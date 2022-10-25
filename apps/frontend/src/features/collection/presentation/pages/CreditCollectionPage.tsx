@@ -171,7 +171,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                         { creditCollectionPageStore.nftEntities !== null && (
                             <GridView
                                 gridViewState={creditCollectionPageStore.gridViewState}
-                                defaultContent={<div className={'NoContentFound'}>No Nfts found</div>}>
+                                defaultContent={creditCollectionPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
                                 { creditCollectionPageStore.nftEntities.map((nftEntity: NftEntity) => {
                                     return (
                                         <NftPreview

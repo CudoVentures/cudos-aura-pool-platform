@@ -123,7 +123,7 @@ function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
                         { exploreNftsPageStore.nftEntities !== null && (
                             <GridView
                                 gridViewState={exploreNftsPageStore.gridViewState}
-                                defaultContent={<div className={'NoContentFound'}>No Nfts found</div>}>
+                                defaultContent={exploreNftsPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>>
                                 {exploreNftsPageStore.nftEntities.map(
                                     (nftEntity: NftEntity, index: number) => {
                                         return (

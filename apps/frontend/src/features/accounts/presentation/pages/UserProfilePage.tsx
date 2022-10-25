@@ -117,7 +117,7 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
                             { userProfilePageStore.nftEntities !== null && (
                                 <GridView
                                     gridViewState={userProfilePageStore.gridViewState}
-                                    defaultContent={<div className={'NoContentFound'}>No Nfts found</div>} >
+                                    defaultContent={userProfilePageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null} >
                                     {userProfilePageStore.nftEntities.map((nftEntity: NftEntity) => {
                                         return (
                                             <NftPreview

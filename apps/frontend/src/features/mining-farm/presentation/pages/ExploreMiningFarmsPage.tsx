@@ -121,7 +121,7 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
                         { exploreMiningFarmsPageStore.miningFarmEntities !== null && (
                             <GridView
                                 gridViewState={exploreMiningFarmsPageStore.gridViewState}
-                                defaultContent={<div className={'NoContentFound'}>No Farms found</div>} >
+                                defaultContent={exploreMiningFarmsPageStore.miningFarmEntities.length === 0 ? <div className={'NoContentFound'}>No Farms found</div> : null} >
                                 { exploreMiningFarmsPageStore.miningFarmEntities.map((miningFarmEntity: MiningFarmEntity) => {
                                     return (
                                         <MiningFarmPeview

@@ -213,7 +213,7 @@ function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                         { viewNftPageStore.nftEntities !== null && (
                             <GridView
                                 gridViewState={viewNftPageStore.gridViewState}
-                                defaultContent={<div className={'NoContentFound'}>No Nfts found</div>}>
+                                defaultContent={viewNftPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
                                 { viewNftPageStore.nftEntities.map((nftEntityRef: NftEntity) => {
                                     return (
                                         <NftPreview

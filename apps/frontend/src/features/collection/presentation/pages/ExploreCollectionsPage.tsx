@@ -113,7 +113,7 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
                         { exploreCollectionsPageStore.collectionEntities !== null && (
                             <GridView
                                 gridViewState={exploreCollectionsPageStore.gridViewState}
-                                defaultContent={<div className={'NoContentFound'}>No Nfts found</div>} >
+                                defaultContent={exploreCollectionsPageStore.collectionEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null} >
                                 { exploreCollectionsPageStore.collectionEntities.map((collectionEntity: CollectionEntity) => {
                                     return (
                                         <CollectionPreview
