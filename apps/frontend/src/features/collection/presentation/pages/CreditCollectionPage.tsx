@@ -30,6 +30,7 @@ import '../styles/page-collection-credit-component.css';
 import CreditCollectionPageStore from '../stores/CreditCollectionPageStore';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 
 type Props = {
     walletStore?: WalletStore
@@ -74,6 +75,28 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         navigate(`${AppRoutes.CREDIT_COLLECTION_NFTS}/${collectionEntity.id}`);
     }
 
+    function getProfitDataPreviews() {
+        const profitDatapreviews = [];
+
+        profitDatapreviews.push(createDataPreview('Floor', collectionEntity.priceDisplay()));
+        profitDatapreviews.push(createDataPreview('Volume', `${collectionEntity.volume.toFixed(1)}CUDOS`));
+        profitDatapreviews.push(createDataPreview('Items', collectionEntity.items));
+        profitDatapreviews.push(createDataPreview('Owners', collectionEntity.owners));
+        profitDatapreviews.push(createDataPreview('Total Hashing Power', collectionEntity.hashRateDisplay()));
+        profitDatapreviews.push(createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]));
+        profitDatapreviews.push(createDataPreview(
+            'Address',
+            <div className={'FlexRow'}>
+                <div className={'Dots'}>{collectionEntity.ownerAddress}</div>
+                <Svg svg={LaunchIcon}
+                    className={'SVG Icon Clickable '}
+                    onClick={() => ProjectUtils.copyText(collectionEntity.ownerAddress)} />
+            </div>,
+        ));
+
+        return profitDatapreviews;
+    }
+
     return (
         <PageLayoutComponent
             className = { 'PageCollectionCredit' }>
@@ -88,47 +111,13 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                     <Breadcrumbs crumbs={crumbs} />
                     <ProfileHeader coverPictureUrl={collectionEntity.coverImgUrl} profilePictureUrl={collectionEntity.profileImgUrl} />
                     <div className={'Heading2 CollectionHeadingName'}>{collectionEntity.name}</div>
+
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
                             <div className={'Clickable'} onClick={onClickFarmLink}>Farm Owner:  <b>{miningFarmEntity.name}</b></div>
                             <div className={'CollectionDescription'}>{collectionEntity.description}</div>
                         </div>
-                        <div className={'FlexColumn InfoBox'}>
-                            <div className={'FlexRow CollectionInfoRow'}>
-                                <div className={'CollectionInfoLabel'}>Floor</div>
-                                <div className={'CollectionInfoValue'}>{collectionEntity.priceDisplay()}</div>
-                            </div>
-                            <div className={'FlexRow CollectionInfoRow'}>
-                                <div className={'CollectionInfoLabel'}>Volume</div>
-                                <div className={'CollectionInfoValue'}>{collectionEntity.volume.toFixed(1)} CUDOS</div>
-                            </div>
-                            <div className={'FlexRow CollectionInfoRow'}>
-                                <div className={'CollectionInfoLabel'}>Items</div>
-                                <div className={'CollectionInfoValue'}>{collectionEntity.items}</div>
-                            </div>
-                            <div className={'FlexRow CollectionInfoRow'}>
-                                <div className={'CollectionInfoLabel'}>Owners</div>
-                                <div className={'CollectionInfoValue'}>{collectionEntity.owners}</div>
-                            </div>
-                            <div className={'FlexRow CollectionInfoRow'}>
-                                <div className={'CollectionInfoLabel'}>Total Hashing Power</div>
-                                <div className={'CollectionInfoValue'}>{collectionEntity.hashRateDisplay()}</div>
-                            </div>
-                            <div className={'HorizontalSeparator'}></div>
-                            <div className={'FlexRow CollectionInfoRow'}>
-                                <div className={'CollectionInfoLabel'}>Blockchain</div>
-                                <div className={'CollectionInfoValue'}>{CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]}</div>
-                            </div>
-                            <div className={'FlexRow CollectionInfoRow'}>
-                                <div className={'CollectionInfoLabel'}>Address</div>
-                                <div className={'CollectionInfoValue'}>
-                                    {ProjectUtils.shortenAddressString(collectionEntity.ownerAddress, 25)}
-                                    <Svg svg={LaunchIcon}
-                                        className={'SVG Icon Clickable '}
-                                        onClick={() => ProjectUtils.copyText(collectionEntity.ownerAddress)} />
-                                </div>
-                            </div>
-                        </div>
+                        <DataPreviewLayout dataPreviews={getProfitDataPreviews()}/>
                     </div>
                     <div className={'GridHeader FlexRow'}>
                         <div className={'H2 Bold'}>NFTs in Collection</div>
