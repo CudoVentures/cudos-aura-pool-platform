@@ -73,7 +73,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                             }} />
                         <div></div>
                     </div>
-                    <div className={'CategoriesRow FlexRow'}>
+                    {/* <div className={'CategoriesRow FlexRow'}>
                         { marketplaceStore.categories.map((category, index) => {
                             return (
                                 <div
@@ -84,10 +84,11 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                                 </div>
                             )
                         }) }
-                    </div>
+                    </div> */}
                 </div>
                 <div className={'H2 Bold'}>New Hash Rate NFT Drops</div>
                 <Slider className={'NewNftDrops'}>
+                    {marketplaceStore.newNftDropsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>)}
                     {marketplaceStore.newNftDropsEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => <NftPreviewInPicture
                         key={index}
                         nftEntity={nftEntity}
@@ -97,6 +98,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                 </Slider>
                 <div className={'H2 Bold'}>Trending NFTs</div>
                 <Slider className={'TrendingNfts'}>
+                    {marketplaceStore.trendingNftEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>)}
                     {marketplaceStore.trendingNftEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => <NftPreview
                         key={index}
                         nftEntity={nftEntity}
@@ -135,6 +137,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                 <div className={'PopularFarms FlexColumn'}>
                     <div className={'H2 Bold'}>Popular Farms</div>
                     <div className={'FlexRow FarmPreviews'}>
+                        {marketplaceStore.popularFarmsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>)}
                         {marketplaceStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => <MiningFarmPreview
                             key={index}
                             miningFarmEntity={miningFarmEntity}

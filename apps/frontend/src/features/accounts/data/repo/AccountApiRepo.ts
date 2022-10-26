@@ -45,4 +45,7 @@ export default class AccountStorageRepo implements AccountRepo {
         return this.accountApi.fetchSessionAccounts();
     }
 
+    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+        return this.accountApi.creditAdminSettings(adminEntity, accountEntity);
+    }
 }

@@ -15,6 +15,7 @@ import Button from '../../../../core/presentation/components/Button';
 import Svg from '../../../../core/presentation/components/Svg';
 import '../styles/credit-account-settings.css';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -22,6 +23,8 @@ type Props = {
 }
 
 function CreditAccountSettings({ accountSessionStore }: Props) {
+    const navigate = useNavigate();
+
     const validationState = useRef(new ValidationState()).current;
 
     const accountEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
@@ -40,13 +43,14 @@ function CreditAccountSettings({ accountSessionStore }: Props) {
         || accountSessionStore.adminEntity.cudosWalletAddress !== tempAdminEntity.cudosWalletAddress
     }
 
-    function onClickSaveChanges() {
+    async function onClickSaveChanges() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
             return;
         }
 
-        accountSessionStore.creditAdminSettings(tempAdminEntity, tempAccountEntity);
+        await accountSessionStore.creditAdminSettings(tempAdminEntity, tempAccountEntity);
+        navigate(-1);
     }
 
     return (

@@ -13,5 +13,5 @@ export default interface AccountRepo {
     forgottenPassword(email: string): Promise < void >
     sendVerificationEmail(): Promise < void >
     fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } >;
-
+    creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void >;
 }

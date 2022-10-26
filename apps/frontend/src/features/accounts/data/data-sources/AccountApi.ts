@@ -37,4 +37,7 @@ export default class AccountApi {
         return null;
     }
 
+    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+        return null;
+    }
 }

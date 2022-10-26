@@ -130,6 +130,7 @@ export default class AccountSessionStore {
 
     async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
         await this.accountRepo.creditAdminSettings(adminEntity, accountEntity);
+        await this.loadSessionAccountsAndSync();
     }
 
     async loadSessionAccountsAndSync() {

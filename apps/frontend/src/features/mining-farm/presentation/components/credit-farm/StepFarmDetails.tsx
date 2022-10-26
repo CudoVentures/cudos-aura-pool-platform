@@ -21,6 +21,7 @@ import ImageEntity, { PictureType } from '../../../../upload-file/entities/Image
 import CloseIcon from '@mui/icons-material/Close';
 import CreditMiningFarmDetailsPageStore from '../../stores/CreditMiningFarmDetailsPageStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
+import MiningFarmEntity from '../../../entities/MiningFarmEntity';
 
 type Props = {
     alertStore?: AlertStore;
@@ -39,13 +40,13 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
 
-    const [selectedManufacturersOptions, setSelectedManufacturersOptions] = useState([]);
-    const [selectedMindersOptions, setSelectedMinersOptions] = useState([]);
-    const [selectedEnergySourceOptions, setSelectedEnergySourceOptions] = useState([]);
-    const [hashRateDisplay, setHashRateDisplay] = useState('');
-
     const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
     const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
+
+    const [selectedManufacturersOptions, setSelectedManufacturersOptions] = useState(miningFarmEntity.manufacturerIds);
+    const [selectedMindersOptions, setSelectedMinersOptions] = useState(miningFarmEntity.minerIds);
+    const [selectedEnergySourceOptions, setSelectedEnergySourceOptions] = useState(miningFarmEntity.energySourceIds);
+    const [hashRateDisplay, setHashRateDisplay] = useState(miningFarmEntity.displayHashRate());
 
     function onClickRemoveImage(imageEntityToRemove: ImageEntity) {
         const imageEntityIndex = imageEntities.findIndex((imageEntity: ImageEntity) => imageEntity.id === imageEntityToRemove.id);
@@ -110,7 +111,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
             />
             <Autocomplete
                 label={'Manufacturers'}
-                value = { selectedManufacturersOptions }
+                value = { selectedManufacturersOptions.map((id) => new AutocompleteOption(id, ManufacturerEntity.getManufacturerName(id))) }
                 multiple
                 onChange = { (d) => {
                     setSelectedManufacturersOptions(d);
@@ -123,7 +124,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 })} />
             <Autocomplete
                 label={'Miners'}
-                value = { selectedMindersOptions }
+                value = { selectedMindersOptions.map((id) => new AutocompleteOption(id, MinerEntity.getMinerName(id))) }
                 multiple
                 onChange = { (d) => {
                     setSelectedMinersOptions(d);
@@ -136,7 +137,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 })} />
             <Autocomplete
                 label={'Energy Source'}
-                value = { selectedEnergySourceOptions }
+                value = { selectedEnergySourceOptions.map((id) => new AutocompleteOption(id, EnergySourceEntity.getEnergySourceName(id))) }
                 multiple
                 onChange = { (d) => {
                     setSelectedEnergySourceOptions(d);

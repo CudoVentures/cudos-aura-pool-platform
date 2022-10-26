@@ -163,4 +163,15 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
+    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+        const adminJson = this.storageHelper.adminsJson.find((admin: AdminEntity) => admin.adminId === adminEntity.adminId);
+        Object.assign(adminJson, AdminEntity.toJson(adminEntity));
+        const accountJson = this.storageHelper.accountsJson.find((account: AccountEntity) => account.accountId === accountEntity.accountId);
+        Object.assign(accountJson, AccountEntity.toJson(accountEntity));
+
+        this.storageHelper.sessionAccount = accountJson ?? null;
+        this.storageHelper.sessionAdmin = adminJson ?? null;
+        this.storageHelper.save();
+    }
+
 }

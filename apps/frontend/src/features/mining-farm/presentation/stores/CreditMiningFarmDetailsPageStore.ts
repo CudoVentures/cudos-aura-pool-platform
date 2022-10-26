@@ -28,6 +28,14 @@ export default class CreditMiningFarmDetailsPageStore {
         makeAutoObservable(this);
     }
 
+    async init() {
+        this.setStepFarmDetails();
+        this.miningFarmEntity = null;
+        this.imageEntities = [];
+
+        await this.fetch();
+    }
+
     async fetch() {
         let miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
 

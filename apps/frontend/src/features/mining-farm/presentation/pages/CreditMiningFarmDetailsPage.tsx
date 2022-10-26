@@ -24,7 +24,7 @@ type Props = {
 function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStore }: Props) {
     useEffect(() => {
         appStore.useLoading(() => {
-            creditMiningFarmDetailsPageStore.fetch();
+            creditMiningFarmDetailsPageStore.init();
         });
     }, []);
 

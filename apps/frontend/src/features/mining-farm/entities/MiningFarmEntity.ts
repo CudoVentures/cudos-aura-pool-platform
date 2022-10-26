@@ -75,7 +75,7 @@ export default class MiningFarmEntity {
             'name': entity.name,
             'legalName': entity.legalName,
             'primaryAccountOwnerName': entity.primaryAccountOwnerName,
-            'primaryAccountOwnerEmail': entity.primaryAccountOwnerName,
+            'primaryAccountOwnerEmail': entity.primaryAccountOwnerEmail,
             'description': entity.description,
             'manufacturerIds': entity.manufacturerIds,
             'minerIds': entity.minerIds,
