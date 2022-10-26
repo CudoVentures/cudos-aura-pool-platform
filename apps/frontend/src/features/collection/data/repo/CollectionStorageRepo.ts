@@ -40,12 +40,6 @@ export default class CollectionStorageRepo implements CollectionRepo {
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         let collectionSlice = this.storageHelper.collectionsJson.map((json) => CollectionEntity.fromJson(json));
 
-        if (collectionFilterModel.sessionAccount === S.INT_TRUE) {
-            collectionSlice = collectionSlice.filter((json) => {
-                return json.ownerAddress === 'cudos1';
-            });
-        }
-
         if (collectionFilterModel.farmId !== '') {
             collectionSlice = collectionSlice.filter((json) => {
                 return json.farmId === collectionFilterModel.farmId;

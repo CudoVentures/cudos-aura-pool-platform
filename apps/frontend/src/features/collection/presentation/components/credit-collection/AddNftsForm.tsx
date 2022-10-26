@@ -147,7 +147,7 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                             </div>
                         </div>
                     }
-                    // disabled={editMaintenanceFeeDisabled}
+                    disabled={editMaintenanceFeeDisabled}
                     inputValidation={nftMaintenanceFeeValidation}
                     placeholder={'Enter Maintenance Fee...'}
                     value={creditCollectionStore.getSelectedNftMaintenanceFeeInputValue()}
@@ -167,7 +167,7 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                     Back
                 </Button>
                 <Button onClick={onClickAddToCollection}>
-                    Add to Collection
+                    {creditCollectionStore.selectedNftEntity.id === S.Strings.NOT_EXISTS ? 'Add to Collection' : 'Save Edit'}
                 </Button>
             </Actions>
         </div>

@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
+import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 
 class TempIdGenerator {
     lastId: number;
@@ -24,6 +25,7 @@ class TempIdGenerator {
 
 export default class CreditCollectionNftsPageStore {
     accountSessionStore: AccountSessionStore;
+    miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
     nftRepo: NftRepo;
 
@@ -38,10 +40,11 @@ export default class CreditCollectionNftsPageStore {
     hashPowerPerNft: number;
     pricePerNft: number;
 
-    constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo) {
+    constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.accountSessionStore = accountSessionStore;
         this.collectionRepo = collectionRepo;
         this.nftRepo = nftRepo;
+        this.miningFarmRepo = miningFarmRepo;
 
         this.nullate();
 
@@ -72,25 +75,26 @@ export default class CreditCollectionNftsPageStore {
         if (collectionId !== undefined) {
             this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
             const nftFilter = new NftFilterModel();
-            nftFilter.collectionId = collectionId;
+            nftFilter.collectionIds = [collectionId];
             nftFilter.count = Number.MAX_SAFE_INTEGER;
 
             const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
             this.nftEntities = nftEntities;
         } else {
             this.collectionEntity = new CollectionEntity();
+            this.collectionEntity.farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId()).id;
+            this.collectionEntity.ownerAddress = (await this.accountSessionStore.adminEntity).cudosWalletAddress;
         }
 
-        this.selectedNftEntity = this.initNewNftEntity();
     }
 
-    initNewNftEntity(): NftEntity {
+    initNewNftEntity(): void {
         const nftEntity = new NftEntity();
 
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
         nftEntity.maintenanceFee = this.collectionEntity.maintenanceFees;
 
-        return nftEntity;
+        this.selectedNftEntity = nftEntity;
     }
 
     isSelectedNftImageEmpty(): boolean {
@@ -111,6 +115,10 @@ export default class CreditCollectionNftsPageStore {
 
     onChangeCollectionDescription = (description: string) => {
         this.collectionEntity.description = description;
+    }
+
+    onChangeHashingPower = (hashRate: strng) => {
+        this.collectionEntity.hashPower = Number(hashRate);
     }
 
     onChangeCollectionRoyalties = (royalties: string) => {
@@ -163,6 +171,8 @@ export default class CreditCollectionNftsPageStore {
     }
 
     onClickSendForApproval = async () => {
+        this.collectionEntity.markQueued();
+        this.collectionEntity.farmId
         await this.collectionRepo.creditCollection(this.collectionEntity, this.addedOrEdittedNftEntities);
     }
 
@@ -184,7 +194,15 @@ export default class CreditCollectionNftsPageStore {
             this.addedOrEdittedNftEntities.push(this.selectedNftEntity);
         }
 
-        this.selectedNftEntity = this.initNewNftEntity();
+        this.initNewNftEntity();
+    }
+
+    getHashingPowerInputValue() {
+        if (this.collectionEntity.hashPower === S.NOT_EXISTS) {
+            return ''
+        }
+
+        return this.collectionEntity.hashPower;
     }
 
     getHashPowerPerNft() {
@@ -236,10 +254,23 @@ export default class CreditCollectionNftsPageStore {
     }
 
     getSelectedNftExpirationDateDisplay() {
-        return new Date(this.selectedNftEntity.expiryDate);
+        return this.selectedNftEntity.expiryDate === S.NOT_EXISTS ? Date.now() : new Date(this.selectedNftEntity.expiryDate)
     }
 
     getAddedNftCount() {
         return this.addedOrEdittedNftEntities.length;
+    }
+
+    getFloorNftPrice() {
+        // TODO: actual
+        let minValue = new BigNumber(Number.MAX_SAFE_INTEGER);
+
+        this.nftEntities.forEach((nftEntity: NftEntity) => {
+            if (nftEntity.price.gt(minValue)) {
+                minValue = nftEntity.price
+            }
+        })
+
+        return minValue.toFixed(2);
     }
 }

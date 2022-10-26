@@ -66,12 +66,12 @@ const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRe
 const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
 const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, nftRepo, collectionRepo, miningFarmRepo);
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo);
-const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo);
+const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo);
 const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo);
 
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo);
 const creditCollectionNftsPageStore = new CreditCollectionNftsPageStore(accountSessionStore, miningFarmRepo, collectionRepo);
-const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo);
+const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
 
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();

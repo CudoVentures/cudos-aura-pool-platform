@@ -69,7 +69,7 @@ export default class ViewNftPageStore {
 
     fetch = async () => {
         const nftFilterModel = new NftFilterModel();
-        nftFilterModel.collectionId = this.nftEntity.collectionId;
+        nftFilterModel.collectionIds = [this.nftEntity.collectionId];
         nftFilterModel.from = this.gridViewState.getFrom();
         nftFilterModel.count = this.gridViewState.getItemsPerPage();
         const { nftEntities, total } = (await this.nftRepo.fetchNftsByFilter(nftFilterModel));

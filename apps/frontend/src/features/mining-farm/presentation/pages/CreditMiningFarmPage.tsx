@@ -34,6 +34,7 @@ import SvgGridNoContent from '../../../../core/presentation/vectors/grid-no-cont
 import SvgNoFarms from '../../../../public/assets/vectors/no-farm.svg';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-mining-farm-credit.css';
+import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 
 type Props = {
     appStore?: AppStore
@@ -47,6 +48,8 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     const navigate = useNavigate();
 
     const miningFarmEntity = creditMiningFarmPageStore.miningFarmEntity;
+    const collectionEntities = creditMiningFarmPageStore.collectionEntities;
+    const nftEntities = creditMiningFarmPageStore.nftEntities;
     const collectionFilterModel = creditMiningFarmPageStore.collectionFilterModel;
 
     const crumbs = [
@@ -141,33 +144,16 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                         <div className={'H2'}>{miningFarmEntity.name}</div>
                         <div className={'Grid GridColumns2'}>
                             <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
-                            <div className={'BorderContainer'}>
-                                {/* TODO: use real data */}
-                                <div className={'FlexRow FarmInfoRow'}>
-                                    <div className={'FarmInfoLabel'}>Total Hashrate</div>
-                                    <div className={'FarmInfoValue'}>102.000 EH/s</div>
-                                </div>
-                                <div className={'FlexRow FarmInfoRow'}>
-                                    <div className={'FarmInfoLabel'}>Hashrate (1h average)</div>
-                                    <div className={'FarmInfoValue'}>80.345 EH/s</div>
-                                </div>
-                                <div className={'FlexRow FarmInfoRow'}>
-                                    <div className={'FarmInfoLabel'}>Active Workers</div>
-                                    <div className={'FarmInfoValue'}>1023</div>
-                                </div>
-                                <div className={'FlexRow FarmInfoRow'}>
-                                    <div className={'FarmInfoLabel'}>Collections Owned</div>
-                                    <div className={'FarmInfoValue'}>2</div>
-                                </div>
-                                <div className={'FlexRow FarmInfoRow'}>
-                                    <div className={'FarmInfoLabel'}>NFTs Owned</div>
-                                    <div className={'FarmInfoValue'}>1400</div>
-                                </div>
-                                <div className={'FlexRow FarmInfoRow'}>
-                                    <div className={'FarmInfoLabel'}>Total NFTs Sold</div>
-                                    <div className={'FarmInfoValue'}>735</div>
-                                </div>
-                            </div>
+                            {/* TODO: use real data */}
+                            <DataPreviewLayout
+                                dataPreviews = { [
+                                    createDataPreview('Total Hashrate', '102.000 EH/s'),
+                                    createDataPreview('Hashrate (1h average)', '80.345 EH/s'),
+                                    createDataPreview('Active Workers', '1023'),
+                                    createDataPreview('Collections Owned', creditMiningFarmPageStore.gridViewState.getItemCount()),
+                                    createDataPreview('NFTs Owned', nftEntities.length),
+                                    createDataPreview('Total NFTs Sold', '735'),
+                                ] } />
                         </div>
                         <div className={'CollectionsOwnedHeader FlexRow'}>
                             <div className={'H2'}>Collections Owned</div>
@@ -212,15 +198,15 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                 </div>
                             ) }>
 
-                            { creditMiningFarmPageStore.collectionEntities === null && (
+                            { collectionEntities === null && (
                                 <LoadingIndicator />
                             ) }
 
-                            { creditMiningFarmPageStore.collectionEntities !== null && (
+                            { collectionEntities !== null && (
                                 <GridView
                                     gridViewState={creditMiningFarmPageStore.gridViewState}
-                                    defaultContent={creditMiningFarmPageStore.collectionEntities ? <EmptyGridContent/> : null} >
-                                    { creditMiningFarmPageStore.collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
+                                    defaultContent={collectionEntities.length === 0 ? <EmptyGridContent /> : null} >
+                                    { collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
                                         return (
                                             <CollectionPreview
                                                 key={index}

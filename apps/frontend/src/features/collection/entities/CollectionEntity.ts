@@ -9,6 +9,7 @@ export enum CollectionStatus {
     REJECTED = 'rejected',
     ISSUED = 'issued',
     DELETED = 'deleted',
+    ANY = 'any'
 }
 
 export default class CollectionEntity {
@@ -48,6 +49,10 @@ export default class CollectionEntity {
         this.payoutAddress = S.Strings.EMPTY;
 
         makeAutoObservable(this);
+    }
+
+    markQueued() {
+        this.status = CollectionStatus.QUEUED
     }
 
     markApproved() {
@@ -110,7 +115,7 @@ export default class CollectionEntity {
     hashRateDisplay(): string {
         // TODO: calculate EH or TH or w/e
 
-        return `${this.hashPower} EH/s`
+        return `${this.hashPower === S.NOT_EXISTS ? 0 : this.hashPower} EH/s`
     }
 
     priceDisplay(): string {

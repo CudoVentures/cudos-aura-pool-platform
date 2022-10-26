@@ -32,7 +32,7 @@ export default class MiningFarmFilterModel {
         this.hashPowerFilter = MiningFarmHashPowerFilter.NONE;
         this.sortPriceDirection = MiningFarmPriceSortDirection.NONE;
         this.searchString = '';
-        this.status = MiningFarmStatus.APPROVED;
+        this.status = MiningFarmStatus.ANY;
         this.sessionAccount = '';
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;

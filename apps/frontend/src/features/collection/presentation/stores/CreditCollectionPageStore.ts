@@ -37,7 +37,7 @@ export default class CreditCollectionPageStore {
     }
 
     async init(collectionId: string) {
-        this.nftFilterModel.collectionId = collectionId;
+        this.nftFilterModel.collectionIds = [collectionId];
         this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
         await this.fetch();
@@ -61,4 +61,7 @@ export default class CreditCollectionPageStore {
         this.fetch();
     }
 
+    getOwnersCount(): number {
+        return [...new Set(this.nftEntities.map((nftEntity: NftEntity) => nftEntity.currentOwnerAddress))].length;
+    }
 }

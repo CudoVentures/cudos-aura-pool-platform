@@ -23,7 +23,7 @@ export default class NftEntity {
     maintenanceFee: BigNumber;
 
     constructor() {
-        this.id = S.Strings.EMPTY;
+        this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.collectionId = S.Strings.EMPTY;
         this.hashPower = S.NOT_EXISTS;

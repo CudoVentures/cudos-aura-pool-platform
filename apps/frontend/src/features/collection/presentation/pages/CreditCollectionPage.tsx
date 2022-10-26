@@ -41,6 +41,8 @@ type Props = {
 function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, walletStore }: Props) {
     const collectionEntity = creditCollectionPageStore.collectionEntity;
     const miningFarmEntity = creditCollectionPageStore.miningFarmEntity;
+    const nftEntities = creditCollectionPageStore.nftEntities;
+
     const nftFilterModel = creditCollectionPageStore.nftFilterModel;
 
     const { collectionId } = useParams();
@@ -80,8 +82,8 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
 
         profitDatapreviews.push(createDataPreview('Floor', collectionEntity.priceDisplay()));
         profitDatapreviews.push(createDataPreview('Volume', `${collectionEntity.volume.toFixed(1)}CUDOS`));
-        profitDatapreviews.push(createDataPreview('Items', collectionEntity.items));
-        profitDatapreviews.push(createDataPreview('Owners', collectionEntity.owners));
+        profitDatapreviews.push(createDataPreview('Items', nftEntities.length));
+        profitDatapreviews.push(createDataPreview('Owners', creditCollectionPageStore.getOwnersCount()));
         profitDatapreviews.push(createDataPreview('Total Hashing Power', collectionEntity.hashRateDisplay()));
         profitDatapreviews.push(createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]));
         profitDatapreviews.push(createDataPreview(
@@ -153,15 +155,15 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             </>
                         ) } >
 
-                        { creditCollectionPageStore.nftEntities === null && (
+                        { nftEntities === null && (
                             <LoadingIndicator />
                         ) }
 
-                        { creditCollectionPageStore.nftEntities !== null && (
+                        { nftEntities !== null && (
                             <GridView
                                 gridViewState={creditCollectionPageStore.gridViewState}
-                                defaultContent={creditCollectionPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
-                                { creditCollectionPageStore.nftEntities.map((nftEntity: NftEntity) => {
+                                defaultContent={nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
+                                { nftEntities.map((nftEntity: NftEntity) => {
                                     return (
                                         <NftPreview
                                             key={nftEntity.id}

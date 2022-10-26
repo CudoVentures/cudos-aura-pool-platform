@@ -74,7 +74,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         }
 
         miningFarmsSlice = miningFarmsSlice.filter((json) => {
-            return json.status === miningFarmFilterModel.status;
+            return json.status === miningFarmFilterModel.status || miningFarmFilterModel.status === MiningFarmStatus.ANY;
         });
 
         if (miningFarmFilterModel.sessionAccount === S.INT_TRUE) {

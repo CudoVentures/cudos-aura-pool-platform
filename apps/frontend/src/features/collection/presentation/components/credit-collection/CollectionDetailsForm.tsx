@@ -28,7 +28,7 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
-    const collectionPayoutAddressValidation = useRef(validationState.addEmptyValidation('Empty payout address')).current;
+    const collectionPayoutAddressValidation = useRef(validationState.addCudosAddressValidation('Empty payout address')).current;
     const collectionHashPowerPerNftValidation = useRef(validationState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationState.addEmptyValidation('Empty price per nft')).current;
 
@@ -37,6 +37,8 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
             validationState.setShowErrors(true);
             return;
         }
+
+        creditCollectionStore.initNewNftEntity();
         onClickNextStep();
     }
 
@@ -139,9 +141,10 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
             </div>
             <Input
                 label={'Hashing Power for collection'}
+                placeholder={'Enter hashing power...'}
                 inputValidation={collectionHashPowerValidation}
-                value={collectionEntity.hashRateDisplay()}
-                disabled={true}
+                value={creditCollectionStore.getHashingPowerInputValue()}
+                onChange={creditCollectionStore.onChangeHashingPower}
             />
             <div className={'InputColumnHolder'}>
                 <Input

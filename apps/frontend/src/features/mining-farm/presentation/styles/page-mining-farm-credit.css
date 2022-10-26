@@ -40,11 +40,6 @@
     gap: 50px;
 }
 
-.PageMiningFarmCredit .BorderContainer .FarmInfoRow {
-    justify-content: space-between;
-}
-
-
 .PageMiningFarmCredit .PageContent .GridFilterHeader {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) minmax(0, 1fr);
