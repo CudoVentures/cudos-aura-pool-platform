@@ -32,10 +32,14 @@ export default class ManufacturerEntity {
         return manufacturers;
     }
 
-    toJson(): any {
+    static toJson(entity: ManufacturerEntity): any {
+        if (entity === null) {
+            return null;
+        }
+
         return {
-            'id': this.id,
-            'name': this.name,
+            'id': entity.id,
+            'name': entity.name,
         }
     }
 
