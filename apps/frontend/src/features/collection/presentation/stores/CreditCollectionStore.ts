@@ -38,7 +38,7 @@ export default class CreditCollectionNftsPageStore {
 
     defaultHashAndPriceValues: number;
     hashPowerPerNft: number;
-    pricePerNft: number;
+    pricePerNft: BigNumber;
 
     constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.accountSessionStore = accountSessionStore;
@@ -66,7 +66,7 @@ export default class CreditCollectionNftsPageStore {
 
         this.defaultHashAndPriceValues = S.INT_FALSE;
         this.hashPowerPerNft = S.NOT_EXISTS;
-        this.pricePerNft = S.NOT_EXISTS;
+        this.pricePerNft = new BigNumber(S.NOT_EXISTS);
     }
 
     async fetch(collectionId: string) {
@@ -91,6 +91,8 @@ export default class CreditCollectionNftsPageStore {
     initNewNftEntity(): void {
         const nftEntity = new NftEntity();
 
+        nftEntity.price = this.pricePerNft;
+        nftEntity.hashPower = this.hashPowerPerNft;
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
         nftEntity.maintenanceFee = this.collectionEntity.maintenanceFees;
 
@@ -143,11 +145,19 @@ export default class CreditCollectionNftsPageStore {
     }
 
     onChangePricePerNft = (pricePerNft: string) => {
-        this.pricePerNft = Number(pricePerNft);
+        this.pricePerNft = new BigNumber(pricePerNft);
     }
 
     onChangeSelectedNftName = (nftName: string) => {
         this.selectedNftEntity.name = nftName;
+    }
+
+    onChangeSelectedNftHashPower = (hasHPower: string) => {
+        this.selectedNftEntity.hashPower = Number(hasHPower);
+    }
+
+    onChangeSelectedNftPrice = (price: string) => {
+        this.selectedNftEntity.price = new BigNumber(price);
     }
 
     onChangeSelectedNftRoyalties = (royalties: string) => {
@@ -214,7 +224,7 @@ export default class CreditCollectionNftsPageStore {
     }
 
     getPricePerNft() {
-        if (this.pricePerNft === S.NOT_EXISTS) {
+        if (this.pricePerNft.eq(S.NOT_EXISTS)) {
             return ''
         }
 

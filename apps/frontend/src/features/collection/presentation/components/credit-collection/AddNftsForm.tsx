@@ -98,10 +98,10 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                 <Input
                     label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                     placeholder={'Enter hashing power...'}
-                    value={creditCollectionStore.getHashPowerPerNft()}
+                    value={selectedNftEntity.hashPower}
                     inputType={InputType.INTEGER}
                     inputValidation={nftHashPowerValidation}
-                    onChange={creditCollectionStore.onChangeHashPowerPerNft}
+                    onChange={creditCollectionStore.onChangeSelectedNftHashPower}
                 />
                 <div className={'InputInfoLabel'}>Available TH/s: 80.000</div>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
@@ -110,9 +110,9 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                 <Input
                     label={'Price per NFT'}
                     placeholder={'Enter price...'}
-                    value={creditCollectionStore.getPricePerNft()}
+                    value={selectedNftEntity.price.toString()}
                     inputValidation={nftPriceValidation}
-                    onChange={creditCollectionStore.onChangePricePerNft}
+                    onChange={creditCollectionStore.onChangeSelectedNftPrice}
                 />
                 <div className={'InputInfoLabel'}>{bitcoinStore.getBitcoinPrice()} based on Today’s BTC Price </div>
             </div>
