@@ -55,7 +55,11 @@ function Select({ className, margin, onChange, innerLabel, label, readOnly, erro
                 return;
             }
 
-            inputValidation.onChange(null);
+            if (Array.isArray(inputValidation)) {
+                inputValidation.forEach((validation) => onChange(null));
+            } else {
+                inputValidation.onChange(null);
+            }
         }
     }, [props.value]);
 

@@ -51,7 +51,11 @@ function Autocomplete({ className, readOnly, error, label, inputValidation, ...p
                 return;
             }
 
-            inputValidation.onChange(null);
+            if (Array.isArray(inputValidation)) {
+                inputValidation.forEach((validation) => onChange(null));
+            } else {
+                inputValidation.onChange(null);
+            }
         }
     }, [props.value]);
 

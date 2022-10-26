@@ -77,28 +77,6 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         navigate(`${AppRoutes.CREDIT_COLLECTION_NFTS}/${collectionEntity.id}`);
     }
 
-    function getProfitDataPreviews() {
-        const profitDatapreviews = [];
-
-        profitDatapreviews.push(createDataPreview('Floor', collectionEntity.priceDisplay()));
-        profitDatapreviews.push(createDataPreview('Volume', `${collectionEntity.volume.toFixed(1)}CUDOS`));
-        profitDatapreviews.push(createDataPreview('Items', nftEntities.length));
-        profitDatapreviews.push(createDataPreview('Owners', creditCollectionPageStore.getOwnersCount()));
-        profitDatapreviews.push(createDataPreview('Total Hashing Power', collectionEntity.hashRateDisplay()));
-        profitDatapreviews.push(createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]));
-        profitDatapreviews.push(createDataPreview(
-            'Address',
-            <div className={'FlexRow'}>
-                <div className={'Dots'}>{collectionEntity.ownerAddress}</div>
-                <Svg svg={LaunchIcon}
-                    className={'SVG Icon Clickable '}
-                    onClick={() => ProjectUtils.copyText(collectionEntity.ownerAddress)} />
-            </div>,
-        ));
-
-        return profitDatapreviews;
-    }
-
     return (
         <PageLayoutComponent
             className = { 'PageCollectionCredit' }>
@@ -119,7 +97,23 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             <div className={'Clickable'} onClick={onClickFarmLink}>Farm Owner:  <b>{miningFarmEntity.name}</b></div>
                             <div className={'CollectionDescription'}>{collectionEntity.description}</div>
                         </div>
-                        <DataPreviewLayout dataPreviews={getProfitDataPreviews()}/>
+                        <DataPreviewLayout dataPreviews={[
+                            createDataPreview('Floor', creditCollectionPageStore.getFloorNftPrice()),
+                            createDataPreview('Volume', creditCollectionPageStore.getNftVolume()),
+                            createDataPreview('Items', nftEntities.length),
+                            createDataPreview('Owners', creditCollectionPageStore.getOwnersCount()),
+                            createDataPreview('Total Hashing Power', collectionEntity.hashRateDisplay()),
+                            createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]),
+                            createDataPreview(
+                                'Address',
+                                <div className={'FlexRow'}>
+                                    <div className={'Dots'}>{collectionEntity.ownerAddress}</div>
+                                    <Svg svg={LaunchIcon}
+                                        className={'SVG Icon Clickable '}
+                                        onClick={() => ProjectUtils.copyText(collectionEntity.ownerAddress)} />
+                                </div>,
+                            ),
+                        ]} />
                     </div>
                     <div className={'GridHeader FlexRow'}>
                         <div className={'H2 Bold'}>NFTs in Collection</div>

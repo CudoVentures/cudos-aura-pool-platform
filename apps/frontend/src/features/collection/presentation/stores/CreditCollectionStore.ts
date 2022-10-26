@@ -260,17 +260,4 @@ export default class CreditCollectionNftsPageStore {
     getAddedNftCount() {
         return this.addedOrEdittedNftEntities.length;
     }
-
-    getFloorNftPrice() {
-        // TODO: actual
-        let minValue = new BigNumber(Number.MAX_SAFE_INTEGER);
-
-        this.nftEntities.forEach((nftEntity: NftEntity) => {
-            if (nftEntity.price.gt(minValue)) {
-                minValue = nftEntity.price
-            }
-        })
-
-        return minValue.toFixed(2);
-    }
 }
