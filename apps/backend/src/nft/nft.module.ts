@@ -8,16 +8,17 @@ import { GraphqlModule } from '../graphql/graphql.module';
 import { GraphqlService } from '../graphql/graphql.service';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionModule } from '../collection/collection.module';
+import { FarmService } from '../farm/farm.service';
 
 @Module({
-    imports: [
-        SequelizeModule.forFeature([NFT]),
-        HttpModule,
-        GraphqlModule,
-        forwardRef(() => CollectionModule),
-    ],
-    providers: [NFTService, GraphqlService, CollectionService],
-    controllers: [NFTController],
-    exports: [SequelizeModule],
+  imports: [
+    SequelizeModule.forFeature([NFT]),
+    HttpModule,
+    GraphqlModule,
+    forwardRef(() => CollectionModule),
+  ],
+  providers: [NFTService, GraphqlService, CollectionService, FarmService],
+  controllers: [NFTController],
+  exports: [SequelizeModule],
 })
 export class NFTModule {}

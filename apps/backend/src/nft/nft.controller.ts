@@ -29,6 +29,7 @@ import { CheckStatusDto } from './dto/check-status.dto';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionStatus } from '../collection/utils';
 import { Collection } from '../collection/collection.model';
+import { IsApprovedGuard } from './guards/is-approved.guard';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -75,7 +76,7 @@ export class NFTController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.FARM_ADMIN]))
+  @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsApprovedGuard)
   @Post()
   async create(
     @Request() req,
@@ -93,7 +94,7 @@ export class NFTController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+  @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard, IsApprovedGuard)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -113,7 +114,7 @@ export class NFTController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+  @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard, IsApprovedGuard)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<NFT> {
     return this.nftService.deleteOne(id);
