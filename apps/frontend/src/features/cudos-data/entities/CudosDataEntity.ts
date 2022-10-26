@@ -10,10 +10,14 @@ export default class CudosDataEntity {
         this.priceChange = S.NOT_EXISTS;
     }
 
-    toJson(): any {
+    static toJson(entity: CudosDataEntity): any {
+        if (entity === null) {
+            return null;
+        }
+
         return {
-            'price': this.price,
-            'priceChange': this.priceChange,
+            'price': entity.price,
+            'priceChange': entity.priceChange,
         }
     }
 
