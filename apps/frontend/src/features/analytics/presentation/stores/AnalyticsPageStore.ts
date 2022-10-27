@@ -6,23 +6,19 @@ import CollectionEventEntity from '../../entities/CollectionEventEntity';
 import PoolEventRepo from '../repos/PoolEventRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
-
-enum StatPeriod {
-    TODAY = 1,
-    WEEK = 2,
-    MONTH = 3
-}
+import ExtendedChartState from '../../../../core/presentation/stores/ExtendedChartState';
+import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
 export default class AnalyticsPageStore {
     poolEventRepo: PoolEventRepo;
     collectionRepo: CollectionRepo;
     miningFarmRepo: MiningFarmRepo;
 
-    statPeriod: StatPeriod;
     collectionEventFilterModel: CollectionEventFilterModel;
     analyticsTableState: TableState;
+    extendedChartState: ExtendedChartState;
 
-    statistics: number[];
+    miningFarmEntity: MiningFarmEntity;
     collectionEventEntities: CollectionEventEntity[];
     collectionEntities: CollectionEntity[];
 
@@ -31,11 +27,11 @@ export default class AnalyticsPageStore {
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
 
-        this.setStatsToday();
         this.collectionEventFilterModel = new CollectionEventFilterModel();
         this.analyticsTableState = new TableState(0, [], this.fetch, 10);
+        this.extendedChartState = new ExtendedChartState(this.fetchStatistics);
 
-        this.statistics = [];
+        this.miningFarmEntity = null;
         this.collectionEventEntities = [];
         this.collectionEntities = [];
 
@@ -43,54 +39,33 @@ export default class AnalyticsPageStore {
     }
 
     async init() {
+        this.miningFarmEntity = null;
         this.collectionEventEntities = [];
         this.collectionEntities = [];
 
-        await this.fetch();
+        this.fetch();
     }
 
     fetch = async () => {
-        const farmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
         const { collectionEventEntities, total } = await this.poolEventRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
         const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(collectionEventEntities.map((eventEntity: CollectionEventEntity) => eventEntity.collectionId));
-        const statistics = await this.miningFarmRepo.fetchMiningFarmSalesStatistics(farmEntity.id);
 
         runInAction(() => {
+            this.miningFarmEntity = miningFarmEntity;
             this.collectionEventEntities = collectionEventEntities;
             this.collectionEntities = collectionEntities;
             this.analyticsTableState.tableFilterState.total = total;
-            this.statistics = statistics;
+            this.extendedChartState.init();
         });
     }
 
-    isStatsToday(): boolean {
-        return this.statPeriod === StatPeriod.TODAY;
-    }
-
-    isStatsWeek(): boolean {
-        return this.statPeriod === StatPeriod.WEEK;
-    }
-
-    isStatsMonth(): boolean {
-        return this.statPeriod === StatPeriod.MONTH;
+    fetchStatistics = (timestamp: number): Promise < number[] > => {
+        return this.miningFarmRepo.fetchMiningFarmSalesStatistics(this.miningFarmEntity.id, timestamp);
     }
 
     getCollectionById(collectionId: string): CollectionEntity {
-        console.log(collectionId);
-        console.log(this.collectionEntities);
         return this.collectionEntities.find((collectionEntity: CollectionEntity) => collectionEntity.id === collectionId);
-    }
-
-    setStatsToday = () => {
-        this.statPeriod = StatPeriod.TODAY;
-    }
-
-    setStatsWeek = () => {
-        this.statPeriod = StatPeriod.WEEK;
-    }
-
-    setStatsMonth = () => {
-        this.statPeriod = StatPeriod.MONTH;
     }
 
     onChangeTableFilter = (value: number) => {
