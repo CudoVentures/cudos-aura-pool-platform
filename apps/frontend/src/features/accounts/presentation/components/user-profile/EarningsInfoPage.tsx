@@ -3,6 +3,7 @@ import React from 'react';
 import ExtendedChart, { createHeaderValueTab } from '../../../../../core/presentation/components/ExtendedChart';
 import StyledContainer, { ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
 import UserProfilePageStore from '../../stores/UserProfilePageStore';
+
 import '../../styles/earnings-page.css';
 
 type Props = {

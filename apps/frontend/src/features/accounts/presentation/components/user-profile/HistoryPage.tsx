@@ -9,6 +9,7 @@ import { MenuItem } from '@mui/material';
 import CollectionEventEntity from '../../../../analytics/entities/CollectionEventEntity';
 import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
 import { EventTypeFilter } from '../../../../analytics/entities/CollectionEventFilterModel';
+
 import '../../styles/history-page.css';
 
 type Props = {
