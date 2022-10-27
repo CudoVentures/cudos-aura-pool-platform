@@ -140,10 +140,11 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                         </div>
                     </StyledContainer>
                 </div>
-                <StyledContainer className={'FlexColumn TableConteiner'} containerPadding={ContainerPadding.PADDING_24}>
-                    <div className={'FlexRow Tableheader'}>
+                <StyledContainer className={'FlexColumn TableContainer'} containerPadding={ContainerPadding.PADDING_24}>
+                    <div className={'FlexRow TableHeader'}>
                         <div className={'H3 Bold'}>Activity on Collections</div>
                         <Select
+                            className={'TableFilter'}
                             onChange={analyticsPageStore.onChangeTableFilter}
                             value={analyticsPageStore.collectionEventFilterModel.eventType} >
                             <MenuItem value = { EventTypeFilter.ALL }> All Event Types </MenuItem>

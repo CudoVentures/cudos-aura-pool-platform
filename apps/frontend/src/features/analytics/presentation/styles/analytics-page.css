@@ -30,3 +30,15 @@
 .PageAnalytics .PageContent .BalancesDataContainer .BalanceColumn .ValueColumn .SecondaryColor {
     color: var(--color-gray-030);    
 }
+
+.PageAnalytics .PageContent .TableContainer {
+    gap: 30px;
+}
+
+.PageAnalytics .PageContent .TableContainer .TableHeader {
+    justify-content: space-between;
+    align-items: center;
+}
+.PageAnalytics .PageContent .TableContainer .TableHeader .TableFilter {
+    width: 20%;
+}
