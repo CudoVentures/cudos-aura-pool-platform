@@ -59,6 +59,25 @@ export default class CollectionEntity {
         this.status = CollectionStatus.APPROVED;
     }
 
+    getHashPowerDisplay(): string {
+        const hashPower = this.hashPower !== S.NOT_EXISTS ? this.hashPower : 0;
+
+        if (hashPower < 1000) {
+            return `${hashPower} TH/s`;
+        }
+
+        if (hashPower / 1000 < 1000) {
+            return `${(hashPower / 1000).toFixed(2)} PH/s`;
+        }
+
+        if (hashPower / 1000000 < 1000) {
+            return `${(hashPower / 1000000).toFixed(2)} EH/s`;
+        }
+
+        return S.Strings.EMPTY;
+
+    }
+
     static toJson(entity: CollectionEntity): any {
         if (entity === null) {
             return null;

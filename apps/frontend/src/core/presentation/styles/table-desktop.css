@@ -19,9 +19,8 @@
     padding:8px 14px;
     transition-property:'background';
     color: #000;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 16px;
+    /* font-weight: 700; */
+    /* line-height: 16px; */
 }
 
 .TableDesktop .TableRow:nth-child(even) {

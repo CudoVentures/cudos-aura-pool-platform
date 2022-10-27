@@ -152,8 +152,9 @@ function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                                 <DataPreviewLayout
                                     dataPreviews={getGeneralDataPreviews()}
                                     gap={DataRowsGap.GAP_25}
-                                    containerBackground={ContainerBackground.GRAY}
-                                />
+                                    styledContainerProps = { {
+                                        containerBackground: ContainerBackground.GRAY,
+                                    } } />
                             </div>
                             <div className={'H2 Bold'}>Description</div>
                             <div className={'Description B1'}>{collectionEntity.description}</div>

@@ -22,7 +22,7 @@ import DataGridLayout from '../../../../core/presentation/components/DataGridLay
 
 import '../styles/page-explore-collections-component.css';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
-import NavRowTabs from '../../../../core/presentation/components/NavRowTabs';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -37,26 +37,18 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
         appStore.useLoading(async () => {
             await exploreCollectionsPageStore.init();
         });
-    }, [])
+    }, []);
+
+    function onClickExploreNfts() {
+        navigate(AppRoutes.EXPLORE_NFTS);
+    }
+
+    function onClickExploreMiningFarms() {
+        navigate(AppRoutes.EXPLORE_MINING_FARMS);
+    }
 
     const collectionFilterModel = exploreCollectionsPageStore.collectionFilterModel;
 
-    const navTabs = [
-        {
-            navName: 'NFTs',
-            isActive: false,
-            onClick: () => navigate(AppRoutes.EXPLORE_NFTS),
-        },
-        {
-            navName: 'Collections',
-            isActive: true,
-        },
-        {
-            navName: 'Farms',
-            isActive: false,
-            onClick: () => navigate(AppRoutes.EXPLORE_MINING_FARMS),
-        },
-    ]
     return (
         <PageLayoutComponent className = { 'PageExploreCollections' } >
 
@@ -68,7 +60,11 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
                     header = { (
                         <>
                             <div className={'H1 Bold'}>Explore AuraPool</div>
-                            <NavRowTabs navTabs={navTabs} />
+                            <NavRowTabs navTabs = {[
+                                createNavRowTab('NFTs', false, onClickExploreNfts),
+                                createNavRowTab('Collections', true),
+                                createNavRowTab('Farms', false, onClickExploreMiningFarms),
+                            ]} />
                         </>
                     ) }>
 
@@ -80,7 +76,7 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
                                     className={'SearchBar'}
                                     value = {collectionFilterModel.searchString}
                                     onChange = { exploreCollectionsPageStore.onChangeSearchWord }
-                                    placeholder = {'Search Collections name'}
+                                    placeholder = {'Search for Collection...'}
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start" >
                                             <Svg svg={SearchIcon} />
@@ -90,7 +86,7 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
                                     label={'Hashing Power'}
                                     onChange={exploreCollectionsPageStore.onChangeHashPowerFilter}
                                     value={collectionFilterModel.hashPowerFilter} >
-                                    <MenuItem value = { CollectionHashPowerFilter.NONE } > </MenuItem>
+                                    <MenuItem value = { CollectionHashPowerFilter.NONE } > None </MenuItem>
                                     <MenuItem value = { CollectionHashPowerFilter.BELOW_1000_EH } > Below 1000 EH/s </MenuItem>
                                     <MenuItem value = { CollectionHashPowerFilter.BELOW_2000_EH } > Below 2000 EH/s </MenuItem>
                                     <MenuItem value = { CollectionHashPowerFilter.ABOVE_2000_EH } > Above 2000 EH/s </MenuItem>
