@@ -1,0 +1,21 @@
+.NoFarmView {
+    flex: 1 1 auto;
+}
+
+.NoFarmView .NoFarmLayout {
+    align-items: center;
+}
+
+.NoFarmView .NoFarmLayout .SvgNoFarm {
+    margin-bottom: 40px;
+}
+
+.NoFarmView .NoFarmLayout .Title {
+    margin-bottom: 16px;
+}
+
+.NoFarmView .NoFarmLayout .Subtitle {
+    color: var(--color-gray-030);
+    font-size: 16px;
+    margin-bottom: 48px;
+}

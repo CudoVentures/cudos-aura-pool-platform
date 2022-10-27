@@ -10,6 +10,7 @@ import BuyNftModalStore from '../stores/BuyNftModalStore';
 import ResellNftModalStore from '../stores/ResellNftModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftEntity from '../../entities/NftEntity';
+import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
 import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
 import NftViewHistory from '../components/NftViewHistory';
@@ -25,12 +26,11 @@ import LoadingIndicator from '../../../../core/presentation/components/LoadingIn
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 import NftPreview from '../components/NftPreview';
 import GridView from '../../../../core/presentation/components/GridView';
-
-import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
-import '../styles/page-nft-view-component.css';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import DataPreviewLayout, { createDataPreview, DataRowsGap } from '../../../../core/presentation/components/DataPreviewLayout';
 import { ContainerBackground } from '../../../../core/presentation/components/StyledContainer';
+
+import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
+import '../styles/page-view-nft.css';
 
 type Props = {
     walletStore?: WalletStore;
@@ -39,7 +39,7 @@ type Props = {
     resellNftModalStore?: ResellNftModalStore;
 }
 
-function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNftModalStore }: Props) {
+function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNftModalStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -126,7 +126,7 @@ function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
 
     return (
         <PageLayoutComponent
-            className = { 'PageNftView' }
+            className = { 'PageViewNft' }
             modals = {
                 <>
                     <BuyNftModal />
@@ -141,14 +141,14 @@ function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
 
             { nftEntity !== null && (
                 <div className={'PageContent AppContent'} >
+
                     <Breadcrumbs crumbs={crumbs}/>
+
                     <div className={'NftInfoCnt Grid GridColumns2'}>
+
                         <div className={'LeftLayout FlexColumn'}>
                             <div className={'PaddingColumn FlexColumn'}>
-                                <div className={'Picture'}
-                                    style={{
-                                        backgroundImage: `url("${nftEntity.imageUrl}")`,
-                                    }} />
+                                <div className={'NftImg'} style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
                                 <DataPreviewLayout
                                     dataPreviews={getGeneralDataPreviews()}
                                     gap={DataRowsGap.GAP_25}
@@ -160,9 +160,10 @@ function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                             <div className={'Description B1'}>{collectionEntity.description}</div>
                             <NftViewHistory />
                         </div>
+
                         <div className={'RightLayout FlexColumn'}>
-                            <div className={'CollectionName B2 SemiBolBuy now for {nftEntity.price.toFixed(0)} CUDOSd'}>{collectionEntity.name}</div>
-                            <div className={'H2 Bold NftName'}>{nftEntity.name}</div>
+                            <div className={'CollectionName SemiBold'}>{collectionEntity.name}</div>
+                            <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                             <div className={'FlexRow OwnerRow'}>
                                 <div className={'FlexRow OwnerBox'}>
                                     <div className={'OwnerPicture'}></div>
@@ -182,30 +183,33 @@ function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                             <DataPreviewLayout dataPreviews={getProfitDataPreviews()}/>
                             <div className={'FlexRow CalculateRewardsNav'}>
                                 <div className={'B3'}>You can calculate your rewards in our dynamic Calculator</div>
-                                <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
+                                <Actions height={ActionsHeight.HEIGHT_32}>
                                     <Button onClick={onClickCalculateRewards}>Calculate Rewards</Button>
                                 </Actions>
                             </div>
-                            <DataPreviewLayout
-                                dataPreviews={getPriceDataPreviews()}
-                            >
+                            <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
                                 { walletStore.isConnected() && (
-                                    <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                    <>
                                         { viewNftPageStore.isNftListed() === true && (
-                                            <Button onClick={onClickBuyNft}>Buy now for {nftEntity.price.toFixed(0)} CUDOS </Button>
+                                            <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                                <Button onClick={onClickBuyNft}>Buy now for {nftEntity.price.toFixed(0)} CUDOS </Button>
+                                            </Actions>
                                         ) }
                                         { viewNftPageStore.isNftListed() === false && viewNftPageStore.isOwner(walletStore.getAddress()) && (
-                                            <Button onClick={onClickResellNft}>Resell NFT</Button>
+                                            <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                                <Button onClick={onClickResellNft}>Resell NFT</Button>
+                                            </Actions>
                                         ) }
-                                    </Actions>
+                                    </>
                                 ) }
                             </DataPreviewLayout>
                         </div>
                     </div>
-                    <div className={'HorizontalSeparator'}/>
+
+                    <div className={'SectionDivider'}/>
+
                     <div className={'H2 Bold'}>Collection Items</div>
-                    <DataGridLayout
-                        header = { null } >
+                    <DataGridLayout className = { 'NftsCnt' } >
 
                         { viewNftPageStore.nftEntities === null && (
                             <LoadingIndicator />
@@ -237,4 +241,4 @@ function NftViewPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
 
 }
 
-export default inject((stores) => stores)(observer(NftViewPage));
+export default inject((stores) => stores)(observer(ViewNftPage));

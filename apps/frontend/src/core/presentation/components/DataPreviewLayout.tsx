@@ -59,4 +59,5 @@ export default function DataPreviewLayout({ dataPreviews, gap, size, styledConta
 DataPreviewLayout.defaultProps = {
     gap: DataRowsGap.GAP_10,
     size: DataRowsSize.LARGE,
+    styledContainerProps: {},
 }

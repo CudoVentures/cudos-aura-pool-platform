@@ -1,0 +1,83 @@
+
+.PageViewNft .PageContent {
+    padding: 24px var(--page-spacing-h);
+}
+
+.PageViewNft .PageContent .NftInfoCnt {
+    margin-top: 40px;
+}
+
+.PageViewNft .PageContent .LeftLayout .PaddingColumn {
+    padding: 0 110px;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.PageViewNft .PageContent .LeftLayout .PaddingColumn .NftImg {
+    width: 100%; height: 0; padding-top: 110%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 16px;
+}
+
+.PageViewNft .PageContent .LeftLayout .Description {
+    margin: 16px 0 40px 0;
+}
+
+.PageViewNft .PageContent .RightLayout .CollectionName {
+    margin-bottom: 16px;
+}
+
+.PageViewNft .PageContent .RightLayout .NftName {
+    margin-bottom: 24px
+}
+
+.PageViewNft .PageContent .RightLayout .OwnerRow {
+    justify-content: flex-start;
+    gap: 10%;
+    margin-bottom: 24px;
+}
+
+.PageViewNft .PageContent .RightLayout .OwnerRow .OwnerBox {
+    gap: 16px;
+    justify-content: left;
+    align-items: center;
+}
+
+.PageViewNft .PageContent .RightLayout .OwnerRow .OwnerBox .OwnerPicture {
+    background-color: black;
+    width: 50px; height: 50px;
+    border-radius: 100px;
+}
+
+.PageViewNft .PageContent .RightLayout .OwnerRow .OwnerBox .OwnerPicture .OwnerInfo {
+    gap: 15px;
+}
+
+.PageViewNft .PageContent .RightLayout .OwnerRow .OwnerBox .OwnerPicture .OwnerInfo .AddressName {
+    font-weight: 600; font-size: 16px;
+}
+
+.PageViewNft .PageContent .RightLayout .OwnerRow .OwnerBox .OwnerPicture .OwnerInfo .Address {
+    font-weight: 700; font-size: 16px;
+}
+
+.PageViewNft .PageContent .RightLayout .DataValue {
+    gap: 15px;
+    font-weight: 600; font-size: 16px;
+}
+
+.PageViewNft .PageContent .RightLayout .CalculateRewardsNav {
+    margin: 20px 40px;
+    justify-content: space-between;
+}
+
+.PageViewNft .SectionDivider {
+    height: 1px;
+    margin: 110px 0 24px 0;
+    background: var(--color-gray-060);
+}
+
+.PageViewNft .NftsCnt {
+    margin-top: 24px;
+}

@@ -1,0 +1,31 @@
+
+.PageCreditMiningFarm .PageContent {
+    padding: 24px var(--page-spacing-h);
+}
+
+.PageCreditMiningFarm .FarmImagesCnt {
+    margin-top: 24px;
+}
+
+.PageCreditMiningFarm .TheMiningFarmName {
+    margin-top: 24px;
+}
+
+.PageCreditMiningFarm .ThePageMiningFarmData {
+    margin-top: 24px;
+    gap: 50px;
+}
+
+.PageCreditMiningFarm .SectionDivider {
+    height: 1px;
+    margin: 110px 0 24px 0;
+    background: var(--color-gray-060);
+}
+
+.PageCreditMiningFarm .CollectionsOwnedHeader {
+    justify-content: space-between;
+}
+
+.PageCreditMiningFarm .CollectionsCnt {
+    margin-top: 24px;
+}
