@@ -14,7 +14,7 @@ import CollectionFilterModel, { CollectionHashPowerFilter } from '../../../colle
 
 import { InputAdornment, MenuItem } from '@mui/material';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
-import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
+import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
@@ -53,17 +53,19 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     const nftEntities = creditMiningFarmPageStore.nftEntities;
     const collectionFilterModel = creditMiningFarmPageStore.collectionFilterModel;
 
-    const crumbs = [
-        { name: 'Marketplace', onClick: () => { navigate(AppRoutes.MARKETPLACE) } },
-        { name: 'Explore Farms', onClick: () => { navigate(AppRoutes.EXPLORE_MINING_FARMS) } },
-        { name: `Farm Owner: ${miningFarmEntity?.name ?? ''}`, onClick: () => {} },
-    ]
-
     useEffect(() => {
         appStore.useLoading(async () => {
             await creditMiningFarmPageStore.init(farmId);
         });
     }, []);
+
+    function onClickNavigateMarketplace() {
+        navigate(AppRoutes.MARKETPLACE)
+    }
+
+    function onClickNavigateExploreMiningFarms() {
+        navigate(AppRoutes.EXPLORE_MINING_FARMS)
+    }
 
     function onClickProfileImages() {
         editMiningFarmModalStore.showSignal(miningFarmEntity);
@@ -113,7 +115,11 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                 { miningFarmEntity !== null && (
                     <>
                         { farmId !== undefined && (
-                            <Breadcrumbs crumbs={crumbs} />
+                            <Breadcrumbs crumbs={ [
+                                createBreadcrumb('Marketplace', onClickNavigateMarketplace),
+                                createBreadcrumb('Explore Farms', onClickNavigateExploreMiningFarms),
+                                createBreadcrumb(`Farm Owner: ${miningFarmEntity?.name ?? ''}`),
+                            ] } />
                         ) }
 
                         <ProfileHeader
