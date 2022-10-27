@@ -16,6 +16,7 @@ class HeaderValueTab {
 
 type Props = {
     headerValueTabs?: HeaderValueTab[];
+    headerItems?: any;
     extendedChartState: ExtendedChartState;
 }
 
@@ -26,7 +27,7 @@ export function createHeaderValueTab(label: string, value: string): HeaderValueT
     return tab;
 }
 
-function ExtendedChart({ headerValueTabs, extendedChartState }: Props) {
+function ExtendedChart({ headerValueTabs, extendedChartState, headerItems }: Props) {
 
     function getChartLabels(): string[] {
         if (extendedChartState.isStatsToday()) {
@@ -66,6 +67,7 @@ function ExtendedChart({ headerValueTabs, extendedChartState }: Props) {
                         <div className={'DataName B1 SemiBold'}>{headerValueTab.label}</div>
                         <div className={'DataValue H2 Bold'}>{headerValueTab.value}</div>
                     </div>)}
+                    {headerItems}
                 </div>
                 <NavRowTabs navTabs={[
                     createNavRowTab('Today', extendedChartState.isStatsToday(), extendedChartState.setStatsToday),
@@ -81,6 +83,11 @@ function ExtendedChart({ headerValueTabs, extendedChartState }: Props) {
                 type = { ChartType.BAR } />
         </StyledContainer>
     )
+}
+
+ExtendedChart.defaultProps = {
+    headerValueTabs: [],
+    headerItems: [],
 }
 
 export default observer(ExtendedChart);

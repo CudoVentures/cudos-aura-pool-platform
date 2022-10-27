@@ -158,7 +158,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                             </div>
                             <div className={'H2 Bold'}>Description</div>
                             <div className={'Description B1'}>{collectionEntity.description}</div>
-                            <NftViewHistory />
+                            <NftViewHistory viewNftPageStore = {viewNftPageStore}/>
                         </div>
 
                         <div className={'RightLayout FlexColumn'}>

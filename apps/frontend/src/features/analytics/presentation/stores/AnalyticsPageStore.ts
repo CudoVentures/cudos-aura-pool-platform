@@ -60,7 +60,7 @@ export default class AnalyticsPageStore {
         });
     }
 
-    fetchStatistics = (timestamp: number): Promise < number[] > => {
+    fetchStatistics = async (timestamp: number): Promise < number[] > => {
         return this.miningFarmRepo.fetchMiningFarmSalesStatistics(this.miningFarmEntity.id, timestamp);
     }
 

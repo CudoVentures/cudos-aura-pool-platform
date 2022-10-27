@@ -10,6 +10,7 @@ import CollectionRepo from '../../../collection/presentation/repos/CollectionRep
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
+import ExtendedChartState from '../../../../core/presentation/stores/ExtendedChartState';
 
 export default class ViewNftPageStore {
 
@@ -21,6 +22,7 @@ export default class ViewNftPageStore {
     miningFarmRepo: MiningFarmRepo;
     gridViewState: GridViewState;
 
+    extendedChartState: ExtendedChartState;
     cudosPrice: number;
     bitcoinPrice: number;
     nftEntity: NftEntity;
@@ -36,6 +38,7 @@ export default class ViewNftPageStore {
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
 
+        this.extendedChartState = new ExtendedChartState(this.fetchStatistics);
         this.gridViewState = new GridViewState(this.fetch, 3, 4, 2);
 
         this.resetDefaults();
@@ -77,7 +80,13 @@ export default class ViewNftPageStore {
         runInAction(() => {
             this.nftEntities = nftEntities;
             this.gridViewState.setTotalItems(total);
+            this.extendedChartState.init();
         });
+    }
+
+    // TODO: get from repo
+    fetchStatistics = async (timestamp: number): Promise < number[] > => {
+        return [100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323, 100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323];
     }
 
     getNftPriceText() {
