@@ -32,6 +32,7 @@ import ForgottenPassEditPage from '../../../accounts/presentation/pages/Forgotte
 import EmailVerificationRequestPage from '../../../accounts/presentation/pages/EmailVerificationRequestPage';
 import EmailVerificationConfirmationPage from '../../../accounts/presentation/pages/EmailVerificationConfirmationPage';
 import CreditAccountSettings from '../../../accounts/presentation/pages/CreditAccountSettings';
+import AnalyticsPage from '../../../analytics/presentation/pages/AnalyticsPage';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
@@ -132,6 +133,7 @@ function AppRouter({ accountSessionStore }: Props) {
                             <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS}/:collectionId` } element = { <CreditCollectionDetailsPage /> } />
                             <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS}` } element = { <CreditCollectionDetailsPage /> } />
                             <Route path = { `${AppRoutes.CREDIT_ACCOUNT_SETTINGS}` } element = { <CreditAccountSettings /> } />
+                            <Route path = { `${AppRoutes.FARM_ANALYTICS}` } element = { <AnalyticsPage /> } />
                         </>
                     ) }
                 </Routes>

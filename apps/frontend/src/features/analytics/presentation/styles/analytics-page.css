@@ -1,0 +1,44 @@
+.PageAnalytics .PageContent {
+    gap: 24px;
+}
+
+.PageAnalytics .PageContent .GraphHeader {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.PageAnalytics .PageContent .GraphHeader .DataRow {
+    gap: 24px;
+}
+
+.PageAnalytics .PageContent .GraphHeader .DataRow .SingleDataColumn {
+    gap: 24px;
+}
+
+.PageAnalytics .PageContent .GraphHeader .DataRow .SingleDataColumn .DataName {
+    color: var(--color-gray-030);
+}
+
+.PageAnalytics .PageContent .BalancesDataContainer {
+    gap: 24px;
+}
+
+.PageAnalytics .PageContent .BalancesDataContainer .BalanceColumn {
+    gap: 16px;
+}
+
+.PageAnalytics .PageContent .BalancesDataContainer .BalanceColumn .ValueColumn .SecondaryColor {
+    color: var(--color-gray-030);    
+}
+
+.PageAnalytics .PageContent .TableContainer {
+    gap: 30px;
+}
+
+.PageAnalytics .PageContent .TableContainer .TableHeader {
+    justify-content: space-between;
+    align-items: center;
+}
+.PageAnalytics .PageContent .TableContainer .TableHeader .TableFilter {
+    width: 20%;
+}

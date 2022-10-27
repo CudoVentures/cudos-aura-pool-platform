@@ -136,13 +136,13 @@ function MarkedplacePage({ marketplaceStore }: Props) {
 
                 <div className={'PopularFarms FlexColumn'}>
                     <div className={'H2 Bold'}>Popular Farms</div>
-                    <div className={'FlexRow FarmPreviews'}>
+                    <Slider className={'TrendingNfts'} maxItems={3}>
                         {marketplaceStore.popularFarmsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>)}
-                        {marketplaceStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => <MiningFarmPreview
+                        {marketplaceStore.popularFarmsEntities.slice(0, 3).map((miningFarmEntity: MiningFarmEntity, index: number) => <MiningFarmPreview
                             key={index}
                             miningFarmEntity={miningFarmEntity}
                         />)}
-                    </div>
+                    </Slider>
                     <Actions
                         layout={ActionsLayout.LAYOUT_ROW_CENTER}
                         height={ActionsHeight.HEIGHT_48}>

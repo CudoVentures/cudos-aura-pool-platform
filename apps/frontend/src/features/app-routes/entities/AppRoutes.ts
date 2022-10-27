@@ -30,4 +30,5 @@ export default class AppRoutes {
     static MINING_FARM_ANALYTICS = '/mining-farm-analytics';
     static CREDIT_COLLECTION_DETAILS = '/credit-collection-details';
     static CREDIT_COLLECTION_NFTS = '/credit-collection-nfts';
+    static FARM_ANALYTICS = '/farm_analytics';
 }
