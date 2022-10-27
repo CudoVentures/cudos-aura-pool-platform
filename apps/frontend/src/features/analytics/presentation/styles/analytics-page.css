@@ -2,24 +2,6 @@
     gap: 24px;
 }
 
-.PageAnalytics .PageContent .GraphHeader {
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 30px;
-}
-
-.PageAnalytics .PageContent .GraphHeader .DataRow {
-    gap: 24px;
-}
-
-.PageAnalytics .PageContent .GraphHeader .DataRow .SingleDataColumn {
-    gap: 24px;
-}
-
-.PageAnalytics .PageContent .GraphHeader .DataRow .SingleDataColumn .DataName {
-    color: var(--color-gray-030);
-}
-
 .PageAnalytics .PageContent .BalancesDataContainer {
     gap: 24px;
 }

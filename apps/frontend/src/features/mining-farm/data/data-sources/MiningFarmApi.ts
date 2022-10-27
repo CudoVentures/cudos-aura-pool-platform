@@ -19,7 +19,7 @@ export default class MiningFarmApi {
         return null;
     }
 
-    async fetchMiningFarmSalesStatistics(miningFarmId: string): Promise < number[] > {
+    async fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] > {
         return null;
     }
 }

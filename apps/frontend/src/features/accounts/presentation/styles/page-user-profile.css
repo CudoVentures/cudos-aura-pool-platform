@@ -48,20 +48,7 @@
     margin-bottom: 50px;
 }
 
-.PageUserProfile .PageContent .ProfileNavHolder .ProfileNav {
-    padding: 5px;
-    gap: 5px;
-    border-radius: 10px;
-    background: var(--color-gray-060);
-    flex-grow: 0;
-}
-
-.PageUserProfile .PageContent .ProfileNavHolder .ProfileNav .NavButton {
-    border-radius: 10px;
-    padding: 10px;
-}
-
-
-.PageUserProfile .PageContent .ProfileNavHolder .ProfileNav .NavButton.Active {
-    background: #FFFFFF;
+.PageUserProfile .PageContent .NavRowHolder {
+    width: 100%;
+    justify-content: center;
 }

@@ -24,18 +24,24 @@ import DataGridLayout from '../../../../core/presentation/components/DataGridLay
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
 
 import '../styles/page-user-profile.css';
-import Chart, { ChartType, createBarChartDataSet, createChartDataSet, createLineChartDataSet, createPieChartDataSet } from '../../../../core/presentation/components/Chart';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
-import NavRowTabs from '../../../../core/presentation/components/NavRowTabs';
+import ExtendedChart, { createHeaderValueTab } from '../../../../core/presentation/components/ExtendedChart';
+import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
+import EarningsInfoPage from '../components/user-profile/EarningsInfoPage';
+import HistoryPage from '../components/user-profile/HistoryPage';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
+import MyNftsPage from '../components/user-profile/MyNftsPage';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
-    appStore?: AppStore
+    appStore?: AppStore;
+    cudosStore?: CudosStore;
     bitcoinStore?: BitcoinStore;
     accountSessionStore?: AccountSessionStore;
     userProfilePageStore?: UserProfilePageStore,
 }
 
-function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, accountSessionStore }: Props) {
+function UserProfilePage({ appStore, cudosStore, bitcoinStore, userProfilePageStore, accountSessionStore }: Props) {
     useEffect(() => {
         appStore.useLoading(async () => {
             await bitcoinStore.init();
@@ -45,7 +51,6 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
 
     const accountEntity = accountSessionStore.accountEntity;
     const userEntity = accountSessionStore.userEntity;
-    const nftFilterModel = userProfilePageStore.nftFilterModel;
 
     return (
         <PageLayoutComponent
@@ -62,7 +67,8 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
                             <div className={'JoinDate B3'}>{accountEntity.formatDateJoined()}</div>
                         </div>
                     </div>
-                    <div className={'FlexRow RightSide'}>
+                    {/* LEGACY DESIGN */}
+                    {/* <div className={'FlexRow RightSide'}>
                         <div className={'BorderContainer FlexColumn'}>
                             <div className={'FlexRow BtcEarned'}>
                                 <div className={'FlexRow BtcValueRow'}>
@@ -80,73 +86,32 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
                             </div>
                             <div className={'B3 Bold Gray'}>TOTAL CONTRACT HASH POWER</div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
-                <div className={'FlexRow ProfileNavHolder'}>
-                    <div className={'ProfileNav FlexRow B3 SemiBold'}>
-                        <div onClick={userProfilePageStore.markNftPage} className={`NavButton Clickable ${S.CSS.getActiveClassName(userProfilePageStore.isNftPage())}`}>My NFTs</div>
-                        <div onClick={userProfilePageStore.markEarningsPage} className={`NavButton Clickable ${S.CSS.getActiveClassName(userProfilePageStore.isEarningsPage())}`}>Earnings Info</div>
-                        <div onClick={userProfilePageStore.markHistoryPage} className={`NavButton Clickable ${S.CSS.getActiveClassName(userProfilePageStore.isHistoryPage())}`}>History</div>
-                    </div>
+                <div className={'FlexRow NavRowHolder'}>
+                    <NavRowTabs
+                        navTabs={[
+                            createNavRowTab('My NFTs', userProfilePageStore.isNftPage(), userProfilePageStore.markNftPage),
+                            createNavRowTab('Earnings Info', userProfilePageStore.isEarningsPage(), userProfilePageStore.markEarningsPage),
+                            createNavRowTab('History', userProfilePageStore.isHistoryPage(), userProfilePageStore.markHistoryPage),
+                        ]}
+                    />
                 </div>
-
                 <AnimationContainer active = { userProfilePageStore.isNftPage() } >
                     {userProfilePageStore.isNftPage() === true && (
-                        <DataGridLayout
-                            headerLeft = { (
-                                <>
-                                    <Select
-                                        onChange={userProfilePageStore.onChangeSortKey}
-                                        value={nftFilterModel.sortKey} >
-                                        <MenuItem value = { NftFilterModel.SORT_KEY_NAME }> Name </MenuItem>
-                                        <MenuItem value = { NftFilterModel.SORT_KEY_POPULAR }> Popular </MenuItem>
-                                    </Select>
-                                </>
-                            ) }
-                            headerRight = { (
-                                <Actions
-                                    layout={ActionsLayout.LAYOUT_ROW_RIGHT}
-                                    height={ActionsHeight.HEIGHT_48} >
-                                    <Button
-                                        padding={ButtonPadding.PADDING_24}
-                                        type={ButtonType.ROUNDED} >
-                                    All Filters
-                                    </Button>
-                                </Actions>
-                            ) }>
-
-                            { userProfilePageStore.nftEntities === null && (
-                                <LoadingIndicator />
-                            ) }
-
-                            { userProfilePageStore.nftEntities !== null && (
-                                <GridView
-                                    gridViewState={userProfilePageStore.gridViewState}
-                                    defaultContent={userProfilePageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null} >
-                                    {userProfilePageStore.nftEntities.map((nftEntity: NftEntity) => {
-                                        return (
-                                            <NftPreview
-                                                key={nftEntity.id}
-                                                nftEntity={nftEntity}
-                                                collectionName={userProfilePageStore.getCollectionName(nftEntity.collectionId)} />
-                                        )
-                                    })}
-                                </GridView>
-                            ) }
-
-                        </DataGridLayout>
+                        <MyNftsPage userProfilePageStore={userProfilePageStore}/>
                     ) }
                 </AnimationContainer>
 
                 <AnimationContainer active = { userProfilePageStore.isEarningsPage() } >
                     {userProfilePageStore.isEarningsPage() === true && (
-                        <EarningsInfo />
+                        <EarningsInfoPage userProfilePageStore={userProfilePageStore}/>
                     ) }
                 </AnimationContainer>
 
                 <AnimationContainer active = { userProfilePageStore.isHistoryPage() } >
                     {userProfilePageStore.isHistoryPage() === true && (
-                        'history'
+                        <HistoryPage userProfilePageStore={userProfilePageStore} cudosStore = {cudosStore} />
                     ) }
                 </AnimationContainer>
             </div>
@@ -154,51 +119,6 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
             <PageFooter />
         </PageLayoutComponent>
     )
-
-    function EarningsInfo() {
-        return (
-            <StyledContainer containerPadding={ContainerPadding.PADDING_24}>
-
-                <div className={'GraphHeader FlexRow'}>
-                    <div className={'FlexRow DataRow'}>
-                        <div className={'FlexColumn SingleDataColumn'}>
-                            <div className={'DataName B1 SemiBold'}>Total BTC Earnings</div>
-                            <div className={'DataValue H2 Bold'}>$3.45k</div>
-                        </div>
-                        <div className={'FlexColumn SingleDataColumn'}>
-                            <div className={'DataName B1 SemiBold'}>Total NFTs Bought</div>
-                            <div className={'DataValue H2 Bold'}>34</div>
-                        </div>
-                    </div>
-                    <NavRowTabs navTabs={[
-                        {
-                            navName: 'Today',
-                            isActive: analyticsPageStore.isStatsToday(),
-                            onClick: analyticsPageStore.setStatsToday,
-                        },
-                        {
-                            navName: '7 Days',
-                            isActive: analyticsPageStore.isStatsWeek(),
-                            onClick: analyticsPageStore.setStatsWeek,
-                        },
-                        {
-                            navName: '30 Days',
-                            isActive: analyticsPageStore.isStatsMonth(),
-                            onClick: analyticsPageStore.setStatsMonth,
-                        },
-                    ]} />
-                </div>
-                <Chart
-                    labels = { getChartLabels() }
-                    datasets = { [
-                        createBarChartDataSet('set label 1', analyticsPageStore.statistics, '#30425A'),
-                    ] }
-                    type = { ChartType.BAR } />
-            </StyledContainer>
-
-        )
-    }
-
 }
 
 export default inject((stores) => stores)(observer(UserProfilePage));

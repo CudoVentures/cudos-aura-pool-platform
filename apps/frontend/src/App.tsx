@@ -40,6 +40,7 @@ import CreditCollectionStore from './features/collection/presentation/stores/Cre
 import CreditCollectionSuccessModalStore from './features/collection/presentation/stores/CreditCollectionSuccessModalStore';
 import AnalyticsPageStore from './features/analytics/presentation/stores/AnalyticsPageStore';
 import PoolEventStorageRepo from './features/analytics/data/repo/PoolEventStorageRepo';
+import UserStorageRepo from './features/accounts/data/repo/UserStorageRepo';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -55,6 +56,7 @@ const collectionRepo = new CollectionStorageRepo(storageHelper);
 const nftRepo = new NftStorageRepo(storageHelper);
 const accountRepo = new AccountStorageRepo(storageHelper);
 const poolEventRepo = new PoolEventStorageRepo();
+const userRepo = new UserStorageRepo();
 
 const walletStore = new WalletStore();
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
@@ -70,7 +72,7 @@ const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
 const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, nftRepo, collectionRepo, miningFarmRepo);
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo);
-const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo);
+const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, userRepo, poolEventRepo);
 const analyticsPageStore = new AnalyticsPageStore(poolEventRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo);
 const creditCollectionNftsPageStore = new CreditCollectionNftsPageStore(accountSessionStore, miningFarmRepo, collectionRepo);
