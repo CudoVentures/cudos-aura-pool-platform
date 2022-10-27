@@ -9,7 +9,7 @@ import '../styles/page-credit-collection-details-page.css';
 import StyledContainer from '../../../../core/presentation/components/StyledContainer';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
-import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
+import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import CollectionDetailsForm from '../components/credit-collection/CollectionDetailsForm';
 import CollectionCreditSidePreview, { CollectionCreditSidePreviewSize } from '../components/credit-collection/CollectionCreditSidePreview';
 import AddNftsForm from '../components/credit-collection/AddNftsForm';
@@ -41,6 +41,7 @@ type Props = {
 function CreditCollectionDetailsPage({ creditCollectionStore, creditCollectionSuccessModalStore, appStore, bitcoinStore }: Props) {
     const { collectionId } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const isOriginAddNfts = location.pathname.includes(AppRoutes.CREDIT_COLLECTION_NFTS);
     const [step, setStep] = useState(isOriginAddNfts === false ? CreditCollectionDetailsSteps.COLLECTION_DETAILS : CreditCollectionDetailsSteps.ADD_NFTS);
@@ -53,12 +54,14 @@ function CreditCollectionDetailsPage({ creditCollectionStore, creditCollectionSu
         })
     }, []);
 
-    const navigate = useNavigate();
+    function onClickNavigateUserProfile() {
+        navigate(AppRoutes.USER_PROFILE)
+    }
 
-    const crumbs = [
-        { name: 'My Collections', onClick: () => { navigate(AppRoutes.USER_PROFILE) } },
-        { name: 'Create Collection' },
-    ]
+    async function onClickSendForApproval() {
+        await creditCollectionStore.onClickSendForApproval();
+        creditCollectionSuccessModalStore.showSignal();
+    }
 
     const navSteps = isOriginAddNfts === false
         ? [
@@ -70,11 +73,6 @@ function CreditCollectionDetailsPage({ creditCollectionStore, creditCollectionSu
             createNavStep(1, 'Add NFTs', step === CreditCollectionDetailsSteps.ADD_NFTS, step === CreditCollectionDetailsSteps.FINISH),
             createNavStep(2, 'Finish', step === CreditCollectionDetailsSteps.FINISH, false),
         ]
-
-    async function onClickSendForApproval() {
-        await creditCollectionStore.onClickSendForApproval();
-        creditCollectionSuccessModalStore.showSignal();
-    }
 
     return (
         <PageLayoutComponent
@@ -88,7 +86,10 @@ function CreditCollectionDetailsPage({ creditCollectionStore, creditCollectionSu
             <PageAdminHeader />
 
             <div className = { 'PageContent AppContent' } >
-                <Breadcrumbs crumbs={crumbs} />
+                <Breadcrumbs crumbs={ [
+                    createBreadcrumb('My Collections', onClickNavigateUserProfile),
+                    createBreadcrumb('Create Collection'),
+                ] } />
                 <StyledContainer className={'FlexColumn BorderContainer'}>
                     {collectionEntity !== null
                         && (<>

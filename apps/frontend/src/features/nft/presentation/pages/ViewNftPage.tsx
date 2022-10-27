@@ -12,7 +12,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
-import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
+import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import NftViewHistory from '../components/NftViewHistory';
 import Button from '../../../../core/presentation/components/Button';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
@@ -47,12 +47,6 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
     const nftEntity = viewNftPageStore.nftEntity;
     const collectionEntity = viewNftPageStore.collectionEntity;
 
-    // TODO: get crumbs from router
-    const crumbs = [
-        { name: 'Marketplace', onClick: () => { navigate(AppRoutes.MARKETPLACE) } },
-        { name: 'NFT Name Details', onClick: () => {} },
-    ]
-
     useEffect(() => {
         async function run() {
             await viewNftPageStore.init(nftId);
@@ -60,6 +54,10 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
 
         run();
     }, []);
+
+    function onClickNavigateMarketplace() {
+        navigate(AppRoutes.MARKETPLACE);
+    }
 
     function onClickCalculateRewards() {
         navigate(AppRoutes.REWARDS_CALCULATOR)
@@ -142,7 +140,10 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
             { nftEntity !== null && (
                 <div className={'PageContent AppContent'} >
 
-                    <Breadcrumbs crumbs={crumbs}/>
+                    <Breadcrumbs crumbs={ [
+                        createBreadcrumb('Marketplace', onClickNavigateMarketplace),
+                        createBreadcrumb('NFT Name Details'),
+                    ] }/>
 
                     <div className={'NftInfoCnt Grid GridColumns2'}>
 

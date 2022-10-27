@@ -15,7 +15,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { MenuItem } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ProfileHeader from '../components/ProfileHeader';
-import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
+import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import Svg from '../../../../core/presentation/components/Svg';
 import PageHeader from '../../../header/presentation/components/PageHeader';
@@ -55,10 +55,9 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         run();
     }, []);
 
-    const crumbs = [
-        { name: 'Marketplace', onClick: () => { navigate(AppRoutes.MARKETPLACE) } },
-        { name: 'Collection Details', onClick: () => {} },
-    ]
+    function onClickNavigateMarketplace() {
+        navigate(AppRoutes.MARKETPLACE)
+    }
 
     function onClickFarmLink() {
         navigate(`${AppRoutes.CREDIT_MINING_FARM}/${miningFarmEntity.id}`)
@@ -89,7 +88,10 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
             { collectionEntity !== null && (
                 <div className={'PageContent AppContent'} >
 
-                    <Breadcrumbs crumbs={crumbs} />
+                    <Breadcrumbs crumbs={ [
+                        createBreadcrumb('Marketplace', onClickNavigateMarketplace),
+                        createBreadcrumb('Collection Details'),
+                    ] } />
 
                     <ProfileHeader
                         className = { 'CollectionImagesCnt' }

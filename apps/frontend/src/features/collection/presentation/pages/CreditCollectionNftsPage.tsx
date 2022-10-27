@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
-import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
+import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
@@ -27,17 +27,19 @@ function CreditCollectionNftsPage({ appStore, creditCollectionNftsPageStore }: P
         })
     }, []);
 
-    const crumbs = [
-        { name: 'My Collections', onClick: () => { navigate(AppRoutes.USER_PROFILE) } },
-        { name: 'Create Collection' },
-    ]
+    function onClickNavigateUserProfile() {
+        navigate(AppRoutes.USER_PROFILE)
+    }
 
     return (
         <PageLayoutComponent
             className = { 'PageCreditCollectionNfts' }>
             <PageHeader />
             <div className={'PageContent AppContent'} >
-                <Breadcrumbs crumbs={crumbs} />
+                <Breadcrumbs crumbs={ [
+                    createBreadcrumb('My Collections', onClickNavigateUserProfile),
+                    createBreadcrumb('Create Collection'),
+                ] } />
                 {/* <AddNftsStage /> */}
             </div>
             <PageFooter />

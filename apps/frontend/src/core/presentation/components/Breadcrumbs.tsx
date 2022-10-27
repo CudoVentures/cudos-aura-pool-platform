@@ -6,13 +6,19 @@ import '../styles/breadcrumbs.css';
 import { useNavigate } from 'react-router-dom';
 import Svg from './Svg';
 
-interface Crumb {
+type Crumb = {
     name: string;
     onClick?: () => void;
 }
 
 type Props = {
     crumbs: Crumb[];
+}
+
+export function createBreadcrumb(name: string, onClick: () => void = null) {
+    return {
+        name, onClick,
+    }
 }
 
 export default function Breadcrumbs({ crumbs }: Props) {
