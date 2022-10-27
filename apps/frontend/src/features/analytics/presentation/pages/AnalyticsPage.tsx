@@ -15,6 +15,10 @@ import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDeskto
 import Table, { createTableCell, createTableRow } from '../../../../core/presentation/components/Table';
 import CollectionEventEntity from '../../entities/CollectionEventEntity';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import Chart, { ChartType, createBarChartDataSet } from '../../../../core/presentation/components/Chart';
+import moment from 'moment';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 type Props = {
     analyticsPageStore?: AnalyticsPageStore,
@@ -22,7 +26,7 @@ type Props = {
 }
 
 const TABLE_LEGEND = ['Wallet Address', 'Last Activity', 'Item', 'Price', 'Quantity', 'To', 'Time'];
-const TABLE_WIDTHS = ['14%', '14%', '14%', '14%', '14%', '14%', '16%']
+const TABLE_WIDTHS = ['14%', '12%', '18%', '14%', '12%', '14%', '16%']
 const TABLE_ALINGS = [
     ALIGN_LEFT,
     ALIGN_LEFT,
@@ -49,11 +53,11 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
         analyticsPageStore.collectionEventEntities.forEach((collectionEventEntity: CollectionEventEntity) => {
             const collectionEntity = analyticsPageStore.getCollectionById(collectionEventEntity.collectionId);
             const rowCells = [];
-
-            rowCells.push(createTableCell(<div className={'Bold Dots'}>{collectionEventEntity.fromAddress}</div>, 0));
+            console.log(collectionEntity);
+            rowCells.push(createTableCell(<div className={'Bold Dots AddressCell'}>{collectionEventEntity.fromAddress}</div>, 0));
             rowCells.push(createTableCell(collectionEventEntity.getEventActivityDisplayName(), 0));
             rowCells.push(createTableCell(
-                <div className={'FlexRow'}>
+                <div className={'FlexRow ItemCell'}>
                     <div className={'PicturePreview'}
                         style={{
                             backgroundImage: `url("${collectionEntity.profileImgUrl}")`,
@@ -71,12 +75,43 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                 0,
             ));
             rowCells.push(createTableCell(collectionEventEntity.quantity, 0));
-            rowCells.push(createTableCell(<div className={'Bold Dots'}>{collectionEventEntity.toAddress}</div>, 0));
+            rowCells.push(createTableCell(<div className={'Bold Dots AddressCell'}>{collectionEventEntity.toAddress}</div>, 0));
             rowCells.push(createTableCell(collectionEventEntity.getTimePassedDisplay(), 0));
             rows.push(createTableRow(rowCells));
         })
 
         return rows;
+    }
+
+    function getChartLabels(): string[] {
+        if (analyticsPageStore.isStatsToday()) {
+            return ['00:00 AM', '04:00 AM', '08:00 AM', '12:00 PM', '16:00 PM', '20:00 PM'];
+        }
+
+        if (analyticsPageStore.isStatsWeek()) {
+            const labelArray = [];
+
+            for (let i = 7; i >= 0; i--) {
+                labelArray.push(moment().subtract(i, 'days').format(ProjectUtils.MOMENT_FORMAT_DATE))
+            }
+
+            return labelArray;
+        }
+
+        if (analyticsPageStore.isStatsMonth()) {
+            const labelArray = [];
+
+            for (let i = 7; i >= 0; i--) {
+                labelArray.push(moment().subtract(i * 4, 'days').format(ProjectUtils.MOMENT_FORMAT_DATE))
+                labelArray.push('')
+                labelArray.push('')
+                labelArray.push('')
+            }
+
+            return labelArray;
+        }
+
+        return [];
     }
 
     return (
@@ -85,38 +120,42 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
             <div className={'PageContent AppContent FlexColumn'} >
                 <div className={'H2 Bold'}>Farm Analytics</div>
                 <StyledContainer containerPadding={ContainerPadding.PADDING_24}>
-                    {/* <Graph header={
-                        <div className={'GraphHeader FlexRow'}>
-                            <div className={'FlexRow DataRow'}>
-                                <div className={'FlexColumn SingleDataColumn'}>
-                                    <div className={'DataName B1 SemiBold'}>Total Farm Sales</div>
-                                    <div className={'DataValue H2 Bold'}>$3.45k</div>
-                                </div>
-                                <div className={'FlexColumn SingleDataColumn'}>
-                                    <div className={'DataName B1 SemiBold'}>Total NFTs Sold</div>
-                                    <div className={'DataValue H2 Bold'}>34</div>
-                                </div>
-                            </div>
-                            <NavRowTabs navTabs={[
-                                {
-                                    navName: 'Today',
-                                    isActive: analyticsPageStore.isStatsToday(),
-                                    onClick: analyticsPageStore.setStatsToday,
-                                },
-                                {
-                                    navName: '7 Days',
-                                    isActive: analyticsPageStore.isStatsWeek(),
-                                    onClick: analyticsPageStore.setStatsWeek,
-                                },
-                                {
-                                    navName: '30 Days',
-                                    isActive: analyticsPageStore.isStatsMonth(),
-                                    onClick: analyticsPageStore.setStatsMonth,
-                                },
-                            ]} />
-                        </div>
-                    } /> */}
 
+                    <div className={'GraphHeader FlexRow'}>
+                        <div className={'FlexRow DataRow'}>
+                            <div className={'FlexColumn SingleDataColumn'}>
+                                <div className={'DataName B1 SemiBold'}>Total Farm Sales</div>
+                                <div className={'DataValue H2 Bold'}>$3.45k</div>
+                            </div>
+                            <div className={'FlexColumn SingleDataColumn'}>
+                                <div className={'DataName B1 SemiBold'}>Total NFTs Sold</div>
+                                <div className={'DataValue H2 Bold'}>34</div>
+                            </div>
+                        </div>
+                        <NavRowTabs navTabs={[
+                            {
+                                navName: 'Today',
+                                isActive: analyticsPageStore.isStatsToday(),
+                                onClick: analyticsPageStore.setStatsToday,
+                            },
+                            {
+                                navName: '7 Days',
+                                isActive: analyticsPageStore.isStatsWeek(),
+                                onClick: analyticsPageStore.setStatsWeek,
+                            },
+                            {
+                                navName: '30 Days',
+                                isActive: analyticsPageStore.isStatsMonth(),
+                                onClick: analyticsPageStore.setStatsMonth,
+                            },
+                        ]} />
+                    </div>
+                    <Chart
+                        labels = { getChartLabels() }
+                        datasets = { [
+                            createBarChartDataSet('set label 1', analyticsPageStore.statistics, '#30425A'),
+                        ] }
+                        type = { ChartType.BAR } />
                 </StyledContainer>
                 <div className={'Grid GridColumns2 BalancesDataContainer'}>
                     <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
@@ -152,7 +191,7 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                         </Select>
                     </div>
                     <Table
-                        className={'New Collections'}
+                        className={'ActivityOnCollections'}
                         legend={TABLE_LEGEND}
                         widths={TABLE_WIDTHS}
                         aligns={TABLE_ALINGS}

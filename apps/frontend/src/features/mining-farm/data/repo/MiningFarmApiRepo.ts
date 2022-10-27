@@ -56,4 +56,8 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
             await this.creditMiningFarm(miningFarmEntities[i]);
         }
     }
+
+    async fetchMiningFarmSalesStatistics(miningFarmId: string): Promise < number[] > {
+        return this.miningFarmApi.fetchMiningFarmSalesStatistics(miningFarmId);
+    }
 }
