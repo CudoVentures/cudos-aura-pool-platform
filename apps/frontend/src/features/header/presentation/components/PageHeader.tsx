@@ -36,21 +36,33 @@ function PageHeader({ accountSessionStore }: Props) {
         navigate(AppRoutes.REWARDS_CALCULATOR);
     }
 
+    function onClickAdminPortal() {
+        navigate(AppRoutes.HOME);
+    }
+
     return (
         <header className={'PageHeader FlexRow FlexSplit'}>
             <div className={'LogoHeader FlexRow'}>
                 <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
             </div>
 
-            <div className={'StartRightBlock FlexRow'}>
-                <div className={`B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>Marketplace</div>
-                <div className={`B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div>
+            <div className={'NavCnt FlexRow'}>
+                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>Marketplace</div>
+                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div>
 
                 { accountSessionStore.isUser() === true && (
                     <div
-                        className={`B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.USER_PROFILE)}`}
+                        className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.USER_PROFILE)}`}
                         onClick={onClickAddress}>
                         Profile
+                    </div>
+                ) }
+
+                { accountSessionStore.isAdmin() === true && (
+                    <div
+                        className={'NavButton B1 SemiBold Clickable'}
+                        onClick={onClickAdminPortal}>
+                        Admin Portal
                     </div>
                 ) }
 

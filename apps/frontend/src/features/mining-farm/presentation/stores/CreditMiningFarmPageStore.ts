@@ -49,6 +49,7 @@ export default class CreditMiningFarmPageStore {
             this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(farmId);
         }
 
+        this.inited = true;
         if (this.miningFarmEntity !== null) {
             this.collectionFilterModel.farmId = this.miningFarmEntity.id;
             await this.fetch();
@@ -78,7 +79,6 @@ export default class CreditMiningFarmPageStore {
             this.collectionEntities = collectionEntities;
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
-            this.inited = true;
         });
 
         this.nftEntities = nftEntities;
