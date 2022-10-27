@@ -35,7 +35,6 @@ export default class MarketplaceStore {
 
     cudosPrice: number;
     cudosPriceChange: number;
-    categories: CategoryEntity[];
 
     constructor(cudosStore: CudosStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.cudosStore = cudosStore;
@@ -45,7 +44,6 @@ export default class MarketplaceStore {
 
         this.collectionMap = new Map < string, CollectionEntity >();
 
-        this.categories = [];
         this.cudosPrice = S.NOT_EXISTS;
         this.cudosPriceChange = S.NOT_EXISTS;
 
@@ -71,7 +69,6 @@ export default class MarketplaceStore {
         this.resetDefaults();
 
         // fetching data
-        this.categories = await this.collectionRepo.fetchCategories();
         await this.fetchTopCollections();
         await this.fetchNewNftDrops();
         this.fetchTrendingNfts();
@@ -123,6 +120,10 @@ export default class MarketplaceStore {
         return this.collectionMap.get(collectionId);
     }
 
+    getCollectionName(collectionId: string): string {
+        return this.collectionMap.get(collectionId)?.name ?? '';
+    }
+
     selectCategory(index: number) {
         this.selectedCategoryIndex = index;
     }
@@ -141,6 +142,6 @@ export default class MarketplaceStore {
 
         const sign = priceChange >= 0 ? '+' : '-';
 
-        return `${sign} ${priceChange.toFixed(1)}%`;
+        return `${sign}${priceChange.toFixed(1)}%`;
     }
 }

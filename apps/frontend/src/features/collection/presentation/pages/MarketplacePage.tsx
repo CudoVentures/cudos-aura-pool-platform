@@ -24,6 +24,7 @@ import MiningFarmPreview from '../../../mining-farm/presentation/components/Mini
 
 import Svg from '../../../../core/presentation/components/Svg';
 import '../styles/page-marketplace.css';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 
 type Props = {
     marketplaceStore?: MarketplaceStore
@@ -56,6 +57,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
         <PageLayoutComponent className = { 'PageMarketplace' } >
             <PageHeader />
             <div className={'PageContent AppContent'} >
+
                 <div className={'ExploreCollections FlexColumn'}>
                     <div className={'PageHeading H1 Bold'}>Explore NFT Collections</div>
                     <div className={'Grid GridColumns3'}>
@@ -73,70 +75,78 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                             }} />
                         <div></div>
                     </div>
-                    {/* <div className={'CategoriesRow FlexRow'}>
-                        { marketplaceStore.categories.map((category, index) => {
-                            return (
-                                <div
-                                    key={category.categoryId}
-                                    onClick={() => marketplaceStore.selectCategory(index)}
-                                    className={`CategoryName Transition Clickable ${S.CSS.getActiveClassName(marketplaceStore.selectedCategoryIndex === index)}`} >
-                                    {category.categoryName}
-                                </div>
-                            )
-                        }) }
-                    </div> */}
                 </div>
-                <div className={'H2 Bold'}>New Hash Rate NFT Drops</div>
-                <Slider className={'NewNftDrops'}>
-                    {marketplaceStore.newNftDropsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>)}
-                    {marketplaceStore.newNftDropsEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => <NftPreviewInPicture
-                        key={index}
-                        nftEntity={nftEntity}
-                        onClick={() => navigate(`${AppRoutes.VIEW_NFT}/${nftEntity.id}`)}
-                        collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)}
-                    />)}
-                </Slider>
-                <div className={'H2 Bold'}>Trending NFTs</div>
-                <Slider className={'TrendingNfts'}>
-                    {marketplaceStore.trendingNftEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>)}
-                    {marketplaceStore.trendingNftEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => <NftPreview
-                        key={index}
-                        nftEntity={nftEntity}
-                        onClick={() => navigate(`${AppRoutes.VIEW_NFT}/${nftEntity.id}`)}
-                        collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)}
-                    />)}
-                </Slider>
-                <Actions
-                    layout={ActionsLayout.LAYOUT_ROW_CENTER}
-                    height={ActionsHeight.HEIGHT_48} >
-                    {/* TODO: redirect */}
-                    <Button
-                        padding={ButtonPadding.PADDING_24}
-                        type={ButtonType.ROUNDED}
-                        onClick={onClickSeeAllNfts} >
-                        See All NFTs
-                    </Button>
-                </Actions>
-                <TopCollections
-                    selectedTopCollectionPeriod={marketplaceStore.selectedTopCollectionPeriod}
-                    cudosPriceChangeDisplay={marketplaceStore.cudosPriceChangeDisplay()}
-                    cudosPriceUsd={marketplaceStore.cudosPrice}
-                    topCollectionEntities={marketplaceStore.topCollectionEntities}
-                    changeTopCollectionPeriod={marketplaceStore.changeTopCollectionPeriod} />
-                <Actions
-                    layout={ActionsLayout.LAYOUT_ROW_CENTER}
-                    height={ActionsHeight.HEIGHT_48}>
-                    <Button
-                        onClick={onClickSeeAllCollections}
-                        padding={ButtonPadding.PADDING_24}
-                        type={ButtonType.ROUNDED}>
-                        See All Collections
-                    </Button>
-                </Actions>
 
-                <div className={'PopularFarms FlexColumn'}>
-                    <div className={'H2 Bold'}>Popular Farms</div>
-                    <Slider className={'TrendingNfts'} maxItems={3}>
+                <div className = { 'SectionWrapper' } >
+                    <div className={'H2 Bold SectionHeadingCnt'}>New Hash Rate NFT Drops</div>
+                    <Slider>
+                        {marketplaceStore.newNftDropsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>)}
+                        {marketplaceStore.newNftDropsEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => {
+                            return (
+                                <NftPreviewInPicture
+                                    key={index}
+                                    nftEntity={nftEntity}
+                                    collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)} />
+                            )
+                        })}
+                    </Slider>
+                </div>
+
+                <div className = { 'SectionWrapper' } >
+                    <div className={'H2 Bold SectionHeadingCnt'}>Trending NFTs</div>
+                    <Slider>
+                        {marketplaceStore.trendingNftEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>)}
+                        {marketplaceStore.trendingNftEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => {
+                            return (
+                                <NftPreview
+                                    key={index}
+                                    nftEntity={nftEntity}
+                                    collectionName={marketplaceStore.getCollectionName(nftEntity.collectionId)} />
+                            )
+                        })}
+                    </Slider>
+                    <Actions
+                        className = { 'SectionActions' }
+                        layout={ActionsLayout.LAYOUT_ROW_CENTER}
+                        height={ActionsHeight.HEIGHT_48} >
+                        <Button
+                            padding={ButtonPadding.PADDING_24}
+                            type={ButtonType.ROUNDED}
+                            onClick={onClickSeeAllNfts} >
+                            See All NFTs
+                        </Button>
+                    </Actions>
+                </div>
+
+                <div className = { 'SectionWrapper' } >
+                    <div className = { 'SectionHeadingCnt' } >
+                        <div className={'H2 Bold'}>Top Collections</div>
+                        <div className = { 'CenterCnt FlexSingleCenter' } >
+                            <NavRowTabs
+                                navTabs = { MarketplaceStore.TOP_COLLECTION_PERIODS.map((period, i) => {
+                                    return createNavRowTab(period, marketplaceStore.selectedTopCollectionPeriod === i, marketplaceStore.changeTopCollectionPeriod.bind(marketplaceStore, i))
+                                }) } />
+                        </div>
+                    </div>
+                    <TopCollections
+                        cudosPriceChangeDisplay={marketplaceStore.cudosPriceChangeDisplay()}
+                        cudosPriceUsd={marketplaceStore.cudosPrice}
+                        topCollectionEntities={marketplaceStore.topCollectionEntities} />
+                    <Actions
+                        className = { 'SectionActions' }
+                        layout={ActionsLayout.LAYOUT_ROW_CENTER}
+                        height={ActionsHeight.HEIGHT_48}>
+                        <Button
+                            onClick={onClickSeeAllCollections}
+                            padding={ButtonPadding.PADDING_24}>
+                            See All Collections
+                        </Button>
+                    </Actions>
+                </div>
+
+                <div className={'SectionWrapper'}>
+                    <div className={'SectionHeadingCnt H2 Bold'}>Popular Farms</div>
+                    <Slider maxItems={3}>
                         {marketplaceStore.popularFarmsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>)}
                         {marketplaceStore.popularFarmsEntities.slice(0, 3).map((miningFarmEntity: MiningFarmEntity, index: number) => <MiningFarmPreview
                             key={index}
@@ -144,6 +154,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                         />)}
                     </Slider>
                     <Actions
+                        className = { 'SectionActions' }
                         layout={ActionsLayout.LAYOUT_ROW_CENTER}
                         height={ActionsHeight.HEIGHT_48}>
                         <Button
