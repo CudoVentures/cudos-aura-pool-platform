@@ -31,7 +31,7 @@ import DataPreviewLayout, { createDataPreview } from '../../../../core/presentat
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
-import SvgGridNoContent from '../../../../core/presentation/vectors/grid-no-content.svg';
+import SvgGridNoContent from '../../../../public/assets/vectors/grid-no-content.svg';
 import SvgNoFarms from '../../../../public/assets/vectors/no-farm.svg';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-mining-farm-credit.css';

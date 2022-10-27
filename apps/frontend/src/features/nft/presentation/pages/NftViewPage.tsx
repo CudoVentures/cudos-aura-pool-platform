@@ -26,7 +26,7 @@ import DataGridLayout from '../../../../core/presentation/components/DataGridLay
 import NftPreview from '../components/NftPreview';
 import GridView from '../../../../core/presentation/components/GridView';
 
-import SvgCudos from '../../../../core/presentation/vectors/cudos-logo.svg';
+import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-nft-view-component.css';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import DataPreviewLayout, { createDataPreview, DataRowsGap } from '../../../../core/presentation/components/DataPreviewLayout';

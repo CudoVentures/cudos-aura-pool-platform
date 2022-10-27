@@ -25,6 +25,8 @@ import AnimationContainer from '../../../../core/presentation/components/Animati
 
 import '../styles/page-user-profile.css';
 import Chart, { ChartType, createBarChartDataSet, createChartDataSet, createLineChartDataSet, createPieChartDataSet } from '../../../../core/presentation/components/Chart';
+import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
+import NavRowTabs from '../../../../core/presentation/components/NavRowTabs';
 
 type Props = {
     appStore?: AppStore
@@ -138,14 +140,7 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
 
                 <AnimationContainer active = { userProfilePageStore.isEarningsPage() } >
                     {userProfilePageStore.isEarningsPage() === true && (
-                        <>
-                            <Chart
-                                labels = { ['10 204 January', '10 204 February', '10 204 March', '10 204 April', '10 204 May', '10 204 June', '10 204 July', '10 204 August', '10 204 September', '10 204 Octomber', '10 204 November', '10 204 December', '10 204 January', '10 204 February', '10 204 March', '10 204 April', '10 204 May', '10 204 June'] }
-                                datasets = { [
-                                    createBarChartDataSet('set label 1', [4, 5, -1, 4, 5, -1, 4, 5, -1, 4, 5, -1, 4, 5, -1, 4, 5, -1], '#30425A'),
-                                ] }
-                                type = { ChartType.BAR } />
-                        </>
+                        <EarningsInfo />
                     ) }
                 </AnimationContainer>
 
@@ -159,6 +154,50 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
             <PageFooter />
         </PageLayoutComponent>
     )
+
+    function EarningsInfo() {
+        return (
+            <StyledContainer containerPadding={ContainerPadding.PADDING_24}>
+
+                <div className={'GraphHeader FlexRow'}>
+                    <div className={'FlexRow DataRow'}>
+                        <div className={'FlexColumn SingleDataColumn'}>
+                            <div className={'DataName B1 SemiBold'}>Total BTC Earnings</div>
+                            <div className={'DataValue H2 Bold'}>$3.45k</div>
+                        </div>
+                        <div className={'FlexColumn SingleDataColumn'}>
+                            <div className={'DataName B1 SemiBold'}>Total NFTs Bought</div>
+                            <div className={'DataValue H2 Bold'}>34</div>
+                        </div>
+                    </div>
+                    <NavRowTabs navTabs={[
+                        {
+                            navName: 'Today',
+                            isActive: analyticsPageStore.isStatsToday(),
+                            onClick: analyticsPageStore.setStatsToday,
+                        },
+                        {
+                            navName: '7 Days',
+                            isActive: analyticsPageStore.isStatsWeek(),
+                            onClick: analyticsPageStore.setStatsWeek,
+                        },
+                        {
+                            navName: '30 Days',
+                            isActive: analyticsPageStore.isStatsMonth(),
+                            onClick: analyticsPageStore.setStatsMonth,
+                        },
+                    ]} />
+                </div>
+                <Chart
+                    labels = { getChartLabels() }
+                    datasets = { [
+                        createBarChartDataSet('set label 1', analyticsPageStore.statistics, '#30425A'),
+                    ] }
+                    type = { ChartType.BAR } />
+            </StyledContainer>
+
+        )
+    }
 
 }
 

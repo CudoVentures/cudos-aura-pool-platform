@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import NftEntity from '../../../../nft/entities/NftEntity';
-import SvgGridNoContent from '../../../../../core/presentation/vectors/grid-no-content.svg';
+import SvgGridNoContent from '../../../../../public/assets/vectors/grid-no-content.svg';
 import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../../core/presentation/components/TableDesktop';
 import Table, { createTableCell, createTableRow } from '../../../../../core/presentation/components/Table';
 import Actions, { ActionsLayout } from '../../../../../core/presentation/components/Actions';

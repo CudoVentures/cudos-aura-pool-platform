@@ -5,6 +5,8 @@ import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel, { CollectionHashPowerFilter } from '../../utilities/CollectionFilterModel';
 import CategoryEntity from '../../entities/CategoryEntity';
 import NftEntity from '../../../nft/entities/NftEntity';
+import { Collection } from 'cudosjs/build/stargate/modules/nft/proto-types/nft';
+import BigNumber from 'bignumber.js';
 
 export default class CollectionStorageRepo implements CollectionRepo {
 
@@ -25,11 +27,36 @@ export default class CollectionStorageRepo implements CollectionRepo {
     }
 
     async fetchCollectionsByIds(idArray: string[]): Promise < CollectionEntity[] > {
-        const collectionEntitiess = this.storageHelper.collectionsJson
+
+        const collectionEntities = this.storageHelper.collectionsJson
             .filter((json) => idArray.includes(json.id))
             .map((json) => CollectionEntity.fromJson(json));
 
-        return collectionEntitiess;
+        // custom case just for testing without filling
+        if (collectionEntities.length === 0) {
+            for (let i = 0; i < 10; i++) {
+                const collectionEntity = new CollectionEntity();
+
+                collectionEntity.coverImgUrl = 'https://www.cnet.com/a/img/resize/c5b48e90abe8b7fe339fc0139f3834dbe434fee5/hub/2021/11/29/f566750f-79b6-4be9-9c32-8402f58ba0ef/richerd.png?auto=webp&width=1200';
+                collectionEntity.description = 'wefwefwefef'
+                collectionEntity.farmId = '1';
+                collectionEntity.hashPower = 123;
+                collectionEntity.id = `${i}`;
+                collectionEntity.items = 123;
+                collectionEntity.maintenanceFees = new BigNumber(21);
+                collectionEntity.name = 'Cool Collection';
+                collectionEntity.ownerAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
+                collectionEntity.price = new BigNumber(1000 * i);
+                collectionEntity.profileImgUrl = 'https://www.cnet.com/a/img/resize/c5b48e90abe8b7fe339fc0139f3834dbe434fee5/hub/2021/11/29/f566750f-79b6-4be9-9c32-8402f58ba0ef/richerd.png?auto=webp&width=1200';
+                collectionEntity.royalties = 123;
+                collectionEntity.volume = new BigNumber(123);
+                collectionEntity.status = CollectionStatus.APPROVED;
+
+                collectionEntities.push(collectionEntity);
+            }
+        }
+
+        return collectionEntities;
     }
 
     async fetchCollectionById(collectionId: string): Promise < CollectionEntity > {
