@@ -38,6 +38,8 @@ import SuperAdminApprovePageStore from './features/accounts/presentation/stores/
 import CreditCollectionNftsPageStore from './features/collection/presentation/stores/CreditCollectionNftsPageStore';
 import CreditCollectionStore from './features/collection/presentation/stores/CreditCollectionStore';
 import CreditCollectionSuccessModalStore from './features/collection/presentation/stores/CreditCollectionSuccessModalStore';
+import AnalyticsPageStore from './features/analytics/presentation/stores/AnalyticsPageStore';
+import PoolEventStorageRepo from './features/analytics/data/repo/PoolEventStorageRepo';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -52,6 +54,7 @@ const miningFarmRepo = new MiningFarmStorageRepo(storageHelper);
 const collectionRepo = new CollectionStorageRepo(storageHelper);
 const nftRepo = new NftStorageRepo(storageHelper);
 const accountRepo = new AccountStorageRepo(storageHelper);
+const poolEventRepo = new PoolEventStorageRepo();
 
 const walletStore = new WalletStore();
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
@@ -68,7 +71,7 @@ const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, nftRepo,
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo);
 const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo);
-
+const analyticsPageStore = new AnalyticsPageStore(poolEventRepo, collectionRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo);
 const creditCollectionNftsPageStore = new CreditCollectionNftsPageStore(accountSessionStore, miningFarmRepo, collectionRepo);
 const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
@@ -119,6 +122,7 @@ const App = () => {
                 superAdminApprovePageStore = { superAdminApprovePageStore }
                 creditCollectionNftsPageStore = { creditCollectionNftsPageStore }
                 creditCollectionStore = { creditCollectionStore }
+                analyticsPageStore = { analyticsPageStore }
 
             >
                 <BrowserRouter>
