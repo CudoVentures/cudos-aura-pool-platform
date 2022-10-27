@@ -19,7 +19,7 @@ export enum ContainerPadding {
     PADDING_16 = 'Padding16',
 }
 
-type Props = {
+export type Props = {
     className?: string;
     containerWidth?: ContainerWidth,
     containerBackground?: ContainerBackground,

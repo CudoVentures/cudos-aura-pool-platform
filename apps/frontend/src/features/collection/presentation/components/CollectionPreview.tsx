@@ -1,7 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import CollectionEntity from '../../entities/CollectionEntity';
+
 import '../styles/collection-preview.css';
 
 type Props = {
@@ -19,14 +22,10 @@ export default function CollectionPreview({ collectionEntity, miningFarmName }: 
 
     return (
         <div className="CollectionPreview FlexColumn" onClick={onClickNft}>
-            <div
-                className="CollectionPreviewImage"
-                style={{
-                    backgroundImage: `url("${collectionEntity.profileImgUrl}")`,
-                }} />
-            <div className={'MiningFarmName B2'}>{miningFarmName}</div>
-            <div className={'CollectionName H2 Bold'}>{collectionEntity.name}</div>
-            <div className={'HashPower H4 Medium'}>{collectionEntity.hashPower}</div>
+            <div className="CollectionPreviewImage ImgCoverNode" style = { ProjectUtils.makeBgImgStyle(collectionEntity.profileImgUrl) } />
+            <div className={'MiningFarmName'}>{miningFarmName}</div>
+            <div className={'CollectionName'}>{collectionEntity.name}</div>
+            <div className={'HashPower'}>{collectionEntity.getHashPowerDisplay()}</div>
         </div>
     );
 }

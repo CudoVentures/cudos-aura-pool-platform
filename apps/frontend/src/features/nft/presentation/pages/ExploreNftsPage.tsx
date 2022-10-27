@@ -21,7 +21,7 @@ import ExplorePageLayout from '../../../../core/presentation/components/ExploreP
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 
 import '../styles/page-explore-nfts-component.css';
-import NavRowTabs from '../../../../core/presentation/components/NavRowTabs';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,22 +41,13 @@ function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
 
     const nftFilterModel = exploreNftsPageStore.nftFilterModel;
 
-    const navTabs = [
-        {
-            navName: 'NFTs',
-            isActive: true,
-        },
-        {
-            navName: 'Collections',
-            isActive: false,
-            onClick: () => navigate(AppRoutes.EXPLORE_COLLECTIONS),
-        },
-        {
-            navName: 'Farms',
-            isActive: false,
-            onClick: () => navigate(AppRoutes.EXPLORE_MINING_FARMS),
-        },
-    ]
+    function onClickExploreCollections() {
+        navigate(AppRoutes.EXPLORE_COLLECTIONS)
+    }
+
+    function onClickExploreMiningFarms() {
+        navigate(AppRoutes.EXPLORE_MINING_FARMS);
+    }
 
     return (
         <PageLayoutComponent className = { 'PageExploreNfts' } >
@@ -69,7 +60,11 @@ function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
                     header = { (
                         <>
                             <div className={'H2 Bold'}>Explore AuraPool</div>
-                            <NavRowTabs navTabs={navTabs} />
+                            <NavRowTabs navTabs = {[
+                                createNavRowTab('NFTs', true),
+                                createNavRowTab('Collections', false, onClickExploreCollections),
+                                createNavRowTab('Farms', false, onClickExploreMiningFarms),
+                            ]} />
                         </>
                     ) }>
 
@@ -81,7 +76,7 @@ function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
                                     className={'SearchBar'}
                                     value = {nftFilterModel.searchString}
                                     onChange = { exploreNftsPageStore.onChangeSearchWord }
-                                    placeholder = {'Search Collections, Farms and accounts'}
+                                    placeholder = {'Search for NFT...'}
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start" >
                                             <Svg svg={SearchIcon} />
@@ -123,7 +118,7 @@ function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
                         { exploreNftsPageStore.nftEntities !== null && (
                             <GridView
                                 gridViewState={exploreNftsPageStore.gridViewState}
-                                defaultContent={exploreNftsPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>>
+                                defaultContent={exploreNftsPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
                                 {exploreNftsPageStore.nftEntities.map(
                                     (nftEntity: NftEntity, index: number) => {
                                         return (
