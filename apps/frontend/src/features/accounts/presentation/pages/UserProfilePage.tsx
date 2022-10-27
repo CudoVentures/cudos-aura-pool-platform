@@ -24,6 +24,7 @@ import DataGridLayout from '../../../../core/presentation/components/DataGridLay
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
 
 import '../styles/page-user-profile.css';
+import Chart, { ChartType, createBarChartDataSet, createChartDataSet, createLineChartDataSet, createPieChartDataSet } from '../../../../core/presentation/components/Chart';
 
 type Props = {
     appStore?: AppStore
@@ -90,7 +91,7 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
                 <AnimationContainer active = { userProfilePageStore.isNftPage() } >
                     {userProfilePageStore.isNftPage() === true && (
                         <DataGridLayout
-                            header = { (
+                            headerLeft = { (
                                 <>
                                     <Select
                                         onChange={userProfilePageStore.onChangeSortKey}
@@ -98,16 +99,18 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
                                         <MenuItem value = { NftFilterModel.SORT_KEY_NAME }> Name </MenuItem>
                                         <MenuItem value = { NftFilterModel.SORT_KEY_POPULAR }> Popular </MenuItem>
                                     </Select>
-                                    <Actions
-                                        layout={ActionsLayout.LAYOUT_ROW_RIGHT}
-                                        height={ActionsHeight.HEIGHT_48} >
-                                        <Button
-                                            padding={ButtonPadding.PADDING_24}
-                                            type={ButtonType.ROUNDED} >
-                                    All Filters
-                                        </Button>
-                                    </Actions>
                                 </>
+                            ) }
+                            headerRight = { (
+                                <Actions
+                                    layout={ActionsLayout.LAYOUT_ROW_RIGHT}
+                                    height={ActionsHeight.HEIGHT_48} >
+                                    <Button
+                                        padding={ButtonPadding.PADDING_24}
+                                        type={ButtonType.ROUNDED} >
+                                    All Filters
+                                    </Button>
+                                </Actions>
                             ) }>
 
                             { userProfilePageStore.nftEntities === null && (
@@ -135,7 +138,14 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
 
                 <AnimationContainer active = { userProfilePageStore.isEarningsPage() } >
                     {userProfilePageStore.isEarningsPage() === true && (
-                        'earnings'
+                        <>
+                            <Chart
+                                labels = { ['10 204 January', '10 204 February', '10 204 March', '10 204 April', '10 204 May', '10 204 June', '10 204 July', '10 204 August', '10 204 September', '10 204 Octomber', '10 204 November', '10 204 December', '10 204 January', '10 204 February', '10 204 March', '10 204 April', '10 204 May', '10 204 June'] }
+                                datasets = { [
+                                    createBarChartDataSet('set label 1', [4, 5, -1, 4, 5, -1, 4, 5, -1, 4, 5, -1, 4, 5, -1, 4, 5, -1], '#30425A'),
+                                ] }
+                                type = { ChartType.BAR } />
+                        </>
                     ) }
                 </AnimationContainer>
 

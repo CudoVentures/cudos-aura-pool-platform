@@ -144,7 +144,8 @@
     "typescript": "^4.7.4",
     "webpack-node-externals": "^3.0.0",
     "path-browserify": "^1.0.1",
-    "speed-measure-webpack-plugin": "^1.5.0"
+    "speed-measure-webpack-plugin": "^1.5.0",
+    "chart.js": "^3.9.1"
   },
   "jest": {
     "moduleFileExtensions": [
