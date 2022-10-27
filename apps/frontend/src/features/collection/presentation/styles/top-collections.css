@@ -1,32 +1,3 @@
-.TopCollectionsList .HeadingRow {
-    margin-bottom: 70px;
-    margin-top: 30px;
-}
-
-.TopCollectionsList .HeadingRow .PeriodButtonsRowHolder {
-    justify-content: center;
-}
-
-.TopCollectionsList .HeadingRow .PeriodButtonsRowHolder .PeriodButtonsRow {
-    justify-content: center;
-    gap: 5px;
-    border-radius: 10px;
-    padding: 3px;
-    background-color: var(--color-gray-095);
-}
-
-.TopCollectionsList .HeadingRow .PeriodButtonsRow .PeriodButton {
-    border-radius: 10px;
-    padding: 10px;
-}
-
-.TopCollectionsList .HeadingRow .PeriodButtonsRow .PeriodButton.Active {
-    background-color: #fff;
-} 
-
-.TopCollectionsList .CollectionsGrid {
-    grid-template-rows: repeat(6, minmax(0, 1fr));
-    grid-auto-flow: column;
-    gap: 20px;
-    margin-bottom: 50px;
+.TopCollections.CollectionsGrid {
+    gap: 24px;
 }

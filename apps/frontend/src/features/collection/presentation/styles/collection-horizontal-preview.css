@@ -1,12 +1,55 @@
-.CollectionsGrid .CollectionPreview {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: minmax(0, 0.1fr) minmax(0, 0.5fr) minmax(0, 1.8fr) minmax(0, 1fr);
-    align-items: center;
-    padding: 20px;
+.CollectionHorizontalPreview {
+    padding: 24px 12px;
 }
 
-.CollectionsGrid .CollectionPreview .PreviewImage {
-    width: 60px; height: 60px;
-    background-size: contain;
+.CollectionHorizontalPreview .PreviewIndex {
+    width: 36px;
+}
+
+.CollectionHorizontalPreview .PreviewImage {
+    flex: 0 0 auto;
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-right: 24px;
+}
+
+.CollectionHorizontalPreview .PreviewData {
+    flex: 1 1 auto;
+    justify-content: center;
+}
+
+.CollectionHorizontalPreview .PreviewData .PreviewDataRow:first-child {
+    margin-bottom: 8px;
+}
+
+.CollectionHorizontalPreview .PreviewData .PreviewDataRow:last-child {
+    color: var(--color-gray-030);
+}
+
+.CollectionHorizontalPreview .CollectionName {
+    width: 0;
+    flex: 1 1 auto;
+    line-height: 145%;
+    margin-right: 8px;
+}
+
+.CollectionHorizontalPreview .CollectionPriceCudos {
+    text-align: right;
+}
+
+.CollectionHorizontalPreview .HashRate {
+
+}
+
+.CollectionHorizontalPreview .CollectionPriceUsd {
+    
+}
+
+.CollectionHorizontalPreview .CollectionPriceUsd .CurrentPrice {
+    color: #000;   
+}
+
+.CollectionHorizontalPreview .CollectionPriceUsd .CurrentPriceChange {
+    margin-left: 8px;
 }

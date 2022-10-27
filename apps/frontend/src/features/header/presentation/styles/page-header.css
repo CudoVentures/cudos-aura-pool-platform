@@ -16,15 +16,15 @@
     background-color: var(--color-gray-090);
 }
 
-.PageHeader .StartRightBlock {
+.PageHeader .NavCnt {
     gap: 40px;
     align-items: center;
 }
 
-.PageHeader .StartRightBlock {
+.PageHeader .NavCnt {
     color: var(--color-gray-030);
 }
 
-.PageHeader .StartRightBlock .Active {
+.PageHeader .NavCnt .NavButton.Active {
     color: #000;
 }

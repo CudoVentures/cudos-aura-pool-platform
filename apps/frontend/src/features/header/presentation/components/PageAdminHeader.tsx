@@ -1,7 +1,8 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
+import S from '../../../../../src/core/utilities/Main';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
@@ -18,8 +19,25 @@ type Props = {
 function PageAdminHeader({ accountSessionStore }: Props) {
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     function onClickLogo() {
+        navigate(AppRoutes.HOME);
+    }
+
+    function onClickMarketplace() {
+        navigate(AppRoutes.MARKETPLACE);
+    }
+
+    function onClickRewardsCalculator() {
+        navigate(AppRoutes.REWARDS_CALCULATOR);
+    }
+
+    function onClickAnalytics() {
+        navigate(AppRoutes.FARM_ANALYTICS);
+    }
+
+    function onClickCreditMiningFarm() {
         navigate(AppRoutes.HOME);
     }
 
@@ -30,9 +48,18 @@ function PageAdminHeader({ accountSessionStore }: Props) {
                 <div className={'AdminPortalNav B2 SemiBold'}>Admin Portal</div>
             </div>
 
-            { accountSessionStore.isAdmin() === true && (
-                <HeaderWallet />
-            ) }
+            <div className={'NavCnt FlexRow'}>
+                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>Marketplace</div>
+                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div>
+
+                { accountSessionStore.isAdmin() === true && (
+                    <>
+                        <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.CREDIT_MINING_FARM)}`} onClick={onClickCreditMiningFarm}>Farm Profile</div>
+                        <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.FARM_ANALYTICS)}`} onClick={onClickAnalytics}>Analytics</div>
+                        <HeaderWallet />
+                    </>
+                ) }
+            </div>
         </header>
     )
 }

@@ -1,15 +1,16 @@
 
-.PageMarketplace .PageContent{
+.PageMarketplace .PageContent {
     padding: 70px var(--page-spacing-h);
 }
 
 .PageMarketplace .ExploreCollections {
     align-items: center;
+    margin-bottom: 150px;
 }
 
 .PageMarketplace .ExploreCollections .PageHeading {
     font-size: 64px;
-    margin-bottom: 40px;   
+    margin: 130px 0 40px 0;
 }
 
 .PageMarketplace .ExploreCollections .SearchBar {
@@ -17,41 +18,23 @@
     margin-bottom: 40px;
 }
 
-.PageMarketplace .ExploreCollections .CategoriesRow {
-    gap: 25px;
-    margin-bottom: 100px;
+.PageMarketplace .SectionWrapper {
+    margin-top: 120px;
 }
 
-.PageMarketplace .ExploreCollections .CategoriesRow .CategoryName {
-    padding: 4px 10px;
-    border-radius: 6px;
-    background-color: var(--color-gray-095);
-    font-weight: 600; font-size: 14px;
-    
-    transition-property: background-color, color;
+.PageMarketplace .SectionWrapper .SectionHeadingCnt {
+    position: relative;
+    margin-bottom: 32px;
 }
 
-.PageMarketplace .ExploreCollections .CategoriesRow .CategoryName.Active {
-    background-color: #000;
-    color: #fff;
+.PageMarketplace .SectionWrapper .SectionHeadingCnt .CenterCnt {
+    width: 50%;
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
+    margin: auto;
 }
 
-.PageMarketplace .NewNftDrops {
-    margin-top: 20px;
-    margin-bottom: 180px;
-}
-
-
-.PageMarketplace .TrendingNfts {
-    margin-top: 20px;
-    margin-bottom: 80px;
-}
-
-.PageMarketplace .PopularFarms {
-    margin-top: 20px;
-    margin-bottom: 80px;
-}
-
-.PageMarketplace .PopularFarms .FarmPreviews {
-    gap: 30px;
+.PageMarketplace .SectionWrapper .SectionActions {
+    margin-top: 50px;
 }

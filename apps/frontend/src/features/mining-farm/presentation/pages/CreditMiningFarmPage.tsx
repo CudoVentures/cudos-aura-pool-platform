@@ -16,7 +16,7 @@ import { InputAdornment, MenuItem } from '@mui/material';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageHeader from '../../../header/presentation/components/PageHeader';
+import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Select from '../../../../core/presentation/components/Select';
@@ -27,6 +27,7 @@ import CollectionPreview from '../../../collection/presentation/components/Colle
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import Input from '../../../../core/presentation/components/Input';
+import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
@@ -34,7 +35,6 @@ import SvgGridNoContent from '../../../../public/assets/vectors/grid-no-content.
 import SvgNoFarms from '../../../../public/assets/vectors/no-farm.svg';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-mining-farm-credit.css';
-import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 
 type Props = {
     appStore?: AppStore
@@ -89,7 +89,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                 </>
             }
             className = { 'PageMiningFarmCredit' } >
-            <PageHeader />
+            <PageAdminHeader />
 
             { creditMiningFarmPageStore.inited === false && (
                 <LoadingIndicator />

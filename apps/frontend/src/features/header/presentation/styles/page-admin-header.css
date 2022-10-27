@@ -16,3 +16,15 @@
     background-color: var(--color-gray-090);
 }
 
+.PageAdminHeader .NavCnt {
+    gap: 40px;
+    align-items: center;
+}
+
+.PageAdminHeader .NavCnt {
+    color: var(--color-gray-030);
+}
+
+.PageAdminHeader .NavCnt .NavButton.Active {
+    color: #000;
+}
