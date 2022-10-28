@@ -20,7 +20,7 @@ export default class AnalyticsPageStore {
 
     miningFarmEntity: MiningFarmEntity;
     collectionEventEntities: CollectionEventEntity[];
-    collectionEntities: CollectionEntity[];
+    collectionEntitiesMap: Map < string, CollectionEntity >;
 
     constructor(poolEventRepo: PoolEventRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
         this.poolEventRepo = poolEventRepo;
@@ -33,7 +33,7 @@ export default class AnalyticsPageStore {
 
         this.miningFarmEntity = null;
         this.collectionEventEntities = [];
-        this.collectionEntities = [];
+        this.collectionEntitiesMap = new Map();
 
         makeAutoObservable(this);
     }
@@ -41,7 +41,7 @@ export default class AnalyticsPageStore {
     async init() {
         this.miningFarmEntity = null;
         this.collectionEventEntities = [];
-        this.collectionEntities = [];
+        this.collectionEntitiesMap = new Map();
 
         this.fetch();
     }
@@ -51,10 +51,15 @@ export default class AnalyticsPageStore {
         const { collectionEventEntities, total } = await this.poolEventRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
         const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(collectionEventEntities.map((eventEntity: CollectionEventEntity) => eventEntity.collectionId));
 
+        const collectionEntitiesMap = new Map();
+        collectionEntities.forEach((collectionEntity) => {
+            collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
+        });
+
         runInAction(() => {
             this.miningFarmEntity = miningFarmEntity;
             this.collectionEventEntities = collectionEventEntities;
-            this.collectionEntities = collectionEntities;
+            this.collectionEntitiesMap = collectionEntitiesMap;
             this.analyticsTableState.tableFilterState.total = total;
             this.extendedChartState.init();
         });
@@ -65,7 +70,7 @@ export default class AnalyticsPageStore {
     }
 
     getCollectionById(collectionId: string): CollectionEntity {
-        return this.collectionEntities.find((collectionEntity: CollectionEntity) => collectionEntity.id === collectionId);
+        return this.collectionEntitiesMap.get(collectionId) ?? null;
     }
 
     onChangeTableFilter = (value: number) => {
