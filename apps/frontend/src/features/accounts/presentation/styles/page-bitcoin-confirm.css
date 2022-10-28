@@ -8,22 +8,3 @@
 .PageBitcoinConfirm .PageContent {
     padding: 100px var(--page-spacing-h);
 }
-
-.PageBitcoinConfirm .Title {
-    margin-bottom: 16px;
-}
-
-.PageBitcoinConfirm .Subtitle {
-    color: var(--color-gray-025);
-    font-size: 16px;
-    margin-bottom: 40px;
-}
-
-.PageBitcoinConfirm .InputsCnt {
-    display: flex; flex-direction: column;
-    gap: 24px;
-}
-
-.PageBitcoinConfirm .BitcoinConfirmActions {
-    margin-top: 24px;
-}

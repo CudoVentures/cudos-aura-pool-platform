@@ -9,15 +9,19 @@ import Svg from '../../../../../core/presentation/components/Svg';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import '../../styles/step-success.css';
+import { useNavigate } from 'react-router-dom';
+import AppRoutes from '../../../../app-routes/entities/AppRoutes';
 
 type Props = {
     accountSessionStore?: AccountSessionStore
 }
 
 function StepReview({ accountSessionStore }: Props) {
+    const navigate = useNavigate();
 
     async function onClickGoHome() {
         await accountSessionStore.loadAdminMiningFarmApproval();
+        navigate(AppRoutes.HOME);
     }
 
     return (

@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateFarmDto } from './dto/create-farm.dto';
 import { UpdateFarmDto } from './dto/update-farm.dto';
 import { Farm } from './farm.model';
+import { FarmStatus } from './utils';
 
 @Injectable()
 export class FarmService {
@@ -44,6 +45,7 @@ export class FarmService {
         const farm = this.farmModel.create({
             ...createFarmDto,
             creator_id,
+            status: FarmStatus.QUEUED,
         });
 
         return farm;
@@ -68,6 +70,20 @@ export class FarmService {
                 where: {
                     id,
                 },
+                returning: true,
+            },
+        );
+
+        return farm;
+    }
+
+    async updateStatus(id: number, status: FarmStatus): Promise<Farm> {
+        const [count, [farm]] = await this.farmModel.update(
+            {
+                status,
+            },
+            {
+                where: { id },
                 returning: true,
             },
         );

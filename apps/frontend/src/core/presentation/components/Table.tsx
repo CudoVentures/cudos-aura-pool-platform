@@ -27,7 +27,9 @@ export default function Table(props: Props) {
                 columnsOrderMap = { props.columnsOrderMap }
                 showPaging = { props.showPaging }
                 contentScrollable = { props.contentScrollable }
+                noRowsContent={ props.noRowsContent }
                 onChangeColumnsOrderIndex = { props.onChangeColumnsOrderIndex } />
+
             <TableMobile
                 className = { props.className }
                 legend = { props.legend }

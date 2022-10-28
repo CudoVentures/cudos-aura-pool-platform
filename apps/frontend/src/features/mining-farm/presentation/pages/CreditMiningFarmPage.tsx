@@ -14,9 +14,9 @@ import CollectionFilterModel, { CollectionHashPowerFilter } from '../../../colle
 
 import { InputAdornment, MenuItem } from '@mui/material';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
-import Breadcrumbs from '../../../../core/presentation/components/Breadcrumbs';
+import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageHeader from '../../../header/presentation/components/PageHeader';
+import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Select from '../../../../core/presentation/components/Select';
@@ -27,11 +27,15 @@ import CollectionPreview from '../../../collection/presentation/components/Colle
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import Input from '../../../../core/presentation/components/Input';
+import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
+import PageHeader from '../../../header/presentation/components/PageHeader';
+import NoFarmView from '../components/NoFarmView';
+import NoCollectionView from '../../../collection/presentation/components/NoCollectionView';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
-import SvgGridNoContent from '../../../../core/presentation/vectors/grid-no-content.svg';
-import '../styles/page-mining-farm-credit-component.css';
+import SettingsIcon from '@mui/icons-material/Settings';
+import '../styles/page-credit-mining-farm.css';
 
 type Props = {
     appStore?: AppStore
@@ -45,13 +49,9 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     const navigate = useNavigate();
 
     const miningFarmEntity = creditMiningFarmPageStore.miningFarmEntity;
+    const collectionEntities = creditMiningFarmPageStore.collectionEntities;
+    const nftEntities = creditMiningFarmPageStore.nftEntities;
     const collectionFilterModel = creditMiningFarmPageStore.collectionFilterModel;
-
-    const crumbs = [
-        { name: 'Marketplace', onClick: () => { navigate(AppRoutes.MARKETPLACE) } },
-        { name: 'Explore Farms', onClick: () => { navigate(AppRoutes.EXPLORE_MINING_FARMS) } },
-        { name: `Farm Owner: ${miningFarmEntity?.name ?? ''}`, onClick: () => {} },
-    ]
 
     useEffect(() => {
         appStore.useLoading(async () => {
@@ -59,9 +59,16 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
         });
     }, []);
 
+    function onClickNavigateMarketplace() {
+        navigate(AppRoutes.MARKETPLACE)
+    }
+
+    function onClickNavigateExploreMiningFarms() {
+        navigate(AppRoutes.EXPLORE_MINING_FARMS)
+    }
+
     function onClickProfileImages() {
         editMiningFarmModalStore.showSignal(miningFarmEntity);
-
     }
 
     function onClickEditProfile() {
@@ -72,6 +79,10 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
         navigate(AppRoutes.CREDIT_COLLECTION_DETAILS);
     }
 
+    function onClickAccountSettings() {
+        navigate(AppRoutes.CREDIT_ACCOUNT_SETTINGS);
+    }
+
     return (
         <PageLayoutComponent
             modals = {
@@ -79,80 +90,94 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                     <EditMiningFarmModal />
                 </>
             }
-            className = { 'PageMiningFarmCredit' } >
-            <PageHeader />
+            className = { 'PageCreditMiningFarm' } >
 
-            { miningFarmEntity === null && (
+            { accountSessionStore.isAdmin() === true && (
+                <PageAdminHeader />
+            ) }
+            { accountSessionStore.isAdmin() === false && (
+                <PageHeader />
+            ) }
+
+            { creditMiningFarmPageStore.inited === false && (
                 <LoadingIndicator />
             ) }
 
-            { miningFarmEntity !== null && (
-                <div className={'PageContent AppContent'} >
-                    { farmId !== undefined && (
-                        <Breadcrumbs crumbs={crumbs}/>
-                    ) }
-                    <ProfileHeader coverPictureUrl={miningFarmEntity.coverImgUrl} profilePictureUrl={miningFarmEntity.profileImgUrl} />
+            <div className={'PageContent AppContent'} >
+                { accountSessionStore.isAdmin() === true && miningFarmEntity === null && (
+                    <NoFarmView />
+                ) }
 
-                    { accountSessionStore.isAdmin() === true && accountSessionStore.accountEntity.accountId === miningFarmEntity.accountId && (
-                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
-                            <Button
-                                onClick={onClickProfileImages}
-                                color={ButtonColor.SCHEME_3} >
-                                <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                                Profile images
-                            </Button>
-                            <Button
-                                onClick={onClickEditProfile}
-                                color={ButtonColor.SCHEME_3} >
-                                <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                                Edit Profile
-                            </Button>
-                        </Actions>
-                    ) }
-                    <div className={'H2'}>{miningFarmEntity.name}</div>
-                    <div className={'Grid GridColumns2'}>
-                        <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
-                        <div className={'BorderContainer'}>
-                            {/* TODO: use real data */}
-                            <div className={'FlexRow FarmInfoRow'}>
-                                <div className={'FarmInfoLabel'}>Total Hashrate</div>
-                                <div className={'FarmInfoValue'}>102.000 EH/s</div>
-                            </div>
-                            <div className={'FlexRow FarmInfoRow'}>
-                                <div className={'FarmInfoLabel'}>Hashrate (1h average)</div>
-                                <div className={'FarmInfoValue'}>80.345 EH/s</div>
-                            </div>
-                            <div className={'FlexRow FarmInfoRow'}>
-                                <div className={'FarmInfoLabel'}>Active Workers</div>
-                                <div className={'FarmInfoValue'}>1023</div>
-                            </div>
-                            <div className={'FlexRow FarmInfoRow'}>
-                                <div className={'FarmInfoLabel'}>Collections Owned</div>
-                                <div className={'FarmInfoValue'}>2</div>
-                            </div>
-                            <div className={'FlexRow FarmInfoRow'}>
-                                <div className={'FarmInfoLabel'}>NFTs Owned</div>
-                                <div className={'FarmInfoValue'}>1400</div>
-                            </div>
-                            <div className={'FlexRow FarmInfoRow'}>
-                                <div className={'FarmInfoLabel'}>Total NFTs Sold</div>
-                                <div className={'FarmInfoValue'}>735</div>
-                            </div>
+                { accountSessionStore.isAdmin() === false && miningFarmEntity === null && (
+                    <LoadingIndicator />
+                ) }
+
+                { miningFarmEntity !== null && (
+                    <>
+                        { farmId !== undefined && (
+                            <Breadcrumbs crumbs={ [
+                                createBreadcrumb('Marketplace', onClickNavigateMarketplace),
+                                createBreadcrumb('Explore Farms', onClickNavigateExploreMiningFarms),
+                                createBreadcrumb(`Farm Owner: ${miningFarmEntity?.name ?? ''}`),
+                            ] } />
+                        ) }
+
+                        <ProfileHeader
+                            className = { 'FarmImagesCnt' }
+                            coverPictureUrl={miningFarmEntity.coverImgUrl}
+                            profilePictureUrl={miningFarmEntity.profileImgUrl} />
+
+                        { accountSessionStore.isAdmin() === true && accountSessionStore.accountEntity.accountId === miningFarmEntity.accountId && (
+                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
+                                <Button
+                                    onClick={onClickProfileImages}
+                                    color={ButtonColor.SCHEME_3} >
+                                    <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                    Profile images
+                                </Button>
+                                <Button
+                                    onClick={onClickEditProfile}
+                                    color={ButtonColor.SCHEME_3} >
+                                    <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                    Edit Farm Details
+                                </Button>
+                                <Button
+                                    onClick={onClickAccountSettings}
+                                    color={ButtonColor.SCHEME_3} >
+                                    <Svg size = { SvgSize.CUSTOM } svg={SettingsIcon} />
+                                    Account settings
+                                </Button>
+                            </Actions>
+                        ) }
+                        <div className={'TheMiningFarmName H2 Bold'}>{miningFarmEntity.name}</div>
+                        <div className={'ThePageMiningFarmData Grid GridColumns2'}>
+                            <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
+                            <DataPreviewLayout
+                                dataPreviews = { [
+                                    createDataPreview('Total Hashrate', `${miningFarmEntity.hashRateTh} TH/s`),
+                                    createDataPreview('Hashrate (1h average)', '80.345 EH/s'),
+                                    createDataPreview('Active Workers', '1023'),
+                                    createDataPreview('Collections Owned', creditMiningFarmPageStore.gridViewState.getItemCount()),
+                                    createDataPreview('NFTs Owned', nftEntities.length),
+                                    createDataPreview('Total NFTs Sold', '735'),
+                                ] } />
                         </div>
-                    </div>
-                    <div className={'CollectionsOwnedHeader FlexRow'}>
-                        <div className={'H2'}>Collections Owned</div>
-                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_CENTER}>
-                            <Button onClick={onClickCreateCollection} >
-                                <Svg svg={AddIcon}/>
-                                Create Collection
-                            </Button>
-                        </Actions>
-                    </div>
-                    <DataGridLayout
-                        header = { (
-                            <div className={'GridFilterHeader'}>
-                                <div className={'LeftHeaderPart FlexRow'}>
+                        <div className = { 'SectionDivider' } />
+                        <div className={'CollectionsOwnedHeader FlexRow'}>
+                            <div className={'H2 Bold'}>Collections Owned</div>
+                            { accountSessionStore.isAdmin() === true && (
+                                <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_CENTER}>
+                                    <Button onClick={onClickCreateCollection} >
+                                        <Svg svg={AddIcon}/>
+                                    Create Collection
+                                    </Button>
+                                </Actions>
+                            ) }
+                        </div>
+                        <DataGridLayout
+                            className = { 'CollectionsCnt' }
+                            headerLeft = { (
+                                <>
                                     <Input
                                         className={'SearchBar'}
                                         value = {collectionFilterModel.searchString}
@@ -172,62 +197,44 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                         <MenuItem value = { CollectionHashPowerFilter.BELOW_2000_EH } > Below 2000 EH/s </MenuItem>
                                         <MenuItem value = { CollectionHashPowerFilter.ABOVE_2000_EH } > Above 2000 EH/s </MenuItem>
                                     </Select>
-                                </div>
-                                <div></div>
+                                </>
+                            ) }
+                            headerRight = { (
                                 <Select
                                     onChange={creditMiningFarmPageStore.onChangeSortKey}
                                     value={collectionFilterModel.sortKey} >
                                     <MenuItem value = { CollectionFilterModel.SORT_KEY_NAME } > Name </MenuItem>
                                     <MenuItem value = { CollectionFilterModel.SORT_KEY_PRICE } > Price </MenuItem>
                                 </Select>
-                            </div>
-                        ) }>
+                            ) } >
 
-                        { creditMiningFarmPageStore.collectionEntities === null && (
-                            <LoadingIndicator />
-                        ) }
+                            { collectionEntities === null && (
+                                <LoadingIndicator />
+                            ) }
 
-                        { creditMiningFarmPageStore.collectionEntities !== null && (
-                            <GridView
-                                gridViewState={creditMiningFarmPageStore.gridViewState}
-                                defaultContent={<EmptyGridContent/>} >
-                                { creditMiningFarmPageStore.collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
-                                    return (
-                                        <CollectionPreview
-                                            key={index}
-                                            collectionEntity={collectionEntity}
-                                            miningFarmName={creditMiningFarmPageStore.getMiningFarmName(collectionEntity.farmId)} />
-                                    )
-                                }) }
-                            </GridView>
-                        ) }
+                            { collectionEntities !== null && (
+                                <GridView
+                                    gridViewState={creditMiningFarmPageStore.gridViewState}
+                                    defaultContent={collectionEntities.length === 0 ? <NoCollectionView /> : null} >
+                                    { collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
+                                        return (
+                                            <CollectionPreview
+                                                key={index}
+                                                collectionEntity={collectionEntity}
+                                                miningFarmName={creditMiningFarmPageStore.getMiningFarmName(collectionEntity.farmId)} />
+                                        )
+                                    }) }
+                                </GridView>
+                            ) }
 
-                    </DataGridLayout>
-                </div>
-            ) }
+                        </DataGridLayout>
+                    </>
+                ) }
+            </div>
 
             <PageFooter />
         </PageLayoutComponent>
     )
-
-    function EmptyGridContent() {
-        return (
-            <div className={'NoContentFound FlexColumn'}>
-                <Svg svg={SvgGridNoContent} />
-                <div className={'H3 Bold'}>No collections in here</div>
-                <div className={'B1'}>Looks like you haven’t created collections yet.</div>
-                <Actions
-                    layout={ActionsLayout.LAYOUT_COLUMN_CENTER}
-                    height={ActionsHeight.HEIGHT_48}
-                >
-                    <Button onClick={onClickCreateCollection}>
-                        <Svg svg={AddIcon} />
-                        Create First Collection
-                    </Button>
-                </Actions>
-            </div>
-        )
-    }
 }
 
 export default inject((stores) => stores)(observer(CreditMiningFarmPage));

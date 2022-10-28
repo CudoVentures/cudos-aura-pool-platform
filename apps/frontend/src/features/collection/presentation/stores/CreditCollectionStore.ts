@@ -7,24 +7,44 @@ import BigNumber from 'bignumber.js';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
+import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
+
+class TempIdGenerator {
+    lastId: number;
+
+    constructor() {
+        this.lastId = 0;
+    }
+
+    generateNewId(): string {
+        this.lastId -= 1;
+
+        return this.lastId.toString();
+    }
+}
 
 export default class CreditCollectionNftsPageStore {
     accountSessionStore: AccountSessionStore;
+    miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
     nftRepo: NftRepo;
 
+    tempIdGenerator: TempIdGenerator;
+
     collectionEntity: CollectionEntity;
     nftEntities: NftEntity[];
+    addedOrEdittedNftEntities: NftEntity[];
     selectedNftEntity: NftEntity;
 
     defaultHashAndPriceValues: number;
     hashPowerPerNft: number;
-    pricePerNft: number;
+    pricePerNft: BigNumber;
 
-    constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo) {
+    constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.accountSessionStore = accountSessionStore;
         this.collectionRepo = collectionRepo;
         this.nftRepo = nftRepo;
+        this.miningFarmRepo = miningFarmRepo;
 
         this.nullate();
 
@@ -40,32 +60,43 @@ export default class CreditCollectionNftsPageStore {
     nullate() {
         this.collectionEntity = null;
         this.nftEntities = [];
+        this.addedOrEdittedNftEntities = [];
         this.selectedNftEntity = null;
+        this.tempIdGenerator = null;
 
         this.defaultHashAndPriceValues = S.INT_FALSE;
         this.hashPowerPerNft = S.NOT_EXISTS;
-        this.pricePerNft = S.NOT_EXISTS;
+        this.pricePerNft = new BigNumber(S.NOT_EXISTS);
     }
 
     async fetch(collectionId: string) {
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
-        const nftFilter = new NftFilterModel();
-        nftFilter.collectionId = collectionId;
-        nftFilter.count = Number.MAX_SAFE_INTEGER;
+        this.tempIdGenerator = new TempIdGenerator();
 
-        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
-        this.nftEntities = nftEntities;
+        if (collectionId !== undefined) {
+            this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+            const nftFilter = new NftFilterModel();
+            nftFilter.collectionIds = [collectionId];
+            nftFilter.count = Number.MAX_SAFE_INTEGER;
 
-        this.selectedNftEntity = this.initNewNftEntity();
+            const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+            this.nftEntities = nftEntities;
+        } else {
+            this.collectionEntity = new CollectionEntity();
+            this.collectionEntity.farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId()).id;
+            this.collectionEntity.ownerAddress = (await this.accountSessionStore.adminEntity).cudosWalletAddress;
+        }
+
     }
 
-    initNewNftEntity(): NftEntity {
+    initNewNftEntity(): void {
         const nftEntity = new NftEntity();
 
+        nftEntity.price = this.pricePerNft;
+        nftEntity.hashPower = this.hashPowerPerNft;
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
         nftEntity.maintenanceFee = this.collectionEntity.maintenanceFees;
 
-        return nftEntity;
+        this.selectedNftEntity = nftEntity;
     }
 
     isSelectedNftImageEmpty(): boolean {
@@ -86,6 +117,10 @@ export default class CreditCollectionNftsPageStore {
 
     onChangeCollectionDescription = (description: string) => {
         this.collectionEntity.description = description;
+    }
+
+    onChangeHashingPower = (hashRate: strng) => {
+        this.collectionEntity.hashPower = Number(hashRate);
     }
 
     onChangeCollectionRoyalties = (royalties: string) => {
@@ -110,11 +145,19 @@ export default class CreditCollectionNftsPageStore {
     }
 
     onChangePricePerNft = (pricePerNft: string) => {
-        this.pricePerNft = Number(pricePerNft);
+        this.pricePerNft = new BigNumber(pricePerNft);
     }
 
     onChangeSelectedNftName = (nftName: string) => {
         this.selectedNftEntity.name = nftName;
+    }
+
+    onChangeSelectedNftHashPower = (hasHPower: string) => {
+        this.selectedNftEntity.hashPower = Number(hasHPower);
+    }
+
+    onChangeSelectedNftPrice = (price: string) => {
+        this.selectedNftEntity.price = new BigNumber(price);
     }
 
     onChangeSelectedNftRoyalties = (royalties: string) => {
@@ -129,14 +172,47 @@ export default class CreditCollectionNftsPageStore {
         return this.selectedNftEntity.maintenanceFee.toString();
     }
 
-    onChangeSelectedNftExpirationDate = (expirationDate: string) => {
-        // TODO: parse date
-        this.selectedNftEntity.expiryDate = Date.now();
+    onChangeSelectedNftExpirationDate = (expirationDate: number) => {
+        this.selectedNftEntity.expiryDate = expirationDate;
+    }
+
+    onClickEditNft = (nftEntityId: string) => {
+        this.selectedNftEntity = this.nftEntities.find((nftEntity: NftEntity) => nftEntity.id === nftEntityId).cloneDeep();
+    }
+
+    onClickSendForApproval = async () => {
+        this.collectionEntity.markQueued();
+        this.collectionEntity.farmId
+        await this.collectionRepo.creditCollection(this.collectionEntity, this.addedOrEdittedNftEntities);
+    }
+
+    onClickDeleteNft = (nftEntityId: string) => {
+        this.nftEntities = this.nftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
     }
 
     onClickAddToCollection = () => {
-        this.nftEntities.push(this.selectedNftEntity);
-        this.selectedNftEntity = this.initNewNftEntity();
+        if (this.selectedNftEntity.id !== S.Strings.NOT_EXISTS) {
+            const existingNftEntity = this.nftEntities.find((nftEntity: NftEntity) => nftEntity.id === this.selectedNftEntity.id)
+            existingNftEntity.copyDeepFrom(this.selectedNftEntity);
+
+            if (this.addedOrEdittedNftEntities.find((nftEntity: NftEntity) => nftEntity.id === this.selectedNftEntity.id) === undefined) {
+                this.addedOrEdittedNftEntities.push(this.selectedNftEntity);
+            }
+        } else {
+            this.selectedNftEntity.id = this.tempIdGenerator.generateNewId();
+            this.nftEntities.push(this.selectedNftEntity);
+            this.addedOrEdittedNftEntities.push(this.selectedNftEntity);
+        }
+
+        this.initNewNftEntity();
+    }
+
+    getHashingPowerInputValue() {
+        if (this.collectionEntity.hashPower === S.NOT_EXISTS) {
+            return ''
+        }
+
+        return this.collectionEntity.hashPower;
     }
 
     getHashPowerPerNft() {
@@ -148,7 +224,7 @@ export default class CreditCollectionNftsPageStore {
     }
 
     getPricePerNft() {
-        if (this.pricePerNft === S.NOT_EXISTS) {
+        if (this.pricePerNft.eq(S.NOT_EXISTS)) {
             return ''
         }
 
@@ -188,6 +264,10 @@ export default class CreditCollectionNftsPageStore {
     }
 
     getSelectedNftExpirationDateDisplay() {
-        return new Date(this.selectedNftEntity.expiryDate);
+        return this.selectedNftEntity.expiryDate === S.NOT_EXISTS ? Date.now() : new Date(this.selectedNftEntity.expiryDate)
+    }
+
+    getAddedNftCount() {
+        return this.addedOrEdittedNftEntities.length;
     }
 }

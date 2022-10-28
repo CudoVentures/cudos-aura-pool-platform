@@ -11,5 +11,5 @@ export default interface MiningFarmRepo {
     fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} >;
     creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void >;
     creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
-
+    fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] >;
 }

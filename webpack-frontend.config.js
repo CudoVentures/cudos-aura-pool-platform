@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 
 const srcPath = Path.join(__dirname, 'apps', 'frontend', 'src');
 const distPath = Path.join(__dirname, 'dist', 'apps', 'frontend', 'src');
@@ -54,7 +55,7 @@ module.exports = function (options, webpack) {
         }
     }
 
-    return {
+    const config = {
         target: 'web',
         mode: process.env.APP_NODE_ENV,
         externals: [],
@@ -117,12 +118,12 @@ module.exports = function (options, webpack) {
                                 '@babel/env',
                                 {
                                     targets: {
-                                        chrome: '60',
-                                        safari: '10',
-                                        edge: '12',
+                                        chrome: 90,
+                                        safari: 13,
+                                        edge: 90,
                                     },
                                     useBuiltIns: 'entry',
-                                    corejs: { version: 2, proposals: false },
+                                    corejs: { version: 3, proposals: false },
                                 },
                             ],
                             '@babel/preset-react',
@@ -156,4 +157,11 @@ module.exports = function (options, webpack) {
             },
         },
     };
+
+    // const configWithMeasure = new SpeedMeasurePlugin().wrap(config);
+    // configWithMeasure.plugins.push(new MiniCssExtractPlugin({
+    //     filename: '[name]-[fullhash].css',
+    // }));
+
+    return config;
 }

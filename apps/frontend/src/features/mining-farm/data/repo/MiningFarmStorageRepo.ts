@@ -74,7 +74,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         }
 
         miningFarmsSlice = miningFarmsSlice.filter((json) => {
-            return json.status === miningFarmFilterModel.status;
+            return json.status === miningFarmFilterModel.status || miningFarmFilterModel.status === MiningFarmStatus.ANY;
         });
 
         if (miningFarmFilterModel.sessionAccount === S.INT_TRUE) {
@@ -129,4 +129,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         }
     }
 
+    async fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] > {
+        return [100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323, 100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323];
+    }
 }

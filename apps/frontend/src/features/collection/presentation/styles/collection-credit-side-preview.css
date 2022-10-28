@@ -3,10 +3,7 @@
 }
 
 .CollectionCreditSidePreview .PreviewBorderContainer {
-    padding: 16px;
     gap: 24px;
-    border: 2px solid var(--color-gray-090);
-    border-radius: 20px;
     align-items: flex-start;
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../core/utilities/Main';
@@ -15,6 +15,7 @@ import AnimationContainer from '../../../../core/presentation/components/Animati
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
 import '../styles/buy-nft-modal.css';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     resellNftModalStore?: ResellNftModalStore;
@@ -23,12 +24,22 @@ type Props = {
 
 function BuyNftModal({ resellNftModalStore, buyNftModalStore }: Props) {
     const nftEntity = buyNftModalStore.nftEntity;
+    const validationState = useRef(new ValidationState()).current;
+    const rewardsRecipientAddress = useRef(validationState.addCudosAddressValidation('Invalid address')).current;
 
     function onClickResellNft() {
         resellNftModalStore.showSignal(buyNftModalStore.nftEntity, buyNftModalStore.cudosPrice, buyNftModalStore.collectionName);
         buyNftModalStore.hide();
     }
 
+    function onClickPurchaseNft() {
+        if (validationState.getIsErrorPresent() === true) {
+            validationState.setShowErrors(true);
+            return;
+        }
+
+        buyNftModalStore.buyNft();
+    }
     return (
         <ModalWindow
             className = { 'BuyNftPopup' }
@@ -59,9 +70,10 @@ function BuyNftModal({ resellNftModalStore, buyNftModalStore }: Props) {
                             value={buyNftModalStore.recipient}
                             onChange={buyNftModalStore.setRecipient}
                             label={'Set Rewards Recepient Address'}
+                            inputValidation={rewardsRecipientAddress}
                             placeholder={'e.g bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'} />
                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                            <Button onClick={buyNftModalStore.buyNft}>Complete Purchase</Button>
+                            <Button onClick={onClickPurchaseNft}>Complete Purchase</Button>
                         </Actions>
                     </>
                 ) }

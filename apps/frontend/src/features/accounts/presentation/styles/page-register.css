@@ -8,27 +8,3 @@
 .PageRegister .PageContent {
     padding: 100px var(--page-spacing-h);
 }
-
-.PageRegister .Title {
-    margin-bottom: 16px;
-}
-
-.PageRegister .Subtitle {
-    color: var(--color-gray-025);
-    font-size: 16px;
-    margin-bottom: 40px;
-}
-
-.PageRegister .InputsCnt {
-    display: flex; flex-direction: column;
-    gap: 24px;
-}
-
-.PageRegister .RegisterActions {
-    margin-top: 24px;
-}
-
-.PageRegister .BottomAction {
-    text-align: center;
-    margin-top: 24px;
-}

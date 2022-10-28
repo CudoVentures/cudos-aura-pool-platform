@@ -124,6 +124,10 @@ html.OverflowHidden {
     font-weight: 500;
 }
 
+.Regular {
+    font-weight: 400;
+}
+
 .H1 {
     font-size: 32px;
 }

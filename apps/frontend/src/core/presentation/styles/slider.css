@@ -2,9 +2,11 @@
     gap: 20px;
 }
 
-.Slider.LeftShadow {
-
+.Slider.Items4 > *{
+    max-width: 25%;
 }
 
-.Slider.RightShadow {
+
+.Slider.Items3 > *{
+    max-width: 33%;
 }

@@ -1,0 +1,26 @@
+.DataPreviewLayout .DataPreviewKey {
+    color: var(--color-gray-025);
+    white-space: nowrap;
+    margin-right: 16px;
+}
+
+.DataPreviewLayout .DataPreviewValue {
+    text-align: right;
+    margin-left: auto;
+}
+
+.DataPreviewLayout.Gap10 {
+    gap: 10px;
+}
+
+.DataPreviewLayout.Gap25 {
+    gap: 25px;
+}
+
+.DataPreviewLayout.SizeSmall {
+    font-size: 12px;
+}
+
+.DataPreviewLayout.SizeLarge {
+    font-size: 16px; font-weight: 600;
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../core/utilities/Main';
@@ -17,6 +17,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ReportIcon from '@mui/icons-material/Report';
 import '../styles/resell-nft-modal.css';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     resellNftModalStore?: ResellNftModalStore;
@@ -24,7 +25,17 @@ type Props = {
 
 function ResellNftModal({ resellNftModalStore }: Props) {
     const nftEntity = resellNftModalStore.nftEntity;
+    const validationState = useRef(new ValidationState()).current;
+    const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
 
+    function onClickSubmitForSell() {
+        if (validationState.getIsErrorPresent() === true) {
+            validationState.setShowErrors(true);
+            return;
+        }
+
+        resellNftModalStore.onClickSubmitForSell();
+    }
     function PreviewContent() {
         return (
             <>
@@ -50,6 +61,7 @@ function ResellNftModal({ resellNftModalStore }: Props) {
                     onChange={resellNftModalStore.setPrice}
                     label={'Set NFT Price'}
                     placeholder={'0'}
+                    inputValidation={nftPriceValidation}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end" > CUDOS </InputAdornment>
@@ -68,7 +80,7 @@ function ResellNftModal({ resellNftModalStore }: Props) {
                         onChange={resellNftModalStore.toggleOriginalPaymentSchedule} />
                 </div>
                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                    <Button onClick={resellNftModalStore.onClickSubmitForSell}>Submit for sell</Button>
+                    <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
                 </Actions>
             </>
         )

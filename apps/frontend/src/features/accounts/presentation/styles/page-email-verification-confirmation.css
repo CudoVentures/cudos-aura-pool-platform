@@ -1,0 +1,10 @@
+.PageEmailVerificationConfirmation {
+    background:url("/assets/vectors/auth-bg.svg");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center bottom;
+}
+
+.PageEmailVerificationConfirmation .PageContent {
+    padding: 100px var(--page-spacing-h);
+}

@@ -1,0 +1,9 @@
+.FinishCreditCollection {
+    gap: 30px;
+}
+
+.FinishCreditCollection .InstructionsBox{
+    padding: 16px;
+    background: var(--color-gray-095);
+    border-radius: 10px;
+}

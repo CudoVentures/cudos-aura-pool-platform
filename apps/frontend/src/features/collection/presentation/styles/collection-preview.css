@@ -1,19 +1,26 @@
 .CollectionPreview {
     width: 100%;
-    gap: 15px;
+    color: var(--color-gray-025);
 }
 
 .CollectionPreview .CollectionPreviewImage {
     width: 100%; height: 0; padding-bottom: 100%;
-    background-size: contain; 
     border-radius: 16px;
-}
-.CollectionPreview .CollectionName, .CollectionPreview .HashPower, .CollectionPreview .Priceheading{
-    color: #717070;
-
+    margin-bottom: 16px;
 }
 
-.CollectionPreview .PriceRow {
-    fill: gradient(45deg, #4C80E9 14.64%, #91D2F5 85.36%);
-    gap: 10px;
+.CollectionPreview .MiningFarmName {
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.CollectionPreview .CollectionName {
+    color: #000;
+    font-size: 24px; font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.CollectionPreview .HashPower {
+    font-size: 18px; font-weight: 500;
+    margin-bottom: 16px;
 }

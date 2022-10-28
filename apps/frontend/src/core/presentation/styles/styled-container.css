@@ -1,0 +1,43 @@
+.StyledContainer {
+    box-sizing: border-box;
+    margin: 0 auto;
+    border:1px solid var(--color-gray-090);
+    border-radius: var(--border-radius);
+}
+
+.StyledContainer.WidthSmall {
+    width: 525px;
+}
+
+.StyledContainer.WidthMedium {
+    width: 720px;
+}
+
+.StyledContainer.WidthLarge {
+    width: 100%;
+    /* flex: 1 1 auto; STRETCHES IT VERTICALLY WHEN IN FLEX COLUMN */
+}
+
+.StyledContainer.BgWhite {
+    background: #fff;
+}
+
+.StyledContainer.BgGray {
+    background: var(--color-gray-090);
+}
+
+.StyledContainer.Padding48 {
+    padding: 48px;
+}
+
+.StyledContainer.Padding24 {
+    padding: 24px;
+}
+
+.StyledContainer.Padding16 {
+    padding: 16px;
+}
+
+.StyledContainer.Shadow {
+    box-shadow: var(--box-shadow);
+}

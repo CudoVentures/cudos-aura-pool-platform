@@ -1,0 +1,33 @@
+
+.PageCreditCollection .PageContent {
+    padding: 24px var(--page-spacing-h);
+}
+
+.PageCreditCollection .CollectionImagesCnt {
+    margin-top: 24px;
+}
+
+.PageCreditCollection .CollectionHeadingName {
+    margin-top: 24px;
+}
+
+.PageCreditCollection .ProfileInfo {
+    align-items: flex-start;
+    gap: 50px;
+    grid-template-columns:  minmax(0, 1fr)  minmax(0, 1fr);
+    margin-top: 24px;
+}
+
+.PageCreditCollection .ProfileInfo .CollectionDescription {
+    margin-top: 24px;
+}
+
+.PageCreditCollection .SectionDivider {
+    height: 1px;
+    margin: 110px 0 24px 0;
+    background: var(--color-gray-060);
+}
+
+.PageCreditCollection .NftsCnt {
+    margin-top: 24px;
+}

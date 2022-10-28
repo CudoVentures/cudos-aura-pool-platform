@@ -22,7 +22,7 @@ import ExplorePageLayout from '../../../../core/presentation/components/ExploreP
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 
 import '../styles/page-explore-mining-farms-component.css';
-import NavRowTabs from '../../../../core/presentation/components/NavRowTabs';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 import { useNavigate } from 'react-router-dom';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
@@ -41,22 +41,15 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
     }, []);
 
     const miningFarmFilterModel = exploreMiningFarmsPageStore.miningFarmFilterModel;
-    const navTabs = [
-        {
-            navName: 'NFTs',
-            isActive: false,
-            onClick: () => navigate(AppRoutes.EXPLORE_NFTS),
-        },
-        {
-            navName: 'Collections',
-            isActive: false,
-            onClick: () => navigate(AppRoutes.EXPLORE_COLLECTIONS),
-        },
-        {
-            navName: 'Farms',
-            isActive: true,
-        },
-    ]
+
+    function onClickExploreNfts() {
+        navigate(AppRoutes.EXPLORE_NFTS);
+    }
+
+    function onClickExploreCollections() {
+        navigate(AppRoutes.EXPLORE_COLLECTIONS)
+    }
+
     return (
         <PageLayoutComponent className = { 'PageExploreMiningFarms' } >
 
@@ -68,7 +61,11 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
                     header = { (
                         <>
                             <div className={'H2 Bold'}>Explore AuraPool</div>
-                            <NavRowTabs navTabs={navTabs} />
+                            <NavRowTabs navTabs = {[
+                                createNavRowTab('NFTs', false, onClickExploreNfts),
+                                createNavRowTab('Collections', false, onClickExploreCollections),
+                                createNavRowTab('Farms', true),
+                            ]} />
                         </>
                     ) }>
 
@@ -121,7 +118,7 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
                         { exploreMiningFarmsPageStore.miningFarmEntities !== null && (
                             <GridView
                                 gridViewState={exploreMiningFarmsPageStore.gridViewState}
-                                defaultContent={<div className={'NoContentFound'}>No Farms found</div>} >
+                                defaultContent={exploreMiningFarmsPageStore.miningFarmEntities.length === 0 ? <div className={'NoContentFound'}>No Farms found</div> : null} >
                                 { exploreMiningFarmsPageStore.miningFarmEntities.map((miningFarmEntity: MiningFarmEntity) => {
                                     return (
                                         <MiningFarmPeview

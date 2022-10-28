@@ -32,10 +32,14 @@ export default class MinerEntity {
         return miners;
     }
 
-    toJson(): any {
+    static toJson(entity: MinerEntity): any {
+        if (entity === null) {
+            return null;
+        }
+
         return {
-            'id': this.id,
-            'name': this.name,
+            'id': entity.id,
+            'name': entity.name,
         }
     }
 

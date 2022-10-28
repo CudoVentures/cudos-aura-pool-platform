@@ -1,0 +1,12 @@
+.Chart {
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.Chart .CanvasWrapper {
+    width: 100%; height: 100%;
+    position: absolute;
+    left: 0; top: 0;
+}

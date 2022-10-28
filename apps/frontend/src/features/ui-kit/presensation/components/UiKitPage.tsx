@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
@@ -34,6 +34,7 @@ import AutocompleteOption from '../../../../core/entities/AutocompleteOption';
 import SingleDatepicker from '../../../../core/presentation/components/SingleDatepicker';
 import RangeDatepicker, { RangeDatepickerState } from '../../../../core/presentation/components/RangeDatepicker';
 import S from '../../../../core/utilities/Main';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     appStore?: AppStore
@@ -43,6 +44,10 @@ type Props = {
 
 function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
     const navigate = useNavigate();
+    const validationState = useRef(new ValidationState()).current;
+    const validation1 = useRef(validationState.addEmptyValidation('Empty miners')).current;
+    const validation2 = useRef(validationState.addEmptyValidation('Empty miners')).current;
+    const validation3 = useRef(validationState.addEmptyValidation('Empty miners')).current;
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [popoverAnchor, setPopupAnchor] = useState(null);
     const [inputValue, setInputValue] = useState('');
@@ -52,6 +57,10 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
     const [singleDatepickerValue, setSingleDatepickerValue] = useState(new Date());
     const [rangeDatepickerValue, setRangeDatepickerValue] = useState(new RangeDatepickerState(Date.now() - 100000000, Date.now()));
     const [checkboxValue, setCheckboxValue] = useState(S.INT_FALSE);
+
+    useEffect(() => {
+        validationState.setShowErrors(true);
+    }, []);
 
     function onClickNavigate() {
         navigate(AppRoutes.NOT_FOUND);
@@ -255,6 +264,7 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
                             label = { 'input with error' }
                             error = { true }
                             value = { selectValue }
+                            inputValidation={validation1}
                             onChange = { setSelectValue } >
                             <MenuItem value = { 1 } >1</MenuItem>
                             <MenuItem value = { 2 } >2</MenuItem>
@@ -267,6 +277,7 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
                                 new AutocompleteOption(1, 1),
                                 new AutocompleteOption(2, 2),
                             ] }
+                            inputValidation={validation2}
                             value = { autocompleteSingleValue }
                             onChange = { setAutocompleteSingleValue } />
                         <Autocomplete
@@ -294,6 +305,7 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
                         <SingleDatepicker
                             label = { 'name of the field' }
                             selected = { singleDatepickerValue }
+                            inputValidation={validation3}
                             onChange = { setSingleDatepickerValue } />
                         <RangeDatepicker
                             label = { 'Name of the field range' }

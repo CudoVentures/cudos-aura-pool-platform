@@ -15,7 +15,7 @@ import '../styles/grid-view.css';
 
 type Props = {
     gridViewState: GridViewState;
-    defaultContent: React.ReactNode;
+    defaultContent?: React.ReactNode;
 }
 
 function GridView({ gridViewState, defaultContent, children }: React.PropsWithChildren < Props >) {
@@ -42,21 +42,26 @@ function GridView({ gridViewState, defaultContent, children }: React.PropsWithCh
 
             { gridViewState.isFetching === false && (
                 <>
-                    { children ? (
+                    { defaultContent !== null && (
+                        <div className={'DefaultContent FlexRow'}>{defaultContent}</div>
+                    ) }
+                    { defaultContent === null && (
                         <SingleRowTable
                             legend={['']}
                             widths={['100%']}
                             aligns={[ALIGN_CENTER]}
                             tableState={gridViewState.tableState}
                             content={<div className={`PreviewsGrid Grid ${gridViewState.getGridSettingClass()}`}>{children}</div>} />
-                    ) : (
-                        <div className={'DefaultContent FlexRow'}>{defaultContent}</div>
                     ) }
                 </>
             ) }
 
         </div>
     )
+}
+
+GridView.defaultProps = {
+    defaultContent: null,
 }
 
 export default observer(GridView);

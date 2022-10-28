@@ -9,6 +9,7 @@ export enum CollectionStatus {
     REJECTED = 'rejected',
     ISSUED = 'issued',
     DELETED = 'deleted',
+    ANY = 'any'
 }
 
 export default class CollectionEntity {
@@ -50,8 +51,31 @@ export default class CollectionEntity {
         makeAutoObservable(this);
     }
 
+    markQueued() {
+        this.status = CollectionStatus.QUEUED
+    }
+
     markApproved() {
         this.status = CollectionStatus.APPROVED;
+    }
+
+    getHashPowerDisplay(): string {
+        const hashPower = this.hashPower !== S.NOT_EXISTS ? this.hashPower : 0;
+
+        if (hashPower < 1000) {
+            return `${hashPower} TH/s`;
+        }
+
+        if (hashPower / 1000 < 1000) {
+            return `${(hashPower / 1000).toFixed(2)} PH/s`;
+        }
+
+        if (hashPower / 1000000 < 1000) {
+            return `${(hashPower / 1000000).toFixed(2)} EH/s`;
+        }
+
+        return S.Strings.EMPTY;
+
     }
 
     static toJson(entity: CollectionEntity): any {
@@ -110,7 +134,7 @@ export default class CollectionEntity {
     hashRateDisplay(): string {
         // TODO: calculate EH or TH or w/e
 
-        return `${this.hashPower} EH/s`
+        return `${this.hashPower === S.NOT_EXISTS ? 0 : this.hashPower} EH/s`
     }
 
     priceDisplay(): string {
@@ -123,5 +147,17 @@ export default class CollectionEntity {
         // TODO calculate M or B or w/e
 
         return `$${this.price.multipliedBy(cudosInUsd).toFixed(1)}K`
+    }
+
+    getMaintenanceFeesDisplay(): string {
+        const fees = this.maintenanceFees.eq(new BigNumber(S.NOT_EXISTS)) === true ? new BigNumber(0) : this.maintenanceFees;
+
+        return fees.toFixed(2);
+    }
+
+    getRoyaltiesDisplay(): string {
+        const royalties = this.royalties === S.NOT_EXISTS ? 0 : this.maintenanceFees;
+
+        return royalties.toFixed(2);
     }
 }

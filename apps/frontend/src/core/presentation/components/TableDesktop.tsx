@@ -25,13 +25,14 @@ export type TableDesktopProps = {
     onClickLegend?: (sortKey: number, i: number) => void;
     showPaging?: boolean;
     contentScrollable?: boolean;
+    noRowsContent?: JSX.Element;
 }
 
 export const ALIGN_LEFT = 1;
 export const ALIGN_CENTER = 2;
 export const ALIGN_RIGHT = 3;
 
-const TableDesktop = ({ className, widths, legend, aligns, tableState, rows, columnsOrderMap, onChangeColumnsOrderIndex, onClickRow, onClickLegend, showPaging, contentScrollable }: TableDesktopProps) => {
+const TableDesktop = ({ className, widths, legend, aligns, tableState, rows, columnsOrderMap, onChangeColumnsOrderIndex, onClickRow, onClickLegend, showPaging, contentScrollable, noRowsContent }: TableDesktopProps) => {
 
     function getCellStyle(index: number) {
         return {
@@ -159,7 +160,7 @@ const TableDesktop = ({ className, widths, legend, aligns, tableState, rows, col
     function renderRows() {
         if (rows.length === 0) {
             return (
-                <div className = { 'Empty FlexSingleCenter' } > Няма намерени резултати </div>
+                <div className = { 'Empty FlexSingleCenter' } > {noRowsContent ?? 'Няма намерени резултати'} </div>
             );
         }
 

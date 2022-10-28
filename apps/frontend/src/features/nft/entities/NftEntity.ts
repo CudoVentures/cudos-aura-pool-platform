@@ -23,7 +23,7 @@ export default class NftEntity {
     maintenanceFee: BigNumber;
 
     constructor() {
-        this.id = S.Strings.EMPTY;
+        this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.collectionId = S.Strings.EMPTY;
         this.hashPower = S.NOT_EXISTS;
@@ -85,6 +85,21 @@ export default class NftEntity {
         return model;
     }
 
+    cloneDeep(): NftEntity {
+        const newNftEntity = Object.assign(new NftEntity(), this);
+
+        newNftEntity.price = new BigNumber(this.price);
+        newNftEntity.maintenanceFee = new BigNumber(this.maintenanceFee);
+
+        return newNftEntity;
+    }
+
+    copyDeepFrom(nftEntity: NftEntity): void {
+        Object.assign(this, nftEntity);
+        this.price = new BigNumber(nftEntity.price);
+        this.maintenanceFee = new BigNumber(nftEntity.maintenanceFee);
+    }
+
     getExpiryDisplay(): string {
         const periodMilis = this.expiryDate - Date.now();
 
@@ -109,6 +124,37 @@ export default class NftEntity {
         delta -= hours * hour;
 
         return `${years} years, ${days} days, ${hours} hours`;
+    }
+
+    getHashPowerDisplay(): string {
+        const hashPower = this.hashPower !== S.NOT_EXISTS ? this.hashPower : 0;
+
+        if (hashPower < 1000) {
+            return `${hashPower} TH/s`;
+        }
+
+        if (hashPower / 1000 < 1000) {
+            return `${(hashPower / 1000).toFixed(2)} PH/s`;
+        }
+
+        if (hashPower / 1000000 < 1000) {
+            return `${(hashPower / 1000000).toFixed(2)} EH/s`;
+        }
+
+        return S.Strings.EMPTY;
+
+    }
+
+    getPriceDisplay(): string {
+        const price = this.price.eq(new BigNumber(S.NOT_EXISTS)) ? new BigNumber(0) : this.price;
+
+        return `${price.toFixed(2)} CUDOS`;
+    }
+
+    getMaintenanceFeeDisplay(): string {
+        const maintenanceFee = this.maintenanceFee.eq(new BigNumber(S.NOT_EXISTS)) ? new BigNumber(0) : this.maintenanceFee;
+
+        return `${maintenanceFee.toFixed(2)}$`;
     }
 
 }

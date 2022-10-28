@@ -34,6 +34,12 @@ export default class NftStorageRepo implements NftRepo {
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
         let nftsSlice = this.storageHelper.nftsJson.map((json) => NftEntity.fromJson(json));
 
+        if (nftFilterModel.collectionIds.length !== 0) {
+            nftsSlice = nftsSlice.filter((json) => {
+                return nftFilterModel.collectionIds.includes(json.collectionId);
+            });
+        }
+
         if (nftFilterModel.searchString !== '') {
             nftsSlice = nftsSlice.filter((json) => {
                 return json.name.toLowerCase().indexOf(nftFilterModel.searchString) !== -1;

@@ -5,6 +5,7 @@ export enum MiningFarmStatus {
     APPROVED = 1,
     NOT_APPROVED = 2,
     DELETED = 3,
+    ANY = 4
 }
 
 export default class MiningFarmEntity {
@@ -75,7 +76,7 @@ export default class MiningFarmEntity {
             'name': entity.name,
             'legalName': entity.legalName,
             'primaryAccountOwnerName': entity.primaryAccountOwnerName,
-            'primaryAccountOwnerEmail': entity.primaryAccountOwnerName,
+            'primaryAccountOwnerEmail': entity.primaryAccountOwnerEmail,
             'description': entity.description,
             'manufacturerIds': entity.manufacturerIds,
             'minerIds': entity.minerIds,
@@ -145,6 +146,10 @@ export default class MiningFarmEntity {
     }
 
     displayHashRate(): string {
+        if (this.hashRateTh === S.NOT_EXISTS) {
+            return S.Strings.EMPTY;
+        }
+
         if (this.hashRateTh < 1000) {
             return `${this.hashRateTh} TH/s`;
         }

@@ -13,7 +13,7 @@ import ExploreNftsPage from '../../../nft/presentation/pages/ExploreNftsPage';
 import ExploreCollectionsPage from '../../../collection/presentation/pages/ExploreCollectionsPage';
 import ExploreMiningFarmsPage from '../../../mining-farm/presentation/pages/ExploreMiningFarmsPage';
 import UserProfilePage from '../../../accounts/presentation/pages/UserProfilePage';
-import NftViewPage from '../../../nft/presentation/pages/NftViewPage';
+import ViewNftPage from '../../../nft/presentation/pages/ViewNftPage';
 import CreditCollectionPage from '../../../collection/presentation/pages/CreditCollectionPage';
 import CreditMiningFarmPage from '../../../mining-farm/presentation/pages/CreditMiningFarmPage';
 
@@ -27,7 +27,12 @@ import BitcoinConfirmPage from '../../../accounts/presentation/pages/BitcoinConf
 import CreditMiningFarmDetailsPage from '../../../mining-farm/presentation/pages/CreditMiningFarmDetailsPage';
 import MiningFarmAnalyticsPage from '../../../mining-farm/presentation/pages/MiningFarmAnalyticsPage';
 import CreditCollectionDetailsPage from '../../../collection/presentation/pages/CreditCollectionDetailsPage';
-import CreditCollectionNftsPage from '../../../collection/presentation/pages/CreditCollectionNftsPage';
+import ForgottenPassRequestPage from '../../../accounts/presentation/pages/ForgottenPassRequestPage';
+import ForgottenPassEditPage from '../../../accounts/presentation/pages/ForgottenPassEditPage';
+import EmailVerificationRequestPage from '../../../accounts/presentation/pages/EmailVerificationRequestPage';
+import EmailVerificationConfirmationPage from '../../../accounts/presentation/pages/EmailVerificationConfirmationPage';
+import CreditAccountSettings from '../../../accounts/presentation/pages/CreditAccountSettings';
+import AnalyticsPage from '../../../analytics/presentation/pages/AnalyticsPage';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
@@ -53,21 +58,27 @@ function AppRouter({ accountSessionStore }: Props) {
     }
 
     function getIndexPage() {
-        if (accountSessionStore.isAdmin() === true) {
-            const adminEntity = accountSessionStore.adminEntity;
-            if (adminEntity.isBitcointAddressConfirmed() === false) {
-                return <BitcoinConfirmPage />
+        if (accountSessionStore.isLoggedIn() === true) {
+            if (accountSessionStore.isEmailVerified() === false) {
+                return <EmailVerificationRequestPage />
             }
 
-            if (accountSessionStore.hasApprovedMiningFarm() === false) {
-                return <CreditMiningFarmDetailsPage />
+            if (accountSessionStore.isAdmin() === true) {
+                const adminEntity = accountSessionStore.adminEntity;
+                if (adminEntity.isBitcointAddressConfirmed() === false) {
+                    return <BitcoinConfirmPage />
+                }
+
+                // if (accountSessionStore.hasApprovedMiningFarm() === false) {
+                //     return <CreditMiningFarmDetailsPage />
+                // }
+
+                return <CreditMiningFarmPage />;
             }
 
-            return <CreditMiningFarmPage />;
-        }
-
-        if (accountSessionStore.isSuperAdmin() === true) {
-            return <SuperAdminApprovePage />;
+            if (accountSessionStore.isSuperAdmin() === true) {
+                return <SuperAdminApprovePage />;
+            }
         }
 
         return <MarketplacePage />;
@@ -92,26 +103,39 @@ function AppRouter({ accountSessionStore }: Props) {
                     <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
                     <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
                     <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
-                    <Route path = { `${AppRoutes.VIEW_NFT}/:nftId` } element = { <NftViewPage /> } />
+                    <Route path = { `${AppRoutes.VIEW_NFT}/:nftId` } element = { <ViewNftPage /> } />
                     <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
                     <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
 
                     {/* Auth */}
                     <Route path = { AppRoutes.LOGIN } element = { <LoginPage /> } />
                     <Route path = { AppRoutes.REGISTER } element = { <RegisterPage /> } />
+                    <Route path = { AppRoutes.FORGOTTEN_PASS_REQUEST } element = { <ForgottenPassRequestPage /> } />
+                    <Route path = { AppRoutes.FORGOTTEN_PASS_EDIT } element = { <ForgottenPassEditPage /> } />
+                    <Route path = { AppRoutes.EMAIL_VERIFICATION_REQUEST } element = { <EmailVerificationRequestPage /> } />
+                    <Route path = { AppRoutes.EMAIL_VERIFICATION_CONFIRMATION } element = { <EmailVerificationConfirmationPage /> } />
 
                     {/* profile */}
                     { accountSessionStore.isUser() === true && (
                         <Route path = { AppRoutes.USER_PROFILE } element = { <UserProfilePage /> } />
                     ) }
-                    
+
                     {/* admin */}
+                    { accountSessionStore.isAdmin() === true && (
+                        <>
+                            <Route path = { AppRoutes.CREDIT_MINING_FARM_DETAILS } element = { <CreditMiningFarmDetailsPage /> } />
+                            <Route path = { `${AppRoutes.FARM_ANALYTICS}` } element = { <AnalyticsPage /> } />
+                        </>
+                    )}
+
                     { accountSessionStore.isAdmin() === true && accountSessionStore.hasApprovedMiningFarm() === true && (
                         <>
                             <Route path = { AppRoutes.CREDIT_MINING_FARM_DETAILS } element = { <CreditMiningFarmDetailsPage /> } />
                             <Route path = { AppRoutes.MINING_FARM_ANALYTICS } element = { <MiningFarmAnalyticsPage /> } />
-                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_NFTS}/:collectionId` } element = { <CreditCollectionNftsPage /> } />
+                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_NFTS}/:collectionId` } element = { <CreditCollectionDetailsPage /> } />
                             <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS}/:collectionId` } element = { <CreditCollectionDetailsPage /> } />
+                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS}` } element = { <CreditCollectionDetailsPage /> } />
+                            <Route path = { `${AppRoutes.CREDIT_ACCOUNT_SETTINGS}` } element = { <CreditAccountSettings /> } />
                         </>
                     ) }
                 </Routes>

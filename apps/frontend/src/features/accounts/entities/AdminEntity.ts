@@ -20,6 +20,12 @@ export default class AdminEntity {
         return this.bitcoinWalletAddress !== '';
     }
 
+    clone(): AdminEntity {
+        const accountEntity = Object.assign(new AdminEntity(), this);
+
+        return accountEntity;
+    }
+
     static toJson(entity: AdminEntity) {
         if (entity === null) {
             return null;

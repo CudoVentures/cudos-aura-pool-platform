@@ -13,12 +13,16 @@ export default class BitcoinDataEntity {
         this.networkDifficulty = S.Strings.EMPTY;
     }
 
-    toJson(): any {
+    static toJson(entity: BitcoinDataEntity): any {
+        if (entity === null) {
+            return null;
+        }
+
         return {
-            'price': this.price,
-            'priceChange': this.priceChange,
-            'blockReward': this.blockReward,
-            'networkDifficulty': this.networkDifficulty,
+            'price': entity.price,
+            'priceChange': entity.priceChange,
+            'blockReward': entity.blockReward,
+            'networkDifficulty': entity.networkDifficulty,
         }
     }
 

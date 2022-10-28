@@ -5,6 +5,8 @@ import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel, { CollectionHashPowerFilter } from '../../utilities/CollectionFilterModel';
 import CategoryEntity from '../../entities/CategoryEntity';
 import NftEntity from '../../../nft/entities/NftEntity';
+import { Collection } from 'cudosjs/build/stargate/modules/nft/proto-types/nft';
+import BigNumber from 'bignumber.js';
 
 export default class CollectionStorageRepo implements CollectionRepo {
 
@@ -15,23 +17,46 @@ export default class CollectionStorageRepo implements CollectionRepo {
     }
 
     async fetchCategories(): Promise < CategoryEntity[] > {
-        // TODO: get categories from
         return this.storageHelper.categoriesJson.map((json) => CategoryEntity.fromJson(json));
     }
 
     async fetchTopCollections(period: number): Promise < CollectionEntity[] > {
-        // TODO: get collectionEntities
         const collectionEntities = this.storageHelper.collectionsJson.slice(0, 18).map((json) => CollectionEntity.fromJson(json));
 
         return collectionEntities;
     }
 
     async fetchCollectionsByIds(idArray: string[]): Promise < CollectionEntity[] > {
-        const collectionEntitiess = this.storageHelper.collectionsJson
+
+        const collectionEntities = this.storageHelper.collectionsJson
             .filter((json) => idArray.includes(json.id))
             .map((json) => CollectionEntity.fromJson(json));
 
-        return collectionEntitiess;
+        // custom case just for testing without filling
+        if (collectionEntities.length === 0) {
+            for (let i = 0; i < 10; i++) {
+                const collectionEntity = new CollectionEntity();
+
+                collectionEntity.coverImgUrl = 'https://www.cnet.com/a/img/resize/c5b48e90abe8b7fe339fc0139f3834dbe434fee5/hub/2021/11/29/f566750f-79b6-4be9-9c32-8402f58ba0ef/richerd.png?auto=webp&width=1200';
+                collectionEntity.description = 'wefwefwefef'
+                collectionEntity.farmId = '1';
+                collectionEntity.hashPower = 123;
+                collectionEntity.id = `${i}`;
+                collectionEntity.items = 123;
+                collectionEntity.maintenanceFees = new BigNumber(21);
+                collectionEntity.name = 'Cool Collection';
+                collectionEntity.ownerAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
+                collectionEntity.price = new BigNumber(1000 * i);
+                collectionEntity.profileImgUrl = 'https://www.cnet.com/a/img/resize/c5b48e90abe8b7fe339fc0139f3834dbe434fee5/hub/2021/11/29/f566750f-79b6-4be9-9c32-8402f58ba0ef/richerd.png?auto=webp&width=1200';
+                collectionEntity.royalties = 123;
+                collectionEntity.volume = new BigNumber(123);
+                collectionEntity.status = CollectionStatus.APPROVED;
+
+                collectionEntities.push(collectionEntity);
+            }
+        }
+
+        return collectionEntities;
     }
 
     async fetchCollectionById(collectionId: string): Promise < CollectionEntity > {
@@ -41,12 +66,6 @@ export default class CollectionStorageRepo implements CollectionRepo {
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         let collectionSlice = this.storageHelper.collectionsJson.map((json) => CollectionEntity.fromJson(json));
-
-        if (collectionFilterModel.sessionAccount === S.INT_TRUE) {
-            collectionSlice = collectionSlice.filter((json) => {
-                return json.ownerAddress === 'cudos1';
-            });
-        }
 
         if (collectionFilterModel.farmId !== '') {
             collectionSlice = collectionSlice.filter((json) => {
@@ -139,6 +158,8 @@ export default class CollectionStorageRepo implements CollectionRepo {
                     nftJson = NftEntity.toJson(nftEntity);
                     nftJson.id = nextNftId.toString();
                     nftJson.collectionId = collectionJson.id;
+                    nftJson.currentOwnerAddress = collectionJson.ownerAddress;
+                    nftJson.creatorAddress = collectionJson.ownerAddress;
 
                     nftsJson.push(nftJson);
                 }

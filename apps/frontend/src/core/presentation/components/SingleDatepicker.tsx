@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ReactDatePickerProps } from 'react-datepicker';
 
 import S from '../../utilities/Main';
@@ -8,13 +8,15 @@ import Input from './Input';
 
 import SvgClose from '@mui/icons-material/Close';
 import Svg from './Svg';
+import { InputValidation } from '../stores/ValidationState';
+import { observer } from 'mobx-react-lite';
 
 type Props = ReactDatePickerProps & {
     label?: string;
-    error?: boolean,
+    inputValidation?: InputValidation | InputValidation[],
 }
 
-export default function SingleDatepicker({ label, error, ...props }: Props) {
+function SingleDatepicker({ label, inputValidation, ...props }: Props) {
 
     const isDateValid = () => {
         return props.selected !== null;
@@ -39,6 +41,23 @@ export default function SingleDatepicker({ label, error, ...props }: Props) {
         }
     }
 
+    useEffect(() => {
+        if (inputValidation !== null) {
+            const value = props.value;
+            if (props.value !== null) {
+                if (Array.isArray(inputValidation)) {
+                    inputValidation.forEach((validation) => validation.onChange(value));
+                } else if (inputValidation !== null) {
+                    inputValidation.onChange(value);
+                }
+
+                return;
+            }
+
+            inputValidation.onChange(null);
+        }
+    }, [props.value]);
+
     return (
         <Datepicker {...props}
             dateFormat = { props.dateFormat ?? 'dd.MM.yyyy' }
@@ -49,7 +68,7 @@ export default function SingleDatepicker({ label, error, ...props }: Props) {
                 <Input
                     defaultOnChangeParameter = { true }
                     label = { label }
-                    error = { error }
+                    inputValidation = { inputValidation }
                     InputProps = { renderInputProps() } />
             } />
     )
@@ -58,8 +77,10 @@ export default function SingleDatepicker({ label, error, ...props }: Props) {
 
 SingleDatepicker.defaultProps = {
     label: S.Strings.EMPTY,
-    error: false,
+    inputValidation: null,
 };
+
+export default observer(SingleDatepicker);
 
 function setTime(hours, minutes): Date {
     const date = new Date();

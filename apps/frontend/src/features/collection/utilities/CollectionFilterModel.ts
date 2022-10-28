@@ -38,6 +38,10 @@ export default class CollectionFilterModel {
         makeAutoObservable(this);
     }
 
+    markSessionAccount() {
+        this.sessionAccount = S.INT_TRUE;
+    }
+
     static toJson(model) {
         if (model === null) {
             return null;

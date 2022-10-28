@@ -12,6 +12,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Svg from '../../../../../core/presentation/components/Svg';
 import AccountSessionStore from '../../../../../features/accounts/presentation/stores/AccountSessionStore';
 import CreditMiningFarmDetailsPageStore from '../../stores/CreditMiningFarmDetailsPageStore';
+import DataPreviewLayout, { createDataPreview } from '../../../../../core/presentation/components/DataPreviewLayout';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -28,48 +29,20 @@ function StepReview({ accountSessionStore, creditMiningFarmDetailsPageStore }: P
         <div className = { 'StepMiningFarmPreview FlexColumn' }>
             <div className={'H3 Bold FullLine'}>{miningFarmEntity.name}</div>
             <div className={'B3 FullLine Descripton'}>{miningFarmEntity.description}</div>
-            <div className={'ReviewDataContainer FlexColumn B2 SemiBold'}>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Account Email</div>
-                    <div className={'DataValue'}>{accountSessionStore.accountEntity.email}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Legal Entity Name</div>
-                    <div className={'DataValue'}>{miningFarmEntity.legalName}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Primary Account Owner</div>
-                    <div className={'DataValue'}>{miningFarmEntity.primaryAccountOwnerName}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Primary Account Owner Email</div>
-                    <div className={'DataValue'}>{miningFarmEntity.primaryAccountOwnerEmail}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Manufacturers</div>
-                    <div className={'DataValue'}>{miningFarmEntity.manufacturerIds.map((id) => ManufacturerEntity.getManufacturerName(id)).join(', ')}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Miners</div>
-                    <div className={'DataValue'}>{miningFarmEntity.minerIds.map((id) => MinerEntity.getMinerName(id)).join(', ')}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Energy Source</div>
-                    <div className={'DataValue'}>{miningFarmEntity.energySourceIds.map((id) => EnergySourceEntity.getEnergySourceName(id)).join(', ')}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Machines Location</div>
-                    <div className={'DataValue'}>{miningFarmEntity.machinesLocation}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Hashrate</div>
-                    <div className={'DataValue'}>{miningFarmEntity.displayHashRate()}</div>
-                </div>
-                <div className={'FlexRow DataRow'}>
-                    <div className={'DataLabel'}>Farm Photos</div>
-                    <div className={'DataValue'}>{imageEntities.length}</div>
-                </div>
-            </div>
+            <DataPreviewLayout
+                dataPreviews = { [
+                    createDataPreview('Account Email', accountSessionStore.accountEntity.email),
+                    createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
+                    createDataPreview('Primary Account Owner', miningFarmEntity.primaryAccountOwnerName),
+                    createDataPreview('Primary Account Owner Email', miningFarmEntity.primaryAccountOwnerEmail),
+                    createDataPreview('Manufacturers', miningFarmEntity.manufacturerIds.map((id) => ManufacturerEntity.getManufacturerName(id)).join(', ')),
+                    createDataPreview('Miners', miningFarmEntity.minerIds.map((id) => MinerEntity.getMinerName(id)).join(', ')),
+                    createDataPreview('Energy Source', miningFarmEntity.energySourceIds.map((id) => EnergySourceEntity.getEnergySourceName(id)).join(', ')),
+                    createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
+                    createDataPreview('Hashrate', miningFarmEntity.displayHashRate()),
+                    createDataPreview('Farm Photos', imageEntities.length),
+
+                ] } />
             <div className={'TermsAgreeRow'}>
                 <Checkbox
                     label={'I agree to allow Aura Pool to store and process the personal information submitted above to provide me the service requested.'}

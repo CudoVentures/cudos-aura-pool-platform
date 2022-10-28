@@ -12,27 +12,13 @@ import TableCell from '../../../../core/entities/TableCell';
 import TableRow from '../../../../core/entities/TableRow';
 import TextWithTooltip from '../../../../core/presentation/components/TextWithTooltip';
 import Svg from '../../../../core/presentation/components/Svg';
-import NavRowTabs from '../../../../core/presentation/components/NavRowTabs';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
+import ExtendedChart, { createHeaderValueTab } from '../../../../core/presentation/components/ExtendedChart';
+import ViewNftPageStore from '../stores/ViewNftPageStore';
 
 const PAGE_STATISTICS = 0;
 const PAGE_EARNINGS = 1;
 const PAGE_HISTORY = 2;
-
-const HISTORY_PAGES = [];
-
-HISTORY_PAGES[PAGE_STATISTICS] = 'Reward Statistics';
-HISTORY_PAGES[PAGE_EARNINGS] = 'Earnings Info';
-HISTORY_PAGES[PAGE_HISTORY] = 'History';
-
-const PERIOD_TODAY = 0;
-const PERIOD_WEEK = 1;
-const PERIOD_MONTH = 2;
-
-const PERIOD_SETTINGS = [];
-
-PERIOD_SETTINGS[PERIOD_TODAY] = 'Today';
-PERIOD_SETTINGS[PERIOD_WEEK] = '7 Days';
-PERIOD_SETTINGS[PERIOD_MONTH] = '30 Days';
 
 const EARNINGS_TABLE_LEGEND = ['', 'UTC Time', 'Local Time (-4:00 EDT)'];
 const EARNINGS_ROW_LEGEND = ['FPPS Calculation Period', 'Earnings Posting Time', 'Daily Payout Window', 'Minimum Daily Auto-withdraw'];
@@ -55,54 +41,61 @@ const HISTORY_TABLE_ALINGS = [
     ALIGN_LEFT,
 ]
 
-export default function NftViewHistory() {
+type Props = {
+    viewNftPageStore: ViewNftPageStore;
+}
+
+export default function NftViewHistory({ viewNftPageStore }: Props) {
     const [historyPage, setHistoryPage] = useState(PAGE_EARNINGS);
-    const [periodSetting, setPeriodSetting] = useState(PERIOD_TODAY);
-    const historyPageTabs = [
-        {
-            navName: HISTORY_PAGES[PAGE_STATISTICS],
-            isActive: historyPage === PAGE_STATISTICS,
-            onClick: () => setHistoryPage(PAGE_STATISTICS),
-        },
-        {
-            navName: HISTORY_PAGES[PAGE_EARNINGS],
-            isActive: historyPage === PAGE_EARNINGS,
-            onClick: () => setHistoryPage(PAGE_EARNINGS),
-        },
-        {
-            navName: HISTORY_PAGES[PAGE_HISTORY],
-            isActive: historyPage === PAGE_HISTORY,
-            onClick: () => setHistoryPage(PAGE_HISTORY),
-        },
-    ]
 
     return (
         <div className={'NftPreviewHistory FlexColumn'}>
-            <NavRowTabs navTabs={historyPageTabs} />
+            <NavRowTabs navTabs={[
+                createNavRowTab('Reward Statistics', historyPage === PAGE_STATISTICS, () => setHistoryPage(PAGE_STATISTICS)),
+                createNavRowTab('Earnings Info', historyPage === PAGE_EARNINGS, () => setHistoryPage(PAGE_EARNINGS)),
+                createNavRowTab('History', historyPage === PAGE_HISTORY, () => setHistoryPage(PAGE_HISTORY)),
+            ]} />
             <div className={'HistoryContainer FlexColumn'}>
-                <div className={'HistoryContainerHeader FlexRow'}>
-                    <div className={'Heading3'}>{HISTORY_PAGES[historyPage]}</div>
-                </div>
                 <div className={'HistoryDataContainer FlexColumn'}>
-                    {historyPage === PAGE_STATISTICS ? <div></div> : ''}
+                    {historyPage === PAGE_STATISTICS && (
+                        <ExtendedChart
+                            headerItems={
+                                <div className={'FlexRow ChartHeader'}>
+                                    <div className={'H3 Bold'}>Daily Rewards (BTC)</div>
+                                    <div className={'NetEarnings'}>Net Earnings</div>
+                                </div>
+                            }
+                            extendedChartState={ viewNftPageStore.extendedChartState }
+                        />
+                    )}
                     {historyPage === PAGE_EARNINGS
-                        ? <Table
-                            className={'EarningsTable'}
-                            legend={EARNINGS_TABLE_LEGEND}
-                            widths={EARNINGS_TABLE_WIDTHS}
-                            aligns={EARNINGS_TABLE_ALINGS}
-                            tableState={new TableState(0, [], () => {}, 5)}
-                            rows={renderEarningsRows()}
-                        /> : ''}
+                        && (<>
+                            <div className={'HistoryContainerHeader FlexRow'}>
+                                <div className={'H3 Bold'}>Earnings Info</div>
+                            </div>
+                            <Table
+                                className={'EarningsTable'}
+                                legend={EARNINGS_TABLE_LEGEND}
+                                widths={EARNINGS_TABLE_WIDTHS}
+                                aligns={EARNINGS_TABLE_ALINGS}
+                                tableState={new TableState(0, [], () => {}, 5)}
+                                rows={renderEarningsRows()}
+                            />
+                        </>)}
                     {historyPage === PAGE_HISTORY
-                        ? <Table
-                            className={'HistoryTable'}
-                            legend={HISTORY_TABLE_LEGEND}
-                            widths={HISTORY_TABLE_WIDTHS}
-                            aligns={HISTORY_TABLE_ALINGS}
-                            tableState={new TableState(0, [], () => {}, 5)}
-                            rows={renderHistoryRows()}
-                        /> : ''}
+                        && (<>
+                            <div className={'HistoryContainerHeader FlexRow'}>
+                                <div className={'H3 Bold'}>History</div>
+                            </div>
+                            <Table
+                                className={'HistoryTable'}
+                                legend={HISTORY_TABLE_LEGEND}
+                                widths={HISTORY_TABLE_WIDTHS}
+                                aligns={HISTORY_TABLE_ALINGS}
+                                tableState={new TableState(0, [], () => {}, 5)}
+                                rows={renderHistoryRows()}
+                            />
+                        </>)}
                 </div>
             </div>
         </div>

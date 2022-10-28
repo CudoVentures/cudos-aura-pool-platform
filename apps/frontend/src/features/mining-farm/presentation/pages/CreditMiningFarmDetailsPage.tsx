@@ -6,42 +6,31 @@ import PageFooter from '../../../footer/presentation/components/PageFooter';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
 
 import '../styles/page-credit-mining-farm-details.css';
-import NavRow, { NavStep } from '../../../../core/presentation/components/NavRow';
+import NavRow, { createNavStep, NavStep } from '../../../../core/presentation/components/NavRow';
 import StepFarmDetails from '../components/credit-farm/StepFarmDetails';
 import CreditMiningFarmDetailsPageState from '../stores/CreditMiningFarmDetailsPageStore';
-import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import StepReview from '../components/credit-farm/StepReview';
 import StepSuccess from '../components/credit-farm/StepSuccess';
-import BorderShadowPaddingContainer, { ContainerWidth } from '../../../../core/presentation/components/BorderShadowPaddingContainer';
+import StyledContainer, { ContainerWidth } from '../../../../core/presentation/components/StyledContainer';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
-import S from '../../../../core/utilities/Main';
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
 
 type Props = {
     creditMiningFarmDetailsPageStore?: CreditMiningFarmDetailsPageState;
-    accountSessionStore?: AccountSessionStore;
     appStore?: AppStore;
 }
 
-function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, accountSessionStore, appStore }: Props) {
+function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStore }: Props) {
     useEffect(() => {
         appStore.useLoading(() => {
-            creditMiningFarmDetailsPageStore.fetch();
+            creditMiningFarmDetailsPageStore.init();
         });
     }, []);
 
     const navSteps: NavStep[] = [
-        {
-            navNumber: 1,
-            navName: 'Farm Details',
-            isActive: creditMiningFarmDetailsPageStore.isStepFarmDetails(),
-        },
-        {
-            navNumber: 2,
-            navName: 'Finish',
-            isActive: creditMiningFarmDetailsPageStore.isStepReview(),
-        },
+        createNavStep(1, 'Farm Details', creditMiningFarmDetailsPageStore.isStepFarmDetails(), creditMiningFarmDetailsPageStore.isStepReview()),
+        createNavStep(2, 'Finish', creditMiningFarmDetailsPageStore.isStepReview(), false),
     ];
 
     function CreditHeading() {
@@ -70,7 +59,7 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, account
                 ) }
 
                 { creditMiningFarmDetailsPageStore.miningFarmEntity !== null && (
-                    <BorderShadowPaddingContainer className={'FormContainer FlexColumn'} containerWidth = { ContainerWidth.MEDIUM } >
+                    <StyledContainer className={'FormContainer FlexColumn'} containerWidth = { ContainerWidth.MEDIUM } >
 
                         <div className = { 'NavRow' } >
                             { creditMiningFarmDetailsPageStore.isStepSuccess() === false && (
@@ -91,7 +80,7 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, account
                             <StepSuccess />
                         </AnimationContainer>
 
-                    </BorderShadowPaddingContainer>
+                    </StyledContainer>
                 ) }
 
             </div>

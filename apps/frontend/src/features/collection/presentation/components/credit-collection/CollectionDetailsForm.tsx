@@ -1,7 +1,7 @@
 import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
 import S from '../../../../../core/utilities/Main';
 import { inject, observer } from 'mobx-react';
-import React from 'react';
+import React, { useRef } from 'react';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import '../../styles/input-column-holder.css';
 import '../../styles/collection-details-form.css';
@@ -14,6 +14,7 @@ import Input, { InputType } from '../../../../../core/presentation/components/In
 import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
 import InfoGrayBox from '../../../../../core/presentation/components/InfoGrayBox';
 import Checkbox from '../../../../../core/presentation/components/Checkbox';
+import ValidationState from '../../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     onClickNextStep: () => void
@@ -22,6 +23,24 @@ type Props = {
 
 function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props) {
     const collectionEntity = creditCollectionStore.collectionEntity;
+    const validationState = useRef(new ValidationState()).current;
+    const collectionNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
+    const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
+    const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
+    const collectionPayoutAddressValidation = useRef(validationState.addCudosAddressValidation('Empty payout address')).current;
+    const collectionHashPowerPerNftValidation = useRef(validationState.addEmptyValidation('Empty hashing power per nft')).current;
+    const collectionPricePerNftValidation = useRef(validationState.addEmptyValidation('Empty price per nft')).current;
+
+    function onClickNextStepButton() {
+        if (validationState.getIsErrorPresent() === true) {
+            validationState.setShowErrors(true);
+            return;
+        }
+
+        creditCollectionStore.initNewNftEntity();
+        onClickNextStep();
+    }
 
     return (
         <div className={'CollectionDetailsForm FlexColumn'}>
@@ -108,6 +127,7 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
                 label={'Collection Name'}
                 placeholder={'Enter name...'}
                 value={collectionEntity.name}
+                inputValidation={collectionNameValidation}
                 onChange={creditCollectionStore.onChangeCollectionName}
             />
             <div className={'InputColumnHolder'}>
@@ -121,8 +141,10 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
             </div>
             <Input
                 label={'Hashing Power for collection'}
-                value={collectionEntity.hashRateDisplay()}
-                disabled={true}
+                placeholder={'Enter hashing power...'}
+                inputValidation={collectionHashPowerValidation}
+                value={creditCollectionStore.getHashingPowerInputValue()}
+                onChange={creditCollectionStore.onChangeHashingPower}
             />
             <div className={'InputColumnHolder'}>
                 <Input
@@ -130,6 +152,7 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
                     placeholder={'Enter royalties...'}
                     value={creditCollectionStore.getCollectionRoyaltiesInputValue()}
                     inputType={InputType.INTEGER}
+                    inputValidation={collectionRoyaltiesValidation}
                     onChange={creditCollectionStore.onChangeCollectionRoyalties}
                 />
                 <div className={'InputInfoLabel'}>Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.</div>
@@ -138,9 +161,10 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
             <div className={'InputColumnHolder'}>
                 <Input
                     label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
-                    placeholder={'Enter royalties...'}
+                    placeholder={'Maintenance fees...'}
                     value={creditCollectionStore.getCollectionMaintenanceFeesInputValue()}
                     inputType={InputType.INTEGER}
+                    inputValidation={collectionMainteannceFeesValidation}
                     onChange={creditCollectionStore.onChangeMaintenanceFees}
                 />
                 <div className={'InputInfoLabel'}>Maintenance fee calculation formula:</div>
@@ -150,6 +174,7 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
                 label={<TextWithTooltip text={'Set Payout Address'} tooltipText={'Set Payout Address'} />}
                 placeholder={'Enter address...'}
                 value={collectionEntity.payoutAddress}
+                inputValidation={collectionPayoutAddressValidation}
                 onChange={creditCollectionStore.onChangeCollectionPayoutAddress}
             />
             <Checkbox
@@ -161,17 +186,19 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
                 label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Paid monthly in BTC'} />}
                 placeholder={'Enter hash power...'}
                 value={creditCollectionStore.getHashPowerPerNft()}
+                inputValidation={collectionHashPowerPerNftValidation}
                 onChange={creditCollectionStore.onChangeHashPowerPerNft}
             />
             <Input
                 label={'Price per NFT'}
                 placeholder={'Enter price...'}
                 value={creditCollectionStore.getPricePerNft()}
+                inputValidation={collectionPricePerNftValidation}
                 onChange={creditCollectionStore.onChangePricePerNft}
             />
 
             <Actions layout={ActionsLayout.LAYOUT_COLUMN_RIGHT}>
-                <Button padding={ButtonPadding.PADDING_48} onClick={onClickNextStep}>NextStep</Button>
+                <Button padding={ButtonPadding.PADDING_48} onClick={onClickNextStepButton}>NextStep</Button>
             </Actions>
         </div>
     )

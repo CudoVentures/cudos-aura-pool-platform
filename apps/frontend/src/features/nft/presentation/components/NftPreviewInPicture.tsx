@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import NftEntity from '../../entities/NftEntity';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
-import '../styles/nft-preview-inv-pricture.css';
-import { useNavigate } from 'react-router-dom';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+
+import '../styles/nft-preview-inv-pricture.css';
 
 type Props = {
     nftEntity: NftEntity
@@ -20,15 +22,14 @@ export default function NftPreviewInPicture({ nftEntity, collectionEntity }: Pro
     return (
         <div className='NftPreviewInPicture Clickable' onClick={onClickNft}>
             <div
-                className={'NftImage'}
+                className={'NftImage ImgCoverNode'}
                 style={{
                     backgroundImage: `url("${nftEntity.imageUrl}")`,
 
-                }}
-            >
+                }} >
                 <div className={'TextHolder'}>
-                    <div className={'H2 Bold'}>{nftEntity.name}</div>
-                    <div className={'B2'}>{collectionEntity.name}</div>
+                    <div className={'NftName Dots'}>{nftEntity.name}</div>
+                    <div className={'CollectionName Dots'}>{collectionEntity.name}</div>
                 </div>
             </div>
         </div>

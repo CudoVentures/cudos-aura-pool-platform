@@ -1,5 +1,5 @@
 import { inject, observer } from 'mobx-react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import '../../styles/add-nfts-form.css';
 import '../../styles/input-column-holder.css';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
@@ -16,20 +16,34 @@ import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinSt
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import S from '../../../../../core/utilities/Main';
+import SingleDatepicker from '../../../../../core/presentation/components/SingleDatepicker';
+import ValidationState from '../../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     onClickBack: () => void
-    onClickNextStep: () => void
     creditCollectionStore?: CreditCollectionStore;
     bitcoinStore?: BitcoinStore;
 }
 
-function AddNftsForm({ onClickBack, onClickNextStep, creditCollectionStore, bitcoinStore }: Props) {
+function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props) {
     const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
     const [editMaintenanceFeeDisabled, setEditMaintenanceFeeDisabled] = useState(true);
+    const validationState = useRef(new ValidationState()).current;
+    const nftNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const nftHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hash power')).current;
+    const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const nftRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
+    const nftMaintenanceFeeValidation = useRef(validationState.addEmptyValidation('Empty maintenance fee')).current;
 
-    const nftEntities = creditCollectionStore.nftEntities;
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
+    function onClickAddToCollection() {
+        if (validationState.getIsErrorPresent() === true) {
+            validationState.setShowErrors(true);
+            return;
+        }
+
+        creditCollectionStore.onClickAddToCollection();
+    }
 
     return (
         <div className={'AddNftsForm FlexColumn'}>
@@ -77,15 +91,17 @@ function AddNftsForm({ onClickBack, onClickNextStep, creditCollectionStore, bitc
                 label={'NFT Name'}
                 placeholder={'Enter name...'}
                 value={selectedNftEntity.name}
+                inputValidation={nftNameValidation}
                 onChange={creditCollectionStore.onChangeSelectedNftName}
             />
             <div className={'InputColumnHolder'}>
                 <Input
                     label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                     placeholder={'Enter hashing power...'}
-                    value={creditCollectionStore.getHashPowerPerNft()}
+                    value={selectedNftEntity.hashPower}
                     inputType={InputType.INTEGER}
-                    onChange={creditCollectionStore.onChangeHashPowerPerNft}
+                    inputValidation={nftHashPowerValidation}
+                    onChange={creditCollectionStore.onChangeSelectedNftHashPower}
                 />
                 <div className={'InputInfoLabel'}>Available TH/s: 80.000</div>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
@@ -94,8 +110,9 @@ function AddNftsForm({ onClickBack, onClickNextStep, creditCollectionStore, bitc
                 <Input
                     label={'Price per NFT'}
                     placeholder={'Enter price...'}
-                    value={creditCollectionStore.getPricePerNft()}
-                    onChange={creditCollectionStore.onChangePricePerNft}
+                    value={selectedNftEntity.price.toString()}
+                    inputValidation={nftPriceValidation}
+                    onChange={creditCollectionStore.onChangeSelectedNftPrice}
                 />
                 <div className={'InputInfoLabel'}>{bitcoinStore.getBitcoinPrice()} based on Today’s BTC Price </div>
             </div>
@@ -112,6 +129,7 @@ function AddNftsForm({ onClickBack, onClickNextStep, creditCollectionStore, bitc
                     }
                     disabled={editRoyaltiesDisabled}
                     placeholder={'Enter royalties...'}
+                    inputValidation={nftRoyaltiesValidation}
                     value={creditCollectionStore.getSelectedNftRoyaltiesInputValue()}
                     inputType={InputType.INTEGER}
                     onChange={creditCollectionStore.onChangeSelectedNftRoyalties}
@@ -129,7 +147,8 @@ function AddNftsForm({ onClickBack, onClickNextStep, creditCollectionStore, bitc
                             </div>
                         </div>
                     }
-                    // disabled={editMaintenanceFeeDisabled}
+                    disabled={editMaintenanceFeeDisabled}
+                    inputValidation={nftMaintenanceFeeValidation}
                     placeholder={'Enter Maintenance Fee...'}
                     value={creditCollectionStore.getSelectedNftMaintenanceFeeInputValue()}
                     inputType={InputType.INTEGER}
@@ -138,19 +157,17 @@ function AddNftsForm({ onClickBack, onClickNextStep, creditCollectionStore, bitc
                 <div className={'InputInfoLabel'}>Maintenance fee calculation formula:</div>
                 <div className={'FormulaBox B2 Bold'}>{'[This NFT EH/s] / [Total EH/s] * [Maintenance fee]'}</div>
             </div>
-            <Input
+            <SingleDatepicker
                 label={<TextWithTooltip text={'Valid Until'} tooltipText={'BTC rewards will be paid to the NFT holder until this date.'} />}
-                placeholder={'Enter valid date...'}
-                value={creditCollectionStore.getSelectedNftExpirationDateDisplay()}
-                onChange={creditCollectionStore.onChangeSelectedNftExpirationDate}
-            />
+                selected = { creditCollectionStore.getSelectedNftExpirationDateDisplay() }
+                onChange = { creditCollectionStore.onChangeSelectedNftExpirationDate } />
             <Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} className={'ButtonsRow'}>
                 <Button type={ButtonType.TEXT_INLINE} onClick={onClickBack}>
                     <Svg svg={ArrowBackIcon} />
                     Back
                 </Button>
-                <Button onClick={creditCollectionStore.onClickAddToCollection}>
-                    Add to Collection
+                <Button onClick={onClickAddToCollection}>
+                    {creditCollectionStore.selectedNftEntity.id === S.Strings.NOT_EXISTS ? 'Add to Collection' : 'Save Edit'}
                 </Button>
             </Actions>
         </div>

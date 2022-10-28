@@ -1,8 +1,38 @@
+.PageCreditCollectionDetailsPage .PageContent .BorderContainer{
+    align-items: center;
+}
+
 .PageCreditCollectionDetailsPage .PageContent .FormAndPreviewContainer {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 70px;
 }
 
+.PageCreditCollectionDetailsPage .PageContent .FormAndPreviewContainer.FlexColumn {
+    width: 50%;
+}
+
 .PageCreditCollectionDetailsPage .PageContent .FormAndPreviewContainer .FormContainer .FormNav {
     margin-bottom: 50px;
+}
+
+.PageCreditCollectionDetailsPage .PageContent .AddNftStep .FormAndPreviewContainer {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    margin-bottom: 100px;
+}
+
+.PageCreditCollectionDetailsPage .PageContent .AddNftStep .FormAndPreviewContainer .PreviewAndFinishContainer {
+    justify-content: space-between;
+}
+
+.PageCreditCollectionDetailsPage .PageContent .AddNftStep .FormAndPreviewContainer .PreviewAndFinishContainer .PreviewContainer {
+    padding: 16px;
+    border: 2px solid var(--color-gray-060);
+    border-radius: 20px;
+}
+
+.PageCreditCollectionDetailsPage .PageContent .AddNftStep .FormAndPreviewContainer .PreviewAndFinishContainer .FinishContainer {
+    gap: 10px;
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--color-gray-095);
 }

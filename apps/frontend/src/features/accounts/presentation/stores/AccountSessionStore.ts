@@ -35,6 +35,10 @@ export default class AccountSessionStore {
         makeAutoObservable(this);
     }
 
+    isLoggedIn(): boolean {
+        return this.accountEntity !== null;
+    }
+
     isUser(): boolean {
         if (this.accountEntity === null) {
             return false;
@@ -71,6 +75,10 @@ export default class AccountSessionStore {
         return false;
     }
 
+    isEmailVerified(): boolean {
+        return this.accountEntity?.isEmailVerified() || false;
+    }
+
     hasApprovedMiningFarm(): boolean {
         return this.approvedMiningFarm;
     }
@@ -104,9 +112,25 @@ export default class AccountSessionStore {
         }
     }
 
-    // TODO: use session token for password change
-    async changePassword(password: string, passwordRepeat: string): Promise < void > {
-        // await this.accountRepo.changePassword(this.userEntity.name, token, password, passwordRepeat);
+    async editPassword(token: string, pass: string): Promise < void > {
+        this.accountRepo.changePassword(token, '', '', pass);
+    }
+
+    async changePassword(oldPass: string, newPass: string): Promise < void > {
+        await this.accountRepo.changePassword('', this.accountEntity.accountId, oldPass, newPass);
+    }
+
+    async forgottenPassword(email: string): Promise < void > {
+        await this.accountRepo.forgottenPassword(email);
+    }
+
+    async sendVerificationEmail(): Promise < void > {
+        await this.accountRepo.sendVerificationEmail();
+    }
+
+    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+        await this.accountRepo.creditAdminSettings(adminEntity, accountEntity);
+        await this.loadSessionAccountsAndSync();
     }
 
     async loadSessionAccountsAndSync() {

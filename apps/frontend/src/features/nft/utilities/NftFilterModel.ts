@@ -25,7 +25,7 @@ export default class NftFilterModel {
     sortPriceDirection: NftPriceSortDirection;
     sortKey: number;
     searchString: string;
-    collectionId: string;
+    collectionIds: string[];
     from: number;
     count: number;
 
@@ -35,7 +35,8 @@ export default class NftFilterModel {
         this.hashPowerFilter = NftHashPowerFilter.NONE;
         this.sortPriceDirection = NftPriceSortDirection.NONE;
         this.searchString = '';
-        this.collectionId = '';
+        this.collectionIds = [];
+        this.categoryIds = [];
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
 
@@ -54,7 +55,7 @@ export default class NftFilterModel {
             sortPriceDirection: entity.sortPriceDirection,
             searchString: entity.searchString,
             categoryIds: entity.categoryIds,
-            collectionId: entity.collectionId,
+            collectionIds: entity.collectionIds,
             from: entity.from,
             count: entity.count,
         }
@@ -73,7 +74,7 @@ export default class NftFilterModel {
         model.sortPriceDirection = parseInt(json.sortPriceDirection ?? model.sortPriceDirection);
         model.searchString = json.searchString ?? model.searchString;
         model.categoryIds = (json.categoryIds ?? model.categoryIds).map((j) => j.toString());
-        model.collectionId = (json.collectionId ?? model.collectionId).toString();
+        model.collectionIds = (json.collectionIds ?? model.collectionIds).map((j) => j.toString());
         model.from = parseInt(json.from ?? model.from);
         model.count = parseInt(json.count ?? model.count);
 

@@ -1,0 +1,24 @@
+.CreditAccountSettings .PageContent {
+    padding: 100px var(--page-spacing-h);
+}
+
+.CreditAccountSettings .PageContent .EditForm {
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 25px;
+}
+
+.CreditAccountSettings .PageContent .EditForm .Header {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.CreditAccountSettings .PageContent .EditForm .InputRow {
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.CreditAccountSettings .PageContent .EditForm .InputRow .InputWithButton {
+    gap: 25px;
+}

@@ -34,10 +34,14 @@ export default class EnergySourceEntity {
         return energySources;
     }
 
-    toJson(): any {
+    static toJson(entity: EnergySourceEntity): any {
+        if (entity === null) {
+            return null;
+        }
+
         return {
-            'id': this.id,
-            'name': this.name,
+            'id': entity.id,
+            'name': entity.name,
         }
     }
 

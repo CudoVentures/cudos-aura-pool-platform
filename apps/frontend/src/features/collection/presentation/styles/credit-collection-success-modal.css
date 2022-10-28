@@ -1,0 +1,9 @@
+.CreditCollectionSuccessModal {
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.CreditCollectionSuccessModal  .SuccessSvg {
+    width: 70px; height: 70px;
+}

@@ -1,3 +1,4 @@
+import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
 
 import S from '../../../core/utilities/Main';
@@ -29,6 +30,15 @@ export default class AccountEntity {
         this.email = '';
         this.timestampLastLogin = -1;
         this.timestampRegister = -1;
+
+        makeAutoObservable(this);
+    }
+
+    deepClone(): AccountEntity {
+        const accountEntity = Object.assign(new AccountEntity(), this);
+        accountEntity.type = this.type;
+
+        return accountEntity;
     }
 
     isUser(): boolean {
@@ -41,6 +51,10 @@ export default class AccountEntity {
 
     isSuperAdmin(): boolean {
         return this.type === AccountType.SUPER_ADMIN;
+    }
+
+    isEmailVerified(): boolean {
+        return this.emailVerified === S.INT_TRUE;
     }
 
     formatDateJoined(): string {

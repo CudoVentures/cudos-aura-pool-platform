@@ -21,7 +21,15 @@ export default class AccountApi {
         return null;
     }
 
-    async changePassword(username: string, token: string, newPassword: string, newPasswordRepeat: string): Promise < void > {
+    async changePassword(token: string, accountId: string, oldPassword: string, newPassword: string): Promise < void > {
+        return null;
+    }
+
+    async forgottenPassword(email: string): Promise < void > {
+        return null;
+    }
+
+    async sendVerificationEmail(): Promise < void > {
         return null;
     }
 
@@ -29,4 +37,7 @@ export default class AccountApi {
         return null;
     }
 
+    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+        return null;
+    }
 }

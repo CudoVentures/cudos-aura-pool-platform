@@ -1,19 +1,56 @@
 .NftPreview {
     width: 100%;
-    gap: 15px;
+    color: var(--color-gray-025);
 }
 
 .NftPreview .NftPreviewImage {
-    width: 100%; height: 0; padding-bottom: 100%;
-    background-size: contain; 
+    width: 100%; height: 0; padding-bottom: 120%;
     border-radius: 16px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 16px;
 }
-.NftPreview .CollectionName, .NftPreview .HashPower, .NftPreview .Priceheading{
-    color: #717070;
 
+.NftPreview .CollectionName {
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.NftPreview .NftName {
+    color: #000;
+    font-size: 24px; font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.NftPreview .HashPower {
+    font-size: 18px; font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.NftPreview .Priceheading {
+    font-weight: 600;
+    margin-bottom: 8px;
 }
 
 .NftPreview .PriceRow {
-    fill: gradient(45deg, #4C80E9 14.64%, #91D2F5 85.36%);
-    gap: 10px;
+    color: #000;
 }
+
+.NftPreview .PriceRow .SvgCudosLogo {
+    flex: 0 0 auto;
+    fill: gradient(45deg, #4C80E9 14.64%, #91D2F5 85.36%);
+    margin-right: 8px;
+}
+
+.NftPreview .NftPreviewImage.Empty {
+    background: var(--color-gray-060);
+}
+
+.NftPreview .NftPreviewImage.Empty .EmptyNftImageIcon {
+    width: 50px; height: 50px;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+}   

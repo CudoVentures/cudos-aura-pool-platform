@@ -8,32 +8,3 @@
 .PageLogin .PageContent {
     padding: 100px var(--page-spacing-h);
 }
-
-.PageLogin .Title {
-    margin-bottom: 16px;
-}
-
-.PageLogin .Subtitle {
-    color: var(--color-gray-025);
-    font-size: 16px;
-    margin-bottom: 40px;
-}
-
-.PageLogin .InputsCnt {
-    display: flex; flex-direction: column;
-    gap: 24px;
-}
-
-.PageLogin .ForgottenPassword {
-    text-align: right;
-    margin-top: 4px;
-}
-
-.PageLogin .LoginActions {
-    margin-top: 24px;
-}
-
-.PageLogin .BottomAction {
-    text-align: center;
-    margin-top: 24px;
-}
