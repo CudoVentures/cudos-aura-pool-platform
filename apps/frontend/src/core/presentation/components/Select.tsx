@@ -3,7 +3,7 @@ import { Select as MuiSelect, SelectProps, InputLabel, FormControl, SelectChange
 import SvgArrowDown from '@mui/icons-material/ArrowDownward';
 import '../styles/select.css';
 import { InputValidation } from '../stores/ValidationState';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 
 type Props = SelectProps & {
     className?: string;

@@ -9,7 +9,7 @@ import Input from './Input';
 import SvgClose from '@mui/icons-material/Close';
 import Svg from './Svg';
 import { InputValidation } from '../stores/ValidationState';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 
 type Props = ReactDatePickerProps & {
     label?: string;

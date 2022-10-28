@@ -5,13 +5,13 @@ import PoolEventRepo from '../../presentation/repos/PoolEventRepo';
 
 export default class PoolEventStorageRepo implements PoolEventRepo {
 
-    fetchCollectionEventsByFilter(collectionEventFilterModel: CollectionEventFilterModel): Promise<{ collectionEventEntities: CollectionEventEntity[]; total: number; }> {
+    async fetchCollectionEventsByFilter(collectionEventFilterModel: CollectionEventFilterModel): Promise<{ collectionEventEntities: CollectionEventEntity[]; total: number; }> {
         const collectionEventEntities = [];
 
         for (let i = 0; i < 10; i++) {
             const collectionEventEntity = new CollectionEventEntity();
-            collectionEventEntity.collectionEventId = `${i}`;
-            collectionEventEntity.collectionId = `${i}`;
+            collectionEventEntity.collectionEventId = `${i + 1}`;
+            collectionEventEntity.collectionId = `${i + 1}`;
             collectionEventEntity.fromAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
             collectionEventEntity.toAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
             collectionEventEntity.activity = 2;
@@ -22,7 +22,7 @@ export default class PoolEventStorageRepo implements PoolEventRepo {
             collectionEventEntities.push(collectionEventEntity);
         }
 
-        return { collectionEventEntities, total: 0 };
+        return { collectionEventEntities, total: 10 };
     }
 
 }

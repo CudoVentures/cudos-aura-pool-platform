@@ -2,31 +2,30 @@
     padding: 48px var(--page-spacing-h);
 }
 
-.PageUserProfile .ProfileNotFoundPage {
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-}
-
 .PageUserProfile .PageContent .ProfileHeaderDataRow {
-    padding: 40px 20px;
-    justify-content: space-between;
-    align-items: flex-start;
+    margin-top: 24px;
 }
 
-.PageUserProfile .PageContent .ProfileHeaderDataRow .LeftSide{
+/* .PageUserProfile .PageContent .ProfileHeaderDataRow .LeftSide{
     gap: 25px;
+} */
+
+.PageUserProfile .PageContent .ProfileHeaderDataRow .AccountName {
+    margin-bottom: 24px;
 }
 
-.PageUserProfile .PageContent .ProfileHeaderDataRow .InfoBelowUserName {
-    gap: 25px;
-}
-
-.PageUserProfile .PageContent .ProfileHeaderDataRow .InfoBelowUserName .JoinDate {
+.PageUserProfile .PageContent .ProfileHeaderDataRow .JoinDate {
     color: var(--color-gray-030);
+    margin-left: 16px;
 }
 
-.PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide {
+.PageUserProfile .SectionDivider {
+    height: 1px;
+    margin: 110px 0 24px 0;
+    background: var(--color-gray-060);
+}
+
+/* .PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide {
     gap: 25px;
 }
 
@@ -46,9 +45,9 @@
 .PageUserProfile .PageContent .ProfileNavHolder{
     justify-content: center;
     margin-bottom: 50px;
-}
+} */
 
 .PageUserProfile .PageContent .NavRowHolder {
-    width: 100%;
-    justify-content: center;
+    align-self: center;
+    margin-bottom: 32px;
 }

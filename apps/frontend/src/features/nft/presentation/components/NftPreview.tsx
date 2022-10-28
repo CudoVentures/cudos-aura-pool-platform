@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 
 import S from '../../../../core/utilities/Main';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
