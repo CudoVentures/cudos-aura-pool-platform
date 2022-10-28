@@ -116,7 +116,7 @@ The project is using the clean architecture.
 
 The project must ALWAYS be deployed on / of a domain.
 
-The project during development must be re-built when a new assest is added to public directory.
+The project during development must be re-built when a new asset is added to public directory.
 
 ## Backend
 
@@ -138,7 +138,7 @@ The frontend is designed to use project's clean architecture. Its structure coul
 └───features // each subfolder corresponds to a feature
 └───public // this folder is explosed by the webserver
     |   index.html // the entry point of the app
-    └───assets // contants the assets of the app
+    └───assets // contains the assets of the app
 
 ```
 
@@ -152,7 +152,7 @@ When React is ready and loaded the page layout looks like:
 <body>
     <div class="ReactEntryPoint"> <!-- Entry point of the react application. --> 
         <div class="AppRouter"> <!-- Wrapper of the transitions between pages. -->
-            <div class="ReactBody"> <!-- Wrapper of the entire page inlcuding its ui helper components. -->
+            <div class="ReactBody"> <!-- Wrapper of the entire page including its ui helper components. -->
                 <div class="Page" /> <!-- The actual page is inserted here. This is the actual ENTRY POINT of the app. -->
                 <div class="..." /> <!-- Modals ui components are inserted here. -->
                 <div class="..." /> <!-- Alert ui components are inserted here. -->
@@ -173,7 +173,7 @@ Frontend features:
 - Set of CSS styles that hold the entire project but are not project specific are defined in ./core/presentation/styles/main.css
 - Set of CSS styles that that are project specific are defined in ./core/presentation/styles/content.css
 - App's routes are defined in ./features/app-routes
-- Global dim/blur feature available available through the AppStore
+- Global dim/blur feature available through the AppStore
 - Global disabler of click action while async job is running available through the AppStore
 - Global loading indicator available through the AppStore
 - Global alert component available through AlertStore
