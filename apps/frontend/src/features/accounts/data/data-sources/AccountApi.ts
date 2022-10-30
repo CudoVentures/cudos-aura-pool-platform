@@ -21,6 +21,10 @@ export default class AccountApi {
         return null;
     }
 
+    async creditAccount(accountEntity: AccountEntity): Promise < AccountEntity > {
+        return null;
+    }
+
     async changePassword(token: string, accountId: string, oldPassword: string, newPassword: string): Promise < void > {
         return null;
     }

@@ -1,24 +1,29 @@
 .CreditAccountSettings .PageContent {
-    padding: 100px var(--page-spacing-h);
+    padding: 48px var(--page-spacing-h);
 }
 
-.CreditAccountSettings .PageContent .EditForm {
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 25px;
+.CreditAccountSettings .PageContent .SettingsItem {
+    display: flex;
+    padding: 32px 0;
+    border-top: 1px solid var(--color-gray-060);
 }
 
-.CreditAccountSettings .PageContent .EditForm .Header {
-    width: 100%;
-    justify-content: space-between;
+.CreditAccountSettings .PageContent .SettingsItem .SettingsName {
+    line-height: 48px;
+    font-size: 16px; font-weight: 600;
+    margin-right: 24px;
 }
 
-.CreditAccountSettings .PageContent .EditForm .InputRow {
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
+.CreditAccountSettings .PageContent .SettingsItem .SettingsOptions {
+    margin-left: auto;
 }
 
-.CreditAccountSettings .PageContent .EditForm .InputRow .InputWithButton {
-    gap: 25px;
+.CreditAccountSettings .PageContent .SettingsItem .SettingsOptions .SettingsDisplay {
+    gap: 8px;
+}
+
+.CreditAccountSettings .PageContent .SettingsItem .SettingsOptions .SettingsEdit {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
 }

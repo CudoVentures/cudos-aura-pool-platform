@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
+import S from '../../../../core/utilities/Main';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import AccountEntity from '../../entities/AccountEntity';
@@ -128,9 +129,15 @@ export default class AccountSessionStore {
         await this.accountRepo.sendVerificationEmail();
     }
 
-    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
-        await this.accountRepo.creditAdminSettings(adminEntity, accountEntity);
-        await this.loadSessionAccountsAndSync();
+    async creditAccount(accountEntity: AccountEntity): Promise < void > {
+        await this.accountRepo.creditAccount(accountEntity);
+
+        runInAction(() => {
+            // update session account entity
+            Object.assign(this.accountEntity, accountEntity);
+            // keep the account verified in the current session
+            this.accountEntity.emailVerified = S.INT_TRUE;
+        });
     }
 
     async loadSessionAccountsAndSync() {

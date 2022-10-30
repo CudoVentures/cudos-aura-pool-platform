@@ -29,6 +29,11 @@ export default class AccountStorageRepo implements AccountRepo {
         return this.accountApi.confirmBitcoinAddress();
     }
 
+    async creditAccount(accountEntity: AccountEntity): Promise < void > {
+        const resultAccountEntity = await this.accountApi.creditAccount(accountEntity);
+        Object.assign(accountEntity, resultAccountEntity);
+    }
+
     async changePassword(token: string, accountId: string, oldPassword: string, newPassword: string): Promise < void > {
         return this.accountApi.changePassword(token, accountId, oldPassword, newPassword);
     }
