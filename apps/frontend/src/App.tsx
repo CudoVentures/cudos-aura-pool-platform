@@ -10,7 +10,7 @@ import AppRouter from './features/app-routes/presentation/components/AppRouter';
 import AlertStore from './core/presentation/stores/AlertStore';
 import RewardsCalculatorStore from './features/rewards-calculator/presentation/stores/RewardsCalculatorStore';
 import BitcoinStorageRepo from './features/bitcoin-data/data/repo/BitcoinStorageRepo';
-import MiningFarmStorageRepo from './features/mining-farm/data/repo/MiningFarmStorageRepo';
+import MiningFarmApiRepo from './features/mining-farm/data/repo/MiningFarmApiRepo';
 import CollectionStorageRepo from './features/collection/data/repo/CollectionStorageRepo';
 import MarketplaceStore from './features/collection/presentation/stores/MarketplaceStore';
 import NftStorageRepo from './features/nft/data/repo/NftStorageRepo';
@@ -26,7 +26,7 @@ import StorageHelper from './core/helpers/StorageHelper';
 import BitcoinStore from './features/bitcoin-data/presentation/stores/BitcoinStore';
 import CudosStore from './features/cudos-data/presentation/stores/CudosStore';
 import UserProfilePageStore from './features/accounts/presentation/stores/UserProfilePageStore';
-import AccountStorageRepo from './features/accounts/data/repo/AccountStorageRepo';
+import AccountApiRepo from './features/accounts/data/repo/AccountApiRepo';
 import AccountSessionStore from './features/accounts/presentation/stores/AccountSessionStore';
 import CategoriesStore from './features/collection/presentation/stores/CategoriesStore';
 import ExploreCollectionsPageStore from './features/collection/presentation/stores/ExploreCollectionsPageStore';
@@ -51,12 +51,12 @@ const exampleModalStore = new ExampleModalStore();
 
 const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
 const cudosRepo = new CudosStorageRepo(storageHelper);
-const miningFarmRepo = new MiningFarmStorageRepo(storageHelper);
+const miningFarmRepo = new MiningFarmApiRepo();
 const collectionRepo = new CollectionStorageRepo(storageHelper);
 const nftRepo = new NftStorageRepo(storageHelper);
-const accountRepo = new AccountStorageRepo(storageHelper);
 const poolEventRepo = new PoolEventStorageRepo();
 const userRepo = new UserStorageRepo();
+const accountRepo = new AccountApiRepo();
 
 const walletStore = new WalletStore();
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
@@ -95,6 +95,8 @@ const App = () => {
         }
         run();
     }, []);
+
+    console.log(accountSessionStore.isInited())
 
     return (
         <StrictMode>

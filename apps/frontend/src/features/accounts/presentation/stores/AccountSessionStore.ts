@@ -5,7 +5,7 @@ import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
-import AccountRepo from '../repos/AccountRepo';
+import AccountRepo from '../../data/repo/AccountApiRepo';
 
 export default class AccountSessionStore {
 
@@ -134,12 +134,12 @@ export default class AccountSessionStore {
     }
 
     async loadSessionAccountsAndSync() {
-        const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
+        const session = await this.accountRepo.fetchSessionAccounts();
         runInAction(() => {
-            this.accountEntity = accountEntity;
-            this.userEntity = userEntity;
-            this.adminEntity = adminEntity;
-            this.superAdminEntity = superAdminEntity;
+            this.accountEntity = session?.accountEntity || null;
+            this.userEntity = session?.userEntity || null;
+            this.adminEntity = session?.adminEntity || null;
+            this.superAdminEntity = session?.superAdminEntity || null;
         });
 
         if (this.isUser() === true) {

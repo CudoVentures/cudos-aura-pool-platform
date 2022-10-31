@@ -14,12 +14,12 @@ export class NftFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
-        creator_id: number;
+        creator_id: string;
 
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
-        collection_id: number;
+        collection_id: string;
 
     @IsString()
     @IsOptional()

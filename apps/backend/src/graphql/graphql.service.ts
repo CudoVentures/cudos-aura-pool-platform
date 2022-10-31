@@ -24,7 +24,7 @@ export class GraphqlService {
             variables: { ...filters },
         });
 
-        return res.data;
+        return res.data.data.marketplace_nft;
     }
 
     async getMintedNftUuid(tx_hash: string): Promise<{ uuid: string }> {
