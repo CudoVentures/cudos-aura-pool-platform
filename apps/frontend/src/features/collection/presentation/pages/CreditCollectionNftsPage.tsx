@@ -27,8 +27,8 @@ function CreditCollectionNftsPage({ appStore, creditCollectionNftsPageStore }: P
         })
     }, []);
 
-    function onClickNavigateUserProfile() {
-        navigate(AppRoutes.USER_PROFILE)
+    function onClickNavigateCreditMiningFarm() {
+        navigate(AppRoutes.CREDIT_MINING_FARM)
     }
 
     return (
@@ -37,7 +37,7 @@ function CreditCollectionNftsPage({ appStore, creditCollectionNftsPageStore }: P
             <PageHeader />
             <div className={'PageContent AppContent'} >
                 <Breadcrumbs crumbs={ [
-                    createBreadcrumb('My Collections', onClickNavigateUserProfile),
+                    createBreadcrumb('My Collections', onClickNavigateCreditMiningFarm),
                     createBreadcrumb('Create Collection'),
                 ] } />
                 {/* <AddNftsStage /> */}

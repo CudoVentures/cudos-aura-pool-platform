@@ -1,5 +1,5 @@
 .AddNftsForm {
-    align-items: flex-start;
+    /* align-items: flex-start; */
     gap: 24px;
 }
 
@@ -34,13 +34,24 @@
     align-items: center;
 }
 
-
 .AddNftsForm .HeaderWithButton .InputHeaderButton {
-    justify-content: flex-start;
-    align-items: baseline;
-    gap: 10px;
+    color: #000;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.AddNftsForm .HeaderWithButton .InputHeaderButton .SvgInputEdit {
+    width: 16px; height: 16px;
 }
 
 .AddNftsForm .ButtonsRow {
     width: 100%;
+}
+
+.AddNftsForm .FormulaBox {
+    align-self: flex-start;
+    padding: 15px;
+    color: var(--color-gray-030);
+    background-color: var(--color-gray-090);
+    border-radius: 10px;
 }

@@ -1,5 +1,5 @@
 .CollectionDetailsForm {
-    align-items: flex-start;
+    /* align-items: flex-start; */
     gap: 24px;
 }
 
@@ -35,17 +35,8 @@
     width: 70px; height: 70px;
 }
 
-.CollectionDetailsForm .InputColumnHolder {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.CollectionDetailsForm .InputColumnHolder .InputInfoLabel {
-    color: var(--color-gray-030);
-}
-
-.CollectionDetailsForm .InputColumnHolder .FormulaBox {
+.CollectionDetailsForm .FormulaBox {
+    align-self: flex-start;
     padding: 15px;
     color: var(--color-gray-030);
     background-color: var(--color-gray-090);

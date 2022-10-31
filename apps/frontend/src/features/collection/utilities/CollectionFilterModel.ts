@@ -42,6 +42,10 @@ export default class CollectionFilterModel {
         this.sessionAccount = S.INT_TRUE;
     }
 
+    markAnyCollectins() {
+        this.status = CollectionStatus.ANY;
+    }
+
     static toJson(model) {
         if (model === null) {
             return null;

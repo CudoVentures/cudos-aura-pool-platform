@@ -1,15 +1,13 @@
-.InputColumnHolder {
-    display: flex;
-    flex-direction: column;
+.FieldColumnWrapper {
+    display: flex; flex-direction: column;
     gap: 10px;
-    width: 100%;
 }
 
-.InputColumnHolder .InputInfoLabel {
+.FieldColumnWrapper .HelperText {
     color: var(--color-gray-030);
 }
 
-.InputColumnHolder .FormulaBox {
+.FieldColumnWrapper .FormulaBox {
     padding: 15px;
     color: var(--color-gray-030);
     background-color: var(--color-gray-090);

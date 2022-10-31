@@ -32,6 +32,7 @@ export default class CreditMiningFarmPageStore {
 
         this.gridViewState = new GridViewState(this.fetch, 3, 4, 6);
         this.collectionFilterModel = new CollectionFilterModel();
+        this.collectionFilterModel.markAnyCollectins();
 
         this.inited = false;
         this.miningFarmEntity = null;

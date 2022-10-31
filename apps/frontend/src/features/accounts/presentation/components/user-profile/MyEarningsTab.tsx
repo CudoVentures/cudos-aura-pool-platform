@@ -45,7 +45,7 @@ function MyEarningsTab({ userProfilePageStore }: Props) {
                     </div>
                 </StyledContainer>
                 <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
-                    <div className={'B1 SemiBold'}>Toral Contract Hash Power</div>
+                    <div className={'B1 SemiBold'}>Total Contract Hash Power</div>
                     <div className={'FlexColumn ValueColumn'}>
                         <div>
                             <span className={'H2 Bold'}>100.563</span>

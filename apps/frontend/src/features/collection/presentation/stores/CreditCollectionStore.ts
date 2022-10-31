@@ -46,18 +46,6 @@ export default class CreditCollectionNftsPageStore {
         this.nftRepo = nftRepo;
         this.miningFarmRepo = miningFarmRepo;
 
-        this.nullate();
-
-        makeAutoObservable(this);
-    }
-
-    init = async (collectionId: string) => {
-        this.nullate();
-
-        this.fetch(collectionId);
-    }
-
-    nullate() {
         this.collectionEntity = null;
         this.nftEntities = [];
         this.addedOrEdittedNftEntities = [];
@@ -67,12 +55,18 @@ export default class CreditCollectionNftsPageStore {
         this.defaultHashAndPriceValues = S.INT_FALSE;
         this.hashPowerPerNft = S.NOT_EXISTS;
         this.pricePerNft = new BigNumber(S.NOT_EXISTS);
+
+        makeAutoObservable(this);
+    }
+
+    async init(collectionId: string = S.Strings.NOT_EXISTS) {
+        await this.fetch(collectionId);
     }
 
     async fetch(collectionId: string) {
         this.tempIdGenerator = new TempIdGenerator();
 
-        if (collectionId !== undefined) {
+        if (collectionId !== S.Strings.NOT_EXISTS) {
             this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
             const nftFilter = new NftFilterModel();
             nftFilter.collectionIds = [collectionId];
@@ -119,7 +113,7 @@ export default class CreditCollectionNftsPageStore {
         this.collectionEntity.description = description;
     }
 
-    onChangeHashingPower = (hashRate: strng) => {
+    onChangeHashingPower = (hashRate: string) => {
         this.collectionEntity.hashPower = Number(hashRate);
     }
 
@@ -182,7 +176,6 @@ export default class CreditCollectionNftsPageStore {
 
     onClickSendForApproval = async () => {
         this.collectionEntity.markQueued();
-        this.collectionEntity.farmId
         await this.collectionRepo.creditCollection(this.collectionEntity, this.addedOrEdittedNftEntities);
     }
 
