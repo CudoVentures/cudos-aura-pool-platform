@@ -2,18 +2,18 @@ import GridViewState from '../../../../core/presentation/stores/GridViewState';
 import { makeAutoObservable, runInAction } from 'mobx';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import MiningFarmFilterModel, { MiningFarmHashPowerFilter, MiningFarmPriceSortDirection } from '../../utilities/MiningFarmFilterModel';
-import MiningFarmRepo from '../repos/MiningFarmRepo';
+import MiningFarmApiRepo from '../../data/repo/MiningFarmApiRepo';
 
 export default class ExploreMiningFarmsPageStore {
 
-    miningFarmRepo: MiningFarmRepo;
+    miningFarmRepo: MiningFarmApiRepo;
 
     gridViewState: GridViewState;
     miningFarmFilterModel: MiningFarmFilterModel;
 
     miningFarmEntities: MiningFarmEntity[];
 
-    constructor(miningFarmRepo: MiningFarmRepo) {
+    constructor(miningFarmRepo: MiningFarmApiRepo) {
         this.miningFarmRepo = miningFarmRepo;
 
         this.gridViewState = new GridViewState(this.fetch, 3, 4, 6);

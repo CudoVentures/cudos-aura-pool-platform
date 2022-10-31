@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateFarmDto } from './dto/create-farm.dto';
 import { UpdateFarmDto } from './dto/update-farm.dto';
 import { Farm } from './farm.model';
-import { FarmStatus } from './utils';
+import { FarmFilters, FarmStatus } from './utils';
 
 @Injectable()
 export class FarmService {
@@ -12,8 +12,8 @@ export class FarmService {
     private farmModel: typeof Farm,
     ) {}
 
-    async findAll(): Promise<Farm[]> {
-        const farms = await this.farmModel.findAll();
+    async findAll(filters: FarmFilters): Promise<Farm[]> {
+        const farms = await this.farmModel.findAll({ where: { ...filters } });
 
         return farms;
     }

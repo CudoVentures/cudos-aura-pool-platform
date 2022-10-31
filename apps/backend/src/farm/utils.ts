@@ -9,6 +9,11 @@ export const enum FarmStatus {
 
 export class FarmFilters {
 
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        ids: string;
+
     @IsNumber()
     @IsOptional()
     @ApiProperty({ required: false })

@@ -38,8 +38,8 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.sessionAccount = S.INT_TRUE;
 
-        const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
-        return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
+        // const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        return null
     }
 
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
