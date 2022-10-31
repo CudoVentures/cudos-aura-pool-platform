@@ -2,19 +2,30 @@ import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
+import axios from 'axios'
 
 export default class AccountApi {
 
     async login(username: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
-        return null;
+        const { data } = await axios.post('/api/v1/auth/login', {
+            email: username,
+            password,
+        })
+
+        localStorage.setItem('access_token', data.access_token)
     }
 
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
-        return null;
+        await axios.post('/api/v1/auth/register', {
+            email,
+            password,
+            name,
+            cudos_address: cudosWalletAddress,
+        })
     }
 
     async logout(): Promise < void > {
-        return null;
+        localStorage.removeItem('access_token')
     }
 
     async confirmBitcoinAddress(): Promise < void > {
