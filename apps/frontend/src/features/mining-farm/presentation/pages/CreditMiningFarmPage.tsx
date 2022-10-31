@@ -92,10 +92,9 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
             }
             className = { 'PageCreditMiningFarm' } >
 
-            { accountSessionStore.isAdmin() === true && (
+            { accountSessionStore.isAdmin() === true ? (
                 <PageAdminHeader />
-            ) }
-            { accountSessionStore.isAdmin() === false && (
+            ) : (
                 <PageHeader />
             ) }
 
@@ -149,8 +148,13 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                 </Button>
                             </Actions>
                         ) }
-                        <div className={'TheMiningFarmName H2 Bold'}>{miningFarmEntity.name}</div>
-                        <div className={'ThePageMiningFarmData Grid GridColumns2'}>
+                        <div className={'MiningFarmNameCnt FlexRow'}>
+                            <span className = { 'H2 Bold' }>{miningFarmEntity.name}</span>
+                            { miningFarmEntity.isApproved() === false && (
+                                <div className = { 'ReviewBadge' } >Under review</div>
+                            ) }
+                        </div>
+                        <div className={'MiningFarmDataCnt Grid GridColumns2'}>
                             <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
                             <DataPreviewLayout
                                 dataPreviews = { [
@@ -162,72 +166,76 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                     createDataPreview('Total NFTs Sold', '735'),
                                 ] } />
                         </div>
-                        <div className = { 'SectionDivider' } />
-                        <div className={'CollectionsOwnedHeader FlexRow'}>
-                            <div className={'H2 Bold'}>Collections Owned</div>
-                            { accountSessionStore.isAdmin() === true && (
-                                <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_CENTER}>
-                                    <Button onClick={onClickCreateCollection} >
-                                        <Svg svg={AddIcon}/>
+                        { miningFarmEntity.isApproved() === true && (
+                            <>
+                                <div className = { 'SectionDivider' } />
+                                <div className={'CollectionsOwnedHeader FlexRow'}>
+                                    <div className={'H2 Bold'}>Collections Owned</div>
+                                    { accountSessionStore.isAdmin() === true && (
+                                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_CENTER}>
+                                            <Button onClick={onClickCreateCollection} >
+                                                <Svg svg={AddIcon}/>
                                     Create Collection
-                                    </Button>
-                                </Actions>
-                            ) }
-                        </div>
-                        <DataGridLayout
-                            className = { 'CollectionsCnt' }
-                            headerLeft = { (
-                                <>
-                                    <Input
-                                        className={'SearchBar'}
-                                        value = {collectionFilterModel.searchString}
-                                        onChange = { creditMiningFarmPageStore.onChangeSearchWord }
-                                        placeholder = {'Search Collections name'}
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start" >
-                                                <Svg svg={SearchIcon} />
-                                            </InputAdornment>,
-                                        }} />
-                                    <Select
-                                        label={'Hashing Power'}
-                                        onChange={creditMiningFarmPageStore.onChangeHashPowerFilter}
-                                        value={collectionFilterModel.hashPowerFilter} >
-                                        <MenuItem value = { CollectionHashPowerFilter.NONE } >All </MenuItem>
-                                        <MenuItem value = { CollectionHashPowerFilter.BELOW_1000_EH } > Below 1000 EH/s </MenuItem>
-                                        <MenuItem value = { CollectionHashPowerFilter.BELOW_2000_EH } > Below 2000 EH/s </MenuItem>
-                                        <MenuItem value = { CollectionHashPowerFilter.ABOVE_2000_EH } > Above 2000 EH/s </MenuItem>
-                                    </Select>
-                                </>
-                            ) }
-                            headerRight = { (
-                                <Select
-                                    onChange={creditMiningFarmPageStore.onChangeSortKey}
-                                    value={collectionFilterModel.sortKey} >
-                                    <MenuItem value = { CollectionFilterModel.SORT_KEY_NAME } > Name </MenuItem>
-                                    <MenuItem value = { CollectionFilterModel.SORT_KEY_PRICE } > Price </MenuItem>
-                                </Select>
-                            ) } >
+                                            </Button>
+                                        </Actions>
+                                    ) }
+                                </div>
+                                <DataGridLayout
+                                    className = { 'CollectionsCnt' }
+                                    headerLeft = { (
+                                        <>
+                                            <Input
+                                                className={'SearchBar'}
+                                                value = {collectionFilterModel.searchString}
+                                                onChange = { creditMiningFarmPageStore.onChangeSearchWord }
+                                                placeholder = {'Search Collections name'}
+                                                InputProps={{
+                                                    startAdornment: <InputAdornment position="start" >
+                                                        <Svg svg={SearchIcon} />
+                                                    </InputAdornment>,
+                                                }} />
+                                            <Select
+                                                label={'Hashing Power'}
+                                                onChange={creditMiningFarmPageStore.onChangeHashPowerFilter}
+                                                value={collectionFilterModel.hashPowerFilter} >
+                                                <MenuItem value = { CollectionHashPowerFilter.NONE } >All </MenuItem>
+                                                <MenuItem value = { CollectionHashPowerFilter.BELOW_1000_EH } > Below 1000 EH/s </MenuItem>
+                                                <MenuItem value = { CollectionHashPowerFilter.BELOW_2000_EH } > Below 2000 EH/s </MenuItem>
+                                                <MenuItem value = { CollectionHashPowerFilter.ABOVE_2000_EH } > Above 2000 EH/s </MenuItem>
+                                            </Select>
+                                        </>
+                                    ) }
+                                    headerRight = { (
+                                        <Select
+                                            onChange={creditMiningFarmPageStore.onChangeSortKey}
+                                            value={collectionFilterModel.sortKey} >
+                                            <MenuItem value = { CollectionFilterModel.SORT_KEY_NAME } > Name </MenuItem>
+                                            <MenuItem value = { CollectionFilterModel.SORT_KEY_PRICE } > Price </MenuItem>
+                                        </Select>
+                                    ) } >
 
-                            { collectionEntities === null && (
-                                <LoadingIndicator />
-                            ) }
+                                    { collectionEntities === null && (
+                                        <LoadingIndicator />
+                                    ) }
 
-                            { collectionEntities !== null && (
-                                <GridView
-                                    gridViewState={creditMiningFarmPageStore.gridViewState}
-                                    defaultContent={collectionEntities.length === 0 ? <NoCollectionView /> : null} >
-                                    { collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
-                                        return (
-                                            <CollectionPreview
-                                                key={index}
-                                                collectionEntity={collectionEntity}
-                                                miningFarmName={creditMiningFarmPageStore.getMiningFarmName(collectionEntity.farmId)} />
-                                        )
-                                    }) }
-                                </GridView>
-                            ) }
+                                    { collectionEntities !== null && (
+                                        <GridView
+                                            gridViewState={creditMiningFarmPageStore.gridViewState}
+                                            defaultContent={collectionEntities.length === 0 ? <NoCollectionView /> : null} >
+                                            { collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
+                                                return (
+                                                    <CollectionPreview
+                                                        key={index}
+                                                        collectionEntity={collectionEntity}
+                                                        miningFarmName={creditMiningFarmPageStore.getMiningFarmName(collectionEntity.farmId)} />
+                                                )
+                                            }) }
+                                        </GridView>
+                                    ) }
 
-                        </DataGridLayout>
+                                </DataGridLayout>
+                            </>
+                        ) }
                     </>
                 ) }
             </div>

@@ -83,35 +83,38 @@ function SuperAdminApprovePage({ superAdminApprovePageStore, appStore }: Props) 
     return (
         <PageLayoutComponent
             className = { 'PageSuperAdminApprove' }>
+
             <PageSuperAdminHeader />
-            <div className={'FlexRow TableHeader'}>
-                <div className={'H2 Bold'}>Mining Farms of Approval</div>
-                <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                    <Button radius={ButtonRadius.RADIUS_16} onClick={superAdminApprovePageStore.approveMiningFarms}>Approve Selected Farms</Button>
-                </Actions>
+            <div className = { 'PageContent AppContent' } >
+                <div className={'FlexRow TableHeader'}>
+                    <div className={'H2 Bold'}>Mining Farms of Approval</div>
+                    <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
+                        <Button radius={ButtonRadius.RADIUS_16} onClick={superAdminApprovePageStore.approveMiningFarms}>Approve Selected Farms</Button>
+                    </Actions>
+                </div>
+                <Table
+                    className={'New Farms'}
+                    legend={TABLE_LEGEND}
+                    widths={TABLE_WIDTHS}
+                    aligns={TABLE_ALINGS}
+                    tableState={superAdminApprovePageStore.miningFarmsTableState}
+                    rows={renderFarmsRows()}
+                />
+                <div className={'FlexRow TableHeader'}>
+                    <div className={'H1 Bold'}>Collections of Approval</div>
+                    <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
+                        <Button radius={ButtonRadius.RADIUS_16} onClick={superAdminApprovePageStore.approveCollections}>Approve Selected Collections</Button>
+                    </Actions>
+                </div>
+                <Table
+                    className={'New Collections'}
+                    legend={TABLE_LEGEND}
+                    widths={TABLE_WIDTHS}
+                    aligns={TABLE_ALINGS}
+                    tableState={superAdminApprovePageStore.collectionsTableState}
+                    rows={renderCollectionsRows()}
+                />
             </div>
-            <Table
-                className={'New Farms'}
-                legend={TABLE_LEGEND}
-                widths={TABLE_WIDTHS}
-                aligns={TABLE_ALINGS}
-                tableState={superAdminApprovePageStore.miningFarmsTableState}
-                rows={renderFarmsRows()}
-            />
-            <div className={'FlexRow TableHeader'}>
-                <div className={'H1 Bold'}>Collections of Approval</div>
-                <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                    <Button radius={ButtonRadius.RADIUS_16} onClick={superAdminApprovePageStore.approveCollections}>Approve Selected Collections</Button>
-                </Actions>
-            </div>
-            <Table
-                className={'New Collections'}
-                legend={TABLE_LEGEND}
-                widths={TABLE_WIDTHS}
-                aligns={TABLE_ALINGS}
-                tableState={superAdminApprovePageStore.collectionsTableState}
-                rows={renderCollectionsRows()}
-            />
             <PageFooter />
         </PageLayoutComponent>
     )

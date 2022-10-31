@@ -39,6 +39,10 @@
     transition: border-color var(--transition-duration);
 }
 
+.Input .MuiInputBase-root.MuiInputBase-multiline {
+    padding: 7px 14px !important;
+}
+
 .Input.InputGray .MuiInputBase-root {
     border-color: var(--color-input-gray-out);
     background: var(--color-input-gray-out);

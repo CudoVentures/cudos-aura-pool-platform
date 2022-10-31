@@ -2,6 +2,14 @@
     padding: 48px var(--page-spacing-h);
 }
 
-.PageCreditMiningFarmDetails .PageContent .NavRow {
+.PageCreditMiningFarmDetails .PageContent .StepsCnt {
+    margin-bottom: 40px;
+}
+
+.PageCreditMiningFarmDetails .FormContainer {
+    margin-top: 24px;
+}
+
+.PageCreditMiningFarmDetails .FormContainer .CreditHeading {
     margin-bottom: 40px;
 }

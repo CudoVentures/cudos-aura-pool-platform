@@ -1,9 +1,10 @@
 .StepMiningFarmDetails {
-    gap: 40px;
+    gap: 32px;
 }
 
 .StepMiningFarmDetails .HashRateInfo {
     gap: 10px;
+    margin-top: 8px;
 }
 
 .StepMiningFarmDetails .Uploader {

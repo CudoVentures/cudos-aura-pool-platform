@@ -45,14 +45,6 @@ export default class EditMiningFarmModalStore extends ModalStore {
         super.hide();
     }
 
-    changeMiningFarmName = (name: string) => {
-        this.miningFarmEntity.name = name;
-    }
-
-    changeMiningFarmDescription = (description: string) => {
-        this.miningFarmEntity.description = description;
-    }
-
     changeCoverImage(base64File: string) {
         this.coverImage = ImageEntity.new(base64File, PictureType.FARM_COVER);
     }

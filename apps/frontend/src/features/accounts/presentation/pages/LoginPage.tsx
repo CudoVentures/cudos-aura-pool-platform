@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
@@ -20,7 +21,6 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../styles/page-login.css';
-import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     alertStore?: AlertStore;
@@ -31,7 +31,6 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
     const emailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
-    const passwordValidation = useRef(validationState.addPasswordValidation('Invalid email')).current;
 
     const [email, setEmail] = useState('');
     const [logging, setLogging] = useState(false);
@@ -99,7 +98,6 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
                                         </InputAdornment>
                                     ),
                                 }}
-                                inputValidation={passwordValidation}
                                 value={password}
                                 onChange={setPassword}
                                 type={showPassword === false ? 'password' : 'text'} />

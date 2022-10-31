@@ -6,7 +6,6 @@ import { InputValidation } from '../stores/ValidationState';
 
 import { TextField, TextFieldProps } from '@mui/material';
 import '../styles/input.css';
-import { runInAction } from 'mobx';
 
 export enum InputType {
     INTEGER,
