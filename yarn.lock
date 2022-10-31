@@ -1497,6 +1497,11 @@
   "resolved" "https://registry.npmjs.org/@fontsource/poppins/-/poppins-4.5.10.tgz"
   "version" "4.5.10"
 
+"@golevelup/ts-jest@^0.3.3":
+  "integrity" "sha512-gut5EhD2S7W1p+C/IsUS1o0P5SHgxsN9TqHyRTjG+rfycniLNBfvIWZPEizpsTev/lR10/XOTpE0YicxPme2+Q=="
+  "resolved" "https://registry.npmjs.org/@golevelup/ts-jest/-/ts-jest-0.3.3.tgz"
+  "version" "0.3.3"
+
 "@graphql-codegen/cli@^2.13.4":
   "integrity" "sha512-qqkQxd+9jBdZDjUSCsH3rTHKmFY9KNQwvwXXEMpRSz+oByYTxGZ0ZE5Lxt0hRXFkGOe8BaVkfPiwa2qSUfA5vw=="
   "resolved" "https://registry.npmjs.org/@graphql-codegen/cli/-/cli-2.13.5.tgz"
