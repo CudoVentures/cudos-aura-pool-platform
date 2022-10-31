@@ -7,7 +7,7 @@ import PoolEventRepo from '../repos/PoolEventRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import ExtendedChartState from '../../../../core/presentation/stores/ExtendedChartState';
-import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
+import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 
 export default class AnalyticsPageStore {
     poolEventRepo: PoolEventRepo;
@@ -47,7 +47,7 @@ export default class AnalyticsPageStore {
     }
 
     fetch = async () => {
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
         const { collectionEventEntities, total } = await this.poolEventRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
         const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(collectionEventEntities.map((eventEntity: CollectionEventEntity) => eventEntity.collectionId));
 

@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
+import { CollectionStatus } from '../../collection/entities/CollectionEntity';
 
 export enum NftHashPowerFilter {
     NONE = 1,
@@ -19,6 +20,7 @@ export default class NftFilterModel {
     static SORT_KEY_NAME = 1;
     static SORT_KEY_POPULAR = 2;
 
+    nftIds: string[];
     sessionAccount: number;
     categoryIds: string[];
     hashPowerFilter: NftHashPowerFilter;
@@ -26,10 +28,12 @@ export default class NftFilterModel {
     sortKey: number;
     searchString: string;
     collectionIds: string[];
+    collectionStatus: CollectionStatus;
     from: number;
     count: number;
 
     constructor() {
+        this.nftIds = null;
         this.sessionAccount = S.INT_FALSE;
         this.sortKey = NftFilterModel.SORT_KEY_NAME;
         this.hashPowerFilter = NftHashPowerFilter.NONE;
@@ -37,6 +41,7 @@ export default class NftFilterModel {
         this.searchString = '';
         this.collectionIds = [];
         this.categoryIds = [];
+        this.collectionStatus = CollectionStatus.APPROVED;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
 
@@ -49,6 +54,7 @@ export default class NftFilterModel {
         }
 
         return {
+            nftIds: entity.nftIds,
             sessionAccount: entity.sessionAccount,
             sortKey: entity.sortKey,
             hashPowerFilter: entity.hashPowerFilter,
@@ -56,6 +62,7 @@ export default class NftFilterModel {
             searchString: entity.searchString,
             categoryIds: entity.categoryIds,
             collectionIds: entity.collectionIds,
+            collectionStatus: entity.collectionStatus,
             from: entity.from,
             count: entity.count,
         }
@@ -68,6 +75,7 @@ export default class NftFilterModel {
 
         const model = new NftFilterModel();
 
+        model.nftIds = json.nftIds ?? model.nftIds;
         model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
         model.sortKey = parseInt(json.sortKey ?? model.sortKey);
         model.hashPowerFilter = parseInt(json.hashPowerFilter ?? model.hashPowerFilter);
@@ -75,6 +83,7 @@ export default class NftFilterModel {
         model.searchString = json.searchString ?? model.searchString;
         model.categoryIds = (json.categoryIds ?? model.categoryIds).map((j) => j.toString());
         model.collectionIds = (json.collectionIds ?? model.collectionIds).map((j) => j.toString());
+        model.collectionStatus = json.collectionStatus ?? model.collectionStatus;
         model.from = parseInt(json.from ?? model.from);
         model.count = parseInt(json.count ?? model.count);
 

@@ -3,6 +3,7 @@ import StorageHelper from '../../../../core/helpers/StorageHelper';
 import NftEntity from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftHashPowerFilter, NftPriceSortDirection } from '../../utilities/NftFilterModel';
+import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 
 export default class NftStorageRepo implements NftRepo {
 
@@ -12,27 +13,81 @@ export default class NftStorageRepo implements NftRepo {
         this.storageHelper = storageHelper;
     }
 
-    async fetchNftById(nftId: string): Promise < NftEntity > {
-        const nftJson = this.storageHelper.nftsJson.find((json) => json.id === nftId);
-        return NftEntity.fromJson(nftJson)
+    async fetchNftById(nftId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity > {
+        const nftFilterModel = new NftFilterModel();
+        nftFilterModel.from = 0;
+        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
+        nftFilterModel.nftIds = [nftId];
+        nftFilterModel.collectionStatus = status;
+
+        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
+        return nftEntities.length === 1 ? nftEntities[0] : null;
     }
 
-    async fetchNewNftDrops(): Promise < NftEntity[] > {
-        // TODO: sort them by listing date or something?
-        const nftEntities = this.storageHelper.nftsJson.slice(0, 10).map((json) => NftEntity.fromJson(json));
+    async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
+        const nftFilterModel = new NftFilterModel();
+        // TO DO: sort by newest
+        nftFilterModel.from = 0;
+        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
+        nftFilterModel.collectionStatus = status;
 
+        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
     }
 
-    async fetchTrendingNfts(): Promise < NftEntity[] > {
-        // TODO: sort them by something?
-        const nftEntities = this.storageHelper.nftsJson.slice(0, 10).map((json) => NftEntity.fromJson(json));
+    async fetchTrendingNfts(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
+        const nftFilterModel = new NftFilterModel();
+        // TO DO: sort by trending
+        nftFilterModel.from = 0;
+        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
+        nftFilterModel.collectionStatus = status;
 
+        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
     }
 
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
         let nftsSlice = this.storageHelper.nftsJson.map((json) => NftEntity.fromJson(json));
+
+        if (nftFilterModel.nftIds !== null) {
+            const set = new Set(nftFilterModel.nftIds);
+            nftsSlice = nftsSlice.filter((json) => {
+                return set.has(json.id);
+            });
+        }
+
+        if (nftFilterModel.sessionAccount === S.INT_TRUE) {
+            const accountId = this.storageHelper.sessionAccount?.accountId ?? '';
+            const miningFarmIdsSet = new Set();
+            const collectionIdsSet = new Set();
+            this.storageHelper.miningFarmsJson.forEach((miningFarmJson) => {
+                if (miningFarmJson.accountId === accountId) {
+                    miningFarmIdsSet.add(miningFarmJson.id);
+                }
+            });
+            this.storageHelper.collectionsJson.forEach((collectionJson) => {
+                if (miningFarmIdsSet.has(collectionJson.farmId) === true) {
+                    collectionIdsSet.add(collectionJson.id);
+                }
+            });
+
+            nftsSlice = nftsSlice.filter((json) => {
+                return collectionIdsSet.has(json.collectionId);
+            });
+        }
+
+        if (nftFilterModel.collectionStatus !== CollectionStatus.ANY) {
+            const collectionIdsSet = new Set();
+            this.storageHelper.collectionsJson.forEach((collectionJson) => {
+                if (collectionJson.status === nftFilterModel.collectionStatus) {
+                    collectionIdsSet.add(collectionJson.id);
+                }
+            });
+
+            nftsSlice = nftsSlice.filter((json) => {
+                return collectionIdsSet.has(json.collectionId);
+            });
+        }
 
         if (nftFilterModel.collectionIds.length !== 0) {
             nftsSlice = nftsSlice.filter((json) => {

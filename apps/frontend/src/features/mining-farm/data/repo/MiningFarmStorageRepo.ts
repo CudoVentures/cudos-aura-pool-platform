@@ -12,32 +12,49 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         this.storageHelper = storageHelper;
     }
 
-    async fetchAllMiningFarms(): Promise < MiningFarmEntity[] > {
+    async fetchAllMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.status = status;
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities
     }
 
-    async fetchPopularMiningFarms(): Promise < MiningFarmEntity[] > {
-        return this.storageHelper.miningFarmsJson.slice(0, 3).map((json: any) => MiningFarmEntity.fromJson(json));
+    async fetchPopularMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
+        const miningFarmFilterModel = new MiningFarmFilterModel();
+        miningFarmFilterModel.from = 0;
+        miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.sortKey = MiningFarmFilterModel.SORT_KEY_POPULAR;
+        miningFarmFilterModel.status = status;
+
+        const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        return miningFarmEntities;
     }
 
-    async fetchMiningFarmsByIds(miningFarmIds: string[]): Promise < MiningFarmEntity[] > {
-        const farmsJson = this.storageHelper.miningFarmsJson.filter((json: any) => miningFarmIds.includes(json.id));
-        return farmsJson.map((farmJson) => MiningFarmEntity.fromJson(farmJson));
+    async fetchMiningFarmsByIds(miningFarmIds: string[], status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
+        const miningFarmFilterModel = new MiningFarmFilterModel();
+        miningFarmFilterModel.from = 0;
+        miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.miningFarmIds = miningFarmIds;
+        miningFarmFilterModel.status = status;
+
+        const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        return miningFarmEntities;
     }
 
-    async fetchMiningFarmById(miningFarmId: string): Promise < MiningFarmEntity > {
-        const miningFarmEntities = await this.fetchMiningFarmsByIds([miningFarmId]);
+    async fetchMiningFarmById(miningFarmId: string, status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
+        const miningFarmEntities = await this.fetchMiningFarmsByIds([miningFarmId], status);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
     }
 
-    async fetchMiningFarmBySessionAccountId(): Promise < MiningFarmEntity > {
+    async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.sessionAccount = S.INT_TRUE;
+        miningFarmFilterModel.from = 0;
+        miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.status = status;
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
@@ -46,9 +63,28 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
         let miningFarmsSlice = this.storageHelper.miningFarmsJson.map((json) => MiningFarmEntity.fromJson(json));
 
+        if (miningFarmFilterModel.miningFarmIds !== null) {
+            const set = new Set(miningFarmFilterModel.miningFarmIds);
+            miningFarmsSlice = miningFarmsSlice.filter((json) => {
+                return set.has(json.id);
+            });
+        }
+
+        if (miningFarmFilterModel.status !== MiningFarmStatus.ANY) {
+            miningFarmsSlice = miningFarmsSlice.filter((json) => {
+                return json.status === miningFarmFilterModel.status;
+            });
+        }
+
         if (miningFarmFilterModel.searchString !== '') {
             miningFarmsSlice = miningFarmsSlice.filter((json) => {
                 return json.name.toLowerCase().indexOf(miningFarmFilterModel.searchString) !== -1;
+            });
+        }
+
+        if (miningFarmFilterModel.sessionAccount === S.INT_TRUE) {
+            miningFarmsSlice = miningFarmsSlice.filter((json) => {
+                return (json.accountId === this.storageHelper.sessionAccount?.accountId) || false
             });
         }
 
@@ -70,16 +106,6 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
             miningFarmsSlice = miningFarmsSlice.filter((json) => {
                 return json.hashRateTh <= hashPowerLimit;
-            });
-        }
-
-        miningFarmsSlice = miningFarmsSlice.filter((json) => {
-            return json.status === miningFarmFilterModel.status || miningFarmFilterModel.status === MiningFarmStatus.ANY;
-        });
-
-        if (miningFarmFilterModel.sessionAccount === S.INT_TRUE) {
-            miningFarmsSlice = miningFarmsSlice.filter((json) => {
-                return (json.accountId === this.storageHelper.sessionAccount?.accountId) || false
             });
         }
 

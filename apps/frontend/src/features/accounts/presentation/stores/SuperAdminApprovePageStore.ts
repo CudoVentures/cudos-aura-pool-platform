@@ -62,7 +62,6 @@ export default class SuperAdminApprovePageStore {
             this.miningFarmEntities = miningFarmEntities;
             this.miningFarmsTableState.tableFilterState.total = total;
         });
-
     }
 
     fetchCollectionEntities = (): void => {
@@ -75,7 +74,6 @@ export default class SuperAdminApprovePageStore {
             this.collectionEntities = collectionEntities;
             this.collectionsTableState.tableFilterState.total = total;
         });
-
     }
 
     isMiningFarmEntitySelected(miningFarmId: string): number {

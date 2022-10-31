@@ -1,7 +1,7 @@
 import S from '../../../../core/utilities/Main';
 import { makeAutoObservable } from 'mobx';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
-import CollectionEntity from '../../entities/CollectionEntity';
+import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
 import BigNumber from 'bignumber.js';
 import NftEntity from '../../../nft/entities/NftEntity';
@@ -23,7 +23,7 @@ class TempIdGenerator {
     }
 }
 
-export default class CreditCollectionNftsPageStore {
+export default class CreditCollectionStore {
     accountSessionStore: AccountSessionStore;
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
@@ -67,12 +67,12 @@ export default class CreditCollectionNftsPageStore {
         this.tempIdGenerator = new TempIdGenerator();
 
         if (collectionId !== S.Strings.NOT_EXISTS) {
-            this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+            this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
             const nftFilter = new NftFilterModel();
             nftFilter.collectionIds = [collectionId];
             nftFilter.count = Number.MAX_SAFE_INTEGER;
 
-            const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+            const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter, CollectionStatus.ANY);
             this.nftEntities = nftEntities;
         } else {
             this.collectionEntity = new CollectionEntity();

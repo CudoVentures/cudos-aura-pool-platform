@@ -12,15 +12,33 @@ export default class NftApiRepo implements NftRepo {
     }
 
     async fetchNftById(nftId: string): Promise < NftEntity > {
-        return this.nftApi.fetchNftById(nftId);
+        const nftFilterModel = new NftFilterModel();
+        nftFilterModel.from = 0;
+        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
+        nftFilterModel.nftIds = [nftId];
+
+        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
+        return nftEntities.length === 1 ? nftEntities[0] : null;
     }
 
     async fetchNewNftDrops(): Promise < NftEntity[] > {
-        return this.nftApi.fetchNewNftDrops();
+        const nftFilterModel = new NftFilterModel();
+        // TO DO: sort by newest
+        nftFilterModel.from = 0;
+        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
+
+        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
+        return nftEntities;
     }
 
     async fetchTrendingNfts(): Promise < NftEntity[] > {
-        return this.nftApi.fetchTrendingNfts();
+        const nftFilterModel = new NftFilterModel();
+        // TO DO: sort by trending
+        nftFilterModel.from = 0;
+        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
+
+        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
+        return nftEntities;
     }
 
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {

@@ -1,5 +1,5 @@
 import S from '../../../../core/utilities/Main';
-import MiningFarmEntity from '../../entities/MiningFarmEntity';
+import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmApi from '../data-sources/MiningFarmApi';
@@ -12,31 +12,49 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         this.miningFarmApi = new MiningFarmApi();
     }
 
-    async fetchAllMiningFarms(): Promise < MiningFarmEntity[] > {
+    async fetchAllMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.status = status;
 
-        const { miningFarmEntities, total } = await this.miningFarmApi.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        return miningFarmEntities
+    }
+
+    async fetchPopularMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
+        const miningFarmFilterModel = new MiningFarmFilterModel();
+        miningFarmFilterModel.from = 0;
+        miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.sortKey = MiningFarmFilterModel.SORT_KEY_POPULAR;
+        miningFarmFilterModel.status = status;
+
+        const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities;
     }
 
-    async fetchPopularMiningFarms(): Promise < MiningFarmEntity[] > {
-        return this.miningFarmApi.fetchPopularMiningFarms();
+    async fetchMiningFarmsByIds(miningFarmIds: string[], status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
+        const miningFarmFilterModel = new MiningFarmFilterModel();
+        miningFarmFilterModel.from = 0;
+        miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.miningFarmIds = miningFarmIds;
+        miningFarmFilterModel.status = status;
+
+        const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        return miningFarmEntities;
     }
 
-    async fetchMiningFarmsByIds(miningFarmIds: string[]): Promise < MiningFarmEntity[] > {
-        return this.miningFarmApi.fetchMiningFarmsByIds(miningFarmIds);
-    }
-
-    async fetchMiningFarmById(miningFarmId: string): Promise < MiningFarmEntity > {
-        const miningFarmEntities = await this.fetchMiningFarmsByIds([miningFarmId]);
+    async fetchMiningFarmById(miningFarmId: string, status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
+        const miningFarmEntities = await this.fetchMiningFarmsByIds([miningFarmId], status);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
     }
 
-    async fetchMiningFarmBySessionAccountId(): Promise < MiningFarmEntity > {
+    async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.sessionAccount = S.INT_TRUE;
+        miningFarmFilterModel.from = 0;
+        miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.status = status;
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;

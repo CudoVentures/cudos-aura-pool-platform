@@ -175,7 +175,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_CENTER}>
                                             <Button onClick={onClickCreateCollection} >
                                                 <Svg svg={AddIcon}/>
-                                    Create Collection
+                                            Create Collection
                                             </Button>
                                         </Actions>
                                     ) }
@@ -227,7 +227,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                                     <CollectionPreview
                                                         key={index}
                                                         collectionEntity={collectionEntity}
-                                                        miningFarmName={creditMiningFarmPageStore.getMiningFarmName(collectionEntity.farmId)} />
+                                                        miningFarmName={miningFarmEntity.name} />
                                                 )
                                             }) }
                                         </GridView>

@@ -85,9 +85,10 @@ export default class MarketplaceStore {
     }
 
     async fetchNewNftDrops() {
-        this.newNftDropsEntities = await this.nftRepo.fetchNewNftDrops();
+        const newNftDropsEntities = await this.nftRepo.fetchNewNftDrops();
 
         await this.fetchCollectionsForEntities(this.newNftDropsEntities);
+        this.newNftDropsEntities = newNftDropsEntities;
     }
 
     async fetchTrendingNfts() {

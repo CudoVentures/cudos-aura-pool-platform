@@ -1,3 +1,4 @@
+import S from '../../../core/utilities/Main';
 import { MiningFarmStatus } from '../entities/MiningFarmEntity';
 
 export enum MiningFarmHashPowerFilter {
@@ -18,22 +19,24 @@ export default class MiningFarmFilterModel {
     static SORT_KEY_NAME = 1;
     static SORT_KEY_POPULAR = 2;
 
-    sortKey: number;
+    miningFarmIds: string[];
+    status: MiningFarmStatus;
+    searchString: string;
+    sessionAccount: number;
     hashPowerFilter: MiningFarmHashPowerFilter;
     sortPriceDirection: MiningFarmPriceSortDirection;
-    searchString: string;
-    status: MiningFarmStatus;
-    sessionAccount: number;
+    sortKey: number;
     from: number;
     count: number;
 
     constructor() {
+        this.miningFarmIds = null;
         this.sortKey = MiningFarmFilterModel.SORT_KEY_NAME;
         this.hashPowerFilter = MiningFarmHashPowerFilter.NONE;
         this.sortPriceDirection = MiningFarmPriceSortDirection.NONE;
         this.searchString = '';
-        this.status = MiningFarmStatus.ANY;
-        this.sessionAccount = '';
+        this.status = MiningFarmStatus.APPROVED;
+        this.sessionAccount = S.INT_FALSE;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
     }
@@ -44,6 +47,7 @@ export default class MiningFarmFilterModel {
         }
 
         return {
+            miningFarmIds: entity.miningFarmIds,
             sortKey: entity.sortKey,
             hashPowerFilter: entity.hashPowerFilter,
             sortPriceDirection: entity.sortPriceDirection,
@@ -62,6 +66,7 @@ export default class MiningFarmFilterModel {
 
         const model = new MiningFarmFilterModel();
 
+        model.miningFarmIds = json.miningFarmIds ?? model.miningFarmIds;
         model.sortKey = parseInt(json.sortKey ?? model.sortKey);
         model.hashPowerFilter = parseInt(json.hashPowerFilter ?? model.hashPowerFilter);
         model.sortPriceDirection = parseInt(json.sortPriceDirection ?? model.sortPriceDirection);

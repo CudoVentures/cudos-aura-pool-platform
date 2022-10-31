@@ -35,7 +35,6 @@ import ExploreNftsPageStore from './features/nft/presentation/stores/ExploreNfts
 import EditMiningFarmModalStore from './features/mining-farm/presentation/stores/EditMiningFarmModalStore';
 import CreditMiningFarmDetailsPageStore from './features/mining-farm/presentation/stores/CreditMiningFarmDetailsPageStore';
 import SuperAdminApprovePageStore from './features/accounts/presentation/stores/SuperAdminApprovePageStore';
-import CreditCollectionNftsPageStore from './features/collection/presentation/stores/CreditCollectionNftsPageStore';
 import CreditCollectionStore from './features/collection/presentation/stores/CreditCollectionStore';
 import CreditCollectionSuccessModalStore from './features/collection/presentation/stores/CreditCollectionSuccessModalStore';
 import AnalyticsPageStore from './features/analytics/presentation/stores/AnalyticsPageStore';
@@ -75,7 +74,6 @@ const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, 
 const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, userRepo, poolEventRepo);
 const analyticsPageStore = new AnalyticsPageStore(poolEventRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo);
-const creditCollectionNftsPageStore = new CreditCollectionNftsPageStore(accountSessionStore, miningFarmRepo, collectionRepo);
 const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
 
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
@@ -122,7 +120,6 @@ const App = () => {
                 creditCollectionSuccessModalStore = { creditCollectionSuccessModalStore }
                 creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
                 superAdminApprovePageStore = { superAdminApprovePageStore }
-                creditCollectionNftsPageStore = { creditCollectionNftsPageStore }
                 creditCollectionStore = { creditCollectionStore }
                 analyticsPageStore = { analyticsPageStore }
 

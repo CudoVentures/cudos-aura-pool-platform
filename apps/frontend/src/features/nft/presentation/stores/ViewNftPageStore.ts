@@ -2,8 +2,8 @@ import S from '../../../../core/utilities/Main';
 import { makeAutoObservable, runInAction } from 'mobx';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity, { NftListinStatus } from '../../entities/NftEntity';
-import CollectionEntity from '../../../collection/entities/CollectionEntity';
-import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
+import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
+import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
@@ -59,10 +59,10 @@ export default class ViewNftPageStore {
         await this.bitcoinStore.init();
         await this.cudosStore.init();
 
-        this.nftEntity = await this.nftRepo.fetchNftById(nftId);
+        this.nftEntity = await this.nftRepo.fetchNftById(nftId, CollectionStatus.ANY);
 
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId);
-        this.miningFarm = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId, CollectionStatus.ANY);
+        this.miningFarm = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId, MiningFarmStatus.ANY);
 
         await this.fetch();
 

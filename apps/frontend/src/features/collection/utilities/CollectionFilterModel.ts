@@ -14,18 +14,20 @@ export default class CollectionFilterModel {
     static SORT_KEY_NAME = 1;
     static SORT_KEY_PRICE = 2;
 
-    sessionAccount: number;
+    collectionIds: string[];
+    status: CollectionStatus;
+    searchString: string;
+    // sessionAccount: number;
     farmId: string;
+    categoryIds: string[];
     sortKey: number;
     hashPowerFilter: CollectionHashPowerFilter;
-    searchString: string;
-    categoryIds: string[];
     from: number;
     count: number;
-    status: CollectionStatus;
 
     constructor() {
-        this.sessionAccount = S.INT_FALSE;
+        this.collectionIds = null;
+        // this.sessionAccount = S.INT_FALSE;
         this.farmId = '';
         this.hashPowerFilter = CollectionHashPowerFilter.NONE;
         this.sortKey = CollectionFilterModel.SORT_KEY_NAME;
@@ -38,9 +40,9 @@ export default class CollectionFilterModel {
         makeAutoObservable(this);
     }
 
-    markSessionAccount() {
-        this.sessionAccount = S.INT_TRUE;
-    }
+    // markSessionAccount() {
+    //     this.sessionAccount = S.INT_TRUE;
+    // }
 
     markAnyCollectins() {
         this.status = CollectionStatus.ANY;
@@ -52,7 +54,8 @@ export default class CollectionFilterModel {
         }
 
         return {
-            sessionAccount: model.sessionAccount,
+            collectionIds: model.collectionIds,
+            // sessionAccount: model.sessionAccount,
             farmId: model.farmId,
             sortKey: model.sortKey,
             hashPowerFilter: model.hashPowerFilter,
@@ -71,7 +74,8 @@ export default class CollectionFilterModel {
 
         const model = new CollectionFilterModel();
 
-        model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
+        model.collectionIds = json.collectionIds ?? model.collectionIds;
+        // model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
         model.farmId = (json.farmId ?? model.farmId).toString();
         model.sortKey = parseInt(json.sortKey ?? model.sortKey);
         model.hashPowerFilter = parseInt(json.hashPowerFilter ?? model.hashPowerFilter);
