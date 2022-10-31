@@ -27,7 +27,7 @@ export default class NftApi {
             ...nftFilterModel,
         } })
 
-        return data
+        return { nftEntities: data, total: data.length }
     }
 
 }
