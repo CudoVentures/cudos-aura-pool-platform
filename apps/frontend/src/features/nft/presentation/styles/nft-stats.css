@@ -1,0 +1,25 @@
+.NftStats {
+    gap: 24px;
+    align-items: center;
+}
+
+.NftStats .HistoryContainer {
+    width: 100%;
+    padding: 24px;
+    border: 1px solid var(--color-gray-060);
+    border-radius: 20px;
+}
+
+.NftStats .HistoryContainer .HistoryContainerHeader {
+    flex-grow: 1;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.NftStats .HistoryContainer .GapCnt {
+    gap: 8px
+}
+
+.NftStats .RewardsHistoryChart {
+    height: 380px;
+}

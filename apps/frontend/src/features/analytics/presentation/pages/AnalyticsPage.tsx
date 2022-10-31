@@ -10,7 +10,7 @@ import Select from '../../../../core/presentation/components/Select';
 import MenuItem from '@mui/material/MenuItem/MenuItem';
 import { EventTypeFilter } from '../../entities/CollectionEventFilterModel';
 import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
-import Table, { createTableCell, createTableRow } from '../../../../core/presentation/components/Table';
+import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import CollectionEventEntity from '../../entities/CollectionEventEntity';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import ExtendedChart, { createHeaderValueTab } from '../../../../core/presentation/components/ExtendedChart';
@@ -23,15 +23,7 @@ type Props = {
 
 const TABLE_LEGEND = ['Wallet Address', 'Last Activity', 'Item', 'Price', 'Quantity', 'To', 'Time'];
 const TABLE_WIDTHS = ['14%', '12%', '18%', '14%', '12%', '14%', '16%']
-const TABLE_ALINGS = [
-    ALIGN_LEFT,
-    ALIGN_LEFT,
-    ALIGN_LEFT,
-    ALIGN_LEFT,
-    ALIGN_LEFT,
-    ALIGN_LEFT,
-    ALIGN_LEFT,
-]
+const TABLE_ALINGS = [ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]
 
 function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
 
@@ -44,40 +36,37 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
     }, []);
 
     function renderCollectionsRows() {
-        const rows = [];
-
-        analyticsPageStore.collectionEventEntities.forEach((collectionEventEntity: CollectionEventEntity) => {
+        return analyticsPageStore.collectionEventEntities.map((collectionEventEntity: CollectionEventEntity) => {
             const collectionEntity = analyticsPageStore.getCollectionById(collectionEventEntity.collectionId);
-            const rowCells = [];
 
-            rowCells.push(createTableCell(<div className={'Bold Dots AddressCell'}>{collectionEventEntity.fromAddress}</div>, 0));
-            rowCells.push(createTableCell(collectionEventEntity.getEventActivityDisplayName(), 0));
-            rowCells.push(createTableCell(
-                <div className={'FlexRow ItemCell'}>
-                    <div className={'PicturePreview'}
-                        style={{
-                            backgroundImage: `url("${collectionEntity.profileImgUrl}")`,
-                        }}
-                    />
-                    <div>{collectionEntity.name}</div>
-                </div>,
-                0,
-            ));
-            rowCells.push(createTableCell(
-                <div className={'FlexColumn'}>
-                    <div className={'B2 Bold'}>{collectionEventEntity.getTransferPriceDisplay()}</div>
-                    <div className={'B3 SemiBold'}>{collectionEventEntity.getTransferPriceUsdDisplay(cudosStore.getCudosPrice())}</div>
-                </div>,
-                0,
-            ));
-            rowCells.push(createTableCell(collectionEventEntity.quantity, 0));
-            rowCells.push(createTableCell(<div className={'Bold Dots AddressCell'}>{collectionEventEntity.toAddress}</div>, 0));
-            rowCells.push(createTableCell(collectionEventEntity.getTimePassedDisplay(), 0));
-
-            rows.push(createTableRow(rowCells));
-        })
-
-        return rows;
+            return createTableRow([
+                createTableCell((
+                    <div className={'Bold Dots AddressCell'}>{collectionEventEntity.fromAddress}</div>
+                )),
+                createTableCellString(collectionEventEntity.getEventActivityDisplayName()),
+                createTableCell((
+                    <div className={'FlexRow ItemCell'}>
+                        <div className={'PicturePreview'}
+                            style={{
+                                backgroundImage: `url("${collectionEntity.profileImgUrl}")`,
+                            }}
+                        />
+                        <div>{collectionEntity.name}</div>
+                    </div>
+                )),
+                createTableCell((
+                    <div className={'FlexColumn'}>
+                        <div className={'B2 Bold'}>{collectionEventEntity.getTransferPriceDisplay()}</div>
+                        <div className={'B3 SemiBold'}>{collectionEventEntity.getTransferPriceUsdDisplay(cudosStore.getCudosPrice())}</div>
+                    </div>
+                )),
+                createTableCellString(collectionEventEntity.quantity.toString()),
+                createTableCell((
+                    <div className={'Bold Dots AddressCell'}>{collectionEventEntity.toAddress}</div>
+                )),
+                createTableCellString(collectionEventEntity.getTimePassedDisplay()),
+            ]);
+        });
     }
 
     return (
@@ -85,13 +74,15 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
             <PageAdminHeader />
             <div className={'PageContent AppContent FlexColumn'} >
                 <div className={'H2 Bold'}>Farm Analytics</div>
-                <ExtendedChart
-                    headerValueTabs={[
-                        createHeaderValueTab('Total Farm Sales', '$3.45k'),
-                        createHeaderValueTab('Total NFTs Sold', '34'),
-                    ]}
-                    extendedChartState={analyticsPageStore.extendedChartState}
-                />
+                <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
+                    <ExtendedChart
+                        className = { 'TheChart' }
+                        headerValueTabs={[
+                            createHeaderValueTab('Total Farm Sales', '$3.45k'),
+                            createHeaderValueTab('Total NFTs Sold', '34'),
+                        ]}
+                        extendedChartState={analyticsPageStore.extendedChartState} />
+                </StyledContainer>
                 <div className={'Grid GridColumns2 BalancesDataContainer'}>
                     <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
                         <div className={'B1 SemiBold'}>Wallet Balance</div>

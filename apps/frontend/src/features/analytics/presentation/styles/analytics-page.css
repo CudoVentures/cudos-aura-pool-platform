@@ -1,5 +1,10 @@
 .PageAnalytics .PageContent {
+    padding: 24px var(--page-spacing-h);
     gap: 24px;
+}
+
+.PageAnalytics .PageContent .TheChart {
+    height: 450px;
 }
 
 .PageAnalytics .PageContent .BalancesDataContainer {

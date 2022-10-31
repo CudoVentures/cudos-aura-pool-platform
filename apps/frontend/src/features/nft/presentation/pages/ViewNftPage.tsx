@@ -13,7 +13,7 @@ import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
-import NftViewHistory from '../components/NftViewHistory';
+import NftStats from '../components/NftStats';
 import Button from '../../../../core/presentation/components/Button';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
@@ -159,7 +159,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                             </div>
                             <div className={'H2 Bold'}>Description</div>
                             <div className={'Description B1'}>{collectionEntity.description}</div>
-                            <NftViewHistory viewNftPageStore = {viewNftPageStore}/>
+                            <NftStats viewNftPageStore = {viewNftPageStore}/>
                         </div>
 
                         <div className={'RightLayout FlexColumn'}>

@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react';
 import moment from 'moment';
-import { string } from 'prop-types';
 import React from 'react';
 import ProjectUtils from '../../utilities/ProjectUtils';
 import ExtendedChartState from '../stores/ExtendedChartState';
@@ -15,6 +14,7 @@ class HeaderValueTab {
 }
 
 type Props = {
+    className?: string;
     headerValueTabs?: HeaderValueTab[];
     headerItems?: any;
     extendedChartState: ExtendedChartState;
@@ -27,7 +27,7 @@ export function createHeaderValueTab(label: string, value: string): HeaderValueT
     return tab;
 }
 
-function ExtendedChart({ headerValueTabs, extendedChartState, headerItems }: Props) {
+function ExtendedChart({ className, headerValueTabs, extendedChartState, headerItems }: Props) {
 
     function getChartLabels(): string[] {
         if (extendedChartState.isStatsToday()) {
@@ -59,8 +59,9 @@ function ExtendedChart({ headerValueTabs, extendedChartState, headerItems }: Pro
 
         return [];
     }
+
     return (
-        <StyledContainer className={'ExtendedChart'} containerPadding={ContainerPadding.PADDING_24}>
+        <div className={`ExtendedChart FlexColumn ${className}`}>
             <div className={'GraphHeader FlexRow'}>
                 <div className={'FlexRow DataRow'}>
                     {headerValueTabs.map((headerValueTab: HeaderValueTab) => <div key={headerValueTab.label} className={'FlexColumn SingleDataColumn'}>
@@ -76,16 +77,18 @@ function ExtendedChart({ headerValueTabs, extendedChartState, headerItems }: Pro
                 ]} />
             </div>
             <Chart
+                className = { 'TheChart' }
                 labels = { getChartLabels() }
                 datasets = { [
                     createBarChartDataSet('set label 1', extendedChartState.statistics, '#30425A'),
                 ] }
                 type = { ChartType.BAR } />
-        </StyledContainer>
+        </div>
     )
 }
 
 ExtendedChart.defaultProps = {
+    className: '',
     headerValueTabs: [],
     headerItems: [],
 }

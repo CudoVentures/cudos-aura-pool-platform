@@ -1,25 +1,28 @@
-import { observer } from 'mobx-react';
 import React from 'react';
+import { inject, observer } from 'mobx-react';
+
 import ExtendedChart, { createHeaderValueTab } from '../../../../../core/presentation/components/ExtendedChart';
 import StyledContainer, { ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
+
 import UserProfilePageStore from '../../stores/UserProfilePageStore';
 
-import '../../styles/earnings-page.css';
+import '../../styles/my-earnings-tab.css';
 
 type Props = {
-    userProfilePageStore: UserProfilePageStore,
+    userProfilePageStore?: UserProfilePageStore,
 }
 
-function EarningsInfoPage({ userProfilePageStore }: Props) {
+function MyEarningsTab({ userProfilePageStore }: Props) {
     return (
-        <div className={'EarningsPage FlexColumn'}>
-            <ExtendedChart
-                headerValueTabs={[
-                    createHeaderValueTab('Total BTC Earnings', '$3.45k'),
-                    createHeaderValueTab('Total NFTs Bought', '34'),
-                ]}
-                extendedChartState={userProfilePageStore.extendedChartState}
-            />
+        <div className={'MyEarningsTab FlexColumn'}>
+            <StyledContainer containerPadding = { ContainerPadding.PADDING_24 }>
+                <ExtendedChart
+                    headerValueTabs={[
+                        createHeaderValueTab('Total BTC Earnings', '$3.45k'),
+                        createHeaderValueTab('Total NFTs Bought', '34'),
+                    ]}
+                    extendedChartState={userProfilePageStore.extendedChartState} />
+            </StyledContainer>
             <div className={'Grid GridColumns3 BalancesDataContainer'}>
                 <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
                     <div className={'B1 SemiBold'}>Wallet Balance</div>
@@ -56,4 +59,4 @@ function EarningsInfoPage({ userProfilePageStore }: Props) {
     )
 }
 
-export default observer(EarningsInfoPage);
+export default inject((stores) => stores)(observer(MyEarningsTab));

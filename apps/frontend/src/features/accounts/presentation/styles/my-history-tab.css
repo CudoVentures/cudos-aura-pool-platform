@@ -1,0 +1,26 @@
+.MyHistoryTab {
+    gap: 30px;
+}
+
+.MyHistoryTab .TableHeader {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.MyHistoryTab .TableHeader .TableFilter {
+    width: 20%;
+}
+
+.MyHistoryTab .ActivityOnCollections .AddressCell {
+    padding-right: 20px;
+}
+
+.MyHistoryTab .ActivityOnCollections .ItemCell {
+    gap: 10px;
+}
+
+.MyHistoryTab .ActivityOnCollections .PicturePreview {
+    width: 50px; height: 50px;
+    background-size: cover;
+    background-position: center;
+}

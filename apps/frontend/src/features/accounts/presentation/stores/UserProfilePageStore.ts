@@ -39,7 +39,6 @@ export default class UserProfilePageStore {
     analyticsTableState: TableState;
     collectionEventFilterModel: CollectionEventFilterModel;
     collectionEventEntities: CollectionEventEntity[];
-    collectionEntitiesDisplay: CollectionEntity[];
 
     constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, userRepo: UserRepo, poolEventRepo: PoolEventRepo) {
         this.walletStore = walletStore;
@@ -62,7 +61,6 @@ export default class UserProfilePageStore {
         this.analyticsTableState = new TableState(0, [], this.fetch, 10);
         this.collectionEventFilterModel = new CollectionEventFilterModel();
         this.collectionEventEntities = [];
-        this.collectionEntitiesDisplay = [];
 
         makeAutoObservable(this);
     }
@@ -71,38 +69,41 @@ export default class UserProfilePageStore {
         this.nftEntities = [];
         this.collectionEntitiesMap = null;
         this.collectionEventEntities = [];
-        this.collectionEntitiesDisplay = [];
 
         await this.fetch();
     }
 
     fetch = async () => {
+        const collectionIdsSet = new Set < string >();
+
         this.gridViewState.setIsLoading(true);
 
         this.nftFilterModel.from = this.gridViewState.getFrom();
         this.nftFilterModel.count = this.gridViewState.getItemsPerPage();
 
-        const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel);
-        const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(nftEntities.map((nftEntity: NftEntity) => {
-            return nftEntity.collectionId
-        }));
+        const fetchedNftEntities = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel);
+        fetchedNftEntities.nftEntities.forEach((nftEntity: NftEntity) => {
+            collectionIdsSet.add(nftEntity.collectionId);
+        });
 
+        const fetchedCollectionEventEntities = await this.poolEventRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
+        fetchedCollectionEventEntities.collectionEventEntities.forEach((collectionEventEntity) => {
+            collectionIdsSet.add(collectionEventEntity.collectionId);
+        });
+
+        const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(Array.from(collectionIdsSet));
         const collectionEntitiesMap = new Map();
         collectionEntities.forEach((collectionEntity) => {
             return collectionEntitiesMap.set(collectionEntity.id, collectionEntities);
         });
 
-        const eventFetchResult = await this.poolEventRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
-        const collectionEntitiesDisplay = await this.collectionRepo.fetchCollectionsByIds(eventFetchResult.collectionEventEntities.map((eventEntity: CollectionEventEntity) => eventEntity.collectionId));
-
         runInAction(() => {
-            this.nftEntities = nftEntities;
+            this.nftEntities = fetchedNftEntities.nftEntities;
             this.collectionEntitiesMap = collectionEntitiesMap;
-            this.collectionEntitiesDisplay = collectionEntitiesDisplay;
-            this.collectionEventEntities = eventFetchResult.collectionEventEntities;
-            this.analyticsTableState.tableFilterState.total = eventFetchResult.total;
+            this.collectionEventEntities = fetchedCollectionEventEntities.collectionEventEntities;
+            this.analyticsTableState.tableFilterState.total = fetchedCollectionEventEntities.total;
 
-            this.gridViewState.setTotalItems(total);
+            this.gridViewState.setTotalItems(fetchedNftEntities.total);
             this.gridViewState.setIsLoading(false);
             this.extendedChartState.init();
         });
@@ -112,27 +113,27 @@ export default class UserProfilePageStore {
         return this.userRepo.fetchUserEarningsStatistics(this.walletStore.address, timestamp);
     }
 
-    isNftPage(): boolean {
+    isMyNftTab(): boolean {
         return this.profilePage === ProfilePages.NFTS;
     }
 
-    isEarningsPage(): boolean {
+    isMyEarningsTab(): boolean {
         return this.profilePage === ProfilePages.EARNINGS;
     }
 
-    isHistoryPage(): boolean {
+    isMyHistoryTab(): boolean {
         return this.profilePage === ProfilePages.HISTORY;
     }
 
-    markNftPage = () => {
+    markMyNftTab = () => {
         this.profilePage = ProfilePages.NFTS;
     }
 
-    markEarningsPage = () => {
+    markMyEarningsTab = () => {
         this.profilePage = ProfilePages.EARNINGS;
     }
 
-    markHistoryPage = () => {
+    markMyHistoryTab = () => {
         this.profilePage = ProfilePages.HISTORY;
     }
 
@@ -140,13 +141,13 @@ export default class UserProfilePageStore {
         return this.collectionEntitiesMap.get(collectionId)?.name ?? '';
     }
 
+    getCollectionById(collectionId: string): CollectionEntity {
+        return this.collectionEntitiesMap.get(collectionId) ?? null;
+    }
+
     onChangeSortKey = (sortKey: number) => {
         this.nftFilterModel.sortKey = sortKey;
         this.fetch();
-    }
-
-    getCollectionById(collectionId: string): CollectionEntity {
-        return this.collectionEntitiesDisplay.find((collectionEntity: CollectionEntity) => collectionEntity.id === collectionId);
     }
 
     onChangeTableFilter = (value: number) => {

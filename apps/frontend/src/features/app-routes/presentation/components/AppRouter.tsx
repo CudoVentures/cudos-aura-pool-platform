@@ -25,7 +25,6 @@ import RegisterPage from '../../../accounts/presentation/pages/RegisterPage';
 import SuperAdminApprovePage from '../../../accounts/presentation/pages/SuperAdminApprovePage';
 import BitcoinConfirmPage from '../../../accounts/presentation/pages/BitcoinConfirmPage';
 import CreditMiningFarmDetailsPage from '../../../mining-farm/presentation/pages/CreditMiningFarmDetailsPage';
-import MiningFarmAnalyticsPage from '../../../mining-farm/presentation/pages/MiningFarmAnalyticsPage';
 import CreditCollectionDetailsPage from '../../../collection/presentation/pages/CreditCollectionDetailsPage';
 import ForgottenPassRequestPage from '../../../accounts/presentation/pages/ForgottenPassRequestPage';
 import ForgottenPassEditPage from '../../../accounts/presentation/pages/ForgottenPassEditPage';
@@ -124,18 +123,16 @@ function AppRouter({ accountSessionStore }: Props) {
                     { accountSessionStore.isAdmin() === true && (
                         <>
                             <Route path = { AppRoutes.CREDIT_MINING_FARM_DETAILS } element = { <CreditMiningFarmDetailsPage /> } />
-                            <Route path = { `${AppRoutes.FARM_ANALYTICS}` } element = { <AnalyticsPage /> } />
+                            <Route path = { AppRoutes.CREDIT_ACCOUNT_SETTINGS } element = { <CreditAccountSettings /> } />
                         </>
                     )}
 
                     { accountSessionStore.isAdmin() === true && accountSessionStore.hasApprovedMiningFarm() === true && (
                         <>
-                            <Route path = { AppRoutes.CREDIT_MINING_FARM_DETAILS } element = { <CreditMiningFarmDetailsPage /> } />
-                            <Route path = { AppRoutes.MINING_FARM_ANALYTICS } element = { <MiningFarmAnalyticsPage /> } />
                             <Route path = { `${AppRoutes.CREDIT_COLLECTION_NFTS}/:collectionId` } element = { <CreditCollectionDetailsPage /> } />
                             <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS}/:collectionId` } element = { <CreditCollectionDetailsPage /> } />
-                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS}` } element = { <CreditCollectionDetailsPage /> } />
-                            <Route path = { `${AppRoutes.CREDIT_ACCOUNT_SETTINGS}` } element = { <CreditAccountSettings /> } />
+                            <Route path = { AppRoutes.CREDIT_COLLECTION_DETAILS } element = { <CreditCollectionDetailsPage /> } />
+                            <Route path = { AppRoutes.FARM_ANALYTICS } element = { <AnalyticsPage /> } />
                         </>
                     ) }
                 </Routes>

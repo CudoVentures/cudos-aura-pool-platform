@@ -1,0 +1,16 @@
+
+.MyEarningsTab {
+    gap: 24px;
+}
+
+.MyEarningsTab .BalancesDataContainer {
+    gap: 24px;
+}
+
+.MyEarningsTab .BalancesDataContainer .BalanceColumn {
+    gap: 16px;
+}
+
+.MyEarningsTab .BalancesDataContainer .BalanceColumn .ValueColumn .SecondaryColor {
+    color: var(--color-gray-030);    
+}
