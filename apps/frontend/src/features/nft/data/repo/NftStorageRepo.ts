@@ -89,7 +89,7 @@ export default class NftStorageRepo implements NftRepo {
             });
         }
 
-        if (nftFilterModel.collectionIds.length !== 0) {
+        if (nftFilterModel.collectionIds !== null) {
             nftsSlice = nftsSlice.filter((json) => {
                 return nftFilterModel.collectionIds.includes(json.collectionId);
             });

@@ -72,7 +72,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         //     });
         // }
 
-        if (collectionFilterModel.farmId !== '') {
+        if (collectionFilterModel.farmId !== S.Strings.NOT_EXISTS) {
             collectionSlice = collectionSlice.filter((json) => {
                 return json.farmId === collectionFilterModel.farmId;
             });

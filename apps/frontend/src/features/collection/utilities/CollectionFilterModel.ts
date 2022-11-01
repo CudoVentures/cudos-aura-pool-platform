@@ -19,7 +19,6 @@ export default class CollectionFilterModel {
     searchString: string;
     // sessionAccount: number;
     farmId: string;
-    categoryIds: string[];
     sortKey: number;
     hashPowerFilter: CollectionHashPowerFilter;
     from: number;
@@ -27,15 +26,14 @@ export default class CollectionFilterModel {
 
     constructor() {
         this.collectionIds = null;
-        // this.sessionAccount = S.INT_FALSE;
-        this.farmId = '';
-        this.hashPowerFilter = CollectionHashPowerFilter.NONE;
-        this.sortKey = CollectionFilterModel.SORT_KEY_NAME;
+        this.status = CollectionStatus.APPROVED;
         this.searchString = '';
-        this.categoryIds = [];
+        // this.sessionAccount = S.INT_FALSE;
+        this.farmId = S.Strings.NOT_EXISTS;
+        this.sortKey = CollectionFilterModel.SORT_KEY_NAME;
+        this.hashPowerFilter = CollectionHashPowerFilter.NONE;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
-        this.status = CollectionStatus.APPROVED;
 
         makeAutoObservable(this);
     }
@@ -55,15 +53,14 @@ export default class CollectionFilterModel {
 
         return {
             collectionIds: model.collectionIds,
+            status: model.status,
+            searchString: model.searchString,
             // sessionAccount: model.sessionAccount,
             farmId: model.farmId,
             sortKey: model.sortKey,
             hashPowerFilter: model.hashPowerFilter,
-            searchString: model.searchString,
-            categoryIds: model.categoryIds,
             from: model.from,
             count: model.count,
-            status: model.status,
         }
     }
 
@@ -75,15 +72,14 @@ export default class CollectionFilterModel {
         const model = new CollectionFilterModel();
 
         model.collectionIds = json.collectionIds ?? model.collectionIds;
+        model.status = json.status ?? model.status;
+        model.searchString = json.searchString ?? model.searchString;
         // model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
         model.farmId = (json.farmId ?? model.farmId).toString();
         model.sortKey = parseInt(json.sortKey ?? model.sortKey);
         model.hashPowerFilter = parseInt(json.hashPowerFilter ?? model.hashPowerFilter);
-        model.searchString = json.searchString ?? model.searchString;
-        model.categoryIds = (json.categoryIds ?? model.categoryIds).map((j) => j.toString());
         model.from = parseInt(json.from ?? model.from);
         model.count = parseInt(json.count ?? model.count);
-        model.status = json.status ?? model.status;
 
         return model;
     }

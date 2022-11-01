@@ -21,27 +21,25 @@ export default class NftFilterModel {
     static SORT_KEY_POPULAR = 2;
 
     nftIds: string[];
+    collectionStatus: CollectionStatus;
+    collectionIds: string[];
+    searchString: string;
     sessionAccount: number;
-    categoryIds: string[];
     hashPowerFilter: NftHashPowerFilter;
     sortPriceDirection: NftPriceSortDirection;
     sortKey: number;
-    searchString: string;
-    collectionIds: string[];
-    collectionStatus: CollectionStatus;
     from: number;
     count: number;
 
     constructor() {
         this.nftIds = null;
+        this.collectionStatus = CollectionStatus.APPROVED;
+        this.collectionIds = null;
+        this.searchString = '';
         this.sessionAccount = S.INT_FALSE;
-        this.sortKey = NftFilterModel.SORT_KEY_NAME;
         this.hashPowerFilter = NftHashPowerFilter.NONE;
         this.sortPriceDirection = NftPriceSortDirection.NONE;
-        this.searchString = '';
-        this.collectionIds = [];
-        this.categoryIds = [];
-        this.collectionStatus = CollectionStatus.APPROVED;
+        this.sortKey = NftFilterModel.SORT_KEY_NAME;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
 
@@ -55,14 +53,13 @@ export default class NftFilterModel {
 
         return {
             nftIds: entity.nftIds,
+            collectionStatus: entity.collectionStatus,
+            collectionIds: entity.collectionIds,
+            searchString: entity.searchString,
             sessionAccount: entity.sessionAccount,
-            sortKey: entity.sortKey,
             hashPowerFilter: entity.hashPowerFilter,
             sortPriceDirection: entity.sortPriceDirection,
-            searchString: entity.searchString,
-            categoryIds: entity.categoryIds,
-            collectionIds: entity.collectionIds,
-            collectionStatus: entity.collectionStatus,
+            sortKey: entity.sortKey,
             from: entity.from,
             count: entity.count,
         }
@@ -76,14 +73,13 @@ export default class NftFilterModel {
         const model = new NftFilterModel();
 
         model.nftIds = json.nftIds ?? model.nftIds;
+        model.collectionStatus = json.collectionStatus ?? model.collectionStatus;
+        model.collectionIds = (json.collectionIds ?? model.collectionIds).map((j) => j.toString());
+        model.searchString = json.searchString ?? model.searchString;
         model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
-        model.sortKey = parseInt(json.sortKey ?? model.sortKey);
         model.hashPowerFilter = parseInt(json.hashPowerFilter ?? model.hashPowerFilter);
         model.sortPriceDirection = parseInt(json.sortPriceDirection ?? model.sortPriceDirection);
-        model.searchString = json.searchString ?? model.searchString;
-        model.categoryIds = (json.categoryIds ?? model.categoryIds).map((j) => j.toString());
-        model.collectionIds = (json.collectionIds ?? model.collectionIds).map((j) => j.toString());
-        model.collectionStatus = json.collectionStatus ?? model.collectionStatus;
+        model.sortKey = parseInt(json.sortKey ?? model.sortKey);
         model.from = parseInt(json.from ?? model.from);
         model.count = parseInt(json.count ?? model.count);
 
