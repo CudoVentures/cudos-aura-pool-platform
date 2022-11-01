@@ -115,7 +115,8 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
                                         <CollectionPreview
                                             key={collectionEntity.id}
                                             collectionEntity={collectionEntity}
-                                            miningFarmName={exploreCollectionsPageStore.getMiningFarmName(collectionEntity.farmId)} />
+                                            miningFarmName={exploreCollectionsPageStore.getMiningFarmName(collectionEntity.farmId)}
+                                            displayStatus = { false } />
                                     )
                                 }) }
                             </GridView>

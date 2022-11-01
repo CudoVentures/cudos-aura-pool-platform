@@ -78,6 +78,30 @@ export default class CollectionEntity {
 
     }
 
+    getStatusDisplayName(): string {
+        return CollectionEntity.getStatusDisplayName(this.status);
+    }
+
+    static getStatusDisplayName(status: CollectionStatus): string {
+        switch (status) {
+            case CollectionStatus.NOT_SUBMITTED:
+                return 'Not submitted';
+            case CollectionStatus.QUEUED:
+                return 'Queued';
+            case CollectionStatus.APPROVED:
+                return 'Approved';
+            case CollectionStatus.REJECTED:
+                return 'Rejected';
+            case CollectionStatus.ISSUED:
+                return 'Issued';
+            case CollectionStatus.DELETED:
+                return 'Deleted';
+            case CollectionStatus.ANY:
+            default:
+                return 'Any';
+        }
+    }
+
     static toJson(entity: CollectionEntity): any {
         if (entity === null) {
             return null;

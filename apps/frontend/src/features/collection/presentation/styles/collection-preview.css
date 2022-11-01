@@ -4,9 +4,19 @@
 }
 
 .CollectionPreview .CollectionPreviewImage {
-    width: 100%; height: 0; padding-bottom: 100%;
+    width: 100%; height: 0; padding-bottom: 135%;
+    position: relative;
     border-radius: 16px;
     margin-bottom: 16px;
+}
+
+.CollectionPreview .CollectionPreviewImage .CollectionStatusLabel {
+    position: absolute;
+    left: 10px; top: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #000;
 }
 
 .CollectionPreview .MiningFarmName {
@@ -24,3 +34,4 @@
     font-size: 18px; font-weight: 500;
     margin-bottom: 16px;
 }
+

@@ -227,7 +227,8 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                                     <CollectionPreview
                                                         key={index}
                                                         collectionEntity={collectionEntity}
-                                                        miningFarmName={miningFarmEntity.name} />
+                                                        miningFarmName={miningFarmEntity.name}
+                                                        displayStatus = { true } />
                                                 )
                                             }) }
                                         </GridView>
