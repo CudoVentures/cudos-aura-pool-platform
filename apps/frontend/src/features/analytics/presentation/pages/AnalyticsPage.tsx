@@ -48,10 +48,10 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                     <div className={'FlexRow ItemCell'}>
                         <div className={'PicturePreview'}
                             style={{
-                                backgroundImage: `url("${collectionEntity.profileImgUrl}")`,
+                                backgroundImage: `url("${collectionEntity?.profileImgUrl}")`,
                             }}
                         />
-                        <div>{collectionEntity.name}</div>
+                        <div>{collectionEntity?.name}</div>
                     </div>
                 )),
                 createTableCell((

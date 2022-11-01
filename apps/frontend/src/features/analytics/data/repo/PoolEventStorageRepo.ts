@@ -11,7 +11,7 @@ export default class PoolEventStorageRepo implements PoolEventRepo {
         for (let i = 0; i < 10; i++) {
             const collectionEventEntity = new CollectionEventEntity();
             collectionEventEntity.collectionEventId = `${i + 1}`;
-            collectionEventEntity.collectionId = `${i + 1}`;
+            collectionEventEntity.collectionId = '1';
             collectionEventEntity.fromAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
             collectionEventEntity.toAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
             collectionEventEntity.activity = 2;
