@@ -7,10 +7,14 @@ export default class SuperAdminEntity {
     accountId: string;
 
     constructor() {
-        this.superAdminId = '';
-        this.accountId = '';
+        this.superAdminId = S.Strings.NOT_EXISTS;
+        this.accountId = S.Strings.NOT_EXISTS;
 
         makeAutoObservable(this);
+    }
+
+    isNew(): boolean {
+        return this.superAdminId === S.Strings.NOT_EXISTS;
     }
 
     static toJson(model: SuperAdminEntity) {

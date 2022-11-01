@@ -25,7 +25,7 @@ export default class NftEntity {
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
-        this.collectionId = S.Strings.EMPTY;
+        this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPower = S.NOT_EXISTS;
         this.price = new BigNumber(S.NOT_EXISTS);
         this.imageUrl = S.Strings.EMPTY;
@@ -37,6 +37,10 @@ export default class NftEntity {
         this.maintenanceFee = new BigNumber(S.NOT_EXISTS);
 
         makeAutoObservable(this);
+    }
+
+    isNew(): boolean {
+        return this.id === S.Strings.NOT_EXISTS;
     }
 
     static toJson(entity: NftEntity): any {

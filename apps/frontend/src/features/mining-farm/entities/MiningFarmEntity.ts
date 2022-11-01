@@ -30,8 +30,8 @@ export default class MiningFarmEntity {
     status: MiningFarmStatus;
 
     constructor() {
-        this.id = S.Strings.EMPTY;
-        this.accountId = S.Strings.EMPTY;
+        this.id = S.Strings.NOT_EXISTS;
+        this.accountId = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.legalName = S.Strings.EMPTY;
         this.primaryAccountOwnerName = S.Strings.EMPTY;
@@ -54,7 +54,7 @@ export default class MiningFarmEntity {
     }
 
     isNew(): boolean {
-        return this.id === S.Strings.EMPTY;
+        return this.id === S.Strings.NOT_EXISTS;
     }
 
     isApproved(): boolean {

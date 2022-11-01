@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import S from '../../../core/utilities/Main';
 
 export default class AdminEntity {
 
@@ -8,12 +9,16 @@ export default class AdminEntity {
     bitcoinWalletAddress: string;
 
     constructor() {
-        this.adminId = '';
-        this.accountId = '';
+        this.adminId = S.Strings.NOT_EXISTS;
+        this.accountId = S.Strings.NOT_EXISTS;
         this.cudosWalletAddress = '';
         this.bitcoinWalletAddress = '';
 
         makeAutoObservable(this);
+    }
+
+    isNew(): boolean {
+        return this.adminId === S.Strings.NOT_EXISTS;
     }
 
     isBitcointAddressConfirmed(): boolean {
