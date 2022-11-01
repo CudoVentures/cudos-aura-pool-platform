@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import '../styles/analytics-page.css';
@@ -8,13 +8,18 @@ import StyledContainer, { ContainerPadding } from '../../../../core/presentation
 import AnalyticsPageStore from '../stores/AnalyticsPageStore';
 import Select from '../../../../core/presentation/components/Select';
 import MenuItem from '@mui/material/MenuItem/MenuItem';
-import { EventTypeFilter } from '../../entities/CollectionEventFilterModel';
 import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
-import CollectionEventEntity from '../../entities/CollectionEventEntity';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
-import ExtendedChart, { createHeaderValueTab } from '../../../../core/presentation/components/ExtendedChart';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import ChartHeading from '../components/ChartHeading';
+import ChartInfo from '../components/ChartInfo';
+import DailyChart from '../components/DailyChart';
+import DefaultIntervalPicker, { DefaultIntervalType } from '../components/DefaultIntervalPicker';
+import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
+import S from '../../../../core/utilities/Main';
+import NftEventEntity, { NftEventType } from '../../entities/NftEventEntity';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 type Props = {
     analyticsPageStore?: AnalyticsPageStore,
@@ -36,37 +41,53 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
     }, []);
 
     function renderCollectionsRows() {
-        return analyticsPageStore.collectionEventEntities.map((collectionEventEntity: CollectionEventEntity) => {
-            const collectionEntity = analyticsPageStore.getCollectionById(collectionEventEntity.collectionId);
+        return analyticsPageStore.nftEventEntities.map((nftEventEntity: NftEventEntity) => {
+            const nftEntity = analyticsPageStore.getNftById(nftEventEntity.nftId);
 
             return createTableRow([
                 createTableCell((
-                    <div className={'Bold Dots AddressCell'}>{collectionEventEntity.fromAddress}</div>
+                    <div className={'Bold Dots AddressCell'}>{nftEventEntity.fromAddress}</div>
                 )),
-                createTableCellString(collectionEventEntity.getEventActivityDisplayName()),
+                createTableCellString(nftEventEntity.getEventActivityDisplayName()),
                 createTableCell((
                     <div className={'FlexRow ItemCell'}>
-                        <div className={'PicturePreview'}
-                            style={{
-                                backgroundImage: `url("${collectionEntity?.profileImgUrl}")`,
-                            }}
-                        />
-                        <div>{collectionEntity?.name}</div>
+                        <div className={'PicturePreview'} style={ ProjectUtils.makeBgImgStyle(nftEntity?.imageUrl) } />
+                        <div>{nftEntity?.name}</div>
                     </div>
                 )),
                 createTableCell((
                     <div className={'FlexColumn'}>
-                        <div className={'B2 Bold'}>{collectionEventEntity.getTransferPriceDisplay()}</div>
-                        <div className={'B3 SemiBold'}>{collectionEventEntity.getTransferPriceUsdDisplay(cudosStore.getCudosPrice())}</div>
+                        <div className={'B2 Bold'}>{nftEventEntity.getTransferPriceDisplay()}</div>
+                        <div className={'B3 SemiBold'}>{nftEventEntity.getTransferPriceUsdDisplay()}</div>
                     </div>
                 )),
-                createTableCellString(collectionEventEntity.quantity.toString()),
+                createTableCellString(nftEventEntity.quantity.toString()),
                 createTableCell((
-                    <div className={'Bold Dots AddressCell'}>{collectionEventEntity.toAddress}</div>
+                    <div className={'Bold Dots AddressCell'}>{nftEventEntity.toAddress}</div>
                 )),
-                createTableCellString(collectionEventEntity.getTimePassedDisplay()),
+                createTableCellString(nftEventEntity.getTimePassedDisplay()),
             ]);
         });
+    }
+
+    const [defaultIntervalType, setDefaultIntervalType] = useState(DefaultIntervalType.TODAY);
+
+    function onClickToday() {
+        setDefaultIntervalType(DefaultIntervalType.TODAY);
+        analyticsPageStore.markEarningsTimestampToday();
+        analyticsPageStore.fetchEarnings();
+    }
+
+    function onClickWeek() {
+        setDefaultIntervalType(DefaultIntervalType.WEEK);
+        analyticsPageStore.markEarningsTimestampWeek();
+        analyticsPageStore.fetchEarnings();
+    }
+
+    function onClickMonth() {
+        setDefaultIntervalType(DefaultIntervalType.MONTH);
+        analyticsPageStore.markEarningsTimestampMonth();
+        analyticsPageStore.fetchEarnings();
     }
 
     return (
@@ -74,57 +95,80 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
             <PageAdminHeader />
             <div className={'PageContent AppContent FlexColumn'} >
                 <div className={'H2 Bold'}>Farm Analytics</div>
-                <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
-                    <ExtendedChart
-                        className = { 'TheChart' }
-                        headerValueTabs={[
-                            createHeaderValueTab('Total Farm Sales', '$3.45k'),
-                            createHeaderValueTab('Total NFTs Sold', '34'),
-                        ]}
-                        extendedChartState={analyticsPageStore.extendedChartState} />
-                </StyledContainer>
-                <div className={'Grid GridColumns2 BalancesDataContainer'}>
-                    <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
-                        <div className={'B1 SemiBold'}>Wallet Balance</div>
-                        <div className={'FlexColumn ValueColumn'}>
-                            <div>
-                                <span className={'H2 Bold'}>456,789<span className={'SecondaryColor'}>.123456</span></span>
-                                <span className={'H3 SecondaryColor'}> CUDOS</span>
-                            </div>
-                            <div className={'SecondaryColor H3 Bold'}>$345,678.00</div>
+
+                { analyticsPageStore.miningFarmEarningsEntity === null ? (
+                    <LoadingIndicator />
+                ) : (
+                    <>
+                        <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
+                            <ChartHeading
+                                leftContent = { (
+                                    <>
+                                        <ChartInfo label = { 'Total Farm Sales'} value = { '$3.45k' } />
+                                        <ChartInfo label = { 'Total NFTs Sold'} value = { '23' } />
+                                    </>
+                                ) }
+                                rightContent = { (
+                                    <DefaultIntervalPicker
+                                        selectedIntervalType = { defaultIntervalType }
+                                        onClickToday = { onClickToday }
+                                        onClickWeek = { onClickWeek }
+                                        onClickMonth = { onClickMonth } />
+                                ) } />
+                            <DailyChart
+                                timestampFrom = { analyticsPageStore.earningsTimestampFrom }
+                                timestampTo = { analyticsPageStore.earningsTimestampTo }
+                                data = { analyticsPageStore.miningFarmEarningsEntity.earningsPerDayInUsd } />
+                        </StyledContainer>
+                        <div className={'Grid GridColumns2 BalancesDataContainer'}>
+                            <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
+                                <div className={'B1 SemiBold'}>Wallet Balance</div>
+                                <div className={'FlexColumn ValueColumn'}>
+                                    <div>
+                                        <span className={'H2 Bold'}>456,789<span className={'SecondaryColor'}>.123456</span></span>
+                                        <span className={'H3 SecondaryColor'}> CUDOS</span>
+                                    </div>
+                                    <div className={'SecondaryColor H3 Bold'}>$345,678.00</div>
+                                </div>
+                            </StyledContainer>
+                            <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
+                                <div className={'B1 SemiBold'}>Maintenance Fee Deposited</div>
+                                <div className={'FlexColumn ValueColumn'}>
+                                    <div>
+                                        <span className={'H2 Bold'}>456,789<span className={'SecondaryColor'}>.123456</span></span>
+                                        <span className={'H3 SecondaryColor'}> CUDOS</span>
+                                    </div>
+                                    <div className={'SecondaryColor H3 Bold'}>$345,678.00</div>
+                                </div>
+                            </StyledContainer>
                         </div>
-                    </StyledContainer>
-                    <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
-                        <div className={'B1 SemiBold'}>Maintenance Fee Deposited</div>
-                        <div className={'FlexColumn ValueColumn'}>
-                            <div>
-                                <span className={'H2 Bold'}>456,789<span className={'SecondaryColor'}>.123456</span></span>
-                                <span className={'H3 SecondaryColor'}> CUDOS</span>
-                            </div>
-                            <div className={'SecondaryColor H3 Bold'}>$345,678.00</div>
+                    </>
+                ) }
+
+                { analyticsPageStore.nftEventEntities === null ? (
+                    <LoadingIndicator />
+                ) : (
+                    <StyledContainer className={'FlexColumn TableContainer'} containerPadding={ContainerPadding.PADDING_24}>
+                        <div className={'FlexRow TableHeader'}>
+                            <div className={'H3 Bold'}>Activity on Collections</div>
+                            <Select
+                                className={'TableFilter'}
+                                onChange={analyticsPageStore.onChangeTableFilter}
+                                value={analyticsPageStore.nftEventFilterModel.eventType} >
+                                <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
+                                <MenuItem value = { NftEventType.TRANSFER }> Transfer </MenuItem>
+                            </Select>
                         </div>
+                        <Table
+                            className={'ActivityOnCollections'}
+                            legend={TABLE_LEGEND}
+                            widths={TABLE_WIDTHS}
+                            aligns={TABLE_ALINGS}
+                            tableState={analyticsPageStore.analyticsTableState}
+                            rows={renderCollectionsRows()} />
                     </StyledContainer>
-                </div>
-                <StyledContainer className={'FlexColumn TableContainer'} containerPadding={ContainerPadding.PADDING_24}>
-                    <div className={'FlexRow TableHeader'}>
-                        <div className={'H3 Bold'}>Activity on Collections</div>
-                        <Select
-                            className={'TableFilter'}
-                            onChange={analyticsPageStore.onChangeTableFilter}
-                            value={analyticsPageStore.collectionEventFilterModel.eventType} >
-                            <MenuItem value = { EventTypeFilter.ALL }> All Event Types </MenuItem>
-                            <MenuItem value = { EventTypeFilter.TRANSFER }> Transfer </MenuItem>
-                        </Select>
-                    </div>
-                    <Table
-                        className={'ActivityOnCollections'}
-                        legend={TABLE_LEGEND}
-                        widths={TABLE_WIDTHS}
-                        aligns={TABLE_ALINGS}
-                        tableState={analyticsPageStore.analyticsTableState}
-                        rows={renderCollectionsRows()}
-                    />
-                </StyledContainer>
+                ) }
+
             </div>
             <PageFooter />
         </PageLayoutComponent>

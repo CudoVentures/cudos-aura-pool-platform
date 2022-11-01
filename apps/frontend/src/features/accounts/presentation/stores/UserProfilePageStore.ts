@@ -10,7 +10,7 @@ import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import ExtendedChartState from '../../../../core/presentation/stores/ExtendedChartState';
 import UserRepo from '../repos/UserRepo';
 import CollectionEventEntity from '../../../analytics/entities/CollectionEventEntity';
-import PoolEventRepo from '../../../analytics/presentation/repos/PoolEventRepo';
+import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
 import CollectionEventFilterModel from '../../../analytics/entities/CollectionEventFilterModel';
 import TableState from '../../../../core/presentation/stores/TableState';
 
@@ -26,7 +26,7 @@ export default class UserProfilePageStore {
     userRepo: UserRepo;
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
-    poolEventRepo: PoolEventRepo;
+    statisticsRepo: StatisticsRepo;
 
     profilePage: number;
     gridViewState: GridViewState;
@@ -40,13 +40,13 @@ export default class UserProfilePageStore {
     collectionEventFilterModel: CollectionEventFilterModel;
     collectionEventEntities: CollectionEventEntity[];
 
-    constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, userRepo: UserRepo, poolEventRepo: PoolEventRepo) {
+    constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, userRepo: UserRepo, statisticsRepo: StatisticsRepo) {
         this.walletStore = walletStore;
 
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
         this.userRepo = userRepo;
-        this.poolEventRepo = poolEventRepo;
+        this.statisticsRepo = statisticsRepo;
 
         this.profilePage = ProfilePages.NFTS;
         this.gridViewState = new GridViewState(this.fetch, 3, 4, 6)
@@ -86,7 +86,7 @@ export default class UserProfilePageStore {
             collectionIdsSet.add(nftEntity.collectionId);
         });
 
-        const fetchedCollectionEventEntities = await this.poolEventRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
+        const fetchedCollectionEventEntities = await this.statisticsRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
         fetchedCollectionEventEntities.collectionEventEntities.forEach((collectionEventEntity) => {
             collectionIdsSet.add(collectionEventEntity.collectionId);
         });

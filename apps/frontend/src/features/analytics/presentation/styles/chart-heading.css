@@ -1,0 +1,7 @@
+.ChartHeading {
+    margin-bottom: 16px;
+}
+
+.ChartHeading .ChartHeadingLeft, .ChartHeading .ChartHeadingRight {
+    gap: 24px;
+}

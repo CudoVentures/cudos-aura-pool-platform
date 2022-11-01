@@ -154,6 +154,45 @@ export default class ProjectUtils {
         return `${leftStr}...${rightStr}`;
     }
 
+    static makeTimestampsToday(): { timestampFrom: number, timestampTo: number } {
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        date.clearTime();
+        date.setTime(date.getTime() - 1);
+        const timestampTo = date.getTime();
+
+        date.setDate(date.getDate() - 1);
+        const timestampFrom = date.getTime();
+
+        return { timestampFrom, timestampTo };
+    }
+
+    static makeTimestampsWeek(): { timestampFrom: number, timestampTo: number } {
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        date.clearTime();
+        date.setTime(date.getTime() - 1);
+        const timestampTo = date.getTime();
+
+        date.setDate(date.getDate() - 7);
+        const timestampFrom = date.getTime();
+
+        return { timestampFrom, timestampTo };
+    }
+
+    static makeTimestampsMonth(): { timestampFrom: number, timestampTo: number } {
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        date.clearTime();
+        date.setTime(date.getTime() - 1);
+        const timestampTo = date.getTime();
+
+        date.setDate(date.getDate() - 30);
+        const timestampFrom = date.getTime();
+
+        return { timestampFrom, timestampTo };
+    }
+
 }
 
 function getQueryArray() {

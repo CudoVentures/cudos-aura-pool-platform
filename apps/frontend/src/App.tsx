@@ -38,7 +38,7 @@ import SuperAdminApprovePageStore from './features/accounts/presentation/stores/
 import CreditCollectionStore from './features/collection/presentation/stores/CreditCollectionStore';
 import CreditCollectionSuccessModalStore from './features/collection/presentation/stores/CreditCollectionSuccessModalStore';
 import AnalyticsPageStore from './features/analytics/presentation/stores/AnalyticsPageStore';
-import PoolEventStorageRepo from './features/analytics/data/repo/PoolEventStorageRepo';
+import StatisticsStorageRepo from './features/analytics/data/repo/StatisticsStorageRepo';
 import UserStorageRepo from './features/accounts/data/repo/UserStorageRepo';
 
 const storageHelper = new StorageHelper();
@@ -54,7 +54,7 @@ const miningFarmRepo = new MiningFarmStorageRepo(storageHelper);
 const collectionRepo = new CollectionStorageRepo(storageHelper);
 const nftRepo = new NftStorageRepo(storageHelper);
 const accountRepo = new AccountStorageRepo(storageHelper);
-const poolEventRepo = new PoolEventStorageRepo();
+const statisticsRepo = new StatisticsStorageRepo();
 const userRepo = new UserStorageRepo();
 
 const walletStore = new WalletStore();
@@ -71,8 +71,8 @@ const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
 const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, nftRepo, collectionRepo, miningFarmRepo);
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo);
-const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, userRepo, poolEventRepo);
-const analyticsPageStore = new AnalyticsPageStore(poolEventRepo, collectionRepo, miningFarmRepo);
+const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, userRepo, statisticsRepo);
+const analyticsPageStore = new AnalyticsPageStore(statisticsRepo, nftRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo);
 const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
 
@@ -121,9 +121,7 @@ const App = () => {
                 creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
                 superAdminApprovePageStore = { superAdminApprovePageStore }
                 creditCollectionStore = { creditCollectionStore }
-                analyticsPageStore = { analyticsPageStore }
-
-            >
+                analyticsPageStore = { analyticsPageStore } >
                 <BrowserRouter>
                     <AppRouter />
                 </BrowserRouter>

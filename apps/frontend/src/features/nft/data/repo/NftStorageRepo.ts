@@ -14,21 +14,22 @@ export default class NftStorageRepo implements NftRepo {
     }
 
     async fetchNftById(nftId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity > {
+        const nftEntities = await this.fetchNftByIds([nftId], status);
+        return nftEntities.length === 1 ? nftEntities[0] : null;
+    }
+
+    async fetchNftByIds(nftIds: string[], status?: CollectionStatus): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
-        nftFilterModel.from = 0;
-        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
-        nftFilterModel.nftIds = [nftId];
+        nftFilterModel.nftIds = nftIds;
         nftFilterModel.collectionStatus = status;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
-        return nftEntities.length === 1 ? nftEntities[0] : null;
+        return nftEntities;
     }
 
     async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
         // TO DO: sort by newest
-        nftFilterModel.from = 0;
-        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
         nftFilterModel.collectionStatus = status;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
@@ -38,8 +39,6 @@ export default class NftStorageRepo implements NftRepo {
     async fetchTrendingNfts(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
         // TO DO: sort by trending
-        nftFilterModel.from = 0;
-        nftFilterModel.count = Number.MAX_SAFE_INTEGER;
         nftFilterModel.collectionStatus = status;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
