@@ -11,6 +11,12 @@ export default class NftEarningsEntity {
         makeAutoObservable(this);
     }
 
+    getEarningsForChart(): number[] {
+        return this.earningsPerDayInBtc.map((earningsPerDay) => {
+            return earningsPerDay.toNumber();
+        });
+    }
+
     static toJson(entity: NftEarningsEntity) {
         if (entity === null) {
             return null;

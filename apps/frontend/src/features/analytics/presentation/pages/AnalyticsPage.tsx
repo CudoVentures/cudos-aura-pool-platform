@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../core/utilities/Main';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AnalyticsPageStore from '../stores/AnalyticsPageStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
-import NftEventEntity, { NftEventType } from '../../entities/NftEventEntity';
+import { NftEventType } from '../../entities/NftEventEntity';
 
 import MenuItem from '@mui/material/MenuItem/MenuItem';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 import Select from '../../../../core/presentation/components/Select';
-import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
-import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
 import ChartHeading from '../components/ChartHeading';
 import ChartInfo from '../components/ChartInfo';
 import DailyChart from '../components/DailyChart';
-import DefaultIntervalPicker, { DefaultIntervalType } from '../components/DefaultIntervalPicker';
+import DefaultIntervalPicker from '../components/DefaultIntervalPicker';
+import NftEventTable from '../components/NftEventTable';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/analytics-page.css';
@@ -28,13 +26,8 @@ type Props = {
     cudosStore?: CudosStore
 }
 
-const TABLE_LEGEND = ['Wallet Address', 'Last Activity', 'Item', 'Price', 'Quantity', 'To', 'Time'];
-const TABLE_WIDTHS = ['14%', '12%', '18%', '14%', '12%', '14%', '16%']
-const TABLE_ALINGS = [ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]
-
 function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
-    const [defaultIntervalType, setDefaultIntervalType] = useState(DefaultIntervalType.TODAY);
-    const miningFarmEarningsEntity = analyticsPageStore.miningFarmEarningsEntity;
+    const { miningFarmEarningsEntity, defaultIntervalPickerState } = analyticsPageStore;
 
     useEffect(() => {
         async function run() {
@@ -43,54 +36,6 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
         }
         run();
     }, []);
-
-    function onClickToday() {
-        setDefaultIntervalType(DefaultIntervalType.TODAY);
-        analyticsPageStore.markEarningsTimestampToday();
-        analyticsPageStore.fetchEarnings();
-    }
-
-    function onClickWeek() {
-        setDefaultIntervalType(DefaultIntervalType.WEEK);
-        analyticsPageStore.markEarningsTimestampWeek();
-        analyticsPageStore.fetchEarnings();
-    }
-
-    function onClickMonth() {
-        setDefaultIntervalType(DefaultIntervalType.MONTH);
-        analyticsPageStore.markEarningsTimestampMonth();
-        analyticsPageStore.fetchEarnings();
-    }
-
-    function renderCollectionsRows() {
-        return analyticsPageStore.nftEventEntities.map((nftEventEntity: NftEventEntity) => {
-            const nftEntity = analyticsPageStore.getNftById(nftEventEntity.nftId);
-
-            return createTableRow([
-                createTableCell((
-                    <div className={'Bold Dots AddressCell'}>{nftEventEntity.fromAddress}</div>
-                )),
-                createTableCellString(nftEventEntity.getEventActivityDisplayName()),
-                createTableCell((
-                    <div className={'FlexRow ItemCell'}>
-                        <div className={'PicturePreview'} style={ ProjectUtils.makeBgImgStyle(nftEntity?.imageUrl) } />
-                        <div>{nftEntity?.name}</div>
-                    </div>
-                )),
-                createTableCell((
-                    <div className={'FlexColumn'}>
-                        <div className={'B2 Bold'}>{nftEventEntity.getTransferPriceDisplay()}</div>
-                        <div className={'B3 SemiBold'}>{nftEventEntity.getTransferPriceUsdDisplay()}</div>
-                    </div>
-                )),
-                createTableCellString(nftEventEntity.quantity.toString()),
-                createTableCell((
-                    <div className={'Bold Dots AddressCell'}>{nftEventEntity.toAddress}</div>
-                )),
-                createTableCellString(nftEventEntity.getTimePassedDisplay()),
-            ]);
-        });
-    }
 
     return (
         <PageLayoutComponent className = { 'PageAnalytics' } >
@@ -111,15 +56,11 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                                     </>
                                 ) }
                                 rightContent = { (
-                                    <DefaultIntervalPicker
-                                        selectedIntervalType = { defaultIntervalType }
-                                        onClickToday = { onClickToday }
-                                        onClickWeek = { onClickWeek }
-                                        onClickMonth = { onClickMonth } />
+                                    <DefaultIntervalPicker defaultIntervalPickerState = { defaultIntervalPickerState } />
                                 ) } />
                             <DailyChart
-                                timestampFrom = { analyticsPageStore.earningsTimestampFrom }
-                                timestampTo = { analyticsPageStore.earningsTimestampTo }
+                                timestampFrom = { defaultIntervalPickerState.earningsTimestampFrom }
+                                timestampTo = { defaultIntervalPickerState.earningsTimestampTo }
                                 data = { miningFarmEarningsEntity.earningsPerDayInUsd } />
                         </StyledContainer>
                         <div className={'Grid GridColumns2 BalancesDataContainer'}>
@@ -162,13 +103,11 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                                 <MenuItem value = { NftEventType.MINT }> Mint </MenuItem>
                             </Select>
                         </div>
-                        <Table
+                        <NftEventTable
                             className={'ActivityOnCollections'}
-                            legend={TABLE_LEGEND}
-                            widths={TABLE_WIDTHS}
-                            aligns={TABLE_ALINGS}
                             tableState={analyticsPageStore.analyticsTableState}
-                            rows={renderCollectionsRows()} />
+                            nftEventEntities = { analyticsPageStore.nftEventEntities }
+                            getNftEntityById = { analyticsPageStore.getNftById } />
                     </StyledContainer>
                 ) }
 

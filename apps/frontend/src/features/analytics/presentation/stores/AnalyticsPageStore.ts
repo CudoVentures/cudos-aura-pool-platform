@@ -9,16 +9,16 @@ import NftEventFilterModel from '../../entities/NftEventFilterModel';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import DefaultIntervalPickerState from './DefaultIntervalPickerState';
 
 export default class AnalyticsPageStore {
+
     statisticsRepo: StatisticsRepo;
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
     miningFarmRepo: MiningFarmRepo;
 
-    earningsTimestampFrom: number;
-    earningsTimestampTo: number;
+    defaultIntervalPickerState: DefaultIntervalPickerState;
     miningFarmEarningsEntity: MiningFarmEarningsEntity;
 
     nftEventFilterModel: NftEventFilterModel;
@@ -32,9 +32,7 @@ export default class AnalyticsPageStore {
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
 
-        this.earningsTimestampFrom = 0;
-        this.earningsTimestampTo = 0;
-        this.markEarningsTimestampToday();
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchEarnings);
         this.miningFarmEarningsEntity = null;
 
         this.nftEventFilterModel = new NftEventFilterModel();
@@ -53,8 +51,9 @@ export default class AnalyticsPageStore {
         await this.fetchNftEvents();
     }
 
-    async fetchEarnings() {
-        this.miningFarmEarningsEntity = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.nftEventFilterModel.miningFarmId, this.earningsTimestampFrom, this.earningsTimestampTo);
+    fetchEarnings = async () => {
+        const defaultIntervalPickerState = this.defaultIntervalPickerState;
+        this.miningFarmEarningsEntity = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.nftEventFilterModel.miningFarmId, defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
     }
 
     fetchNftEvents = async () => {
@@ -68,45 +67,23 @@ export default class AnalyticsPageStore {
             return nftEventEntity.nftId;
         });
 
+        const nftEntitiesMap = this.nftEntitiesMap;
         if (nftIds.length > 0) {
             const nftEntities = await this.nftRepo.fetchNftByIds(nftIds);
 
-            const nftEntitiesMap = this.nftEntitiesMap;
-            this.nftEntitiesMap = null;
             nftEntities.forEach((nftEntity) => {
                 nftEntitiesMap.set(nftEntity.id, nftEntity);
-            });
-
-            runInAction(() => {
-                this.nftEntitiesMap = nftEntitiesMap;
             });
         }
 
         runInAction(() => {
+            this.nftEntitiesMap = nftEntitiesMap;
             this.nftEventEntities = nftEventEntities;
             this.analyticsTableState.tableFilterState.total = total;
         });
     }
 
-    markEarningsTimestampToday() {
-        const { timestampFrom, timestampTo } = ProjectUtils.makeTimestampsToday();
-        this.earningsTimestampFrom = timestampFrom;
-        this.earningsTimestampTo = timestampTo;
-    }
-
-    markEarningsTimestampWeek() {
-        const { timestampFrom, timestampTo } = ProjectUtils.makeTimestampsWeek();
-        this.earningsTimestampFrom = timestampFrom;
-        this.earningsTimestampTo = timestampTo;
-    }
-
-    markEarningsTimestampMonth() {
-        const { timestampFrom, timestampTo } = ProjectUtils.makeTimestampsMonth();
-        this.earningsTimestampFrom = timestampFrom;
-        this.earningsTimestampTo = timestampTo;
-    }
-
-    getNftById(nftId: string): NftEntity {
+    getNftById = (nftId: string): NftEntity => {
         return this.nftEntitiesMap.get(nftId) ?? null;
     }
 

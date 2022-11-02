@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 
 export default class UserEarningsEntity {
@@ -21,6 +22,22 @@ export default class UserEarningsEntity {
         this.btcEarnedInUsd = 0;
 
         makeAutoObservable(this);
+    }
+
+    formatTotalBtcEarningInUsd(): string {
+        return `${numeral(this.totalBtcEarningInUsd / 1000).format('$0,0.0')}k`;
+    }
+
+    formatBtcEarnedInBtc(): string {
+        return this.btcEarnedInBtc.toString();
+    }
+
+    formatBtcEarnedInUsd(): string {
+        return numeral(this.btcEarnedInUsd).format('$0,0.0');
+    }
+
+    formatTotalContractHashPowerInUsd(): string {
+        return numeral(this.totalContractHashPowerInUsd).format('$0,0.0');
     }
 
     static toJson(entity: UserEarningsEntity) {

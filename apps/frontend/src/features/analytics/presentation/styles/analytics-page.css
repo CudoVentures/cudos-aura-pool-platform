@@ -31,17 +31,3 @@
 .PageAnalytics .PageContent .TableContainer .TableHeader .TableFilter {
     width: 20%;
 }
-
-.PageAnalytics .PageContent .TableContainer .ActivityOnCollections .AddressCell {
-    padding-right: 20px;
-}
-
-.PageAnalytics .PageContent .TableContainer .ActivityOnCollections .ItemCell {
-    gap: 10px;
-}
-
-.PageAnalytics .PageContent .TableContainer .ActivityOnCollections .PicturePreview {
-    width: 50px; height: 50px;
-    background-size: cover;
-    background-position: center;
-}

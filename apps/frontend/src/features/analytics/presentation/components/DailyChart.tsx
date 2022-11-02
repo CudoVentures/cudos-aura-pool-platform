@@ -6,12 +6,13 @@ import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import '../styles/daily-chart.css';
 
 type Props = {
+    className?: string;
     timestampFrom: number,
     timestampTo: number,
     data: number[],
 }
 
-export default function DailyChart({ timestampFrom, timestampTo, data }: Props) {
+export default function DailyChart({ className, timestampFrom, timestampTo, data }: Props) {
 
     function calculatedLabels() {
         return data.map((number, i) => {
@@ -23,7 +24,7 @@ export default function DailyChart({ timestampFrom, timestampTo, data }: Props) 
 
     return (
         <Chart
-            className = { 'DailyChart' }
+            className = { `DailyChart ${className}` }
             labels = { calculatedLabels() }
             datasets = { [
                 createBarChartDataSet('', data, '#30425A'),
@@ -32,3 +33,7 @@ export default function DailyChart({ timestampFrom, timestampTo, data }: Props) 
     )
 
 }
+
+DailyChart.defaultProps = {
+    className: '',
+};

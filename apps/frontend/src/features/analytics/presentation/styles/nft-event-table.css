@@ -1,0 +1,13 @@
+.NftEventTable .AddressCell {
+    padding-right: 20px;
+}
+
+.NftEventTable .ItemCell {
+    gap: 10px;
+}
+
+.NftEventTable .PicturePreview {
+    width: 50px; height: 50px;
+    background-size: cover;
+    background-position: center;
+}

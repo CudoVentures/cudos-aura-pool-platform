@@ -1,40 +1,20 @@
 import React from 'react';
 import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
+import DefaultIntervalPickerState from '../stores/DefaultIntervalPickerState';
 
 import '../styles/default-interval-picker.css';
 
-export enum DefaultIntervalType {
-    TODAY = 1,
-    WEEK = 2,
-    MONTH = 3,
-}
-
 type Props = {
-    selectedIntervalType: DefaultIntervalType,
-    onClickToday: () => void;
-    onClickWeek: () => void;
-    onClickMonth: () => void;
+    defaultIntervalPickerState: DefaultIntervalPickerState;
 }
 
-export default function DefaultIntervalPicker({ selectedIntervalType, onClickToday, onClickWeek, onClickMonth }: Props) {
-
-    function isActiveToday() {
-        return selectedIntervalType === DefaultIntervalType.TODAY;
-    }
-
-    function isActiveWeek() {
-        return selectedIntervalType === DefaultIntervalType.WEEK;
-    }
-
-    function isActiveMonth() {
-        return selectedIntervalType === DefaultIntervalType.MONTH;
-    }
+export default function DefaultIntervalPicker({ defaultIntervalPickerState }: Props) {
 
     return (
         <NavRowTabs className = { 'DefaultIntervalPicker' } navTabs={[
-            createNavRowTab('Today', isActiveToday(), onClickToday),
-            createNavRowTab('7 Days', isActiveWeek(), onClickWeek),
-            createNavRowTab('30 Days', isActiveMonth(), onClickMonth),
+            createNavRowTab('Today', defaultIntervalPickerState.isActiveToday(), defaultIntervalPickerState.onChangeToday),
+            createNavRowTab('7 Days', defaultIntervalPickerState.isActiveWeek(), defaultIntervalPickerState.onChangeWeek),
+            createNavRowTab('30 Days', defaultIntervalPickerState.isActiveMonth(), defaultIntervalPickerState.onChangeMonth),
         ]} />
     )
 

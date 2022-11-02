@@ -7,12 +7,13 @@ import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
-import ExtendedChartState from '../../../../core/presentation/stores/ExtendedChartState';
 import UserRepo from '../repos/UserRepo';
-import CollectionEventEntity from '../../../analytics/entities/CollectionEventEntity';
 import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
-import CollectionEventFilterModel from '../../../analytics/entities/CollectionEventFilterModel';
 import TableState from '../../../../core/presentation/stores/TableState';
+import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
+import NftEventEntity from '../../../analytics/entities/NftEventEntity';
+import UserEarningsEntity from '../../../analytics/entities/UserEarningsEntity';
+import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 
 export enum ProfilePages {
     NFTS,
@@ -31,86 +32,116 @@ export default class UserProfilePageStore {
     profilePage: number;
     gridViewState: GridViewState;
     nftFilterModel: NftFilterModel;
-    extendedChartState: ExtendedChartState;
 
+    // my nfts tab
     nftEntities: NftEntity[];
     collectionEntitiesMap: Map < string, CollectionEntity >;
 
-    analyticsTableState: TableState;
-    collectionEventFilterModel: CollectionEventFilterModel;
-    collectionEventEntities: CollectionEventEntity[];
+    // earnings tab
+    defaultIntervalPickerState: DefaultIntervalPickerState;
+    userEarningsEntity: UserEarningsEntity;
+
+    // history tab
+    nftEventFilterModel: NftEventFilterModel;
+    nftEventEntities: NftEventEntity[];
+    nftEntitiesMap: Map < string, NftEntity >;
+    historyTableState: TableState;
 
     constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, userRepo: UserRepo, statisticsRepo: StatisticsRepo) {
         this.walletStore = walletStore;
-
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
         this.userRepo = userRepo;
         this.statisticsRepo = statisticsRepo;
 
         this.profilePage = ProfilePages.NFTS;
-        this.gridViewState = new GridViewState(this.fetch, 3, 4, 6)
-        this.extendedChartState = new ExtendedChartState(this.fetchStatistics);
-
+        this.gridViewState = new GridViewState(this.fetchMyNfts, 3, 4, 6)
         this.nftFilterModel = new NftFilterModel();
         this.nftFilterModel.sessionAccount = S.INT_TRUE;
 
-        this.nftEntities = [];
+        this.nftEntities = null;
         this.collectionEntitiesMap = null;
 
-        this.analyticsTableState = new TableState(0, [], this.fetch, 10);
-        this.collectionEventFilterModel = new CollectionEventFilterModel();
-        this.collectionEventEntities = [];
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchEarnings);
+        this.userEarningsEntity = null;
+
+        this.nftEventFilterModel = new NftEventFilterModel();
+        this.nftEventFilterModel.sessionAccount = S.INT_TRUE;
+        this.nftEventEntities = null;
+        this.nftEntitiesMap = new Map();
+        this.historyTableState = new TableState(0, [], this.fetchHistory, 10);
 
         makeAutoObservable(this);
     }
 
     async init() {
-        this.nftEntities = [];
-        this.collectionEntitiesMap = null;
-        this.collectionEventEntities = [];
-
-        await this.fetch();
+        await this.fetchMyNfts();
+        await this.fetchEarnings();
+        await this.fetchHistory();
     }
 
-    fetch = async () => {
-        const collectionIdsSet = new Set < string >();
-
+    fetchMyNfts = async () => {
         this.gridViewState.setIsLoading(true);
 
         this.nftFilterModel.from = this.gridViewState.getFrom();
         this.nftFilterModel.count = this.gridViewState.getItemsPerPage();
 
         const fetchedNftEntities = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel);
-        fetchedNftEntities.nftEntities.forEach((nftEntity: NftEntity) => {
-            collectionIdsSet.add(nftEntity.collectionId);
+        const collectionIds = fetchedNftEntities.nftEntities.filter((nftEntity) => {
+            return this.collectionEntitiesMap.has(nftEntity.collectionId) === false;
+        }).map((nftEntity) => {
+            return nftEntity.collectionId;
         });
 
-        const fetchedCollectionEventEntities = await this.statisticsRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
-        fetchedCollectionEventEntities.collectionEventEntities.forEach((collectionEventEntity) => {
-            collectionIdsSet.add(collectionEventEntity.collectionId);
-        });
-
-        const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(Array.from(collectionIdsSet));
-        const collectionEntitiesMap = new Map();
-        collectionEntities.forEach((collectionEntity) => {
-            return collectionEntitiesMap.set(collectionEntity.id, collectionEntities);
-        });
+        const collectionEntitiesMap = this.collectionEntitiesMap;
+        if (collectionIds.length > 0) {
+            const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(collectionIds);
+            collectionEntities.forEach((collectionEntity) => {
+                collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
+            });
+        }
 
         runInAction(() => {
-            this.nftEntities = fetchedNftEntities.nftEntities;
+            this.collectionEntitiesMap = null;
             this.collectionEntitiesMap = collectionEntitiesMap;
-            this.collectionEventEntities = fetchedCollectionEventEntities.collectionEventEntities;
-            this.analyticsTableState.tableFilterState.total = fetchedCollectionEventEntities.total;
-
+            this.nftEntities = fetchedNftEntities.nftEntities;
             this.gridViewState.setTotalItems(fetchedNftEntities.total);
             this.gridViewState.setIsLoading(false);
-            this.extendedChartState.init();
         });
     }
 
-    fetchStatistics = (timestamp: number): Promise < number[] > => {
-        return this.userRepo.fetchUserEarningsStatistics(this.walletStore.address, timestamp);
+    fetchEarnings = async (): Promise < void > => {
+        const defaultIntervalPickerState = this.defaultIntervalPickerState;
+        this.userEarningsEntity = await this.statisticsRepo.fetchNftEarningsBySessionAccount(defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+    }
+
+    fetchHistory = async () => {
+        this.nftEventFilterModel.from = this.historyTableState.tableFilterState.from;
+        this.nftEventFilterModel.count = this.historyTableState.tableFilterState.itemsPerPage;
+        const { nftEventEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
+
+        const nftIds = nftEventEntities.filter((nftEventEntity) => {
+            return this.nftEntitiesMap.has(nftEventEntity.nftId) === false;
+        }).map((nftEventEntity) => {
+            return nftEventEntity.nftId;
+        });
+
+        const nftEntitiesMap = this.nftEntitiesMap;
+        if (nftIds.length > 0) {
+            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds);
+
+            nftEntities.forEach((nftEntity) => {
+                nftEntitiesMap.set(nftEntity.id, nftEntity);
+            });
+        }
+
+        runInAction(() => {
+            this.nftEntitiesMap = null;
+            this.nftEntitiesMap = nftEntitiesMap;
+
+            this.nftEventEntities = nftEventEntities;
+            this.historyTableState.tableFilterState.total = total;
+        });
     }
 
     isMyNftTab(): boolean {
@@ -147,10 +178,14 @@ export default class UserProfilePageStore {
 
     onChangeSortKey = (sortKey: number) => {
         this.nftFilterModel.sortKey = sortKey;
-        this.fetch();
+        this.fetchMyNfts();
     }
 
     onChangeTableFilter = (value: number) => {
-        this.collectionEventFilterModel.eventType = value;
+        this.nftEventFilterModel.eventType = value;
+    }
+
+    getNftEntityById = (nftId: string): NftEntity => {
+        return this.nftEntitiesMap.get(nftId);
     }
 }

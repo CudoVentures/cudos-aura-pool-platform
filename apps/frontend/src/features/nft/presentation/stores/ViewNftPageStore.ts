@@ -1,7 +1,7 @@
 import S from '../../../../core/utilities/Main';
 import { makeAutoObservable, runInAction } from 'mobx';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
-import NftEntity, { NftListinStatus } from '../../entities/NftEntity';
+import NftEntity from '../../entities/NftEntity';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
@@ -10,7 +10,18 @@ import CollectionRepo from '../../../collection/presentation/repos/CollectionRep
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
-import ExtendedChartState from '../../../../core/presentation/stores/ExtendedChartState';
+import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
+import NftEarningsEntity from '../../../analytics/entities/NftEarningsEntity';
+import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
+import TableState from '../../../../core/presentation/stores/TableState';
+import NftEventEntity from '../../../analytics/entities/NftEventEntity';
+import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
+
+enum StatsTabs {
+    EARNINGS = 0,
+    INFO = 1,
+    HISTORY = 2,
+}
 
 export default class ViewNftPageStore {
 
@@ -20,57 +31,73 @@ export default class ViewNftPageStore {
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
     miningFarmRepo: MiningFarmRepo;
-    gridViewState: GridViewState;
+    statisticsRepo: StatisticsRepo;
 
-    extendedChartState: ExtendedChartState;
     cudosPrice: number;
     bitcoinPrice: number;
+    statsTab: StatsTabs;
+
     nftEntity: NftEntity;
     collectionEntity: CollectionEntity;
-    miningFarm: MiningFarmEntity;
+    miningFarmEntity: MiningFarmEntity;
     nftEntities: NftEntity[];
+    gridViewState: GridViewState;
 
-    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
+    defaultIntervalPickerState: DefaultIntervalPickerState;
+    nftEarningsEntity: NftEarningsEntity;
+
+    nftEventFilterModel: NftEventFilterModel;
+    nftEventEntities: NftEventEntity[];
+    historyTableState: TableState;
+
+    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo) {
         this.bitcoinStore = bitcoinStore;
         this.cudosStore = cudosStore;
 
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
+        this.statisticsRepo = statisticsRepo;
 
-        this.extendedChartState = new ExtendedChartState(this.fetchStatistics);
-        this.gridViewState = new GridViewState(this.fetch, 3, 4, 2);
-
-        this.resetDefaults();
-
-        makeAutoObservable(this);
-    }
-
-    resetDefaults() {
         this.cudosPrice = S.NOT_EXISTS;
         this.bitcoinPrice = S.NOT_EXISTS;
+        this.statsTab = StatsTabs.EARNINGS;
+
         this.nftEntity = null;
         this.collectionEntity = null;
-        this.miningFarm = null;
+        this.miningFarmEntity = null;
         this.nftEntities = null;
+        this.gridViewState = new GridViewState(this.fetchNftsInTheCollection, 3, 4, 2);
+
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchEarnings);
+        this.nftEarningsEntity = null;
+
+        this.nftEventFilterModel = new NftEventFilterModel();
+        this.nftEventEntities = null;
+        this.historyTableState = new TableState(0, [], this.fetchHistory, 10);
+
+        makeAutoObservable(this);
     }
 
     async init(nftId: string) {
         await this.bitcoinStore.init();
         await this.cudosStore.init();
 
-        this.nftEntity = await this.nftRepo.fetchNftById(nftId, CollectionStatus.ANY);
-
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId, CollectionStatus.ANY);
-        this.miningFarm = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId, MiningFarmStatus.ANY);
-
-        await this.fetch();
-
         this.cudosPrice = this.cudosStore.getCudosPrice();
         this.bitcoinPrice = this.bitcoinStore.getBitcoinPrice();
+
+        this.nftEntity = await this.nftRepo.fetchNftById(nftId, CollectionStatus.ANY);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId, CollectionStatus.ANY);
+        this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId, MiningFarmStatus.ANY);
+
+        this.nftEventFilterModel.nftId = this.nftEntity.id;
+
+        await this.fetchNftsInTheCollection();
+        await this.fetchEarnings();
+        await this.fetchHistory();
     }
 
-    fetch = async () => {
+    fetchNftsInTheCollection = async () => {
         const nftFilterModel = new NftFilterModel();
         nftFilterModel.collectionIds = [this.nftEntity.collectionId];
         nftFilterModel.from = this.gridViewState.getFrom();
@@ -80,28 +107,54 @@ export default class ViewNftPageStore {
         runInAction(() => {
             this.nftEntities = nftEntities;
             this.gridViewState.setTotalItems(total);
-            this.extendedChartState.init();
         });
     }
 
-    // TODO: get from repo
-    fetchStatistics = async (timestamp: number): Promise < number[] > => {
-        return [100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323, 100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323];
+    fetchEarnings = async () => {
+        this.nftEarningsEntity = await this.statisticsRepo.fetchNftEarningsByNftId(this.nftEntity.id, this.defaultIntervalPickerState.earningsTimestampFrom, this.defaultIntervalPickerState.earningsTimestampTo);
+    }
+
+    fetchHistory = async () => {
+        this.nftEventFilterModel.from = this.historyTableState.tableFilterState.from;
+        this.nftEventFilterModel.count = this.historyTableState.tableFilterState.itemsPerPage;
+        const { nftEventEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
+
+        runInAction(() => {
+            this.nftEventEntities = nftEventEntities;
+            this.historyTableState.tableFilterState.total = total;
+        });
+    }
+
+    isTabEarnings(): boolean {
+        return this.statsTab === StatsTabs.EARNINGS;
+    }
+
+    isTabInfo(): boolean {
+        return this.statsTab === StatsTabs.INFO;
+    }
+
+    isTabHistory(): boolean {
+        return this.statsTab === StatsTabs.HISTORY;
+    }
+
+    onChangeTabEarnings = () => {
+        this.statsTab = StatsTabs.EARNINGS;
+    }
+
+    onChangeTabInfo = () => {
+        this.statsTab = StatsTabs.INFO;
+    }
+
+    onChangeTabHistory = () => {
+        this.statsTab = StatsTabs.HISTORY;
     }
 
     getNftPriceText() {
-        if (this.isNftListed() === false) {
+        if (this.nftEntity.isStatusListed() === false) {
             return 'Not for sale';
         }
 
         return `${this.nftEntity.price.multipliedBy(this.cudosPrice).toFixed(2)}`;
     }
 
-    isNftListed() {
-        return this.nftEntity.listingStatus === NftListinStatus.LISTED;
-    }
-
-    isOwner(address: string) {
-        return this.nftEntity.currentOwnerAddress === address;
-    }
 }

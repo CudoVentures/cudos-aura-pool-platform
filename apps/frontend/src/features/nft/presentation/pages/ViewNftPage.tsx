@@ -74,7 +74,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
     function getGeneralDataPreviews() {
         const generalDatapreviews = [];
 
-        generalDatapreviews.push(createDataPreview('Listing Status', nftEntity.listingStatus === S.INT_TRUE ? 'Active' : 'Not Listed'));
+        generalDatapreviews.push(createDataPreview('Listing Status', nftEntity.isStatusListed() === true ? 'Active' : 'Not Listed'));
         generalDatapreviews.push(createDataPreview('Sining Farm', nftEntity.name));
         generalDatapreviews.push(createDataPreview('Collection', collectionEntity.name));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.getExpiryDisplay()));
@@ -191,16 +191,20 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                             <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
                                 { walletStore.isConnected() && (
                                     <>
-                                        { viewNftPageStore.isNftListed() === true && (
+                                        { nftEntity.isStatusListed() === true ? (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                                                 <Button onClick={onClickBuyNft}>Buy now for {nftEntity.price.toFixed(0)} CUDOS </Button>
                                             </Actions>
+                                        ) : (
+                                            <>
+                                                { nftEntity.isOwnedByAddress(walletStore.getAddress()) && (
+                                                    <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                                        <Button onClick={onClickResellNft}>Resell NFT</Button>
+                                                    </Actions>
+                                                ) }
+                                            </>
                                         ) }
-                                        { viewNftPageStore.isNftListed() === false && viewNftPageStore.isOwner(walletStore.getAddress()) && (
-                                            <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                <Button onClick={onClickResellNft}>Resell NFT</Button>
-                                            </Actions>
-                                        ) }
+
                                     </>
                                 ) }
                             </DataPreviewLayout>
