@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 
 export default class MiningFarmEarningsEntity {
@@ -17,6 +18,23 @@ export default class MiningFarmEarningsEntity {
         this.earningsPerDayInUsd = [];
 
         makeAutoObservable(this);
+    }
+
+    formatTotalFarmSalesInUsd(): string {
+        return `${numeral(this.totalFarmSalesInUsd / 1000).format('$0,0.0')}k`;
+    }
+
+    formatMaintenanceFeeDepositedInCudosInt(): string {
+        const value = this.maintenanceFeeDepositedInCudos.toFixed(0)
+        return numeral(value).format('0,0');
+    }
+
+    formatMaintenanceFeeDepositedInCudosFraction(): string {
+        return this.maintenanceFeeDepositedInCudos.minus(this.maintenanceFeeDepositedInCudos.integerValue()).toFixed();
+    }
+
+    formatMaintenanceFeeDepositedInUsd(): string {
+        return numeral(this.maintenanceFeeDepositedInUsd).format('$0,0');
     }
 
     static toJson(entity: MiningFarmEarningsEntity) {

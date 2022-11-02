@@ -17,10 +17,9 @@ export default class AnalyticsPageStore {
     collectionRepo: CollectionRepo;
     miningFarmRepo: MiningFarmRepo;
 
-    miningFarmEarningsEntity: MiningFarmEarningsEntity;
-
     earningsTimestampFrom: number;
     earningsTimestampTo: number;
+    miningFarmEarningsEntity: MiningFarmEarningsEntity;
 
     nftEventFilterModel: NftEventFilterModel;
     nftEventEntities: NftEventEntity[];
@@ -33,11 +32,10 @@ export default class AnalyticsPageStore {
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
 
-        this.miningFarmEarningsEntity = null;
-
         this.earningsTimestampFrom = 0;
         this.earningsTimestampTo = 0;
         this.markEarningsTimestampToday();
+        this.miningFarmEarningsEntity = null;
 
         this.nftEventFilterModel = new NftEventFilterModel();
         this.nftEventEntities = null;

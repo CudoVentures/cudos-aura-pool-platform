@@ -4,6 +4,7 @@ import S from '../../../core/utilities/Main';
 
 export enum NftEventType {
     TRANSFER = 1,
+    MINT = 2,
 }
 
 export default class NftEventEntity {
