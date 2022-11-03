@@ -1,0 +1,8 @@
+.CreditCollectionDetailsStep {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 70px;
+}
+
+.CreditCollectionDetailsStep .FormContainer .FormNav {
+    margin-bottom: 50px;
+}

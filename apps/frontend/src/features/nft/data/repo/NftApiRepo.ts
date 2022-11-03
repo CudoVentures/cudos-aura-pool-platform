@@ -17,7 +17,7 @@ export default class NftApiRepo implements NftRepo {
         return nftEntities.length === 1 ? nftEntities[0] : null;
     }
 
-    async fetchNftByIds(nftIds: string[], status?: CollectionStatus): Promise < NftEntity[] > {
+    async fetchNftByIds(nftIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
         nftFilterModel.nftIds = nftIds;
         nftFilterModel.collectionStatus = status;

@@ -1,10 +1,13 @@
 import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
 import S from '../../../../../core/utilities/Main';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
+import AlertStore from '../../../../../core/presentation/stores/AlertStore';
+import AppRoutes from '../../../../app-routes/entities/AppRoutes';
 
 import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
@@ -18,23 +21,32 @@ import FieldColumnWrapper from '../../../../../core/presentation/components/Fiel
 
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import '../../styles/collection-details-form.css';
+import '../../styles/credit-collection-details-form.css';
 
 type Props = {
-    onClickNextStep: () => void
+    alertStore?: AlertStore;
     creditCollectionStore?: CreditCollectionStore;
 }
 
-function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props) {
+function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Props) {
+    const navigate = useNavigate();
+
     const collectionEntity = creditCollectionStore.collectionEntity;
     const validationState = useRef(new ValidationState()).current;
     const collectionNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
-    const collectionPayoutAddressValidation = useRef(validationState.addCudosAddressValidation('Empty payout address')).current;
+    const collectionPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Empty payout address')).current;
     const collectionHashPowerPerNftValidation = useRef(validationState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationState.addEmptyValidation('Empty price per nft')).current;
+
+    async function onClickFinishEdit() {
+        await creditCollectionStore.onClickSave();
+        alertStore.show('Your collection has been updated', () => {
+            navigate(AppRoutes.CREDIT_MINING_FARM);
+        });
+    }
 
     function onClickNextStepButton() {
         if (validationState.getIsErrorPresent() === true) {
@@ -43,11 +55,11 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
         }
 
         creditCollectionStore.initNewNftEntity();
-        onClickNextStep();
+        creditCollectionStore.moveToStepAddNfts();
     }
 
     return (
-        <div className={'CollectionDetailsForm FlexColumn'}>
+        <div className={'CreditCollectionDetailsForm FlexColumn'}>
             <div className={'H3 Bold'}>Create Collecton</div>
             <div className={'B1'}>Fill in the needed information for the collection</div>
             <div className={'HorizontalSeparator'}></div>
@@ -187,10 +199,14 @@ function CollectionDetailsForm({ onClickNextStep, creditCollectionStore }: Props
                 onChange={creditCollectionStore.onChangePricePerNft} />
 
             <Actions layout={ActionsLayout.LAYOUT_COLUMN_RIGHT}>
-                <Button padding={ButtonPadding.PADDING_48} onClick={onClickNextStepButton}>Next Step</Button>
+                { creditCollectionStore.isEditMode() === true ? (
+                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickFinishEdit}>Save</Button>
+                ) : (
+                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickNextStepButton}>Next Step</Button>
+                ) }
             </Actions>
         </div>
     )
 }
 
-export default inject((stores) => stores)(observer(CollectionDetailsForm));
+export default inject((stores) => stores)(observer(CreditCollectionDetailsForm));

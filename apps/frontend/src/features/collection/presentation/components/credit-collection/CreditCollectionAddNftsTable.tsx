@@ -12,32 +12,26 @@ import TableState from '../../../../../core/presentation/stores/TableState';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 
+import '../../styles/credit-collection-add-nfts-table.css';
+
 type Props = {
     creditCollectionStore?: CreditCollectionStore;
 }
 
-function CollectionAddNftsTable({ creditCollectionStore }: Props) {
+function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
     const collectionName = creditCollectionStore.collectionEntity.name;
     const nftEntities = creditCollectionStore.nftEntities;
 
     const TABLE_LEGEND = ['NFT', 'Name', 'Collection', 'Hashing Power', 'Price', 'Maintenance Fee', 'Action'];
     const TABLE_WIDTHS = ['5%', '15%', '17%', '12%', '12%', '12%', '12%', '15%']
-    const TABLE_ALINGS = [
-        ALIGN_LEFT,
-        ALIGN_LEFT,
-        ALIGN_LEFT,
-        ALIGN_LEFT,
-        ALIGN_LEFT,
-        ALIGN_CENTER,
-        ALIGN_LEFT,
-    ]
+    const TABLE_ALINGS = [ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_CENTER, ALIGN_LEFT];
 
     function renderFarmsRows() {
         const rows = [];
 
         nftEntities.forEach((nftEntity) => {
             const rowCells = [
-                createTableCell(<div className={'NftTableImage'} style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl)} />),
+                createTableCell(<div className={'NftTableImage ImgContainNode'} style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl)} />),
                 createTableCell(nftEntity.name),
                 createTableCell(collectionName),
                 createTableCell(nftEntity.getHashPowerDisplay()),
@@ -63,7 +57,7 @@ function CollectionAddNftsTable({ creditCollectionStore }: Props) {
     }
 
     return (
-        <div className = { 'CollectionAddNftsTable' }>
+        <div className = { 'CreditCollectionAddNftsTable' }>
             <div className={'H2 Bold'}>Added NFTs ({nftEntities.length})</div>
             <Table
                 className={''}
@@ -87,4 +81,4 @@ function CollectionAddNftsTable({ creditCollectionStore }: Props) {
     }
 }
 
-export default inject((stores) => stores)(observer(CollectionAddNftsTable));
+export default inject((stores) => stores)(observer(CreditCollectionAddNftsTable));

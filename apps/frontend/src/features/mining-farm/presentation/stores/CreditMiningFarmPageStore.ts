@@ -3,7 +3,7 @@ import CollectionEntity, { CollectionStatus } from '../../../collection/entities
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
-import CollectionFilterModel, { CollectionHashPowerFilter } from '../../../collection/utilities/CollectionFilterModel';
+import CollectionFilterModel from '../../../collection/utilities/CollectionFilterModel';
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
@@ -73,15 +73,6 @@ export default class CreditMiningFarmPageStore {
             this.nftEntities = nftEntities;
         });
 
-    }
-    onChangeSortKey = (sortKey: number) => {
-        this.collectionFilterModel.sortKey = sortKey;
-        this.fetch();
-    }
-
-    onChangeHashPowerFilter = (collectionHashPowerfilter: CollectionHashPowerFilter) => {
-        this.collectionFilterModel.hashPowerFilter = collectionHashPowerfilter;
-        this.fetch();
     }
 
     onChangeSearchWord = (searchString: string) => {

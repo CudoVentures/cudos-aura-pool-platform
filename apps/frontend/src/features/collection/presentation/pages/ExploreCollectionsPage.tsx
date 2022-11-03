@@ -82,24 +82,7 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
                                             <Svg svg={SearchIcon} />
                                         </InputAdornment>,
                                     }} />
-                                <Select
-                                    label={'Hashing Power'}
-                                    onChange={exploreCollectionsPageStore.onChangeHashPowerFilter}
-                                    value={collectionFilterModel.hashPowerFilter} >
-                                    <MenuItem value = { CollectionHashPowerFilter.NONE } > None </MenuItem>
-                                    <MenuItem value = { CollectionHashPowerFilter.BELOW_1000_EH } > Below 1000 EH/s </MenuItem>
-                                    <MenuItem value = { CollectionHashPowerFilter.BELOW_2000_EH } > Below 2000 EH/s </MenuItem>
-                                    <MenuItem value = { CollectionHashPowerFilter.ABOVE_2000_EH } > Above 2000 EH/s </MenuItem>
-                                </Select>
                             </>
-                        ) }
-                        headerRight = { (
-                            <Select
-                                onChange={exploreCollectionsPageStore.onChangeSortKey}
-                                value={collectionFilterModel.sortKey} >
-                                <MenuItem value = { CollectionFilterModel.SORT_KEY_NAME } > Name </MenuItem>
-                                <MenuItem value = { CollectionFilterModel.SORT_KEY_PRICE } > Price </MenuItem>
-                            </Select>
                         ) } >
 
                         { exploreCollectionsPageStore.collectionEntities === null && (

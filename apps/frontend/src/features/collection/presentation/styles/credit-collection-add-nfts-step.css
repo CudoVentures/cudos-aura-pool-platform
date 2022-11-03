@@ -1,0 +1,26 @@
+.CreditCollectionAddNftsStep .FormAndPreviewContainer {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    gap: 70px;
+    margin-bottom: 100px;
+}
+
+.CreditCollectionAddNftsStep .FormAndPreviewContainer .FormContainer .FormNav {
+    margin-bottom: 50px;
+}
+
+.CreditCollectionAddNftsStep .FormAndPreviewContainer .PreviewAndFinishContainer {
+    justify-content: space-between;
+}
+
+.CreditCollectionAddNftsStep .FormAndPreviewContainer .PreviewAndFinishContainer .PreviewContainer {
+    padding: 16px;
+    border: 2px solid var(--color-gray-060);
+    border-radius: 20px;
+}
+
+.CreditCollectionAddNftsStep .FormAndPreviewContainer .PreviewAndFinishContainer .FinishContainer {
+    gap: 10px;
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--color-gray-095);
+}

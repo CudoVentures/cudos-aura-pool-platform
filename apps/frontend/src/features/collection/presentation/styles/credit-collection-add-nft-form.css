@@ -1,10 +1,10 @@
-.AddNftsForm {
+.CreditCollectionAddNftForm {
     /* align-items: flex-start; */
     gap: 24px;
 }
 
 
-.AddNftsForm .ImagePreview {
+.CreditCollectionAddNftForm .ImagePreview {
     border-radius: 20px;
     background-size: cover;
     background-position: center;
@@ -12,43 +12,39 @@
     align-items: center;
 }
 
-.AddNftsForm .ImagePreview.Empty {
+.CreditCollectionAddNftForm .ImagePreview.Empty {
     background-color: var(--color-gray-060);
 }
 
-.AddNftsForm .MainImagePreview {
+.CreditCollectionAddNftForm .MainImagePreview {
     width: 150px; height: 150px;
 }
 
-.AddNftsForm .MainImagePreview.Empty .EmptyPictureSvg {
+.CreditCollectionAddNftForm .MainImagePreview.Empty .EmptyPictureSvg {
     width: 40px; height: 40px;
 }
 
-.AddNftsForm .ImageLabel .Gray {
+.CreditCollectionAddNftForm .ImageLabel .Gray {
     color: var(--color-gray-030);
 }
 
-.AddNftsForm .HeaderWithButton {
+.CreditCollectionAddNftForm .HeaderWithButton {
     flex-grow: 1;
     justify-content: space-between;
     align-items: center;
 }
 
-.AddNftsForm .HeaderWithButton .InputHeaderButton {
+.CreditCollectionAddNftForm .HeaderWithButton .InputHeaderButton {
     color: #000;
     gap: 6px;
     cursor: pointer;
 }
 
-.AddNftsForm .HeaderWithButton .InputHeaderButton .SvgInputEdit {
+.CreditCollectionAddNftForm .HeaderWithButton .InputHeaderButton .SvgInputEdit {
     width: 16px; height: 16px;
 }
 
-.AddNftsForm .ButtonsRow {
-    width: 100%;
-}
-
-.AddNftsForm .FormulaBox {
+.CreditCollectionAddNftForm .FormulaBox {
     align-self: flex-start;
     padding: 15px;
     color: var(--color-gray-030);

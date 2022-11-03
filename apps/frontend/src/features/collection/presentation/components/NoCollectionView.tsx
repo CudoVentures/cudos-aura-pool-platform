@@ -23,7 +23,7 @@ function NoCollectionView({ accountSessionStore }: Props) {
     const navigate = useNavigate();
 
     function onClickCreateCollection() {
-        navigate(AppRoutes.CREDIT_COLLECTION_DETAILS);
+        navigate(AppRoutes.CREDIT_COLLECTION_DETAILS_CREATE);
     }
 
     return (

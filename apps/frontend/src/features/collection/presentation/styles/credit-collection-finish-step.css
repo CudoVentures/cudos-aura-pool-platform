@@ -1,0 +1,12 @@
+.CreditCollectionFinishStep {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 70px;
+}
+
+.CreditCollectionFinishStep.AddNftMode {
+    width: 50%;
+}
+
+.CreditCollectionFinishStep .FormContainer .FormNav {
+    margin-bottom: 50px;
+}

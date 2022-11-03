@@ -10,7 +10,7 @@ import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import EditMiningFarmModal from '../components/EditMiningFarmModal';
 import EditMiningFarmModalStore from '../stores/EditMiningFarmModalStore';
-import CollectionFilterModel, { CollectionHashPowerFilter } from '../../../collection/utilities/CollectionFilterModel';
+import CollectionFilterModel from '../../../collection/utilities/CollectionFilterModel';
 
 import { InputAdornment, MenuItem } from '@mui/material';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
@@ -76,7 +76,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     }
 
     function onClickCreateCollection() {
-        navigate(AppRoutes.CREDIT_COLLECTION_DETAILS);
+        navigate(AppRoutes.CREDIT_COLLECTION_DETAILS_CREATE);
     }
 
     function onClickAccountSettings() {
@@ -194,24 +194,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                                         <Svg svg={SearchIcon} />
                                                     </InputAdornment>,
                                                 }} />
-                                            <Select
-                                                label={'Hashing Power'}
-                                                onChange={creditMiningFarmPageStore.onChangeHashPowerFilter}
-                                                value={collectionFilterModel.hashPowerFilter} >
-                                                <MenuItem value = { CollectionHashPowerFilter.NONE } >All </MenuItem>
-                                                <MenuItem value = { CollectionHashPowerFilter.BELOW_1000_EH } > Below 1000 EH/s </MenuItem>
-                                                <MenuItem value = { CollectionHashPowerFilter.BELOW_2000_EH } > Below 2000 EH/s </MenuItem>
-                                                <MenuItem value = { CollectionHashPowerFilter.ABOVE_2000_EH } > Above 2000 EH/s </MenuItem>
-                                            </Select>
                                         </>
-                                    ) }
-                                    headerRight = { (
-                                        <Select
-                                            onChange={creditMiningFarmPageStore.onChangeSortKey}
-                                            value={collectionFilterModel.sortKey} >
-                                            <MenuItem value = { CollectionFilterModel.SORT_KEY_NAME } > Name </MenuItem>
-                                            <MenuItem value = { CollectionFilterModel.SORT_KEY_PRICE } > Price </MenuItem>
-                                        </Select>
                                     ) } >
 
                                     { collectionEntities === null && (

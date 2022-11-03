@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
@@ -13,13 +14,11 @@ import Button from '../../../../core/presentation/components/Button';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
-import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import '../styles/page-forgotten-pass-edit.css';
-import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     alertStore?: AlertStore;
@@ -30,7 +29,6 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
 
-    const [loading, setLoading] = useState(false);
     const [pass, setPass] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
     const [showUpdatedStep, setShowUpdatedStep] = useState(false);
@@ -40,10 +38,8 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
             validationState.setShowErrors(true);
             return;
         }
-        setLoading(true);
         await accountSessionStore.editPassword('token', pass);
         setShowUpdatedStep(true);
-        setLoading(false);
     }
 
     function onClickBackToLogin() {
@@ -92,9 +88,7 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
                     </>
                 ) }
                 actions = { (
-                    <Button onClick = { loading === true ? null : onClickSendNewPassword } >
-                        {loading === true ? <LoadingIndicator /> : 'Update Password'}
-                    </Button>
+                    <Button onClick = { onClickSendNewPassword } >Update Password</Button>
                 ) } />
         )
     }

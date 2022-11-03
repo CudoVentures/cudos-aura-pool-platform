@@ -55,6 +55,17 @@ export default class CollectionEntity {
         return this.id === S.Strings.NOT_EXISTS;
     }
 
+    // TO DO: what will happen when queue collection is updated and approved at the same time
+    isEditable(): boolean {
+        switch (this.status) {
+            case CollectionStatus.NOT_SUBMITTED:
+            case CollectionStatus.QUEUED:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     markQueued() {
         this.status = CollectionStatus.QUEUED
     }

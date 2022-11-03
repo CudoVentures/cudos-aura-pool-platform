@@ -22,6 +22,7 @@ function CreditCollectionSuccessModal({ creditCollectionSuccessModalStore }: Pro
     const navigate = useNavigate();
 
     function onClickClose() {
+        creditCollectionSuccessModalStore.hide();
         navigate(AppRoutes.CREDIT_MINING_FARM);
     }
 

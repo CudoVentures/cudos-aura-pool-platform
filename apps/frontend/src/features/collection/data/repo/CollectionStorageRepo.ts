@@ -5,8 +5,6 @@ import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel, { CollectionHashPowerFilter } from '../../utilities/CollectionFilterModel';
 import CategoryEntity from '../../entities/CategoryEntity';
 import NftEntity from '../../../nft/entities/NftEntity';
-import { Collection } from 'cudosjs/build/stargate/modules/nft/proto-types/nft';
-import BigNumber from 'bignumber.js';
 
 export default class CollectionStorageRepo implements CollectionRepo {
 
@@ -66,48 +64,11 @@ export default class CollectionStorageRepo implements CollectionRepo {
             });
         }
 
-        // if (collectionFilterModel.sessionAccount === S.INT_TRUE) {
-        //     collectionSlice = collectionSlice.filter((json) => {
-        //         return (json.accountId === this.storageHelper.sessionAccount?.accountId) || false
-        //     });
-        // }
-
         if (collectionFilterModel.farmId !== S.Strings.NOT_EXISTS) {
             collectionSlice = collectionSlice.filter((json) => {
                 return json.farmId === collectionFilterModel.farmId;
             });
         }
-
-        if (collectionFilterModel.hashPowerFilter !== CollectionHashPowerFilter.NONE) {
-            let hashPowerLimit = S.NOT_EXISTS;
-            switch (collectionFilterModel.hashPowerFilter) {
-                case CollectionHashPowerFilter.BELOW_1000_EH:
-                    hashPowerLimit = 1000;
-                    break;
-                case CollectionHashPowerFilter.BELOW_2000_EH:
-                    hashPowerLimit = 2000;
-                    break;
-                case CollectionHashPowerFilter.ABOVE_2000_EH:
-                default:
-                    hashPowerLimit = Number.MAX_SAFE_INTEGER;
-                    break;
-
-            }
-
-            collectionSlice = collectionSlice.filter((json) => {
-                return json.hashPower <= hashPowerLimit;
-            });
-        }
-
-        collectionSlice.sort((a: CollectionEntity, b: CollectionEntity) => {
-            switch (collectionFilterModel.sortKey) {
-                case CollectionFilterModel.SORT_KEY_PRICE:
-                    return a.price.comparedTo(b.price)
-                case CollectionFilterModel.SORT_KEY_NAME:
-                default:
-                    return a.name.localeCompare(b.name)
-            }
-        });
 
         return {
             collectionEntities: collectionSlice.slice(collectionFilterModel.from, collectionFilterModel.from + collectionFilterModel.count),

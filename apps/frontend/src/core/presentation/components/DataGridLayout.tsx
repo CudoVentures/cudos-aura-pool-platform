@@ -12,7 +12,7 @@ export default function DataGridLayout({ className, headerLeft, headerRight, chi
 
     return (
         <div className={`DataGridLayout ${className}`}>
-            { headerLeft !== null && headerRight !== null && (
+            { (headerLeft !== null || headerRight !== null) && (
                 <div className={'DataGridHeader'}>
                     <div className={'DataGridHeaderLeft'}> { headerLeft } </div>
                     <div className={'DataGridHeaderRight'}> { headerRight } </div>

@@ -2,7 +2,7 @@ import S from '../../../../core/utilities/Main';
 import StorageHelper from '../../../../core/helpers/StorageHelper';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
-import MiningFarmFilterModel, { MiningFarmHashPowerFilter } from '../../utilities/MiningFarmFilterModel';
+import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 
 export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
@@ -87,38 +87,6 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
                 return (json.accountId === this.storageHelper.sessionAccount?.accountId) || false
             });
         }
-
-        if (miningFarmFilterModel.hashPowerFilter !== MiningFarmHashPowerFilter.NONE) {
-            let hashPowerLimit = S.NOT_EXISTS;
-            switch (miningFarmFilterModel.hashPowerFilter) {
-                case MiningFarmHashPowerFilter.BELOW_1000_EH:
-                    hashPowerLimit = 1000;
-                    break;
-                case MiningFarmHashPowerFilter.BELOW_2000_EH:
-                    hashPowerLimit = 2000;
-                    break;
-                case MiningFarmHashPowerFilter.ABOVE_2000_EH:
-                default:
-                    hashPowerLimit = Number.MAX_SAFE_INTEGER;
-                    break;
-
-            }
-
-            miningFarmsSlice = miningFarmsSlice.filter((json) => {
-                return json.hashRateTh <= hashPowerLimit;
-            });
-        }
-
-        miningFarmsSlice.sort((a: MiningFarmEntity, b: MiningFarmEntity) => {
-            switch (miningFarmFilterModel.sortKey) {
-                case MiningFarmFilterModel.SORT_KEY_POPULAR:
-                    // TODO: what does popular farm mean, how to compare?
-                    return a.name.localeCompare(b.name)
-                case MiningFarmFilterModel.SORT_KEY_NAME:
-                default:
-                    return a.name.localeCompare(b.name)
-            }
-        });
 
         return {
             miningFarmEntities: miningFarmsSlice.slice(miningFarmFilterModel.from, miningFarmFilterModel.from + miningFarmFilterModel.count),

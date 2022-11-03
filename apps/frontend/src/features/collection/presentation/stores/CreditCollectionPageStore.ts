@@ -48,18 +48,14 @@ export default class CreditCollectionPageStore {
         this.gridViewState.setIsLoading(true);
         this.nftFilterModel.from = this.gridViewState.getFrom();
         this.nftFilterModel.count = this.gridViewState.getItemsPerPage();
-        const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel, CollectionStatus.ANY);
+        this.nftFilterModel.collectionStatus = CollectionStatus.ANY;
+        const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel);
 
         runInAction(() => {
             this.nftEntities = nftEntities;
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
         });
-    }
-
-    onChangeSortKey = (sortKey: number) => {
-        this.nftFilterModel.sortKey = sortKey;
-        this.fetch();
     }
 
     getOwnersCount(): number {

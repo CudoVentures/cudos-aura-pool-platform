@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import ExploreMiningFarmsPageStore from '../stores/ExploreMiningFarmsPageStore';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
-import MiningFarmFilterModel, { MiningFarmHashPowerFilter, MiningFarmPriceSortDirection } from '../../utilities/MiningFarmFilterModel';
+import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import { MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -20,11 +22,9 @@ import MiningFarmPeview from '../components/MiningFarmPreview';
 import Select from '../../../../core/presentation/components/Select';
 import ExplorePageLayout from '../../../../core/presentation/components/ExplorePageLayout';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 
 import '../styles/page-explore-mining-farms-component.css';
-import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
-import { useNavigate } from 'react-router-dom';
-import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 type Props = {
     appStore?: AppStore
@@ -83,32 +83,7 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
                                             <Svg svg={SearchIcon} />
                                         </InputAdornment>,
                                     }} />
-                                <Select
-                                    label={'Hashing Power'}
-                                    onChange={exploreMiningFarmsPageStore.onChangeHashPowerFilter}
-                                    value={miningFarmFilterModel.hashPowerFilter} >
-                                    <MenuItem value = { MiningFarmHashPowerFilter.NONE } > None </MenuItem>
-                                    <MenuItem value = { MiningFarmHashPowerFilter.BELOW_1000_EH } > Below 1000 EH/s </MenuItem>
-                                    <MenuItem value = { MiningFarmHashPowerFilter.BELOW_2000_EH } > Below 2000 EH/s </MenuItem>
-                                    <MenuItem value = { MiningFarmHashPowerFilter.ABOVE_2000_EH } > Above 2000 EH/s </MenuItem>
-                                </Select>
-                                <Select
-                                    label={'Price'}
-                                    onChange={exploreMiningFarmsPageStore.onChangeSortPriceDirection}
-                                    value={miningFarmFilterModel.sortPriceDirection} >
-                                    <MenuItem value = { MiningFarmPriceSortDirection.NONE } > None </MenuItem>
-                                    <MenuItem value = { MiningFarmPriceSortDirection.HIGH_TO_LOW } > Low to High </MenuItem>
-                                    <MenuItem value = { MiningFarmPriceSortDirection.LOW_TO_HIGH } > High to Low </MenuItem>
-                                </Select>
                             </>
-                        ) }
-                        headerRight = { (
-                            <Select
-                                onChange={exploreMiningFarmsPageStore.onChangeSortKey}
-                                value={miningFarmFilterModel.sortKey} >
-                                <MenuItem value = { MiningFarmFilterModel.SORT_KEY_NAME } > Name </MenuItem>
-                                <MenuItem value = { MiningFarmFilterModel.SORT_KEY_POPULAR } > Popular </MenuItem>
-                            </Select>
                         ) } >
 
                         { exploreMiningFarmsPageStore.miningFarmEntities === null && (

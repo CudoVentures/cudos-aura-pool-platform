@@ -32,7 +32,6 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
     const requestEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
     const resendEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
 
-    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [showResendStep, setShowResendStep] = useState(false);
 
@@ -41,10 +40,8 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
             validationState.setShowErrors(true);
             return;
         }
-        setLoading(true);
         await accountSessionStore.forgottenPassword(email);
         setShowResendStep(true);
-        setLoading(false);
     }
 
     function onClickBackToLogin() {
@@ -57,10 +54,8 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
             return;
         }
 
-        setLoading(true);
         await accountSessionStore.forgottenPassword(email);
         alertStore.show('We have resent the email.');
-        setLoading(false);
     }
 
     function renderRequestStep() {
@@ -87,9 +82,7 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
                 ) }
                 actions = { (
                     <>
-                        <Button onClick = { loading === true ? null : onClickSendNewPassword } >
-                            {loading === true ? <LoadingIndicator /> : 'Send new password'}
-                        </Button>
+                        <Button onClick = { onClickSendNewPassword } >Send new password</Button>
                         <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickBackToLogin } >
                             Go back to Login
                         </Button>

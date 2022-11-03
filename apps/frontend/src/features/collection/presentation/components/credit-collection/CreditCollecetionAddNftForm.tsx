@@ -5,10 +5,11 @@ import S from '../../../../../core/utilities/Main';
 import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinStore';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
+import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 
 import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
-import Button, { ButtonRadius, ButtonType } from '../../../../../core/presentation/components/Button';
+import Button, { ButtonType } from '../../../../../core/presentation/components/Button';
 import UploaderComponent from '../../../../../core/presentation/components/UploaderComponent';
 import Input, { InputType } from '../../../../../core/presentation/components/Input';
 import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
@@ -20,16 +21,14 @@ import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import '../../styles/add-nfts-form.css';
-import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
+import '../../styles/credit-collection-add-nft-form.css';
 
 type Props = {
-    onClickBack: () => void
     creditCollectionStore?: CreditCollectionStore;
     bitcoinStore?: BitcoinStore;
 }
 
-function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props) {
+function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Props) {
     const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
     const [editMaintenanceFeeDisabled, setEditMaintenanceFeeDisabled] = useState(true);
     const validationState = useRef(new ValidationState()).current;
@@ -50,12 +49,12 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
     }
 
     return (
-        <div className={'AddNftsForm FlexColumn'}>
+        <div className={'CreditCollectionAddNftForm FlexColumn'}>
             <div className={'H3 Bold'}>Add NFTs to Collection</div>
             <div className={'B1'}>Fill in the needed information for the NFTs.</div>
             <div className={'HorizontalSeparator'}></div>
             <div
-                style={ ProjectUtils.makeBgImgStyle(selectedNftEntity.imageUrl) }
+                style={ selectedNftEntity === null ? null : ProjectUtils.makeBgImgStyle(selectedNftEntity.imageUrl) }
                 className={`MainImagePreview ImagePreview FlexRow ${S.CSS.getClassName(creditCollectionStore.isSelectedNftImageEmpty(), 'Empty')}`} >
                 {creditCollectionStore.isSelectedNftImageEmpty() === true && (
                     <div className={'EmptyPictureSvg'}>
@@ -71,25 +70,28 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
             <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT} height={ActionsHeight.HEIGHT_48}>
                 <Button>
                     <Svg svg={FileUploadIcon}/>
-                        Upload file
-                    <UploaderComponent
-                        id = { this }
-                        params = { {
-                            'maxSize': 73400320, // 70MB
-                            'onExceedLimit': () => {
-                                this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
-                            },
-                            'multi': true,
-                            onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                                selectedNftEntity.imageUrl = base64File;
-                            },
-                        } } />
+                    Upload file
+                    { selectedNftEntity !== null && (
+                        <UploaderComponent
+                            id = { this }
+                            params = { {
+                                'maxSize': 73400320, // 70MB
+                                'onExceedLimit': () => {
+                                    this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
+                                },
+                                'multi': true,
+                                onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
+                                    selectedNftEntity.imageUrl = base64File;
+                                },
+                            } } />
+                    ) }
                 </Button>
             </Actions>
             <Input
                 label={'NFT Name'}
                 placeholder={'Enter name...'}
-                value={selectedNftEntity.name}
+                disabled = { selectedNftEntity === null }
+                value={selectedNftEntity?.name ?? ''}
                 inputValidation={nftNameValidation}
                 onChange={creditCollectionStore.onChangeSelectedNftName} />
             <FieldColumnWrapper
@@ -97,7 +99,8 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                     <Input
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                         placeholder={'Enter hashing power...'}
-                        value={selectedNftEntity.hashPower}
+                        disabled = { selectedNftEntity === null }
+                        value={selectedNftEntity?.hashPower ?? ''}
                         inputType={InputType.INTEGER}
                         inputValidation={nftHashPowerValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftHashPower} />
@@ -110,7 +113,8 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                     <Input
                         label={'Price per NFT'}
                         placeholder={'Enter price...'}
-                        value={selectedNftEntity.price.toString()}
+                        disabled = { selectedNftEntity === null }
+                        value={selectedNftEntity?.price.toString() ?? ''}
                         inputValidation={nftPriceValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftPrice} />
                 }
@@ -127,7 +131,7 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                                 </div>
                             </div>
                         }
-                        disabled={editRoyaltiesDisabled}
+                        disabled={editRoyaltiesDisabled || selectedNftEntity === null}
                         placeholder={'Enter royalties...'}
                         inputValidation={nftRoyaltiesValidation}
                         value={creditCollectionStore.getSelectedNftRoyaltiesInputValue()}
@@ -149,7 +153,7 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                             </div>
                         }
                         disabled={editMaintenanceFeeDisabled}
-                        inputValidation={nftMaintenanceFeeValidation}
+                        inputValidation={nftMaintenanceFeeValidation || selectedNftEntity === null}
                         placeholder={'Enter Maintenance Fee...'}
                         value={creditCollectionStore.getSelectedNftMaintenanceFeeInputValue()}
                         inputType={InputType.INTEGER}
@@ -163,20 +167,29 @@ function AddNftsForm({ onClickBack, creditCollectionStore, bitcoinStore }: Props
                 label = {
                     <TextWithTooltip text={'Valid Until'} tooltipText={'BTC rewards will be paid to the NFT holder until this date.'} />
                 }
+                disabled = { selectedNftEntity === null }
                 selected = { creditCollectionStore.getSelectedNftExpirationDateDisplay() }
                 onChange = { creditCollectionStore.onChangeSelectedNftExpirationDate } />
-            <Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} className={'ButtonsRow'}>
-                <Button type={ButtonType.TEXT_INLINE} onClick={onClickBack}>
-                    <Svg svg={ArrowBackIcon} />
-                    Back
-                </Button>
-                <Button onClick={onClickAddToCollection}>
-                    {creditCollectionStore.selectedNftEntity.id === S.Strings.NOT_EXISTS ? 'Add to Collection' : 'Save Edit'}
-                </Button>
-            </Actions>
+            <div className = { 'FlexSplit' }>
+                { creditCollectionStore.isCreateMode() === true && (
+                    <Actions className={'ButtonsRow'}>
+                        <Button type={ButtonType.TEXT_INLINE} onClick={ creditCollectionStore.moveToStepDetails }>
+                            <Svg svg={ArrowBackIcon} />
+                        Back
+                        </Button>
+                    </Actions>
+                ) }
+                { selectedNftEntity !== null && (
+                    <Actions className={'StartRight'}>
+                        <Button onClick={onClickAddToCollection}>
+                            {selectedNftEntity.isNew() === true ? 'Add to Collection' : 'Save'}
+                        </Button>
+                    </Actions>
+                ) }
+            </div>
         </div>
     )
 
 }
 
-export default inject((stores) => stores)(observer(AddNftsForm));
+export default inject((stores) => stores)(observer(CreditCollecetionAddNftForm));

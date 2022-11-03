@@ -10,6 +10,7 @@ import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
 import DefaultIntervalPickerState from './DefaultIntervalPickerState';
+import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 
 export default class AnalyticsPageStore {
 
@@ -69,7 +70,7 @@ export default class AnalyticsPageStore {
 
         const nftEntitiesMap = this.nftEntitiesMap;
         if (nftIds.length > 0) {
-            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds);
+            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds, CollectionStatus.ANY);
 
             nftEntities.forEach((nftEntity) => {
                 nftEntitiesMap.set(nftEntity.id, nftEntity);
