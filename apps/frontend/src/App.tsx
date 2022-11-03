@@ -40,6 +40,8 @@ import CreditCollectionSuccessModalStore from './features/collection/presentatio
 import AnalyticsPageStore from './features/analytics/presentation/stores/AnalyticsPageStore';
 import StatisticsStorageRepo from './features/analytics/data/repo/StatisticsStorageRepo';
 import UserStorageRepo from './features/accounts/data/repo/UserStorageRepo';
+import ViewCollectionModalStore from './features/collection/presentation/stores/ViewCollectionModalStore';
+import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores/ViewMiningFarmModalStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -80,6 +82,8 @@ const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
 const buyNftModalStore = new BuyNftModalStore();
 const resellNftModalStore = new ResellNftModalStore();
+const viewCollectionModalStore = new ViewCollectionModalStore();
+const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 
 const App = () => {
 
@@ -121,7 +125,9 @@ const App = () => {
                 creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
                 superAdminApprovePageStore = { superAdminApprovePageStore }
                 creditCollectionStore = { creditCollectionStore }
-                analyticsPageStore = { analyticsPageStore } >
+                analyticsPageStore = { analyticsPageStore }
+                viewCollectionModalStore = { viewCollectionModalStore }
+                viewMiningFarmModalStore = { viewMiningFarmModalStore } >
                 <BrowserRouter>
                     <AppRouter />
                 </BrowserRouter>

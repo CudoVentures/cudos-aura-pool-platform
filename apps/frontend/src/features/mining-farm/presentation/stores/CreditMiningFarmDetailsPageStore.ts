@@ -126,4 +126,22 @@ export default class CreditMiningFarmDetailsPageStore {
             return this.energySourceEntitiesMap.get(energySourceId);
         });
     }
+
+    getSelectedManufacturersNames(): string {
+        return this.getSelectedManufacturers().map((manufacturerEntity) => {
+            return manufacturerEntity.name;
+        }).join(', ');
+    }
+
+    getSelectedMinersNames(): string {
+        return this.getSelectedMiners().map((minerEntity) => {
+            return minerEntity.name
+        }).join(', ');
+    }
+
+    getSelectedEnergySourcesNames(): string {
+        return this.getSelectedEnergySources().map((energySourceEntity) => {
+            return energySourceEntity.name
+        }).join(', ');
+    }
 }
