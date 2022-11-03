@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 
@@ -107,8 +108,7 @@ export default class NftEntity {
     }
 
     getMaintenanceFeeDisplay(): string {
-        const maintenanceFee = this.maintenanceFee.eq(new BigNumber(S.NOT_EXISTS)) ? new BigNumber(0) : this.maintenanceFee;
-        return `${maintenanceFee.toFixed(2)}$`;
+        return numeral(this.maintenanceFee.toNumber()).format('$0,0.0');
     }
 
     cloneDeep(): NftEntity {

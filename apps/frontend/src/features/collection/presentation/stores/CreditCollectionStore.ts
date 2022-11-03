@@ -141,7 +141,7 @@ export default class CreditCollectionStore {
         nftEntity.price = this.pricePerNft;
         nftEntity.hashPower = this.hashPowerPerNft;
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
-        nftEntity.maintenanceFee = this.collectionEntity.maintenanceFees;
+        nftEntity.maintenanceFee = new BigNumber(this.collectionEntity.maintenanceFees);
 
         this.selectedNftEntity = nftEntity;
     }
@@ -210,12 +210,8 @@ export default class CreditCollectionStore {
         this.selectedNftEntity.farmRoyalties = Number(royalties);
     }
 
-    onChangeSelectedNftMaintenanceFee() {
-        if (this.selectedNftEntity.maintenanceFee.eq(new BigNumber(S.NOT_EXISTS))) {
-            return ''
-        }
-
-        return this.selectedNftEntity.maintenanceFee.toString();
+    onChangeSelectedNftMaintenanceFee = (value: string) => {
+        this.selectedNftEntity.maintenanceFee = new BigNumber(value);
     }
 
     onChangeSelectedNftExpirationDate = (expirationDate: number) => {

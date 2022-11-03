@@ -79,7 +79,6 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                                 'onExceedLimit': () => {
                                     this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
                                 },
-                                'multi': true,
                                 onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
                                     selectedNftEntity.imageUrl = base64File;
                                 },
@@ -123,13 +122,18 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                 field = {
                     <Input
                         label={
-                            <div className={'HeaderWithButton FlexRow'}>
-                                <TextWithTooltip text={'Farm Royalties'} tooltipText={'Farm Royalties'} />
-                                <div className={'InputHeaderButton FlexRow'} onClick={() => setEditRoyaltiesDisabled(!editRoyaltiesDisabled)}>
-                                    <Svg className = { 'SvgInputEdit' } size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                                    Edit
-                                </div>
-                            </div>
+                            <>
+                                { selectedNftEntity !== null && (
+                                    <div className={'HeaderWithButton FlexRow'}>
+                                        <TextWithTooltip text={'Farm Royalties'} tooltipText={'Farm Royalties'} />
+                                        <div className={'InputHeaderButton FlexRow'} onClick={() => setEditRoyaltiesDisabled(!editRoyaltiesDisabled)}>
+                                            <Svg className = { 'SvgInputEdit' } size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                            Edit
+                                        </div>
+                                    </div>
+                                ) }
+
+                            </>
                         }
                         disabled={editRoyaltiesDisabled || selectedNftEntity === null}
                         placeholder={'Enter royalties...'}
@@ -144,13 +148,18 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                 field = {
                     <Input
                         label={
-                            <div className={'HeaderWithButton FlexRow'}>
-                                <TextWithTooltip text={'Maintenance Fee'} tooltipText={'Maintenance Fee'} />
-                                <div className={'InputHeaderButton FlexRow'} onClick={() => setEditMaintenanceFeeDisabled(!editMaintenanceFeeDisabled)}>
-                                    <Svg className = { 'SvgInputEdit' } size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                                Edit
-                                </div>
-                            </div>
+                            <>
+                                { selectedNftEntity !== null && (
+                                    <div className={'HeaderWithButton FlexRow'}>
+                                        <TextWithTooltip text={'Maintenance Fee'} tooltipText={'Maintenance Fee'} />
+                                        <div className={'InputHeaderButton FlexRow'} onClick={() => setEditMaintenanceFeeDisabled(!editMaintenanceFeeDisabled)}>
+                                            <Svg className = { 'SvgInputEdit' } size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                            Edit
+                                        </div>
+                                    </div>
+                                ) }
+
+                            </>
                         }
                         disabled={editMaintenanceFeeDisabled}
                         inputValidation={nftMaintenanceFeeValidation || selectedNftEntity === null}

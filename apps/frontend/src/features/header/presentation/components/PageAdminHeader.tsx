@@ -43,8 +43,9 @@ function PageAdminHeader({ accountSessionStore }: Props) {
         navigate(AppRoutes.HOME);
     }
 
-    function onClickLogout() {
-        accountSessionStore.logout();
+    async function onClickLogout() {
+        await accountSessionStore.logout();
+        navigate(AppRoutes.HOME);
     }
 
     return (

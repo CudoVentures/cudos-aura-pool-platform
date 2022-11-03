@@ -82,7 +82,7 @@ const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
 const buyNftModalStore = new BuyNftModalStore();
 const resellNftModalStore = new ResellNftModalStore();
-const viewCollectionModalStore = new ViewCollectionModalStore();
+const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 
 const App = () => {

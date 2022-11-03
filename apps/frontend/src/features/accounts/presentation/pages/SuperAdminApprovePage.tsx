@@ -51,7 +51,7 @@ function SuperAdminApprovePage({ appStore, superAdminApprovePageStore, viewMinin
     }
 
     function onClickCollectionRow(i: number) {
-        console.log(collectionEntities[i]);
+        viewCollectionModalStore.showSignal(collectionEntities[i]);
     }
 
     function onClickSelectCollection(collectionEntity, value, e) {
