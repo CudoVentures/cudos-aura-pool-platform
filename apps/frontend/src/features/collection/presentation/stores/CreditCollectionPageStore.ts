@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import CollectionEntity from '../../entities/CollectionEntity';
+import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
@@ -39,7 +39,7 @@ export default class CreditCollectionPageStore {
 
     async init(collectionId: string) {
         this.nftFilterModel.collectionIds = [collectionId];
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
         await this.fetch();
     }
@@ -48,7 +48,7 @@ export default class CreditCollectionPageStore {
         this.gridViewState.setIsLoading(true);
         this.nftFilterModel.from = this.gridViewState.getFrom();
         this.nftFilterModel.count = this.gridViewState.getItemsPerPage();
-        const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel);
+        const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel, CollectionStatus.ANY);
 
         runInAction(() => {
             this.nftEntities = nftEntities;

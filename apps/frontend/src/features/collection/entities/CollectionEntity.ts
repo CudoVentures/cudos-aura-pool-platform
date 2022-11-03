@@ -31,8 +31,8 @@ export default class CollectionEntity {
     payoutAddress: string;
 
     constructor() {
-        this.id = S.Strings.EMPTY;
-        this.farmId = S.Strings.EMPTY;
+        this.id = S.Strings.NOT_EXISTS;
+        this.farmId = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.description = S.Strings.EMPTY;
         this.ownerAddress = S.Strings.EMPTY;
@@ -49,6 +49,10 @@ export default class CollectionEntity {
         this.payoutAddress = S.Strings.EMPTY;
 
         makeAutoObservable(this);
+    }
+
+    isNew(): boolean {
+        return this.id === S.Strings.NOT_EXISTS;
     }
 
     markQueued() {
@@ -76,6 +80,30 @@ export default class CollectionEntity {
 
         return S.Strings.EMPTY;
 
+    }
+
+    getStatusDisplayName(): string {
+        return CollectionEntity.getStatusDisplayName(this.status);
+    }
+
+    static getStatusDisplayName(status: CollectionStatus): string {
+        switch (status) {
+            case CollectionStatus.NOT_SUBMITTED:
+                return 'Not submitted';
+            case CollectionStatus.QUEUED:
+                return 'Queued';
+            case CollectionStatus.APPROVED:
+                return 'Approved';
+            case CollectionStatus.REJECTED:
+                return 'Rejected';
+            case CollectionStatus.ISSUED:
+                return 'Issued';
+            case CollectionStatus.DELETED:
+                return 'Deleted';
+            case CollectionStatus.ANY:
+            default:
+                return 'Any';
+        }
     }
 
     static toJson(entity: CollectionEntity): any {

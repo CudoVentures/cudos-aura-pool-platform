@@ -1,27 +1,28 @@
 import React, { useRef, useState } from 'react';
+import { inject, observer } from 'mobx-react';
 
-import '../../styles/step-farm-details.css';
-import Input, { InputType } from '../../../../../core/presentation/components/Input';
-import { InputAdornment } from '@mui/material';
-import Svg from '../../../../../core/presentation/components/Svg';
-import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
-import Button, { ButtonRadius } from '../../../../../core/presentation/components/Button';
-import Autocomplete from '../../../../../core/presentation/components/Autcomplete';
 import AutocompleteOption from '../../../../../core/entities/AutocompleteOption';
 import ManufacturerEntity from '../../../entities/ManufacturerEntity';
 import MinerEntity from '../../../entities/MinerEntity';
 import EnergySourceEntity from '../../../entities/EnergySourceEntity';
-import NearMeIcon from '@mui/icons-material/NearMe';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { inject, observer } from 'mobx-react';
-import UploaderComponent from '../../../../../core/presentation/components/UploaderComponent';
 import AlertStore from '../../../../../core/presentation/stores/AlertStore';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ImageEntity, { PictureType } from '../../../../upload-file/entities/ImageEntity';
-import CloseIcon from '@mui/icons-material/Close';
 import CreditMiningFarmDetailsPageStore from '../../stores/CreditMiningFarmDetailsPageStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
-import MiningFarmEntity from '../../../entities/MiningFarmEntity';
+
+import Input from '../../../../../core/presentation/components/Input';
+import { InputAdornment } from '@mui/material';
+import Svg from '../../../../../core/presentation/components/Svg';
+import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
+import Button from '../../../../../core/presentation/components/Button';
+import Autocomplete from '../../../../../core/presentation/components/Autcomplete';
+import UploaderComponent from '../../../../../core/presentation/components/UploaderComponent';
+
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import NearMeIcon from '@mui/icons-material/NearMe';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import '../../styles/step-farm-details.css';
 
 type Props = {
     alertStore?: AlertStore;
@@ -61,51 +62,43 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
             validationState.setShowErrors(true);
             return;
         }
+
         creditMiningFarmDetailsPageStore.setStepReview();
     }
 
     return (
         <div className = { 'StepMiningFarmDetails FlexColumn' }>
-            <div className={'B2 Bold FullLine'}>1. Fill in the general farm details</div>
+            <div className={'B2 Bold'}>1. Fill in the general farm details</div>
             <Input
                 label={'Farm Name'}
                 placeholder={'e.g Cool Farm'}
                 value={miningFarmEntity.name}
                 inputValidation={farmNameValidation}
-                onChange={(string) => { miningFarmEntity.name = string }}
-                inputType={InputType.TEXT}
-            />
+                onChange={(string) => { miningFarmEntity.name = string }} />
             <Input
                 label={'Description'}
                 placeholder={'Enter description... (Optional)'}
+                multiline = { true }
                 value={miningFarmEntity.description}
-                onChange={(string) => { miningFarmEntity.description = string }}
-                inputType={InputType.TEXT}
-            />
+                onChange={(string) => { miningFarmEntity.description = string }} />
             <Input
                 label={'Legal Entity Name'}
                 placeholder={'e.g Cool Farm Inc.'}
                 value={miningFarmEntity.legalName}
                 inputValidation={farmLegalNameValidation}
-                onChange={(string) => { miningFarmEntity.legalName = string }}
-                inputType={InputType.TEXT}
-            />
+                onChange={(string) => { miningFarmEntity.legalName = string }} />
             <Input
                 label={'Primary Account Owner Full Name'}
                 placeholder={'e.g Steve Jones'}
                 value={miningFarmEntity.primaryAccountOwnerName}
                 inputValidation={farmOwnerNameValidation}
-                onChange={(string) => { miningFarmEntity.primaryAccountOwnerName = string }}
-                inputType={InputType.TEXT}
-            />
+                onChange={(string) => { miningFarmEntity.primaryAccountOwnerName = string }} />
             <Input
                 label={'Primary Account Owner Email'}
                 placeholder={'examplemail@mail.com'}
                 value={miningFarmEntity.primaryAccountOwnerEmail}
                 inputValidation={farmOwnerEmailValidation}
-                onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }}
-                inputType={InputType.TEXT}
-            />
+                onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }} />
             <Autocomplete
                 label={'Manufacturers'}
                 value = { miningFarmEntity.manufacturerIds.map((id) => new AutocompleteOption(id, ManufacturerEntity.getManufacturerName(id))) }
@@ -148,37 +141,33 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 placeholder={'e.g Las Brisas, United States'}
                 value={miningFarmEntity.machinesLocation}
                 onChange={(string) => { miningFarmEntity.machinesLocation = string }}
-                inputType={InputType.TEXT}
                 inputValidation={farmLocationValidation}
                 InputProps={{
                     endAdornment: <InputAdornment position="end" >
                         <Svg svg={NearMeIcon}/>
                     </InputAdornment>,
-                }}
-            />
-            <Input
-                label={'Hashrate'}
-                placeholder={'e.g 102.001 EH/s'}
-                value={hashRateDisplay}
-                onChange={(string) => {
-                    setHashRateDisplay(string);
-                    miningFarmEntity.parseHashRateFromString(string);
-                }}
-                inputValidation={farmHashrateValidation}
-                inputType={InputType.TEXT}
-            />
-            <div className={'FlexRow HashRateInfo B2 SemiBold FullLine'}>
-                <Svg svg={ErrorOutlineIcon}/>
-                Insert the Hashrate planned to be offered as NFTs
+                }} />
+            <div>
+                <Input
+                    label={'Hashrate'}
+                    placeholder={'e.g 102.001 EH/s'}
+                    value={hashRateDisplay}
+                    onChange={(string) => {
+                        setHashRateDisplay(string);
+                        miningFarmEntity.parseHashRateFromString(string);
+                    }}
+                    inputValidation={farmHashrateValidation} />
+                <div className={'FlexRow HashRateInfo B2 SemiBold FullLine'}>
+                    <Svg svg={ErrorOutlineIcon}/>
+                    Insert the Hashrate planned to be offered as NFTs
+                </div>
             </div>
             <div className={'B2 Bold FullLine'}> 3. Upload photos from the farm</div>
             <div className={'Uploader FlexColumn'}>
                 <div className={'B3 SemiBold'}>Upload files here</div>
                 <div className={'B3 SemiBold'}>File Format: <span className={'Gray'}>.svg, .png, .jpeg</span></div>
                 <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
-                    <Button
-                        radius={ButtonRadius.RADIUS_16}
-                    >
+                    <Button>
                         <Svg svg={FileUploadIcon}/>
                         Upload file
                     </Button>
@@ -218,9 +207,9 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
             <Actions layout={ActionsLayout.LAYOUT_COLUMN_RIGHT} height={ActionsHeight.HEIGHT_48}>
                 <Button
                     disabled={shouldButtonBeDisabled()}
-                    onClick={onClickNextStep}
-                    radius={ButtonRadius.RADIUS_16}
-                >Next Step</Button>
+                    onClick={onClickNextStep}>
+                    Next Step
+                </Button>
             </Actions>
         </div>
     )

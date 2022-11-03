@@ -1,79 +1,93 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
-import CollectionEventFilterModel from '../../entities/CollectionEventFilterModel';
-import CollectionEventEntity from '../../entities/CollectionEventEntity';
-import PoolEventRepo from '../repos/PoolEventRepo';
-import CollectionEntity from '../../../collection/entities/CollectionEntity';
+import StatisticsRepo from '../repos/StatisticsRepo';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
-import ExtendedChartState from '../../../../core/presentation/stores/ExtendedChartState';
-import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
+import { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
+import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
+import NftEventFilterModel from '../../entities/NftEventFilterModel';
+import NftRepo from '../../../nft/presentation/repos/NftRepo';
+import NftEntity from '../../../nft/entities/NftEntity';
+import NftEventEntity from '../../entities/NftEventEntity';
+import DefaultIntervalPickerState from './DefaultIntervalPickerState';
 
 export default class AnalyticsPageStore {
-    poolEventRepo: PoolEventRepo;
+
+    statisticsRepo: StatisticsRepo;
+    nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
     miningFarmRepo: MiningFarmRepo;
 
-    collectionEventFilterModel: CollectionEventFilterModel;
+    defaultIntervalPickerState: DefaultIntervalPickerState;
+    miningFarmEarningsEntity: MiningFarmEarningsEntity;
+
+    nftEventFilterModel: NftEventFilterModel;
+    nftEventEntities: NftEventEntity[];
+    nftEntitiesMap: Map < string, NftEntity >;
     analyticsTableState: TableState;
-    extendedChartState: ExtendedChartState;
 
-    miningFarmEntity: MiningFarmEntity;
-    collectionEventEntities: CollectionEventEntity[];
-    collectionEntitiesMap: Map < string, CollectionEntity >;
-
-    constructor(poolEventRepo: PoolEventRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
-        this.poolEventRepo = poolEventRepo;
+    constructor(statisticsRepo: StatisticsRepo, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
+        this.statisticsRepo = statisticsRepo;
+        this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
 
-        this.collectionEventFilterModel = new CollectionEventFilterModel();
-        this.analyticsTableState = new TableState(0, [], this.fetch, 10);
-        this.extendedChartState = new ExtendedChartState(this.fetchStatistics);
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchEarnings);
+        this.miningFarmEarningsEntity = null;
 
-        this.miningFarmEntity = null;
-        this.collectionEventEntities = [];
-        this.collectionEntitiesMap = new Map();
+        this.nftEventFilterModel = new NftEventFilterModel();
+        this.nftEventEntities = null;
+        this.nftEntitiesMap = new Map();
+        this.analyticsTableState = new TableState(0, [], this.fetchNftEvents, 10);
 
         makeAutoObservable(this);
     }
 
     async init() {
-        this.miningFarmEntity = null;
-        this.collectionEventEntities = [];
-        this.collectionEntitiesMap = new Map();
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
+        this.nftEventFilterModel.miningFarmId = miningFarmEntity.id;
 
-        this.fetch();
+        await this.fetchEarnings();
+        await this.fetchNftEvents();
     }
 
-    fetch = async () => {
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
-        const { collectionEventEntities, total } = await this.poolEventRepo.fetchCollectionEventsByFilter(this.collectionEventFilterModel);
-        const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(collectionEventEntities.map((eventEntity: CollectionEventEntity) => eventEntity.collectionId));
+    fetchEarnings = async () => {
+        const defaultIntervalPickerState = this.defaultIntervalPickerState;
+        this.miningFarmEarningsEntity = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.nftEventFilterModel.miningFarmId, defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+    }
 
-        const collectionEntitiesMap = new Map();
-        collectionEntities.forEach((collectionEntity) => {
-            collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
+    fetchNftEvents = async () => {
+        this.nftEventFilterModel.from = this.analyticsTableState.tableFilterState.from;
+        this.nftEventFilterModel.count = this.analyticsTableState.tableFilterState.itemsPerPage;
+        const { nftEventEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
+
+        const nftIds = nftEventEntities.filter((nftEventEntity) => {
+            return this.nftEntitiesMap.has(nftEventEntity.nftId) === false;
+        }).map((nftEventEntity) => {
+            return nftEventEntity.nftId;
         });
+
+        const nftEntitiesMap = this.nftEntitiesMap;
+        if (nftIds.length > 0) {
+            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds);
+
+            nftEntities.forEach((nftEntity) => {
+                nftEntitiesMap.set(nftEntity.id, nftEntity);
+            });
+        }
 
         runInAction(() => {
-            this.miningFarmEntity = miningFarmEntity;
-            this.collectionEventEntities = collectionEventEntities;
-            this.collectionEntitiesMap = collectionEntitiesMap;
+            this.nftEntitiesMap = nftEntitiesMap;
+            this.nftEventEntities = nftEventEntities;
             this.analyticsTableState.tableFilterState.total = total;
-            this.extendedChartState.init();
         });
     }
 
-    fetchStatistics = async (timestamp: number): Promise < number[] > => {
-        return this.miningFarmRepo.fetchMiningFarmSalesStatistics(this.miningFarmEntity.id, timestamp);
-    }
-
-    getCollectionById(collectionId: string): CollectionEntity {
-        return this.collectionEntitiesMap.get(collectionId) ?? null;
+    getNftById = (nftId: string): NftEntity => {
+        return this.nftEntitiesMap.get(nftId) ?? null;
     }
 
     onChangeTableFilter = (value: number) => {
-        this.collectionEventFilterModel.eventType = value;
+        this.nftEventFilterModel.eventType = value;
     }
 }

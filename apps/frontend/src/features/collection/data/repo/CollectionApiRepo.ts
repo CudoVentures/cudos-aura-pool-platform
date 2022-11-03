@@ -1,6 +1,6 @@
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
-import CollectionEntity from '../../entities/CollectionEntity';
+import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
@@ -17,16 +17,27 @@ export default class CollectionStorageRepo implements CollectionRepo {
         return this.collectionApi.fetchCategories();
     }
 
-    async fetchTopCollections(period: number): Promise < CollectionEntity[] > {
-        return this.collectionApi.fetchTopCollections(period);
+    async fetchTopCollections(period: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+        const collectionFilterModel = new CollectionFilterModel();
+        // TO DO: add top collection sort
+        collectionFilterModel.status = status;
+
+        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        return collectionEntities;
     }
 
-    async fetchCollectionsByIds(idArray: string[]): Promise < CollectionEntity[] > {
-        return this.collectionApi.fetchCollectionsByIds(idArray);
+    async fetchCollectionsByIds(collectionIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+        const collectionFilterModel = new CollectionFilterModel();
+        // TO DO: add top collection sort
+        collectionFilterModel.collectionIds = collectionIds;
+        collectionFilterModel.status = status;
+
+        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        return collectionEntities;
     }
 
-    async fetchCollectionById(collectionId: string): Promise < CollectionEntity > {
-        const collectionEntities = await this.fetchCollectionsByIds([collectionId]);
+    async fetchCollectionById(collectionId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity > {
+        const collectionEntities = await this.fetchCollectionsByIds([collectionId], status);
         return collectionEntities.length === 1 ? collectionEntities[0] : null;
     }
 

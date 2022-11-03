@@ -26,7 +26,7 @@ function NoFarmView({ accountSessionStore }: Props) {
     }
 
     return (
-        <div className = { 'NoFarmCnt FlexSingleCenter' } >
+        <div className = { 'NoFarmView FlexSingleCenter' } >
             <div className = { 'NoFarmLayout FlexColumn' } >
                 <Svg className = { 'SvgNoFarm' } svg = { SvgNoFarms } />
                 <div className = { 'Title H3 Bold' } >No Farm Profile</div>

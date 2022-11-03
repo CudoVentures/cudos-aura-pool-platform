@@ -1,11 +1,13 @@
-import { observer } from 'mobx-react';
-import moment from 'moment';
 import React from 'react';
+import moment from 'moment';
+import { observer } from 'mobx-react';
+
 import ProjectUtils from '../../utilities/ProjectUtils';
 import ExtendedChartState from '../stores/ExtendedChartState';
+
 import Chart, { ChartType, createBarChartDataSet } from './Chart';
 import NavRowTabs, { createNavRowTab } from './NavRowTabs';
-import StyledContainer, { ContainerPadding } from './StyledContainer';
+
 import '../styles/extended-chart.css';
 
 class HeaderValueTab {

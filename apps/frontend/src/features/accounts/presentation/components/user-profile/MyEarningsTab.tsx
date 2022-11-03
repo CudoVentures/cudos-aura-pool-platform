@@ -1,10 +1,13 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import ExtendedChart, { createHeaderValueTab } from '../../../../../core/presentation/components/ExtendedChart';
-import StyledContainer, { ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
-
 import UserProfilePageStore from '../../stores/UserProfilePageStore';
+
+import StyledContainer, { ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
+import ChartHeading from '../../../../analytics/presentation/components/ChartHeading';
+import ChartInfo from '../../../../analytics/presentation/components/ChartInfo';
+import DefaultIntervalPicker from '../../../../analytics/presentation/components/DefaultIntervalPicker';
+import DailyChart from '../../../../analytics/presentation/components/DailyChart';
 
 import '../../styles/my-earnings-tab.css';
 
@@ -13,15 +16,25 @@ type Props = {
 }
 
 function MyEarningsTab({ userProfilePageStore }: Props) {
+    const { userEarningsEntity, defaultIntervalPickerState } = userProfilePageStore;
+
     return (
         <div className={'MyEarningsTab FlexColumn'}>
             <StyledContainer containerPadding = { ContainerPadding.PADDING_24 }>
-                <ExtendedChart
-                    headerValueTabs={[
-                        createHeaderValueTab('Total BTC Earnings', '$3.45k'),
-                        createHeaderValueTab('Total NFTs Bought', '34'),
-                    ]}
-                    extendedChartState={userProfilePageStore.extendedChartState} />
+                <ChartHeading
+                    leftContent = { (
+                        <>
+                            <ChartInfo label = { 'Total BTC Earnings'} value = { userEarningsEntity.formatTotalBtcEarningInUsd()} />
+                            <ChartInfo label = { 'Total NFTs Bought'} value = { userEarningsEntity.totalNftBounght.toString() } />
+                        </>
+                    ) }
+                    rightContent = { (
+                        <DefaultIntervalPicker defaultIntervalPickerState = { defaultIntervalPickerState } />
+                    ) } />
+                <DailyChart
+                    timestampFrom = { defaultIntervalPickerState.earningsTimestampFrom }
+                    timestampTo = { defaultIntervalPickerState.earningsTimestampTo }
+                    data = { userEarningsEntity.earningsPerDayInUsd } />
             </StyledContainer>
             <div className={'Grid GridColumns3 BalancesDataContainer'}>
                 <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
@@ -38,20 +51,20 @@ function MyEarningsTab({ userProfilePageStore }: Props) {
                     <div className={'B1 SemiBold'}>BTC Earned</div>
                     <div className={'FlexColumn ValueColumn'}>
                         <div>
-                            <span className={'H2 Bold'}>0.232</span>
+                            <span className={'H2 Bold'}>{ userEarningsEntity.formatBtcEarnedInBtc() }</span>
                             <span className={'H3 SecondaryColor'}> BTC</span>
                         </div>
-                        <div className={'SecondaryColor H3 Bold'}>$4,678.00 USD</div>
+                        <div className={'SecondaryColor H3 Bold'}>{ userEarningsEntity.formatBtcEarnedInUsd() }</div>
                     </div>
                 </StyledContainer>
                 <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
-                    <div className={'B1 SemiBold'}>Toral Contract Hash Power</div>
+                    <div className={'B1 SemiBold'}>Total Contract Hash Power</div>
                     <div className={'FlexColumn ValueColumn'}>
                         <div>
-                            <span className={'H2 Bold'}>100.563</span>
+                            <span className={'H2 Bold'}>{userEarningsEntity.totalContractHashPower}</span>
                             <span className={'H3 SecondaryColor'}> TH/S</span>
                         </div>
-                        <div className={'SecondaryColor H3 Bold'}>$345,678.00</div>
+                        <div className={'SecondaryColor H3 Bold'}>{userEarningsEntity.formatTotalContractHashPowerInUsd()}</div>
                     </div>
                 </StyledContainer>
             </div>

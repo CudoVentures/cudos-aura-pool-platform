@@ -2,12 +2,13 @@ import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 
-export enum NftListinStatus {
-    NOT_LISTED,
-    LISTED
+export enum NftStatus {
+    NOT_LISTED = 1,
+    LISTED = 2,
 }
 
 export default class NftEntity {
+
     id: string;
     name: string;
     category: string;
@@ -15,7 +16,7 @@ export default class NftEntity {
     hashPower: number;
     price: BigNumber;
     imageUrl: string;
-    listingStatus: number;
+    status: NftStatus;
     expiryDate: number;
     creatorAddress: string;
     currentOwnerAddress: string;
@@ -25,11 +26,11 @@ export default class NftEntity {
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
-        this.collectionId = S.Strings.EMPTY;
+        this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPower = S.NOT_EXISTS;
         this.price = new BigNumber(S.NOT_EXISTS);
         this.imageUrl = S.Strings.EMPTY;
-        this.listingStatus = S.NOT_EXISTS;
+        this.status = S.NOT_EXISTS;
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = S.Strings.EMPTY
         this.currentOwnerAddress = S.Strings.EMPTY
@@ -39,65 +40,20 @@ export default class NftEntity {
         makeAutoObservable(this);
     }
 
-    static toJson(entity: NftEntity): any {
-        if (entity === null) {
-            return null;
-        }
-
-        return {
-            'id': entity.id,
-            'name': entity.name,
-            'category': entity.category,
-            'collectionId': entity.collectionId,
-            'hashPower': entity.hashPower,
-            'price': entity.price.toString(),
-            'imageUrl': entity.imageUrl,
-            'listingStatus': entity.listingStatus,
-            'expiryDate': entity.expiryDate,
-            'creatorAddress': entity.creatorAddress,
-            'currentOwnerAddress': entity.currentOwnerAddress,
-            'farmRoyalties': entity.currentOwnerAddress,
-            'maintenanceFee': entity.currentOwnerAddress.toString(),
-        }
+    isNew(): boolean {
+        return this.id === S.Strings.NOT_EXISTS;
     }
 
-    static fromJson(json): NftEntity {
-        if (json === null) {
-            return null;
-        }
-
-        const model = new NftEntity();
-
-        model.id = json.id ?? model.id;
-        model.name = json.name ?? model.name;
-        model.category = json.category ?? model.category;
-        model.collectionId = json.collectionId ?? model.collectionId;
-        model.hashPower = Number(json.hashPower ?? model.hashPower);
-        model.price = new BigNumber(json.price ?? model.price);
-        model.imageUrl = json.imageUrl ?? model.imageUrl;
-        model.listingStatus = Number(json.listingStatus ?? model.listingStatus);
-        model.expiryDate = Number(json.expiryDate ?? model.expiryDate);
-        model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
-        model.currentOwnerAddress = json.currentOwnerAddress ?? model.currentOwnerAddress;
-        model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);
-        model.maintenanceFee = new BigNumber(json.maintenanceFee ?? model.maintenanceFee);
-
-        return model;
+    isStatusListed(): boolean {
+        return this.status === NftStatus.LISTED;
     }
 
-    cloneDeep(): NftEntity {
-        const newNftEntity = Object.assign(new NftEntity(), this);
-
-        newNftEntity.price = new BigNumber(this.price);
-        newNftEntity.maintenanceFee = new BigNumber(this.maintenanceFee);
-
-        return newNftEntity;
+    isStatusNotListed(): boolean {
+        return this.status === NftStatus.NOT_LISTED;
     }
 
-    copyDeepFrom(nftEntity: NftEntity): void {
-        Object.assign(this, nftEntity);
-        this.price = new BigNumber(nftEntity.price);
-        this.maintenanceFee = new BigNumber(nftEntity.maintenanceFee);
+    isOwnedByAddress(cudosWalletAddress: string): boolean {
+        return this.currentOwnerAddress === cudosWalletAddress;
     }
 
     getExpiryDisplay(): string {
@@ -147,14 +103,73 @@ export default class NftEntity {
 
     getPriceDisplay(): string {
         const price = this.price.eq(new BigNumber(S.NOT_EXISTS)) ? new BigNumber(0) : this.price;
-
         return `${price.toFixed(2)} CUDOS`;
     }
 
     getMaintenanceFeeDisplay(): string {
         const maintenanceFee = this.maintenanceFee.eq(new BigNumber(S.NOT_EXISTS)) ? new BigNumber(0) : this.maintenanceFee;
-
         return `${maintenanceFee.toFixed(2)}$`;
+    }
+
+    cloneDeep(): NftEntity {
+        const newNftEntity = Object.assign(new NftEntity(), this);
+
+        newNftEntity.price = new BigNumber(this.price);
+        newNftEntity.maintenanceFee = new BigNumber(this.maintenanceFee);
+
+        return newNftEntity;
+    }
+
+    copyDeepFrom(nftEntity: NftEntity): void {
+        Object.assign(this, nftEntity);
+        this.price = new BigNumber(nftEntity.price);
+        this.maintenanceFee = new BigNumber(nftEntity.maintenanceFee);
+    }
+
+    static toJson(entity: NftEntity): any {
+        if (entity === null) {
+            return null;
+        }
+
+        return {
+            'id': entity.id,
+            'name': entity.name,
+            'category': entity.category,
+            'collectionId': entity.collectionId,
+            'hashPower': entity.hashPower,
+            'price': entity.price.toString(),
+            'imageUrl': entity.imageUrl,
+            'status': entity.status,
+            'expiryDate': entity.expiryDate,
+            'creatorAddress': entity.creatorAddress,
+            'currentOwnerAddress': entity.currentOwnerAddress,
+            'farmRoyalties': entity.currentOwnerAddress,
+            'maintenanceFee': entity.currentOwnerAddress.toString(),
+        }
+    }
+
+    static fromJson(json): NftEntity {
+        if (json === null) {
+            return null;
+        }
+
+        const model = new NftEntity();
+
+        model.id = json.id ?? model.id;
+        model.name = json.name ?? model.name;
+        model.category = json.category ?? model.category;
+        model.collectionId = json.collectionId ?? model.collectionId;
+        model.hashPower = Number(json.hashPower ?? model.hashPower);
+        model.price = new BigNumber(json.price ?? model.price);
+        model.imageUrl = json.imageUrl ?? model.imageUrl;
+        model.status = Number(json.status ?? model.status);
+        model.expiryDate = Number(json.expiryDate ?? model.expiryDate);
+        model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
+        model.currentOwnerAddress = json.currentOwnerAddress ?? model.currentOwnerAddress;
+        model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);
+        model.maintenanceFee = new BigNumber(json.maintenanceFee ?? model.maintenanceFee);
+
+        return model;
     }
 
 }

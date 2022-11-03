@@ -9,10 +9,11 @@ import '../styles/collection-preview.css';
 
 type Props = {
     collectionEntity: CollectionEntity,
-    miningFarmName: string
+    miningFarmName: string;
+    displayStatus: boolean;
 }
 
-export default function CollectionPreview({ collectionEntity, miningFarmName }: Props) {
+export default function CollectionPreview({ collectionEntity, miningFarmName, displayStatus }: Props) {
 
     const navigate = useNavigate();
 
@@ -22,7 +23,11 @@ export default function CollectionPreview({ collectionEntity, miningFarmName }: 
 
     return (
         <div className="CollectionPreview FlexColumn" onClick={onClickNft}>
-            <div className="CollectionPreviewImage ImgCoverNode" style = { ProjectUtils.makeBgImgStyle(collectionEntity.profileImgUrl) } />
+            <div className="CollectionPreviewImage ImgCoverNode" style = { ProjectUtils.makeBgImgStyle(collectionEntity.profileImgUrl) } >
+                { displayStatus === true && (
+                    <div className = { 'CollectionStatusLabel'} >{ collectionEntity.getStatusDisplayName() }</div>
+                ) }
+            </div>
             <div className={'MiningFarmName'}>{miningFarmName}</div>
             <div className={'CollectionName'}>{collectionEntity.name}</div>
             <div className={'HashPower'}>{collectionEntity.getHashPowerDisplay()}</div>

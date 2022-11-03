@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import S from '../../../../core/utilities/Main';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
@@ -183,7 +184,7 @@ export default class AccountSessionStore {
     }
 
     async loadAdminMiningFarmApproval(): Promise < void > {
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
         this.approvedMiningFarm = miningFarmEntity?.isApproved() ?? false;
     }
 

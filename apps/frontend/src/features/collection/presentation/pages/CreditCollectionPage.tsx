@@ -77,8 +77,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
     }
 
     return (
-        <PageLayoutComponent
-            className = { 'PageCreditCollection' }>
+        <PageLayoutComponent className = { 'PageCreditCollection' }>
             <PageHeader />
 
             { collectionEntity === null && (

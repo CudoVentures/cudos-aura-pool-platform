@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import MiningFarmEntity from '../../entities/MiningFarmEntity';
+import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import ImageEntity from '../../../upload-file/entities/ImageEntity';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
@@ -37,7 +37,7 @@ export default class CreditMiningFarmDetailsPageStore {
     }
 
     async fetch() {
-        let miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
+        let miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
 
         runInAction(() => {
             if (miningFarmEntity === null) {

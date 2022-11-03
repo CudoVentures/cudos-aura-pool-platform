@@ -9,15 +9,6 @@ export default class CollectionApi {
         return null;
     }
 
-    // Maybe we will merge this method with fetchCollectionsByFilter
-    async fetchTopCollections(period: number): Promise < CollectionEntity[] > {
-        return null;
-    }
-
-    async fetchCollectionsByIds(idArray: string[]): Promise < CollectionEntity[] > {
-        return null;
-    }
-
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         return null;
     }

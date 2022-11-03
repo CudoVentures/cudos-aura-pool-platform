@@ -13,13 +13,17 @@ export default class UserEntity {
     coverImgUrl: string;
 
     constructor() {
-        this.userId = '';
-        this.accountId = '';
+        this.userId = S.Strings.NOT_EXISTS;
+        this.accountId = S.Strings.NOT_EXISTS;
         this.cudosWalletAddress = '';
         this.totalBtcEarned = new BigNumber(S.NOT_EXISTS);
         this.totalHashPower = S.NOT_EXISTS;
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
+    }
+
+    isNew(): boolean {
+        return this.userId === S.Strings.NOT_EXISTS;
     }
 
     static toJson(entity: UserEntity): any {

@@ -20,10 +20,10 @@ export default class ExtendedChartState {
         makeAutoObservable(this);
     }
 
-    init() {
+    async init() {
         this.statPeriod = StatPeriod.TODAY;
         this.statistics = [];
-        this.fetch();
+        await this.fetch();
     }
 
     async fetch() {

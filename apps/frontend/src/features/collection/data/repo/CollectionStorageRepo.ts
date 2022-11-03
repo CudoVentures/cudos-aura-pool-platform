@@ -20,56 +20,43 @@ export default class CollectionStorageRepo implements CollectionRepo {
         return this.storageHelper.categoriesJson.map((json) => CategoryEntity.fromJson(json));
     }
 
-    async fetchTopCollections(period: number): Promise < CollectionEntity[] > {
-        const collectionEntities = this.storageHelper.collectionsJson.slice(0, 18).map((json) => CollectionEntity.fromJson(json));
+    async fetchTopCollections(period: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+        const collectionFilterModel = new CollectionFilterModel();
+        // TO DO: add top collection sort
+        collectionFilterModel.status = status;
 
+        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
-    async fetchCollectionsByIds(idArray: string[]): Promise < CollectionEntity[] > {
+    async fetchCollectionsByIds(collectionIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+        const collectionFilterModel = new CollectionFilterModel();
+        // TO DO: add top collection sort
+        collectionFilterModel.collectionIds = collectionIds;
+        collectionFilterModel.status = status;
 
-        const collectionEntities = this.storageHelper.collectionsJson
-            .filter((json) => idArray.includes(json.id))
-            .map((json) => CollectionEntity.fromJson(json));
-
-        // custom case just for testing without filling
-        if (collectionEntities.length === 0) {
-            for (let i = 0; i < 10; i++) {
-                const collectionEntity = new CollectionEntity();
-
-                collectionEntity.coverImgUrl = 'https://www.cnet.com/a/img/resize/c5b48e90abe8b7fe339fc0139f3834dbe434fee5/hub/2021/11/29/f566750f-79b6-4be9-9c32-8402f58ba0ef/richerd.png?auto=webp&width=1200';
-                collectionEntity.description = 'wefwefwefef'
-                collectionEntity.farmId = '1';
-                collectionEntity.hashPower = 123;
-                collectionEntity.id = `${i}`;
-                collectionEntity.items = 123;
-                collectionEntity.maintenanceFees = new BigNumber(21);
-                collectionEntity.name = 'Cool Collection';
-                collectionEntity.ownerAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
-                collectionEntity.price = new BigNumber(1000 * i);
-                collectionEntity.profileImgUrl = 'https://www.cnet.com/a/img/resize/c5b48e90abe8b7fe339fc0139f3834dbe434fee5/hub/2021/11/29/f566750f-79b6-4be9-9c32-8402f58ba0ef/richerd.png?auto=webp&width=1200';
-                collectionEntity.royalties = 123;
-                collectionEntity.volume = new BigNumber(123);
-                collectionEntity.status = CollectionStatus.APPROVED;
-
-                collectionEntities.push(collectionEntity);
-            }
-        }
-
+        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
-    async fetchCollectionById(collectionId: string): Promise < CollectionEntity > {
-        const collectionEntities = await this.fetchCollectionsByIds([collectionId]);
+    async fetchCollectionById(collectionId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity > {
+        const collectionEntities = await this.fetchCollectionsByIds([collectionId], status);
         return collectionEntities.length === 1 ? collectionEntities[0] : null;
     }
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         let collectionSlice = this.storageHelper.collectionsJson.map((json) => CollectionEntity.fromJson(json));
 
-        if (collectionFilterModel.farmId !== '') {
+        if (collectionFilterModel.collectionIds !== null) {
+            const set = new Set(collectionFilterModel.collectionIds);
             collectionSlice = collectionSlice.filter((json) => {
-                return json.farmId === collectionFilterModel.farmId;
+                return set.has(json.id);
+            });
+        }
+
+        if (collectionFilterModel.status !== CollectionStatus.ANY) {
+            collectionSlice = collectionSlice.filter((json) => {
+                return json.status === collectionFilterModel.status;
             });
         }
 
@@ -79,9 +66,17 @@ export default class CollectionStorageRepo implements CollectionRepo {
             });
         }
 
-        collectionSlice = collectionSlice.filter((json) => {
-            return json.status === collectionFilterModel.status;
-        });
+        // if (collectionFilterModel.sessionAccount === S.INT_TRUE) {
+        //     collectionSlice = collectionSlice.filter((json) => {
+        //         return (json.accountId === this.storageHelper.sessionAccount?.accountId) || false
+        //     });
+        // }
+
+        if (collectionFilterModel.farmId !== S.Strings.NOT_EXISTS) {
+            collectionSlice = collectionSlice.filter((json) => {
+                return json.farmId === collectionFilterModel.farmId;
+            });
+        }
 
         if (collectionFilterModel.hashPowerFilter !== CollectionHashPowerFilter.NONE) {
             let hashPowerLimit = S.NOT_EXISTS;

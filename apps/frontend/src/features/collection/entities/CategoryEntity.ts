@@ -1,11 +1,17 @@
+import S from '../../../core/utilities/Main';
+
 export default class CategoryEntity {
 
     categoryId: string;
     categoryName: string;
 
     constructor() {
-        this.categoryId = '';
+        this.categoryId = S.Strings.NOT_EXISTS;
         this.categoryName = '';
+    }
+
+    isNew(): boolean {
+        return this.categoryId === S.Strings.NOT_EXISTS;
     }
 
     static toJson(model: CategoryEntity) {

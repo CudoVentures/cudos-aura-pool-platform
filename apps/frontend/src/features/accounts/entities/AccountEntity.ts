@@ -22,7 +22,7 @@ export default class AccountEntity {
     timestampRegister: number;
 
     constructor() {
-        this.accountId = '';
+        this.accountId = S.Strings.NOT_EXISTS;
         this.type = AccountType.USER;
         this.active = S.INT_TRUE;
         this.emailVerified = S.INT_FALSE;
@@ -34,11 +34,8 @@ export default class AccountEntity {
         makeAutoObservable(this);
     }
 
-    deepClone(): AccountEntity {
-        const accountEntity = Object.assign(new AccountEntity(), this);
-        accountEntity.type = this.type;
-
-        return accountEntity;
+    isNew(): boolean {
+        return this.accountId === S.Strings.NOT_EXISTS;
     }
 
     isUser(): boolean {
@@ -59,6 +56,13 @@ export default class AccountEntity {
 
     formatDateJoined(): string {
         return moment(new Date(this.timestampRegister)).format(ProjectUtils.MOMENT_FORMAT_DATE);
+    }
+
+    deepClone(): AccountEntity {
+        const accountEntity = Object.assign(new AccountEntity(), this);
+        accountEntity.type = this.type;
+
+        return accountEntity;
     }
 
     static toJson(entity: AccountEntity): any {
