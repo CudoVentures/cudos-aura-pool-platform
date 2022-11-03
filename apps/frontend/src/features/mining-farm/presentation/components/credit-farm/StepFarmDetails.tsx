@@ -46,6 +46,18 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
 
     const [hashRateDisplay, setHashRateDisplay] = useState(miningFarmEntity.displayHashRate());
 
+    function onChangeManufacturers(values) {
+        miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
+    }
+
+    function onChangeMiners(values) {
+        miningFarmEntity.minerIds = values.map((autocompleteOption) => autocompleteOption.value);
+    }
+
+    function onChangeEnergySources(values) {
+        miningFarmEntity.energySourceIds = values.map((autocompleteOption) => autocompleteOption.value);
+    }
+
     function onClickRemoveImage(imageEntityToRemove: ImageEntity) {
         const imageEntityIndex = imageEntities.findIndex((imageEntity: ImageEntity) => imageEntity.id === imageEntityToRemove.id);
         imageEntities.splice(imageEntityIndex, 1);
@@ -101,39 +113,39 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }} />
             <Autocomplete
                 label={'Manufacturers'}
-                value = { miningFarmEntity.manufacturerIds.map((id) => new AutocompleteOption(id, ManufacturerEntity.getManufacturerName(id))) }
+                value = { creditMiningFarmDetailsPageStore.getSelectedManufacturers().map((manufacturerEntity) => {
+                    return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
+                }) }
                 multiple
-                onChange = { (d) => {
-                    miningFarmEntity.manufacturerIds = d.map((option) => option.value);
-                }}
+                onChange = { onChangeManufacturers }
                 placeholder={'Select manufacturers...'}
                 inputValidation={farmManufacturersValidation}
-                options = { ManufacturerEntity.getAllManufacturers().map((manufacturer: ManufacturerEntity) => {
-                    return new AutocompleteOption(manufacturer.id, manufacturer.name);
+                options = { creditMiningFarmDetailsPageStore.manufacturerEntities.map((manufacturerEntity: ManufacturerEntity) => {
+                    return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
                 })} />
             <Autocomplete
                 label={'Miners'}
-                value = { miningFarmEntity.minerIds.map((id) => new AutocompleteOption(id, MinerEntity.getMinerName(id))) }
+                value = { creditMiningFarmDetailsPageStore.getSelectedMiners().map((minerEntity) => {
+                    return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
+                }) }
                 multiple
-                onChange = { (d) => {
-                    miningFarmEntity.minerIds = d.map((option) => option.value);
-                }}
+                onChange = { onChangeMiners }
                 placeholder={'Select miners...'}
                 inputValidation={farmMinersValidation}
-                options = { MinerEntity.getAllMiners().map((miner: MinerEntity) => {
-                    return new AutocompleteOption(miner.id, miner.name);
+                options = { creditMiningFarmDetailsPageStore.minerEntities.map((minerEntity: MinerEntity) => {
+                    return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
                 })} />
             <Autocomplete
                 label={'Energy Source'}
-                value = { miningFarmEntity.energySourceIds.map((id) => new AutocompleteOption(id, EnergySourceEntity.getEnergySourceName(id))) }
+                value = { creditMiningFarmDetailsPageStore.getSelectedEnergySources().map((energySourceEntity) => {
+                    return new AutocompleteOption(energySourceEntity.energySourceId, energySourceEntity.name);
+                }) }
                 multiple
-                onChange = { (d) => {
-                    miningFarmEntity.energySourceIds = d.map((option) => option.value);
-                }}
+                onChange = { onChangeEnergySources}
                 inputValidation={farmEnergySourceseValidation}
                 placeholder={'Select energy source...'}
-                options = { EnergySourceEntity.getAllEnergySources().map((energySource: EnergySourceEntity) => {
-                    return new AutocompleteOption(energySource.id, energySource.name);
+                options = { creditMiningFarmDetailsPageStore.energySourceEntities.map((energySourceEntity: EnergySourceEntity) => {
+                    return new AutocompleteOption(energySourceEntity.energySourceId, energySourceEntity.name);
                 })} />
             <div className={'B2 Bold FullLine'}>2. Add farm activity details</div>
             <Input

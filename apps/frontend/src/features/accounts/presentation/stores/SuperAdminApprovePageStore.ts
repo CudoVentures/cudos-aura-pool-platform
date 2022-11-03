@@ -25,8 +25,8 @@ export default class SuperAdminApprovePageStore {
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
 
-        this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarmEntities, 5);
-        this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 5);
+        this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarmEntities, 50);
+        this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 50);
 
         this.miningFarmEntities = [];
         this.collectionEntities = [];

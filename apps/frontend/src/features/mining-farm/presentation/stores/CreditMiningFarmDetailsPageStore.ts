@@ -3,6 +3,9 @@ import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEnt
 import ImageEntity from '../../../upload-file/entities/ImageEntity';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
+import MinerEntity from '../../entities/MinerEntity';
+import ManufacturerEntity from '../../entities/ManufacturerEntity';
+import EnergySourceEntity from '../../entities/EnergySourceEntity';
 
 export default class CreditMiningFarmDetailsPageStore {
 
@@ -14,6 +17,13 @@ export default class CreditMiningFarmDetailsPageStore {
     miningFarmRepo: MiningFarmRepo;
 
     step: number;
+    manufacturerEntities: ManufacturerEntity[];
+    minerEntities: MinerEntity[];
+    energySourceEntities: EnergySourceEntity[];
+    manufacturerEntitiesMap: Map < string, ManufacturerEntity >;
+    minerEntitiesMap: Map < string, MinerEntity >;
+    energySourceEntitiesMap: Map < string, EnergySourceEntity >;
+
     miningFarmEntity: MiningFarmEntity;
     imageEntities: ImageEntity[];
 
@@ -22,6 +32,10 @@ export default class CreditMiningFarmDetailsPageStore {
         this.miningFarmRepo = miningFarmRepo;
 
         this.setStepFarmDetails();
+        this.manufacturerEntities = [];
+        this.minerEntities = [];
+        this.energySourceEntities = [];
+
         this.miningFarmEntity = null;
         this.imageEntities = [];
 
@@ -30,21 +44,35 @@ export default class CreditMiningFarmDetailsPageStore {
 
     async init() {
         this.setStepFarmDetails();
-        this.miningFarmEntity = null;
-        this.imageEntities = [];
 
-        await this.fetch();
-    }
+        const manufacturerEntities = await this.miningFarmRepo.fetchManufacturers();
+        const manufacturerEntitiesMap = new Map();
+        manufacturerEntities.forEach((manufacturerEntity) => {
+            manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
+        });
 
-    async fetch() {
-        let miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
+        const minerEntities = await this.miningFarmRepo.fetchMiners();
+        const minerEntitiesMap = new Map();
+        minerEntities.forEach((minerEntity) => {
+            minerEntitiesMap.set(minerEntity.minerId, minerEntity);
+        });
+
+        const energySourceEntities = await this.miningFarmRepo.fetchEnergySources();
+        const energySourceEntitiesMap = new Map();
+        energySourceEntities.forEach((energySourceEntity) => {
+            energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
+        });
+
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
 
         runInAction(() => {
-            if (miningFarmEntity === null) {
-                miningFarmEntity = new MiningFarmEntity();
-            }
-
-            this.miningFarmEntity = miningFarmEntity;
+            this.manufacturerEntities = manufacturerEntities;
+            this.minerEntities = minerEntities;
+            this.energySourceEntities = energySourceEntities;
+            this.manufacturerEntitiesMap = manufacturerEntitiesMap;
+            this.minerEntitiesMap = minerEntitiesMap;
+            this.energySourceEntitiesMap = energySourceEntitiesMap;
+            this.miningFarmEntity = miningFarmEntity ?? new MiningFarmEntity();
         });
     }
 
@@ -78,6 +106,24 @@ export default class CreditMiningFarmDetailsPageStore {
 
         runInAction(() => {
             this.setStepSuccess();
+        });
+    }
+
+    getSelectedManufacturers(): ManufacturerEntity[] {
+        return this.miningFarmEntity.manufacturerIds.map((manufacturerId) => {
+            return this.manufacturerEntitiesMap.get(manufacturerId);
+        });
+    }
+
+    getSelectedMiners(): MinerEntity[] {
+        return this.miningFarmEntity.minerIds.map((minerId) => {
+            return this.minerEntitiesMap.get(minerId);
+        });
+    }
+
+    getSelectedEnergySources(): EnergySourceEntity[] {
+        return this.miningFarmEntity.energySourceIds.map((energySourceId) => {
+            return this.energySourceEntitiesMap.get(energySourceId);
         });
     }
 }
