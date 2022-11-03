@@ -73,7 +73,7 @@ export default class CreditMiningFarmDetailsPageStore {
     }
 
     finishCreation = async () => {
-        this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity.accountId;
+        // this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity.accountId;
         await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
 
         runInAction(() => {

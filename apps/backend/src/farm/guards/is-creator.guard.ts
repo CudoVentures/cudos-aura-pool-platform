@@ -15,12 +15,16 @@ export class IsCreatorGuard extends JwtAuthGuard implements CanActivate {
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithUser>();
-        const { user, params } = request;
+        const { user, body } = request;
 
-        if (!user || !params) return false;
+        if (!user || !body) return false;
+
+        if (body.id < 0) {
+            return true
+        }
 
         const userId = user.id;
-        const farmId = parseInt(params.id);
+        const farmId = parseInt(body.id);
 
         return this.farmService
             .findOne(farmId)

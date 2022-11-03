@@ -85,7 +85,7 @@ export default class AccountEntity {
 
         const entity = new AccountEntity();
 
-        entity.accountId = (json.accountId ?? entity.accountId).toString();
+        entity.accountId = (json.accountId ?? entity.accountId);
         entity.type = parseInt(json.type ?? entity.type);
         entity.active = parseInt(json.active ?? entity.active);
         entity.emailVerified = parseInt(json.emailVerified ?? entity.emailVerified);

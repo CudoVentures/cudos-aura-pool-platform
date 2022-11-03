@@ -112,7 +112,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                     <LoadingIndicator />
                 ) }
 
-                { miningFarmEntity !== null && (
+                { miningFarmEntity && (
                     <>
                         { farmId !== undefined && (
                             <Breadcrumbs crumbs={ [

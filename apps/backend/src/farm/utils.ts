@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export const enum FarmStatus {
     QUEUED = 'queued',
@@ -8,8 +8,12 @@ export const enum FarmStatus {
 }
 
 export class FarmFilters {
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        ids: string;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
         creator_id: number;
@@ -17,5 +21,15 @@ export class FarmFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
-        status: FarmStatus;
+        status: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        limit: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        offset: number;
 }

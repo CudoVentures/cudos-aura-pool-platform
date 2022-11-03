@@ -60,4 +60,10 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     async fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] > {
         return this.miningFarmApi.fetchMiningFarmSalesStatistics(miningFarmId, timestamp);
     }
+
+    async approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
+        for (let i = miningFarmEntities.length; i-- > 0;) {
+            await this.miningFarmApi.approveMiningFarm(miningFarmEntities[i].id);
+        }
+    }
 }

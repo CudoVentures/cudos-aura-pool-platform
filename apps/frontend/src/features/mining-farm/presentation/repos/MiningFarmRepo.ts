@@ -12,4 +12,5 @@ export default interface MiningFarmRepo {
     creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void >;
     creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
     fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] >;
+    approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
 }

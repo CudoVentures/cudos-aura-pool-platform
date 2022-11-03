@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateFarmDto } from './dto/create-farm.dto';
-import { UpdateFarmDto } from './dto/update-farm.dto';
+import { FarmDto } from './dto/farm.dto';
 import { Farm } from './farm.model';
-import { FarmStatus } from './utils';
+import { FarmFilters, FarmStatus } from './utils';
 
 @Injectable()
 export class FarmService {
@@ -12,8 +11,9 @@ export class FarmService {
     private farmModel: typeof Farm,
     ) {}
 
-    async findAll(): Promise<Farm[]> {
-        const farms = await this.farmModel.findAll();
+    async findAll(filters: FarmFilters): Promise<Farm[]> {
+        const { limit, offset, ...rest } = filters
+        const farms = await this.farmModel.findAll({ where: { ...rest }, offset, limit });
 
         return farms;
     }
@@ -39,7 +39,7 @@ export class FarmService {
     }
 
     async createOne(
-        createFarmDto: CreateFarmDto,
+        createFarmDto: FarmDto,
         creator_id: number,
     ): Promise<Farm> {
         const farm = this.farmModel.create({
@@ -53,7 +53,7 @@ export class FarmService {
 
     async updateOne(
         id: number,
-        updateFarmDto: Partial<UpdateFarmDto>,
+        updateFarmDto: FarmDto,
     ): Promise<Farm> {
         const [count, [farm]] = await this.farmModel.update(updateFarmDto, {
             where: { id },

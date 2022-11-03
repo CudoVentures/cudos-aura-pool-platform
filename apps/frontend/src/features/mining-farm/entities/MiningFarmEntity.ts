@@ -9,7 +9,7 @@ export enum MiningFarmStatus {
 }
 
 export default class MiningFarmEntity {
-    id: string;
+    id: number;
     accountId: string;
     name: string;
     legalName: string;
@@ -30,7 +30,7 @@ export default class MiningFarmEntity {
     status: MiningFarmStatus;
 
     constructor() {
-        this.id = S.Strings.EMPTY;
+        this.id = S.NOT_EXISTS;
         this.accountId = S.Strings.EMPTY;
         this.name = S.Strings.EMPTY;
         this.legalName = S.Strings.EMPTY;
@@ -54,7 +54,7 @@ export default class MiningFarmEntity {
     }
 
     isNew(): boolean {
-        return this.id === S.Strings.EMPTY;
+        return this.id === S.NOT_EXISTS;
     }
 
     isApproved(): boolean {

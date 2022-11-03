@@ -112,7 +112,7 @@ export default class SuperAdminApprovePageStore {
             miningFarmEntities.push(miningFarmEntity)
         });
 
-        await this.miningFarmRepo.creditMiningFarms(miningFarmEntities);
+        await this.miningFarmRepo.approveMiningFarms(miningFarmEntities);
         this.fetch();
     }
 
@@ -125,7 +125,7 @@ export default class SuperAdminApprovePageStore {
         });
 
         for (let i = collectionEntities.length; i-- > 0;) {
-            await this.collectionRepo.creditCollection(collectionEntities[i], null);
+            await this.collectionRepo.approveCollection(collectionEntities[i]);
         }
 
         this.fetch();
