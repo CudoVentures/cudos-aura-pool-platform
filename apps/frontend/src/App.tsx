@@ -55,10 +55,10 @@ const exampleModalStore = new ExampleModalStore();
 const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
 const cudosRepo = new CudosStorageRepo(storageHelper);
 const miningFarmRepo = new MiningFarmApiRepo();
-const collectionRepo = new CollectionApiRepo();
-const nftRepo = new NftApiRepo();
+const collectionRepo = new CollectionStorageRepo(storageHelper);
+const nftRepo = new NftStorageRepo(storageHelper);
 const accountRepo = new AccountApiRepo();
-const poolEventRepo = new PoolEventStorageRepo();
+// const poolEventRepo = new PoolEventStorageRepo();
 const statisticsRepo = new StatisticsStorageRepo();
 const userRepo = new UserStorageRepo();
 

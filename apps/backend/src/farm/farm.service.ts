@@ -55,7 +55,7 @@ export class FarmService {
         id: number,
         updateFarmDto: FarmDto,
     ): Promise<Farm> {
-        const [count, [farm]] = await this.farmModel.update(updateFarmDto, {
+        const [count, [farm]] = await this.farmModel.update({ ...updateFarmDto, status: FarmStatus.QUEUED }, {
             where: { id },
             returning: true,
         });

@@ -59,7 +59,7 @@ export default class MiningFarmApi {
         const { data } = await axios.get('/api/v1/farm', { params: {
             status: miningFarmFilterModel.status,
             limit: miningFarmFilterModel.count,
-            // creator_id: miningFarmFilterModel.sessionAccount,
+            creator_id: miningFarmFilterModel.sessionAccount,
             offset: miningFarmFilterModel.from,
         } })
 
