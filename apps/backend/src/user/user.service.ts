@@ -54,7 +54,7 @@ export class UserService {
     }
 
     async createFarmAdmin(createUserDto: CreateUserDto): Promise<User> {
-        const password = this.generateRandomPassword(12);
+        const { password, cudos_address } = createUserDto
         const salt = this.generateSalt();
         const hashed_pass = this.generateHashedPass(password, salt);
 
@@ -63,12 +63,13 @@ export class UserService {
             salt,
             hashed_pass,
             role: 'farm_admin',
+            cudos_address,
             is_active: true,
         };
 
         const farmAdmin = await User.create(user);
 
-        await this.sendPasswordEmail(password);
+        // await this.sendPasswordEmail(password);
 
         return farmAdmin;
     }

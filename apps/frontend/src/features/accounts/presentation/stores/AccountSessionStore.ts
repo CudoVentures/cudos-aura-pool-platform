@@ -41,7 +41,7 @@ export default class AccountSessionStore {
     }
 
     isUser(): boolean {
-        if (this.accountEntity === null) {
+        if (!this.accountEntity) {
             return false;
         }
 
@@ -53,7 +53,7 @@ export default class AccountSessionStore {
     }
 
     isAdmin(): boolean {
-        if (this.accountEntity === null) {
+        if (!this.accountEntity) {
             return false;
         }
 
@@ -65,7 +65,7 @@ export default class AccountSessionStore {
     }
 
     isSuperAdmin(): boolean {
-        if (this.accountEntity === null) {
+        if (!this.accountEntity) {
             return false;
         }
 
