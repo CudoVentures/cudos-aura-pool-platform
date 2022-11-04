@@ -23,6 +23,7 @@ import NearMeIcon from '@mui/icons-material/NearMe';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/step-farm-details.css';
+import S from '../../../../../core/utilities/Main';
 
 type Props = {
     alertStore?: AlertStore;
@@ -30,6 +31,9 @@ type Props = {
 }
 
 function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props) {
+    const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
+    const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
+
     const validationState = useRef(new ValidationState()).current;
     const farmNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const farmLegalNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
@@ -41,21 +45,30 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
 
-    const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
-    const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
-
     const [hashRateDisplay, setHashRateDisplay] = useState(miningFarmEntity.displayHashRate());
 
     function onChangeManufacturers(values) {
         miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
     }
 
+    function onChangeManufacturerInput(e, value, reason) {
+        creditMiningFarmDetailsPageStore.manufacturerInputValue = value;
+    }
+
     function onChangeMiners(values) {
         miningFarmEntity.minerIds = values.map((autocompleteOption) => autocompleteOption.value);
     }
 
+    function onChangeMinerInput(e, value, reason) {
+        creditMiningFarmDetailsPageStore.minerInputValue = value;
+    }
+
     function onChangeEnergySources(values) {
         miningFarmEntity.energySourceIds = values.map((autocompleteOption) => autocompleteOption.value);
+    }
+
+    function onChangeEnergySourceInput(e, value, reason) {
+        creditMiningFarmDetailsPageStore.energySourceInputValue = value;
     }
 
     function onClickRemoveImage(imageEntityToRemove: ImageEntity) {
@@ -118,11 +131,17 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 }) }
                 multiple
                 onChange = { onChangeManufacturers }
+                onInputChange = { onChangeManufacturerInput }
                 placeholder={'Select manufacturers...'}
                 inputValidation={farmManufacturersValidation}
                 options = { creditMiningFarmDetailsPageStore.manufacturerEntities.map((manufacturerEntity: ManufacturerEntity) => {
                     return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
-                })} />
+                }) }
+                noOptionsText = { (
+                    <NoOptions
+                        storePropertyName = { 'manufacturerInputValue' }
+                        onClick = { creditMiningFarmDetailsPageStore.onClickAddManufacturer } />
+                ) } />
             <Autocomplete
                 label={'Miners'}
                 value = { creditMiningFarmDetailsPageStore.getSelectedMiners().map((minerEntity) => {
@@ -130,11 +149,17 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 }) }
                 multiple
                 onChange = { onChangeMiners }
+                onInputChange = { onChangeMinerInput }
                 placeholder={'Select miners...'}
                 inputValidation={farmMinersValidation}
                 options = { creditMiningFarmDetailsPageStore.minerEntities.map((minerEntity: MinerEntity) => {
                     return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
-                })} />
+                })}
+                noOptionsText = { (
+                    <NoOptions
+                        storePropertyName = { 'minerInputValue' }
+                        onClick = { creditMiningFarmDetailsPageStore.onClickAddMiner } />
+                ) } />
             <Autocomplete
                 label={'Energy Source'}
                 value = { creditMiningFarmDetailsPageStore.getSelectedEnergySources().map((energySourceEntity) => {
@@ -142,11 +167,17 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 }) }
                 multiple
                 onChange = { onChangeEnergySources}
+                onInputChange = { onChangeEnergySourceInput }
                 inputValidation={farmEnergySourceseValidation}
                 placeholder={'Select energy source...'}
                 options = { creditMiningFarmDetailsPageStore.energySourceEntities.map((energySourceEntity: EnergySourceEntity) => {
                     return new AutocompleteOption(energySourceEntity.energySourceId, energySourceEntity.name);
-                })} />
+                })}
+                noOptionsText = { (
+                    <NoOptions
+                        storePropertyName = { 'energySourceInputValue' }
+                        onClick = { creditMiningFarmDetailsPageStore.onClickAddEnergySource } />
+                ) } />
             <div className={'B2 Bold FullLine'}>2. Add farm activity details</div>
             <Input
                 label={'Machines Location'}
@@ -228,3 +259,17 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
 }
 
 export default inject((props) => props)(observer(StepFarmDetails));
+
+type NoOptionsProps = {
+    creditMiningFarmDetailsPageStore?: CreditMiningFarmDetailsPageStore;
+    storePropertyName: string;
+    onClick: () => void;
+}
+
+function NoOptionsRender({ creditMiningFarmDetailsPageStore, storePropertyName, onClick }: NoOptionsProps) {
+    return (
+        <div className = { 'Clickable' } onClick = { onClick }>Add new: {creditMiningFarmDetailsPageStore[storePropertyName]}</div>
+    )
+}
+
+const NoOptions = inject((stores) => stores)(observer(NoOptionsRender));

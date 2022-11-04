@@ -9,6 +9,15 @@ export default class MinerEntity {
         this.name = S.Strings.EMPTY;
     }
 
+    static newInstance(minerId: string, name: string) {
+        const entity = new MinerEntity();
+
+        entity.minerId = minerId;
+        entity.name = name;
+
+        return entity;
+    }
+
     isNew(): boolean {
         return this.minerId === S.Strings.NOT_EXISTS;
     }

@@ -6,6 +6,7 @@ import MiningFarmRepo from '../repos/MiningFarmRepo';
 import MinerEntity from '../../entities/MinerEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
+import S from '../../../../core/utilities/Main';
 
 export default class CreditMiningFarmDetailsPageStore {
 
@@ -17,6 +18,10 @@ export default class CreditMiningFarmDetailsPageStore {
     miningFarmRepo: MiningFarmRepo;
 
     step: number;
+    manufacturerInputValue: string;
+    minerInputValue: string;
+    energySourceInputValue: string
+
     manufacturerEntities: ManufacturerEntity[];
     minerEntities: MinerEntity[];
     energySourceEntities: EnergySourceEntity[];
@@ -32,9 +37,16 @@ export default class CreditMiningFarmDetailsPageStore {
         this.miningFarmRepo = miningFarmRepo;
 
         this.setStepFarmDetails();
+        this.manufacturerInputValue = '';
+        this.minerInputValue = '';
+        this.energySourceInputValue = '';
+
         this.manufacturerEntities = [];
         this.minerEntities = [];
         this.energySourceEntities = [];
+        this.manufacturerEntitiesMap = null;
+        this.minerEntitiesMap = null;
+        this.energySourceEntitiesMap = null;
 
         this.miningFarmEntity = null;
         this.imageEntities = [];
@@ -143,5 +155,50 @@ export default class CreditMiningFarmDetailsPageStore {
         return this.getSelectedEnergySources().map((energySourceEntity) => {
             return energySourceEntity.name
         }).join(', ');
+    }
+
+    onClickAddManufacturer = async () => {
+        if (this.manufacturerInputValue === '') {
+            return;
+        }
+
+        const manufacturerEntity = ManufacturerEntity.newInstance(S.Strings.NOT_EXISTS, this.manufacturerInputValue);
+        await this.miningFarmRepo.creditManufacturer(manufacturerEntity);
+        runInAction(() => {
+            this.manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
+            this.manufacturerEntities.push(manufacturerEntity);
+            this.miningFarmEntity.manufacturerIds.push(manufacturerEntity.manufacturerId);
+            this.manufacturerInputValue = '';
+        });
+    }
+
+    onClickAddMiner = async () => {
+        if (this.minerInputValue === '') {
+            return;
+        }
+
+        const minerEntity = MinerEntity.newInstance(S.Strings.NOT_EXISTS, this.minerInputValue)
+        await this.miningFarmRepo.creditMiner(minerEntity);
+        runInAction(() => {
+            this.minerEntitiesMap.set(minerEntity.minerId, minerEntity);
+            this.minerEntities.push(minerEntity);
+            this.miningFarmEntity.minerIds.push(minerEntity.minerId);
+            this.minerInputValue = '';
+        });
+    }
+
+    onClickAddEnergySource = async () => {
+        if (this.energySourceInputValue === '') {
+            return;
+        }
+
+        const energySourceEntity = EnergySourceEntity.newInstance(S.Strings.NOT_EXISTS, this.energySourceInputValue);
+        await this.miningFarmRepo.creditEnergySource(energySourceEntity);
+        runInAction(() => {
+            this.energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
+            this.energySourceEntities.push(energySourceEntity);
+            this.miningFarmEntity.energySourceIds.push(energySourceEntity.energySourceId);
+            this.energySourceInputValue = '';
+        });
     }
 }

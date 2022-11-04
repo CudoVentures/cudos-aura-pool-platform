@@ -199,13 +199,13 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
             const lastEnergySourceEntity = this.storageHelper.energySourcesJson.last();
             const nextEnergySourceId = 1 + (lastEnergySourceEntity !== null ? parseInt(lastEnergySourceEntity.energySourceId) : 0);
 
-            energySourceJson = MinerEntity.fromJson(energySourceEntity);
+            energySourceJson = EnergySourceEntity.fromJson(energySourceEntity);
             energySourceJson.energySourceId = nextEnergySourceId.toString();
 
             this.storageHelper.energySourcesJson.push(energySourceJson);
         }
 
-        Object.assign(energySourceEntity, MinerEntity.fromJson(energySourceJson));
+        Object.assign(energySourceEntity, EnergySourceEntity.fromJson(energySourceJson));
 
         this.storageHelper.save();
     }

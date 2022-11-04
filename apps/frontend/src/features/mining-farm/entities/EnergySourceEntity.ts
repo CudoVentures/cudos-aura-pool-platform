@@ -10,6 +10,15 @@ export default class EnergySourceEntity {
         this.name = S.Strings.EMPTY;
     }
 
+    static newInstance(energySourceId: string, name: string) {
+        const entity = new EnergySourceEntity();
+
+        entity.energySourceId = energySourceId;
+        entity.name = name;
+
+        return entity;
+    }
+
     isNew(): boolean {
         return this.energySourceId === S.Strings.NOT_EXISTS;
     }

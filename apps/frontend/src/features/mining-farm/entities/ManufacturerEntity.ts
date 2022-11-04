@@ -9,6 +9,15 @@ export default class ManufacturerEntity {
         this.name = S.Strings.EMPTY;
     }
 
+    static newInstance(manufacturerId: string, name: string) {
+        const entity = new ManufacturerEntity();
+
+        entity.manufacturerId = manufacturerId;
+        entity.name = name;
+
+        return entity;
+    }
+
     isNew(): boolean {
         return this.manufacturerId === S.Strings.NOT_EXISTS;
     }
