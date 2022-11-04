@@ -25,12 +25,14 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
     function createDataPreviews() {
         const previews = [];
 
-        previews.push(createDataPreview('Hashing Power', collectionEntity.hashRateDisplay()));
-        previews.push(createDataPreview('Hashing Power per NFT', creditCollectionStore.getHashPowerPerNft()));
-        previews.push(createDataPreview('Price per NFT', creditCollectionStore.getPricePerNft()));
+        previews.push(createDataPreview('Hashing Power', collectionEntity.formatHashRateInEH()));
+        if (collectionEntity.hasDefaultValuesPerNft() === true) {
+            previews.push(createDataPreview('Hashing Power per NFT', collectionEntity.formatDefaultPricePerNft()));
+            previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerInEHPerNft()));
+        }
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));
-        previews.push(createDataPreview('Farm Royalties', collectionEntity.getRoyaltiesDisplay()));
-        previews.push(createDataPreview('Maintenance Fee', collectionEntity.getMaintenanceFeesDisplay()));
+        previews.push(createDataPreview('Farm Royalties', collectionEntity.formatRoyalties()));
+        previews.push(createDataPreview('Maintenance Fee', collectionEntity.formatMaintenanceFees()));
         previews.push(createDataPreview('Payout Address', ProjectUtils.shortenAddressString(collectionEntity.payoutAddress, 10)));
 
         return previews

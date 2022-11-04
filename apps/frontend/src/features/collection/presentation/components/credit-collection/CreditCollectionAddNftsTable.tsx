@@ -34,9 +34,9 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                 createTableCell(<div className={'NftTableImage ImgContainNode'} style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl)} />),
                 createTableCell(nftEntity.name),
                 createTableCell(collectionName),
-                createTableCell(nftEntity.getHashPowerDisplay()),
-                createTableCell(nftEntity.getPriceDisplay()),
-                createTableCell(nftEntity.getMaintenanceFeeDisplay()),
+                createTableCell(nftEntity.formatHashPowerInEH()),
+                createTableCell(nftEntity.formatPrice()),
+                createTableCell(nftEntity.formatMaintenanceFee()),
                 createTableCell(
                     <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT}>
                         <Button onClick={() => creditCollectionStore.onClickEditNft(nftEntity.id)} type={ButtonType.TEXT_INLINE}>

@@ -42,6 +42,7 @@ import StatisticsStorageRepo from './features/analytics/data/repo/StatisticsStor
 import UserStorageRepo from './features/accounts/data/repo/UserStorageRepo';
 import ViewCollectionModalStore from './features/collection/presentation/stores/ViewCollectionModalStore';
 import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores/ViewMiningFarmModalStore';
+import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -50,7 +51,8 @@ const appStore = new AppStore();
 const alertStore = new AlertStore();
 const exampleModalStore = new ExampleModalStore();
 
-const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
+// const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
+const bitcoinRepo = new BitcoinApiRepo();
 const cudosRepo = new CudosStorageRepo(storageHelper);
 const miningFarmRepo = new MiningFarmStorageRepo(storageHelper);
 const collectionRepo = new CollectionStorageRepo(storageHelper);

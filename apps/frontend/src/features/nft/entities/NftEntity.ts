@@ -12,9 +12,8 @@ export default class NftEntity {
 
     id: string;
     name: string;
-    category: string;
     collectionId: string;
-    hashPower: number;
+    hashPowerInEH: number;
     price: BigNumber;
     imageUrl: string;
     status: NftStatus;
@@ -28,7 +27,7 @@ export default class NftEntity {
         this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.collectionId = S.Strings.NOT_EXISTS;
-        this.hashPower = S.NOT_EXISTS;
+        this.hashPowerInEH = S.NOT_EXISTS;
         this.price = new BigNumber(S.NOT_EXISTS);
         this.imageUrl = S.Strings.EMPTY;
         this.status = S.NOT_EXISTS;
@@ -57,7 +56,7 @@ export default class NftEntity {
         return this.currentOwnerAddress === cudosWalletAddress;
     }
 
-    getExpiryDisplay(): string {
+    formatExpiryDate(): string {
         const periodMilis = this.expiryDate - Date.now();
 
         if (periodMilis < 0) {
@@ -83,31 +82,16 @@ export default class NftEntity {
         return `${years} years, ${days} days, ${hours} hours`;
     }
 
-    getHashPowerDisplay(): string {
-        const hashPower = this.hashPower !== S.NOT_EXISTS ? this.hashPower : 0;
-
-        if (hashPower < 1000) {
-            return `${hashPower} TH/s`;
-        }
-
-        if (hashPower / 1000 < 1000) {
-            return `${(hashPower / 1000).toFixed(2)} PH/s`;
-        }
-
-        if (hashPower / 1000000 < 1000) {
-            return `${(hashPower / 1000000).toFixed(2)} EH/s`;
-        }
-
-        return S.Strings.EMPTY;
-
+    formatHashPowerInEH(): string {
+        return `${this.hashPowerInEH !== S.NOT_EXISTS ? this.hashPowerInEH : 0} EH`;
     }
 
-    getPriceDisplay(): string {
+    formatPrice(): string {
         const price = this.price.eq(new BigNumber(S.NOT_EXISTS)) ? new BigNumber(0) : this.price;
         return `${price.toFixed(2)} CUDOS`;
     }
 
-    getMaintenanceFeeDisplay(): string {
+    formatMaintenanceFee(): string {
         return numeral(this.maintenanceFee.toNumber()).format('$0,0.0');
     }
 
@@ -134,9 +118,8 @@ export default class NftEntity {
         return {
             'id': entity.id,
             'name': entity.name,
-            'category': entity.category,
             'collectionId': entity.collectionId,
-            'hashPower': entity.hashPower,
+            'hashPowerInEH': entity.hashPowerInEH,
             'price': entity.price.toString(),
             'imageUrl': entity.imageUrl,
             'status': entity.status,
@@ -157,9 +140,8 @@ export default class NftEntity {
 
         model.id = json.id ?? model.id;
         model.name = json.name ?? model.name;
-        model.category = json.category ?? model.category;
         model.collectionId = json.collectionId ?? model.collectionId;
-        model.hashPower = Number(json.hashPower ?? model.hashPower);
+        model.hashPowerInEH = Number(json.hashPowerInEH ?? model.hashPowerInEH);
         model.price = new BigNumber(json.price ?? model.price);
         model.imageUrl = json.imageUrl ?? model.imageUrl;
         model.status = Number(json.status ?? model.status);

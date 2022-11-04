@@ -158,7 +158,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                             <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
                             <DataPreviewLayout
                                 dataPreviews = { [
-                                    createDataPreview('Total Hashrate', `${miningFarmEntity.hashRateTh} TH/s`),
+                                    createDataPreview('Total Hashrate', `${miningFarmEntity.formatHashRateInEH()}`),
                                     createDataPreview('Hashrate (1h average)', '80.345 EH/s'),
                                     createDataPreview('Active Workers', '1023'),
                                     createDataPreview('Collections Owned', creditMiningFarmPageStore.gridViewState.getItemCount()),

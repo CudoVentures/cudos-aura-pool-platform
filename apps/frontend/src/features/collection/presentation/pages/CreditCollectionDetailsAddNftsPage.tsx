@@ -40,6 +40,10 @@ function CreditCollectionDetailsAddNftsPage({ appStore, creditCollectionStore }:
         navigate(AppRoutes.CREDIT_MINING_FARM)
     }
 
+    function onClickNavigateCollection() {
+        navigate(`${AppRoutes.CREDIT_COLLECTION}/${collectionEntity.id}`)
+    }
+
     return (
         <PageLayoutComponent
             modals = {
@@ -58,7 +62,7 @@ function CreditCollectionDetailsAddNftsPage({ appStore, creditCollectionStore }:
                     <>
                         <Breadcrumbs crumbs={ [
                             createBreadcrumb('My Collections', onClickNavigateCreditMiningFarm),
-                            createBreadcrumb('Collection'),
+                            createBreadcrumb('Collection', onClickNavigateCollection),
                             createBreadcrumb('Add NFTs'),
                         ] } />
                         <StyledContainer className={'FlexColumn BorderContainer'}>

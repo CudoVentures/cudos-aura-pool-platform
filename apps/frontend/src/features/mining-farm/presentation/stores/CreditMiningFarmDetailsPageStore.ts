@@ -84,7 +84,7 @@ export default class CreditMiningFarmDetailsPageStore {
             this.manufacturerEntitiesMap = manufacturerEntitiesMap;
             this.minerEntitiesMap = minerEntitiesMap;
             this.energySourceEntitiesMap = energySourceEntitiesMap;
-            this.miningFarmEntity = miningFarmEntity ?? new MiningFarmEntity();
+            this.miningFarmEntity = miningFarmEntity ?? MiningFarmEntity.newInstanceWithEmail(this.accountSessionStore.accountEntity.email);
         });
     }
 

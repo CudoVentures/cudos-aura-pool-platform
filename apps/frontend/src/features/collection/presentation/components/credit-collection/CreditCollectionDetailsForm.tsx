@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +22,8 @@ import FieldColumnWrapper from '../../../../../core/presentation/components/Fiel
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import '../../styles/credit-collection-details-form.css';
+import { InputAdornment } from '@mui/material';
+import BigNumber from 'bignumber.js';
 
 type Props = {
     alertStore?: AlertStore;
@@ -33,13 +35,51 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
 
     const collectionEntity = creditCollectionStore.collectionEntity;
     const validationState = useRef(new ValidationState()).current;
+    const validationPerNftState = useRef(new ValidationState()).current;
     const collectionNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
     const collectionPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Empty payout address')).current;
-    const collectionHashPowerPerNftValidation = useRef(validationState.addEmptyValidation('Empty hashing power per nft')).current;
-    const collectionPricePerNftValidation = useRef(validationState.addEmptyValidation('Empty price per nft')).current;
+    const collectionHashPowerPerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty hashing power per nft')).current;
+    const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
+
+    const [hashPowerInEH, setHashPowerInEH] = useState(collectionEntity.hashPowerInEH !== S.NOT_EXISTS ? collectionEntity.hashPowerInEH : '');
+    const [maintenanceFees, setMaintenanceFees] = useState(collectionEntity.maintenanceFees !== null ? collectionEntity.maintenanceFees.toString() : '')
+    const [defaultPricePerNft, setDefaultPricePerNft] = useState(collectionEntity.defaultPricePerNft !== null ? collectionEntity.defaultPricePerNft.toString() : '');
+    const [defaultHashPowerInEHPerNftInEH, setDefaultHashPowerPerNftInEH] = useState(collectionEntity.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNft : '');
+
+    function onChangeHashPowerInEH(value) {
+        setHashPowerInEH(value);
+        collectionEntity.hashPowerInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    }
+
+    function onChangeRoyalties(value) {
+        collectionEntity.royalties = value !== '' ? parseInt(value) : S.NOT_EXISTS;
+    }
+
+    function onChangeMaintenanceFees(value) {
+        setMaintenanceFees(value);
+        collectionEntity.maintenanceFees = value !== '' ? new BigNumber(value) : null;
+    }
+
+    function onChangeDefaultPricePerNft(value) {
+        setDefaultPricePerNft(value);
+        collectionEntity.defaultPricePerNft = value !== '' ? new BigNumber(value) : null;
+    }
+
+    function onChangeDefaultHashPowerPerNftInEH(value) {
+        setDefaultHashPowerPerNftInEH(value);
+        collectionEntity.defaultHashPowerInEHPerNftInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    }
+
+    function onChangeAcceptDefaultHashPowerCheckboxValue() {
+        creditCollectionStore.defaultHashAndPriceValues ^= 1;
+        if (creditCollectionStore.defaultHashAndPriceValues === S.INT_FALSE) {
+            onChangeDefaultPricePerNft('');
+            onChangeDefaultHashPowerPerNftInEH('');
+        }
+    }
 
     async function onClickFinishEdit() {
         await creditCollectionStore.onClickSave();
@@ -52,6 +92,13 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
             return;
+        }
+
+        if (creditCollectionStore.defaultHashAndPriceValues === S.INT_TRUE) {
+            if (validationPerNftState.getIsErrorPresent() === true) {
+                validationPerNftState.setShowErrors(true);
+                return;
+            }
         }
 
         creditCollectionStore.initNewNftEntity();
@@ -148,17 +195,28 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 label={'Hashing Power for collection'}
                 placeholder={'Enter hashing power...'}
                 inputValidation={collectionHashPowerValidation}
-                value={creditCollectionStore.getHashingPowerInputValue()}
-                onChange={creditCollectionStore.onChangeHashingPower} />
+                value={hashPowerInEH}
+                onChange={onChangeHashPowerInEH}
+                inputType = { InputType.REAL }
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end" >EH</InputAdornment>
+                    ),
+                }} />
             <FieldColumnWrapper
                 field = {
                     <Input
                         label={<TextWithTooltip text={'Secondary Sale Royalties'} tooltipText={'Secondary Sale Royalties'} />}
                         placeholder={'Enter royalties...'}
-                        value={creditCollectionStore.getCollectionRoyaltiesInputValue()}
+                        value={collectionEntity.royalties !== S.NOT_EXISTS ? collectionEntity.royalties : ''}
                         inputType={InputType.INTEGER}
                         inputValidation={collectionRoyaltiesValidation}
-                        onChange={creditCollectionStore.onChangeCollectionRoyalties} />
+                        onChange={onChangeRoyalties}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >%</InputAdornment>
+                            ),
+                        }} />
                 }
                 helperText = { 'Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.' } />
             <InfoGrayBox text={'Farm admins receives 80% of first NFT sale proceeds. 10% are Aura Pool Fees and 10% will be held to a Cudo account as escrow. Farm admin is able to change their payout address per collection.'} />
@@ -167,13 +225,18 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                     <Input
                         label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
                         placeholder={'Maintenance fees...'}
-                        value={creditCollectionStore.getCollectionMaintenanceFeesInputValue()}
-                        inputType={InputType.INTEGER}
+                        value={maintenanceFees}
+                        inputType={InputType.REAL}
                         inputValidation={collectionMainteannceFeesValidation}
-                        onChange={creditCollectionStore.onChangeMaintenanceFees} />
+                        onChange={onChangeMaintenanceFees}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >BTC</InputAdornment>
+                            ),
+                        }} />
                 }
                 helperText = { 'Maintenance fee calculation formula:' } >
-                <div className={'FormulaBox B2 Bold'}>{'[This NFT EH/s] / [Total EH/s] * [Maintenance fee]'}</div>
+                <div className={'FormulaBox B2 Bold'}>{'[This Collection EH/s] / [Total EH/s] * [Maintenance fee]'}</div>
             </FieldColumnWrapper>
             <Input
                 label={<TextWithTooltip text={'Set Payout Address'} tooltipText={'Set Payout Address'} />}
@@ -183,21 +246,36 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 onChange={creditCollectionStore.onChangeCollectionPayoutAddress} />
             <Checkbox
                 value={creditCollectionStore.defaultHashAndPriceValues}
-                onChange={creditCollectionStore.onChangeAcceptDefaultHashPowerCheckboxValue}
+                onChange={onChangeAcceptDefaultHashPowerCheckboxValue}
                 label={'Set default hashing power and nft price values for all items in the collection.'} />
-            <Input
-                label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Paid monthly in BTC'} />}
-                placeholder={'Enter hash power...'}
-                value={creditCollectionStore.getHashPowerPerNft()}
-                inputValidation={collectionHashPowerPerNftValidation}
-                onChange={creditCollectionStore.onChangeHashPowerPerNft} />
-            <Input
-                label={'Price per NFT'}
-                placeholder={'Enter price...'}
-                value={creditCollectionStore.getPricePerNft()}
-                inputValidation={collectionPricePerNftValidation}
-                onChange={creditCollectionStore.onChangePricePerNft} />
-
+            { creditCollectionStore.defaultHashAndPriceValues === S.INT_TRUE && (
+                <>
+                    <Input
+                        label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Paid monthly in BTC'} />}
+                        placeholder={'Enter hash power...'}
+                        value={defaultHashPowerInEHPerNftInEH}
+                        inputType = { InputType.REAL }
+                        inputValidation={collectionHashPowerPerNftValidation}
+                        onChange={onChangeDefaultHashPowerPerNftInEH}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >EH</InputAdornment>
+                            ),
+                        }} />
+                    <Input
+                        label={'Price per NFT'}
+                        placeholder={'Enter price...'}
+                        inputType = { InputType.REAL }
+                        value={defaultPricePerNft}
+                        inputValidation={collectionPricePerNftValidation}
+                        onChange={onChangeDefaultPricePerNft}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >BTC</InputAdornment>
+                            ),
+                        }} />
+                </>
+            ) }
             <Actions layout={ActionsLayout.LAYOUT_COLUMN_RIGHT}>
                 { creditCollectionStore.isEditMode() === true ? (
                     <Button padding={ButtonPadding.PADDING_48} onClick={onClickFinishEdit}>Save</Button>

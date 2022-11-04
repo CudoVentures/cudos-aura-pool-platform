@@ -45,7 +45,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
 
-    const [hashRateDisplay, setHashRateDisplay] = useState(miningFarmEntity.displayHashRate());
+    const [hashRateInEH, setHashRateInEH] = useState(miningFarmEntity.hashRateInEH !== S.NOT_EXISTS ? miningFarmEntity.hashRateInEH : '');
 
     function onChangeManufacturers(values) {
         miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
@@ -69,6 +69,11 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
 
     function onChangeEnergySourceInput(e, value, reason) {
         creditMiningFarmDetailsPageStore.energySourceInputValue = value;
+    }
+
+    function onChangeHashRateInEH(value) {
+        setHashRateInEH(value);
+        miningFarmEntity.hashRateInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
     }
 
     function onClickRemoveImage(imageEntityToRemove: ImageEntity) {
@@ -101,8 +106,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 inputValidation={farmNameValidation}
                 onChange={(string) => { miningFarmEntity.name = string }} />
             <Input
-                label={'Description'}
-                placeholder={'Enter description... (Optional)'}
+                label={'Description (Optional)'}
                 multiline = { true }
                 value={miningFarmEntity.description}
                 onChange={(string) => { miningFarmEntity.description = string }} />
@@ -194,12 +198,14 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 <Input
                     label={'Hashrate'}
                     placeholder={'e.g 102.001 EH/s'}
-                    value={hashRateDisplay}
-                    onChange={(string) => {
-                        setHashRateDisplay(string);
-                        miningFarmEntity.parseHashRateFromString(string);
-                    }}
-                    inputValidation={farmHashrateValidation} />
+                    value={hashRateInEH}
+                    onChange={ onChangeHashRateInEH }
+                    inputValidation={farmHashrateValidation}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end" > EH/s </InputAdornment>
+                        ),
+                    }} />
                 <div className={'FlexRow HashRateInfo B2 SemiBold FullLine'}>
                     <Svg svg={ErrorOutlineIcon}/>
                     Insert the Hashrate planned to be offered as NFTs

@@ -36,7 +36,7 @@ function StepReview({ accountSessionStore, creditMiningFarmDetailsPageStore }: P
                     createDataPreview('Miners', creditMiningFarmDetailsPageStore.getSelectedMinersNames()),
                     createDataPreview('Energy Source', creditMiningFarmDetailsPageStore.getSelectedEnergySourcesNames()),
                     createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
-                    createDataPreview('Hashrate', miningFarmEntity.displayHashRate()),
+                    createDataPreview('Hashrate', miningFarmEntity.formatHashRateInEH()),
                     createDataPreview('Farm Photos', imageEntities.length),
 
                 ] } />

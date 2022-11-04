@@ -6,13 +6,13 @@ export default class BitcoinStore {
     bitcoinRepo: BitcoinRepo;
 
     inited: boolean;
-    bitcointDataEntity: BitcoinDataEntity;
+    bitcoinDataEntity: BitcoinDataEntity;
 
     constructor(bitcoinRepo: BitcoinRepo) {
         this.bitcoinRepo = bitcoinRepo;
 
         this.inited = false;
-        this.bitcointDataEntity = null;
+        this.bitcoinDataEntity = null;
     }
 
     async init() {
@@ -21,23 +21,46 @@ export default class BitcoinStore {
         }
 
         this.inited = true;
-        this.bitcointDataEntity = await this.bitcoinRepo.fetchBitcoinData();
+        this.bitcoinDataEntity = await this.bitcoinRepo.fetchBitcoinData();
     }
 
     getBitcoinPrice(): number {
-        return this.bitcointDataEntity?.price ?? 0;
+        return this.bitcoinDataEntity?.priceInUsd ?? 0;
+    }
+
+    getBitcoinPriceInUsd(): number {
+        return this.bitcoinDataEntity?.priceInUsd ?? 0;
     }
 
     getBitcoinPriceChange(): number {
-        return this.bitcointDataEntity?.priceChange ?? 0;
+        return this.bitcoinDataEntity?.priceChangeInUsd ?? 0;
+    }
+
+    getBitcoinPriceChangeInUsd(): number {
+        return this.bitcoinDataEntity?.priceChangeInUsd ?? 0;
+    }
+
+    getBitcoinPriceChangeInPercentage(): number {
+        const priceInUsd = this.getBitcoinPriceInUsd();
+        const priceChangeInUsd = this.getBitcoinPriceChangeInUsd();
+
+        if (priceInUsd === 0) {
+            return 0;
+        }
+
+        return (priceChangeInUsd / priceInUsd) * 100;
+    }
+
+    formatBitcoinPriceChangeInPercentage(): string {
+        return `${this.getBitcoinPriceChangeInPercentage().toFixed(2)} %`;
     }
 
     getNetworkDifficulty(): string {
-        return this.bitcointDataEntity?.networkDifficulty ?? '';
+        return this.bitcoinDataEntity?.networkDifficulty ?? '';
     }
 
-    getBlockReward(): string {
-        return this.bitcointDataEntity?.blockReward ?? '';
+    getBlockReward(): number {
+        return this.bitcoinDataEntity?.blockReward ?? 0;
     }
 
 }

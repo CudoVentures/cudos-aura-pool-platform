@@ -39,8 +39,6 @@ export default class CreditCollectionStore {
     selectedNftEntity: NftEntity;
 
     defaultHashAndPriceValues: number;
-    hashPowerPerNft: number;
-    pricePerNft: BigNumber;
 
     constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -57,8 +55,6 @@ export default class CreditCollectionStore {
         this.tempIdGenerator = new TempIdGenerator();
 
         this.defaultHashAndPriceValues = S.INT_FALSE;
-        this.hashPowerPerNft = S.NOT_EXISTS;
-        this.pricePerNft = new BigNumber(S.NOT_EXISTS);
 
         makeAutoObservable(this);
     }
@@ -138,8 +134,10 @@ export default class CreditCollectionStore {
     initNewNftEntity(): void {
         const nftEntity = new NftEntity();
 
-        nftEntity.price = this.pricePerNft;
-        nftEntity.hashPower = this.hashPowerPerNft;
+        if (this.collectionEntity.hasDefaultValuesPerNft() === true) {
+            nftEntity.price = this.collectionEntity.defaultPricePerNft;
+            nftEntity.hashPowerInEH = this.collectionEntity.defaultHashPowerInEHPerNftInEH;
+        }
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
         nftEntity.maintenanceFee = new BigNumber(this.collectionEntity.maintenanceFees);
 
@@ -166,32 +164,8 @@ export default class CreditCollectionStore {
         this.collectionEntity.description = description;
     }
 
-    onChangeHashingPower = (hashRate: string) => {
-        this.collectionEntity.hashPower = Number(hashRate);
-    }
-
-    onChangeCollectionRoyalties = (royalties: string) => {
-        this.collectionEntity.royalties = Number(royalties);
-    }
-
-    onChangeMaintenanceFees = (maintenanceFees: string) => {
-        this.collectionEntity.maintenanceFees = new BigNumber(maintenanceFees);
-    }
-
     onChangeCollectionPayoutAddress = (payoutAddress: string) => {
         this.collectionEntity.payoutAddress = payoutAddress;
-    }
-
-    onChangeAcceptDefaultHashPowerCheckboxValue = () => {
-        this.defaultHashAndPriceValues ^= 1;
-    }
-
-    onChangeHashPowerPerNft = (hashPowerPerNft: string) => {
-        this.hashPowerPerNft = Number(hashPowerPerNft);
-    }
-
-    onChangePricePerNft = (pricePerNft: string) => {
-        this.pricePerNft = new BigNumber(pricePerNft);
     }
 
     onChangeSelectedNftName = (nftName: string) => {
@@ -199,7 +173,7 @@ export default class CreditCollectionStore {
     }
 
     onChangeSelectedNftHashPower = (hasHPower: string) => {
-        this.selectedNftEntity.hashPower = Number(hasHPower);
+        this.selectedNftEntity.hashPowerInEH = Number(hasHPower);
     }
 
     onChangeSelectedNftPrice = (price: string) => {
@@ -247,30 +221,6 @@ export default class CreditCollectionStore {
         this.initNewNftEntity();
     }
 
-    getHashingPowerInputValue() {
-        if (this.collectionEntity.hashPower === S.NOT_EXISTS) {
-            return ''
-        }
-
-        return this.collectionEntity.hashPower;
-    }
-
-    getHashPowerPerNft() {
-        if (this.hashPowerPerNft === S.NOT_EXISTS) {
-            return ''
-        }
-
-        return this.hashPowerPerNft.toString();
-    }
-
-    getPricePerNft() {
-        if (this.pricePerNft.eq(S.NOT_EXISTS)) {
-            return ''
-        }
-
-        return this.pricePerNft.toString();
-    }
-
     getSelectedNftMaintenanceFeeInputValue() {
         if (this.selectedNftEntity === null) {
             return '';
@@ -281,22 +231,6 @@ export default class CreditCollectionStore {
         }
 
         return this.selectedNftEntity.maintenanceFee.toString();
-    }
-
-    getCollectionRoyaltiesInputValue() {
-        if (this.collectionEntity.royalties === S.NOT_EXISTS) {
-            return ''
-        }
-
-        return this.collectionEntity.royalties.toString();
-    }
-
-    getCollectionMaintenanceFeesInputValue() {
-        if (this.collectionEntity.maintenanceFees.eq(new BigNumber(S.NOT_EXISTS))) {
-            return ''
-        }
-
-        return this.collectionEntity.maintenanceFees.toString();
     }
 
     getSelectedNftRoyaltiesInputValue() {

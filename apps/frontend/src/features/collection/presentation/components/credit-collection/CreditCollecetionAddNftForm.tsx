@@ -99,12 +99,12 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                         placeholder={'Enter hashing power...'}
                         disabled = { selectedNftEntity === null }
-                        value={selectedNftEntity?.hashPower ?? ''}
+                        value={selectedNftEntity?.hashPowerInEH ?? ''}
                         inputType={InputType.INTEGER}
                         inputValidation={nftHashPowerValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftHashPower} />
                 }
-                helperText = { 'Available TH/s: 80.000' }>
+                helperText = { 'Available EH/s: 80.000' }>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
             </FieldColumnWrapper>
             <FieldColumnWrapper

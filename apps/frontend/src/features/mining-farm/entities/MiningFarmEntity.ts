@@ -1,5 +1,7 @@
 import { makeAutoObservable } from 'mobx';
+import numeral from 'numeral';
 import S from '../../../core/utilities/Main';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum MiningFarmStatus {
     APPROVED = 1,
@@ -9,6 +11,7 @@ export enum MiningFarmStatus {
 }
 
 export default class MiningFarmEntity {
+
     id: string;
     accountId: string;
     name: string;
@@ -19,15 +22,15 @@ export default class MiningFarmEntity {
     manufacturerIds: string[];
     minerIds: string[];
     energySourceIds: string[];
-    hashRateTh: number;
-    powerCost: number;
+    hashRateInEH: number;
     machinesLocation: string
-    poolFee: number;
-    powerConsumptionPerTh: number;
     profileImgUrl: string;
     coverImgUrl: string;
     farmPhotoUrls: string[];
     status: MiningFarmStatus;
+    powerCost: number;
+    poolFee: number;
+    powerConsumptionPerTh: number;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -40,17 +43,23 @@ export default class MiningFarmEntity {
         this.manufacturerIds = [];
         this.minerIds = [];
         this.energySourceIds = [];
-        this.hashRateTh = S.NOT_EXISTS;
-        this.powerCost = S.NOT_EXISTS;
+        this.hashRateInEH = S.NOT_EXISTS;
         this.machinesLocation = S.Strings.EMPTY;
-        this.poolFee = S.NOT_EXISTS;
-        this.powerConsumptionPerTh = S.NOT_EXISTS;
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
         this.farmPhotoUrls = [];
         this.status = MiningFarmStatus.NOT_APPROVED;
+        this.powerCost = S.NOT_EXISTS;
+        this.poolFee = S.NOT_EXISTS;
+        this.powerConsumptionPerTh = S.NOT_EXISTS;
 
         makeAutoObservable(this);
+    }
+
+    static newInstanceWithEmail(primaryAccountOwnerEmail: string) {
+        const entity = new MiningFarmEntity();
+        entity.primaryAccountOwnerEmail = primaryAccountOwnerEmail;
+        return entity;
     }
 
     isNew(): boolean {
@@ -63,6 +72,23 @@ export default class MiningFarmEntity {
 
     markApproved() {
         this.status = MiningFarmStatus.APPROVED;
+    }
+
+    formatHashRateInEH(): string {
+        return `${this.hashRateInEH !== S.NOT_EXISTS ? this.hashRateInEH : 0} EH/s`
+    }
+
+    formatPowerCost(): string {
+        const powerCost = `${this.powerCost !== S.NOT_EXISTS ? this.powerCost : 0}`
+        return numeral(powerCost).format(ProjectUtils.NUMERAL_USD);
+    }
+
+    formatPoolFee(): string {
+        return `${this.poolFee !== S.NOT_EXISTS ? this.poolFee : 0} %`;
+    }
+
+    formatPowerConsumptionPerTH(): string {
+        return `${this.powerConsumptionPerTh !== S.NOT_EXISTS ? this.powerConsumptionPerTh : 0} W`;
     }
 
     static toJson(entity: MiningFarmEntity): any {
@@ -81,15 +107,15 @@ export default class MiningFarmEntity {
             'manufacturerIds': entity.manufacturerIds,
             'minerIds': entity.minerIds,
             'energySourceIds': entity.energySourceIds,
-            'hashRateTh': entity.hashRateTh,
-            'powerCost': entity.powerCost,
+            'hashRateInEH': entity.hashRateInEH,
             'machinesLocation': entity.machinesLocation,
-            'poolFee': entity.poolFee,
-            'powerConsumptionPerTh': entity.powerConsumptionPerTh,
             'profileImgUrl': entity.profileImgUrl,
             'coverImgUrl': entity.coverImgUrl,
             'farmPhotoUrls': JSON.stringify(entity.farmPhotoUrls),
             'status': entity.status,
+            'powerCost': entity.powerCost,
+            'poolFee': entity.poolFee,
+            'powerConsumptionPerTh': entity.powerConsumptionPerTh,
         }
     }
 
@@ -109,60 +135,17 @@ export default class MiningFarmEntity {
         model.manufacturerIds = json.manufacturerIds ?? model.manufacturerIds;
         model.minerIds = json.minerIds ?? model.minerIds;
         model.energySourceIds = json.energySourceIds ?? model.energySourceIds;
-        model.hashRateTh = Number(json.hashRateTh) ?? model.hashRateTh;
-        model.powerCost = Number(json.powerCost) ?? model.powerCost;
+        model.hashRateInEH = Number(json.hashRateInEH) ?? model.hashRateInEH;
         model.machinesLocation = json.machinesLocation ?? model.machinesLocation;
-        model.poolFee = Number(json.poolFee) ?? model.poolFee;
-        model.powerConsumptionPerTh = Number(json.powerConsumptionPerTh) ?? model.powerConsumptionPerTh;
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.farmPhotoUrls = json.farmPhotoUrls ?? model.farmPhotoUrls;
         model.status = parseInt(json.status ?? model.status);
+        model.powerCost = Number(json.powerCost) ?? model.powerCost;
+        model.poolFee = Number(json.poolFee) ?? model.poolFee;
+        model.powerConsumptionPerTh = Number(json.powerConsumptionPerTh) ?? model.powerConsumptionPerTh;
 
         return model;
-    }
-
-    // TODO: do a good parsing
-    parseHashRateFromString(hashRateString: string) {
-        const [hashRate, unit] = hashRateString.split(' ');
-        const hashRateParsed = Number(hashRate);
-        if (unit !== undefined) {
-            switch (unit.toLowerCase()) {
-                case 'eh/s':
-                    this.hashRateTh = hashRateParsed * 1000000;
-                    return;
-                case 'ph/s':
-                    this.hashRateTh = hashRateParsed * 1000;
-                    return;
-                case 'th/s':
-                    this.hashRateTh = hashRateParsed;
-                    return;
-                default:
-                    this.hashRateTh = S.NOT_EXISTS;
-            }
-        }
-
-        this.hashRateTh = hashRateParsed;
-    }
-
-    displayHashRate(): string {
-        if (this.hashRateTh === S.NOT_EXISTS) {
-            return S.Strings.EMPTY;
-        }
-
-        if (this.hashRateTh < 1000) {
-            return `${this.hashRateTh} TH/s`;
-        }
-
-        if (this.hashRateTh / 1000 < 1000) {
-            return `${(this.hashRateTh / 1000).toFixed(2)} PH/s`;
-        }
-
-        if (this.hashRateTh / 1000000 < 1000) {
-            return `${(this.hashRateTh / 1000000).toFixed(2)} EH/s`;
-        }
-
-        return S.Strings.EMPTY;
     }
 
 }

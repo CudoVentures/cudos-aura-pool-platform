@@ -124,7 +124,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             createDataPreview('Volume', creditCollectionPageStore.getNftVolume()),
                             createDataPreview('Items', nftEntities.length),
                             createDataPreview('Owners', creditCollectionPageStore.getOwnersCount()),
-                            createDataPreview('Total Hashing Power', collectionEntity.hashRateDisplay()),
+                            createDataPreview('Total Hashing Power', collectionEntity.formatHashRateInEH()),
                             createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]),
                             createDataPreview(
                                 'Address',

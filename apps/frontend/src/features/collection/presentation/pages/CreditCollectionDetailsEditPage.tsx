@@ -38,6 +38,10 @@ function CreditCollectionDetailsEditPage({ appStore, creditCollectionStore }: Pr
         navigate(AppRoutes.CREDIT_MINING_FARM)
     }
 
+    function onClickNavigateCollection() {
+        navigate(`${AppRoutes.CREDIT_COLLECTION}/${collectionEntity.id}`)
+    }
+
     return (
         <PageLayoutComponent
             modals = {
@@ -56,6 +60,7 @@ function CreditCollectionDetailsEditPage({ appStore, creditCollectionStore }: Pr
                     <>
                         <Breadcrumbs crumbs={ [
                             createBreadcrumb('My Collections', onClickNavigateCreditMiningFarm),
+                            createBreadcrumb('Collection', onClickNavigateCollection),
                             createBreadcrumb('Edit Collection'),
                         ] } />
                         <StyledContainer className={'FlexColumn BorderContainer'}>

@@ -18,7 +18,7 @@ type Props = {
 function CreditCollectionFinish({ creditCollectionStore, creditCollectionSuccessModalStore }: Props) {
 
     const dataPreviews = [
-        createDataPreview('Hashing Power', creditCollectionStore.collectionEntity.hashRateDisplay()),
+        createDataPreview('Hashing Power', creditCollectionStore.collectionEntity.formatHashRateInEH()),
         createDataPreview('Added NFTs', creditCollectionStore.nftEntities.length),
     ];
 

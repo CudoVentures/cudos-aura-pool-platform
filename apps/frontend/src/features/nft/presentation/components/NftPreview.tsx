@@ -39,11 +39,11 @@ function NftPreview({ nftEntity, collectionName, disabled }: Props) {
             </div>
             <div className={'CollectionName'}>{collectionName}</div>
             <div className={'NftName'}>{nftEntity.name}</div>
-            <div className={'HashPower'}>{nftEntity.getHashPowerDisplay()}</div>
+            <div className={'HashPower'}>{nftEntity.formatHashPowerInEH()}</div>
             <div className={'Priceheading'}>Price</div>
             <div className={'PriceRow FlexRow Dots'}>
                 <Svg className = { 'SvgCudosLogo' } svg={SvgCudosLogo} />
-                <div className={'Price H4 Bold Dots'}>{nftEntity.getPriceDisplay()}</div>
+                <div className={'Price H4 Bold Dots'}>{nftEntity.formatPrice()}</div>
             </div>
         </div>
     );
