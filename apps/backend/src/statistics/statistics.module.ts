@@ -9,18 +9,20 @@ import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { StatisticsController } from './statistics.controller';
 import { StatisticsService } from './statistics.service';
 import { GraphqlService } from '../graphql/graphql.service';
+import { Collection } from '../collection/collection.model';
 
 @Module({
-    imports: [
-        SequelizeModule.forFeature([
-            DestinationAddressesWithAmount,
-            NftOwnersPayoutHistory,
-            NftPayoutHistory,
-        ]),
-        NFTModule,
-        HttpModule,
-    ],
-    controllers: [StatisticsController],
-    providers: [StatisticsService, NFTService, GraphqlService],
+  imports: [
+    SequelizeModule.forFeature([
+      DestinationAddressesWithAmount,
+      NftOwnersPayoutHistory,
+      NftPayoutHistory,
+      Collection,
+    ]),
+    NFTModule,
+    HttpModule,
+  ],
+  controllers: [StatisticsController],
+  providers: [StatisticsService, NFTService, GraphqlService],
 })
 export class StatisticsModule {}
