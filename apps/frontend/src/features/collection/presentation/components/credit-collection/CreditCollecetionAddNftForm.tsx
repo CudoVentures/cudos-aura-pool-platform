@@ -117,7 +117,7 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                         inputValidation={nftPriceValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftPrice} />
                 }
-                helperText = { `${bitcoinStore.getBitcoinPrice()} based on Today’s BTC Price` } />
+                helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
             <FieldColumnWrapper
                 field = {
                     <Input

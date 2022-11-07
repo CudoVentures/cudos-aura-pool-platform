@@ -7,13 +7,11 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
-import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 
 export default class MarketplaceStore {
 
-    cudosStore: CudosStore;
     collectionRepo: CollectionRepo;
     nftRepo: NftRepo;
     miningFarmRepo: MiningFarmRepo;
@@ -28,11 +26,7 @@ export default class MarketplaceStore {
     trendingNftEntities: NftEntity[];
     popularFarmsEntities: MiningFarmEntity[];
 
-    cudosPrice: number;
-    cudosPriceChange: number;
-
-    constructor(cudosStore: CudosStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
-        this.cudosStore = cudosStore;
+    constructor(collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.collectionRepo = collectionRepo;
         this.nftRepo = nftRepo;
         this.miningFarmRepo = miningFarmRepo;
@@ -47,22 +41,14 @@ export default class MarketplaceStore {
         this.trendingNftEntities = [];
         this.popularFarmsEntities = [];
 
-        this.cudosPrice = S.NOT_EXISTS;
-        this.cudosPriceChange = S.NOT_EXISTS;
-
         makeAutoObservable(this);
     }
 
     async init() {
-        await this.cudosStore.init();
-
         await this.fetchTopCollections();
         await this.fetchNewNftDrops();
         this.fetchTrendingNfts();
         this.fetchPopularFarms();
-
-        this.cudosPrice = this.cudosStore.getCudosPrice();
-        this.cudosPriceChange = this.cudosStore.getBitcoinPriceChange();
     }
 
     fetchTopCollections = async () => {
@@ -130,11 +116,4 @@ export default class MarketplaceStore {
         this.searchString = searchString;
     }
 
-    cudosPriceChangeDisplay() {
-        const priceChange = this.cudosPriceChange === S.NOT_EXISTS ? 0 : this.cudosPriceChange;
-
-        const sign = priceChange >= 0 ? '+' : '-';
-
-        return `${sign}${priceChange.toFixed(1)}%`;
-    }
 }

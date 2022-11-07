@@ -2,12 +2,22 @@ import S from '../../../core/utilities/Main';
 
 export default class CudosDataEntity {
 
-    price: number;
-    priceChange: number;
+    static MODEL_VERSION = 1;
+
+    modelVersion: number;
+    priceInUsd: number;
+    priceChangeInUsd: number;
+    timestampLastUpdate: number;
 
     constructor() {
-        this.price = S.NOT_EXISTS;
-        this.priceChange = S.NOT_EXISTS;
+        this.modelVersion = CudosDataEntity.MODEL_VERSION
+        this.priceInUsd = S.NOT_EXISTS;
+        this.priceChangeInUsd = S.NOT_EXISTS;
+        this.timestampLastUpdate = S.NOT_EXISTS;
+    }
+
+    shouldUpdate(): boolean {
+        return this.timestampLastUpdate + 2 * 3600 * 1000 < Date.now();
     }
 
     static toJson(entity: CudosDataEntity): any {
@@ -16,8 +26,10 @@ export default class CudosDataEntity {
         }
 
         return {
-            'price': entity.price,
-            'priceChange': entity.priceChange,
+            'modelVersion': entity.modelVersion,
+            'priceInUsd': entity.priceInUsd,
+            'priceChangeInUsd': entity.priceChangeInUsd,
+            'timestampLastUpdate': entity.timestampLastUpdate,
         }
     }
 
@@ -28,8 +40,10 @@ export default class CudosDataEntity {
 
         const model = new CudosDataEntity();
 
-        model.price = Number(json.price ?? model.price);
-        model.priceChange = Number(json.priceChange ?? model.priceChange);
+        model.modelVersion = parseInt(json.modelVersion) ?? model.modelVersion;
+        model.priceInUsd = Number(json.priceInUsd) ?? model.priceInUsd;
+        model.priceChangeInUsd = Number(json.priceChangeInUsd) ?? model.priceChangeInUsd;
+        model.timestampLastUpdate = parseInt(json.timestampLastUpdate ?? model.timestampLastUpdate);
 
         return model;
     }

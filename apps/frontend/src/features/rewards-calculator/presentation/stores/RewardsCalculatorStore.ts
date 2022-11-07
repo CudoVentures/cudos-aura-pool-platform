@@ -119,7 +119,7 @@ export default class RewardsCalculatorStore {
     // }
 
     // calculateBtcToUsd(btcAmount: BigNumber): BigNumber {
-    //     return btcAmount.multipliedBy(this.bitcoinStore.getBitcoinPrice());
+    //     return btcAmount.multipliedBy(this.bitcoinStore.getBitcoinPriceInUsd());
     // }
 
 }

@@ -83,8 +83,8 @@ export default class ViewNftPageStore {
         await this.bitcoinStore.init();
         await this.cudosStore.init();
 
-        this.cudosPrice = this.cudosStore.getCudosPrice();
-        this.bitcoinPrice = this.bitcoinStore.getBitcoinPrice();
+        this.cudosPrice = this.cudosStore.getCudosPriceInUsd();
+        this.bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
 
         this.nftEntity = await this.nftRepo.fetchNftById(nftId, CollectionStatus.ANY);
         this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId, CollectionStatus.ANY);

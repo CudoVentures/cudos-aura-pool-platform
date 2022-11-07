@@ -36,7 +36,7 @@ export default class BitcoinDataEntity {
             'priceChangeInUsd': entity.priceChangeInUsd,
             'blockReward': entity.blockReward,
             'networkDifficulty': entity.networkDifficulty.toString(),
-            'timestampLastUpdate': entity.networkDifficulty,
+            'timestampLastUpdate': entity.timestampLastUpdate,
         }
     }
 

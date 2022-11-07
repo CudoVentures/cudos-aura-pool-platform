@@ -1,23 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity from '../../entities/CollectionEntity';
 
 import '../styles/collection-horizontal-preview.css';
 
 type Props = {
+    cudosStore?: CudosStore;
     placeNumber: number,
-    cudosPriceUsd: number,
-    cudosPriceChange: string,
     collectionEntity: CollectionEntity;
     collectionDetailsEntity: CollectionDetailsEntity;
 }
 
-export default function CollectionHorizontalPreview({ placeNumber, cudosPriceUsd, cudosPriceChange, collectionEntity, collectionDetailsEntity }: Props) {
+function CollectionHorizontalPreview({ cudosStore, placeNumber, collectionEntity, collectionDetailsEntity }: Props) {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        cudosStore.init();
+    }, []);
 
     function onClickNavigateToNft() {
         navigate(`${AppRoutes.CREDIT_COLLECTION}/${collectionEntity.id}`)
@@ -35,11 +40,13 @@ export default function CollectionHorizontalPreview({ placeNumber, cudosPriceUsd
                 <div className = { 'PreviewDataRow SemiBold B3 FlexSplit' } >
                     <div className={'HashRate'}>Hashrate: {collectionEntity.formatHashRateInEH()}</div>
                     <div className={'FlexRow CollectionPriceUsd StartRight'}>
-                        {/* <div className={'CurrentPrice'}>{collectionEntity.priceUsdDisplay(cudosPriceUsd)}</div> */}
-                        <div className={'CurrentPriceChange'}>{cudosPriceChange}</div>
+                        <div className={'CurrentPrice'}>{cudosStore.formatConvertedCudosInUsd(collectionDetailsEntity.floorPrice)}</div>
+                        <div className={'CurrentPriceChange'}>{cudosStore.formatCudosPriceChangeInPercentage()}</div>
                     </div>
                 </div>
             </div>
         </div>
     )
 }
+
+export default inject((stores) => stores)(observer(CollectionHorizontalPreview));
