@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export const enum CollectionStatus {
     QUEUED = 'queued',
@@ -13,9 +13,14 @@ export class CollectionFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
+        ids: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
         denom_id: string;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
         creator_id: number;
@@ -23,7 +28,17 @@ export class CollectionFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
-        status: CollectionStatus;
+        status: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        offset: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        limit: number;
 }
 
 export type MarketplaceCollectionFilters = {

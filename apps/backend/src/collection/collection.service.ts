@@ -1,20 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateCollectionDto } from './dto/create-collection.dto';
-import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { CollectionDto } from './dto/collection.dto';
 import { Collection } from './collection.model';
 import { CollectionFilters, CollectionStatus } from './utils';
+import { NFTService } from '../nft/nft.service';
 
 @Injectable()
 export class CollectionService {
     constructor(
     @InjectModel(Collection)
     private collectionModel: typeof Collection,
+    private nftService: NFTService,
     ) {}
 
     async findAll(filters: Partial<CollectionFilters>): Promise<Collection[]> {
+        const { limit, offset, ...rest } = filters
         const collections = await this.collectionModel.findAll({
-            where: { ...filters },
+            where: { ...rest },
+            offset,
+            limit,
         });
         return collections;
     }
@@ -50,11 +54,11 @@ export class CollectionService {
     }
 
     async createOne(
-        createCollectionDto: CreateCollectionDto,
+        collectionDto: Partial<CollectionDto>,
         creator_id: number,
     ): Promise<Collection> {
         const collection = this.collectionModel.create({
-            ...createCollectionDto,
+            ...collectionDto,
             status: CollectionStatus.QUEUED,
             creator_id,
         });
@@ -64,10 +68,10 @@ export class CollectionService {
 
     async updateOne(
         id: number,
-        updateCollectionDto: Partial<UpdateCollectionDto>,
+        collectionDto: Partial<CollectionDto>,
     ): Promise<Collection> {
         const [count, [collection]] = await this.collectionModel.update(
-            { ...updateCollectionDto, status: CollectionStatus.QUEUED },
+            { ...collectionDto, status: CollectionStatus.QUEUED },
             {
                 where: { id },
                 returning: true,
