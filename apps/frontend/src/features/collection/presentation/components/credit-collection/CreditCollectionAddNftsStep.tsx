@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 
 import CreditCollectionNavRow from './CreditCollectionNavRow';
-import CreditCollecetionAddNftForm from './CreditCollecetionAddNftForm';
+import CreditCollectionAddNftForm from './CreditCollectionAddNftForm';
 import NftPreview from '../../../../nft/presentation/components/NftPreview';
 import Actions, { ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button from '../../../../../core/presentation/components/Button';
@@ -25,7 +25,7 @@ function CreditCollectionAddNftsStep({ creditCollectionStore }: Props) {
             <div className={'Grid FormAndPreviewContainer'}>
                 <div className={'FormContainer FlexColumn'}>
                     <CreditCollectionNavRow className = { 'FormNav' } />
-                    <CreditCollecetionAddNftForm />
+                    <CreditCollectionAddNftForm />
                 </div>
                 <div className={'PreviewAndFinishContainer FlexColumn'}>
                     <div className={'PreviewContainer'}>

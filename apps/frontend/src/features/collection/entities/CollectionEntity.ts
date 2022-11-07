@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum CollectionStatus {
     NOT_SUBMITTED = 'not_submitted',
@@ -23,9 +24,9 @@ export default class CollectionEntity {
     coverImgUrl: string;
     status: CollectionStatus;
     royalties: number;
-    maintenanceFees: BigNumber;
+    maintenanceFeeInBtc: BigNumber;
     payoutAddress: string;
-    defaultPricePerNft: BigNumber;
+    defaultPricePerNftInCudos: BigNumber;
     defaultHashPowerInEHPerNftInEH: number;
 
     constructor() {
@@ -38,9 +39,9 @@ export default class CollectionEntity {
         this.coverImgUrl = S.Strings.EMPTY;
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
-        this.maintenanceFees = null;
+        this.maintenanceFeeInBtc = null;
         this.payoutAddress = S.Strings.EMPTY;
-        this.defaultPricePerNft = null;
+        this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerInEHPerNftInEH = S.NOT_EXISTS;
 
         makeAutoObservable(this);
@@ -62,7 +63,11 @@ export default class CollectionEntity {
     }
 
     hasDefaultValuesPerNft(): boolean {
-        return this.defaultPricePerNft !== null && this.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS;
+        return this.defaultPricePerNftInCudos !== null && this.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS;
+    }
+
+    getDefaultPricePerNftInAcudos(): BigNumber {
+        return this.defaultPricePerNftInCudos.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }
 
     markQueued() {
@@ -85,16 +90,16 @@ export default class CollectionEntity {
         return `${this.hashPowerInEH === S.NOT_EXISTS ? 0 : this.hashPowerInEH} EH/s`
     }
 
-    formatMaintenanceFees(): string {
-        return this.maintenanceFees !== null ? this.maintenanceFees.toFixed(2) : '0.00';
+    formatMaintenanceFeesInBtc(): string {
+        return this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(2) : '0.00';
     }
 
     formatRoyalties(): string {
         return this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00';
     }
 
-    formatDefaultPricePerNft(): string {
-        return this.defaultPricePerNft !== null ? this.defaultPricePerNft.toFixed(2) : '0.00';
+    formatDefaultPricePerNftInCudos(): string {
+        return this.defaultPricePerNftInCudos !== null ? this.defaultPricePerNftInCudos.toFixed(2) : '0.00';
     }
 
     formatDefaultHashPowerInEHPerNft(): string {
@@ -136,9 +141,9 @@ export default class CollectionEntity {
             'coverImgUrl': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
-            'maintenanceFees': entity.maintenanceFees.toString(),
+            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
             'payoutAddress': entity.payoutAddress,
-            'defaultPricePerNft': entity.defaultPricePerNft.toString(),
+            'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
             'defaultHashPowerInEHPerNftInEH': entity.defaultHashPowerInEHPerNftInEH,
         }
     }
@@ -159,9 +164,9 @@ export default class CollectionEntity {
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
-        model.maintenanceFees = new BigNumber(json.maintenanceFees ?? model.maintenanceFees);
+        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
-        model.defaultPricePerNft = new BigNumber(json.defaultPricePerNft ?? model.defaultPricePerNft);
+        model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
         model.defaultHashPowerInEHPerNftInEH = parseInt(json.defaultHashPowerInEHPerNftInEH ?? model.defaultHashPowerInEHPerNftInEH);
 
         return model;

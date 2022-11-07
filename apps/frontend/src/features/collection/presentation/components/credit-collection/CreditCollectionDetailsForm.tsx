@@ -45,9 +45,9 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
 
     const [hashPowerInEH, setHashPowerInEH] = useState(collectionEntity.hashPowerInEH !== S.NOT_EXISTS ? collectionEntity.hashPowerInEH : '');
-    const [maintenanceFees, setMaintenanceFees] = useState(collectionEntity.maintenanceFees !== null ? collectionEntity.maintenanceFees.toString() : '')
-    const [defaultPricePerNft, setDefaultPricePerNft] = useState(collectionEntity.defaultPricePerNft !== null ? collectionEntity.defaultPricePerNft.toString() : '');
-    const [defaultHashPowerInEHPerNftInEH, setDefaultHashPowerPerNftInEH] = useState(collectionEntity.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNft : '');
+    const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString() : '')
+    const [defaultPricePerNftInCudos, setDefaultPricePerNftInCudos] = useState(collectionEntity.defaultPricePerNftInCudos !== null ? collectionEntity.defaultPricePerNftInCudos.toString() : '');
+    const [defaultHashPowerInEHPerNftInEH, setDefaultHashPowerPerNftInEH] = useState(collectionEntity.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInCudos : '');
 
     function onChangeHashPowerInEH(value) {
         setHashPowerInEH(value);
@@ -59,13 +59,13 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     }
 
     function onChangeMaintenanceFees(value) {
-        setMaintenanceFees(value);
-        collectionEntity.maintenanceFees = value !== '' ? new BigNumber(value) : null;
+        setMaintenanceFeeInBtc(value);
+        collectionEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
     }
 
-    function onChangeDefaultPricePerNft(value) {
-        setDefaultPricePerNft(value);
-        collectionEntity.defaultPricePerNft = value !== '' ? new BigNumber(value) : null;
+    function onChangeDefaultPricePerNftInCudos(value) {
+        setDefaultPricePerNftInCudos(value);
+        collectionEntity.defaultPricePerNftInCudos = value !== '' ? new BigNumber(value) : null;
     }
 
     function onChangeDefaultHashPowerPerNftInEH(value) {
@@ -76,7 +76,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     function onChangeAcceptDefaultHashPowerCheckboxValue() {
         creditCollectionStore.defaultHashAndPriceValues ^= 1;
         if (creditCollectionStore.defaultHashAndPriceValues === S.INT_FALSE) {
-            onChangeDefaultPricePerNft('');
+            onChangeDefaultPricePerNftInCudos('');
             onChangeDefaultHashPowerPerNftInEH('');
         }
     }
@@ -225,7 +225,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                     <Input
                         label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
                         placeholder={'Maintenance fees...'}
-                        value={maintenanceFees}
+                        value={maintenanceFeeInBtc}
                         inputType={InputType.REAL}
                         inputValidation={collectionMainteannceFeesValidation}
                         onChange={onChangeMaintenanceFees}
@@ -266,9 +266,9 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         label={'Price per NFT'}
                         placeholder={'Enter price...'}
                         inputType = { InputType.REAL }
-                        value={defaultPricePerNft}
+                        value={defaultPricePerNftInCudos}
                         inputValidation={collectionPricePerNftValidation}
-                        onChange={onChangeDefaultPricePerNft}
+                        onChange={onChangeDefaultPricePerNftInCudos}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end" >BTC</InputAdornment>

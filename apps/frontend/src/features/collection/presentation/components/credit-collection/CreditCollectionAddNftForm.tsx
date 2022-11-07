@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import BigNumber from 'bignumber.js';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../../core/utilities/Main';
@@ -28,17 +29,22 @@ type Props = {
     bitcoinStore?: BitcoinStore;
 }
 
-function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Props) {
+function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Props) {
+    const selectedNftEntity = creditCollectionStore.selectedNftEntity;
+
     const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
     const [editMaintenanceFeeDisabled, setEditMaintenanceFeeDisabled] = useState(true);
+    const [hashPowerInEH, setHashPowerInEH] = useState(selectedNftEntity !== null && selectedNftEntity.hashPowerInEH !== S.NOT_EXISTS ? selectedNftEntity.hashPowerInEH : '');
+    const [nftPriceInCudos, setNftPriceInCudos] = useState(selectedNftEntity?.getPriceInCudos()?.toString() ?? '');
+    const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(selectedNftEntity !== null && selectedNftEntity.maintenanceFeeInBtc !== null ? selectedNftEntity.maintenanceFeeInBtc.toString() : '')
+
     const validationState = useRef(new ValidationState()).current;
     const nftNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const nftHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hash power')).current;
-    const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
     const nftRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     const nftMaintenanceFeeValidation = useRef(validationState.addEmptyValidation('Empty maintenance fee')).current;
 
-    const selectedNftEntity = creditCollectionStore.selectedNftEntity;
     function onClickAddToCollection() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
@@ -46,6 +52,21 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
         }
 
         creditCollectionStore.onClickAddToCollection();
+    }
+
+    function onChangeHashPowerInEH(value) {
+        setHashPowerInEH(value);
+        selectedNftEntity.hashPowerInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    }
+
+    function onChangeNftPriceInCudos(value) {
+        setNftPriceInCudos(value);
+        selectedNftEntity.setPriceInCudos(value !== '' ? new BigNumber(value) : null);
+    }
+
+    function onChangeMaintenanceFees(value) {
+        setMaintenanceFeeInBtc(value);
+        selectedNftEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
     }
 
     return (
@@ -99,10 +120,10 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                         placeholder={'Enter hashing power...'}
                         disabled = { selectedNftEntity === null }
-                        value={selectedNftEntity?.hashPowerInEH ?? ''}
+                        value={hashPowerInEH}
                         inputType={InputType.INTEGER}
                         inputValidation={nftHashPowerValidation}
-                        onChange={creditCollectionStore.onChangeSelectedNftHashPower} />
+                        onChange={onChangeHashPowerInEH} />
                 }
                 helperText = { 'Available EH/s: 80.000' }>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
@@ -113,9 +134,9 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                         label={'Price per NFT'}
                         placeholder={'Enter price...'}
                         disabled = { selectedNftEntity === null }
-                        value={selectedNftEntity?.price.toString() ?? ''}
+                        value={nftPriceInCudos}
                         inputValidation={nftPriceValidation}
-                        onChange={creditCollectionStore.onChangeSelectedNftPrice} />
+                        onChange={onChangeNftPriceInCudos} />
                 }
                 helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
             <FieldColumnWrapper
@@ -164,9 +185,9 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
                         disabled={editMaintenanceFeeDisabled}
                         inputValidation={nftMaintenanceFeeValidation || selectedNftEntity === null}
                         placeholder={'Enter Maintenance Fee...'}
-                        value={creditCollectionStore.getSelectedNftMaintenanceFeeInputValue()}
+                        value={maintenanceFeeInBtc}
                         inputType={InputType.INTEGER}
-                        onChange={creditCollectionStore.onChangeSelectedNftMaintenanceFee}
+                        onChange={onChangeMaintenanceFees}
                     />
                 }
                 helperText = { 'Maintenance fee calculation formula:' }>
@@ -201,4 +222,4 @@ function CreditCollecetionAddNftForm({ creditCollectionStore, bitcoinStore }: Pr
 
 }
 
-export default inject((stores) => stores)(observer(CreditCollecetionAddNftForm));
+export default inject((stores) => stores)(observer(CreditCollectionAddNftForm));

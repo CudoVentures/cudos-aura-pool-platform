@@ -310,9 +310,9 @@ function jsonCudosData(price) {
     }
 }
 
-function jsonNft(id, name, category, collectionId, hashPower, price, imageUrl, status, expiryDate, creatorAddress, currentOwnerAddress) {
+function jsonNft(id, name, category, collectionId, hashPower, priceInAcudos, imageUrl, status, expiryDate, creatorAddress, currentOwnerAddress) {
     return {
-        id, collectionId, name, category, hashPower, price, imageUrl, status, expiryDate, creatorAddress, currentOwnerAddress,
+        id, collectionId, name, category, hashPower, priceInAcudos, imageUrl, status, expiryDate, creatorAddress, currentOwnerAddress,
     }
 }
 
