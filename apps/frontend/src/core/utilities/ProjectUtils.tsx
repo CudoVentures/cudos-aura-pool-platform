@@ -9,6 +9,7 @@ export default class ProjectUtils {
     static MOMENT_FORMAT_DATE = 'DD.MM.yyyy';
     static DATEPICKER_FORMAT_DATE_AND_TIME = 'dd.MM.yyyy, HH:mm';
     static DATEPICKER_FORMAT_DATE = 'dd.MM.yyyy';
+    static NUMERAL_USD = '$0,0.0';
 
     static makeBgImgStyle(url: string) {
         return {

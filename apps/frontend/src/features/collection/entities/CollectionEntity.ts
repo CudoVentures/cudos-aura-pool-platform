@@ -18,17 +18,15 @@ export default class CollectionEntity {
     name: string;
     description: string;
     ownerAddress: string;
-    hashPower: number;
-    price: BigNumber;
-    volume: BigNumber;
-    items: number;
-    owners: number;
+    hashPowerInEH: number;
     profileImgUrl: string;
     coverImgUrl: string;
     status: CollectionStatus;
     royalties: number;
     maintenanceFees: BigNumber;
     payoutAddress: string;
+    defaultPricePerNft: BigNumber;
+    defaultHashPowerInEHPerNftInEH: number;
 
     constructor() {
         this.id = S.NOT_EXISTS;
@@ -36,23 +34,36 @@ export default class CollectionEntity {
         this.name = S.Strings.EMPTY;
         this.description = S.Strings.EMPTY;
         this.ownerAddress = S.Strings.EMPTY;
-        this.hashPower = S.NOT_EXISTS;
-        this.price = new BigNumber(S.NOT_EXISTS);
-        this.volume = new BigNumber(S.NOT_EXISTS);
-        this.items = S.NOT_EXISTS;
-        this.owners = S.NOT_EXISTS;
+        this.hashPowerInEH = S.NOT_EXISTS;
         this.profileImgUrl = S.Strings.EMPTY;
         this.coverImgUrl = S.Strings.EMPTY;
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
-        this.maintenanceFees = new BigNumber(S.NOT_EXISTS);
+        this.maintenanceFees = null;
         this.payoutAddress = S.Strings.EMPTY;
+        this.defaultPricePerNft = null;
+        this.defaultHashPowerInEHPerNftInEH = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
 
     isNew(): boolean {
         return this.id === S.Strings.NOT_EXISTS;
+    }
+
+    // TO DO: what will happen when queue collection is updated and approved at the same time
+    isEditable(): boolean {
+        switch (this.status) {
+            case CollectionStatus.NOT_SUBMITTED:
+            case CollectionStatus.QUEUED:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    hasDefaultValuesPerNft(): boolean {
+        return this.defaultPricePerNft !== null && this.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS;
     }
 
     markQueued() {
@@ -63,30 +74,35 @@ export default class CollectionEntity {
         this.status = CollectionStatus.APPROVED;
     }
 
-    getHashPowerDisplay(): string {
-        const hashPower = this.hashPower !== S.NOT_EXISTS ? this.hashPower : 0;
-
-        if (hashPower < 1000) {
-            return `${hashPower} TH/s`;
-        }
-
-        if (hashPower / 1000 < 1000) {
-            return `${(hashPower / 1000).toFixed(2)} PH/s`;
-        }
-
-        if (hashPower / 1000000 < 1000) {
-            return `${(hashPower / 1000000).toFixed(2)} EH/s`;
-        }
-
-        return S.Strings.EMPTY;
-
+    formatHashPowerInEH(): string {
+        return `${this.hashPowerInEH !== S.NOT_EXISTS ? this.hashPowerInEH : 0} EH`;
     }
 
-    getStatusDisplayName(): string {
-        return CollectionEntity.getStatusDisplayName(this.status);
+    formatStatusName(): string {
+        return CollectionEntity.formatStatusName(this.status);
     }
 
-    static getStatusDisplayName(status: CollectionStatus): string {
+    formatHashRateInEH(): string {
+        return `${this.hashPowerInEH === S.NOT_EXISTS ? 0 : this.hashPowerInEH} EH/s`
+    }
+
+    formatMaintenanceFees(): string {
+        return this.maintenanceFees !== null ? this.maintenanceFees.toFixed(2) : '0.00';
+    }
+
+    formatRoyalties(): string {
+        return this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00';
+    }
+
+    formatDefaultPricePerNft(): string {
+        return this.defaultPricePerNft !== null ? this.defaultPricePerNft.toFixed(2) : '0.00';
+    }
+
+    formatDefaultHashPowerInEHPerNft(): string {
+        return this.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS ? this.defaultHashPowerInEHPerNftInEH.toString() : '0.00';
+    }
+
+    static formatStatusName(status: CollectionStatus): string {
         switch (status) {
             case CollectionStatus.NOT_SUBMITTED:
                 return 'Not submitted';
@@ -117,17 +133,15 @@ export default class CollectionEntity {
             'name': entity.name,
             'description': entity.description,
             'ownerAddress': entity.ownerAddress,
-            'hashPower': entity.hashPower,
-            'price': entity.price.toString(),
-            'volume': entity.volume.toString(),
-            'items': entity.items,
-            'owners': entity.owners,
+            'hashPowerInEH': entity.hashPowerInEH,
             'profileImgUrl': entity.profileImgUrl,
             'coverImgUrl': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
             'maintenanceFees': entity.maintenanceFees.toString(),
             'payoutAddress': entity.payoutAddress,
+            'defaultPricePerNft': entity.defaultPricePerNft.toString(),
+            'defaultHashPowerInEHPerNftInEH': entity.defaultHashPowerInEHPerNftInEH,
         }
     }
 
@@ -143,49 +157,16 @@ export default class CollectionEntity {
         model.name = json.name ?? model.name;
         model.description = json.description ?? model.description;
         model.ownerAddress = json.ownerAddress ?? model.ownerAddress;
-        model.hashPower = Number(json.hashPower ?? model.hashPower);
-        model.price = new BigNumber(json.price ?? model.price);
-        model.volume = new BigNumber(json.volume ?? model.volume);
-        model.items = Number(json.items ?? model.items);
-        model.owners = Number(json.owners ?? model.owners);
-
+        model.hashPowerInEH = Number(json.hashPowerInEH ?? model.hashPowerInEH);
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
         model.maintenanceFees = new BigNumber(json.maintenanceFees ?? model.maintenanceFees);
         model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
+        model.defaultPricePerNft = new BigNumber(json.defaultPricePerNft ?? model.defaultPricePerNft);
+        model.defaultHashPowerInEHPerNftInEH = parseInt(json.defaultHashPowerInEHPerNftInEH ?? model.defaultHashPowerInEHPerNftInEH);
 
         return model;
-    }
-
-    hashRateDisplay(): string {
-        // TODO: calculate EH or TH or w/e
-
-        return `${this.hashPower === S.NOT_EXISTS ? 0 : this.hashPower} EH/s`
-    }
-
-    priceDisplay(): string {
-        // TODO: calculate K or M or w/e
-
-        return `${this.price.toFixed(0)}K CUDOS`
-    }
-
-    priceUsdDisplay(cudosInUsd: number) {
-        // TODO calculate M or B or w/e
-
-        return `$${this.price.multipliedBy(cudosInUsd).toFixed(1)}K`
-    }
-
-    getMaintenanceFeesDisplay(): string {
-        const fees = this.maintenanceFees.eq(new BigNumber(S.NOT_EXISTS)) === true ? new BigNumber(0) : this.maintenanceFees;
-
-        return fees.toFixed(2);
-    }
-
-    getRoyaltiesDisplay(): string {
-        const royalties = this.royalties === S.NOT_EXISTS ? 0 : this.maintenanceFees;
-
-        return royalties.toFixed(2);
     }
 }

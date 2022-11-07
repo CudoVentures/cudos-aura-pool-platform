@@ -3,40 +3,42 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
-import '../../styles/collection-credit-side-preview.css';
+import '../../styles/credit-collection-side-preview.css';
 import S from '../../../../../core/utilities/Main';
 import DataPreviewLayout, { createDataPreview } from '../../../../../core/presentation/components/DataPreviewLayout';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 import StyledContainer, { ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
 
-export enum CollectionCreditSidePreviewSize {
+export enum CreditCollectionSidePreviewSize {
     SMALL = 1,
     FULL = 2,
 }
 
 type Props = {
-    size: CollectionCreditSidePreviewSize,
+    size: CreditCollectionSidePreviewSize,
     creditCollectionStore?: CreditCollectionStore;
 }
 
-function CollectionCreditSidePreview({ size, creditCollectionStore }: Props) {
+function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
     const collectionEntity = creditCollectionStore.collectionEntity;
 
     function createDataPreviews() {
         const previews = [];
 
-        previews.push(createDataPreview('Hashing Power', collectionEntity.hashRateDisplay()));
-        previews.push(createDataPreview('Hashing Power per NFT', creditCollectionStore.getHashPowerPerNft()));
-        previews.push(createDataPreview('Price per NFT', creditCollectionStore.getPricePerNft()));
+        previews.push(createDataPreview('Hashing Power', collectionEntity.formatHashRateInEH()));
+        if (collectionEntity.hasDefaultValuesPerNft() === true) {
+            previews.push(createDataPreview('Hashing Power per NFT', collectionEntity.formatDefaultPricePerNft()));
+            previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerInEHPerNft()));
+        }
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));
-        previews.push(createDataPreview('Farm Royalties', collectionEntity.getRoyaltiesDisplay()));
-        previews.push(createDataPreview('Maintenance Fee', collectionEntity.getMaintenanceFeesDisplay()));
+        previews.push(createDataPreview('Farm Royalties', collectionEntity.formatRoyalties()));
+        previews.push(createDataPreview('Maintenance Fee', collectionEntity.formatMaintenanceFees()));
         previews.push(createDataPreview('Payout Address', ProjectUtils.shortenAddressString(collectionEntity.payoutAddress, 10)));
 
         return previews
     }
     return (
-        <div className={'CollectionCreditSidePreview FlexColumn'}>
+        <div className={'CreditCollectionSidePreview FlexColumn'}>
             <div className={'H3 Bold'}>Collection Preview</div>
             <div className={'B1'}>This is how your collection details view would look like in AuraPool</div>
             <StyledContainer
@@ -65,15 +67,15 @@ function CollectionCreditSidePreview({ size, creditCollectionStore }: Props) {
                 </div>
                 <div className={'H3 Bold'}>{collectionEntity.name || 'No Name'}</div>
                 <div className={'B3'}>{collectionEntity.description || 'No Description'}</div>
-                {size === CollectionCreditSidePreviewSize.FULL && (<DataPreviewLayout dataPreviews={createDataPreviews()}/>)}
+                {size === CreditCollectionSidePreviewSize.FULL && (<DataPreviewLayout dataPreviews={createDataPreviews()}/>)}
             </StyledContainer>
         </div>
     )
 
 }
 
-CollectionCreditSidePreview.defaultProps = {
-    size: CollectionCreditSidePreviewSize.FULL,
+CreditCollectionSidePreview.defaultProps = {
+    size: CreditCollectionSidePreviewSize.FULL,
 };
 
-export default inject((stores) => stores)(observer(CollectionCreditSidePreview));
+export default inject((stores) => stores)(observer(CreditCollectionSidePreview));

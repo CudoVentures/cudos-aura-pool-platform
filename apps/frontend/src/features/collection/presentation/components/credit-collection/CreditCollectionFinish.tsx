@@ -4,31 +4,34 @@ import Actions, { ActionsLayout } from '../../../../../core/presentation/compone
 import Button, { ButtonType } from '../../../../../core/presentation/components/Button';
 import Svg from '../../../../../core/presentation/components/Svg';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import '../../styles/finish-credit-collection.css';
+import '../../styles/credit-collection-finish.css';
 import StyledContainer, { ContainerBackground, ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
 import DataPreviewLayout, { createDataPreview } from '../../../../../core/presentation/components/DataPreviewLayout';
-import S from '../../../../../core/utilities/Main';
+import CreditCollectionStore from '../../stores/CreditCollectionStore';
+import CreditCollectionSuccessModalStore from '../../stores/CreditCollectionSuccessModalStore';
 
 type Props = {
-    hashingPower?: string
-    addedNftCount?: number
-    isOriginAddNfts: boolean
-    onClickBack: () => void
-    onClickSendForApproval: () => void
+    creditCollectionStore?: CreditCollectionStore;
+    creditCollectionSuccessModalStore?: CreditCollectionSuccessModalStore;
 }
 
-function FinishCreditCollection({ hashingPower, addedNftCount, isOriginAddNfts, onClickBack, onClickSendForApproval }: Props) {
+function CreditCollectionFinish({ creditCollectionStore, creditCollectionSuccessModalStore }: Props) {
 
-    const dataPreviews = [];
+    const dataPreviews = [
+        createDataPreview('Hashing Power', creditCollectionStore.collectionEntity.formatHashRateInEH()),
+        createDataPreview('Added NFTs', creditCollectionStore.nftEntities.length),
+    ];
 
-    dataPreviews.push(createDataPreview('Hashing Power', hashingPower));
-    dataPreviews.push(createDataPreview('Added NFTs', addedNftCount));
+    async function onClickSendForApproval() {
+        await creditCollectionStore.onClickSendForApproval();
+        creditCollectionSuccessModalStore.showSignal();
+    }
 
     return (
-        <div className={'FinishCreditCollection FlexColumn '}>
+        <div className={'CreditCollectionFinish FlexColumn '}>
             <div className={'H3 Bold'}>Finalise</div>
             <div className={'B1'}>Check all the iformation related to the collection.</div>
-            {isOriginAddNfts === true && (
+            {creditCollectionStore.isAddNftsMode() === true && (
                 <DataPreviewLayout dataPreviews={dataPreviews}/>
             )}
             <StyledContainer
@@ -37,7 +40,7 @@ function FinishCreditCollection({ hashingPower, addedNftCount, isOriginAddNfts, 
                 containerShadow = { false }
                 containerPadding = { ContainerPadding.PADDING_16 } >
                 <ul>
-                    {isOriginAddNfts === false
+                    {creditCollectionStore.isCreateMode() === true
                         ? <>
                             <li>Review the collection and hash rate  information before sending it for approval to Aura Pool.</li>
                             <li>Once your collection is reviewed and approved you'll receive a notification on your email address.</li>
@@ -50,7 +53,7 @@ function FinishCreditCollection({ hashingPower, addedNftCount, isOriginAddNfts, 
                 </ul>
             </StyledContainer>
             <Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} className={'ButtonsRow'}>
-                <Button type={ButtonType.TEXT_INLINE} onClick={onClickBack}>
+                <Button type={ButtonType.TEXT_INLINE} onClick={creditCollectionStore.moveToStepAddNfts}>
                     <Svg svg={ArrowBackIcon} />
                     Back
                 </Button>
@@ -62,4 +65,4 @@ function FinishCreditCollection({ hashingPower, addedNftCount, isOriginAddNfts, 
     )
 }
 
-export default inject((stores) => stores)(observer(FinishCreditCollection));
+export default inject((stores) => stores)(observer(CreditCollectionFinish));

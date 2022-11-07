@@ -20,6 +20,7 @@ type DataPreview = {
 }
 
 type Props = {
+    className?: string;
     dataPreviews: DataPreview[];
     gap?: DataRowsGap;
     size?: DataRowsSize;
@@ -32,7 +33,7 @@ export function createDataPreview(key: string, value: React.ReactNode | string):
     }
 }
 
-export default function DataPreviewLayout({ dataPreviews, gap, size, styledContainerProps, children }: React.PropsWithChildren < Props >) {
+export default function DataPreviewLayout({ className, dataPreviews, gap, size, styledContainerProps, children }: React.PropsWithChildren < Props >) {
 
     if (styledContainerProps.containerPadding === undefined) {
         styledContainerProps.containerPadding = ContainerPadding.PADDING_24;
@@ -40,7 +41,7 @@ export default function DataPreviewLayout({ dataPreviews, gap, size, styledConta
 
     return (
         <StyledContainer
-            className = { `DataPreviewLayout ${gap} ${size} FlexColumn` }
+            className = { `DataPreviewLayout ${gap} ${size} FlexColumn ${className}` }
             { ...styledContainerProps } >
             { dataPreviews.map((dataPreview: DataPreview) => {
                 return (
@@ -57,6 +58,7 @@ export default function DataPreviewLayout({ dataPreviews, gap, size, styledConta
 }
 
 DataPreviewLayout.defaultProps = {
+    className: '',
     gap: DataRowsGap.GAP_10,
     size: DataRowsSize.LARGE,
     styledContainerProps: {},

@@ -1,9 +1,9 @@
-.CollectionDetailsForm {
+.CreditCollectionDetailsForm {
     /* align-items: flex-start; */
     gap: 24px;
 }
 
-.CollectionDetailsForm .ImagePreview {
+.CreditCollectionDetailsForm .ImagePreview {
     border-radius: 20px;
     background-size: cover;
     background-position: center;
@@ -11,31 +11,31 @@
     align-items: center;
 }
 
-.CollectionDetailsForm .ImagePreview.Empty {
+.CreditCollectionDetailsForm .ImagePreview.Empty {
     background-color: var(--color-gray-060);
 }
 
-.CollectionDetailsForm .MainImagePreview {
+.CreditCollectionDetailsForm .MainImagePreview {
     width: 150px; height: 150px;
 }
 
-.CollectionDetailsForm .MainImagePreview.Empty .EmptyPictureSvg {
+.CreditCollectionDetailsForm .MainImagePreview.Empty .EmptyPictureSvg {
     width: 40px; height: 40px;
 }
 
-.CollectionDetailsForm .ImageLabel .Gray {
+.CreditCollectionDetailsForm .ImageLabel .Gray {
     color: var(--color-gray-030);
 }
 
-.CollectionDetailsForm .BannerImagePreview {
+.CreditCollectionDetailsForm .BannerImagePreview {
     height: 200px; width: 100%;
 }
 
-.CollectionDetailsForm .BannerImagePreview.Empty .EmptyPictureSvg {
+.CreditCollectionDetailsForm .BannerImagePreview.Empty .EmptyPictureSvg {
     width: 70px; height: 70px;
 }
 
-.CollectionDetailsForm .FormulaBox {
+.CreditCollectionDetailsForm .FormulaBox {
     align-self: flex-start;
     padding: 15px;
     color: var(--color-gray-030);

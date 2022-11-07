@@ -1,0 +1,8 @@
+.PageCreditCollectionDetailsCreate .PageContent {
+    padding: 24px var(--page-spacing-h);
+}
+
+.PageCreditCollectionDetailsCreate .PageContent .BorderContainer {
+    margin-top: 24px;
+    align-items: center;
+}

@@ -25,12 +25,12 @@ export default function CollectionPreview({ collectionEntity, miningFarmName, di
         <div className="CollectionPreview FlexColumn" onClick={onClickNft}>
             <div className="CollectionPreviewImage ImgCoverNode" style = { ProjectUtils.makeBgImgStyle(collectionEntity.profileImgUrl) } >
                 { displayStatus === true && (
-                    <div className = { 'CollectionStatusLabel'} >{ collectionEntity.getStatusDisplayName() }</div>
+                    <div className = { 'CollectionStatusLabel'} >{ collectionEntity.formatStatusName() }</div>
                 ) }
             </div>
             <div className={'MiningFarmName'}>{miningFarmName}</div>
             <div className={'CollectionName'}>{collectionEntity.name}</div>
-            <div className={'HashPower'}>{collectionEntity.getHashPowerDisplay()}</div>
+            <div className={'HashPower'}>{collectionEntity.formatHashPowerInEH()}</div>
         </div>
     );
 }

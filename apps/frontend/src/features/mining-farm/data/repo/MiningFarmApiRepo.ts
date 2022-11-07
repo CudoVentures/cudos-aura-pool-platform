@@ -1,4 +1,7 @@
 import S from '../../../../core/utilities/Main';
+import EnergySourceEntity from '../../entities/EnergySourceEntity';
+import ManufacturerEntity from '../../entities/ManufacturerEntity';
+import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
@@ -75,8 +78,8 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         }
     }
 
-    async fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] > {
-        return this.miningFarmApi.fetchMiningFarmSalesStatistics(miningFarmId, timestamp);
+    async fetchManufacturers(): Promise < ManufacturerEntity[] > {
+        return this.miningFarmApi.fetchManufacturers();
     }
 
     async approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
@@ -84,4 +87,27 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
             await this.miningFarmApi.approveMiningFarm(miningFarmEntities[i].id);
         }
     }
+    async fetchMiners(): Promise < MinerEntity[] > {
+        return this.miningFarmApi.fetchMiners();
+    }
+
+    async fetchEnergySources(): Promise < EnergySourceEntity[] > {
+        return this.miningFarmApi.fetchEnergySources();
+    }
+
+    async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void > {
+        const resultEntity = await this.miningFarmApi.creditManufacturer(manufacturerEntity);
+        Object.assign(manufacturerEntity, resultEntity);
+    }
+
+    async creditMiner(minerEntity: MinerEntity): Promise < void > {
+        const resultEntity = await this.miningFarmApi.creditMiner(minerEntity);
+        Object.assign(minerEntity, resultEntity);
+    }
+
+    async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void > {
+        const resultEntity = await this.miningFarmApi.creditEnergySource(energySourceEntity);
+        Object.assign(energySourceEntity, resultEntity);
+    }
+
 }

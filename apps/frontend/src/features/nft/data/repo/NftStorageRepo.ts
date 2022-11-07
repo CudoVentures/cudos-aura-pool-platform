@@ -2,7 +2,7 @@ import S from '../../../../core/utilities/Main';
 import StorageHelper from '../../../../core/helpers/StorageHelper';
 import NftEntity from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
-import NftFilterModel, { NftHashPowerFilter, NftPriceSortDirection } from '../../utilities/NftFilterModel';
+import NftFilterModel from '../../utilities/NftFilterModel';
 import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 
 export default class NftStorageRepo implements NftRepo {
@@ -18,7 +18,7 @@ export default class NftStorageRepo implements NftRepo {
         return nftEntities.length === 1 ? nftEntities[0] : null;
     }
 
-    async fetchNftByIds(nftIds: string[], status?: CollectionStatus): Promise < NftEntity[] > {
+    async fetchNftByIds(nftIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
         nftFilterModel.nftIds = nftIds;
         nftFilterModel.collectionStatus = status;
@@ -97,49 +97,6 @@ export default class NftStorageRepo implements NftRepo {
         if (nftFilterModel.searchString !== '') {
             nftsSlice = nftsSlice.filter((json) => {
                 return json.name.toLowerCase().indexOf(nftFilterModel.searchString) !== -1;
-            });
-        }
-
-        if (nftFilterModel.hashPowerFilter !== NftHashPowerFilter.NONE) {
-            let hashPowerLimit = S.NOT_EXISTS;
-            switch (nftFilterModel.hashPowerFilter) {
-                case NftHashPowerFilter.BELOW_1000_EH:
-                    hashPowerLimit = 1000;
-                    break;
-                case NftHashPowerFilter.BELOW_2000_EH:
-                    hashPowerLimit = 2000;
-                    break;
-                case NftHashPowerFilter.ABOVE_2000_EH:
-                default:
-                    hashPowerLimit = Number.MAX_SAFE_INTEGER;
-                    break;
-
-            }
-
-            nftsSlice = nftsSlice.filter((json) => {
-                return json.hashPower <= hashPowerLimit;
-            });
-        }
-
-        nftsSlice.sort((a: NftEntity, b: NftEntity) => {
-            switch (nftFilterModel.sortKey) {
-                case NftFilterModel.SORT_KEY_POPULAR:
-                case NftFilterModel.SORT_KEY_NAME:
-                default:
-                    return a.name.localeCompare(b.name)
-            }
-        });
-
-        if (nftFilterModel.sortPriceDirection !== NftPriceSortDirection.NONE) {
-            nftsSlice.sort((a: NftEntity, b: NftEntity) => {
-                switch (nftFilterModel.sortPriceDirection) {
-                    case NftPriceSortDirection.HIGH_TO_LOW:
-                        return a.price.comparedTo(b.price);
-                    case NftPriceSortDirection.LOW_TO_HIGH:
-                        return b.price.comparedTo(a.price);
-                    default:
-                        return 0;
-                }
             });
         }
 

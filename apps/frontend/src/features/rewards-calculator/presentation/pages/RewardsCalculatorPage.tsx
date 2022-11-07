@@ -8,6 +8,7 @@ import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation
 import PageFooter from '../../../../features/footer/presentation/components/PageFooter';
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import RewardsCalculatorStore from '../stores/RewardsCalculatorStore';
@@ -22,12 +23,14 @@ import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator-component.css';
+import S from '../../../../core/utilities/Main';
 
 type Props = {
+    bitcoinStore?: BitcoinStore;
     rewardsCalculatorStore?: RewardsCalculatorStore
 }
 
-function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
+function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) {
 
     const [networkDifficultyEditEnabled, setNetworkDifficultyEditEnabled] = useState(false);
     const navigate = useNavigate();
@@ -35,9 +38,12 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
     const bitcoinPrice = rewardsCalculatorStore.bitcoinStore.getBitcoinPrice();
     const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChange();
 
+    const [hashRateInEH, setHashRateInEH] = useState(rewardsCalculatorStore.hashRateInEH !== 0 ? rewardsCalculatorStore.hashRateInEH.toString() : '');
+
     useEffect(() => {
         async function run() {
-            rewardsCalculatorStore.init();
+            await bitcoinStore.init();
+            await rewardsCalculatorStore.init();
         }
         run();
     }, []);
@@ -53,6 +59,16 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
 
     function toggleDifficultyEdit() {
         setNetworkDifficultyEditEnabled(!networkDifficultyEditEnabled);
+    }
+
+    function onChangeMiningFarm(miningFarmId: string) {
+        rewardsCalculatorStore.onChangeMiningFarm(miningFarmId);
+        setHashRateInEH(rewardsCalculatorStore.hashRateInEH);
+    }
+
+    function onChangeHashRateInEH(value) {
+        setHashRateInEH(value);
+        rewardsCalculatorStore.hashRateInEH = value !== '' ? parseFloat(value) : 0;
     }
 
     return (
@@ -84,9 +100,9 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
                                             tooltipText={'info'}
                                         />
                                     }
-                                    onChange={rewardsCalculatorStore.selectFarmPool}
-                                    value={rewardsCalculatorStore.selectedFarmId}>
-                                    { rewardsCalculatorStore.miningFarms.map((miningFarmEntity) => {
+                                    onChange={onChangeMiningFarm}
+                                    value={rewardsCalculatorStore.selectedMiningFarmEntity !== null ? rewardsCalculatorStore.selectedMiningFarmEntity.id : S.Strings.NOT_EXISTS}>
+                                    { rewardsCalculatorStore.miningFarmsEntities.map((miningFarmEntity) => {
                                         return (
                                             <MenuItem key = { miningFarmEntity.id } value = { miningFarmEntity.id } > { miningFarmEntity.name } </MenuItem>
                                         )
@@ -100,8 +116,13 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
                                         />
                                     }
                                     inputType={InputType.INTEGER}
-                                    value = {rewardsCalculatorStore.hashRateTh}
-                                    onChange = { rewardsCalculatorStore.onChangeHashRate } />
+                                    value = { hashRateInEH }
+                                    onChange = { onChangeHashRateInEH }
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end" >EH</InputAdornment>
+                                        ),
+                                    }} />
                                 <Slider defaultValue={50}
                                     aria-label="Default"
                                     sx={{
@@ -111,8 +132,8 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
                                         },
                                     }}
                                     valueLabelDisplay="auto"
-                                    value={rewardsCalculatorStore.hashRateTh}
-                                    onChange={rewardsCalculatorStore.onChangeHashRateSlider}
+                                    value={rewardsCalculatorStore.hashRateInEH}
+                                    onChange={rewardsCalculatorStore.onChangeHashRateInEHSlider}
                                     min={0}
                                     max={10000000}/>
                                 <div className={'FlexRow NetworkDifficulty'}>
@@ -120,13 +141,12 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
                                         label = {
                                             <TextWithTooltip
                                                 text={'Network Difficulty'}
-                                                tooltipText={'info'}
-                                            />
+                                                tooltipText={'info'} />
                                         }
                                         inputType={InputType.INTEGER}
                                         readOnly={networkDifficultyEditEnabled === false}
                                         value={rewardsCalculatorStore.getNetworkDifficulty()}
-                                        onChange = { rewardsCalculatorStore.onEditNetworkDifficulty }
+                                        onChange = { rewardsCalculatorStore.onChangeNetworkDifficulty }
                                         gray = { networkDifficultyEditEnabled === false }
                                         InputProps={{
                                             endAdornment: <InputAdornment position="end" >
@@ -149,7 +169,7 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
                                 <div className={'FlexRow'}>
                                     <div className={'H2 BtcPrice'}>$ {bitcoinPrice} USD</div>
                                     <div className={'PriceChange FlexRow'}>
-                                        <div className={'PriceText'}>{rewardsCalculatorStore.getPriceChangeFormated()}</div>
+                                        <div className={'PriceText'}>{bitcoinStore.formatBitcoinPriceChangeInPercentage()}</div>
                                         {bitcoinPriceChange >= 0
                                             ? <Svg svg={ArrowOutwardIcon}/>
                                             : <Svg svg={SouthEastIcon}/>
@@ -164,28 +184,28 @@ function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
                                         className={'DataRowHeading'}
                                         text={'Cost'}
                                         tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.getPowerCostDisplay()}</div>
+                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPowerCost()}</div>
                                 </div>
                                 <div className={'DataRow FlexRow'}>
                                     <TextWithTooltip
                                         className={'DataRowHeading'}
                                         text={'Pool Fee'}
                                         tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.getPoolFeeDisplay()}</div>
+                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPoolFee()}</div>
                                 </div>
                                 <div className={'DataRow FlexRow'}>
                                     <TextWithTooltip
                                         className={'DataRowHeading'}
                                         text={'Power Consumption'}
                                         tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.getPowerConsumptionDisplay()}</div>
+                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPowerConsumptionPerTH()}</div>
                                 </div>
                                 <div className={'DataRow FlexRow'}>
                                     <TextWithTooltip
                                         className={'DataRowHeading'}
                                         text={'Block Reward'}
                                         tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.getBlockRewardDisplay()}</div>
+                                    <div className={'DataRowValue'}>{bitcoinStore.getBlockReward()}</div>
                                 </div>
                             </div>
                             <div className={'RewardsEstimateContainer FlexColumn'}>

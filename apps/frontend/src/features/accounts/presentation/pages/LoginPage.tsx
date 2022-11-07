@@ -49,6 +49,12 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
         setShowPassword(!showPassword);
     }
 
+    function onKeyUp(e) {
+        if (e.key === 'Enter') {
+            onClickLogin();
+        }
+    }
+
     async function onClickLogin() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
@@ -87,7 +93,8 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
                                 }}
                                 inputValidation={emailValidation}
                                 value={email}
-                                onChange={setEmail} />
+                                onChange={setEmail}
+                                onKeyUp= { onKeyUp } />
                             <Input
                                 label={'Password'}
                                 placeholder={'Password'}
@@ -100,7 +107,8 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
                                 }}
                                 value={password}
                                 onChange={setPassword}
-                                type={showPassword === false ? 'password' : 'text'} />
+                                type={showPassword === false ? 'password' : 'text'}
+                                onKeyUp = { onKeyUp } />
                         </>
                     ) }
                     subInputsAction = { (

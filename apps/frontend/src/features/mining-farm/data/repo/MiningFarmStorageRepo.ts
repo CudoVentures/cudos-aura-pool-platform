@@ -2,7 +2,10 @@ import S from '../../../../core/utilities/Main';
 import StorageHelper from '../../../../core/helpers/StorageHelper';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
-import MiningFarmFilterModel, { MiningFarmHashPowerFilter } from '../../utilities/MiningFarmFilterModel';
+import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
+import EnergySourceEntity from '../../entities/EnergySourceEntity';
+import ManufacturerEntity from '../../entities/ManufacturerEntity';
+import MinerEntity from '../../entities/MinerEntity';
 
 export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
@@ -88,38 +91,6 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
             });
         }
 
-        if (miningFarmFilterModel.hashPowerFilter !== MiningFarmHashPowerFilter.NONE) {
-            let hashPowerLimit = S.NOT_EXISTS;
-            switch (miningFarmFilterModel.hashPowerFilter) {
-                case MiningFarmHashPowerFilter.BELOW_1000_EH:
-                    hashPowerLimit = 1000;
-                    break;
-                case MiningFarmHashPowerFilter.BELOW_2000_EH:
-                    hashPowerLimit = 2000;
-                    break;
-                case MiningFarmHashPowerFilter.ABOVE_2000_EH:
-                default:
-                    hashPowerLimit = Number.MAX_SAFE_INTEGER;
-                    break;
-
-            }
-
-            miningFarmsSlice = miningFarmsSlice.filter((json) => {
-                return json.hashRateTh <= hashPowerLimit;
-            });
-        }
-
-        miningFarmsSlice.sort((a: MiningFarmEntity, b: MiningFarmEntity) => {
-            switch (miningFarmFilterModel.sortKey) {
-                case MiningFarmFilterModel.SORT_KEY_POPULAR:
-                    // TODO: what does popular farm mean, how to compare?
-                    return a.name.localeCompare(b.name)
-                case MiningFarmFilterModel.SORT_KEY_NAME:
-                default:
-                    return a.name.localeCompare(b.name)
-            }
-        });
-
         return {
             miningFarmEntities: miningFarmsSlice.slice(miningFarmFilterModel.from, miningFarmFilterModel.from + miningFarmFilterModel.count),
             total: miningFarmsSlice.length,
@@ -155,7 +126,88 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         }
     }
 
-    async fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] > {
-        return [100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323, 100, 232, 24, 51, 46, 43, 234, 534, 34, 56, 34, 53, 235, 532, 2, 353, 323];
+    async fetchManufacturers(): Promise < ManufacturerEntity[] > {
+        return this.storageHelper.manufacturersJson.map((m) => {
+            return ManufacturerEntity.fromJson(m);
+        });
     }
+
+    async fetchMiners(): Promise < MinerEntity[] > {
+        return this.storageHelper.minersJson.map((m) => {
+            return MinerEntity.fromJson(m);
+        })
+    }
+
+    async fetchEnergySources(): Promise < EnergySourceEntity[] > {
+        return this.storageHelper.energySourcesJson.map((m) => {
+            return EnergySourceEntity.fromJson(m);
+        });
+    }
+
+    async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void > {
+        let manufacturerJson = this.storageHelper.manufacturersJson.find((json) => {
+            return json.manufacturerId === manufacturerEntity.manufacturerId;
+        });
+
+        if (manufacturerJson !== undefined) {
+            Object.assign(manufacturerJson, ManufacturerEntity.toJson(manufacturerEntity));
+        } else {
+            const lastManufacturerEntity = this.storageHelper.manufacturersJson.last();
+            const nextManufacturerId = 1 + (lastManufacturerEntity !== null ? parseInt(lastManufacturerEntity.manufacturerId) : 0);
+
+            manufacturerJson = ManufacturerEntity.toJson(manufacturerEntity);
+            manufacturerJson.manufacturerId = nextManufacturerId.toString();
+
+            this.storageHelper.manufacturersJson.push(manufacturerJson);
+        }
+
+        Object.assign(manufacturerEntity, ManufacturerEntity.fromJson(manufacturerJson));
+
+        this.storageHelper.save();
+    }
+
+    async creditMiner(minerEntity: MinerEntity): Promise < void > {
+        let minerJson = this.storageHelper.minersJson.find((json) => {
+            return json.minerId === minerEntity.minerId;
+        })
+
+        if (minerJson !== undefined) {
+            Object.assign(minerJson, MinerEntity.toJson(minerEntity));
+        } else {
+            const lastMinerEntity = this.storageHelper.minersJson.last();
+            const nextMinerId = 1 + (lastMinerEntity !== null ? parseInt(lastMinerEntity.minerId) : 0);
+
+            minerJson = MinerEntity.fromJson(minerEntity);
+            minerJson.minerId = nextMinerId.toString();
+
+            this.storageHelper.minersJson.push(minerJson);
+        }
+
+        Object.assign(minerEntity, MinerEntity.fromJson(minerJson));
+
+        this.storageHelper.save();
+    }
+
+    async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void > {
+        let energySourceJson = this.storageHelper.energySourcesJson.find((json) => {
+            return json.energySourceId === energySourceEntity.energySourceId;
+        })
+
+        if (energySourceJson !== undefined) {
+            Object.assign(energySourceJson, EnergySourceEntity.toJson(energySourceEntity));
+        } else {
+            const lastEnergySourceEntity = this.storageHelper.energySourcesJson.last();
+            const nextEnergySourceId = 1 + (lastEnergySourceEntity !== null ? parseInt(lastEnergySourceEntity.energySourceId) : 0);
+
+            energySourceJson = EnergySourceEntity.fromJson(energySourceEntity);
+            energySourceJson.energySourceId = nextEnergySourceId.toString();
+
+            this.storageHelper.energySourcesJson.push(energySourceJson);
+        }
+
+        Object.assign(energySourceEntity, EnergySourceEntity.fromJson(energySourceJson));
+
+        this.storageHelper.save();
+    }
+
 }

@@ -21,13 +21,15 @@ import RegisterPage from '../../../accounts/presentation/pages/RegisterPage';
 import SuperAdminApprovePage from '../../../accounts/presentation/pages/SuperAdminApprovePage';
 import BitcoinConfirmPage from '../../../accounts/presentation/pages/BitcoinConfirmPage';
 import CreditMiningFarmDetailsPage from '../../../mining-farm/presentation/pages/CreditMiningFarmDetailsPage';
-import CreditCollectionDetailsPage from '../../../collection/presentation/pages/CreditCollectionDetailsPage';
+import CreditCollectionDetailsCreatePage from '../../../collection/presentation/pages/CreditCollectionDetailsCreatePage';
 import ForgottenPassRequestPage from '../../../accounts/presentation/pages/ForgottenPassRequestPage';
 import ForgottenPassEditPage from '../../../accounts/presentation/pages/ForgottenPassEditPage';
 import EmailVerificationRequestPage from '../../../accounts/presentation/pages/EmailVerificationRequestPage';
 import EmailVerificationConfirmationPage from '../../../accounts/presentation/pages/EmailVerificationConfirmationPage';
 import CreditAccountSettings from '../../../accounts/presentation/pages/CreditAccountSettings';
 import AnalyticsPage from '../../../analytics/presentation/pages/AnalyticsPage';
+import CreditCollectionDetailsAddNftsPage from '../../../collection/presentation/pages/CreditCollectionDetailsAddNftsPage';
+import CreditCollectionDetailsEditPage from '../../../collection/presentation/pages/CreditCollectionDetailsEditPage';
 
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 
@@ -130,9 +132,9 @@ function AppRouter({ accountSessionStore }: Props) {
                     { accountSessionStore.isAdmin() === true && accountSessionStore.hasApprovedMiningFarm() === true && (
                         <>
                             <Route path = { AppRoutes.CREDIT_MINING_FARM } element = { <CreditMiningFarmPage /> } />
-                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_NFTS}/:collectionId` } element = { <CreditCollectionDetailsPage /> } />
-                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS}/:collectionId` } element = { <CreditCollectionDetailsPage /> } />
-                            <Route path = { AppRoutes.CREDIT_COLLECTION_DETAILS } element = { <CreditCollectionDetailsPage /> } />
+                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS_ADD_NFTS}/:collectionId` } element = { <CreditCollectionDetailsAddNftsPage /> } />
+                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/:collectionId` } element = { <CreditCollectionDetailsEditPage /> } />
+                            <Route path = { AppRoutes.CREDIT_COLLECTION_DETAILS_CREATE } element = { <CreditCollectionDetailsCreatePage /> } />
                             <Route path = { AppRoutes.FARM_ANALYTICS } element = { <AnalyticsPage /> } />
                         </>
                     ) }

@@ -1,5 +1,8 @@
 import axios from 'axios';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
+import EnergySourceEntity from '../../entities/EnergySourceEntity';
+import ManufacturerEntity from '../../entities/ManufacturerEntity';
+import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 
 const MiningFarmStatusMap = {
@@ -128,7 +131,7 @@ export default class MiningFarmApi {
         })
     }
 
-    async fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] > {
+    async fetchManufacturers(): Promise < ManufacturerEntity[] > {
         return null;
     }
 
@@ -137,4 +140,24 @@ export default class MiningFarmApi {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         } })
     }
+    async fetchMiners(): Promise < MinerEntity[] > {
+        return null;
+    }
+
+    async fetchEnergySources(): Promise < EnergySourceEntity[] > {
+        return null;
+    }
+
+    async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void > {
+        return null;
+    }
+
+    async creditMiner(minerEntity: MinerEntity): Promise < void > {
+        return null;
+    }
+
+    async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void > {
+        return null;
+    }
+
 }

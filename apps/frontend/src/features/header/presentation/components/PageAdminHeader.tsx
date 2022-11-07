@@ -11,6 +11,8 @@ import HeaderWallet from './HeaderWallet';
 
 import SvgAuraPoolLogo from '../../../../public/assets/vectors/aura-pool-logo.svg';
 import '../styles/page-admin-header.css'
+import Actions from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -41,6 +43,11 @@ function PageAdminHeader({ accountSessionStore }: Props) {
         navigate(AppRoutes.HOME);
     }
 
+    async function onClickLogout() {
+        await accountSessionStore.logout();
+        navigate(AppRoutes.HOME);
+    }
+
     return (
         <header className={'PageAdminHeader FlexRow FlexSplit'}>
             <div className={'LogoHeader FlexRow'}>
@@ -59,6 +66,10 @@ function PageAdminHeader({ accountSessionStore }: Props) {
                         <HeaderWallet />
                     </>
                 ) }
+
+                <Actions>
+                    <Button onClick={onClickLogout}>Logout</Button>
+                </Actions>
             </div>
         </header>
     )

@@ -1,35 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import SuperAdminApprovePageStore from '../stores/SuperAdminApprovePageStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
-import TableCell from '../../../../core/entities/TableCell';
 
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
-import Table from '../../../../core/presentation/components/Table';
-import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
+import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
+import { ALIGN_LEFT, ALIGN_RIGHT } from '../../../../core/presentation/components/TableDesktop';
 import Checkbox from '../../../../core/presentation/components/Checkbox';
-import TableRow from '../../../../core/entities/TableRow';
-import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button, { ButtonRadius } from '../../../../core/presentation/components/Button';
+import Actions from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
 import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader';
 
 import '../styles/page-super-admin-approve.css';
+import ViewCollectionModal from '../../../collection/presentation/components/ViewCollectionModal';
+import ViewMiningFarmModal from '../../../mining-farm/presentation/components/ViewMiningFarmModal';
+import ViewCollectionModalStore from '../../../collection/presentation/stores/ViewCollectionModalStore';
+import ViewMiningFarmModalStore from '../../../mining-farm/presentation/stores/ViewMiningFarmModalStore';
 
 type Props = {
-    superAdminApprovePageStore?: SuperAdminApprovePageStore;
     appStore?: AppStore;
+    superAdminApprovePageStore?: SuperAdminApprovePageStore;
+    viewMiningFarmModalStore?: ViewMiningFarmModalStore;
+    viewCollectionModalStore?: ViewCollectionModalStore;
 }
 
 const TABLE_LEGEND = ['name', 'Select'];
 const TABLE_WIDTHS = ['80%', '20%']
-const TABLE_ALINGS = [
-    ALIGN_LEFT,
-    ALIGN_CENTER,
-]
+const TABLE_ALINGS = [ALIGN_LEFT, ALIGN_RIGHT];
 
-function SuperAdminApprovePage({ superAdminApprovePageStore, appStore }: Props) {
+function SuperAdminApprovePage({ appStore, superAdminApprovePageStore, viewMiningFarmModalStore, viewCollectionModalStore }: Props) {
 
     const miningFarmEntities = superAdminApprovePageStore.miningFarmEntities;
     const collectionEntities = superAdminApprovePageStore.collectionEntities;
@@ -40,56 +41,72 @@ function SuperAdminApprovePage({ superAdminApprovePageStore, appStore }: Props) 
         })
     }, []);
 
+    function onClickMiningFarmRow(i: number) {
+        viewMiningFarmModalStore.showSignal(miningFarmEntities[i]);
+    }
+
+    function onClickSelectMiningFarm(miningFarmEntity, value, e) {
+        e.stopPropagation();
+        superAdminApprovePageStore.toggleMiningFarmSelection(miningFarmEntity.id);
+    }
+
+    function onClickCollectionRow(i: number) {
+        viewCollectionModalStore.showSignal(collectionEntities[i]);
+    }
+
+    function onClickSelectCollection(collectionEntity, value, e) {
+        e.stopPropagation();
+        superAdminApprovePageStore.toggleCollectionSelection(collectionEntity.id)
+    }
+
     function renderFarmsRows() {
-        const rows = [];
-
-        miningFarmEntities.forEach((miningFarmEntity) => {
-            const rowCells = [];
-            rowCells.push(new TableCell(miningFarmEntity.name, 0));
-            rowCells.push(new TableCell(
-                <Checkbox
-                    label={''}
-                    value={superAdminApprovePageStore.isMiningFarmEntitySelected(miningFarmEntity.id)}
-                    onChange={() => superAdminApprovePageStore.toggleMiningFarmSelection(miningFarmEntity.id)}
-                />,
-                0,
-            ));
-            rows.push(new TableRow(rowCells));
-        })
-
-        return rows;
+        return miningFarmEntities.map((miningFarmEntity) => {
+            return createTableRow([
+                createTableCellString(miningFarmEntity.name),
+                createTableCell((
+                    <Checkbox
+                        label={''}
+                        value={superAdminApprovePageStore.isMiningFarmEntitySelected(miningFarmEntity.id)}
+                        onChange={onClickSelectMiningFarm.bind(null, miningFarmEntity)} />
+                )),
+            ])
+        });
     }
 
     function renderCollectionsRows() {
-        const rows = [];
-
-        collectionEntities.forEach((collectionEntity) => {
-            const rowCells = [];
-            rowCells.push(new TableCell(collectionEntity.name, 0));
-            rowCells.push(new TableCell(
-                <Checkbox
-                    label={''}
-                    value={superAdminApprovePageStore.isCollectionEntitySelected(collectionEntity.id)}
-                    onChange={() => superAdminApprovePageStore.toggleCollectionSelection(collectionEntity.id)}
-                />,
-                0,
-            ));
-            rows.push(new TableRow(rowCells));
-        })
-
-        return rows;
+        return collectionEntities.map((collectionEntity) => {
+            return createTableRow([
+                createTableCellString(collectionEntity.name),
+                createTableCell((
+                    <Checkbox
+                        label={''}
+                        value={superAdminApprovePageStore.isCollectionEntitySelected(collectionEntity.id)}
+                        onChange={onClickSelectCollection.bind(null, collectionEntity)} />
+                )),
+            ])
+        });
     }
 
     return (
         <PageLayoutComponent
-            className = { 'PageSuperAdminApprove' }>
+            className = { 'PageSuperAdminApprove' }
+            modals = { (
+                <>
+                    <ViewCollectionModal />
+                    <ViewMiningFarmModal />
+                </>
+            ) }>
 
             <PageSuperAdminHeader />
             <div className = { 'PageContent AppContent' } >
                 <div className={'FlexRow TableHeader'}>
                     <div className={'H2 Bold'}>Mining Farms of Approval</div>
-                    <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                        <Button radius={ButtonRadius.RADIUS_16} onClick={superAdminApprovePageStore.approveMiningFarms}>Approve Selected Farms</Button>
+                    <Actions>
+                        <Button
+                            disabled = { superAdminApprovePageStore.selectedMiningFarmEntities.size === 0 }
+                            onClick={superAdminApprovePageStore.approveMiningFarms}>
+                            Approve Selected Farms
+                        </Button>
                     </Actions>
                 </div>
                 <Table
@@ -98,12 +115,16 @@ function SuperAdminApprovePage({ superAdminApprovePageStore, appStore }: Props) 
                     widths={TABLE_WIDTHS}
                     aligns={TABLE_ALINGS}
                     tableState={superAdminApprovePageStore.miningFarmsTableState}
-                    rows={renderFarmsRows()}
-                />
+                    onClickRow = { onClickMiningFarmRow }
+                    rows={renderFarmsRows()} />
                 <div className={'FlexRow TableHeader'}>
                     <div className={'H1 Bold'}>Collections of Approval</div>
-                    <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                        <Button radius={ButtonRadius.RADIUS_16} onClick={superAdminApprovePageStore.approveCollections}>Approve Selected Collections</Button>
+                    <Actions>
+                        <Button
+                            disabled = { superAdminApprovePageStore.selectedCollectionEntities.size === 0 }
+                            onClick={superAdminApprovePageStore.approveCollections}>
+                            Approve Selected Collections
+                        </Button>
                     </Actions>
                 </div>
                 <Table
@@ -112,8 +133,8 @@ function SuperAdminApprovePage({ superAdminApprovePageStore, appStore }: Props) 
                     widths={TABLE_WIDTHS}
                     aligns={TABLE_ALINGS}
                     tableState={superAdminApprovePageStore.collectionsTableState}
-                    rows={renderCollectionsRows()}
-                />
+                    onClickRow = { onClickCollectionRow }
+                    rows={renderCollectionsRows()} />
             </div>
             <PageFooter />
         </PageLayoutComponent>

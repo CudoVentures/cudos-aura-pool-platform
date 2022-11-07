@@ -1,5 +1,5 @@
 const LOCAL_STORAGE_KEY = 'cudos_aura_service_storage';
-const VERSION = 16;
+const VERSION = 18;
 
 const collectionDescription = 'DigiDaigaku is a collection of 2022 unique characters developed by Limit Break, a company founded by world famous game designers Gabriel Leydon and Halbert Nakagawa.  Currently, DigiDaigaku characters live in a mysterious world unknown to outsiders, but in time, exciting details about their world will be revealed. /n Learn more about the project at: https://digidaigaku.com and https://twitter.com/DigiDaigaku'
 const collectionProfileImgUrl = 'https://www.cnet.com/a/img/resize/c5b48e90abe8b7fe339fc0139f3834dbe434fee5/hub/2021/11/29/f566750f-79b6-4be9-9c32-8402f58ba0ef/richerd.png?auto=webp&width=1200';
@@ -120,6 +120,41 @@ const categoriesJson = [
     // jsonCategory('9', '3D'),
 ]
 
+const manufacturersJson = [
+    jsonManufacturer('1', 'Bitman'),
+    jsonManufacturer('2', 'MicroBT'),
+    jsonManufacturer('3', 'Canaan'),
+    jsonManufacturer('4', 'Bitfury'),
+]
+
+const minersJson = [
+    jsonMiner('1', 'Antminer S19'),
+    jsonMiner('2', 'Antminer S19 Pro'),
+    jsonMiner('3', 'Antminer S19J Pro'),
+    jsonMiner('4', 'WhatsMiner M30S'),
+    jsonMiner('5', 'WhatsMiner M30S+'),
+    jsonMiner('6', 'WhatsMiner M31S'),
+    jsonMiner('7', 'WhatsMiner M31s+'),
+    jsonMiner('8', 'AvalonMiner A12'),
+    jsonMiner('9', 'AvalonMiner A11'),
+    jsonMiner('10', 'AvalonMiner A12S'),
+]
+
+const energySourcesJson = [
+    jsonEnergySource('1', 'Natural Gas'),
+    jsonEnergySource('2', 'Grid'),
+    jsonEnergySource('3', 'Oil'),
+    jsonEnergySource('4', 'Hydro'),
+    jsonEnergySource('5', 'Solar'),
+    jsonEnergySource('6', 'Coal'),
+    jsonEnergySource('7', 'Wind'),
+    jsonEnergySource('8', 'Geothermal'),
+    jsonEnergySource('9', 'Nuclear'),
+    jsonEnergySource('10', 'Bio-gas'),
+    jsonEnergySource('11', 'Flare Gas'),
+    jsonEnergySource('12', 'Methane'),
+]
+
 export default class StorageHelper {
 
     static singleton = null;
@@ -135,6 +170,9 @@ export default class StorageHelper {
     accountsJson: any[];
     adminsJson: any[];
     superAdminsJson: any[];
+    manufacturersJson: any[];
+    minersJson: any[];
+    energySourcesJson: any[];
 
     sessionAccount: any;
     sessionUser: any;
@@ -153,6 +191,9 @@ export default class StorageHelper {
         this.accountsJson = accountsJson;
         this.adminsJson = adminsJson;
         this.superAdminsJson = superAdminsJson;
+        this.manufacturersJson = manufacturersJson;
+        this.minersJson = minersJson;
+        this.energySourcesJson = energySourcesJson;
 
         this.sessionAccount = null;
         this.sessionUser = null;
@@ -285,4 +326,22 @@ function jsonCategory(categoryId, categoryName) {
     return {
         categoryId, categoryName,
     };
+}
+
+function jsonManufacturer(manufacturerId, name) {
+    return {
+        manufacturerId, name,
+    }
+}
+
+function jsonMiner(minerId, name) {
+    return {
+        minerId, name,
+    }
+}
+
+function jsonEnergySource(energySourceId, name) {
+    return {
+        energySourceId, name,
+    }
 }

@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
+import { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../../core/presentation/components/DataPreviewLayout';
 import '../styles/mining-farm-preview.css';
-import { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 
 type Props = {
     miningFarmEntity: MiningFarmEntity,
@@ -33,7 +33,7 @@ export default function MiningFarmPeview({ miningFarmEntity }: Props) {
                     containerPadding: ContainerPadding.PADDING_16,
                 } }
                 dataPreviews = { [
-                    createDataPreview('Total hashrate', `${miningFarmEntity.hashRateTh} TH/s`),
+                    createDataPreview('Total hashrate', `${miningFarmEntity.formatHashRateInEH()}`),
                     createDataPreview('NFTs Owned', 1400),
                     createDataPreview('Total NFTs Sold', 735),
                 ] }>

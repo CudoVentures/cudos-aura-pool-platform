@@ -44,6 +44,9 @@ import AccountApiRepo from './features/accounts/data/repo/AccountApiRepo';
 import MiningFarmApiRepo from './features/mining-farm/data/repo/MiningFarmApiRepo';
 import CollectionApiRepo from './features/collection/data/repo/CollectionApiRepo';
 import NftApiRepo from './features/nft/data/repo/NftApiRepo';
+import ViewCollectionModalStore from './features/collection/presentation/stores/ViewCollectionModalStore';
+import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores/ViewMiningFarmModalStore';
+import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -52,7 +55,8 @@ const appStore = new AppStore();
 const alertStore = new AlertStore();
 const exampleModalStore = new ExampleModalStore();
 
-const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
+// const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
+const bitcoinRepo = new BitcoinApiRepo();
 const cudosRepo = new CudosStorageRepo(storageHelper);
 const miningFarmRepo = new MiningFarmApiRepo();
 const collectionRepo = new CollectionApiRepo();
@@ -85,6 +89,8 @@ const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
 const buyNftModalStore = new BuyNftModalStore();
 const resellNftModalStore = new ResellNftModalStore();
+const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo);
+const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 
 const App = () => {
 
@@ -126,7 +132,9 @@ const App = () => {
                 creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
                 superAdminApprovePageStore = { superAdminApprovePageStore }
                 creditCollectionStore = { creditCollectionStore }
-                analyticsPageStore = { analyticsPageStore } >
+                analyticsPageStore = { analyticsPageStore }
+                viewCollectionModalStore = { viewCollectionModalStore }
+                viewMiningFarmModalStore = { viewMiningFarmModalStore } >
                 <BrowserRouter>
                     <AppRouter />
                 </BrowserRouter>

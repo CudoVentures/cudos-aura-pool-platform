@@ -1,6 +1,13 @@
+.PageSuperAdminApprove .PageContent {
+    padding: 96px var(--page-spacing-h);
+}
+
 .PageSuperAdminApprove .TableHeader {
     width: 100%;
     justify-content: space-between;
-    margin-bottom: 30px;
-    margin-top: 100px;
+    margin-bottom: 24px;
+}
+
+.PageSuperAdminApprove .TableHeader:not(:first-child) {
+    margin-top: 96px;
 }

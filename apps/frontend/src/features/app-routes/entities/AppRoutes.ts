@@ -28,7 +28,8 @@ export default class AppRoutes {
     static CREDIT_ACCOUNT_SETTINGS = '/credit-account-settings';
     static CREDIT_MINING_FARM_DETAILS = '/credit-mining-farm-details';
     static MINING_FARM_ANALYTICS = '/mining-farm-analytics';
-    static CREDIT_COLLECTION_DETAILS = '/credit-collection-details';
-    static CREDIT_COLLECTION_NFTS = '/credit-collection-nfts';
+    static CREDIT_COLLECTION_DETAILS_CREATE = '/credit-collection-details-create';
+    static CREDIT_COLLECTION_DETAILS_ADD_NFTS = '/credit-collection-details-add-nfts';
+    static CREDIT_COLLECTION_DETAILS_EDIT = '/credit-collection-details-edit';
     static FARM_ANALYTICS = '/farm-analytics';
 }

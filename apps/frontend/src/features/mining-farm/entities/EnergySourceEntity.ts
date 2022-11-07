@@ -1,37 +1,26 @@
 import S from '../../../core/utilities/Main';
 
-enum EnergySourceId {
-    NUCLEAR_FUSION = '1',
-    WIND = '2',
-    COAL = '3',
-}
-
 export default class EnergySourceEntity {
-    id: string;
+
+    energySourceId: string;
     name: string;
 
     constructor() {
-        this.id = S.Strings.NOT_EXISTS;
+        this.energySourceId = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
     }
 
-    static newInstance(energySourceId: EnergySourceId): EnergySourceEntity {
-        const energySource = new EnergySourceEntity();
+    static newInstance(energySourceId: string, name: string) {
+        const entity = new EnergySourceEntity();
 
-        energySource.id = energySourceId;
-        energySource.name = EnergySourceEntity.getEnergySourceName(energySourceId);
+        entity.energySourceId = energySourceId;
+        entity.name = name;
 
-        return energySource;
+        return entity;
     }
 
-    static getAllEnergySources(): EnergySourceEntity[] {
-        const energySources = [];
-
-        energySources.push(EnergySourceEntity.newInstance(EnergySourceId.NUCLEAR_FUSION));
-        energySources.push(EnergySourceEntity.newInstance(EnergySourceId.WIND));
-        energySources.push(EnergySourceEntity.newInstance(EnergySourceId.COAL));
-
-        return energySources;
+    isNew(): boolean {
+        return this.energySourceId === S.Strings.NOT_EXISTS;
     }
 
     static toJson(entity: EnergySourceEntity): any {
@@ -40,7 +29,7 @@ export default class EnergySourceEntity {
         }
 
         return {
-            'id': entity.id,
+            'energySourceId': entity.energySourceId,
             'name': entity.name,
         }
     }
@@ -52,22 +41,10 @@ export default class EnergySourceEntity {
 
         const model = new EnergySourceEntity();
 
-        model.id = json.id ?? model.id;
+        model.energySourceId = (json.energySourceId ?? model.energySourceId).toString();
         model.name = json.name ?? model.name;
 
         return model;
     }
 
-    static getEnergySourceName(energySourceId: EnergySourceId): string {
-        switch (energySourceId) {
-            case EnergySourceId.NUCLEAR_FUSION:
-                return 'Nuclear Fusion';
-            case EnergySourceId.COAL:
-                return 'Coal';
-            case EnergySourceId.WIND:
-                return 'Wind';
-            default:
-                return S.Strings.EMPTY;
-        }
-    }
 }

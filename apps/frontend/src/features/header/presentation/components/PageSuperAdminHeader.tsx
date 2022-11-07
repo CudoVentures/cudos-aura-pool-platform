@@ -3,15 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 import Svg from '../../../../core/presentation/components/Svg';
+import Actions from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
+
 import SvgAuraPoolLogo from '../../../../public/assets/vectors/aura-pool-logo.svg';
 import '../styles/page-super-admin-header.css'
 
-function PageSuperAdminHeader() {
+type Props = {
+    accountSessionStore?: AccountSessionStore;
+}
+
+function PageSuperAdminHeader({ accountSessionStore }: Props) {
     const navigate = useNavigate();
 
     function onClickLogo() {
+        navigate(AppRoutes.HOME);
+    }
+
+    async function onClickLogout() {
+        await accountSessionStore.logout();
         navigate(AppRoutes.HOME);
     }
 
@@ -21,6 +34,9 @@ function PageSuperAdminHeader() {
                 <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
                 <div className={'AdminPortalNav B2 SemiBold'}>Super Admin</div>
             </div>
+            <Actions className = { 'StartRight' }>
+                <Button onClick={onClickLogout}>Logout</Button>
+            </Actions>
         </header>
     )
 }

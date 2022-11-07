@@ -3,9 +3,6 @@ import React, { useState } from 'react';
 import '../../styles/step-review.css';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button, { ButtonPadding, ButtonType } from '../../../../../core/presentation/components/Button';
-import ManufacturerEntity from '../../../../mining-farm/entities/ManufacturerEntity';
-import MinerEntity from '../../../../mining-farm/entities/MinerEntity';
-import EnergySourceEntity from '../../../../mining-farm/entities/EnergySourceEntity';
 import { inject, observer } from 'mobx-react';
 import Checkbox from '../../../../../core/presentation/components/Checkbox';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -35,11 +32,11 @@ function StepReview({ accountSessionStore, creditMiningFarmDetailsPageStore }: P
                     createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
                     createDataPreview('Primary Account Owner', miningFarmEntity.primaryAccountOwnerName),
                     createDataPreview('Primary Account Owner Email', miningFarmEntity.primaryAccountOwnerEmail),
-                    createDataPreview('Manufacturers', miningFarmEntity.manufacturerIds.map((id) => ManufacturerEntity.getManufacturerName(id)).join(', ')),
-                    createDataPreview('Miners', miningFarmEntity.minerIds.map((id) => MinerEntity.getMinerName(id)).join(', ')),
-                    createDataPreview('Energy Source', miningFarmEntity.energySourceIds.map((id) => EnergySourceEntity.getEnergySourceName(id)).join(', ')),
+                    createDataPreview('Manufacturers', creditMiningFarmDetailsPageStore.getSelectedManufacturersNames()),
+                    createDataPreview('Miners', creditMiningFarmDetailsPageStore.getSelectedMinersNames()),
+                    createDataPreview('Energy Source', creditMiningFarmDetailsPageStore.getSelectedEnergySourcesNames()),
                     createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
-                    createDataPreview('Hashrate', miningFarmEntity.displayHashRate()),
+                    createDataPreview('Hashrate', miningFarmEntity.formatHashRateInEH()),
                     createDataPreview('Farm Photos', imageEntities.length),
 
                 ] } />

@@ -28,12 +28,12 @@ export default function CollectionHorizontalPreview({ placeNumber, cudosPriceUsd
             <div className = { 'PreviewData FlexColumn'} >
                 <div className = { 'PreviewDataRow FlexRow FlexSplit Bold' } >
                     <div className={'CollectionName Dots H3'}>{collectionEntity.name}</div>
-                    <div className={'CollectionPriceCudos B2 StartRight'}>{collectionEntity.priceDisplay()}</div>
+                    {/* <div className={'CollectionPriceCudos B2 StartRight'}>{collectionEntity.priceDisplay()}</div> */}
                 </div>
                 <div className = { 'PreviewDataRow SemiBold B3 FlexSplit' } >
-                    <div className={'HashRate'}>Hashrate: {collectionEntity.hashRateDisplay()}</div>
+                    <div className={'HashRate'}>Hashrate: {collectionEntity.formatHashRateInEH()}</div>
                     <div className={'FlexRow CollectionPriceUsd StartRight'}>
-                        <div className={'CurrentPrice'}>{collectionEntity.priceUsdDisplay(cudosPriceUsd)}</div>
+                        {/* <div className={'CurrentPrice'}>{collectionEntity.priceUsdDisplay(cudosPriceUsd)}</div> */}
                         <div className={'CurrentPriceChange'}>{cudosPriceChange}</div>
                     </div>
                 </div>

@@ -1,13 +1,13 @@
-.CollectionCreditSidePreview {
+.CreditCollectionSidePreview {
     gap: 25px;
 }
 
-.CollectionCreditSidePreview .PreviewBorderContainer {
+.CreditCollectionSidePreview .PreviewBorderContainer {
     gap: 24px;
     align-items: flex-start;
 }
 
-.CollectionCreditSidePreview .PreviewBorderContainer .ImgCoverNode {
+.CreditCollectionSidePreview .PreviewBorderContainer .ImgCoverNode {
     display: flex;
     border-radius: 20px;
     background-size: cover;
@@ -18,21 +18,21 @@
     flex-shrink: 0;
 }
 
-.CollectionCreditSidePreview .PreviewBorderContainer .ImgCoverNode.Empty {
+.CreditCollectionSidePreview .PreviewBorderContainer .ImgCoverNode.Empty {
     background-color: var(--color-gray-090);
 }
 
-.CollectionCreditSidePreview .PreviewBorderContainer .CoverPicture {
+.CreditCollectionSidePreview .PreviewBorderContainer .CoverPicture {
     width: 100%; height: 125px;
     margin-bottom: 25px;
 }
 
-.CollectionCreditSidePreview .PreviewBorderContainer .CoverPicture.Empty .EmptyPictureSvg {
+.CreditCollectionSidePreview .PreviewBorderContainer .CoverPicture.Empty .EmptyPictureSvg {
     width: 40px; height: 40px;
 }
 
 
-.CollectionCreditSidePreview .PreviewBorderContainer .ProfilePicture {
+.CreditCollectionSidePreview .PreviewBorderContainer .ProfilePicture {
     width: 70px; height: 70px;
     position: absolute;
     left: 25px; bottom: -25px;
@@ -40,6 +40,6 @@
     border-radius: 8px;
 }
 
-.CollectionCreditSidePreview .PreviewBorderContainer .ProfilePicture.Empty .EmptyPictureSvg {
+.CreditCollectionSidePreview .PreviewBorderContainer .ProfilePicture.Empty .EmptyPictureSvg {
     width: 20px; height: 20px;
 }

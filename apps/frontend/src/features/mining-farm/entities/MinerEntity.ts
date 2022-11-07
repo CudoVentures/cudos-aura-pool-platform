@@ -1,35 +1,25 @@
 import S from '../../../core/utilities/Main';
 
-enum MinerId {
-    ANTMINER = '1',
-    WHATSMINER = '2'
-}
-
 export default class MinerEntity {
-    id: string;
+    minerId: string;
     name: string;
 
     constructor() {
-        this.id = S.Strings.NOT_EXISTS;
+        this.minerId = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
     }
 
-    static newInstance(minerId: MinerId): MinerEntity {
-        const miner = new MinerEntity();
+    static newInstance(minerId: string, name: string) {
+        const entity = new MinerEntity();
 
-        miner.id = minerId;
-        miner.name = MinerEntity.getMinerName(minerId);
+        entity.minerId = minerId;
+        entity.name = name;
 
-        return miner;
+        return entity;
     }
 
-    static getAllMiners(): MinerEntity[] {
-        const miners = [];
-
-        miners.push(MinerEntity.newInstance(MinerId.ANTMINER));
-        miners.push(MinerEntity.newInstance(MinerId.WHATSMINER));
-
-        return miners;
+    isNew(): boolean {
+        return this.minerId === S.Strings.NOT_EXISTS;
     }
 
     static toJson(entity: MinerEntity): any {
@@ -38,7 +28,7 @@ export default class MinerEntity {
         }
 
         return {
-            'id': entity.id,
+            'minerId': entity.minerId,
             'name': entity.name,
         }
     }
@@ -50,20 +40,10 @@ export default class MinerEntity {
 
         const model = new MinerEntity();
 
-        model.id = json.id ?? model.id;
+        model.minerId = (json.minerId ?? model.minerId).toString();
         model.name = json.name ?? model.name;
 
         return model;
     }
 
-    static getMinerName(minerId: MinerId): string {
-        switch (minerId) {
-            case MinerId.ANTMINER:
-                return 'Antminer S9K 14TH/s';
-            case MinerId.WHATSMINER:
-                return 'Whatsminer M30S++';
-            default:
-                return S.Strings.EMPTY;
-        }
-    }
 }

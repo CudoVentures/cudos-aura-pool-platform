@@ -1,0 +1,18 @@
+.ViewCollectionModal .NftEntity {
+    display: flex;
+    border:1px solid var(--color-gray-090);
+    border-radius: var(--border-radius);
+    padding: 16px; 
+    margin-top: 24px;
+}
+
+.ViewCollectionModal .NftEntity .NftPreview {
+    width: 128px; height: 128px;
+    flex: 0 0 auto;
+    margin-right: 12px;
+}
+
+.ViewCollectionModal .NftEntity .DataPreviewLayout {
+    width: 0;
+    flex: 1 1 auto;
+}

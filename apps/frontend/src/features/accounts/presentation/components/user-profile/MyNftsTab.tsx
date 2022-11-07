@@ -23,28 +23,7 @@ function MyNftsTab({ userProfilePageStore }: Props) {
     const nftFilterModel = userProfilePageStore.nftFilterModel;
 
     return (
-        <DataGridLayout
-            headerLeft = { (
-                <>
-                    <Select
-                        onChange={userProfilePageStore.onChangeSortKey}
-                        value={nftFilterModel.sortKey} >
-                        <MenuItem value = { NftFilterModel.SORT_KEY_NAME }> Name </MenuItem>
-                        <MenuItem value = { NftFilterModel.SORT_KEY_POPULAR }> Popular </MenuItem>
-                    </Select>
-                </>
-            ) }
-            headerRight = { (
-                <Actions
-                    layout={ActionsLayout.LAYOUT_ROW_RIGHT}
-                    height={ActionsHeight.HEIGHT_48} >
-                    <Button
-                        padding={ButtonPadding.PADDING_24}
-                        type={ButtonType.ROUNDED} >
-                            All Filters
-                    </Button>
-                </Actions>
-            ) }>
+        <DataGridLayout>
 
             { userProfilePageStore.nftEntities === null && (
                 <LoadingIndicator />

@@ -25,8 +25,6 @@ function EmailVerificationConfirmationPage({ alertStore, accountSessionStore }: 
     const navigate = useNavigate();
 
     async function onClickHome() {
-        setLoading(true);
-
         navigate(AppRoutes.HOME);
     }
 

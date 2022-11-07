@@ -77,7 +77,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
         generalDatapreviews.push(createDataPreview('Listing Status', nftEntity.isStatusListed() === true ? 'Active' : 'Not Listed'));
         generalDatapreviews.push(createDataPreview('Sining Farm', nftEntity.name));
         generalDatapreviews.push(createDataPreview('Collection', collectionEntity.name));
-        generalDatapreviews.push(createDataPreview('Expiry', nftEntity.getExpiryDisplay()));
+        generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
 
         return generalDatapreviews;
     }
@@ -85,7 +85,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
     function getProfitDataPreviews() {
         const profitDatapreviews = [];
 
-        profitDatapreviews.push(createDataPreview('Hashing Power', nftEntity.getHashPowerDisplay()));
+        profitDatapreviews.push(createDataPreview('Hashing Power', nftEntity.formatHashPowerInEH()));
         profitDatapreviews.push(createDataPreview(
             'Estimated Profit per Day',
             <div className={'DataValue FlexRow'}>

@@ -17,7 +17,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import ProfileHeader from '../components/ProfileHeader';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import Svg from '../../../../core/presentation/components/Svg';
+import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
@@ -30,6 +30,7 @@ import DataGridLayout from '../../../../core/presentation/components/DataGridLay
 import AddIcon from '@mui/icons-material/Add';
 import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 import '../styles/page-credit-collection.css';
 
 type Props = {
@@ -66,14 +67,18 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
     function isCollectionEditable() {
         const adminEntity = accountSessionStore.accountEntity;
         if (miningFarmEntity !== null && adminEntity !== null) {
-            return miningFarmEntity.accountId === adminEntity.accountId && collectionEntity.status === CollectionStatus.NOT_SUBMITTED;
+            return miningFarmEntity.accountId === adminEntity.accountId && collectionEntity.isEditable();
         }
 
         return false
     }
 
     function onClickAddMoreNfts() {
-        navigate(`${AppRoutes.CREDIT_COLLECTION_NFTS}/${collectionEntity.id}`);
+        navigate(`${AppRoutes.CREDIT_COLLECTION_DETAILS_ADD_NFTS}/${collectionEntity.id}`);
+    }
+
+    function onClickCreditCollectionDetailsEdit() {
+        navigate(`${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/${collectionEntity.id}`);
     }
 
     return (
@@ -97,6 +102,16 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                         coverPictureUrl={collectionEntity.coverImgUrl}
                         profilePictureUrl={collectionEntity.profileImgUrl} />
 
+                    { isCollectionEditable() === true && (
+                        <Actions layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
+                            <Button
+                                onClick={onClickCreditCollectionDetailsEdit} >
+                                <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                Edit Collection Details
+                            </Button>
+                        </Actions>
+                    ) }
+
                     <div className={'H2 CollectionHeadingName'}>{collectionEntity.name}</div>
 
                     <div className={'ProfileInfo Grid'}>
@@ -109,7 +124,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             createDataPreview('Volume', creditCollectionPageStore.getNftVolume()),
                             createDataPreview('Items', nftEntities.length),
                             createDataPreview('Owners', creditCollectionPageStore.getOwnersCount()),
-                            createDataPreview('Total Hashing Power', collectionEntity.hashRateDisplay()),
+                            createDataPreview('Total Hashing Power', collectionEntity.formatHashRateInEH()),
                             createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]),
                             createDataPreview(
                                 'Address',
@@ -134,31 +149,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             </Actions>
                         )}
                     </div>
-                    <DataGridLayout
-                        className = { 'NftsCnt' }
-                        headerLeft = { (
-                            <>
-                                <Select
-                                    onChange={creditCollectionPageStore.onChangeSortKey}
-                                    value={nftFilterModel.sortKey} >
-                                    <MenuItem value = { NftFilterModel.SORT_KEY_NAME } > Name </MenuItem>
-                                    <MenuItem value = { NftFilterModel.SORT_KEY_POPULAR } > Popular </MenuItem>
-                                </Select>
-
-                            </>
-                        ) }
-                        headerRight = {
-                            <Actions
-                                layout={ActionsLayout.LAYOUT_ROW_RIGHT}
-                                height={ActionsHeight.HEIGHT_48} >
-                                {/* TODO: show all filters */}
-                                <Button
-                                    padding={ButtonPadding.PADDING_24}
-                                    type={ButtonType.ROUNDED}>
-                                    All Filters
-                                </Button>
-                            </Actions>
-                        } >
+                    <DataGridLayout className = { 'NftsCnt' } >
 
                         { nftEntities === null && (
                             <LoadingIndicator />

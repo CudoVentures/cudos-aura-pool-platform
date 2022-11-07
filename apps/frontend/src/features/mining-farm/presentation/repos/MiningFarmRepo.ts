@@ -1,3 +1,6 @@
+import EnergySourceEntity from '../../entities/EnergySourceEntity';
+import ManufacturerEntity from '../../entities/ManufacturerEntity';
+import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 
@@ -11,6 +14,11 @@ export default interface MiningFarmRepo {
     fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel, status?: MiningFarmStatus): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} >;
     creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void >;
     creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
-    fetchMiningFarmSalesStatistics(miningFarmId: string, timestamp: number): Promise < number[] >;
-    approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
+
+    fetchManufacturers(): Promise < ManufacturerEntity[] >;
+    fetchMiners(): Promise < MinerEntity[] >;
+    fetchEnergySources(): Promise < EnergySourceEntity[] >;
+    creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void >;
+    creditMiner(minerEntity: MinerEntity): Promise < void >;
+    creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void >;
 }
