@@ -1,21 +1,17 @@
 import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Put,
-  UseGuards,
-  Request,
-  Delete,
-  Query,
-  NotFoundException,
+    Body,
+    Controller,
+    Get,
+    Param,
+    Patch,
+    Put,
+    UseGuards,
+    Delete,
+    Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
 import { Role } from '../user/roles';
-import { CreateNFTDto } from './dto/create-nft.dto';
 import { UpdateNFTDto } from './dto/update-nft.dto';
 import { UpdateNFTStatusDto } from './dto/update-nft-status';
 import { NFT } from './nft.model';
@@ -33,89 +29,98 @@ import { Collection } from '../collection/collection.model';
 @ApiTags('NFT')
 @Controller('nft')
 export class NFTController {
-  constructor(
+    constructor(
     private nftService: NFTService,
     private graphqlService: GraphqlService,
     private collectionService: CollectionService,
-  ) {}
+    ) {}
 
   @Get()
-  async findAll(@Query(ParseNftQueryPipe) filters: NftFilters): Promise<NFT[]> {
-    const result = await this.nftService.findAll(filters);
+    async findAll(@Query(ParseNftQueryPipe) filters: NftFilters): Promise<NFT[]> {
+        const result = await this.nftService.findAll(filters);
+        // const minted = await this.graphqlService.fetchNft({ denom_ids: [filters.collection_id] })
 
-    return result;
-  }
+        return result;
+    }
 
   @Get('minted')
   async findMinted(
     @Query() filters: Partial<MarketplaceNftFilters>,
   ): Promise<MarketplaceNftQuery> {
-    const collections = await this.collectionService.findAll({
-      status: CollectionStatus.APPROVED,
-    });
-    const denom_ids = collections.map(
-      (collection: Collection) => collection.denom_id,
-    );
+      const collections = await this.collectionService.findAll({
+          status: CollectionStatus.APPROVED,
+      });
+      const denom_ids = collections.map(
+          (collection: Collection) => collection.denom_id,
+      );
 
-    return this.graphqlService.fetchNft({ denom_ids });
+      return this.graphqlService.fetchNft({ denom_ids });
   }
 
   @Put('minted/check-status')
   async mint(@Body() checkStatusDto: CheckStatusDto): Promise<NFT> {
-    const { tx_hash } = checkStatusDto;
+      const { tx_hash } = checkStatusDto;
 
-    const uuid = await this.nftService.getTokenId(tx_hash);
+      const uuid = await this.nftService.getTokenId(tx_hash);
 
-    return this.nftService.updateStatus(uuid, NftStatus.MINTED);
+      return this.nftService.updateStatus(uuid, NftStatus.MINTED);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<NFT> {
-    return this.nftService.findOne(id);
+      return this.nftService.findOne(id);
   }
 
-  @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.FARM_ADMIN]))
-  @Post()
-  async create(
-    @Request() req,
-    @Body() createNFTDto: CreateNFTDto,
-  ): Promise<NFT> {
-    const collection = await this.collectionService.findOne(
-      createNFTDto.collection_id,
-    );
+  //   @ApiBearerAuth('access-token')
+  //   @ApiBody({ type: [NFTDto] })
+  //   @UseGuards(RoleGuard([Role.FARM_ADMIN]))
+  //   @Post()
+  //   async create(
+  //     @Request() req,
+  //     @Body() nfts: NFTDto[],
+  //   ): Promise<NFT[]> {
+  // const createdNfts = nfts.map(async (nft) => {
+  //     const collection = await this.collectionService.findOne(
+  //         nft.collection_id,
+  //     );
 
-    if (!collection) {
-      throw new NotFoundException('Collection does not exist');
-    }
+  //     if (!collection) {
+  //         throw new NotFoundException('Collection does not exist');
+  //     }
 
-    return this.nftService.createOne(createNFTDto, req.user.id);
-  }
+  //     const createdNft = this.nftService.createOne(nft, req.user.id)
+  //     return createdNft
+  // })
 
-  @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
-  @Put(':id')
+  // const result = await Promise.all(createdNfts)
+
+  //       return result
+  //   }
+
+    @ApiBearerAuth('access-token')
+    @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+    @Put(':id')
   async update(
-    @Param('id') id: string,
-    @Body() updateNFTDto: UpdateNFTDto,
+            @Param('id') id: string,
+            @Body() updateNFTDto: UpdateNFTDto,
   ): Promise<NFT> {
-    return this.nftService.updateOne(id, updateNFTDto);
+      return this.nftService.updateOne(id, updateNFTDto);
   }
 
   @ApiBearerAuth('access-token')
   @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
   @Patch(':id/status')
-  async updateStatus(
+    async updateStatus(
     @Param('id') id: string,
     @Body() updateNftStatusDto: UpdateNFTStatusDto,
-  ): Promise<NFT> {
-    return this.nftService.updateStatus(id, updateNftStatusDto.status);
-  }
+    ): Promise<NFT> {
+        return this.nftService.updateStatus(id, updateNftStatusDto.status);
+    }
 
   @ApiBearerAuth('access-token')
   @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<NFT> {
-    return this.nftService.deleteOne(id);
+      return this.nftService.deleteOne(id);
   }
 }

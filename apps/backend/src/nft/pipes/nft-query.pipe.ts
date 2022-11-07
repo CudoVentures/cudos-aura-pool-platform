@@ -7,10 +7,10 @@ export class ParseNftQueryPipe implements PipeTransform {
         const parsedQuery = {};
 
         Object.keys(value).map((key) => {
-            if (key !== 'status') {
-                parsedQuery[key] = Number(value[key]);
+            if (key !== 'id') {
+                parsedQuery['id'] = value.ids.split(',');
             } else {
-                parsedQuery[key] = value[key];
+                parsedQuery['collection_id'] = value.collection_id;
             }
         });
 
