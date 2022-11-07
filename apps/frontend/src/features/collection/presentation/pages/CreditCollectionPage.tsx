@@ -84,7 +84,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                 <LoadingIndicator />
             ) }
 
-            { collectionEntity !== null && (
+            { collectionEntity !== null && miningFarmEntity !== null && nftEntities !== null && (
                 <div className={'PageContent AppContent'} >
 
                     <Breadcrumbs crumbs={ [

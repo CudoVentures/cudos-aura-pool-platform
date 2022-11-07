@@ -16,4 +16,6 @@ export default interface CollectionRepo {
     fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } >;
 
     creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < void >;
+
+    approveCollection(collectionEntity: CollectionEntity): Promise < void >;
 }

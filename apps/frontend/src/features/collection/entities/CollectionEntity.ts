@@ -13,8 +13,8 @@ export enum CollectionStatus {
 }
 
 export default class CollectionEntity {
-    id: string;
-    farmId: string;
+    id: number;
+    farmId: number;
     name: string;
     description: string;
     ownerAddress: string;
@@ -31,8 +31,8 @@ export default class CollectionEntity {
     payoutAddress: string;
 
     constructor() {
-        this.id = S.Strings.NOT_EXISTS;
-        this.farmId = S.Strings.NOT_EXISTS;
+        this.id = S.NOT_EXISTS;
+        this.farmId = S.EXISTS;
         this.name = S.Strings.EMPTY;
         this.description = S.Strings.EMPTY;
         this.ownerAddress = S.Strings.EMPTY;

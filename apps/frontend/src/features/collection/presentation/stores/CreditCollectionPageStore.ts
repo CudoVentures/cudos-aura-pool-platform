@@ -39,7 +39,7 @@ export default class CreditCollectionPageStore {
 
     async init(collectionId: string) {
         this.nftFilterModel.collectionIds = [collectionId];
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.APPROVED);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
         await this.fetch();
     }
@@ -67,6 +67,10 @@ export default class CreditCollectionPageStore {
     }
 
     getFloorNftPrice() {
+        if (!this.nftEntities) {
+            return '0'
+        }
+
         if (this.nftEntities.length === 0) {
             return '0';
         }

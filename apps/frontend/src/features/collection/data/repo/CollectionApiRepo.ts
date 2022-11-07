@@ -5,7 +5,7 @@ import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
 
-export default class CollectionStorageRepo implements CollectionRepo {
+export default class CollectionApiRepo implements CollectionRepo {
 
     collectionApi: CollectionApi;
 
@@ -53,4 +53,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         });
     }
 
+    async approveCollection(collectionEntity: CollectionEntity): Promise < void > {
+        await this.collectionApi.approveCollection(collectionEntity.id);
+    }
 }
