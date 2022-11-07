@@ -9,24 +9,17 @@ import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
+import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 
 export default class MarketplaceStore {
 
-    static TOP_COLLECTION_PERIODS = [
-        '1 Day',
-        '7 Days',
-        '30 Days',
-    ]
-
     cudosStore: CudosStore;
-
     collectionRepo: CollectionRepo;
     nftRepo: NftRepo;
     miningFarmRepo: MiningFarmRepo;
 
-    selectedCategoryIndex: number;
     searchString: string;
-    selectedTopCollectionPeriod: number;
+    defaultIntervalPickerState: DefaultIntervalPickerState;
 
     collectionMap: Map < string, CollectionEntity >;
     collectionDetailsMap: Map < string, CollectionDetailsEntity >;
@@ -44,34 +37,25 @@ export default class MarketplaceStore {
         this.nftRepo = nftRepo;
         this.miningFarmRepo = miningFarmRepo;
 
+        this.searchString = S.Strings.EMPTY;
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopCollections);
+
         this.collectionMap = new Map();
         this.collectionDetailsMap = new Map();
-
-        this.cudosPrice = S.NOT_EXISTS;
-        this.cudosPriceChange = S.NOT_EXISTS;
-
-        this.resetDefaults();
-
-        makeAutoObservable(this);
-    }
-
-    resetDefaults = () => {
-        this.selectedCategoryIndex = 0;
-        this.searchString = S.Strings.EMPTY;
-        this.selectedTopCollectionPeriod = 0;
-
         this.topCollectionEntities = [];
         this.newNftDropsEntities = [];
         this.trendingNftEntities = [];
         this.popularFarmsEntities = [];
+
+        this.cudosPrice = S.NOT_EXISTS;
+        this.cudosPriceChange = S.NOT_EXISTS;
+
+        makeAutoObservable(this);
     }
 
     async init() {
         await this.cudosStore.init();
 
-        this.resetDefaults();
-
-        // fetching data
         await this.fetchTopCollections();
         await this.fetchNewNftDrops();
         this.fetchTrendingNfts();
@@ -81,8 +65,8 @@ export default class MarketplaceStore {
         this.cudosPriceChange = this.cudosStore.getBitcoinPriceChange();
     }
 
-    async fetchTopCollections() {
-        const topCollectionEntities = await this.collectionRepo.fetchTopCollections(this.selectedTopCollectionPeriod);
+    fetchTopCollections = async () => {
+        const topCollectionEntities = await this.collectionRepo.fetchTopCollections(this.defaultIntervalPickerState.earningsTimestampFrom, this.defaultIntervalPickerState.earningsTimestampTo);
         const collectionIds = topCollectionEntities.map((collectionEntity) => {
             return collectionEntity.id;
         });
@@ -140,15 +124,6 @@ export default class MarketplaceStore {
 
     getCollectionName(collectionId: string): string {
         return this.collectionMap.get(collectionId)?.name ?? '';
-    }
-
-    selectCategory(index: number) {
-        this.selectedCategoryIndex = index;
-    }
-
-    changeTopCollectionPeriod = (index: number) => {
-        this.selectedTopCollectionPeriod = index;
-        // TODO: get new preview models from new period;
     }
 
     changeSearchString = (searchString: string) => {

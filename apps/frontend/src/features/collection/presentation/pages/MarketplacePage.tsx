@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
-import S from '../../../../core/utilities/Main';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import MarketplaceStore from '../stores/MarketplaceStore';
 import NftEntity from '../../../nft/entities/NftEntity';
@@ -21,10 +20,10 @@ import Slider from '../../../../core/presentation/components/Slider';
 import NftPreviewInPicture from '../../../nft/presentation/components/NftPreviewInPicture';
 import NftPreview from '../../../nft/presentation/components/NftPreview';
 import MiningFarmPreview from '../../../mining-farm/presentation/components/MiningFarmPreview';
+import DefaultIntervalPicker from '../../../analytics/presentation/components/DefaultIntervalPicker';
 
 import Svg from '../../../../core/presentation/components/Svg';
 import '../styles/page-marketplace.css';
-import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 
 type Props = {
     marketplaceStore?: MarketplaceStore
@@ -122,10 +121,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                     <div className = { 'SectionHeadingCnt' } >
                         <div className={'H2 Bold'}>Top Collections</div>
                         <div className = { 'CenterCnt FlexSingleCenter' } >
-                            <NavRowTabs
-                                navTabs = { MarketplaceStore.TOP_COLLECTION_PERIODS.map((period, i) => {
-                                    return createNavRowTab(period, marketplaceStore.selectedTopCollectionPeriod === i, marketplaceStore.changeTopCollectionPeriod.bind(marketplaceStore, i))
-                                }) } />
+                            <DefaultIntervalPicker defaultIntervalPickerState={marketplaceStore.defaultIntervalPickerState} />
                         </div>
                     </div>
                     <TopCollections

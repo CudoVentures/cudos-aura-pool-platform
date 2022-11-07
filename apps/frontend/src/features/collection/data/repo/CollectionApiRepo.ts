@@ -18,7 +18,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         return this.collectionApi.fetchCategories();
     }
 
-    async fetchTopCollections(period: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+    async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         // TO DO: add top collection sort
         collectionFilterModel.status = status;

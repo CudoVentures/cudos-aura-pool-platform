@@ -8,7 +8,7 @@ export default interface CollectionRepo {
 
     fetchCategories(): Promise < CategoryEntity[] >;
 
-    fetchTopCollections(period: number, status?: CollectionStatus): Promise < CollectionEntity[] >;
+    fetchTopCollections(timestampFrom: number, timestampTo: number, status?: CollectionStatus): Promise < CollectionEntity[] >;
 
     fetchCollectionsByIds(idArray: string[], status?: CollectionStatus): Promise < CollectionEntity[] >;
 
