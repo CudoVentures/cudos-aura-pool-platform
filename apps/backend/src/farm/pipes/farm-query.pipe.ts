@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
-import { FarmStatus } from '../farm.model';
+import { FarmStatus } from '../models/farm.model';
 import { FarmFilters } from '../utils';
 
 const statusMap = [FarmStatus.APPROVED, FarmStatus.QUEUED, FarmStatus.REJECTED]

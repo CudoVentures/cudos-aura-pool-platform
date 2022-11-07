@@ -1,7 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { EnergySourceDto } from './dto/energy-source.dto';
 import { FarmDto } from './dto/farm.dto';
-import { Farm } from './farm.model';
+import { ManufacturerDto } from './dto/manufacturer.dto';
+import { MinerDto } from './dto/miner.dto';
+import { EnergySource } from './models/energy-source.model';
+import { Farm } from './models/farm.model';
+import { Manufacturer } from './models/manufacturer.model';
+import { Miner } from './models/miner.model';
 import { FarmFilters, FarmStatus } from './utils';
 
 @Injectable()
@@ -9,6 +15,12 @@ export class FarmService {
     constructor(
     @InjectModel(Farm)
     private farmModel: typeof Farm,
+    @InjectModel(Manufacturer)
+    private manufacturerModel: typeof Manufacturer,
+    @InjectModel(Miner)
+    private minerModel: typeof Miner,
+    @InjectModel(EnergySource)
+    private energySourceModel: typeof EnergySource,
     ) {}
 
     async findAll(filters: FarmFilters): Promise<Farm[]> {
@@ -89,5 +101,62 @@ export class FarmService {
         );
 
         return farm;
+    }
+
+    async findMiners(): Promise<Miner[]> {
+        const miners = await this.minerModel.findAll();
+
+        return miners;
+    }
+
+    async findEnergySources(): Promise<EnergySource[]> {
+        const miners = await this.energySourceModel.findAll();
+
+        return miners;
+    }
+
+    async findManufacturers(): Promise<Manufacturer[]> {
+        const miners = await this.manufacturerModel.findAll();
+
+        return miners;
+    }
+
+    async createMiner(minerDto: MinerDto): Promise<Miner> {
+        const miner = await this.minerModel.create({ ...minerDto });
+
+        return miner;
+    }
+
+    async createEnergySource(energySourceDto: EnergySourceDto): Promise<EnergySource> {
+        const energySource = await this.energySourceModel.create({ ...energySourceDto });
+
+        return energySource;
+    }
+
+    async createManufacturer(manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
+        const manufacturer = await this.manufacturerModel.create({ ...manufacturerDto });
+
+        return manufacturer;
+    }
+
+    async updateMiner(minerDto: MinerDto): Promise<Miner> {
+        const { id, ...rest } = minerDto
+        const [count, [miner]] = await this.minerModel.update({ ...rest }, { where: { id }, returning: true })
+
+        return miner;
+    }
+
+    async updateEnergySource(energySourceDto: EnergySourceDto): Promise<EnergySource> {
+        const { id, ...rest } = energySourceDto
+        const [count, [energySource]] = await this.energySourceModel.update({ ...rest }, { where: { id }, returning: true })
+
+        return energySource;
+    }
+
+    async updateManufacturer(manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
+        const { id, ...rest } = manufacturerDto
+        const [count, [manufacturer]] = await this.manufacturerModel.update({ ...rest }, { where: { id }, returning: true })
+
+        return manufacturer;
     }
 }

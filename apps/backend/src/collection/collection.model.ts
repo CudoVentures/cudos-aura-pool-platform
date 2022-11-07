@@ -12,7 +12,7 @@ import {
     AutoIncrement,
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
-import { Farm } from '../farm/farm.model';
+import { Farm } from '../farm/models/farm.model';
 import { NFT } from '../nft/nft.model';
 import { CollectionStatus } from './utils';
 

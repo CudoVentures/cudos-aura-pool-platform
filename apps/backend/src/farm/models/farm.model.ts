@@ -11,8 +11,8 @@ import {
     AutoIncrement,
     DataType,
 } from 'sequelize-typescript';
-import { Collection } from '../collection/collection.model';
-import { User } from '../user/user.model';
+import { Collection } from '../../collection/collection.model';
+import { User } from '../../user/user.model';
 
 export const enum FarmStatus {
     QUEUED = 'queued',

@@ -8,7 +8,7 @@ import {
     Unique,
     AllowNull,
 } from 'sequelize-typescript';
-import { Farm } from '../../farm/farm.model';
+import { Farm } from '../../farm/models/farm.model';
 
 @Table({
     freezeTableName: true,

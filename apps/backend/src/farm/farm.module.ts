@@ -5,11 +5,14 @@ import { CollectionService } from '../collection/collection.service';
 import { NFTModule } from '../nft/nft.module';
 import { NFTService } from '../nft/nft.service';
 import { FarmController } from './farm.controller';
-import { Farm } from './farm.model';
+import { Farm } from './models/farm.model';
 import { FarmService } from './farm.service';
+import { Miner } from './models/miner.model';
+import { Manufacturer } from './models/manufacturer.model';
+import { EnergySource } from './models/energy-source.model';
 
 @Module({
-    imports: [SequelizeModule.forFeature([Farm]), CollectionModule, NFTModule],
+    imports: [SequelizeModule.forFeature([Farm, Miner, Manufacturer, EnergySource]), CollectionModule, NFTModule],
     controllers: [FarmController],
     providers: [FarmService, CollectionService, NFTService],
 })

@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import RequestWithUser from '../../auth/interfaces/requestWithUser.interface';
-import { Farm } from '../farm.model';
+import { Farm } from '../models/farm.model';
 import { FarmService } from '../farm.service';
 
 @Injectable()

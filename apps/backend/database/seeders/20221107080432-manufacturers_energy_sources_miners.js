@@ -36,9 +36,7 @@ const manufacturers = [
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.bulkInsert('miners', miners);
-
         await queryInterface.bulkInsert('energy_sources', energySources);
-
         await queryInterface.bulkInsert('manufacturers', manufacturers);
     },
 
