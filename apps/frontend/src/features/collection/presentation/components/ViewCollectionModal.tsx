@@ -32,7 +32,6 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             createDataPreview('Royalties', collectionEntity.royalties),
                             createDataPreview('Maintenance Fees (per month)', collectionEntity.maintenanceFees.toString()),
                             createDataPreview('Payout address', collectionEntity.payoutAddress),
-                            createDataPreview('Ownwer address', collectionEntity.ownerAddress),
                         ] } />
                     { nftEntities.map((nftEntity) => {
                         return (
@@ -45,13 +44,13 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                                     size = { DataRowsSize.SMALL }
                                     dataPreviews = { [
                                         createDataPreview('NFT Name', nftEntity.name),
-                                        createDataPreview('Hash power', nftEntity.hashPower),
+                                        createDataPreview('Hash power', nftEntity.formatHashPowerInEH()),
                                         createDataPreview('Price', nftEntity.price.toString()),
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
                                         createDataPreview('Creator address', nftEntity.creatorAddress),
                                         createDataPreview('Current owner', nftEntity.currentOwnerAddress),
                                         createDataPreview('Farm Royalties', nftEntity.farmRoyalties),
-                                        createDataPreview('Maintenance Fee', nftEntity.maintenanceFee.toString()),
+                                        createDataPreview('Maintenance Fee', nftEntity.formatMaintenanceFee()),
                                     ] } />
                             </div>
                         )

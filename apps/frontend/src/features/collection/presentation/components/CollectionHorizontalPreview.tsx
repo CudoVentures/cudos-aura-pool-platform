@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity from '../../entities/CollectionEntity';
 
 import '../styles/collection-horizontal-preview.css';
@@ -11,10 +12,11 @@ type Props = {
     placeNumber: number,
     cudosPriceUsd: number,
     cudosPriceChange: string,
-    collectionEntity: CollectionEntity
+    collectionEntity: CollectionEntity;
+    collectionDetailsEntity: CollectionDetailsEntity;
 }
 
-export default function CollectionHorizontalPreview({ placeNumber, cudosPriceUsd, cudosPriceChange, collectionEntity }: Props) {
+export default function CollectionHorizontalPreview({ placeNumber, cudosPriceUsd, cudosPriceChange, collectionEntity, collectionDetailsEntity }: Props) {
     const navigate = useNavigate();
 
     function onClickNavigateToNft() {
@@ -28,7 +30,7 @@ export default function CollectionHorizontalPreview({ placeNumber, cudosPriceUsd
             <div className = { 'PreviewData FlexColumn'} >
                 <div className = { 'PreviewDataRow FlexRow FlexSplit Bold' } >
                     <div className={'CollectionName Dots H3'}>{collectionEntity.name}</div>
-                    {/* <div className={'CollectionPriceCudos B2 StartRight'}>{collectionEntity.priceDisplay()}</div> */}
+                    <div className={'CollectionPriceCudos B2 StartRight'}>{collectionDetailsEntity.formatFloorPriceInCudos()}</div>
                 </div>
                 <div className = { 'PreviewDataRow SemiBold B3 FlexSplit' } >
                     <div className={'HashRate'}>Hashrate: {collectionEntity.formatHashRateInEH()}</div>

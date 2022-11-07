@@ -49,8 +49,8 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     const navigate = useNavigate();
 
     const miningFarmEntity = creditMiningFarmPageStore.miningFarmEntity;
+    const miningFarmDetailsEntity = creditMiningFarmPageStore.miningFarmDetailsEntity;
     const collectionEntities = creditMiningFarmPageStore.collectionEntities;
-    const nftEntities = creditMiningFarmPageStore.nftEntities;
     const collectionFilterModel = creditMiningFarmPageStore.collectionFilterModel;
 
     useEffect(() => {
@@ -156,15 +156,17 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                         </div>
                         <div className={'MiningFarmDataCnt Grid GridColumns2'}>
                             <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
-                            <DataPreviewLayout
-                                dataPreviews = { [
-                                    createDataPreview('Total Hashrate', `${miningFarmEntity.formatHashRateInEH()}`),
-                                    createDataPreview('Hashrate (1h average)', '80.345 EH/s'),
-                                    createDataPreview('Active Workers', '1023'),
-                                    createDataPreview('Collections Owned', creditMiningFarmPageStore.gridViewState.getItemCount()),
-                                    createDataPreview('NFTs Owned', nftEntities.length),
-                                    createDataPreview('Total NFTs Sold', '735'),
-                                ] } />
+                            { miningFarmDetailsEntity !== null && (
+                                <DataPreviewLayout
+                                    dataPreviews = { [
+                                        createDataPreview('Total Hashrate', `${miningFarmEntity.formatHashRateInEH()}`),
+                                        createDataPreview('Hashrate (1h average)', miningFarmDetailsEntity.formatHashRateInEH()),
+                                        createDataPreview('Active Workers', miningFarmDetailsEntity.activeWorkers),
+                                        createDataPreview('Collections Owned', creditMiningFarmPageStore.gridViewState.getItemCount()),
+                                        createDataPreview('NFTs Owned', miningFarmDetailsEntity.nftsOwned),
+                                        createDataPreview('Total NFTs Sold', miningFarmDetailsEntity.totalNftsSold),
+                                    ] } />
+                            ) }
                         </div>
                         { miningFarmEntity.isApproved() === true && (
                             <>

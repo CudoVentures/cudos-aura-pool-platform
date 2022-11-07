@@ -131,7 +131,8 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                     <TopCollections
                         cudosPriceChangeDisplay={marketplaceStore.cudosPriceChangeDisplay()}
                         cudosPriceUsd={marketplaceStore.cudosPrice}
-                        topCollectionEntities={marketplaceStore.topCollectionEntities} />
+                        topCollectionEntities={marketplaceStore.topCollectionEntities}
+                        collectionDetailsMap={marketplaceStore.collectionDetailsMap} />
                     <Actions
                         className = { 'SectionActions' }
                         layout={ActionsLayout.LAYOUT_ROW_CENTER}

@@ -10,6 +10,10 @@ export default class MiningFarmApi {
         return null;
     }
 
+    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
+        return null;
+    }
+
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
         return null;
     }

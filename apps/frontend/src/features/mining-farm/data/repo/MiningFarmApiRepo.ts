@@ -2,6 +2,7 @@ import S from '../../../../core/utilities/Main';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
+import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
@@ -65,6 +66,15 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
 
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
         return this.miningFarmApi.fetchMiningFarmsByFilter(miningFarmFilterModel);
+    }
+
+    async fetchMiningFarmDetailsById(miningFarmId: string): Promise < MiningFarmDetailsEntity > {
+        const miningFarmDetailsEntities = await this.fetchMiningFarmsDetailsByIds([miningFarmId]);
+        return miningFarmDetailsEntities.length === 1 ? miningFarmDetailsEntities[0] : null;
+    }
+
+    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
+        return this.miningFarmApi.fetchMiningFarmsDetailsByIds(miningFarmIds);
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void > {

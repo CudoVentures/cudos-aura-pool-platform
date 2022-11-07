@@ -1,5 +1,6 @@
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
+import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 
@@ -10,6 +11,10 @@ export default class CollectionApi {
     }
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
+        return null;
+    }
+
+    async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
         return null;
     }
 
