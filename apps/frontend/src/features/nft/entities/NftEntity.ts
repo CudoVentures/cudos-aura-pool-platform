@@ -17,7 +17,7 @@ export default class NftEntity {
     price: BigNumber;
     imageUrl: string;
     status: NftStatus;
-    expiryDate: number;
+    expiryDate: Date;
     creatorAddress: string;
     currentOwnerAddress: string;
     farmRoyalties: number;
