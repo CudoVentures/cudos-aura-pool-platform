@@ -88,6 +88,10 @@ export default class MiningFarmApi {
         return result
     }
 
+    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
+        return null;
+    }
+
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
         const { data: farm } = await axios.put(
             '/api/v1/farm',

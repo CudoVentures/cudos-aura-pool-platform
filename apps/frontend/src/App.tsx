@@ -47,6 +47,7 @@ import NftApiRepo from './features/nft/data/repo/NftApiRepo';
 import ViewCollectionModalStore from './features/collection/presentation/stores/ViewCollectionModalStore';
 import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores/ViewMiningFarmModalStore';
 import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
+import CudosApiRepo from './features/cudos-data/data/repo/CudosApiRepo';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -57,12 +58,11 @@ const exampleModalStore = new ExampleModalStore();
 
 // const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
 const bitcoinRepo = new BitcoinApiRepo();
-const cudosRepo = new CudosStorageRepo(storageHelper);
+const cudosRepo = new CudosApiRepo();
 const miningFarmRepo = new MiningFarmApiRepo();
 const collectionRepo = new CollectionApiRepo();
 const nftRepo = new NftApiRepo();
 const accountRepo = new AccountApiRepo();
-// const poolEventRepo = new PoolEventStorageRepo();
 const statisticsRepo = new StatisticsStorageRepo();
 const userRepo = new UserStorageRepo();
 
@@ -72,7 +72,7 @@ const cudosStore = new CudosStore(cudosRepo);
 const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, miningFarmRepo);
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, miningFarmRepo);
-const marketplaceStore = new MarketplaceStore(cudosStore, collectionRepo, nftRepo, miningFarmRepo);
+const marketplaceStore = new MarketplaceStore(collectionRepo, nftRepo, miningFarmRepo);
 const superAdminApprovePageStore = new SuperAdminApprovePageStore(miningFarmRepo, collectionRepo);
 const exploreCollectionsPageStore = new ExploreCollectionsPageStore(collectionRepo, miningFarmRepo);
 const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRepo);

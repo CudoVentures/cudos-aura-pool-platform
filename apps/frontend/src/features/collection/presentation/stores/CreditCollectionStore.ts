@@ -97,14 +97,12 @@ export default class CreditCollectionStore {
 
     async initAsCreate() {
         const farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId()).id;
-        const ownerAddress = (await this.accountSessionStore.adminEntity).cudosWalletAddress;
 
         runInAction(() => {
             this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
             this.creditMode = CreditCollectionMode.CREATE;
             this.collectionEntity = new CollectionEntity();
             this.collectionEntity.farmId = farmId;
-            this.collectionEntity.ownerAddress = ownerAddress;
         });
     }
 

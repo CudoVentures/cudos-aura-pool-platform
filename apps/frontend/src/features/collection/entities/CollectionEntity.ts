@@ -17,7 +17,6 @@ export default class CollectionEntity {
     farmId: number;
     name: string;
     description: string;
-    ownerAddress: string;
     hashPowerInEH: number;
     profileImgUrl: string;
     coverImgUrl: string;
@@ -33,7 +32,6 @@ export default class CollectionEntity {
         this.farmId = S.EXISTS;
         this.name = S.Strings.EMPTY;
         this.description = S.Strings.EMPTY;
-        this.ownerAddress = S.Strings.EMPTY;
         this.hashPowerInEH = S.NOT_EXISTS;
         this.profileImgUrl = S.Strings.EMPTY;
         this.coverImgUrl = S.Strings.EMPTY;
@@ -132,7 +130,6 @@ export default class CollectionEntity {
             'farmId': entity.farmId,
             'name': entity.name,
             'description': entity.description,
-            'ownerAddress': entity.ownerAddress,
             'hashPowerInEH': entity.hashPowerInEH,
             'profileImgUrl': entity.profileImgUrl,
             'coverImgUrl': entity.coverImgUrl,
@@ -156,7 +153,6 @@ export default class CollectionEntity {
         model.farmId = json.farmId ?? model.farmId;
         model.name = json.name ?? model.name;
         model.description = json.description ?? model.description;
-        model.ownerAddress = json.ownerAddress ?? model.ownerAddress;
         model.hashPowerInEH = Number(json.hashPowerInEH ?? model.hashPowerInEH);
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;

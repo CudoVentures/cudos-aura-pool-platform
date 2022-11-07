@@ -35,8 +35,8 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
     const [networkDifficultyEditEnabled, setNetworkDifficultyEditEnabled] = useState(false);
     const navigate = useNavigate();
 
-    const bitcoinPrice = rewardsCalculatorStore.bitcoinStore.getBitcoinPrice();
-    const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChange();
+    const bitcoinPrice = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceInUsd();
+    const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChangeInUsd();
 
     const [hashRateInEH, setHashRateInEH] = useState(rewardsCalculatorStore.hashRateInEH !== 0 ? rewardsCalculatorStore.hashRateInEH.toString() : '');
 

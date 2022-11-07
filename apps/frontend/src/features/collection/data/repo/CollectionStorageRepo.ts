@@ -5,6 +5,8 @@ import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel, { CollectionHashPowerFilter } from '../../utilities/CollectionFilterModel';
 import CategoryEntity from '../../entities/CategoryEntity';
 import NftEntity from '../../../nft/entities/NftEntity';
+import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
+import BigNumber from 'bignumber.js';
 
 export default class CollectionStorageRepo implements CollectionRepo {
 
@@ -18,7 +20,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         return this.storageHelper.categoriesJson.map((json) => CategoryEntity.fromJson(json));
     }
 
-    async fetchTopCollections(period: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+    async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         // TO DO: add top collection sort
         collectionFilterModel.status = status;
@@ -76,6 +78,25 @@ export default class CollectionStorageRepo implements CollectionRepo {
         }
     }
 
+    async fetchCollectionDetailsById(collectionId: string): Promise < CollectionDetailsEntity > {
+        const collectionDetailsEntities = await this.fetchCollectionsDetailsByIds([collectionId]);
+        return collectionDetailsEntities.length === 1 ? collectionDetailsEntities[0] : null;
+    }
+
+    async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
+        return collectionIds.map((collectionId) => {
+            const collectionDetailsEntity = new CollectionDetailsEntity();
+
+            collectionDetailsEntity.collectionId = collectionId;
+            collectionDetailsEntity.floorPrice = new BigNumber(`${Math.round(Math.random() * 100)}000000000000000000`);
+            collectionDetailsEntity.volume = new BigNumber(`${Math.round(Math.random() * 100000)}000000000000000000`);
+            collectionDetailsEntity.owners = Math.round(Math.random() * 10);
+            collectionDetailsEntity.cudosAddress = 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0';
+
+            return collectionDetailsEntity;
+        });
+    }
+
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]) {
         const collectionsJson = this.storageHelper.collectionsJson;
 
@@ -110,12 +131,13 @@ export default class CollectionStorageRepo implements CollectionRepo {
                 } else {
                     const lastNftEntity = nftsJson.last();
                     const nextNftId = 1 + (lastNftEntity !== null ? parseInt(lastNftEntity.id) : 0);
+                    const cudosWalletAddress = this.storageHelper.sessionAdmin.cudosWalletAddress;
 
                     nftJson = NftEntity.toJson(nftEntity);
                     nftJson.id = nextNftId.toString();
                     nftJson.collectionId = collectionJson.id;
-                    nftJson.currentOwnerAddress = collectionJson.ownerAddress;
-                    nftJson.creatorAddress = collectionJson.ownerAddress;
+                    nftJson.currentOwnerAddress = cudosWalletAddress;
+                    nftJson.creatorAddress = cudosWalletAddress;
 
                     nftsJson.push(nftJson);
                 }

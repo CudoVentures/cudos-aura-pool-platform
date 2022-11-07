@@ -2,6 +2,7 @@ import axios from 'axios';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
+import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 
 const MiningFarmStatusMap = {
@@ -78,5 +79,9 @@ export default class CollectionApi {
         const { data } = await axios.patch(`/api/v1/collection/${collectionId}/status`, { status: 'approved' }, { headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         } })
+    }
+
+    async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
+        return null;
     }
 }

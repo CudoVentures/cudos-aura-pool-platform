@@ -1,3 +1,4 @@
+import { makeAutoObservable } from 'mobx';
 import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
 import BitcoinRepo from '../repos/BitcoinRepo';
 
@@ -13,6 +14,8 @@ export default class BitcoinStore {
 
         this.inited = false;
         this.bitcoinDataEntity = null;
+
+        makeAutoObservable(this);
     }
 
     async init() {
@@ -24,16 +27,8 @@ export default class BitcoinStore {
         this.bitcoinDataEntity = await this.bitcoinRepo.fetchBitcoinData();
     }
 
-    getBitcoinPrice(): number {
-        return this.bitcoinDataEntity?.priceInUsd ?? 0;
-    }
-
     getBitcoinPriceInUsd(): number {
         return this.bitcoinDataEntity?.priceInUsd ?? 0;
-    }
-
-    getBitcoinPriceChange(): number {
-        return this.bitcoinDataEntity?.priceChangeInUsd ?? 0;
     }
 
     getBitcoinPriceChangeInUsd(): number {
@@ -56,7 +51,7 @@ export default class BitcoinStore {
     }
 
     getNetworkDifficulty(): string {
-        return this.bitcoinDataEntity?.networkDifficulty ?? '';
+        return this.bitcoinDataEntity?.networkDifficulty.toString() ?? '';
     }
 
     getBlockReward(): number {

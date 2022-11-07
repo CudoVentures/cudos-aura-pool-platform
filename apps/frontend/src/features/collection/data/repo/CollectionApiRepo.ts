@@ -1,5 +1,6 @@
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
+import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
@@ -17,7 +18,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         return this.collectionApi.fetchCategories();
     }
 
-    async fetchTopCollections(period: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+    async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         // TO DO: add top collection sort
         collectionFilterModel.status = status;
@@ -43,6 +44,15 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         return this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
+    }
+
+    async fetchCollectionDetailsById(collectionId: string): Promise < CollectionDetailsEntity > {
+        const collectionDetailsEntities = await this.fetchCollectionsDetailsByIds([collectionId]);
+        return collectionDetailsEntities.length === 1 ? collectionDetailsEntities[0] : null;
+    }
+
+    async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
+        return this.collectionApi.fetchCollectionsDetailsByIds(collectionIds);
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]) {

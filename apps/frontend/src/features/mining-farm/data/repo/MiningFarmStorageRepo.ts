@@ -6,6 +6,7 @@ import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
+import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 
 export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
@@ -95,6 +96,25 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
             miningFarmEntities: miningFarmsSlice.slice(miningFarmFilterModel.from, miningFarmFilterModel.from + miningFarmFilterModel.count),
             total: miningFarmsSlice.length,
         }
+    }
+
+    async fetchMiningFarmDetailsById(miningFarmId: string): Promise < MiningFarmDetailsEntity > {
+        const miningFarmDetailsEntities = await this.fetchMiningFarmsDetailsByIds([miningFarmId]);
+        return miningFarmDetailsEntities.length === 1 ? miningFarmDetailsEntities[0] : null;
+    }
+
+    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
+        return miningFarmIds.map((miningFarmId) => {
+            const miningFarmDetailsEntity = new MiningFarmDetailsEntity();
+
+            miningFarmDetailsEntity.miningFarmId = miningFarmId;
+            miningFarmDetailsEntity.averageHashRateInEH = Math.round(Math.random() * 200);
+            miningFarmDetailsEntity.activeWorkers = Math.round(Math.random() * 15);
+            miningFarmDetailsEntity.nftsOwned = Math.round(Math.random() * 2000);
+            miningFarmDetailsEntity.totalNftsSold = Math.round(Math.random() * 20000);
+
+            return miningFarmDetailsEntity;
+        });
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void > {

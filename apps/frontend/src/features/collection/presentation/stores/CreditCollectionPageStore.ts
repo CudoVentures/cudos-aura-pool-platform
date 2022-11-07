@@ -8,6 +8,7 @@ import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
 import BigNumber from 'bignumber.js';
+import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 
 export default class CreditCollectionPageStore {
 
@@ -19,6 +20,7 @@ export default class CreditCollectionPageStore {
     nftFilterModel: NftFilterModel;
 
     collectionEntity: CollectionEntity;
+    collectionDetailsEntity: CollectionDetailsEntity;
     miningFarmEntity: MiningFarmEntity;
     nftEntities: NftEntity[];
 
@@ -27,10 +29,11 @@ export default class CreditCollectionPageStore {
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
 
-        this.gridViewState = new GridViewState(this.fetch, 3, 4, 6);
+        this.gridViewState = new GridViewState(this.fetchNfts, 3, 4, 6);
         this.nftFilterModel = new NftFilterModel();
 
         this.collectionEntity = null;
+        this.collectionDetailsEntity = null;
         this.miningFarmEntity = null;
         this.nftEntities = null;
 
@@ -41,10 +44,15 @@ export default class CreditCollectionPageStore {
         this.nftFilterModel.collectionIds = [collectionId];
         this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.APPROVED);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
-        await this.fetch();
+        await this.fetchCollectionDetails();
+        await this.fetchNfts();
     }
 
-    fetch = async () => {
+    async fetchCollectionDetails() {
+        this.collectionDetailsEntity = await this.collectionRepo.fetchCollectionDetailsById(this.collectionEntity.id);
+    }
+
+    fetchNfts = async () => {
         this.gridViewState.setIsLoading(true);
         this.nftFilterModel.from = this.gridViewState.getFrom();
         this.nftFilterModel.count = this.gridViewState.getItemsPerPage();

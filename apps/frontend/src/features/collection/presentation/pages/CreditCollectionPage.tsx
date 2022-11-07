@@ -41,6 +41,7 @@ type Props = {
 
 function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, walletStore }: Props) {
     const collectionEntity = creditCollectionPageStore.collectionEntity;
+    const collectionDetailsEntity = creditCollectionPageStore.collectionDetailsEntity;
     const miningFarmEntity = creditCollectionPageStore.miningFarmEntity;
     const nftEntities = creditCollectionPageStore.nftEntities;
 
@@ -119,23 +120,25 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             <div className={'Clickable'} onClick={onClickFarmLink}>Farm Owner:  <b>{miningFarmEntity.name}</b></div>
                             <div className={'CollectionDescription'}>{collectionEntity.description}</div>
                         </div>
-                        <DataPreviewLayout dataPreviews={[
-                            createDataPreview('Floor', creditCollectionPageStore.getFloorNftPrice()),
-                            createDataPreview('Volume', creditCollectionPageStore.getNftVolume()),
-                            createDataPreview('Items', nftEntities.length),
-                            createDataPreview('Owners', creditCollectionPageStore.getOwnersCount()),
-                            createDataPreview('Total Hashing Power', collectionEntity.formatHashRateInEH()),
-                            createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]),
-                            createDataPreview(
-                                'Address',
-                                <div className={'FlexRow'}>
-                                    <div className={'Dots'}>{collectionEntity.ownerAddress}</div>
-                                    <Svg svg={LaunchIcon}
-                                        className={'SVG Icon Clickable '}
-                                        onClick={() => ProjectUtils.copyText(collectionEntity.ownerAddress)} />
-                                </div>,
-                            ),
-                        ]} />
+                        { collectionDetailsEntity !== null && (
+                            <DataPreviewLayout dataPreviews={[
+                                createDataPreview('Floor', collectionDetailsEntity.formatFloorPriceInCudos()),
+                                createDataPreview('Volume', collectionDetailsEntity.formatVolumeInCudos()),
+                                createDataPreview('Items', creditCollectionPageStore.gridViewState.getItemCount()),
+                                createDataPreview('Owners', collectionDetailsEntity.owners),
+                                createDataPreview('Total Hashing Power', collectionEntity.formatHashRateInEH()),
+                                createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]),
+                                createDataPreview(
+                                    'Address',
+                                    <div className={'FlexRow'}>
+                                        <div className={'Dots'}>{collectionDetailsEntity.cudosAddress}</div>
+                                        <Svg svg={LaunchIcon}
+                                            className={'SVG Icon Clickable '}
+                                            onClick={() => ProjectUtils.copyText(collectionDetailsEntity.cudosAddress)} />
+                                    </div>,
+                                ),
+                            ]} />
+                        )}
                     </div>
                     <div className = { 'SectionDivider' } />
                     <div className={'FlexRow FlexSplit'}>
