@@ -4,6 +4,7 @@ import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
+import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 
 const MiningFarmStatusMap = {
     queued: MiningFarmStatus.NOT_APPROVED,
@@ -89,7 +90,15 @@ export default class MiningFarmApi {
     }
 
     async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
-        return null;
+        const { data } = await axios.get('/api/v1/farm/details', { params: {
+            ids: miningFarmIds.join(','),
+        } })
+
+        return data.map((farm) => MiningFarmDetailsEntity.fromJson({
+            miningFarmId: farm.id,
+            nftsOwned: farm.nftsOwned,
+            totalNftsSold: farm.nftsSold,
+        }))
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
@@ -135,33 +144,58 @@ export default class MiningFarmApi {
         })
     }
 
-    async fetchManufacturers(): Promise < ManufacturerEntity[] > {
-        return null;
-    }
-
     async approveMiningFarm(miningFarmId: string): Promise < void > {
         const { data } = await axios.patch(`/api/v1/farm/${miningFarmId}/status`, { status: 'approved' }, { headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         } })
     }
+
+    async fetchManufacturers(): Promise < ManufacturerEntity[] > {
+        const { data } = await axios.get('/api/v1/farm/manufacturers')
+
+        return data.map((manufacturer) => ManufacturerEntity.fromJson({
+            manufacturerId: manufacturer.id,
+            name: manufacturer.name,
+        }))
+    }
+
     async fetchMiners(): Promise < MinerEntity[] > {
-        return null;
+        const { data } = await axios.get('/api/v1/farm/miners')
+
+        return data.map((miner) => MinerEntity.fromJson({
+            minerId: miner.id,
+            name: miner.name,
+        }))
     }
 
     async fetchEnergySources(): Promise < EnergySourceEntity[] > {
-        return null;
+        const { data } = await axios.get('/api/v1/farm/energy-sources')
+
+        return data.map((energySource) => EnergySourceEntity.fromJson({
+            energySourceId: energySource.id,
+            name: energySource.name,
+        }))
     }
 
     async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void > {
-        return null;
+        await axios.put('/api/v1/farm/manufacturers', {
+            id: Number(manufacturerEntity.manufacturerId),
+            name: manufacturerEntity.name,
+        })
     }
 
     async creditMiner(minerEntity: MinerEntity): Promise < void > {
-        return null;
+        await axios.put('/api/v1/farm/miners', {
+            id: Number(minerEntity.minerId),
+            name: minerEntity.name,
+        })
     }
 
     async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void > {
-        return null;
+        await axios.put('/api/v1/farm/energy-sources', {
+            id: Number(energySourceEntity.energySourceId),
+            name: energySourceEntity.name,
+        })
     }
 
 }

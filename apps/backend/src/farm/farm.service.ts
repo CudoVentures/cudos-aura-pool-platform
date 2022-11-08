@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Collection } from '../collection/collection.model';
+import { NFT } from '../nft/nft.model';
+import { NftStatus } from '../nft/utils';
 import { EnergySourceDto } from './dto/energy-source.dto';
 import { FarmDto } from './dto/farm.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
@@ -15,6 +18,8 @@ export class FarmService {
     constructor(
     @InjectModel(Farm)
     private farmModel: typeof Farm,
+    @InjectModel(NFT)
+    private nftModel: typeof NFT,
     @InjectModel(Manufacturer)
     private manufacturerModel: typeof Manufacturer,
     @InjectModel(Miner)
@@ -158,5 +163,16 @@ export class FarmService {
         const [count, [manufacturer]] = await this.manufacturerModel.update({ ...rest }, { where: { id }, returning: true })
 
         return manufacturer;
+    }
+
+    async getDetails(farmId: number): Promise <{ id: number, nftsOwned: number, nftsSold: number }> {
+        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }] })
+        const minted = nfts.filter((nft) => nft.status === NftStatus.MINTED)
+
+        return {
+            id: farmId,
+            nftsOwned: nfts.length,
+            nftsSold: minted.length,
+        }
     }
 }

@@ -40,7 +40,6 @@ export class FarmController {
 
     @Get()
     async findAll(@Query(ParseFarmQueryPipe) filters: FarmFilters): Promise<Farm[]> {
-        console.log(filters)
         return this.farmService.findAll({ ...filters });
     }
 
@@ -90,6 +89,16 @@ export class FarmController {
         }
 
         return this.farmService.updateManufacturer(manufacturerDto)
+    }
+
+    @Get('details')
+    async getDetails(@Query('ids') ids: string): Promise<any> {
+        const farmIds = ids.split(',').map((id) => Number(id))
+
+        const getFarmsDetails = farmIds.map(async (farmId) => this.farmService.getDetails(farmId))
+        const farmsDetails = await Promise.all(getFarmsDetails)
+
+        return farmsDetails
     }
 
     @Get(':id')
