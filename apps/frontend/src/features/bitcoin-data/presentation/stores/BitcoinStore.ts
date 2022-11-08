@@ -1,6 +1,9 @@
+import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
 import BitcoinRepo from '../repos/BitcoinRepo';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 export default class BitcoinStore {
 
@@ -44,6 +47,10 @@ export default class BitcoinStore {
         }
 
         return (priceChangeInUsd / priceInUsd) * 100;
+    }
+
+    formatBtcInUsd(btcPrice: BigNumber): string {
+        return numeral(btcPrice.multipliedBy(this.bitcoinDataEntity?.priceInUsd ?? 0)).format(ProjectUtils.NUMERAL_USD);
     }
 
     formatBitcoinPriceChangeInPercentage(): string {

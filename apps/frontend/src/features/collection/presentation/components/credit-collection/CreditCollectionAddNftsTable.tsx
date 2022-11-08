@@ -39,7 +39,7 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                 createTableCell(nftEntity.formatMaintenanceFeeInBtc()),
                 createTableCell(
                     <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT}>
-                        <Button onClick={() => creditCollectionStore.onClickEditNft(nftEntity.id)} type={ButtonType.TEXT_INLINE}>
+                        <Button onClick={creditCollectionStore.onClickEditNft.bind(creditCollectionStore, nftEntity)} type={ButtonType.TEXT_INLINE}>
                             <Svg svg={BorderColorIcon} />
                             Edit
                         </Button>

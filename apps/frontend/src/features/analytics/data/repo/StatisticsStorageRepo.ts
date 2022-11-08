@@ -34,13 +34,12 @@ export default class StatisticsStorageRepo implements StatisticsRepo {
     async fetchNftEarningsBySessionAccount(timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
         const userEarningsEntity = new UserEarningsEntity();
 
-        userEarningsEntity.totalBtcEarningInUsd = 3451;
-        userEarningsEntity.totalNftBounght = 34;
-        userEarningsEntity.totalContractHashPower = 104135;
+        userEarningsEntity.totalEarningInBtc = new BigNumber(1.2);
+        userEarningsEntity.totalNftBought = 34;
+        userEarningsEntity.totalContractHashPowerInEH = 104135;
         userEarningsEntity.totalContractHashPowerInUsd = 34124;
         userEarningsEntity.earningsPerDayInUsd = [100, 32, 231, 511, 531, 81];
         userEarningsEntity.btcEarnedInBtc = new BigNumber(0.321);
-        userEarningsEntity.btcEarnedInUsd = 4145;
 
         return userEarningsEntity;
     }
@@ -56,10 +55,9 @@ export default class StatisticsStorageRepo implements StatisticsRepo {
     async fetchNftEarningsByMiningFarmId(miningFarmId: string, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
         const miningFarmEarningsEntity = new MiningFarmEarningsEntity();
 
-        miningFarmEarningsEntity.totalFarmSalesInUsd = 4125;
+        miningFarmEarningsEntity.totalMiningFarmSalesInAcudos = new BigNumber(41253113).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
         miningFarmEarningsEntity.totalNftSold = 41;
-        miningFarmEarningsEntity.maintenanceFeeDepositedInCudos = new BigNumber(4120);
-        miningFarmEarningsEntity.maintenanceFeeDepositedInUsd = 41.2;
+        miningFarmEarningsEntity.maintenanceFeeDepositedInAcudos = new BigNumber(4120).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
         miningFarmEarningsEntity.earningsPerDayInUsd = [100, 32, 231, 511, 531, 81];
 
         return miningFarmEarningsEntity

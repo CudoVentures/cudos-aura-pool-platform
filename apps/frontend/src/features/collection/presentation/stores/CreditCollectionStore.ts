@@ -9,6 +9,7 @@ import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import TempIdGenerator from '../../../../core/utilities/TempIdGenerator';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 enum CreditCollectionDetailsSteps {
     COLLECTION_DETAILS = 1,
@@ -40,6 +41,10 @@ export default class CreditCollectionStore {
 
     defaultHashAndPriceValues: number;
 
+    selectedNftHashingPowerInEHInputValue: string;
+    selectedNftPriceInCudosInputValue: string;
+    selectedNftMaintenanceFeeInBtcInputValue: string;
+
     constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
         this.creditMode = CreditCollectionMode.CREATE;
@@ -55,6 +60,9 @@ export default class CreditCollectionStore {
         this.tempIdGenerator = new TempIdGenerator();
 
         this.defaultHashAndPriceValues = S.INT_FALSE;
+        this.selectedNftHashingPowerInEHInputValue = '';
+        this.selectedNftPriceInCudosInputValue = '';
+        this.selectedNftMaintenanceFeeInBtcInputValue = '';
 
         makeAutoObservable(this);
     }
@@ -143,7 +151,7 @@ export default class CreditCollectionStore {
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
         nftEntity.maintenanceFeeInBtc = new BigNumber(this.collectionEntity.maintenanceFeeInBtc);
 
-        this.selectedNftEntity = nftEntity;
+        this.onClickEditNft(nftEntity);
     }
 
     isSelectedNftImageEmpty(): boolean {
@@ -158,32 +166,75 @@ export default class CreditCollectionStore {
         return this.collectionEntity.coverImgUrl === S.Strings.EMPTY
     }
 
-    onChangeCollectionName = (name: string) => {
-        this.collectionEntity.name = name;
+    // on change collection
+    onChangeCollectionName = (inputValue: string) => {
+        this.collectionEntity.name = inputValue;
     }
 
-    onChangeCollectionDescription = (description: string) => {
-        this.collectionEntity.description = description;
+    onChangeCollectionDescription = (inputValue: string) => {
+        this.collectionEntity.description = inputValue;
     }
 
-    onChangeCollectionPayoutAddress = (payoutAddress: string) => {
-        this.collectionEntity.payoutAddress = payoutAddress;
+    onChangeCollectionPayoutAddress = (inputValue: string) => {
+        this.collectionEntity.payoutAddress = inputValue;
     }
 
+    // on change nft
     onChangeSelectedNftName = (nftName: string) => {
         this.selectedNftEntity.name = nftName;
     }
 
-    onChangeSelectedNftRoyalties = (royalties: string) => {
-        this.selectedNftEntity.farmRoyalties = Number(royalties);
+    onChangeSelectedNftHashPowerInEH(inputValue: string) {
+        this.selectedNftHashingPowerInEHInputValue = inputValue;
+        this.selectedNftEntity.hashPowerInEH = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
+    }
+
+    onChangeSelectedNftPriceInCudos(inputValue: string) {
+        this.selectedNftPriceInCudosInputValue = inputValue;
+        this.selectedNftEntity.priceInAcudos = inputValue !== '' ? ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(new BigNumber(inputValue)) : null;
+    }
+
+    onChangeSelectedNftRoyalties = (inputValue: string) => {
+        this.selectedNftEntity.farmRoyalties = inputValue !== '' ? parseInt(inputValue) : S.NOT_EXISTS;
+    }
+
+    onChangeSelectedNftMaintenanceFeeInBtc = (inputValue: string) => {
+        this.selectedNftMaintenanceFeeInBtcInputValue = inputValue;
+        this.selectedNftEntity.maintenanceFeeInBtc = inputValue !== '' ? new BigNumber(inputValue) : null;
     }
 
     onChangeSelectedNftExpirationDate = (expirationDate: number) => {
         this.selectedNftEntity.expiryDate = expirationDate;
     }
 
-    onClickEditNft = (nftEntityId: string) => {
-        this.selectedNftEntity = this.nftEntities.find((nftEntity: NftEntity) => nftEntity.id === nftEntityId).cloneDeep();
+    // nft get input value
+    getSelectedNftName() {
+        return this.selectedNftEntity?.name ?? '';
+    }
+
+    getSelectedNftRoyaltiesInputValue() {
+        if (this.selectedNftEntity === null || this.selectedNftEntity.farmRoyalties === S.NOT_EXISTS) {
+            return '';
+        }
+
+        return this.selectedNftEntity.farmRoyalties.toString();
+    }
+
+    getSelectedNftExpirationDateInputValue(): Date {
+        if (this.selectedNftEntity === null) {
+            return new Date();
+        }
+
+        return this.selectedNftEntity.expiryDate === S.NOT_EXISTS ? new Date() : new Date(this.selectedNftEntity.expiryDate)
+    }
+
+    // nft controls
+    onClickEditNft(nftEntity: NftEntity) {
+        this.selectedNftEntity = nftEntity;
+
+        this.selectedNftHashingPowerInEHInputValue = nftEntity.hashPowerInEH !== S.NOT_EXISTS ? nftEntity.hashPowerInEH.toString() : '';
+        this.selectedNftPriceInCudosInputValue = nftEntity.priceInAcudos !== null ? nftEntity.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toString() : ''
+        this.selectedNftMaintenanceFeeInBtcInputValue = nftEntity.maintenanceFeeInBtc !== null ? nftEntity.maintenanceFeeInBtc.toString() : '';
     }
 
     onClickSendForApproval = async () => {
@@ -209,34 +260,6 @@ export default class CreditCollectionStore {
         }
 
         this.initNewNftEntity();
-    }
-
-    getSelectedNftMaintenanceFeeInputValue() {
-        if (this.selectedNftEntity === null) {
-            return '';
-        }
-
-        return this.selectedNftEntity.maintenanceFeeInBtc?.toString() ?? '';
-    }
-
-    getSelectedNftRoyaltiesInputValue() {
-        if (this.selectedNftEntity === null) {
-            return '';
-        }
-
-        if (this.selectedNftEntity.farmRoyalties === S.NOT_EXISTS) {
-            return ''
-        }
-
-        return this.selectedNftEntity.farmRoyalties.toString();
-    }
-
-    getSelectedNftExpirationDateDisplay(): Date {
-        if (this.selectedNftEntity === null) {
-            return new Date();
-        }
-
-        return this.selectedNftEntity.expiryDate === S.NOT_EXISTS ? new Date() : new Date(this.selectedNftEntity.expiryDate)
     }
 
 }

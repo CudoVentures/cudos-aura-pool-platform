@@ -1,40 +1,33 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export default class MiningFarmEarningsEntity {
 
-    totalFarmSalesInUsd: number;
+    totalMiningFarmSalesInAcudos: BigNumber;
     totalNftSold: number;
-    maintenanceFeeDepositedInCudos: BigNumber;
-    maintenanceFeeDepositedInUsd: number;
+    maintenanceFeeDepositedInAcudos: BigNumber;
     earningsPerDayInUsd: number[];
 
     constructor() {
-        this.totalFarmSalesInUsd = 0;
+        this.totalMiningFarmSalesInAcudos = new BigNumber(0);
         this.totalNftSold = 0;
-        this.maintenanceFeeDepositedInCudos = new BigNumber(0);
-        this.maintenanceFeeDepositedInUsd = 0;
+        this.maintenanceFeeDepositedInAcudos = new BigNumber(0);
         this.earningsPerDayInUsd = [];
 
         makeAutoObservable(this);
     }
 
-    formatTotalFarmSalesInUsd(): string {
-        return `${numeral(this.totalFarmSalesInUsd / 1000).format('$0,0.0')}k`;
-    }
-
     formatMaintenanceFeeDepositedInCudosInt(): string {
-        const value = this.maintenanceFeeDepositedInCudos.toFixed(0)
+        const valueInCudos = this.maintenanceFeeDepositedInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+        const value = valueInCudos.toFixed(0)
         return numeral(value).format('0,0');
     }
 
     formatMaintenanceFeeDepositedInCudosFraction(): string {
-        return this.maintenanceFeeDepositedInCudos.minus(this.maintenanceFeeDepositedInCudos.integerValue()).toFixed();
-    }
-
-    formatMaintenanceFeeDepositedInUsd(): string {
-        return numeral(this.maintenanceFeeDepositedInUsd).format('$0,0');
+        const valueInCudos = this.maintenanceFeeDepositedInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+        return valueInCudos.minus(valueInCudos).toFixed();
     }
 
     static toJson(entity: MiningFarmEarningsEntity) {
@@ -43,10 +36,9 @@ export default class MiningFarmEarningsEntity {
         }
 
         return {
-            'totalFarmSalesInUsd': entity.totalFarmSalesInUsd,
+            'totalMiningFarmSalesInAcudos': entity.totalMiningFarmSalesInAcudos.toString(),
             'totalNftSold': entity.totalNftSold,
-            'maintenanceFeeDepositedInCudos': entity.maintenanceFeeDepositedInCudos.toString(),
-            'maintenanceFeeDepositedInUsd': entity.maintenanceFeeDepositedInUsd,
+            'maintenanceFeeDepositedInAcudos': entity.maintenanceFeeDepositedInAcudos.toString(),
             'earningsPerDayInUsd': entity.earningsPerDayInUsd,
         }
     }
@@ -58,10 +50,9 @@ export default class MiningFarmEarningsEntity {
 
         const entity = new MiningFarmEarningsEntity();
 
-        entity.totalFarmSalesInUsd = parseInt(json.totalFarmSalesInUsd ?? entity.totalFarmSalesInUsd);
+        entity.totalMiningFarmSalesInAcudos = new BigNumber(json.totalMiningFarmSalesInAcudos ?? entity.totalMiningFarmSalesInAcudos);
         entity.totalNftSold = parseInt(json.totalNftSold ?? entity.totalNftSold);
-        entity.maintenanceFeeDepositedInCudos = new BigNumber(json.maintenanceFeeDepositedInCudos ?? entity.maintenanceFeeDepositedInCudos);
-        entity.maintenanceFeeDepositedInUsd = parseInt(json.maintenanceFeeDepositedInUsd ?? entity.maintenanceFeeDepositedInUsd);
+        entity.maintenanceFeeDepositedInAcudos = new BigNumber(json.maintenanceFeeDepositedInAcudos ?? entity.maintenanceFeeDepositedInAcudos);
         entity.earningsPerDayInUsd = (json.earningsPerDayInUsd ?? entity.earningsPerDayInUsd).map((j) => parseInt(j));
 
         return entity;

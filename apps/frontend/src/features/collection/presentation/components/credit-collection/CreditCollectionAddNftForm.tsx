@@ -34,9 +34,6 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
 
     const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
     const [editMaintenanceFeeDisabled, setEditMaintenanceFeeDisabled] = useState(true);
-    const [hashPowerInEH, setHashPowerInEH] = useState(selectedNftEntity !== null && selectedNftEntity.hashPowerInEH !== S.NOT_EXISTS ? selectedNftEntity.hashPowerInEH : '');
-    const [nftPriceInCudos, setNftPriceInCudos] = useState(selectedNftEntity?.getPriceInCudos()?.toString() ?? '');
-    const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(selectedNftEntity !== null && selectedNftEntity.maintenanceFeeInBtc !== null ? selectedNftEntity.maintenanceFeeInBtc.toString() : '')
 
     const validationState = useRef(new ValidationState()).current;
     const nftNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
@@ -52,21 +49,6 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
         }
 
         creditCollectionStore.onClickAddToCollection();
-    }
-
-    function onChangeHashPowerInEH(value) {
-        setHashPowerInEH(value);
-        selectedNftEntity.hashPowerInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
-    }
-
-    function onChangeNftPriceInCudos(value) {
-        setNftPriceInCudos(value);
-        selectedNftEntity.setPriceInCudos(value !== '' ? new BigNumber(value) : null);
-    }
-
-    function onChangeMaintenanceFees(value) {
-        setMaintenanceFeeInBtc(value);
-        selectedNftEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
     }
 
     return (
@@ -111,7 +93,7 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                 label={'NFT Name'}
                 placeholder={'Enter name...'}
                 disabled = { selectedNftEntity === null }
-                value={selectedNftEntity?.name ?? ''}
+                value={creditCollectionStore.getSelectedNftName()}
                 inputValidation={nftNameValidation}
                 onChange={creditCollectionStore.onChangeSelectedNftName} />
             <FieldColumnWrapper
@@ -120,10 +102,10 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                         placeholder={'Enter hashing power...'}
                         disabled = { selectedNftEntity === null }
-                        value={hashPowerInEH}
+                        value={creditCollectionStore.selectedNftHashingPowerInEHInputValue}
                         inputType={InputType.INTEGER}
                         inputValidation={nftHashPowerValidation}
-                        onChange={onChangeHashPowerInEH} />
+                        onChange={creditCollectionStore.onChangeSelectedNftHashPowerInEH} />
                 }
                 helperText = { 'Available EH/s: 80.000' }>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
@@ -134,9 +116,9 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                         label={'Price per NFT'}
                         placeholder={'Enter price...'}
                         disabled = { selectedNftEntity === null }
-                        value={nftPriceInCudos}
+                        value={creditCollectionStore.selectedNftPriceInCudosInputValue}
                         inputValidation={nftPriceValidation}
-                        onChange={onChangeNftPriceInCudos} />
+                        onChange={creditCollectionStore.onChangeSelectedNftPriceInCudos} />
                 }
                 helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
             <FieldColumnWrapper
@@ -161,8 +143,7 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                         inputValidation={nftRoyaltiesValidation}
                         value={creditCollectionStore.getSelectedNftRoyaltiesInputValue()}
                         inputType={InputType.INTEGER}
-                        onChange={creditCollectionStore.onChangeSelectedNftRoyalties}
-                    />
+                        onChange={creditCollectionStore.onChangeSelectedNftRoyalties} />
                 }
                 helperText = { 'Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.' } />
             <FieldColumnWrapper
@@ -185,9 +166,9 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                         disabled={editMaintenanceFeeDisabled}
                         inputValidation={nftMaintenanceFeeValidation || selectedNftEntity === null}
                         placeholder={'Enter Maintenance Fee...'}
-                        value={maintenanceFeeInBtc}
+                        value={creditCollectionStore.selectedNftMaintenanceFeeInBtcInputValue}
                         inputType={InputType.INTEGER}
-                        onChange={onChangeMaintenanceFees}
+                        onChange={creditCollectionStore.onChangeSelectedNftMaintenanceFeeInBtc}
                     />
                 }
                 helperText = { 'Maintenance fee calculation formula:' }>
@@ -198,7 +179,7 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                     <TextWithTooltip text={'Valid Until'} tooltipText={'BTC rewards will be paid to the NFT holder until this date.'} />
                 }
                 disabled = { selectedNftEntity === null }
-                selected = { creditCollectionStore.getSelectedNftExpirationDateDisplay() }
+                selected = { creditCollectionStore.getSelectedNftExpirationDateInputValue() }
                 onChange = { creditCollectionStore.onChangeSelectedNftExpirationDate } />
             <div className = { 'FlexSplit' }>
                 { creditCollectionStore.isCreateMode() === true && (
