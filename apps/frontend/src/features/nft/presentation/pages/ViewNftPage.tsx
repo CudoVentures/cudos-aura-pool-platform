@@ -85,7 +85,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
     function getProfitDataPreviews() {
         const profitDatapreviews = [];
 
-        profitDatapreviews.push(createDataPreview('Hashing Power', nftEntity.formatHashPowerInEH()));
+        profitDatapreviews.push(createDataPreview('Hashing Power', nftEntity.formatHashPowerInTh()));
         profitDatapreviews.push(createDataPreview(
             'Estimated Profit per Day',
             <div className={'DataValue FlexRow'}>

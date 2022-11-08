@@ -68,7 +68,7 @@ function MyEarningsTab({ bitcoinStore, userProfilePageStore }: Props) {
                     <div className={'B1 SemiBold'}>Total Contract Hash Power</div>
                     <div className={'FlexColumn ValueColumn'}>
                         <div>
-                            <span className={'H2 Bold'}>{userEarningsEntity.totalContractHashPowerInEH}</span>
+                            <span className={'H2 Bold'}>{userEarningsEntity.totalContractHashPowerInTh}</span>
                             <span className={'H3 SecondaryColor'}> TH/S</span>
                         </div>
                         <div className={'SecondaryColor H3 Bold'}>{userEarningsEntity.formatTotalContractHashPowerInUsd()}</div>

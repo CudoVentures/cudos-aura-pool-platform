@@ -30,7 +30,7 @@ export default function CollectionPreview({ collectionEntity, miningFarmName, di
             </div>
             <div className={'MiningFarmName'}>{miningFarmName}</div>
             <div className={'CollectionName'}>{collectionEntity.name}</div>
-            <div className={'HashPower'}>{collectionEntity.formatHashPowerInEH()}</div>
+            <div className={'HashPower'}>{collectionEntity.formatHashPowerInTh()}</div>
         </div>
     );
 }

@@ -108,7 +108,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
             const miningFarmDetailsEntity = new MiningFarmDetailsEntity();
 
             miningFarmDetailsEntity.miningFarmId = miningFarmId;
-            miningFarmDetailsEntity.averageHashRateInEH = Math.round(Math.random() * 200);
+            miningFarmDetailsEntity.averageHashRateInTh = Math.round(Math.random() * 200);
             miningFarmDetailsEntity.activeWorkers = Math.round(Math.random() * 15);
             miningFarmDetailsEntity.nftsOwned = Math.round(Math.random() * 2000);
             miningFarmDetailsEntity.totalNftsSold = Math.round(Math.random() * 20000);

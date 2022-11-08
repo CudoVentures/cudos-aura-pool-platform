@@ -88,6 +88,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                             id = { this }
                             params = { {
                                 'maxSize': 73400320, // 70MB
+                                'position': 'static',
                                 'onExceedLimit': () => {
                                     this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
                                 },
@@ -111,12 +112,12 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                         placeholder={'Enter hashing power...'}
                         disabled = { selectedNftEntity === null }
-                        value={creditCollectionStore.selectedNftHashingPowerInEHInputValue}
+                        value={creditCollectionStore.selectedNftHashingPowerInThInputValue}
                         inputType={InputType.INTEGER}
                         inputValidation={nftHashPowerValidation}
-                        onChange={creditCollectionStore.onChangeSelectedNftHashPowerInEH} />
+                        onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
-                helperText = { 'Available EH/s: 80.000' }>
+                helperText = { 'Available TH: 80.000' }>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
             </FieldColumnWrapper>
             <FieldColumnWrapper
@@ -181,7 +182,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                     />
                 }
                 helperText = { 'Maintenance fee calculation formula:' }>
-                <div className={'FormulaBox B2 Bold'}>{'[This NFT EH/s] / [Total EH/s] * [Maintenance fee]'}</div>
+                <div className={'FormulaBox B2 Bold'}>{'[This NFT TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
             </FieldColumnWrapper>
             <SingleDatepicker
                 label = {

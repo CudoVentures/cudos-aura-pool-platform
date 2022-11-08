@@ -46,7 +46,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
 
-    const [hashRateInEH, setHashRateInEH] = useState(miningFarmEntity.hashRateInEH !== S.NOT_EXISTS ? miningFarmEntity.hashRateInEH : '');
+    const [hashRateInTh, setHashRateInTh] = useState(miningFarmEntity.hashRateInTh !== S.NOT_EXISTS ? miningFarmEntity.hashRateInTh : '');
 
     function onChangeManufacturers(values) {
         miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
@@ -72,9 +72,9 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
         creditMiningFarmDetailsPageStore.energySourceInputValue = value;
     }
 
-    function onChangeHashRateInEH(value) {
-        setHashRateInEH(value);
-        miningFarmEntity.hashRateInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    function onChangeHashRateInTh(value) {
+        setHashRateInTh(value);
+        miningFarmEntity.hashRateInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
     }
 
     function onClickRemoveImage(i: number) {
@@ -198,13 +198,13 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
             <div>
                 <Input
                     label={'Hashrate'}
-                    placeholder={'e.g 102.001 EH/s'}
-                    value={hashRateInEH}
-                    onChange={ onChangeHashRateInEH }
+                    placeholder={'e.g 102.001 TH'}
+                    value={hashRateInTh}
+                    onChange={ onChangeHashRateInTh }
                     inputValidation={farmHashrateValidation}
                     InputProps={{
                         endAdornment: (
-                            <InputAdornment position="end" > EH/s </InputAdornment>
+                            <InputAdornment position="end" > TH </InputAdornment>
                         ),
                     }} />
                 <div className={'FlexRow HashRateInfo B2 SemiBold FullLine'}>

@@ -41,7 +41,7 @@ export default class CreditCollectionStore {
 
     defaultHashAndPriceValues: number;
 
-    selectedNftHashingPowerInEHInputValue: string;
+    selectedNftHashingPowerInThInputValue: string;
     selectedNftPriceInCudosInputValue: string;
     selectedNftMaintenanceFeeInBtcInputValue: string;
 
@@ -60,7 +60,7 @@ export default class CreditCollectionStore {
         this.tempIdGenerator = new TempIdGenerator();
 
         this.defaultHashAndPriceValues = S.INT_FALSE;
-        this.selectedNftHashingPowerInEHInputValue = '';
+        this.selectedNftHashingPowerInThInputValue = '';
         this.selectedNftPriceInCudosInputValue = '';
         this.selectedNftMaintenanceFeeInBtcInputValue = '';
 
@@ -146,7 +146,7 @@ export default class CreditCollectionStore {
 
         if (this.collectionEntity.hasDefaultValuesPerNft() === true) {
             nftEntity.priceInAcudos = this.collectionEntity.getDefaultPricePerNftInAcudos();
-            nftEntity.hashPowerInEH = this.collectionEntity.defaultHashPowerInEHPerNftInEH;
+            nftEntity.hashPowerInTh = this.collectionEntity.defaultHashPowerPerNftInTh;
         }
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
         nftEntity.maintenanceFeeInBtc = new BigNumber(this.collectionEntity.maintenanceFeeInBtc);
@@ -184,9 +184,9 @@ export default class CreditCollectionStore {
         this.selectedNftEntity.name = nftName;
     }
 
-    onChangeSelectedNftHashPowerInEH(inputValue: string) {
-        this.selectedNftHashingPowerInEHInputValue = inputValue;
-        this.selectedNftEntity.hashPowerInEH = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
+    onChangeSelectedNftHashPowerInTh(inputValue: string) {
+        this.selectedNftHashingPowerInThInputValue = inputValue;
+        this.selectedNftEntity.hashPowerInTh = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
     }
 
     onChangeSelectedNftPriceInCudos(inputValue: string) {
@@ -232,7 +232,7 @@ export default class CreditCollectionStore {
     onClickEditNft(nftEntity: NftEntity) {
         this.selectedNftEntity = nftEntity;
 
-        this.selectedNftHashingPowerInEHInputValue = nftEntity.hashPowerInEH !== S.NOT_EXISTS ? nftEntity.hashPowerInEH.toString() : '';
+        this.selectedNftHashingPowerInThInputValue = nftEntity.hashPowerInTh !== S.NOT_EXISTS ? nftEntity.hashPowerInTh.toString() : '';
         this.selectedNftPriceInCudosInputValue = nftEntity.priceInAcudos !== null ? nftEntity.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toString() : ''
         this.selectedNftMaintenanceFeeInBtcInputValue = nftEntity.maintenanceFeeInBtc !== null ? nftEntity.maintenanceFeeInBtc.toString() : '';
     }

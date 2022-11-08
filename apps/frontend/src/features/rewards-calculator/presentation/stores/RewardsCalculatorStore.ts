@@ -15,7 +15,7 @@ export default class RewardsCalculatorStore {
     selectedMiningFarmEntity: MiningFarmEntity;
 
     networkDifficultyEdit: string;
-    hashRateInEH: number;
+    hashRateInTh: number;
 
     constructor(bitcoinStore: BitcoinStore, miningFarmRepo: MiningFarmRepo) {
         this.bitcoinStore = bitcoinStore;
@@ -31,7 +31,7 @@ export default class RewardsCalculatorStore {
     resetDefaults() {
         this.selectedMiningFarmEntity = null;
         this.networkDifficultyEdit = S.Strings.EMPTY;
-        this.hashRateInEH = 0;
+        this.hashRateInTh = 0;
     }
 
     isDefault() {
@@ -43,7 +43,7 @@ export default class RewardsCalculatorStore {
             return false;
         }
 
-        if (this.hashRateInEH !== 0) {
+        if (this.hashRateInTh !== 0) {
             return false;
         }
 
@@ -74,11 +74,11 @@ export default class RewardsCalculatorStore {
             return entity.id === selectedMiningFarmId;
         });
 
-        this.hashRateInEH = this.selectedMiningFarmEntity.hashRateInEH;
+        this.hashRateInTh = this.selectedMiningFarmEntity.hashRateInTh;
     }
 
-    onChangeHashRateInEHSlider = (event: MouseEvent, value: number) => {
-        this.hashRateInEH = value;
+    onChangeHashRateInThSlider = (event: MouseEvent, value: number) => {
+        this.hashRateInTh = value;
     }
 
     onChangeNetworkDifficulty = (input: string) => {
@@ -110,7 +110,7 @@ export default class RewardsCalculatorStore {
     }
 
     // calculatePowerConsumption(): number {
-    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashRateInEH;
+    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashRateInTh;
     // }
 
     // calculateMonthlyRewardBtc(): BigNumber {

@@ -44,14 +44,14 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const collectionHashPowerPerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
 
-    const [hashPowerInEH, setHashPowerInEH] = useState(collectionEntity.hashPowerInEH !== S.NOT_EXISTS ? collectionEntity.hashPowerInEH : '');
+    const [hashPowerInTh, setHashPowerInTh] = useState(collectionEntity.hashPowerInTh !== S.NOT_EXISTS ? collectionEntity.hashPowerInTh : '');
     const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString() : '')
     const [defaultPricePerNftInCudos, setDefaultPricePerNftInCudos] = useState(collectionEntity.defaultPricePerNftInCudos !== null ? collectionEntity.defaultPricePerNftInCudos.toString() : '');
-    const [defaultHashPowerInEHPerNftInEH, setDefaultHashPowerPerNftInEH] = useState(collectionEntity.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInCudos : '');
+    const [defaultHashPowerPerNftInTh, setDefaultHashPowerPerNftInTh] = useState(collectionEntity.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInCudos : '');
 
-    function onChangeHashPowerInEH(value) {
-        setHashPowerInEH(value);
-        collectionEntity.hashPowerInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    function onChangeHashPowerInTh(value) {
+        setHashPowerInTh(value);
+        collectionEntity.hashPowerInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
     }
 
     function onChangeRoyalties(value) {
@@ -68,16 +68,16 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
         collectionEntity.defaultPricePerNftInCudos = value !== '' ? new BigNumber(value) : null;
     }
 
-    function onChangeDefaultHashPowerPerNftInEH(value) {
-        setDefaultHashPowerPerNftInEH(value);
-        collectionEntity.defaultHashPowerInEHPerNftInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    function onChangeDefaultHashPowerPerNftInTh(value) {
+        setDefaultHashPowerPerNftInTh(value);
+        collectionEntity.defaultHashPowerPerNftInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
     }
 
     function onChangeAcceptDefaultHashPowerCheckboxValue() {
         creditCollectionStore.defaultHashAndPriceValues ^= 1;
         if (creditCollectionStore.defaultHashAndPriceValues === S.INT_FALSE) {
             onChangeDefaultPricePerNftInCudos('');
-            onChangeDefaultHashPowerPerNftInEH('');
+            onChangeDefaultHashPowerPerNftInTh('');
         }
     }
 
@@ -200,12 +200,12 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 label={'Hashing Power for collection'}
                 placeholder={'Enter hashing power...'}
                 inputValidation={collectionHashPowerValidation}
-                value={hashPowerInEH}
-                onChange={onChangeHashPowerInEH}
+                value={hashPowerInTh}
+                onChange={onChangeHashPowerInTh}
                 inputType = { InputType.REAL }
                 InputProps={{
                     endAdornment: (
-                        <InputAdornment position="end" >EH</InputAdornment>
+                        <InputAdornment position="end" >TH</InputAdornment>
                     ),
                 }} />
             <FieldColumnWrapper
@@ -241,7 +241,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         }} />
                 }
                 helperText = { 'Maintenance fee calculation formula:' } >
-                <div className={'FormulaBox B2 Bold'}>{'[This Collection EH/s] / [Total EH/s] * [Maintenance fee]'}</div>
+                <div className={'FormulaBox B2 Bold'}>{'[This Collection TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
             </FieldColumnWrapper>
             <Input
                 label={<TextWithTooltip text={'Set Payout Address'} tooltipText={'Set Payout Address'} />}
@@ -258,13 +258,13 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                     <Input
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Paid monthly in BTC'} />}
                         placeholder={'Enter hash power...'}
-                        value={defaultHashPowerInEHPerNftInEH}
+                        value={defaultHashPowerPerNftInTh}
                         inputType = { InputType.REAL }
                         inputValidation={collectionHashPowerPerNftValidation}
-                        onChange={onChangeDefaultHashPowerPerNftInEH}
+                        onChange={onChangeDefaultHashPowerPerNftInTh}
                         InputProps={{
                             endAdornment: (
-                                <InputAdornment position="end" >EH</InputAdornment>
+                                <InputAdornment position="end" >TH</InputAdornment>
                             ),
                         }} />
                     <Input

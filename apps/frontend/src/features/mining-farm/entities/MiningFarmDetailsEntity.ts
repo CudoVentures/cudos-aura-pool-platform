@@ -3,21 +3,21 @@ import S from '../../../core/utilities/Main';
 export default class MiningFarmDetailsEntity {
 
     miningFarmId: string;
-    averageHashRateInEH: number;
+    averageHashRateInTh: number;
     activeWorkers: number;
     nftsOwned: number;
     totalNftsSold: number;
 
     constructor() {
         this.miningFarmId = S.Strings.NOT_EXISTS;
-        this.averageHashRateInEH = 0;
+        this.averageHashRateInTh = 0;
         this.activeWorkers = 0;
         this.nftsOwned = 0;
         this.totalNftsSold = 0;
     }
 
-    formatHashRateInEH(): string {
-        return `${this.averageHashRateInEH} EH/s`;
+    formatHashRateInTh(): string {
+        return `${this.averageHashRateInTh} TH`;
     }
 
     static toJson(entity: MiningFarmDetailsEntity) {
@@ -27,7 +27,7 @@ export default class MiningFarmDetailsEntity {
 
         return {
             'miningFarmId': entity.miningFarmId,
-            'averageHashRateInEH': entity.averageHashRateInEH,
+            'averageHashRateInTh': entity.averageHashRateInTh,
             'activeWorkers': entity.activeWorkers,
             'nftsOwned': entity.nftsOwned,
             'totalNftsSold': entity.totalNftsSold,
@@ -42,7 +42,7 @@ export default class MiningFarmDetailsEntity {
         const entity = new MiningFarmDetailsEntity();
 
         entity.miningFarmId = (json.miningFarmId ?? entity.miningFarmId).toString();
-        entity.averageHashRateInEH = parseInt(json.averageHashRateInEH ?? entity.averageHashRateInEH);
+        entity.averageHashRateInTh = parseInt(json.averageHashRateInTh ?? entity.averageHashRateInTh);
         entity.activeWorkers = parseInt(json.activeWorkers ?? entity.activeWorkers);
         entity.nftsOwned = parseInt(json.nftsOwned ?? entity.nftsOwned);
         entity.totalNftsSold = parseInt(json.totalNftsSold ?? entity.totalNftsSold);

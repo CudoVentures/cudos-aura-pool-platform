@@ -38,7 +38,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
     const bitcoinPrice = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceInUsd();
     const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChangeInUsd();
 
-    const [hashRateInEH, setHashRateInEH] = useState(rewardsCalculatorStore.hashRateInEH !== 0 ? rewardsCalculatorStore.hashRateInEH.toString() : '');
+    const [hashRateInTh, setHashRateInTh] = useState(rewardsCalculatorStore.hashRateInTh !== 0 ? rewardsCalculatorStore.hashRateInTh.toString() : '');
 
     useEffect(() => {
         async function run() {
@@ -63,12 +63,12 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
 
     function onChangeMiningFarm(miningFarmId: string) {
         rewardsCalculatorStore.onChangeMiningFarm(miningFarmId);
-        setHashRateInEH(rewardsCalculatorStore.hashRateInEH);
+        setHashRateInTh(rewardsCalculatorStore.hashRateInTh);
     }
 
-    function onChangeHashRateInEH(value) {
-        setHashRateInEH(value);
-        rewardsCalculatorStore.hashRateInEH = value !== '' ? parseFloat(value) : 0;
+    function onChangeHashRateInTh(value) {
+        setHashRateInTh(value);
+        rewardsCalculatorStore.hashRateInTh = value !== '' ? parseFloat(value) : 0;
     }
 
     return (
@@ -116,11 +116,11 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         />
                                     }
                                     inputType={InputType.INTEGER}
-                                    value = { hashRateInEH }
-                                    onChange = { onChangeHashRateInEH }
+                                    value = { hashRateInTh }
+                                    onChange = { onChangeHashRateInTh }
                                     InputProps={{
                                         endAdornment: (
-                                            <InputAdornment position="end" >EH</InputAdornment>
+                                            <InputAdornment position="end" >TH</InputAdornment>
                                         ),
                                     }} />
                                 <Slider defaultValue={50}
@@ -132,8 +132,8 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         },
                                     }}
                                     valueLabelDisplay="auto"
-                                    value={rewardsCalculatorStore.hashRateInEH}
-                                    onChange={rewardsCalculatorStore.onChangeHashRateInEHSlider}
+                                    value={rewardsCalculatorStore.hashRateInTh}
+                                    onChange={rewardsCalculatorStore.onChangeHashRateInThSlider}
                                     min={0}
                                     max={10000000}/>
                                 <div className={'FlexRow NetworkDifficulty'}>

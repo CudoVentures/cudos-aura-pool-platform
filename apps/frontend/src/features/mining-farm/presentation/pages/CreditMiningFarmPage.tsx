@@ -159,8 +159,8 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                             { miningFarmDetailsEntity !== null && (
                                 <DataPreviewLayout
                                     dataPreviews = { [
-                                        createDataPreview('Total Hashrate', `${miningFarmEntity.formatHashRateInEH()}`),
-                                        createDataPreview('Hashrate (1h average)', miningFarmDetailsEntity.formatHashRateInEH()),
+                                        createDataPreview('Total Hashrate', `${miningFarmEntity.formatHashRateInTh()}`),
+                                        createDataPreview('Hashrate (1h average)', miningFarmDetailsEntity.formatHashRateInTh()),
                                         createDataPreview('Active Workers', miningFarmDetailsEntity.activeWorkers),
                                         createDataPreview('Collections Owned', creditMiningFarmPageStore.gridViewState.getItemCount()),
                                         createDataPreview('NFTs Owned', miningFarmDetailsEntity.nftsOwned),
