@@ -56,14 +56,6 @@ export default class NftEntity {
         return this.currentOwnerAddress === cudosWalletAddress;
     }
 
-    getPriceInCudos(): BigNumber {
-        return this.priceInAcudos?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER) ?? null;
-    }
-
-    setPriceInCudos(priceInCudos: BigNumber) {
-        this.priceInAcudos = priceInCudos?.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER) ?? null;
-    }
-
     formatExpiryDate(): string {
         const periodMilis = this.expiryDate - Date.now();
 

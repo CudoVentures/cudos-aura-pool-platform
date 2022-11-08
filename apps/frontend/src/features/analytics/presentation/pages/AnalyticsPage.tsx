@@ -51,7 +51,7 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                             <ChartHeading
                                 leftContent = { (
                                     <>
-                                        <ChartInfo label = { 'Total Farm Sales'} value = { miningFarmEarningsEntity.formatTotalFarmSalesInUsd()} />
+                                        <ChartInfo label = { 'Total Farm Sales'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.totalMiningFarmSalesInAcudos)} />
                                         <ChartInfo label = { 'Total NFTs Sold'} value = { miningFarmEarningsEntity.totalNftSold.toString() } />
                                     </>
                                 ) }
@@ -81,7 +81,7 @@ function MarkedplacePage({ analyticsPageStore, cudosStore }: Props) {
                                         <span className={'H2 Bold'}>{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInCudosInt()}<span className={'SecondaryColor'}>.{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInCudosFraction()}</span></span>
                                         <span className={'H3 SecondaryColor'}> CUDOS</span>
                                     </div>
-                                    <div className={'SecondaryColor H3 Bold'}>{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInUsd()}</div>
+                                    <div className={'SecondaryColor H3 Bold'}>{cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.maintenanceFeeDepositedInAcudos)}</div>
                                 </div>
                             </StyledContainer>
                         </div>
