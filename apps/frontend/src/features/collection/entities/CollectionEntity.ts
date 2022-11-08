@@ -32,15 +32,15 @@ export default class CollectionEntity {
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
         this.farmId = S.Strings.NOT_EXISTS;
-        this.name = S.Strings.EMPTY;
-        this.description = S.Strings.EMPTY;
+        this.name = '';
+        this.description = '';
         this.hashPowerInEH = S.NOT_EXISTS;
-        this.profileImgUrl = S.Strings.EMPTY;
-        this.coverImgUrl = S.Strings.EMPTY;
+        this.profileImgUrl = '';
+        this.coverImgUrl = '';
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
         this.maintenanceFeeInBtc = null;
-        this.payoutAddress = S.Strings.EMPTY;
+        this.payoutAddress = '';
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerInEHPerNftInEH = S.NOT_EXISTS;
 
@@ -64,6 +64,10 @@ export default class CollectionEntity {
 
     hasDefaultValuesPerNft(): boolean {
         return this.defaultPricePerNftInCudos !== null && this.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS;
+    }
+
+    hasImages(): boolean {
+        return this.profileImgUrl !== '' && this.coverImgUrl !== '';
     }
 
     getDefaultPricePerNftInAcudos(): BigNumber {

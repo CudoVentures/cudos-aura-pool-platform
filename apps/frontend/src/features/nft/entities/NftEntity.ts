@@ -56,6 +56,10 @@ export default class NftEntity {
         return this.currentOwnerAddress === cudosWalletAddress;
     }
 
+    hasImage(): boolean {
+        return this.imageUrl !== '';
+    }
+
     formatExpiryDate(): string {
         const periodMilis = this.expiryDate - Date.now();
 

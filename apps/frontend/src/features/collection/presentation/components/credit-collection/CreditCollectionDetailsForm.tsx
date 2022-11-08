@@ -101,6 +101,11 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             }
         }
 
+        if (collectionEntity.hasImages() === false) {
+            alertStore.show('You must upload both images of your collection');
+            return;
+        }
+
         creditCollectionStore.initNewNftEntity();
         creditCollectionStore.moveToStepAddNfts();
     }

@@ -135,7 +135,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
             this.storageHelper.miningFarmsJson.push(miningFarmJson);
         }
 
-        Object.assign(miningFarmEntity, MiningFarmEntity.fromJson(miningFarmEntity));
+        Object.assign(miningFarmEntity, MiningFarmEntity.fromJson(miningFarmJson));
 
         this.storageHelper.save();
     }

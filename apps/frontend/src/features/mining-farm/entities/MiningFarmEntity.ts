@@ -70,6 +70,10 @@ export default class MiningFarmEntity {
         return this.status === MiningFarmStatus.APPROVED;
     }
 
+    hasPhotos(): boolean {
+        return this.farmPhotoUrls.length > 0;
+    }
+
     markApproved() {
         this.status = MiningFarmStatus.APPROVED;
     }
@@ -139,7 +143,7 @@ export default class MiningFarmEntity {
         model.machinesLocation = json.machinesLocation ?? model.machinesLocation;
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
-        model.farmPhotoUrls = json.farmPhotoUrls ?? model.farmPhotoUrls;
+        model.farmPhotoUrls = JSON.parse(json.farmPhotoUrls ?? model.farmPhotoUrls);
         model.status = parseInt(json.status ?? model.status);
         model.powerCost = Number(json.powerCost) ?? model.powerCost;
         model.poolFee = Number(json.poolFee) ?? model.poolFee;

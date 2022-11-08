@@ -30,7 +30,7 @@ export default class CreditMiningFarmDetailsPageStore {
     energySourceEntitiesMap: Map < string, EnergySourceEntity >;
 
     miningFarmEntity: MiningFarmEntity;
-    imageEntities: ImageEntity[];
+    // imageEntities: ImageEntity[];
 
     constructor(accountSessionStore: AccountSessionStore, miningFarmRepo: MiningFarmRepo) {
         this.accountSessionStore = accountSessionStore;
@@ -49,7 +49,7 @@ export default class CreditMiningFarmDetailsPageStore {
         this.energySourceEntitiesMap = null;
 
         this.miningFarmEntity = null;
-        this.imageEntities = [];
+        // this.imageEntities = [];
 
         makeAutoObservable(this);
     }

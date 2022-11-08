@@ -1,8 +1,6 @@
 import React from 'react';
 
-import TableCell from '../../entities/TableCell';
-import TableRow from '../../entities/TableRow';
-import Table, { Props as TableProps } from './Table';
+import Table, { createTableCell, createTableRow, Props as TableProps } from './Table';
 
 import '../styles/single-row-table.css';
 
@@ -15,8 +13,8 @@ export default function SingleRowTable(props: Props) {
         <Table
             {...props}
             rows={[
-                new TableRow([
-                    new TableCell(props.content, 0),
+                createTableRow([
+                    createTableCell(props.content),
                 ]),
             ]}
             className={`SingleRowTable ${props.className}`} />

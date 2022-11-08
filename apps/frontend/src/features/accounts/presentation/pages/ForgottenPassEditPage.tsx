@@ -28,6 +28,9 @@ type Props = {
 function ForgottenPassEditPage({ accountSessionStore }: Props) {
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
+    const validationPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
+    const validationConfirmPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
+    const [validationFirstMatchPass, validationSecondMatchPass] = useRef(validationState.addMatchStringsValidation('Passwords don\'t match.')).current;
 
     const [pass, setPass] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
@@ -66,8 +69,8 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
                                 </InputAdornment>,
                             }}
                             inputValidation={[
-                                useRef(validationState.addEmailValidation('Invalid email')).current,
-                                validationState.addMatchStringsValidation(confirmPass, 'Passwords don\'t match.'),
+                                validationPass,
+                                validationFirstMatchPass,
                             ]}
                             value={pass}
                             onChange={setPass} />
@@ -80,8 +83,8 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
                                 </InputAdornment>,
                             }}
                             inputValidation={[
-                                useRef(validationState.addEmailValidation('Invalid email')).current,
-                                validationState.addMatchStringsValidation(pass, 'Passwords don\'t match.'),
+                                validationConfirmPass,
+                                validationSecondMatchPass,
                             ]}
                             value={confirmPass}
                             onChange={setConfirmPass} />

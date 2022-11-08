@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import BigNumber from 'bignumber.js';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../../core/utilities/Main';
@@ -7,6 +6,7 @@ import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinSt
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
+import AlertStore from '../../../../../core/presentation/stores/AlertStore';
 
 import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
@@ -25,11 +25,12 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import '../../styles/credit-collection-add-nft-form.css';
 
 type Props = {
+    alertStore?: AlertStore;
     creditCollectionStore?: CreditCollectionStore;
     bitcoinStore?: BitcoinStore;
 }
 
-function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Props) {
+function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoinStore }: Props) {
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
 
     const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
@@ -48,7 +49,15 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
             return;
         }
 
+        if (selectedNftEntity.hasImage() === false) {
+            alertStore.show('You must upload an image');
+            return;
+        }
+
         creditCollectionStore.onClickAddToCollection();
+        setTimeout(() => {
+            validationState.setShowErrors(false);
+        });
     }
 
     return (

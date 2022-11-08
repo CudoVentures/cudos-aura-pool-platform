@@ -1,93 +1,7 @@
 import { isValidAddress } from 'cudosjs';
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
 import S from '../../utilities/Main';
 import { validate } from 'bitcoin-address-validation';
-
-export class InputValidation {
-    errorMessage: string;
-    isError: boolean;
-    showError: boolean;
-
-    checkValidInput: (value: any) => boolean;
-
-    constructor() {
-        this.errorMessage = S.Strings.EMPTY;
-        this.isError = false;
-        this.showError = false;
-        this.checkValidInput = null;
-
-        makeAutoObservable(this);
-    }
-
-    onChange = (value: any) => {
-        this.isError = this.checkValidInput(value) === false;
-    }
-
-    setErrorMessage(errorMessage?: string) {
-        if (errorMessage !== undefined) {
-            this.errorMessage = errorMessage;
-        }
-    }
-
-    static emptyValidation(errorMessage?: string): InputValidation {
-        const validation = new InputValidation();
-
-        validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => value !== null && value !== undefined && value !== S.Strings.EMPTY;
-
-        return validation;
-    }
-
-    static matchStringsValidation(secondString: string, errorMessage?: string): InputValidation {
-        const validation = new InputValidation();
-
-        validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => value === secondString;
-
-        return validation;
-    }
-
-    static emailValidation(errorMessage?: string) {
-        const validation = new InputValidation();
-
-        validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => {
-            const result = value.toLowerCase()
-                .match(
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                )
-            return result !== null;
-        };
-        return validation;
-    }
-
-    static passwordValidation(errorMessage?: string) {
-        const validation = new InputValidation();
-
-        validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => value.length >= 6;
-
-        return validation;
-    }
-
-    static cudosAddressValidation(errorMessage?: string) {
-        const validation = new InputValidation();
-
-        validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => isValidAddress(value);
-
-        return validation;
-    }
-
-    static bitcoinAddressValidation(errorMessage?: string) {
-        const validation = new InputValidation();
-
-        validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => validate(value);
-
-        return validation;
-    }
-}
 
 export default class ValidationState {
 
@@ -117,12 +31,29 @@ export default class ValidationState {
         return inputValidation;
     }
 
-    addMatchStringsValidation(secondString: string, errorMessage?: string): InputValidation {
-        const inputValidation = InputValidation.matchStringsValidation(secondString, errorMessage);
+    addMatchStringsValidation(errorMessage?: string): InputValidation[] {
+        let firstValue = '', secondValue = '';
 
-        this.inputValidations.push(inputValidation);
+        const firstInputValidation = new InputValidation();
+        firstInputValidation.setErrorMessage(errorMessage);
+        firstInputValidation.checkValidInput = (value: any): boolean => {
+            firstValue = value;
+            secondInputValidation.isError = firstValue !== secondValue;
+            return firstValue === secondValue;
+        };
 
-        return inputValidation;
+        const secondInputValidation = new InputValidation()
+        secondInputValidation.setErrorMessage(errorMessage);
+        secondInputValidation.checkValidInput = (value: any): boolean => {
+            secondValue = value;
+            firstInputValidation.isError = firstValue !== secondValue;
+            return firstValue === secondValue;
+        };
+
+        this.inputValidations.push(firstInputValidation);
+        this.inputValidations.push(secondInputValidation);
+
+        return [firstInputValidation, secondInputValidation];
     }
 
     addEmailValidation(errorMessage?: string) {
@@ -169,5 +100,82 @@ export default class ValidationState {
         this.inputValidations.forEach((element) => {
             element.showError = showErrors;
         })
+    }
+}
+
+export class InputValidation {
+    errorMessage: string;
+    isError: boolean;
+    showError: boolean;
+
+    checkValidInput: (value: any) => boolean;
+
+    constructor() {
+        this.errorMessage = S.Strings.EMPTY;
+        this.isError = false;
+        this.showError = false;
+        this.checkValidInput = null;
+
+        makeAutoObservable(this);
+    }
+
+    onChange = (value: any) => {
+        this.isError = this.checkValidInput(value) === false;
+    }
+
+    setErrorMessage(errorMessage?: string) {
+        if (errorMessage !== undefined) {
+            this.errorMessage = errorMessage;
+        }
+    }
+
+    static emptyValidation(errorMessage?: string): InputValidation {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = (value) => value !== null && value !== undefined && value !== S.Strings.EMPTY;
+
+        return validation;
+    }
+
+    static emailValidation(errorMessage?: string) {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = (value) => {
+            const result = value.toLowerCase()
+                .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                )
+            return result !== null;
+        };
+        return validation;
+    }
+
+    static passwordValidation(errorMessage?: string) {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = (value) => value.length >= 6;
+
+        return validation;
+    }
+
+    static cudosAddressValidation(errorMessage?: string) {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = (value) => isValidAddress(value);
+
+        return validation;
+    }
+
+    static bitcoinAddressValidation(errorMessage?: string) {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = (value) => validate(value);
+
+        return validation;
     }
 }
