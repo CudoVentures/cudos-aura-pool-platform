@@ -43,7 +43,7 @@ function NftPreview({ nftEntity, collectionName, disabled }: Props) {
             <div className={'Priceheading'}>Price</div>
             <div className={'PriceRow FlexRow Dots'}>
                 <Svg className = { 'SvgCudosLogo' } svg={SvgCudosLogo} />
-                <div className={'Price H4 Bold Dots'}>{nftEntity.formatPrice()}</div>
+                <div className={'Price H4 Bold Dots'}>{nftEntity.formatPriceInCudos()}</div>
             </div>
         </div>
     );

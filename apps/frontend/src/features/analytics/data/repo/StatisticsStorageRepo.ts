@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
@@ -18,8 +19,8 @@ export default class StatisticsStorageRepo implements StatisticsRepo {
             nftEventEntity.nftId = '1';
             nftEventEntity.fromAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
             nftEventEntity.toAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
-            nftEventEntity.transferPriceInCudos = new BigNumber(1000);
-            nftEventEntity.transferPriceUsd = 10;
+            nftEventEntity.transferPriceInAcudos = new BigNumber(1000).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+            nftEventEntity.transferPriceInUsd = 10;
             nftEventEntity.quantity = 1;
             nftEventEntity.timestamp = Date.now();
         }

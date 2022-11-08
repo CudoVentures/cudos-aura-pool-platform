@@ -114,7 +114,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
             'Price',
             <div className={'DataValue NftPrice FlexRow'}>
                 <Svg svg={SvgCudos}/>
-                <div className={'H3 Bold'}>{nftEntity.price.toFixed(0)} CUDOS</div>
+                <div className={'H3 Bold'}>{nftEntity.formatPriceInCudos()}</div>
                 <div className={'SubPrice B2 SemiBold'}>{viewNftPageStore.getNftPriceText()}</div>
             </div>,
         ));
@@ -193,7 +193,7 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
                                     <>
                                         { nftEntity.isStatusListed() === true ? (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                <Button onClick={onClickBuyNft}>Buy now for {nftEntity.price.toFixed(0)} CUDOS </Button>
+                                                <Button onClick={onClickBuyNft}>Buy now for {nftEntity.formatPriceInCudos()} </Button>
                                             </Actions>
                                         ) : (
                                             <>

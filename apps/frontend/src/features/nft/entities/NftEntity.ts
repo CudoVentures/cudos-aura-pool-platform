@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
-import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum NftStatus {
     NOT_LISTED = 1,
@@ -14,28 +14,28 @@ export default class NftEntity {
     name: string;
     collectionId: string;
     hashPowerInEH: number;
-    price: BigNumber;
+    priceInAcudos: BigNumber;
     imageUrl: string;
     status: NftStatus;
     expiryDate: Date;
     creatorAddress: string;
     currentOwnerAddress: string;
     farmRoyalties: number;
-    maintenanceFee: BigNumber;
+    maintenanceFeeInBtc: BigNumber;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPowerInEH = S.NOT_EXISTS;
-        this.price = new BigNumber(S.NOT_EXISTS);
+        this.priceInAcudos = null;
         this.imageUrl = S.Strings.EMPTY;
         this.status = S.NOT_EXISTS;
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = S.Strings.EMPTY
         this.currentOwnerAddress = S.Strings.EMPTY
         this.farmRoyalties = S.NOT_EXISTS;
-        this.maintenanceFee = new BigNumber(S.NOT_EXISTS);
+        this.maintenanceFeeInBtc = null;
 
         makeAutoObservable(this);
     }
@@ -54,6 +54,14 @@ export default class NftEntity {
 
     isOwnedByAddress(cudosWalletAddress: string): boolean {
         return this.currentOwnerAddress === cudosWalletAddress;
+    }
+
+    getPriceInCudos(): BigNumber {
+        return this.priceInAcudos?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER) ?? null;
+    }
+
+    setPriceInCudos(priceInCudos: BigNumber) {
+        this.priceInAcudos = priceInCudos?.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER) ?? null;
     }
 
     formatExpiryDate(): string {
@@ -86,28 +94,31 @@ export default class NftEntity {
         return `${this.hashPowerInEH !== S.NOT_EXISTS ? this.hashPowerInEH : 0} EH`;
     }
 
-    formatPrice(): string {
-        const price = this.price.eq(new BigNumber(S.NOT_EXISTS)) ? new BigNumber(0) : this.price;
-        return `${price.toFixed(2)} CUDOS`;
+    formatPriceInCudos(): string {
+        if (this.priceInAcudos === null) {
+            return '0 CUDOS';
+        }
+
+        return `${this.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0)} CUDOS`;
     }
 
-    formatMaintenanceFee(): string {
-        return numeral(this.maintenanceFee.toNumber()).format('$0,0.0');
+    formatMaintenanceFeeInBtc(): string {
+        return `${this.maintenanceFeeInBtc.toString()} BTC`;
     }
 
     cloneDeep(): NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 
-        newNftEntity.price = new BigNumber(this.price);
-        newNftEntity.maintenanceFee = new BigNumber(this.maintenanceFee);
+        newNftEntity.priceInAcudos = new BigNumber(this.priceInAcudos);
+        newNftEntity.maintenanceFeeInBtc = new BigNumber(this.maintenanceFeeInBtc);
 
         return newNftEntity;
     }
 
     copyDeepFrom(nftEntity: NftEntity): void {
         Object.assign(this, nftEntity);
-        this.price = new BigNumber(nftEntity.price);
-        this.maintenanceFee = new BigNumber(nftEntity.maintenanceFee);
+        this.priceInAcudos = new BigNumber(nftEntity.priceInAcudos);
+        this.maintenanceFeeInBtc = new BigNumber(nftEntity.maintenanceFeeInBtc);
     }
 
     static toJson(entity: NftEntity): any {
@@ -120,14 +131,14 @@ export default class NftEntity {
             'name': entity.name,
             'collectionId': entity.collectionId,
             'hashPowerInEH': entity.hashPowerInEH,
-            'price': entity.price.toString(),
+            'priceInAcudos': entity.priceInAcudos.toString(),
             'imageUrl': entity.imageUrl,
             'status': entity.status,
             'expiryDate': entity.expiryDate,
             'creatorAddress': entity.creatorAddress,
             'currentOwnerAddress': entity.currentOwnerAddress,
-            'farmRoyalties': entity.currentOwnerAddress,
-            'maintenanceFee': entity.currentOwnerAddress.toString(),
+            'farmRoyalties': entity.farmRoyalties,
+            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
         }
     }
 
@@ -142,14 +153,14 @@ export default class NftEntity {
         model.name = json.name ?? model.name;
         model.collectionId = json.collectionId ?? model.collectionId;
         model.hashPowerInEH = Number(json.hashPowerInEH ?? model.hashPowerInEH);
-        model.price = new BigNumber(json.price ?? model.price);
+        model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
         model.imageUrl = json.imageUrl ?? model.imageUrl;
         model.status = Number(json.status ?? model.status);
         model.expiryDate = Number(json.expiryDate ?? model.expiryDate);
         model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
         model.currentOwnerAddress = json.currentOwnerAddress ?? model.currentOwnerAddress;
         model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);
-        model.maintenanceFee = new BigNumber(json.maintenanceFee ?? model.maintenanceFee);
+        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
 
         return model;
     }

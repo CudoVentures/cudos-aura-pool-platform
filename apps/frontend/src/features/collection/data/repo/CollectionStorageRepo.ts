@@ -88,8 +88,8 @@ export default class CollectionStorageRepo implements CollectionRepo {
             const collectionDetailsEntity = new CollectionDetailsEntity();
 
             collectionDetailsEntity.collectionId = collectionId;
-            collectionDetailsEntity.floorPrice = new BigNumber(`${Math.round(Math.random() * 100)}000000000000000000`);
-            collectionDetailsEntity.volume = new BigNumber(`${Math.round(Math.random() * 100000)}000000000000000000`);
+            collectionDetailsEntity.floorPriceInAcudos = new BigNumber(`${Math.round(Math.random() * 100)}000000000000000000`);
+            collectionDetailsEntity.volumeInAcudos = new BigNumber(`${Math.round(Math.random() * 100000)}000000000000000000`);
             collectionDetailsEntity.owners = Math.round(Math.random() * 10);
             collectionDetailsEntity.cudosAddress = 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0';
 

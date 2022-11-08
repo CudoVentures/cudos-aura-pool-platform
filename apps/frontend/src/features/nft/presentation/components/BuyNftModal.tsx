@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../core/utilities/Main';
@@ -16,16 +16,22 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
 import '../styles/buy-nft-modal.css';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
+    cudosStore?: CudosStore,
     resellNftModalStore?: ResellNftModalStore;
     buyNftModalStore?: BuyNftModalStore;
 }
 
-function BuyNftModal({ resellNftModalStore, buyNftModalStore }: Props) {
+function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore }: Props) {
     const nftEntity = buyNftModalStore.nftEntity;
     const validationState = useRef(new ValidationState()).current;
     const rewardsRecipientAddress = useRef(validationState.addCudosAddressValidation('Invalid address')).current;
+
+    useEffect(() => {
+        cudosStore.init();
+    }, []);
 
     function onClickResellNft() {
         resellNftModalStore.showSignal(buyNftModalStore.nftEntity, buyNftModalStore.cudosPrice, buyNftModalStore.collectionName);
@@ -61,8 +67,8 @@ function BuyNftModal({ resellNftModalStore, buyNftModalStore }: Props) {
                                 <div className={'CollectionName B2 SemiBold Gray'}>{buyNftModalStore.collectionName}</div>
                                 <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                                 <div className={'Price FlexRow'}>
-                                    <div className={'H3 Bold'}>{nftEntity.price.toFixed(0)} CUDOS</div>
-                                    <div className={'B2 SemiBold Gray'}>${nftEntity.price.multipliedBy(buyNftModalStore.cudosPrice).toFixed(0)}</div>
+                                    <div className={'H3 Bold'}>{nftEntity.formatPriceInCudos()}</div>
+                                    <div className={'B2 SemiBold Gray'}>{cudosStore.formatConvertedAcudosInUsd(nftEntity.priceInAcudos)}</div>
                                 </div>
                             </div>
                         </div>

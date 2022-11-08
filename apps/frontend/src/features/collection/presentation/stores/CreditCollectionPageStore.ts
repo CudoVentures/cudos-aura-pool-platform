@@ -7,7 +7,6 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
-import BigNumber from 'bignumber.js';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 
 export default class CreditCollectionPageStore {
@@ -66,34 +65,4 @@ export default class CreditCollectionPageStore {
         });
     }
 
-    getOwnersCount(): number {
-        return [...new Set(this.nftEntities.map((nftEntity: NftEntity) => nftEntity.currentOwnerAddress))].length;
-    }
-
-    getFloorNftPrice() {
-        if (!this.nftEntities) {
-            return '0'
-        }
-
-        if (this.nftEntities.length === 0) {
-            return '0';
-        }
-
-        // TODO: actual
-        let minValue = new BigNumber(Number.MAX_SAFE_INTEGER);
-
-        this.nftEntities.forEach((nftEntity: NftEntity) => {
-            if (nftEntity.price.lt(minValue)) {
-                minValue = nftEntity.price
-            }
-        })
-
-        return `${minValue.toFixed(2)} CUDOS`;
-    }
-
-    getNftVolume() {
-        // TODO; get real volume
-
-        return '0 CUDOS';
-    }
 }

@@ -154,7 +154,7 @@ export default class ViewNftPageStore {
             return 'Not for sale';
         }
 
-        return `${this.nftEntity.price.multipliedBy(this.cudosPrice).toFixed(2)}`;
+        return this.cudosStore.formatConvertedAcudosInUsd(this.nftEntity.priceInAcudos);
     }
 
 }

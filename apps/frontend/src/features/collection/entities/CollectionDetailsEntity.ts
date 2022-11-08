@@ -5,25 +5,25 @@ import ProjectUtils from '../../../core/utilities/ProjectUtils';
 export default class CollectionDetailsEntity {
 
     collectionId: string;
-    floorPrice: BigNumber;
-    volume: BigNumber;
+    floorPriceInAcudos: BigNumber;
+    volumeInAcudos: BigNumber;
     owners: number;
     cudosAddress: string;
 
     constructor() {
         this.collectionId = S.Strings.NOT_EXISTS;
-        this.floorPrice = null;
-        this.volume = null;
+        this.floorPriceInAcudos = null;
+        this.volumeInAcudos = null;
         this.owners = 0;
         this.cudosAddress = '';
     }
 
     formatFloorPriceInCudos(): string {
-        return `${this.floorPrice?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0) ?? '0'} CUDOS`;
+        return `${this.floorPriceInAcudos?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0) ?? '0'} CUDOS`;
     }
 
     formatVolumeInCudos(): string {
-        return `${this.volume?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0) ?? '0'} CUDOS`;
+        return `${this.volumeInAcudos?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0) ?? '0'} CUDOS`;
     }
 
     static toJson(entity: CollectionDetailsEntity) {
@@ -33,8 +33,8 @@ export default class CollectionDetailsEntity {
 
         return {
             'collectionId': entity.collectionId,
-            'floorPrice': entity.floorPrice.toString(),
-            'volume': entity.volume.toString(),
+            'floorPriceInAcudos': entity.floorPriceInAcudos.toString(),
+            'volumeInAcudos': entity.volumeInAcudos.toString(),
             'owners': entity.owners,
             'cudosAddress': entity.cudosAddress,
         }
@@ -48,8 +48,8 @@ export default class CollectionDetailsEntity {
         const entity = new CollectionDetailsEntity();
 
         entity.collectionId = (json.collectionId ?? entity.collectionId).toString();
-        entity.floorPrice = new BigNumber(json.floorPrice ?? entity.floorPrice);
-        entity.volume = new BigNumber(json.volume ?? entity.volume);
+        entity.floorPriceInAcudos = new BigNumber(json.floorPriceInAcudos ?? entity.floorPriceInAcudos);
+        entity.volumeInAcudos = new BigNumber(json.volumeInAcudos ?? entity.volumeInAcudos);
         entity.owners = parseInt(json.owners ?? entity.owners);
         entity.cudosAddress = json.cudosAddress ?? entity.cudosAddress;
 

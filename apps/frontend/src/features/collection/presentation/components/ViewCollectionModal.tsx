@@ -30,7 +30,7 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             createDataPreview('Description', collectionEntity.description),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashRateInEH()),
                             createDataPreview('Royalties', collectionEntity.royalties),
-                            createDataPreview('Maintenance Fees (per month)', collectionEntity.maintenanceFees.toString()),
+                            createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
                             createDataPreview('Payout address', collectionEntity.payoutAddress),
                         ] } />
                     { nftEntities.map((nftEntity) => {
@@ -45,12 +45,12 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                                     dataPreviews = { [
                                         createDataPreview('NFT Name', nftEntity.name),
                                         createDataPreview('Hash power', nftEntity.formatHashPowerInEH()),
-                                        createDataPreview('Price', nftEntity.price.toString()),
+                                        createDataPreview('Price', nftEntity.formatPriceInCudos()),
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
                                         createDataPreview('Creator address', nftEntity.creatorAddress),
                                         createDataPreview('Current owner', nftEntity.currentOwnerAddress),
                                         createDataPreview('Farm Royalties', nftEntity.farmRoyalties),
-                                        createDataPreview('Maintenance Fee', nftEntity.formatMaintenanceFee()),
+                                        createDataPreview('Maintenance Fee', nftEntity.formatMaintenanceFeeInBtc()),
                                     ] } />
                             </div>
                         )

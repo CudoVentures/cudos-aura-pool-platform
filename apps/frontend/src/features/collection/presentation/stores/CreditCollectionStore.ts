@@ -114,6 +114,10 @@ export default class CreditCollectionStore {
 
     async initAsAddNfts(collectionId: string) {
         await this.fetchCollectionData(collectionId);
+        if (this.nftEntities.length === 0) {
+            this.initNewNftEntity();
+        }
+
         this.creditStep = CreditCollectionDetailsSteps.ADD_NFTS;
         this.creditMode = CreditCollectionMode.ADD_NFTS;
     }
@@ -133,11 +137,11 @@ export default class CreditCollectionStore {
         const nftEntity = new NftEntity();
 
         if (this.collectionEntity.hasDefaultValuesPerNft() === true) {
-            nftEntity.price = this.collectionEntity.defaultPricePerNft;
+            nftEntity.priceInAcudos = this.collectionEntity.getDefaultPricePerNftInAcudos();
             nftEntity.hashPowerInEH = this.collectionEntity.defaultHashPowerInEHPerNftInEH;
         }
         nftEntity.farmRoyalties = this.collectionEntity.royalties;
-        nftEntity.maintenanceFee = new BigNumber(this.collectionEntity.maintenanceFees);
+        nftEntity.maintenanceFeeInBtc = new BigNumber(this.collectionEntity.maintenanceFeeInBtc);
 
         this.selectedNftEntity = nftEntity;
     }
@@ -170,20 +174,8 @@ export default class CreditCollectionStore {
         this.selectedNftEntity.name = nftName;
     }
 
-    onChangeSelectedNftHashPower = (hasHPower: string) => {
-        this.selectedNftEntity.hashPowerInEH = Number(hasHPower);
-    }
-
-    onChangeSelectedNftPrice = (price: string) => {
-        this.selectedNftEntity.price = new BigNumber(price);
-    }
-
     onChangeSelectedNftRoyalties = (royalties: string) => {
         this.selectedNftEntity.farmRoyalties = Number(royalties);
-    }
-
-    onChangeSelectedNftMaintenanceFee = (value: string) => {
-        this.selectedNftEntity.maintenanceFee = new BigNumber(value);
     }
 
     onChangeSelectedNftExpirationDate = (expirationDate: number) => {
@@ -225,11 +217,7 @@ export default class CreditCollectionStore {
             return '';
         }
 
-        if (this.selectedNftEntity.maintenanceFee.eq(new BigNumber(S.NOT_EXISTS))) {
-            return ''
-        }
-
-        return this.selectedNftEntity.maintenanceFee.toString();
+        return this.selectedNftEntity.maintenanceFeeInBtc?.toString() ?? '';
     }
 
     getSelectedNftRoyaltiesInputValue() {

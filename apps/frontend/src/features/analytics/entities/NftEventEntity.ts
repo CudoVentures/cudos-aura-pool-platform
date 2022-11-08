@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum NftEventType {
     TRANSFER = 1,
@@ -14,8 +16,8 @@ export default class NftEventEntity {
     fromAddress: string;
     toAddress: string;
     eventType: NftEventType;
-    transferPriceInCudos: BigNumber;
-    transferPriceUsd: number;
+    transferPriceInAcudos: BigNumber;
+    transferPriceInUsd: number;
     quantity: number;
     timestamp: number;
 
@@ -25,20 +27,20 @@ export default class NftEventEntity {
         this.fromAddress = '';
         this.toAddress = '';
         this.eventType = NftEventType.TRANSFER;
-        this.transferPriceInCudos = new BigNumber(S.NOT_EXISTS);
-        this.transferPriceUsd = S.NOT_EXISTS;
+        this.transferPriceInAcudos = new BigNumber(S.NOT_EXISTS);
+        this.transferPriceInUsd = S.NOT_EXISTS;
         this.quantity = 0;
         this.timestamp = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
 
-    getTransferPriceDisplay(): string {
-        return `${this.transferPriceInCudos.toFixed(2)} CUDOS`;
+    formatTransferPriceInCudos(): string {
+        return `${this.transferPriceInAcudos.div(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(2)} CUDOS`;
     }
 
-    getTransferPriceUsdDisplay(): string {
-        return `$${this.transferPriceUsd.toFixed(2)}`;
+    formatTransferPriceInUsd(): string {
+        return numeral(this.transferPriceInUsd).format(ProjectUtils.NUMERAL_USD);
     }
 
     getTimePassedDisplay(): string {
@@ -83,8 +85,8 @@ export default class NftEventEntity {
             'fromAddress': entity.fromAddress,
             'toAddress': entity.toAddress,
             'eventType': entity.eventType,
-            'transferPriceInCudos': entity.transferPriceInCudos.toString(),
-            'transferPriceUsd': entity.transferPriceUsd,
+            'transferPriceInAcudos': entity.transferPriceInAcudos.toString(),
+            'transferPriceInUsd': entity.transferPriceInUsd,
             'quantity': entity.quantity,
             'timestamp': entity.timestamp,
         }
@@ -102,8 +104,8 @@ export default class NftEventEntity {
         entity.fromAddress = json.this.fromAddress ?? entity.fromAddress;
         entity.toAddress = json.this.toAddress ?? entity.toAddress;
         entity.eventType = parseInt(json.this.eventType ?? entity.eventType);
-        entity.transferPriceInCudos = new BigNumber(json.this.transferPriceInCudos ?? entity.transferPriceInCudos);
-        entity.transferPriceUsd = parseFloat(json.this.transferPriceUsd ?? entity.transferPriceUsd);
+        entity.transferPriceInAcudos = new BigNumber(json.this.transferPriceInAcudos ?? entity.transferPriceInAcudos);
+        entity.transferPriceInUsd = parseFloat(json.this.transferPriceInUsd ?? entity.transferPriceInUsd);
         entity.quantity = parseInt(json.this.quantity ?? entity.quantity);
         entity.timestamp = parseInt(json.this.timestamp ?? entity.timestamp);
 

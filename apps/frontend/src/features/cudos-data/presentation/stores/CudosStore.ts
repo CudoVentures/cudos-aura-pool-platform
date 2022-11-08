@@ -49,20 +49,20 @@ export default class CudosStore {
         return (priceChangeInUsd / priceInUsd) * 100;
     }
 
-    convertCudosInUsd(cudosPrice: BigNumber): BigNumber {
+    convertAcudosInUsd(cudosPrice: BigNumber): BigNumber {
         return cudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
     }
 
-    convertCudosInUsdAsString(cudosPrice: BigNumber): string {
-        return this.convertCudosInUsd(cudosPrice).toString();
+    convertAcudosInUsdAsString(cudosPrice: BigNumber): string {
+        return this.convertAcudosInUsd(cudosPrice).toString();
     }
 
     formatCudosPriceChangeInPercentage(): string {
         return `${this.getCudosPriceChangeInPercentage().toFixed(2)} %`;
     }
 
-    formatConvertedCudosInUsd(cudosPrice: BigNumber): string {
-        return numeral(this.convertCudosInUsdAsString(cudosPrice)).format(ProjectUtils.NUMERAL_USD);
+    formatConvertedAcudosInUsd(cudosPrice: BigNumber): string {
+        return numeral(this.convertAcudosInUsdAsString(cudosPrice)).format(ProjectUtils.NUMERAL_USD);
     }
 
 }
