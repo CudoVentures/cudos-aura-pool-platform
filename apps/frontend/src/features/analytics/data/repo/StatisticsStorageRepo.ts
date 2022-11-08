@@ -9,6 +9,8 @@ import StatisticsRepo from '../../presentation/repos/StatisticsRepo';
 
 export default class StatisticsStorageRepo implements StatisticsRepo {
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
         const nftEventEntities = [];
 

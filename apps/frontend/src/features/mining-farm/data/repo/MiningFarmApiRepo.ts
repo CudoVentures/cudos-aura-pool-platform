@@ -11,9 +11,18 @@ import MiningFarmApi from '../data-sources/MiningFarmApi';
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
     miningFarmApi: MiningFarmApi;
+    enableActions: () => void;
+    disableActions: () => void;
 
     constructor() {
         this.miningFarmApi = new MiningFarmApi();
+        this.enableActions = null;
+        this.disableActions = null;
+    }
+
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+        this.enableActions = enableActions;
+        this.disableActions = disableActions;
     }
 
     async fetchAllMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
@@ -65,7 +74,12 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     }
 
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
-        return this.miningFarmApi.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        try {
+            this.disableActions?.();
+            return await this.miningFarmApi.fetchMiningFarmsByFilter(miningFarmFilterModel);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchMiningFarmDetailsById(miningFarmId: string): Promise < MiningFarmDetailsEntity > {
@@ -74,12 +88,22 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     }
 
     async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
-        return this.miningFarmApi.fetchMiningFarmsDetailsByIds(miningFarmIds);
+        try {
+            this.disableActions?.();
+            return await this.miningFarmApi.fetchMiningFarmsDetailsByIds(miningFarmIds);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void > {
-        const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity);
-        Object.assign(miningFarmEntity, resultMiningFarmEntity);
+        try {
+            this.disableActions?.();
+            const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity);
+            Object.assign(miningFarmEntity, resultMiningFarmEntity);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
@@ -89,30 +113,60 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     }
 
     async fetchManufacturers(): Promise < ManufacturerEntity[] > {
-        return this.miningFarmApi.fetchManufacturers();
+        try {
+            this.disableActions?.();
+            return await this.miningFarmApi.fetchManufacturers();
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchMiners(): Promise < MinerEntity[] > {
-        return this.miningFarmApi.fetchMiners();
+        try {
+            this.disableActions?.();
+            return await this.miningFarmApi.fetchMiners();
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchEnergySources(): Promise < EnergySourceEntity[] > {
-        return this.miningFarmApi.fetchEnergySources();
+        try {
+            this.disableActions?.();
+            return await this.miningFarmApi.fetchEnergySources();
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void > {
-        const resultEntity = await this.miningFarmApi.creditManufacturer(manufacturerEntity);
-        Object.assign(manufacturerEntity, resultEntity);
+        try {
+            this.disableActions?.();
+            const resultEntity = await this.miningFarmApi.creditManufacturer(manufacturerEntity);
+            Object.assign(manufacturerEntity, resultEntity);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async creditMiner(minerEntity: MinerEntity): Promise < void > {
-        const resultEntity = await this.miningFarmApi.creditMiner(minerEntity);
-        Object.assign(minerEntity, resultEntity);
+        try {
+            this.disableActions?.();
+            const resultEntity = await this.miningFarmApi.creditMiner(minerEntity);
+            Object.assign(minerEntity, resultEntity);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void > {
-        const resultEntity = await this.miningFarmApi.creditEnergySource(energySourceEntity);
-        Object.assign(energySourceEntity, resultEntity);
+        try {
+            this.disableActions?.();
+            const resultEntity = await this.miningFarmApi.creditEnergySource(energySourceEntity);
+            Object.assign(energySourceEntity, resultEntity);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
 }

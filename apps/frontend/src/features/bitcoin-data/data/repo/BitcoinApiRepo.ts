@@ -9,9 +9,18 @@ const LOCAL_STORAGE_BLOCKCHAIN_INFO_KEY = 'cudos_aura_service_storage_bitcoin_bl
 export default class BitcoinApiRepo implements BitcoinRepo {
 
     bitcoinApi: BitcoinApi;
+    enableActions: () => void;
+    disableActions: () => void;
 
     constructor() {
         this.bitcoinApi = new BitcoinApi();
+        this.enableActions = null;
+        this.disableActions = null;
+    }
+
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+        this.enableActions = enableActions;
+        this.disableActions = disableActions;
     }
 
     async fetchBitcoinCoinGecko(): Promise < BitcoinCoinGeckoEntity > {
@@ -28,10 +37,16 @@ export default class BitcoinApiRepo implements BitcoinRepo {
             return bitcoinCoinGeckoEntity;
         }
 
-        bitcoinCoinGeckoEntity = await this.bitcoinApi.fetchBitcoinCoinGecko();
-        bitcoinCoinGeckoEntity.timestampLastUpdate = Date.now();
+        try {
+            this.disableActions?.();
+            bitcoinCoinGeckoEntity = await this.bitcoinApi.fetchBitcoinCoinGecko();
+            bitcoinCoinGeckoEntity.timestampLastUpdate = Date.now();
 
-        localStorage.setItem(LOCAL_STORAGE_COIN_GECKO_KEY, JSON.stringify(BitcoinCoinGeckoEntity.toJson(bitcoinCoinGeckoEntity)));
+            localStorage.setItem(LOCAL_STORAGE_COIN_GECKO_KEY, JSON.stringify(BitcoinCoinGeckoEntity.toJson(bitcoinCoinGeckoEntity)));
+        } finally {
+            this.enableActions?.();
+        }
+
         return bitcoinCoinGeckoEntity;
     }
 
@@ -49,10 +64,17 @@ export default class BitcoinApiRepo implements BitcoinRepo {
             return bitcoinBlockchainInfoEntity;
         }
 
-        bitcoinBlockchainInfoEntity = await this.bitcoinApi.fetchBitcoinBlockchainInfo();
-        bitcoinBlockchainInfoEntity.timestampLastUpdate = Date.now();
+        try {
+            this.disableActions?.();
 
-        localStorage.setItem(LOCAL_STORAGE_BLOCKCHAIN_INFO_KEY, JSON.stringify(BitcoinBlockchainInfoEntity.toJson(bitcoinBlockchainInfoEntity)));
+            bitcoinBlockchainInfoEntity = await this.bitcoinApi.fetchBitcoinBlockchainInfo();
+            bitcoinBlockchainInfoEntity.timestampLastUpdate = Date.now();
+
+            localStorage.setItem(LOCAL_STORAGE_BLOCKCHAIN_INFO_KEY, JSON.stringify(BitcoinBlockchainInfoEntity.toJson(bitcoinBlockchainInfoEntity)));
+        } finally {
+            this.enableActions?.();
+        }
+
         return bitcoinBlockchainInfoEntity;
     }
 

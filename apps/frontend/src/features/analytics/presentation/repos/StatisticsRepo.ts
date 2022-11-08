@@ -6,6 +6,8 @@ import UserEarningsEntity from '../../entities/UserEarningsEntity';
 
 export default interface StatisticsRepo {
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
+
     fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } >;
     fetchNftEarningsBySessionAccount(timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity >;
     fetchNftEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity >;

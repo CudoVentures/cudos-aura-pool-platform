@@ -9,13 +9,27 @@ import CollectionApi from '../data-sources/CollectionApi';
 export default class CollectionStorageRepo implements CollectionRepo {
 
     collectionApi: CollectionApi;
+    enableActions: () => void;
+    disableActions: () => void;
 
     constructor() {
         this.collectionApi = new CollectionApi();
+        this.enableActions = null;
+        this.disableActions = null;
+    }
+
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+        this.enableActions = enableActions;
+        this.disableActions = disableActions;
     }
 
     async fetchCategories(): Promise < CategoryEntity [] > {
-        return this.collectionApi.fetchCategories();
+        try {
+            this.disableActions?.();
+            return this.collectionApi.fetchCategories();
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
@@ -43,7 +57,12 @@ export default class CollectionStorageRepo implements CollectionRepo {
     }
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
-        return this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
+        try {
+            this.disableActions?.();
+            return await this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchCollectionDetailsById(collectionId: string): Promise < CollectionDetailsEntity > {
@@ -52,15 +71,25 @@ export default class CollectionStorageRepo implements CollectionRepo {
     }
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
-        return this.collectionApi.fetchCollectionsDetailsByIds(collectionIds);
+        try {
+            this.disableActions?.();
+            return this.collectionApi.fetchCollectionsDetailsByIds(collectionIds);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]) {
-        const result = await this.collectionApi.creditCollection(collectionEntity, nftEntities);
-        Object.assign(collectionEntity, result.collectionEntity);
-        result.nftEntities.forEach((nftEntity, i) => {
-            Object.assign(nftEntities[i], nftEntity);
-        });
+        try {
+            this.disableActions?.();
+            const result = await this.collectionApi.creditCollection(collectionEntity, nftEntities);
+            Object.assign(collectionEntity, result.collectionEntity);
+            result.nftEntities.forEach((nftEntity, i) => {
+                Object.assign(nftEntities[i], nftEntity);
+            });
+        } finally {
+            this.enableActions?.();
+        }
     }
 
 }

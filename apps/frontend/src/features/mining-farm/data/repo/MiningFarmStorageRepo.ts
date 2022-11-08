@@ -16,6 +16,8 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         this.storageHelper = storageHelper;
     }
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
     async fetchAllMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;

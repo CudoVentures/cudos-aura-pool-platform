@@ -13,6 +13,8 @@ export default class NftStorageRepo implements NftRepo {
         this.storageHelper = storageHelper;
     }
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
     async fetchNftById(nftId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity > {
         const nftEntities = await this.fetchNftByIds([nftId], status);
         return nftEntities.length === 1 ? nftEntities[0] : null;

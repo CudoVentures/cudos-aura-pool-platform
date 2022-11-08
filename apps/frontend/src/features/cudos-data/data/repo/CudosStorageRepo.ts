@@ -6,6 +6,8 @@ export default class CudosStorageRepo implements CudosRepo {
 
     storageHelper: StorageHelper;
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
     constructor(storageHelper: StorageHelper) {
         this.storageHelper = storageHelper;
     }

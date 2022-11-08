@@ -7,9 +7,18 @@ import NftApi from '../data-sources/NftApi';
 export default class NftApiRepo implements NftRepo {
 
     nftApi: NftApi;
+    enableActions: () => void;
+    disableActions: () => void;
 
     constructor() {
         this.nftApi = new NftApi();
+        this.enableActions = null;
+        this.disableActions = null;
+    }
+
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+        this.enableActions = enableActions;
+        this.disableActions = disableActions;
     }
 
     async fetchNftById(nftId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity > {
@@ -45,6 +54,11 @@ export default class NftApiRepo implements NftRepo {
     }
 
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
-        return this.nftApi.fetchNftsByFilter(nftFilterModel);
+        try {
+            this.disableActions?.();
+            return this.nftApi.fetchNftsByFilter(nftFilterModel);
+        } finally {
+            this.enableActions?.();
+        }
     }
 }
