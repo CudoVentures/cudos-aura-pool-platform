@@ -31,15 +31,17 @@ import { ContainerBackground } from '../../../../core/presentation/components/St
 
 import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
+import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 type Props = {
     walletStore?: WalletStore;
+    bitcoinStore?: BitcoinStore;
     viewNftPageStore?: ViewNftPageStore;
     buyNftModalStore?: BuyNftModalStore;
     resellNftModalStore?: ResellNftModalStore;
 }
 
-function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNftModalStore }: Props) {
+function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -89,19 +91,20 @@ function ViewNftPage({ walletStore, viewNftPageStore, buyNftModalStore, resellNf
         profitDatapreviews.push(createDataPreview(
             'Estimated Profit per Day',
             <div className={'DataValue FlexRow'}>
-                0.002 BTC
-                <div className={'SubPrice'}>${(0.002 * viewNftPageStore.bitcoinPrice).toFixed(2)}</div>
+                { viewNftPageStore.formatNetProfitPerDay() }
+                <div className={'SubPrice'}>{bitcoinStore.formatBtcInUsd(viewNftPageStore.calculateNetProfitPerDay())}</div>
             </div>,
         ));
         profitDatapreviews.push(createDataPreview(
             'Estimated Profit per Week',
             <div className={'DataValue FlexRow'}>
-                0.014 BTC
-                <div className={'SubPrice'}>${(0.014 * viewNftPageStore.bitcoinPrice).toFixed(2)}</div>
+                { viewNftPageStore.formatNetProfitPerWeek() }
+                <div className={'SubPrice'}>{bitcoinStore.formatBtcInUsd(viewNftPageStore.calculateNetProfitPerWeek())}</div>
             </div>,
         ));
-        profitDatapreviews.push(createDataPreview('Estimated Profit per Month', '2K'));
-        profitDatapreviews.push(createDataPreview('Estimated Profit per Year', '735'));
+        profitDatapreviews.push(createDataPreview('Estimated Profit per Month', viewNftPageStore.formatNetProfitPerMonth()));
+        profitDatapreviews.push(createDataPreview('Estimated Profit per Year', viewNftPageStore.formatNetProfitPerYear()));
+        profitDatapreviews.push(createDataPreview('Maintenance fee', nftEntity.formatMaintenanceFeeInBtc()));
 
         return profitDatapreviews;
     }

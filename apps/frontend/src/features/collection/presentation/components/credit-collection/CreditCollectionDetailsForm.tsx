@@ -137,6 +137,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         id = { this }
                         params = { {
                             'maxSize': 73400320, // 70MB
+                            'position': 'static',
                             'onExceedLimit': () => {
                                 this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
                             },
@@ -170,6 +171,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         id = { this }
                         params = { {
                             'maxSize': 73400320, // 70MB
+                            'position': 'static',
                             'onExceedLimit': () => {
                                 this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
                             },
@@ -276,7 +278,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         onChange={onChangeDefaultPricePerNftInCudos}
                         InputProps={{
                             endAdornment: (
-                                <InputAdornment position="end" >BTC</InputAdornment>
+                                <InputAdornment position="end" >CUDOS</InputAdornment>
                             ),
                         }} />
                 </>

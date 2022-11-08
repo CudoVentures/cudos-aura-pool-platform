@@ -1,10 +1,14 @@
-import { makeAutoObservable } from 'mobx';
+import { computed, makeAutoObservable } from 'mobx';
 
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
 import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import BigNumber from 'bignumber.js';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+
+const MAINTENANCE_FEE = 0.01;
 
 export default class RewardsCalculatorStore {
 
@@ -85,28 +89,50 @@ export default class RewardsCalculatorStore {
         this.networkDifficultyEdit = input;
     }
 
-    formatPowerCost(): string {
-        if (this.selectedMiningFarmEntity === null) {
-            return '-';
-        }
+    // formatPowerCost(): string {
+    //     if (this.selectedMiningFarmEntity === null) {
+    //         return '-';
+    //     }
 
-        return this.selectedMiningFarmEntity.formatPowerCost();
+    //     return this.selectedMiningFarmEntity.formatPowerCost();
+    // }
+
+    // formatPoolFee(): string {
+    //     if (this.selectedMiningFarmEntity === null) {
+    //         return '-';
+    //     }
+
+    //     return this.selectedMiningFarmEntity.formatPoolFee();
+    // }
+
+    // formatPowerConsumptionPerTH(): string {
+    //     if (this.selectedMiningFarmEntity === null) {
+    //         return '-';
+    //     }
+
+    //     return this.selectedMiningFarmEntity.formatPowerConsumptionPerTH();
+    // }
+
+    formatCost(): string {
+        return `${ProjectUtils.CUDOS_FEE_IN_PERCENT + MAINTENANCE_FEE} %`;
     }
 
-    formatPoolFee(): string {
+    calculateGrossRewardPerMonth(): BigNumber {
         if (this.selectedMiningFarmEntity === null) {
-            return '-';
+            return new BigNumber(0);
         }
 
-        return this.selectedMiningFarmEntity.formatPoolFee();
+        return this.bitcoinStore.calculateRewardsPerMonth(this.selectedMiningFarmEntity.hashRateInTh);
     }
 
-    formatPowerConsumptionPerTH(): string {
-        if (this.selectedMiningFarmEntity === null) {
-            return '-';
-        }
+    @computed
+    calculateNetRewardPetMonth(): BigNumber {
+        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT - MAINTENANCE_FEE);
+        return this.calculateGrossRewardPerMonth().multipliedBy(fees);
+    }
 
-        return this.selectedMiningFarmEntity.formatPowerConsumptionPerTH();
+    formatNetRewardPerMonth(): string {
+        return `${this.calculateNetRewardPetMonth().toFixed(5)} BTC`;
     }
 
     // calculatePowerConsumption(): number {

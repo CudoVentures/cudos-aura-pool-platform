@@ -8,6 +8,7 @@ import ValidationState from '../../../../../core/presentation/stores/ValidationS
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 import AlertStore from '../../../../../core/presentation/stores/AlertStore';
 
+import { InputAdornment } from '@mui/material';
 import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button, { ButtonType } from '../../../../../core/presentation/components/Button';
@@ -128,7 +129,12 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         disabled = { selectedNftEntity === null }
                         value={creditCollectionStore.selectedNftPriceInCudosInputValue}
                         inputValidation={nftPriceValidation}
-                        onChange={creditCollectionStore.onChangeSelectedNftPriceInCudos} />
+                        onChange={creditCollectionStore.onChangeSelectedNftPriceInCudos}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >CUDOS</InputAdornment>
+                            ),
+                        }} />
                 }
                 helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
             <FieldColumnWrapper

@@ -184,12 +184,12 @@ export default class CreditCollectionStore {
         this.selectedNftEntity.name = nftName;
     }
 
-    onChangeSelectedNftHashPowerInTh(inputValue: string) {
+    onChangeSelectedNftHashPowerInTh = (inputValue: string) => {
         this.selectedNftHashingPowerInThInputValue = inputValue;
         this.selectedNftEntity.hashPowerInTh = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
     }
 
-    onChangeSelectedNftPriceInCudos(inputValue: string) {
+    onChangeSelectedNftPriceInCudos = (inputValue: string) => {
         this.selectedNftPriceInCudosInputValue = inputValue;
         this.selectedNftEntity.priceInAcudos = inputValue !== '' ? ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(new BigNumber(inputValue)) : null;
     }
