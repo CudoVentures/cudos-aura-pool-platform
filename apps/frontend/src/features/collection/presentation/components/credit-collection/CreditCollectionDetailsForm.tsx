@@ -81,14 +81,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
         }
     }
 
-    async function onClickFinishEdit() {
-        await creditCollectionStore.onClickSave();
-        alertStore.show('Your collection has been updated', () => {
-            navigate(AppRoutes.CREDIT_MINING_FARM);
-        });
-    }
-
-    function onClickNextStepButton() {
+    async function onClickSave() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
             return;
@@ -106,8 +99,21 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             return;
         }
 
-        creditCollectionStore.initNewNftEntity();
-        creditCollectionStore.moveToStepAddNfts();
+        if (creditCollectionStore.miningFarmRemainingHashPower < collectionEntity.hashPowerInTh) {
+            collectionHashPowerValidation.isError = collectionHashPowerValidation.showError = true;
+            alertStore.show('Your collection\'s hash power exceed available hash power in the farm');
+            return;
+        }
+
+        if (creditCollectionStore.isEditMode() === true) {
+            await creditCollectionStore.onClickSave();
+            alertStore.show('Your collection has been updated', () => {
+                navigate(AppRoutes.CREDIT_MINING_FARM);
+            });
+        } else {
+            creditCollectionStore.initNewNftEntity();
+            creditCollectionStore.moveToStepAddNfts();
+        }
     }
 
     return (
@@ -198,18 +204,22 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         onChange={creditCollectionStore.onChangeCollectionDescription} />
                 }
                 helperText = { 'Collection description will be same for all NFTs within that collection.' } />
-            <Input
-                label={'Hashing Power for collection'}
-                placeholder={'Enter hashing power...'}
-                inputValidation={collectionHashPowerValidation}
-                value={hashPowerInTh}
-                onChange={onChangeHashPowerInTh}
-                inputType = { InputType.REAL }
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end" >TH</InputAdornment>
-                    ),
-                }} />
+            <FieldColumnWrapper
+                field = {
+                    <Input
+                        label={'Hashing Power for collection'}
+                        placeholder={'Enter hashing power...'}
+                        inputValidation={collectionHashPowerValidation}
+                        value={hashPowerInTh}
+                        onChange={onChangeHashPowerInTh}
+                        inputType = { InputType.REAL }
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >TH</InputAdornment>
+                            ),
+                        }} />
+                }
+                helperText = { `Available TH: ${creditCollectionStore.formatMiningFarmRemainingHashPower()}` } />
             <FieldColumnWrapper
                 field = {
                     <Input
@@ -284,11 +294,14 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 </>
             ) }
             <Actions layout={ActionsLayout.LAYOUT_COLUMN_RIGHT}>
-                { creditCollectionStore.isEditMode() === true ? (
-                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickFinishEdit}>Save</Button>
-                ) : (
-                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickNextStepButton}>Next Step</Button>
-                ) }
+                <Button padding={ButtonPadding.PADDING_48} onClick={onClickSave}>
+                    { creditCollectionStore.isEditMode() === true ? (
+                        'Save'
+                    ) : (
+                        'Next Step'
+                    ) }
+                </Button>
+
             </Actions>
         </div>
     )

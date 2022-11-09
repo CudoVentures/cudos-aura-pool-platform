@@ -46,7 +46,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
 
-    const [hashRateInTh, setHashRateInTh] = useState(miningFarmEntity.hashRateInTh !== S.NOT_EXISTS ? miningFarmEntity.hashRateInTh : '');
+    const [hashPowerInTh, setHashPowerInTh] = useState(miningFarmEntity.hashPowerInTh !== S.NOT_EXISTS ? miningFarmEntity.hashPowerInTh : '');
 
     function onChangeManufacturers(values) {
         miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
@@ -72,9 +72,9 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
         creditMiningFarmDetailsPageStore.energySourceInputValue = value;
     }
 
-    function onChangeHashRateInTh(value) {
-        setHashRateInTh(value);
-        miningFarmEntity.hashRateInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    function onChangeHashPowerInTh(value) {
+        setHashPowerInTh(value);
+        miningFarmEntity.hashPowerInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
     }
 
     function onClickRemoveImage(i: number) {
@@ -199,15 +199,15 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 <Input
                     label={'Hashrate'}
                     placeholder={'e.g 102.001 TH'}
-                    value={hashRateInTh}
-                    onChange={ onChangeHashRateInTh }
+                    value={hashPowerInTh}
+                    onChange={ onChangeHashPowerInTh }
                     inputValidation={farmHashrateValidation}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end" > TH </InputAdornment>
                         ),
                     }} />
-                <div className={'FlexRow HashRateInfo B2 SemiBold FullLine'}>
+                <div className={'FlexRow HashPowerInfo B2 SemiBold FullLine'}>
                     <Svg svg={ErrorOutlineIcon}/>
                     Insert the Hashrate planned to be offered as NFTs
                 </div>

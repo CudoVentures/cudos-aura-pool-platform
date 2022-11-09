@@ -10,6 +10,8 @@ import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import TempIdGenerator from '../../../../core/utilities/TempIdGenerator';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
+import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 
 enum CreditCollectionDetailsSteps {
     COLLECTION_DETAILS = 1,
@@ -38,9 +40,11 @@ export default class CreditCollectionStore {
     collectionEntity: CollectionEntity;
     nftEntities: NftEntity[];
     selectedNftEntity: NftEntity;
+    miningFarmDetailsEntity: MiningFarmDetailsEntity;
+    collectionDetailsEntity: CollectionDetailsEntity;
 
     defaultHashAndPriceValues: number;
-
+    miningFarmRemainingHashPower: number;
     selectedNftHashingPowerInThInputValue: string;
     selectedNftPriceInCudosInputValue: string;
     selectedNftMaintenanceFeeInBtcInputValue: string;
@@ -54,17 +58,76 @@ export default class CreditCollectionStore {
         this.nftRepo = nftRepo;
         this.miningFarmRepo = miningFarmRepo;
 
+        this.tempIdGenerator = new TempIdGenerator();
+
         this.collectionEntity = null;
         this.nftEntities = [];
         this.selectedNftEntity = null;
-        this.tempIdGenerator = new TempIdGenerator();
+        this.miningFarmDetailsEntity = null;
+        this.collectionDetailsEntity = null;
 
         this.defaultHashAndPriceValues = S.INT_FALSE;
+        this.miningFarmRemainingHashPower = 0;
         this.selectedNftHashingPowerInThInputValue = '';
         this.selectedNftPriceInCudosInputValue = '';
         this.selectedNftMaintenanceFeeInBtcInputValue = '';
 
         makeAutoObservable(this);
+    }
+
+    async initAsCreate() {
+        const farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId()).id;
+
+        runInAction(() => {
+            this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
+            this.creditMode = CreditCollectionMode.CREATE;
+            this.collectionEntity = new CollectionEntity();
+            this.collectionEntity.farmId = farmId;
+
+            this.fetchMiningFarmDetails();
+        });
+    }
+
+    async initAsEdit(collectionId: string) {
+        await this.fetchCollectionData(collectionId);
+        await this.fetchMiningFarmDetails();
+
+        runInAction(() => {
+            this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
+            this.creditMode = CreditCollectionMode.EDIT;
+        });
+    }
+
+    async initAsAddNfts(collectionId: string) {
+        await this.fetchCollectionData(collectionId);
+        await this.fetchMiningFarmDetails();
+        if (this.nftEntities.length === 0) {
+            this.initNewNftEntity();
+        }
+
+        runInAction(() => {
+            this.creditStep = CreditCollectionDetailsSteps.ADD_NFTS;
+            this.creditMode = CreditCollectionMode.ADD_NFTS;
+        });
+    }
+
+    async fetchCollectionData(collectionId: string) {
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
+        const nftFilter = new NftFilterModel();
+        nftFilter.collectionIds = [collectionId];
+        nftFilter.count = Number.MAX_SAFE_INTEGER;
+        nftFilter.collectionStatus = CollectionStatus.ANY;
+
+        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+        this.nftEntities = nftEntities;
+    }
+
+    async fetchMiningFarmDetails() {
+        this.miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.collectionEntity.farmId);
+        this.miningFarmRemainingHashPower = this.miningFarmDetailsEntity.remainingHashPowerInTH;
+        if (this.collectionEntity.isNew() === false) {
+            this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
+        }
     }
 
     moveToStepDetails = () => {
@@ -103,44 +166,6 @@ export default class CreditCollectionStore {
         return this.creditMode === CreditCollectionMode.ADD_NFTS;
     }
 
-    async initAsCreate() {
-        const farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId()).id;
-
-        runInAction(() => {
-            this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
-            this.creditMode = CreditCollectionMode.CREATE;
-            this.collectionEntity = new CollectionEntity();
-            this.collectionEntity.farmId = farmId;
-        });
-    }
-
-    async initAsEdit(collectionId: string) {
-        await this.fetchCollectionData(collectionId);
-        this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
-        this.creditMode = CreditCollectionMode.EDIT;
-    }
-
-    async initAsAddNfts(collectionId: string) {
-        await this.fetchCollectionData(collectionId);
-        if (this.nftEntities.length === 0) {
-            this.initNewNftEntity();
-        }
-
-        this.creditStep = CreditCollectionDetailsSteps.ADD_NFTS;
-        this.creditMode = CreditCollectionMode.ADD_NFTS;
-    }
-
-    async fetchCollectionData(collectionId: string) {
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
-        const nftFilter = new NftFilterModel();
-        nftFilter.collectionIds = [collectionId];
-        nftFilter.count = Number.MAX_SAFE_INTEGER;
-        nftFilter.collectionStatus = CollectionStatus.ANY;
-
-        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
-        this.nftEntities = nftEntities;
-    }
-
     initNewNftEntity(): void {
         const nftEntity = new NftEntity();
 
@@ -164,6 +189,24 @@ export default class CreditCollectionStore {
 
     isCoverPictureEmpty(): boolean {
         return this.collectionEntity.coverImgUrl === S.Strings.EMPTY
+    }
+
+    getCollectionRemainingHashPowerForSelectedNft(): number {
+        if (this.selectedNftEntity === null || this.collectionEntity.hasHashPowerInTh() === false) {
+            return 0;
+        }
+
+        return this.nftEntities.reduce((accu, nftEntity) => {
+            return accu - (nftEntity.id === this.selectedNftEntity.id ? 0 : nftEntity.hashPowerInTh);
+        }, this.collectionEntity.hashPowerInTh);
+    }
+
+    formatMiningFarmRemainingHashPower(): string {
+        return this.miningFarmRemainingHashPower.toFixed(5);
+    }
+
+    formatCollectionRemainingHashPowerForSelectedNft(): string {
+        return this.getCollectionRemainingHashPowerForSelectedNft().toFixed(5);
     }
 
     // on change collection
@@ -230,7 +273,7 @@ export default class CreditCollectionStore {
 
     // nft controls
     onClickEditNft(nftEntity: NftEntity) {
-        this.selectedNftEntity = nftEntity;
+        this.selectedNftEntity = nftEntity.cloneDeep();
 
         this.selectedNftHashingPowerInThInputValue = nftEntity.hashPowerInTh !== S.NOT_EXISTS ? nftEntity.hashPowerInTh.toString() : '';
         this.selectedNftPriceInCudosInputValue = nftEntity.priceInAcudos !== null ? nftEntity.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toString() : ''

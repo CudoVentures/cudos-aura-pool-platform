@@ -55,6 +55,12 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
             return;
         }
 
+        if (creditCollectionStore.getCollectionRemainingHashPowerForSelectedNft() < selectedNftEntity.hashPowerInTh) {
+            nftHashPowerValidation.isError = nftHashPowerValidation.showError = true;
+            alertStore.show('Your nfts\' hash power exceed available hash power in the collection');
+            return;
+        }
+
         creditCollectionStore.onClickAddToCollection();
         setTimeout(() => {
             validationState.setShowErrors(false);
@@ -118,7 +124,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         inputValidation={nftHashPowerValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
-                helperText = { 'Available TH: 80.000' }>
+                helperText = { `Available TH: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
             </FieldColumnWrapper>
             <FieldColumnWrapper
