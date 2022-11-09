@@ -9,6 +9,8 @@ import StatisticsRepo from '../../presentation/repos/StatisticsRepo';
 
 export default class StatisticsStorageRepo implements StatisticsRepo {
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
         const nftEventEntities = [];
 
@@ -36,7 +38,7 @@ export default class StatisticsStorageRepo implements StatisticsRepo {
 
         userEarningsEntity.totalEarningInBtc = new BigNumber(1.2);
         userEarningsEntity.totalNftBought = 34;
-        userEarningsEntity.totalContractHashPowerInEH = 104135;
+        userEarningsEntity.totalContractHashPowerInTh = 104135;
         userEarningsEntity.totalContractHashPowerInUsd = 34124;
         userEarningsEntity.earningsPerDayInUsd = [100, 32, 231, 511, 531, 81];
         userEarningsEntity.btcEarnedInBtc = new BigNumber(0.321);

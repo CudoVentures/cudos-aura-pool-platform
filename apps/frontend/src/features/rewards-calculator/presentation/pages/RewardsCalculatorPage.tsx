@@ -38,7 +38,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
     const bitcoinPrice = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceInUsd();
     const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChangeInUsd();
 
-    const [hashRateInEH, setHashRateInEH] = useState(rewardsCalculatorStore.hashRateInEH !== 0 ? rewardsCalculatorStore.hashRateInEH.toString() : '');
+    const [hashRateInTh, setHashRateInTh] = useState(rewardsCalculatorStore.hashRateInTh !== 0 ? rewardsCalculatorStore.hashRateInTh.toString() : '');
 
     useEffect(() => {
         async function run() {
@@ -63,12 +63,12 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
 
     function onChangeMiningFarm(miningFarmId: string) {
         rewardsCalculatorStore.onChangeMiningFarm(miningFarmId);
-        setHashRateInEH(rewardsCalculatorStore.hashRateInEH);
+        setHashRateInTh(rewardsCalculatorStore.hashRateInTh.toString());
     }
 
-    function onChangeHashRateInEH(value) {
-        setHashRateInEH(value);
-        rewardsCalculatorStore.hashRateInEH = value !== '' ? parseFloat(value) : 0;
+    function onChangeHashRateInTh(value) {
+        setHashRateInTh(value);
+        rewardsCalculatorStore.hashRateInTh = value !== '' ? parseFloat(value) : 0;
     }
 
     return (
@@ -116,11 +116,11 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         />
                                     }
                                     inputType={InputType.INTEGER}
-                                    value = { hashRateInEH }
-                                    onChange = { onChangeHashRateInEH }
+                                    value = { hashRateInTh }
+                                    onChange = { onChangeHashRateInTh }
                                     InputProps={{
                                         endAdornment: (
-                                            <InputAdornment position="end" >EH</InputAdornment>
+                                            <InputAdornment position="end" >TH</InputAdornment>
                                         ),
                                     }} />
                                 <Slider defaultValue={50}
@@ -132,8 +132,8 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         },
                                     }}
                                     valueLabelDisplay="auto"
-                                    value={rewardsCalculatorStore.hashRateInEH}
-                                    onChange={rewardsCalculatorStore.onChangeHashRateInEHSlider}
+                                    value={rewardsCalculatorStore.hashRateInTh}
+                                    onChange={rewardsCalculatorStore.onChangeHashRateInThSlider}
                                     min={0}
                                     max={10000000}/>
                                 <div className={'FlexRow NetworkDifficulty'}>
@@ -183,6 +183,13 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                     <TextWithTooltip
                                         className={'DataRowHeading'}
                                         text={'Cost'}
+                                        tooltipText={'Cudo’s pool commission + Farm’s maintenance fee'} />
+                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatCost()}</div>
+                                </div>
+                                {/* <div className={'DataRow FlexRow'}>
+                                    <TextWithTooltip
+                                        className={'DataRowHeading'}
+                                        text={'Cost'}
                                         tooltipText={'info'} />
                                     <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPowerCost()}</div>
                                 </div>
@@ -192,14 +199,14 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         text={'Pool Fee'}
                                         tooltipText={'info'} />
                                     <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPoolFee()}</div>
-                                </div>
-                                <div className={'DataRow FlexRow'}>
+                                </div> */}
+                                {/* <div className={'DataRow FlexRow'}>
                                     <TextWithTooltip
                                         className={'DataRowHeading'}
                                         text={'Power Consumption'}
                                         tooltipText={'info'} />
                                     <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPowerConsumptionPerTH()}</div>
-                                </div>
+                                </div> */}
                                 <div className={'DataRow FlexRow'}>
                                     <TextWithTooltip
                                         className={'DataRowHeading'}
@@ -211,9 +218,9 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                             <div className={'RewardsEstimateContainer FlexColumn'}>
                                 <div className={'RewardsEstimateHeading'}>Your Monthly Rewards</div>
                                 <div className={'FlexRow'}>
-                                    <div className={'H2 RewardsInBtc'}>0.000000 BTC</div>
+                                    <div className={'H2 RewardsInBtc'}>{rewardsCalculatorStore.formatNetRewardPerMonth()}</div>
                                     <div className={'FlexColumn'}>
-                                        <div className={'MonthlyRewardUsd'}>$ 0.00 USD</div>
+                                        <div className={'MonthlyRewardUsd'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.calculateNetRewardPetMonth())}</div>
                                         <div className={'Discretion'}>Based on Today’s BTC Price</div>
                                     </div>
                                 </div>

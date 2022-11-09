@@ -1,7 +1,11 @@
-import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
+import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
+import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
 
 export default interface BitcoinRepo {
 
-    fetchBitcoinData(): Promise < BitcoinDataEntity >;
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
+
+    fetchBitcoinCoinGecko(): Promise < BitcoinCoinGeckoEntity >;
+    fetchBitcoinBlockchainInfo(): Promise < BitcoinBlockchainInfoEntity >;
 
 }

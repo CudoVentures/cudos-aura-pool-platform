@@ -18,7 +18,7 @@ export default class CollectionEntity {
     farmId: number;
     name: string;
     description: string;
-    hashPowerInEH: number;
+    hashPowerInTh: number;
     profileImgUrl: string;
     coverImgUrl: string;
     status: CollectionStatus;
@@ -26,22 +26,22 @@ export default class CollectionEntity {
     maintenanceFeeInBtc: BigNumber;
     payoutAddress: string;
     defaultPricePerNftInCudos: BigNumber;
-    defaultHashPowerInEHPerNftInEH: number;
+    defaultHashPowerPerNftInTh: number;
 
     constructor() {
         this.id = S.NOT_EXISTS;
         this.farmId = S.EXISTS;
         this.name = S.Strings.EMPTY;
         this.description = S.Strings.EMPTY;
-        this.hashPowerInEH = S.NOT_EXISTS;
+        this.hashPowerInTh = S.NOT_EXISTS;
         this.profileImgUrl = S.Strings.EMPTY;
         this.coverImgUrl = S.Strings.EMPTY;
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
         this.maintenanceFeeInBtc = null;
-        this.payoutAddress = S.Strings.EMPTY;
+        this.payoutAddress = '';
         this.defaultPricePerNftInCudos = null;
-        this.defaultHashPowerInEHPerNftInEH = S.NOT_EXISTS;
+        this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -62,7 +62,11 @@ export default class CollectionEntity {
     }
 
     hasDefaultValuesPerNft(): boolean {
-        return this.defaultPricePerNftInCudos !== null && this.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS;
+        return this.defaultPricePerNftInCudos !== null && this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS;
+    }
+
+    hasImages(): boolean {
+        return this.profileImgUrl !== '' && this.coverImgUrl !== '';
     }
 
     getDefaultPricePerNftInAcudos(): BigNumber {
@@ -77,16 +81,16 @@ export default class CollectionEntity {
         this.status = CollectionStatus.APPROVED;
     }
 
-    formatHashPowerInEH(): string {
-        return `${this.hashPowerInEH !== S.NOT_EXISTS ? this.hashPowerInEH : 0} EH`;
+    formatHashPowerInTh(): string {
+        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`;
     }
 
     formatStatusName(): string {
         return CollectionEntity.formatStatusName(this.status);
     }
 
-    formatHashRateInEH(): string {
-        return `${this.hashPowerInEH === S.NOT_EXISTS ? 0 : this.hashPowerInEH} EH/s`
+    formatHashRateInTh(): string {
+        return `${this.hashPowerInTh === S.NOT_EXISTS ? 0 : this.hashPowerInTh} TH`
     }
 
     formatMaintenanceFeesInBtc(): string {
@@ -101,8 +105,8 @@ export default class CollectionEntity {
         return this.defaultPricePerNftInCudos !== null ? this.defaultPricePerNftInCudos.toFixed(2) : '0.00';
     }
 
-    formatDefaultHashPowerInEHPerNft(): string {
-        return this.defaultHashPowerInEHPerNftInEH !== S.NOT_EXISTS ? this.defaultHashPowerInEHPerNftInEH.toString() : '0.00';
+    formatDefaultHashPowerPerNftInTh(): string {
+        return this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? this.defaultHashPowerPerNftInTh.toString() : '0.00';
     }
 
     static formatStatusName(status: CollectionStatus): string {
@@ -135,7 +139,7 @@ export default class CollectionEntity {
             'farmId': entity.farmId,
             'name': entity.name,
             'description': entity.description,
-            'hashPowerInEH': entity.hashPowerInEH,
+            'hashPowerInTh': entity.hashPowerInTh,
             'profileImgUrl': entity.profileImgUrl,
             'coverImgUrl': entity.coverImgUrl,
             'status': entity.status,
@@ -143,7 +147,7 @@ export default class CollectionEntity {
             'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
             'payoutAddress': entity.payoutAddress,
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
-            'defaultHashPowerInEHPerNftInEH': entity.defaultHashPowerInEHPerNftInEH,
+            'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
         }
     }
 
@@ -158,7 +162,7 @@ export default class CollectionEntity {
         model.farmId = json.farmId ?? model.farmId;
         model.name = json.name ?? model.name;
         model.description = json.description ?? model.description;
-        model.hashPowerInEH = Number(json.hashPowerInEH ?? model.hashPowerInEH);
+        model.hashPowerInTh = Number(json.hashPowerInTh ?? model.hashPowerInTh);
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
@@ -166,7 +170,7 @@ export default class CollectionEntity {
         model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
-        model.defaultHashPowerInEHPerNftInEH = parseInt(json.defaultHashPowerInEHPerNftInEH ?? model.defaultHashPowerInEHPerNftInEH);
+        model.defaultHashPowerPerNftInTh = parseInt(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
 
         return model;
     }

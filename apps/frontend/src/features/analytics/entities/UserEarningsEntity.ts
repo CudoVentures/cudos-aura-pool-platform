@@ -7,7 +7,7 @@ export default class UserEarningsEntity {
 
     totalEarningInBtc: BigNumber;
     totalNftBought: number;
-    totalContractHashPowerInEH: number;
+    totalContractHashPowerInTh: number;
     totalContractHashPowerInUsd: number;
     earningsPerDayInUsd: number[];
     btcEarnedInBtc: BigNumber;
@@ -15,7 +15,7 @@ export default class UserEarningsEntity {
     constructor() {
         this.totalEarningInBtc = new BigNumber(0);
         this.totalNftBought = 0;
-        this.totalContractHashPowerInEH = 0;
+        this.totalContractHashPowerInTh = 0;
         this.totalContractHashPowerInUsd = 0;
         this.earningsPerDayInUsd = [];
         this.btcEarnedInBtc = new BigNumber(0);
@@ -39,7 +39,7 @@ export default class UserEarningsEntity {
         return {
             'totalEarningInBtc': entity.totalEarningInBtc.toString(),
             'totalNftBought': entity.totalNftBought,
-            'totalContractHashPowerInEH': entity.totalContractHashPowerInEH,
+            'totalContractHashPowerInTh': entity.totalContractHashPowerInTh,
             'totalContractHashPowerInUsd': entity.totalContractHashPowerInUsd,
             'earningsPerDayInUsd': entity.earningsPerDayInUsd,
             'btcEarnedInBtc': entity.btcEarnedInBtc.toString(),
@@ -55,7 +55,7 @@ export default class UserEarningsEntity {
 
         entity.totalEarningInBtc = new BigNumber(json.totalEarningInBtc ?? entity.totalEarningInBtc);
         entity.totalNftBought = parseInt(json.totalNftBought ?? entity.totalNftBought);
-        entity.totalContractHashPowerInEH = parseInt(json.totalContractHashPowerInEH ?? entity.totalContractHashPowerInEH);
+        entity.totalContractHashPowerInTh = parseInt(json.totalContractHashPowerInTh ?? entity.totalContractHashPowerInTh);
         entity.totalContractHashPowerInUsd = parseInt(json.totalContractHashPowerInUsd ?? entity.totalContractHashPowerInUsd);
         entity.earningsPerDayInUsd = (json.earningsPerDayInUsd ?? entity.earningsPerDayInUsd).map((j) => parseInt(j));
         entity.btcEarnedInBtc = new BigNumber(json.btcEarnedInBtc ?? entity.btcEarnedInBtc);

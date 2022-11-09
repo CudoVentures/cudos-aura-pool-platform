@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 
+import S from '../../../../../core/utilities/Main';
 import AutocompleteOption from '../../../../../core/entities/AutocompleteOption';
 import ManufacturerEntity from '../../../entities/ManufacturerEntity';
 import MinerEntity from '../../../entities/MinerEntity';
@@ -23,7 +24,7 @@ import NearMeIcon from '@mui/icons-material/NearMe';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/step-farm-details.css';
-import S from '../../../../../core/utilities/Main';
+import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 
 type Props = {
     alertStore?: AlertStore;
@@ -32,7 +33,7 @@ type Props = {
 
 function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props) {
     const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
-    const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
+    // const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
 
     const validationState = useRef(new ValidationState()).current;
     const farmNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
@@ -45,7 +46,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
 
-    const [hashRateInEH, setHashRateInEH] = useState(miningFarmEntity.hashRateInEH !== S.NOT_EXISTS ? miningFarmEntity.hashRateInEH : '');
+    const [hashRateInTh, setHashRateInTh] = useState(miningFarmEntity.hashRateInTh !== S.NOT_EXISTS ? miningFarmEntity.hashRateInTh : '');
 
     function onChangeManufacturers(values) {
         miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
@@ -71,25 +72,25 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
         creditMiningFarmDetailsPageStore.energySourceInputValue = value;
     }
 
-    function onChangeHashRateInEH(value) {
-        setHashRateInEH(value);
-        miningFarmEntity.hashRateInEH = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    function onChangeHashRateInTh(value) {
+        setHashRateInTh(value);
+        miningFarmEntity.hashRateInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
     }
 
-    function onClickRemoveImage(imageEntityToRemove: ImageEntity) {
-        const imageEntityIndex = imageEntities.findIndex((imageEntity: ImageEntity) => imageEntity.id === imageEntityToRemove.id);
-        imageEntities.splice(imageEntityIndex, 1);
-    }
-
-    // based onfilled farm entity properties
-    // TODO
-    function shouldButtonBeDisabled() {
-        return false;
+    function onClickRemoveImage(i: number) {
+        miningFarmEntity.farmPhotoUrls.splice(i, 1);
+        // const imageEntityIndex = imageEntities.findIndex((imageEntity: ImageEntity) => imageEntity.id === imageEntityToRemove.id);
+        // imageEntities.splice(imageEntityIndex, 1);
     }
 
     function onClickNextStep() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
+            return;
+        }
+
+        if (miningFarmEntity.hasPhotos() === false) {
+            alertStore.show('You must upload at least one photo of your farm');
             return;
         }
 
@@ -197,13 +198,13 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
             <div>
                 <Input
                     label={'Hashrate'}
-                    placeholder={'e.g 102.001 EH/s'}
-                    value={hashRateInEH}
-                    onChange={ onChangeHashRateInEH }
+                    placeholder={'e.g 102.001 TH'}
+                    value={hashRateInTh}
+                    onChange={ onChangeHashRateInTh }
                     inputValidation={farmHashrateValidation}
                     InputProps={{
                         endAdornment: (
-                            <InputAdornment position="end" > EH/s </InputAdornment>
+                            <InputAdornment position="end" > TH </InputAdornment>
                         ),
                     }} />
                 <div className={'FlexRow HashRateInfo B2 SemiBold FullLine'}>
@@ -230,32 +231,30 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                         },
                         'multi': true,
                         onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                            const imageEntity = ImageEntity.new(base64File, PictureType.FARM_PHOTO);
-                            imageEntities.push(imageEntity);
-
-                            alertStore.show('success');
+                            miningFarmEntity.farmPhotoUrls.push(base64File);
+                            // const imageEntity = ImageEntity.new(base64File, PictureType.FARM_PHOTO);
+                            // imageEntities.push(imageEntity);
                         },
                     } } />
             </div>
             <div className={'UploadedImagesRow FlexRow'}>
-                {imageEntities.length === 0 && (
+                {miningFarmEntity.farmPhotoUrls.length === 0 && (
                     <div className={'NoUploads B3 SemiBold'}>No files uploaded yet.</div>
                 )}
-                {imageEntities.length > 0 && (
-                    imageEntities.map((imageEntity) => {
-                        return <div key={imageEntity.id}
-                            style={{
-                                backgroundImage: `url(${imageEntity.base64})`,
-                            }}
-                            className={'PictureBox'} >
-                            <Svg svg={CloseIcon} className={'RemovePictureButton Clickable'} onClick={() => onClickRemoveImage(imageEntity)}/>
-                        </div>
+                {miningFarmEntity.farmPhotoUrls.length > 0 && (
+                    miningFarmEntity.farmPhotoUrls.map((url, i) => {
+                        return (
+                            <div key={i}
+                                style={ ProjectUtils.makeBgImgStyle(url) }
+                                className={'PictureBox'} >
+                                <Svg svg={CloseIcon} className={'RemovePictureButton Clickable'} onClick={onClickRemoveImage.bind(null, i)}/>
+                            </div>
+                        )
                     })
                 )}
             </div>
             <Actions layout={ActionsLayout.LAYOUT_COLUMN_RIGHT} height={ActionsHeight.HEIGHT_48}>
                 <Button
-                    disabled={shouldButtonBeDisabled()}
                     onClick={onClickNextStep}>
                     Next Step
                 </Button>

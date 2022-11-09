@@ -25,10 +25,10 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
     function createDataPreviews() {
         const previews = [];
 
-        previews.push(createDataPreview('Hashing Power', collectionEntity.formatHashRateInEH()));
+        previews.push(createDataPreview('Hashing Power', collectionEntity.formatHashRateInTh()));
         if (collectionEntity.hasDefaultValuesPerNft() === true) {
             previews.push(createDataPreview('Hashing Power per NFT', collectionEntity.formatDefaultPricePerNftInCudos()));
-            previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerInEHPerNft()));
+            previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerPerNftInTh()));
         }
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));
         previews.push(createDataPreview('Farm Royalties', collectionEntity.formatRoyalties()));

@@ -4,13 +4,11 @@ import NftFilterModel from '../../utilities/NftFilterModel';
 
 export default interface NftRepo {
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
+
     fetchNftById(nftId: string, status?: CollectionStatus): Promise < NftEntity >;
-
     fetchNftByIds(nftIds: string[], status?: CollectionStatus): Promise < NftEntity[] >;
-
     fetchNewNftDrops(status?: CollectionStatus): Promise < NftEntity[] >;
-
     fetchTrendingNfts(status?: CollectionStatus): Promise < NftEntity[] >;
-
     fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } >;
 }

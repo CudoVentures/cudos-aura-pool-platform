@@ -9,13 +9,11 @@ import AppStore from './core/presentation/stores/AppStore';
 import AppRouter from './features/app-routes/presentation/components/AppRouter';
 import AlertStore from './core/presentation/stores/AlertStore';
 import RewardsCalculatorStore from './features/rewards-calculator/presentation/stores/RewardsCalculatorStore';
-import BitcoinStorageRepo from './features/bitcoin-data/data/repo/BitcoinStorageRepo';
 import MiningFarmStorageRepo from './features/mining-farm/data/repo/MiningFarmStorageRepo';
 import CollectionStorageRepo from './features/collection/data/repo/CollectionStorageRepo';
 import MarketplaceStore from './features/collection/presentation/stores/MarketplaceStore';
 import NftStorageRepo from './features/nft/data/repo/NftStorageRepo';
 import ExampleModalStore from './features/ui-kit/presensation/stores/ExampleModalStore';
-import CudosStorageRepo from './features/cudos-data/data/repo/CudosStorageRepo';
 import ViewNftPageStore from './features/nft/presentation/stores/ViewNftPageStore';
 import CreditCollectionPageStore from './features/collection/presentation/stores/CreditCollectionPageStore';
 import CreditMiningFarmPageStore from './features/mining-farm/presentation/stores/CreditMiningFarmPageStore';
@@ -52,10 +50,6 @@ import CudosApiRepo from './features/cudos-data/data/repo/CudosApiRepo';
 const storageHelper = new StorageHelper();
 storageHelper.open();
 
-const appStore = new AppStore();
-const alertStore = new AlertStore();
-const exampleModalStore = new ExampleModalStore();
-
 // const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
 const bitcoinRepo = new BitcoinApiRepo();
 const cudosRepo = new CudosApiRepo();
@@ -64,8 +58,10 @@ const collectionRepo = new CollectionApiRepo();
 const nftRepo = new NftApiRepo();
 const accountRepo = new AccountApiRepo();
 const statisticsRepo = new StatisticsStorageRepo();
-const userRepo = new UserStorageRepo();
 
+const appStore = new AppStore();
+const alertStore = new AlertStore();
+const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore();
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
@@ -80,7 +76,7 @@ const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
 const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, nftRepo, collectionRepo, miningFarmRepo, statisticsRepo);
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo);
-const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, userRepo, statisticsRepo);
+const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, statisticsRepo);
 const analyticsPageStore = new AnalyticsPageStore(statisticsRepo, nftRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo);
 const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
@@ -91,6 +87,8 @@ const buyNftModalStore = new BuyNftModalStore();
 const resellNftModalStore = new ResellNftModalStore();
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
+
+bitcoinRepo.setPresentationCallbacks(appStore.enableActions, appStore.disableActions);
 
 const App = () => {
 

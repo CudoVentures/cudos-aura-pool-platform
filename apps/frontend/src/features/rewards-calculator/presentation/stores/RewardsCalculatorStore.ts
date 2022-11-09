@@ -1,10 +1,14 @@
-import { makeAutoObservable } from 'mobx';
+import { computed, makeAutoObservable } from 'mobx';
 
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
 import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import BigNumber from 'bignumber.js';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+
+const MAINTENANCE_FEE = 0.01;
 
 export default class RewardsCalculatorStore {
 
@@ -15,7 +19,7 @@ export default class RewardsCalculatorStore {
     selectedMiningFarmEntity: MiningFarmEntity;
 
     networkDifficultyEdit: string;
-    hashRateInEH: number;
+    hashRateInTh: number;
 
     constructor(bitcoinStore: BitcoinStore, miningFarmRepo: MiningFarmRepo) {
         this.bitcoinStore = bitcoinStore;
@@ -31,7 +35,7 @@ export default class RewardsCalculatorStore {
     resetDefaults() {
         this.selectedMiningFarmEntity = null;
         this.networkDifficultyEdit = S.Strings.EMPTY;
-        this.hashRateInEH = 0;
+        this.hashRateInTh = 0;
     }
 
     isDefault() {
@@ -43,7 +47,7 @@ export default class RewardsCalculatorStore {
             return false;
         }
 
-        if (this.hashRateInEH !== 0) {
+        if (this.hashRateInTh !== 0) {
             return false;
         }
 
@@ -74,43 +78,65 @@ export default class RewardsCalculatorStore {
             return entity.id === selectedMiningFarmId;
         });
 
-        this.hashRateInEH = this.selectedMiningFarmEntity.hashRateInEH;
+        this.hashRateInTh = this.selectedMiningFarmEntity.hashRateInTh;
     }
 
-    onChangeHashRateInEHSlider = (event: MouseEvent, value: number) => {
-        this.hashRateInEH = value;
+    onChangeHashRateInThSlider = (event: MouseEvent, value: number) => {
+        this.hashRateInTh = value;
     }
 
     onChangeNetworkDifficulty = (input: string) => {
         this.networkDifficultyEdit = input;
     }
 
-    formatPowerCost(): string {
-        if (this.selectedMiningFarmEntity === null) {
-            return '-';
-        }
+    // formatPowerCost(): string {
+    //     if (this.selectedMiningFarmEntity === null) {
+    //         return '-';
+    //     }
 
-        return this.selectedMiningFarmEntity.formatPowerCost();
+    //     return this.selectedMiningFarmEntity.formatPowerCost();
+    // }
+
+    // formatPoolFee(): string {
+    //     if (this.selectedMiningFarmEntity === null) {
+    //         return '-';
+    //     }
+
+    //     return this.selectedMiningFarmEntity.formatPoolFee();
+    // }
+
+    // formatPowerConsumptionPerTH(): string {
+    //     if (this.selectedMiningFarmEntity === null) {
+    //         return '-';
+    //     }
+
+    //     return this.selectedMiningFarmEntity.formatPowerConsumptionPerTH();
+    // }
+
+    formatCost(): string {
+        return `${ProjectUtils.CUDOS_FEE_IN_PERCENT + MAINTENANCE_FEE} %`;
     }
 
-    formatPoolFee(): string {
+    calculateGrossRewardPerMonth(): BigNumber {
         if (this.selectedMiningFarmEntity === null) {
-            return '-';
+            return new BigNumber(0);
         }
 
-        return this.selectedMiningFarmEntity.formatPoolFee();
+        return this.bitcoinStore.calculateRewardsPerMonth(this.selectedMiningFarmEntity.hashRateInTh);
     }
 
-    formatPowerConsumptionPerTH(): string {
-        if (this.selectedMiningFarmEntity === null) {
-            return '-';
-        }
+    @computed
+    calculateNetRewardPetMonth(): BigNumber {
+        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT - MAINTENANCE_FEE);
+        return this.calculateGrossRewardPerMonth().multipliedBy(fees);
+    }
 
-        return this.selectedMiningFarmEntity.formatPowerConsumptionPerTH();
+    formatNetRewardPerMonth(): string {
+        return `${this.calculateNetRewardPetMonth().toFixed(5)} BTC`;
     }
 
     // calculatePowerConsumption(): number {
-    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashRateInEH;
+    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashRateInTh;
     // }
 
     // calculateMonthlyRewardBtc(): BigNumber {

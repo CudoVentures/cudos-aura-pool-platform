@@ -21,7 +21,7 @@ export default class MiningFarmEntity {
     manufacturerIds: string[];
     minerIds: string[];
     energySourceIds: string[];
-    hashRateInEH: number;
+    hashRateInTh: number;
     machinesLocation: string
     profileImgUrl: string;
     coverImgUrl: string;
@@ -42,7 +42,7 @@ export default class MiningFarmEntity {
         this.manufacturerIds = [];
         this.minerIds = [];
         this.energySourceIds = [];
-        this.hashRateInEH = S.NOT_EXISTS;
+        this.hashRateInTh = S.NOT_EXISTS;
         this.machinesLocation = S.Strings.EMPTY;
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
@@ -69,12 +69,16 @@ export default class MiningFarmEntity {
         return this.status === MiningFarmStatus.APPROVED;
     }
 
+    hasPhotos(): boolean {
+        return this.farmPhotoUrls.length > 0;
+    }
+
     markApproved() {
         this.status = MiningFarmStatus.APPROVED;
     }
 
-    formatHashRateInEH(): string {
-        return `${this.hashRateInEH !== S.NOT_EXISTS ? this.hashRateInEH : 0} EH/s`
+    formatHashRateInTh(): string {
+        return `${this.hashRateInTh !== S.NOT_EXISTS ? this.hashRateInTh : 0} TH`
     }
 
     formatPowerCost(): string {
@@ -106,7 +110,7 @@ export default class MiningFarmEntity {
             'manufacturerIds': entity.manufacturerIds,
             'minerIds': entity.minerIds,
             'energySourceIds': entity.energySourceIds,
-            'hashRateInEH': entity.hashRateInEH,
+            'hashRateInTh': entity.hashRateInTh,
             'machinesLocation': entity.machinesLocation,
             'profileImgUrl': entity.profileImgUrl,
             'coverImgUrl': entity.coverImgUrl,
@@ -134,11 +138,11 @@ export default class MiningFarmEntity {
         model.manufacturerIds = json.manufacturerIds ?? model.manufacturerIds;
         model.minerIds = json.minerIds ?? model.minerIds;
         model.energySourceIds = json.energySourceIds ?? model.energySourceIds;
-        model.hashRateInEH = Number(json.hashRateInEH) ?? model.hashRateInEH;
+        model.hashRateInTh = Number(json.hashRateInTh) ?? model.hashRateInTh;
         model.machinesLocation = json.machinesLocation ?? model.machinesLocation;
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
-        model.farmPhotoUrls = json.farmPhotoUrls ?? model.farmPhotoUrls;
+        model.farmPhotoUrls = JSON.parse(json.farmPhotoUrls ?? model.farmPhotoUrls);
         model.status = parseInt(json.status ?? model.status);
         model.powerCost = Number(json.powerCost) ?? model.powerCost;
         model.poolFee = Number(json.poolFee) ?? model.poolFee;

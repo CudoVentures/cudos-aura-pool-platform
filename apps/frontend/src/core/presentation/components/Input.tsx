@@ -30,6 +30,28 @@ const Input = React.forwardRef(({ className, inputType, decimalLength, readOnly,
 
     const changed = useRef(false);
 
+    useEffect(() => {
+        if (props.value !== undefined) {
+            if (Array.isArray(inputValidation)) {
+                inputValidation.forEach((validation) => validation.onChange(props.value));
+            } else if (inputValidation !== null) {
+                inputValidation.onChange(props.value);
+            }
+        }
+
+        if (changed.current === true) {
+            if (inputValidation !== null) {
+                if (Array.isArray(inputValidation)) {
+                    inputValidation.forEach((validation) => {
+                        validation.showError = true;
+                    });
+                } else {
+                    inputValidation.showError = true;
+                }
+            }
+        }
+    }, [props.value]);
+
     /* listeners */
     function onChangeHandler(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         changed.current = true;
@@ -58,28 +80,6 @@ const Input = React.forwardRef(({ className, inputType, decimalLength, readOnly,
             onChange(defaultOnChangeParameter === true ? event : event.target.value);
         }
     }
-
-    useEffect(() => {
-        if (props.value !== undefined) {
-            if (Array.isArray(inputValidation)) {
-                inputValidation.forEach((validation) => validation.onChange(props.value));
-            } else if (inputValidation !== null) {
-                inputValidation.onChange(props.value);
-            }
-        }
-
-        if (changed.current === true) {
-            if (inputValidation !== null) {
-                if (Array.isArray(inputValidation)) {
-                    inputValidation.forEach((validation) => {
-                        validation.showError = true;
-                    });
-                } else {
-                    inputValidation.showError = true;
-                }
-            }
-        }
-    }, [props.value]);
 
     function isErrorPresent(): boolean {
         if (inputValidation !== null) {
@@ -123,12 +123,13 @@ const Input = React.forwardRef(({ className, inputType, decimalLength, readOnly,
 
     const cssClassStretch = S.CSS.getClassName(stretch, 'InputStretch');
     const cssClassGray = S.CSS.getClassName(gray, 'InputGray');
+    const error = shouldShowError() && isErrorPresent();
     return (
         <div ref = { ref } className={`Input ${className} ${cssClassStretch} ${cssClassGray} ${S.CSS.getClassName(readOnly, 'ReadOnly')}`}>
             <TextField
                 {...props}
-                error={shouldShowError() && isErrorPresent()}
-                helperText={shouldShowError() ? getErrorMessage() : '' }
+                error={error}
+                helperText={error ? getErrorMessage() : '' }
                 hiddenLabel = { false }
                 onChange={onChange !== null && readOnly !== true ? onChangeHandler : undefined}
                 margin='dense'

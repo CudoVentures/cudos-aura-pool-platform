@@ -20,7 +20,7 @@ function StepReview({ accountSessionStore, creditMiningFarmDetailsPageStore }: P
     const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
-    const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
+    // const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
 
     return (
         <div className = { 'StepMiningFarmPreview FlexColumn' }>
@@ -36,8 +36,8 @@ function StepReview({ accountSessionStore, creditMiningFarmDetailsPageStore }: P
                     createDataPreview('Miners', creditMiningFarmDetailsPageStore.getSelectedMinersNames()),
                     createDataPreview('Energy Source', creditMiningFarmDetailsPageStore.getSelectedEnergySourcesNames()),
                     createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
-                    createDataPreview('Hashrate', miningFarmEntity.formatHashRateInEH()),
-                    createDataPreview('Farm Photos', imageEntities.length),
+                    createDataPreview('Hashrate', miningFarmEntity.formatHashRateInTh()),
+                    createDataPreview('Farm Photos', miningFarmEntity.farmPhotoUrls.length),
 
                 ] } />
             <div className={'TermsAgreeRow'}>

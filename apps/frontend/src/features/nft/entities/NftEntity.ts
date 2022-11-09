@@ -13,7 +13,7 @@ export default class NftEntity {
     id: string;
     name: string;
     collectionId: string;
-    hashPowerInEH: number;
+    hashPowerInTh: number;
     priceInAcudos: BigNumber;
     imageUrl: string;
     status: NftStatus;
@@ -27,7 +27,7 @@ export default class NftEntity {
         this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.collectionId = S.Strings.NOT_EXISTS;
-        this.hashPowerInEH = S.NOT_EXISTS;
+        this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
         this.imageUrl = S.Strings.EMPTY;
         this.status = S.NOT_EXISTS;
@@ -56,6 +56,10 @@ export default class NftEntity {
         return this.currentOwnerAddress === cudosWalletAddress;
     }
 
+    hasImage(): boolean {
+        return this.imageUrl !== '';
+    }
+
     formatExpiryDate(): string {
         const periodMilis = this.expiryDate - Date.now();
 
@@ -82,8 +86,8 @@ export default class NftEntity {
         return `${years} years, ${days} days, ${hours} hours`;
     }
 
-    formatHashPowerInEH(): string {
-        return `${this.hashPowerInEH !== S.NOT_EXISTS ? this.hashPowerInEH : 0} EH`;
+    formatHashPowerInTh(): string {
+        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`;
     }
 
     formatPriceInCudos(): string {
@@ -122,7 +126,7 @@ export default class NftEntity {
             'id': entity.id,
             'name': entity.name,
             'collectionId': entity.collectionId,
-            'hashPowerInEH': entity.hashPowerInEH,
+            'hashPowerInTh': entity.hashPowerInTh,
             'priceInAcudos': entity.priceInAcudos.toString(),
             'imageUrl': entity.imageUrl,
             'status': entity.status,
@@ -144,7 +148,7 @@ export default class NftEntity {
         model.id = json.id ?? model.id;
         model.name = json.name ?? model.name;
         model.collectionId = json.collectionId ?? model.collectionId;
-        model.hashPowerInEH = Number(json.hashPowerInEH ?? model.hashPowerInEH);
+        model.hashPowerInTh = Number(json.hashPowerInTh ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
         model.imageUrl = json.imageUrl ?? model.imageUrl;
         model.status = Number(json.status ?? model.status);
