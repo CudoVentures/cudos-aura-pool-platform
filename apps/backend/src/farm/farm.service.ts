@@ -165,12 +165,14 @@ export class FarmService {
         return manufacturer;
     }
 
-    async getDetails(farmId: number): Promise <{ id: number, nftsOwned: number, nftsSold: number }> {
+    async getDetails(farmId: number): Promise <{ totalHashRate: number, id: number, nftsOwned: number, nftsSold: number }> {
+        const farm = await this.farmModel.findByPk(farmId)
         const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }] })
         const minted = nfts.filter((nft) => nft.status === NftStatus.MINTED)
 
         return {
             id: farmId,
+            totalHashRate: farm.total_farm_hashrate,
             nftsOwned: nfts.length,
             nftsSold: minted.length,
         }

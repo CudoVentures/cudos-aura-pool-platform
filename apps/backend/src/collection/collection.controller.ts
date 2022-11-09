@@ -23,6 +23,7 @@ import { IsCreatorGuard } from './guards/is-creator.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { CollectionFilters } from './utils';
 import { ParseCollectionQueryPipe } from './pipes/collection-query.pipe';
+import { NftStatus } from '../nft/utils';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -37,6 +38,16 @@ export class CollectionController {
         @Query(ParseCollectionQueryPipe) filters: CollectionFilters,
     ): Promise<Collection[]> {
         return this.collectionService.findAll({ ...filters });
+    }
+
+    @Get('details')
+    async getDetails(@Query('ids') ids: string): Promise<any> {
+        const collectionIds = ids.split(',').map((id) => Number(id))
+
+        const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(collectionId))
+        const collectionDetails = await Promise.all(getCollectionDetails)
+
+        return collectionDetails
     }
 
     @Get(':id')
@@ -108,11 +119,16 @@ export class CollectionController {
     async updateStatus(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateCollectionStatusDto: UpdateCollectionStatusDto,
-    ): Promise<Collection> {
-        return this.collectionService.updateStatus(
+    ): Promise<void> {
+        await this.collectionService.updateStatus(
             id,
             updateCollectionStatusDto.status,
         );
+
+        const nftsToUpdate = await this.nftService.findAll({ collection_id: id })
+        const nftsToApprove = nftsToUpdate.map(async (nft) => this.nftService.updateStatus(nft.id, NftStatus.APPROVED))
+
+        await Promise.all(nftsToApprove)
     }
 
     @ApiBearerAuth('access-token')

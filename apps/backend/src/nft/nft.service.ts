@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 import { NFTDto } from './dto/nft.dto';
-import { UpdateNFTDto } from './dto/update-nft.dto';
 import { NFT } from './nft.model';
 import { NftFilters, NftStatus } from './utils';
 
