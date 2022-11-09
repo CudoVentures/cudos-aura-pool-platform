@@ -5,7 +5,7 @@ import UserEntity from '../../entities/UserEntity';
 
 export default class AccountApi {
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletname: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
         return null;
     }
 

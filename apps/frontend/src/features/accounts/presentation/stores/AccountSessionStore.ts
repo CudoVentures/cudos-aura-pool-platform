@@ -85,9 +85,9 @@ export default class AccountSessionStore {
         return this.approvedMiningFarm;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletname: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
         try {
-            await this.accountRepo.login(username, password, cudosWalletAddress, walletname, signedTx);
+            await this.accountRepo.login(username, password, cudosWalletAddress, walletName, signedTx);
         } finally {
             await this.loadSessionAccountsAndSync();
         }

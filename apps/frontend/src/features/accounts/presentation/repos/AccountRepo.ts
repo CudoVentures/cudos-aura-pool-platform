@@ -7,7 +7,7 @@ export default interface AccountRepo {
 
     setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
 
-    login(username: string, password: string, cudosWalletAddress: string, walletname: string, signedTx: any): Promise < void >;
+    login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void >;
     register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void >;
     logout(): Promise < void >;
     confirmBitcoinAddress(): Promise < void >;
