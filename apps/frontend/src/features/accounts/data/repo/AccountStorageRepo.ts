@@ -6,6 +6,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
+import Ledger from 'cudosjs/build/ledgers/Ledger';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -15,7 +16,9 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper = storageHelper;
     }
 
-    async login(email: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
+    async login(email: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
         const currentAccounts = this.storageHelper.accountsJson;
         const currentUsers = this.storageHelper.usersJson;
         const currentAdmins = this.storageHelper.adminsJson;
@@ -53,9 +56,9 @@ export default class AccountStorageRepo implements AccountRepo {
 
                 const lastUserEntity = currentUsers.last();
                 const nextUserId = 1 + (lastUserEntity !== null ? parseInt(lastUserEntity.userId) : 0);
-
                 const accountEntity = new AccountEntity();
                 accountEntity.accountId = nextAccountId.toString();
+                accountEntity.name = walletName;
                 accountEntity.emailVerified = S.INT_TRUE;
                 accountEntity.timestampLastLogin = S.NOT_EXISTS;
                 accountEntity.timestampRegister = Date.now() - 100000000;
@@ -133,13 +136,13 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
-    async confirmBitcoinAddress(): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
         const adminJson = this.storageHelper.adminsJson.find((json) => {
             return json.accountId === this.storageHelper.sessionAdmin.accountId;
         });
 
-        this.storageHelper.sessionAdmin.bitcoinWalletAddress = 'bc2qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
-        adminJson.bitcoinWalletAddress = 'bc2qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+        this.storageHelper.sessionAdmin.bitcoinWalletAddress = bitcoinAddress;
+        adminJson.bitcoinWalletAddress = bitcoinAddress;
         this.storageHelper.save();
     }
 

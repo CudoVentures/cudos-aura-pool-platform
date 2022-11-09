@@ -7,7 +7,6 @@ import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
-import UserRepo from '../repos/UserRepo';
 import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
 import TableState from '../../../../core/presentation/stores/TableState';
 import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
@@ -24,7 +23,6 @@ export enum ProfilePages {
 export default class UserProfilePageStore {
 
     walletStore: WalletStore;
-    userRepo: UserRepo;
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
     statisticsRepo: StatisticsRepo;
@@ -47,11 +45,10 @@ export default class UserProfilePageStore {
     nftEntitiesMap: Map < string, NftEntity >;
     historyTableState: TableState;
 
-    constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, userRepo: UserRepo, statisticsRepo: StatisticsRepo) {
+    constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, statisticsRepo: StatisticsRepo) {
         this.walletStore = walletStore;
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
-        this.userRepo = userRepo;
         this.statisticsRepo = statisticsRepo;
 
         this.profilePage = ProfilePages.NFTS;

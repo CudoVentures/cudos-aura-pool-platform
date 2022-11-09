@@ -67,6 +67,11 @@
     font-weight: 600; font-size: 16px;
 }
 
+.PageViewNft .PageContent .RightLayout .DataValue .SubPrice {
+    color: var(--color-gray-025);
+    font-size: 12px;
+}
+
 .PageViewNft .PageContent .RightLayout .CalculateRewardsNav {
     margin: 20px 40px;
     justify-content: space-between;

@@ -63,7 +63,7 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
 
         setLogging(true);
         try {
-            await accountSessionStore.login(email, password, '', null);
+            await accountSessionStore.login(email, password, '', '', null);
             navigate(AppRoutes.HOME);
         } catch (e) {
             alertStore.show('Wrong username/password');

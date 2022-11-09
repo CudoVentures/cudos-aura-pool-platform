@@ -16,6 +16,8 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         this.storageHelper = storageHelper;
     }
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
     async fetchAllMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
@@ -105,13 +107,21 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
     async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
         return miningFarmIds.map((miningFarmId) => {
+            const miningFarmEntity = this.storageHelper.miningFarmsJson.find((miningFarmJson) => {
+                return miningFarmJson.id === miningFarmId;
+            });
+            const remainingHashPowerInTh = this.storageHelper.collectionsJson.reduce((accu, collectionJson) => {
+                return accu - (collectionJson.farmId === miningFarmId ? collectionJson.hashPowerInTh : 0);
+            }, miningFarmEntity.hashPowerInTh);
+
             const miningFarmDetailsEntity = new MiningFarmDetailsEntity();
 
             miningFarmDetailsEntity.miningFarmId = miningFarmId;
-            miningFarmDetailsEntity.averageHashRateInEH = Math.round(Math.random() * 200);
+            miningFarmDetailsEntity.averageHashPowerInTh = Math.round(Math.random() * 200);
             miningFarmDetailsEntity.activeWorkers = Math.round(Math.random() * 15);
             miningFarmDetailsEntity.nftsOwned = Math.round(Math.random() * 2000);
             miningFarmDetailsEntity.totalNftsSold = Math.round(Math.random() * 20000);
+            miningFarmDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTh;
 
             return miningFarmDetailsEntity;
         });
@@ -135,7 +145,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
             this.storageHelper.miningFarmsJson.push(miningFarmJson);
         }
 
-        Object.assign(miningFarmEntity, MiningFarmEntity.fromJson(miningFarmEntity));
+        Object.assign(miningFarmEntity, MiningFarmEntity.fromJson(miningFarmJson));
 
         this.storageHelper.save();
     }

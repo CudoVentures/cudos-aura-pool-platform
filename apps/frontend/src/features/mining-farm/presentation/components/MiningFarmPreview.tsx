@@ -33,7 +33,7 @@ export default function MiningFarmPeview({ miningFarmEntity }: Props) {
                     containerPadding: ContainerPadding.PADDING_16,
                 } }
                 dataPreviews = { [
-                    createDataPreview('Total hashrate', `${miningFarmEntity.formatHashRateInEH()}`),
+                    createDataPreview('Total hashrate', `${miningFarmEntity.formatHashPowerInTh()}`),
                     createDataPreview('NFTs Owned', 1400),
                     createDataPreview('Total NFTs Sold', 735),
                 ] }>

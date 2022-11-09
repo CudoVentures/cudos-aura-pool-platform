@@ -1,22 +1,30 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
-import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
+import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
 import BitcoinRepo from '../repos/BitcoinRepo';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
+
+export const BLOCKS_PER_DAY = 6 * 24
+export const BLOCKS_PER_WEEK = 6 * 24 * 7;
+export const BLOCKS_PER_MONTH = BLOCKS_PER_DAY * 30;
+export const BLOCKS_PER_YEAR = BLOCKS_PER_DAY * 365;
 
 export default class BitcoinStore {
 
     bitcoinRepo: BitcoinRepo;
 
     inited: boolean;
-    bitcoinDataEntity: BitcoinDataEntity;
+    bitcoinCoinGeckoEntity: BitcoinCoinGeckoEntity;
+    bitcoinBlockchainInfoEntity: BitcoinBlockchainInfoEntity;
 
     constructor(bitcoinRepo: BitcoinRepo) {
         this.bitcoinRepo = bitcoinRepo;
 
         this.inited = false;
-        this.bitcoinDataEntity = null;
+        this.bitcoinCoinGeckoEntity = null;
+        this.bitcoinBlockchainInfoEntity = null;
 
         makeAutoObservable(this);
     }
@@ -27,15 +35,16 @@ export default class BitcoinStore {
         }
 
         this.inited = true;
-        this.bitcoinDataEntity = await this.bitcoinRepo.fetchBitcoinData();
+        this.bitcoinCoinGeckoEntity = await this.bitcoinRepo.fetchBitcoinCoinGecko();
+        this.bitcoinBlockchainInfoEntity = await this.bitcoinRepo.fetchBitcoinBlockchainInfo();
     }
 
     getBitcoinPriceInUsd(): number {
-        return this.bitcoinDataEntity?.priceInUsd ?? 0;
+        return this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0;
     }
 
     getBitcoinPriceChangeInUsd(): number {
-        return this.bitcoinDataEntity?.priceChangeInUsd ?? 0;
+        return this.bitcoinCoinGeckoEntity?.priceChangeInUsd ?? 0;
     }
 
     getBitcoinPriceChangeInPercentage(): number {
@@ -50,7 +59,7 @@ export default class BitcoinStore {
     }
 
     formatBtcInUsd(btcPrice: BigNumber): string {
-        return numeral(btcPrice.multipliedBy(this.bitcoinDataEntity?.priceInUsd ?? 0)).format(ProjectUtils.NUMERAL_USD);
+        return numeral(btcPrice.multipliedBy(this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0)).format(ProjectUtils.NUMERAL_USD);
     }
 
     formatBitcoinPriceChangeInPercentage(): string {
@@ -58,11 +67,41 @@ export default class BitcoinStore {
     }
 
     getNetworkDifficulty(): string {
-        return this.bitcoinDataEntity?.networkDifficulty.toString() ?? '';
+        return this.bitcoinBlockchainInfoEntity?.networkDifficulty.toString() ?? '';
+    }
+
+    getNetworkHashPowerInTh(): number {
+        return this.bitcoinBlockchainInfoEntity?.networkHashPowerInTh ?? 1;
     }
 
     getBlockReward(): number {
-        return this.bitcoinDataEntity?.blockReward ?? 0;
+        return this.bitcoinBlockchainInfoEntity?.blockReward ?? 0;
+    }
+
+    calculateRewardsPerBlock(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        const blockReward = new BigNumber(this.getBlockReward());
+        const hashPower = new BigNumber(targetHashPowerInTh);
+        if (bitcoinHashPower === null) {
+            bitcoinHashPower = new BigNumber(this.getNetworkHashPowerInTh());
+        }
+
+        return hashPower.dividedBy(bitcoinHashPower).multipliedBy(blockReward);
+    }
+
+    calculateRewardsPerDay(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_DAY);
+    }
+
+    calculateRewardsPerWeek(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_WEEK);
+    }
+
+    calculateRewardsPerMonth(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_MONTH);
+    }
+
+    calculateRewardsPerYear(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_YEAR);
     }
 
 }

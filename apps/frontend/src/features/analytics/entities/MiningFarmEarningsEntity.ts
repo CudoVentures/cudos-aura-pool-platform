@@ -27,7 +27,7 @@ export default class MiningFarmEarningsEntity {
 
     formatMaintenanceFeeDepositedInCudosFraction(): string {
         const valueInCudos = this.maintenanceFeeDepositedInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
-        return valueInCudos.minus(valueInCudos).toFixed();
+        return valueInCudos.minus(valueInCudos.integerValue()).shiftedBy(4).toFixed(0);
     }
 
     static toJson(entity: MiningFarmEarningsEntity) {

@@ -9,6 +9,7 @@ export default class CollectionDetailsEntity {
     volumeInAcudos: BigNumber;
     owners: number;
     cudosAddress: string;
+    remainingHashPowerInTH: number;
 
     constructor() {
         this.collectionId = S.Strings.NOT_EXISTS;
@@ -16,6 +17,7 @@ export default class CollectionDetailsEntity {
         this.volumeInAcudos = new BigNumber(0);
         this.owners = 0;
         this.cudosAddress = '';
+        this.remainingHashPowerInTH = 0;
     }
 
     formatFloorPriceInCudos(): string {
@@ -37,6 +39,7 @@ export default class CollectionDetailsEntity {
             'volumeInAcudos': entity.volumeInAcudos.toString(),
             'owners': entity.owners,
             'cudosAddress': entity.cudosAddress,
+            'remainingHashPowerInTH': entity.remainingHashPowerInTH,
         }
     }
 
@@ -52,6 +55,7 @@ export default class CollectionDetailsEntity {
         entity.volumeInAcudos = new BigNumber(json.volumeInAcudos ?? entity.volumeInAcudos);
         entity.owners = parseInt(json.owners ?? entity.owners);
         entity.cudosAddress = json.cudosAddress ?? entity.cudosAddress;
+        entity.remainingHashPowerInTH = parseInt(json.remainingHashPowerInTH ?? entity.remainingHashPowerInTH);
 
         return entity;
     }

@@ -3,6 +3,8 @@ import { action, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import NftRepo from '../repos/NftRepo';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 export enum ModalStage {
     PREVIEW,
@@ -12,6 +14,8 @@ export enum ModalStage {
 }
 
 export default class BuyNftModalStore extends ModalStore {
+    nftRepo: NftRepo;
+    walletStore: WalletStore;
 
     @observable nftEntity: NftEntity;
     @observable cudosPrice: number;
@@ -20,8 +24,11 @@ export default class BuyNftModalStore extends ModalStore {
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
-    constructor() {
+    constructor(nftRepo: NftRepo, walletStore: WalletStore) {
         super();
+
+        this.nftRepo = nftRepo;
+        this.walletStore = walletStore;
 
         this.resetValues();
 
@@ -64,19 +71,16 @@ export default class BuyNftModalStore extends ModalStore {
         this.recipient = recipient;
     }
 
-    buyNft = () => {
+    buyNft = async () => {
         this.modalStage = ModalStage.PROCESSING;
 
-        // TODO: really buy nftEntity
-        this.txHash = 'aergaerhuaeruaeruaeruaeruearueru'
-        setTimeout(() => {
-            this.modalStage = ModalStage.SUCCESS;
-        }, 2000)
+        this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger, this.walletStore.selectedNetwork);
+
+        this.modalStage = ModalStage.SUCCESS;
     }
 
-    getTxLink(): string {
-        // TODO: dynamic link geenration for all networks
-        return `${CHAIN_DETAILS.EXPLORER_URL['PRIVATE']}/${this.txHash}`
+    getTxLink(network): string {
+        return `${CHAIN_DETAILS.EXPLORER_URL[network]}/${this.txHash}`
     }
 
     isStagePreview(): boolean {

@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import BigNumber from 'bignumber.js';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../../core/utilities/Main';
@@ -7,7 +6,9 @@ import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinSt
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
+import AlertStore from '../../../../../core/presentation/stores/AlertStore';
 
+import { InputAdornment } from '@mui/material';
 import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button, { ButtonType } from '../../../../../core/presentation/components/Button';
@@ -25,11 +26,12 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import '../../styles/credit-collection-add-nft-form.css';
 
 type Props = {
+    alertStore?: AlertStore;
     creditCollectionStore?: CreditCollectionStore;
     bitcoinStore?: BitcoinStore;
 }
 
-function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Props) {
+function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoinStore }: Props) {
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
 
     const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
@@ -48,7 +50,21 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
             return;
         }
 
+        if (selectedNftEntity.hasImage() === false) {
+            alertStore.show('You must upload an image');
+            return;
+        }
+
+        if (creditCollectionStore.getCollectionRemainingHashPowerForSelectedNft() < selectedNftEntity.hashPowerInTh) {
+            nftHashPowerValidation.isError = nftHashPowerValidation.showError = true;
+            alertStore.show('Your nfts\' hash power exceed available hash power in the collection');
+            return;
+        }
+
         creditCollectionStore.onClickAddToCollection();
+        setTimeout(() => {
+            validationState.setShowErrors(false);
+        });
     }
 
     return (
@@ -79,6 +95,7 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                             id = { this }
                             params = { {
                                 'maxSize': 73400320, // 70MB
+                                'position': 'static',
                                 'onExceedLimit': () => {
                                     this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
                                 },
@@ -102,12 +119,12 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
                         placeholder={'Enter hashing power...'}
                         disabled = { selectedNftEntity === null }
-                        value={creditCollectionStore.selectedNftHashingPowerInEHInputValue}
+                        value={creditCollectionStore.selectedNftHashingPowerInThInputValue}
                         inputType={InputType.INTEGER}
                         inputValidation={nftHashPowerValidation}
-                        onChange={creditCollectionStore.onChangeSelectedNftHashPowerInEH} />
+                        onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
-                helperText = { 'Available EH/s: 80.000' }>
+                helperText = { `Available TH: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
                 <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
             </FieldColumnWrapper>
             <FieldColumnWrapper
@@ -118,7 +135,12 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                         disabled = { selectedNftEntity === null }
                         value={creditCollectionStore.selectedNftPriceInCudosInputValue}
                         inputValidation={nftPriceValidation}
-                        onChange={creditCollectionStore.onChangeSelectedNftPriceInCudos} />
+                        onChange={creditCollectionStore.onChangeSelectedNftPriceInCudos}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >CUDOS</InputAdornment>
+                            ),
+                        }} />
                 }
                 helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
             <FieldColumnWrapper
@@ -172,7 +194,7 @@ function CreditCollectionAddNftForm({ creditCollectionStore, bitcoinStore }: Pro
                     />
                 }
                 helperText = { 'Maintenance fee calculation formula:' }>
-                <div className={'FormulaBox B2 Bold'}>{'[This NFT EH/s] / [Total EH/s] * [Maintenance fee]'}</div>
+                <div className={'FormulaBox B2 Bold'}>{'[This NFT TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
             </FieldColumnWrapper>
             <SingleDatepicker
                 label = {

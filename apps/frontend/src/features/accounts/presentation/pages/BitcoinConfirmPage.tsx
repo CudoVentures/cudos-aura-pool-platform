@@ -12,12 +12,14 @@ import Button from '../../../../core/presentation/components/Button';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import '../styles/page-bitcoin-confirm.css';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
+    walletStore?: WalletStore;
 }
 
-function BitcoinConfirmPage({ accountSessionStore }: Props) {
+function BitcoinConfirmPage({ accountSessionStore, walletStore }: Props) {
     const validationState = useRef(new ValidationState()).current;
     const validationBitcoin = useRef(validationState.addBitcoinAddressValidation('Invalid address')).current;
 
@@ -28,8 +30,8 @@ function BitcoinConfirmPage({ accountSessionStore }: Props) {
             validationState.setShowErrors(true);
             return;
         }
-        // TO DO: submit a tx
-        accountSessionStore.confirmBitcoinAddress();
+
+        accountSessionStore.confirmBitcoinAddress(bitcoinAddress, walletStore.ledger, walletStore.selectedNetwork);
     }
 
     return (

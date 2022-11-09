@@ -29,7 +29,7 @@ export default class AccountApi {
         localStorage.removeItem('access_token')
     }
 
-    async confirmBitcoinAddress(): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string): Promise < void > {
         return null;
     }
 

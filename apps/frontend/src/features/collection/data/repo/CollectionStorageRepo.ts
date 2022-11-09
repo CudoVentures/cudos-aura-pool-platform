@@ -16,6 +16,8 @@ export default class CollectionStorageRepo implements CollectionRepo {
         this.storageHelper = storageHelper;
     }
 
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
     async fetchCategories(): Promise < CategoryEntity[] > {
         return this.storageHelper.categoriesJson.map((json) => CategoryEntity.fromJson(json));
     }
@@ -85,6 +87,14 @@ export default class CollectionStorageRepo implements CollectionRepo {
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
         return collectionIds.map((collectionId) => {
+            const collectionJson = this.storageHelper.collectionsJson.find((collectionJson) => {
+                return collectionJson.id === collectionId;
+            });
+            const usedHashPowerInTh = this.storageHelper.nftsJson.reduce((accu, nftJson) => {
+                const hashPowerInTh = nftJson.collectionId === collectionJson.id ? nftJson.hashPowerInTh : 0;
+                return accu + hashPowerInTh;
+            }, 0);
+
             const collectionDetailsEntity = new CollectionDetailsEntity();
 
             collectionDetailsEntity.collectionId = collectionId;
@@ -92,6 +102,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
             collectionDetailsEntity.volumeInAcudos = new BigNumber(`${Math.round(Math.random() * 100000)}000000000000000000`);
             collectionDetailsEntity.owners = Math.round(Math.random() * 10);
             collectionDetailsEntity.cudosAddress = 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0';
+            collectionDetailsEntity.remainingHashPowerInTH = collectionJson.hashPowerInTh - usedHashPowerInTh
 
             return collectionDetailsEntity;
         });

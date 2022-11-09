@@ -1,8 +1,10 @@
 import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
-import { KeplrWallet, SigningStargateClient } from 'cudosjs';
+import { KeplrWallet, Ledger } from 'cudosjs';
 import S from '../../../../core/utilities/Main';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import numeral from 'numeral';
 
 declare let Config;
 
@@ -17,23 +19,25 @@ export default class WalletStore {
 
     selectedNetwork: string;
 
-    keplrWallet: KeplrWallet;
+    ledger: Ledger;
     balance: BigNumber;
     address: string;
+    name: string;
 
     constructor() {
         this.selectedNetwork = CHAIN_DETAILS.DEFAULT_NETWORK;
 
-        this.keplrWallet = null;
+        this.ledger = null;
         this.balance = null;
-        this.address = '';
+        this.address = S.Strings.EMPTY;
+        this.name = S.Strings.EMPTY;
 
         makeAutoObservable(this);
     }
 
     @action
     public async connectKeplr(): Promise<void> {
-        this.keplrWallet = new KeplrWallet({
+        this.ledger = new KeplrWallet({
             CHAIN_ID: CHAIN_DETAILS.CHAIN_ID[this.selectedNetwork],
             CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME[this.selectedNetwork],
             RPC: CHAIN_DETAILS.RPC_ADDRESS[this.selectedNetwork],
@@ -42,19 +46,20 @@ export default class WalletStore {
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
 
-        makeObservable(this.keplrWallet, {
+        makeObservable(this.ledger, {
             'connected': observable,
             'accountAddress': observable,
             'connect': action,
         });
 
-        this.keplrWallet.addAddressChangeCallback(this.onChangeAccount);
+        this.ledger.addAddressChangeCallback(this.onChangeAccount);
 
         try {
-            await this.keplrWallet.connect();
+            await this.ledger.connect();
             sessionStorage.setItem(SESSION_STORAGE_WALLET_KEY, SessionStorageWalletOptions.KEPLR);
 
-            this.address = this.keplrWallet.accountAddress;
+            this.address = this.ledger.accountAddress;
+            this.name = await this.ledger.getName();
             this.loadBalance(); // to not wait for it
         } catch (ex) {
             console.error(ex);
@@ -68,13 +73,13 @@ export default class WalletStore {
     }
 
     public async disconnect(): Promise < void > {
-        if (this.keplrWallet !== null) {
+        if (this.ledger !== null) {
             try {
-                await this.keplrWallet.disconnect();
+                await this.ledger.disconnect();
             } catch (ex) {
                 console.error(ex);
             }
-            this.keplrWallet = null;
+            this.ledger = null;
         }
 
         // TO DO: Cosmostation
@@ -95,8 +100,8 @@ export default class WalletStore {
     }
 
     public isConnected(): boolean {
-        if (this.keplrWallet !== null) {
-            return this.keplrWallet.isConnected();
+        if (this.ledger !== null) {
+            return this.ledger.isConnected();
         }
 
         // TO DO: Cosmostation
@@ -106,8 +111,9 @@ export default class WalletStore {
 
     private async loadBalance(): Promise < void > {
         try {
-            if (this.keplrWallet !== null) {
-                this.balance = await this.keplrWallet.getBalance();
+            if (this.ledger !== null) {
+                this.balance = await this.ledger.getBalance();
+                return;
             }
 
             // TO DO: Cosmostation
@@ -131,18 +137,34 @@ export default class WalletStore {
     }
 
     // async getSignerData() {
-    //     const signer = this.keplrWallet.offlineSigner;
-    //     const sender = this.keplrWallet.accountAddress;
+    //     const signer = this.ledger.offlineSigner;
+    //     const sender = this.ledger.accountAddress;
     //     const client = await SigningStargateClient.connectWithSigner(Config.CUDOS_NETWORK.RPC, signer);
 
     //     return { signer, sender, client };
     // }
 
+    getBalanceSafe(): BigNumber {
+        return this.balance ?? new BigNumber(0);
+    }
+
     getAddress(): string {
         return this.address;
     }
 
-    getBalance(): string {
-        return this.balance?.toFixed() ?? '0';
+    formatBalance(): string {
+        return `${this.balance?.toFixed() ?? '0'} CUDOS`;
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
+    formatBalanceInCudosInt(): string {
+        return this.balance?.toFixed(0) ?? '0';
+    }
+
+    formatBalanceInCudosFraction(): string {
+        return this.balance?.minus(this.balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0) ?? '0000';
     }
 }

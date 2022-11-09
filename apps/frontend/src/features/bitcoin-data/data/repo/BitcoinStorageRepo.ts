@@ -1,5 +1,6 @@
 import StorageHelper from '../../../../core/helpers/StorageHelper';
-import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
+import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
+import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
 import BitcoinRepo from '../../presentation/repos/BitcoinRepo';
 
 export default class BitcoinStorageRepo implements BitcoinRepo {
@@ -10,8 +11,14 @@ export default class BitcoinStorageRepo implements BitcoinRepo {
         this.storageHelper = storageHelper;
     }
 
-    async fetchBitcoinData(): Promise < BitcoinDataEntity > {
-        return BitcoinDataEntity.fromJson(this.storageHelper.bitcoinDataJson);
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+
+    async fetchBitcoinCoinGecko(): Promise < BitcoinCoinGeckoEntity > {
+        return BitcoinCoinGeckoEntity.fromJson(this.storageHelper.bitcoinDataJson);
+    }
+
+    async fetchBitcoinBlockchainInfo(): Promise < BitcoinBlockchainInfoEntity > {
+        return new BitcoinBlockchainInfoEntity();
     }
 
 }

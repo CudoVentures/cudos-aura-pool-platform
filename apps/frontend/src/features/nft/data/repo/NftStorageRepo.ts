@@ -1,9 +1,10 @@
 import S from '../../../../core/utilities/Main';
 import StorageHelper from '../../../../core/helpers/StorageHelper';
-import NftEntity from '../../entities/NftEntity';
+import NftEntity, { ListStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
+import BigNumber from 'bignumber.js';
 
 export default class NftStorageRepo implements NftRepo {
 
@@ -12,6 +13,8 @@ export default class NftStorageRepo implements NftRepo {
     constructor(storageHelper: StorageHelper) {
         this.storageHelper = storageHelper;
     }
+
+    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
 
     async fetchNftById(nftId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity > {
         const nftEntities = await this.fetchNftByIds([nftId], status);
@@ -104,5 +107,30 @@ export default class NftStorageRepo implements NftRepo {
             nftEntities: nftsSlice.slice(nftFilterModel.from, nftFilterModel.from + nftFilterModel.count),
             total: nftsSlice.length,
         };
+    }
+
+    async buyNft(nftEntity: NftEntity, ledger: Ledger, network: string): Promise < string > {
+        this.storageHelper.nftsJson.forEach((nftJson: NftEntity) => {
+            if (nftJson.id === nftEntity.id) {
+                nftJson.currentOwnerAddress = ledger.accountAddress
+                nftJson.listStatus = ListStatus.NOT_LISTED
+            }
+        })
+
+        this.storageHelper.save();
+
+        return '0xTRANSACTIONHASH1';
+    }
+
+    async listNftForSale(nftEntity: NftEntity, price: BigNumber, ledger: Ledger, network: string): Promise < string > {
+        this.storageHelper.nftsJson.forEach((nftJson: NftEntity) => {
+            if (nftJson.id === nftEntity.id) {
+                nftJson.listStatus = ListStatus.LISTED
+            }
+        })
+
+        this.storageHelper.save();
+
+        return '0xTRANSACTIONHASH1';
     }
 }

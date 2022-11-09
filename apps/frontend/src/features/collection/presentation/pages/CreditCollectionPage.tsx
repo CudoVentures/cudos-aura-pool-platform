@@ -126,7 +126,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 createDataPreview('Volume', collectionDetailsEntity.formatVolumeInCudos()),
                                 createDataPreview('Items', creditCollectionPageStore.gridViewState.getItemCount()),
                                 createDataPreview('Owners', collectionDetailsEntity.owners),
-                                createDataPreview('Total Hashing Power', collectionEntity.formatHashRateInEH()),
+                                createDataPreview('Total Hashing Power', collectionEntity.formatHashPowerInTh()),
                                 createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]),
                                 createDataPreview(
                                     'Address',

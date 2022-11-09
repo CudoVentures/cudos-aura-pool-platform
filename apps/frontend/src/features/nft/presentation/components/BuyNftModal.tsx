@@ -17,14 +17,16 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import '../styles/buy-nft-modal.css';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 type Props = {
     cudosStore?: CudosStore,
+    walletStore?: WalletStore,
     resellNftModalStore?: ResellNftModalStore;
     buyNftModalStore?: BuyNftModalStore;
 }
 
-function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore }: Props) {
+function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, walletStore }: Props) {
     const nftEntity = buyNftModalStore.nftEntity;
     const validationState = useRef(new ValidationState()).current;
     const rewardsRecipientAddress = useRef(validationState.addCudosAddressValidation('Invalid address')).current;
@@ -118,7 +120,7 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore }: Prop
                         </div>
                         <div className={'FlexRow TransactionView H3'}>
                             Transaction details
-                            <a className={'Clickable'} href={buyNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                            <a className={'Clickable'} href={buyNftModalStore.getTxLink(walletStore.selectedNetwork)} target={'_blank'} rel={'noreferrer'}>
                                 <Svg svg={LaunchIcon} />
                             </a>
                         </div>

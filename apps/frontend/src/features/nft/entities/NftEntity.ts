@@ -4,6 +4,15 @@ import S from '../../../core/utilities/Main';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum NftStatus {
+    QUEUED = 'queued',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
+    MINTED = 'minted',
+    EXPIRED = 'expired',
+    DELETED = 'deleted',
+}
+
+export enum ListStatus {
     NOT_LISTED = 1,
     LISTED = 2,
 }
@@ -13,10 +22,11 @@ export default class NftEntity {
     id: string;
     name: string;
     collectionId: string;
-    hashPowerInEH: number;
+    hashPowerInTh: number;
     priceInAcudos: BigNumber;
     imageUrl: string;
     status: NftStatus;
+    listStatus: ListStatus;
     expiryDate: Date;
     creatorAddress: string;
     currentOwnerAddress: string;
@@ -27,10 +37,11 @@ export default class NftEntity {
         this.id = S.Strings.NOT_EXISTS;
         this.name = S.Strings.EMPTY;
         this.collectionId = S.Strings.NOT_EXISTS;
-        this.hashPowerInEH = S.NOT_EXISTS;
+        this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
         this.imageUrl = S.Strings.EMPTY;
-        this.status = S.NOT_EXISTS;
+        this.status = S.Strings.EMPTY;
+        this.listStatus = S.NOT_EXISTS;
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = S.Strings.EMPTY
         this.currentOwnerAddress = S.Strings.EMPTY
@@ -54,6 +65,10 @@ export default class NftEntity {
 
     isOwnedByAddress(cudosWalletAddress: string): boolean {
         return this.currentOwnerAddress === cudosWalletAddress;
+    }
+
+    hasImage(): boolean {
+        return this.imageUrl !== '';
     }
 
     formatExpiryDate(): string {
@@ -82,8 +97,8 @@ export default class NftEntity {
         return `${years} years, ${days} days, ${hours} hours`;
     }
 
-    formatHashPowerInEH(): string {
-        return `${this.hashPowerInEH !== S.NOT_EXISTS ? this.hashPowerInEH : 0} EH`;
+    formatHashPowerInTh(): string {
+        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`;
     }
 
     formatPriceInCudos(): string {
@@ -122,10 +137,11 @@ export default class NftEntity {
             'id': entity.id,
             'name': entity.name,
             'collectionId': entity.collectionId,
-            'hashPowerInEH': entity.hashPowerInEH,
+            'hashPowerInTh': entity.hashPowerInTh,
             'priceInAcudos': entity.priceInAcudos.toString(),
             'imageUrl': entity.imageUrl,
             'status': entity.status,
+            'listStatus': entity.listStatus,
             'expiryDate': entity.expiryDate,
             'creatorAddress': entity.creatorAddress,
             'currentOwnerAddress': entity.currentOwnerAddress,
@@ -144,10 +160,11 @@ export default class NftEntity {
         model.id = json.id ?? model.id;
         model.name = json.name ?? model.name;
         model.collectionId = json.collectionId ?? model.collectionId;
-        model.hashPowerInEH = Number(json.hashPowerInEH ?? model.hashPowerInEH);
+        model.hashPowerInTh = Number(json.hashPowerInTh ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
         model.imageUrl = json.imageUrl ?? model.imageUrl;
-        model.status = Number(json.status ?? model.status);
+        model.status = json.status ?? model.status;
+        model.listStatus = Number(json.listStatus ?? model.listStatus);
         model.expiryDate = Number(json.expiryDate ?? model.expiryDate);
         model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
         model.currentOwnerAddress = json.currentOwnerAddress ?? model.currentOwnerAddress;

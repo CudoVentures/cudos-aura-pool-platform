@@ -3,21 +3,23 @@ import S from '../../../core/utilities/Main';
 export default class MiningFarmDetailsEntity {
 
     miningFarmId: string;
-    averageHashRateInEH: number;
+    averageHashPowerInTh: number;
     activeWorkers: number;
     nftsOwned: number;
     totalNftsSold: number;
+    remainingHashPowerInTH: number;
 
     constructor() {
         this.miningFarmId = S.Strings.NOT_EXISTS;
-        this.averageHashRateInEH = 0;
+        this.averageHashPowerInTh = 0;
         this.activeWorkers = 0;
         this.nftsOwned = 0;
         this.totalNftsSold = 0;
+        this.remainingHashPowerInTH = 0;
     }
 
-    formatHashRateInEH(): string {
-        return `${this.averageHashRateInEH} EH/s`;
+    formatHashPowerInTh(): string {
+        return `${this.averageHashPowerInTh} TH`;
     }
 
     static toJson(entity: MiningFarmDetailsEntity) {
@@ -27,10 +29,11 @@ export default class MiningFarmDetailsEntity {
 
         return {
             'miningFarmId': entity.miningFarmId,
-            'averageHashRateInEH': entity.averageHashRateInEH,
+            'averageHashPowerInTh': entity.averageHashPowerInTh,
             'activeWorkers': entity.activeWorkers,
             'nftsOwned': entity.nftsOwned,
             'totalNftsSold': entity.totalNftsSold,
+            'remainingHashPowerInTH': entity.remainingHashPowerInTH,
         }
     }
 
@@ -42,10 +45,11 @@ export default class MiningFarmDetailsEntity {
         const entity = new MiningFarmDetailsEntity();
 
         entity.miningFarmId = (json.miningFarmId ?? entity.miningFarmId).toString();
-        entity.averageHashRateInEH = parseInt(json.averageHashRateInEH ?? entity.averageHashRateInEH);
+        entity.averageHashPowerInTh = parseInt(json.averageHashPowerInTh ?? entity.averageHashPowerInTh);
         entity.activeWorkers = parseInt(json.activeWorkers ?? entity.activeWorkers);
         entity.nftsOwned = parseInt(json.nftsOwned ?? entity.nftsOwned);
         entity.totalNftsSold = parseInt(json.totalNftsSold ?? entity.totalNftsSold);
+        entity.remainingHashPowerInTH = parseInt(json.remainingHashPowerInTH ?? entity.remainingHashPowerInTH);
 
         return entity;
     }

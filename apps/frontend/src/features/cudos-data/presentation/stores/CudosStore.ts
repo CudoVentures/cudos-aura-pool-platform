@@ -49,20 +49,28 @@ export default class CudosStore {
         return (priceChangeInUsd / priceInUsd) * 100;
     }
 
-    convertAcudosInUsd(cudosPrice: BigNumber): BigNumber {
-        return cudosPrice?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
+    convertAcudosInUsd(acudosPrice: BigNumber): BigNumber {
+        return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
     }
 
-    convertAcudosInUsdAsString(cudosPrice: BigNumber): string {
-        return this.convertAcudosInUsd(cudosPrice).toString();
+    convertCudosInUsd(cudosPrice: BigNumber): BigNumber {
+        return cudosPrice.multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
+    }
+
+    convertAcudosInUsdAsString(acudosPrice: BigNumber): string {
+        return this.convertAcudosInUsd(acudosPrice).toString();
     }
 
     formatCudosPriceChangeInPercentage(): string {
         return `${this.getCudosPriceChangeInPercentage().toFixed(2)} %`;
     }
 
-    formatConvertedAcudosInUsd(cudosPrice: BigNumber): string {
-        return numeral(this.convertAcudosInUsdAsString(cudosPrice)).format(ProjectUtils.NUMERAL_USD);
+    formatConvertedAcudosInUsd(acudosPrice: BigNumber): string {
+        return numeral(this.convertAcudosInUsdAsString(acudosPrice)).format(ProjectUtils.NUMERAL_USD);
+    }
+
+    formatConvertedCudosInUsd(cudosPrice: BigNumber): string {
+        return numeral(this.convertCudosInUsd(cudosPrice)).format(ProjectUtils.NUMERAL_USD);
     }
 
 }

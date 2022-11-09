@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
+import S from '../../../../core/utilities/Main';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
 import PageFooter from '../../../../features/footer/presentation/components/PageFooter';
@@ -23,7 +24,7 @@ import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator-component.css';
-import S from '../../../../core/utilities/Main';
+import BigNumber from 'bignumber.js';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -32,13 +33,10 @@ type Props = {
 
 function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) {
 
-    const [networkDifficultyEditEnabled, setNetworkDifficultyEditEnabled] = useState(false);
     const navigate = useNavigate();
-
-    const bitcoinPrice = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceInUsd();
     const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChangeInUsd();
 
-    const [hashRateInEH, setHashRateInEH] = useState(rewardsCalculatorStore.hashRateInEH !== 0 ? rewardsCalculatorStore.hashRateInEH.toString() : '');
+    const [networkDifficultyEditEnabled, setNetworkDifficultyEditEnabled] = useState(false);
 
     useEffect(() => {
         async function run() {
@@ -59,16 +57,6 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
 
     function toggleDifficultyEdit() {
         setNetworkDifficultyEditEnabled(!networkDifficultyEditEnabled);
-    }
-
-    function onChangeMiningFarm(miningFarmId: string) {
-        rewardsCalculatorStore.onChangeMiningFarm(miningFarmId);
-        setHashRateInEH(rewardsCalculatorStore.hashRateInEH);
-    }
-
-    function onChangeHashRateInEH(value) {
-        setHashRateInEH(value);
-        rewardsCalculatorStore.hashRateInEH = value !== '' ? parseFloat(value) : 0;
     }
 
     return (
@@ -100,7 +88,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                             tooltipText={'info'}
                                         />
                                     }
-                                    onChange={onChangeMiningFarm}
+                                    onChange={rewardsCalculatorStore.onChangeMiningFarm}
                                     value={rewardsCalculatorStore.selectedMiningFarmEntity !== null ? rewardsCalculatorStore.selectedMiningFarmEntity.id : S.Strings.NOT_EXISTS}>
                                     { rewardsCalculatorStore.miningFarmsEntities.map((miningFarmEntity) => {
                                         return (
@@ -115,16 +103,18 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                             tooltipText={'info'}
                                         />
                                     }
+                                    disabled = { rewardsCalculatorStore.hasSelectedMiningFarm() === false }
                                     inputType={InputType.INTEGER}
-                                    value = { hashRateInEH }
-                                    onChange = { onChangeHashRateInEH }
+                                    value = { rewardsCalculatorStore.hashPowerInThInputValue }
+                                    onChange = { rewardsCalculatorStore.onChangeHashPowerInInput }
                                     InputProps={{
                                         endAdornment: (
-                                            <InputAdornment position="end" >EH</InputAdornment>
+                                            <InputAdornment position="end" >TH</InputAdornment>
                                         ),
                                     }} />
                                 <Slider defaultValue={50}
                                     aria-label="Default"
+                                    disabled = { rewardsCalculatorStore.hasSelectedMiningFarm() === false }
                                     sx={{
                                         color: '#000',
                                         '& .MuiSlider-thumb': {
@@ -132,10 +122,10 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         },
                                     }}
                                     valueLabelDisplay="auto"
-                                    value={rewardsCalculatorStore.hashRateInEH}
-                                    onChange={rewardsCalculatorStore.onChangeHashRateInEHSlider}
+                                    value={parseFloat(rewardsCalculatorStore.hashPowerInThInputValue)}
+                                    onChange={rewardsCalculatorStore.onChangeHashPowerInThSlider}
                                     min={0}
-                                    max={10000000}/>
+                                    max={rewardsCalculatorStore.selectedMiningFarmEntity?.hashPowerInTh ?? 1}/>
                                 <div className={'FlexRow NetworkDifficulty'}>
                                     <Input
                                         label = {
@@ -145,13 +135,15 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         }
                                         inputType={InputType.INTEGER}
                                         readOnly={networkDifficultyEditEnabled === false}
-                                        value={rewardsCalculatorStore.getNetworkDifficulty()}
+                                        value={rewardsCalculatorStore.getNetworkDifficultyInputValue()}
                                         onChange = { rewardsCalculatorStore.onChangeNetworkDifficulty }
                                         gray = { networkDifficultyEditEnabled === false }
                                         InputProps={{
-                                            endAdornment: <InputAdornment position="end" >
-                                                <Svg className = { 'EnableEditButton' } size = { SvgSize.CUSTOM } svg={SvgDriveFileRenameOutlineIcon} onClick={toggleDifficultyEdit} />
-                                            </InputAdornment>,
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <Svg className = { 'EnableEditButton' } size = { SvgSize.CUSTOM } svg={SvgDriveFileRenameOutlineIcon} onClick={toggleDifficultyEdit} />
+                                                </InputAdornment>
+                                            ),
                                         }} />
                                 </div>
                                 <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
@@ -167,7 +159,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                         <div className={'DataContainer FlexColumn'}>
                             <div className={'BtcPriceContainer FlexColumn BorderContainer'}>
                                 <div className={'FlexRow'}>
-                                    <div className={'H2 BtcPrice'}>$ {bitcoinPrice} USD</div>
+                                    <div className={'H2 BtcPrice'}>{bitcoinStore.formatBtcInUsd(new BigNumber(1))}</div>
                                     <div className={'PriceChange FlexRow'}>
                                         <div className={'PriceText'}>{bitcoinStore.formatBitcoinPriceChangeInPercentage()}</div>
                                         {bitcoinPriceChange >= 0
@@ -183,22 +175,8 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                     <TextWithTooltip
                                         className={'DataRowHeading'}
                                         text={'Cost'}
-                                        tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPowerCost()}</div>
-                                </div>
-                                <div className={'DataRow FlexRow'}>
-                                    <TextWithTooltip
-                                        className={'DataRowHeading'}
-                                        text={'Pool Fee'}
-                                        tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPoolFee()}</div>
-                                </div>
-                                <div className={'DataRow FlexRow'}>
-                                    <TextWithTooltip
-                                        className={'DataRowHeading'}
-                                        text={'Power Consumption'}
-                                        tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatPowerConsumptionPerTH()}</div>
+                                        tooltipText={'Cudo’s pool commission + Farm’s maintenance fee'} />
+                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatCost()}</div>
                                 </div>
                                 <div className={'DataRow FlexRow'}>
                                     <TextWithTooltip
@@ -211,9 +189,9 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                             <div className={'RewardsEstimateContainer FlexColumn'}>
                                 <div className={'RewardsEstimateHeading'}>Your Monthly Rewards</div>
                                 <div className={'FlexRow'}>
-                                    <div className={'H2 RewardsInBtc'}>0.000000 BTC</div>
+                                    <div className={'H2 RewardsInBtc'}>{rewardsCalculatorStore.formatNetRewardPerMonth()}</div>
                                     <div className={'FlexColumn'}>
-                                        <div className={'MonthlyRewardUsd'}>$ 0.00 USD</div>
+                                        <div className={'MonthlyRewardUsd'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.calculateNetRewardPetMonth())}</div>
                                         <div className={'Discretion'}>Based on Today’s BTC Price</div>
                                     </div>
                                 </div>

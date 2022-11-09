@@ -1,10 +1,15 @@
-import { makeAutoObservable } from 'mobx';
+import { computed, makeAutoObservable } from 'mobx';
 
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
 import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import BigNumber from 'bignumber.js';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import BitcoinBlockchainInfoEntity from '../../../bitcoin-data/entities/BitcoinBlockchainInfoEntity';
+
+const MAINTENANCE_FEE = 0.01;
 
 export default class RewardsCalculatorStore {
 
@@ -12,10 +17,10 @@ export default class RewardsCalculatorStore {
     miningFarmRepo: MiningFarmRepo;
 
     miningFarmsEntities: MiningFarmEntity[];
-    selectedMiningFarmEntity: MiningFarmEntity;
 
-    networkDifficultyEdit: string;
-    hashRateInEH: number;
+    selectedMiningFarmEntity: MiningFarmEntity;
+    networkDifficultyEdit: BigNumber;
+    hashPowerInThInputValue: string;
 
     constructor(bitcoinStore: BitcoinStore, miningFarmRepo: MiningFarmRepo) {
         this.bitcoinStore = bitcoinStore;
@@ -30,8 +35,8 @@ export default class RewardsCalculatorStore {
 
     resetDefaults() {
         this.selectedMiningFarmEntity = null;
-        this.networkDifficultyEdit = S.Strings.EMPTY;
-        this.hashRateInEH = 0;
+        this.networkDifficultyEdit = null;
+        this.hashPowerInThInputValue = '0';
     }
 
     isDefault() {
@@ -39,11 +44,11 @@ export default class RewardsCalculatorStore {
             return false;
         }
 
-        if (this.networkDifficultyEdit !== S.Strings.EMPTY) {
+        if (this.networkDifficultyEdit !== null) {
             return false;
         }
 
-        if (this.hashRateInEH !== 0) {
+        if (this.hashPowerInThInputValue !== '0') {
             return false;
         }
 
@@ -52,74 +57,74 @@ export default class RewardsCalculatorStore {
 
     async init() {
         await this.bitcoinStore.init();
-
-        this.resetDefaults();
         this.miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
     }
 
-    hasNetworkDifficulty() {
-        return this.networkDifficultyEdit !== S.Strings.EMPTY;
+    hasSelectedMiningFarm(): boolean {
+        return this.selectedMiningFarmEntity !== null;
     }
 
-    getNetworkDifficulty() {
-        if (this.hasNetworkDifficulty() === true) {
-            return this.networkDifficultyEdit;
-        }
-
-        return this.bitcoinStore.getNetworkDifficulty();
+    getNetworkDifficultyInputValue(): string {
+        return this.networkDifficultyEdit !== null ? this.networkDifficultyEdit.toString() : this.bitcoinStore.getNetworkDifficulty();
     }
 
-    onChangeMiningFarm(selectedMiningFarmId: string) {
+    onChangeMiningFarm = (selectedMiningFarmId: string) => {
         this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
             return entity.id === selectedMiningFarmId;
         });
 
-        this.hashRateInEH = this.selectedMiningFarmEntity.hashRateInEH;
+        this.hashPowerInThInputValue = this.selectedMiningFarmEntity.hashPowerInTh.toString();
     }
 
-    onChangeHashRateInEHSlider = (event: MouseEvent, value: number) => {
-        this.hashRateInEH = value;
+    onChangeHashPowerInInput = (value: string) => {
+        if (value === '') {
+            this.hashPowerInThInputValue = '0';
+            return;
+        }
+
+        const floatValue = parseFloat(value);
+        if (floatValue < 0) {
+            value = '0';
+        }
+        if (floatValue > this.selectedMiningFarmEntity.hashPowerInTh) {
+            value = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+        }
+
+        while (value[0] === '0') {
+            value = value.substring(1);
+        }
+
+        this.hashPowerInThInputValue = value;
+    }
+
+    onChangeHashPowerInThSlider = (event: MouseEvent, value: number) => {
+        this.hashPowerInThInputValue = value.toString();
     }
 
     onChangeNetworkDifficulty = (input: string) => {
-        this.networkDifficultyEdit = input;
+        this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
     }
 
-    formatPowerCost(): string {
-        if (this.selectedMiningFarmEntity === null) {
-            return '-';
+    formatCost(): string {
+        return `${ProjectUtils.CUDOS_FEE_IN_PERCENT + MAINTENANCE_FEE} %`;
+    }
+
+    calculateGrossRewardPerMonth(): BigNumber {
+        let bitcoinHashPower = null;
+        if (this.networkDifficultyEdit !== null) {
+            bitcoinHashPower = BitcoinBlockchainInfoEntity.getNetworkHashPowerInTh(this.networkDifficultyEdit);
         }
 
-        return this.selectedMiningFarmEntity.formatPowerCost();
+        return this.bitcoinStore.calculateRewardsPerMonth(parseFloat(this.hashPowerInThInputValue), bitcoinHashPower);
     }
 
-    formatPoolFee(): string {
-        if (this.selectedMiningFarmEntity === null) {
-            return '-';
-        }
-
-        return this.selectedMiningFarmEntity.formatPoolFee();
+    @computed
+    calculateNetRewardPetMonth(): BigNumber {
+        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT - MAINTENANCE_FEE);
+        return this.calculateGrossRewardPerMonth().multipliedBy(fees);
     }
 
-    formatPowerConsumptionPerTH(): string {
-        if (this.selectedMiningFarmEntity === null) {
-            return '-';
-        }
-
-        return this.selectedMiningFarmEntity.formatPowerConsumptionPerTH();
+    formatNetRewardPerMonth(): string {
+        return `${this.calculateNetRewardPetMonth().toFixed(5)} BTC`;
     }
-
-    // calculatePowerConsumption(): number {
-    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashRateInEH;
-    // }
-
-    // calculateMonthlyRewardBtc(): BigNumber {
-    //     // TODO: calculate
-    //     return new BigNumber(1);
-    // }
-
-    // calculateBtcToUsd(btcAmount: BigNumber): BigNumber {
-    //     return btcAmount.multipliedBy(this.bitcoinStore.getBitcoinPriceInUsd());
-    // }
-
 }

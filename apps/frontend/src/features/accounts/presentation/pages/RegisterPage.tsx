@@ -8,6 +8,7 @@ import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AppStore from '../../../../core/presentation/stores/AppStore';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
@@ -28,7 +29,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import '../styles/page-register.css';
-import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 enum RegisterStep {
     ACCOUNT_DETAILS,
@@ -51,6 +51,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
     const validationEmail = useRef(validationState.addEmailValidation('Invalid email')).current;
     const validationPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
     const validationConfirmPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
+    const [validationFirstMatchPass, validationSecondMatchPass] = useRef(validationState.addMatchStringsValidation('Passwords don\'t match.')).current;
 
     const [step, setStep] = useState(RegisterStep.ACCOUNT_DETAILS);
     const [name, setName] = useState('');
@@ -162,7 +163,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
                             value={password}
                             inputValidation={[
                                 validationPass,
-                                // validationState.addMatchStringsValidation(repeatPassword, 'Passwords don\'t match.'),
+                                validationFirstMatchPass,
                             ]}
                             onChange={setPassword}
                             type={showPassword === false ? 'password' : 'text'} />
@@ -176,7 +177,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
                             }}
                             inputValidation={[
                                 validationConfirmPass,
-                                // validationState.addMatchStringsValidation(password, 'Passwords don\'t match.'),
+                                validationSecondMatchPass,
                             ]}
                             value={repeatPassword}
                             onChange={setRepeatPassword}
@@ -235,7 +236,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
         async function onClickCreateAccount() {
             // prepare a signed tx for register
             await accountSessionStore.register(email, password, name, cudosWalletAddress, '');
-            await accountSessionStore.login(email, password, cudosWalletAddress, '');
+            await accountSessionStore.login(email, password, cudosWalletAddress, '', '');
             navigate(AppRoutes.HOME);
         }
 

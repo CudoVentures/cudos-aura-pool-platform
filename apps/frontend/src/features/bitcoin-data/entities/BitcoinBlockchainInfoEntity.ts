@@ -1,57 +1,65 @@
 import BigNumber from 'bignumber.js';
 import S from '../../../core/utilities/Main';
 
-export default class BitcoinDataEntity {
+export default class BitcoinBlockchainInfoEntity {
 
     static MODEL_VERSION = 1;
 
     modelVersion: number;
-    priceInUsd: number;
-    priceChangeInUsd: number;
     blockReward: number;
     networkDifficulty: BigNumber;
+    networkHashPowerInTh: number;
     timestampLastUpdate: number;
 
     constructor() {
-        this.modelVersion = BitcoinDataEntity.MODEL_VERSION;
-        this.priceInUsd = S.NOT_EXISTS;
-        this.priceChangeInUsd = S.NOT_EXISTS;
+        this.modelVersion = BitcoinBlockchainInfoEntity.MODEL_VERSION;
         this.blockReward = S.NOT_EXISTS;
         this.networkDifficulty = null;
+        this.networkHashPowerInTh = S.NOT_EXISTS;
         this.timestampLastUpdate = S.NOT_EXISTS;
     }
 
-    shouldUpdate(): boolean {
-        return this.timestampLastUpdate + 2 * 3600 * 1000 < Date.now();
+    static getNetworkHashPowerInTh(networkDifficulty: BigNumber): number {
+        const multiplier = new BigNumber(2).pow(32);
+        const teraDivider = new BigNumber(1000000000000);
+
+        return parseInt(networkDifficulty.multipliedBy(multiplier).dividedBy(600).dividedBy(teraDivider).toFixed(0));
     }
 
-    static toJson(entity: BitcoinDataEntity): any {
+    setNetworkDifficulty(networkDifficulty: BigNumber) {
+        this.networkDifficulty = networkDifficulty;
+        this.networkHashPowerInTh = BitcoinBlockchainInfoEntity.getNetworkHashPowerInTh(networkDifficulty);
+    }
+
+    shouldUpdate(): boolean {
+        return this.timestampLastUpdate + 48 * 3600 * 1000 < Date.now();
+    }
+
+    static toJson(entity: BitcoinBlockchainInfoEntity): any {
         if (entity === null) {
             return null;
         }
 
         return {
             'modelVersion': entity.modelVersion,
-            'priceInUsd': entity.priceInUsd,
-            'priceChangeInUsd': entity.priceChangeInUsd,
             'blockReward': entity.blockReward,
             'networkDifficulty': entity.networkDifficulty.toString(),
+            'networkHashPowerInTh': entity.networkHashPowerInTh,
             'timestampLastUpdate': entity.timestampLastUpdate,
         }
     }
 
-    static fromJson(json): BitcoinDataEntity {
+    static fromJson(json): BitcoinBlockchainInfoEntity {
         if (json === null) {
             return null;
         }
 
-        const model = new BitcoinDataEntity();
+        const model = new BitcoinBlockchainInfoEntity();
 
         model.modelVersion = parseInt(json.modelVersion) ?? model.modelVersion;
-        model.priceInUsd = Number(json.priceInUsd) ?? model.priceInUsd;
-        model.priceChangeInUsd = Number(json.priceChangeInUsd) ?? model.priceChangeInUsd;
         model.blockReward = parseFloat(json.blockReward ?? model.blockReward);
         model.networkDifficulty = new BigNumber(json.networkDifficulty ?? model.networkDifficulty);
+        model.networkHashPowerInTh = parseInt(json.networkHashPowerInTh ?? model.networkHashPowerInTh);
         model.timestampLastUpdate = parseInt(json.timestampLastUpdate ?? model.timestampLastUpdate);
 
         return model;

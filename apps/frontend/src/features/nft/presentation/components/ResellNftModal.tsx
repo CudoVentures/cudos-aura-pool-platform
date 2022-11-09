@@ -18,12 +18,14 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import ReportIcon from '@mui/icons-material/Report';
 import '../styles/resell-nft-modal.css';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 type Props = {
+    walletStore?: WalletStore;
     resellNftModalStore?: ResellNftModalStore;
 }
 
-function ResellNftModal({ resellNftModalStore }: Props) {
+function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
     const nftEntity = resellNftModalStore.nftEntity;
     const validationState = useRef(new ValidationState()).current;
     const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
@@ -103,7 +105,7 @@ function ResellNftModal({ resellNftModalStore }: Props) {
                 <div className={'H3 Info'}>Transaction was successfully executed.</div>
                 <div className={'FlexRow TransactionView H3'}>
                     Transaction details
-                    <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                    <a className={'Clickable'} href={resellNftModalStore.getTxLink(walletStore.selectedNetwork)} target={'_blank'} rel={'noreferrer'}>
                         <Svg svg={LaunchIcon} />
                     </a>
                 </div>

@@ -1,5 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import S from '../../../../core/utilities/Main';
+import { Ledger, GasPrice, SigningStargateClient } from 'cudosjs';
+
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
@@ -8,6 +10,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../repos/AccountRepo';
+import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
 export default class AccountSessionStore {
 
@@ -85,9 +88,9 @@ export default class AccountSessionStore {
         return this.approvedMiningFarm;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
         try {
-            await this.accountRepo.login(username, password, cudosWalletAddress, signedTx);
+            await this.accountRepo.login(username, password, cudosWalletAddress, walletName, signedTx);
         } finally {
             await this.loadSessionAccountsAndSync();
         }
@@ -106,9 +109,9 @@ export default class AccountSessionStore {
         this.superAdminEntity = null;
     }
 
-    async confirmBitcoinAddress(): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
         try {
-            this.accountRepo.confirmBitcoinAddress();
+            this.accountRepo.confirmBitcoinAddress(bitcoinAddress, ledger, network);
         } finally {
             await this.loadSessionAccountsAndSync();
         }
