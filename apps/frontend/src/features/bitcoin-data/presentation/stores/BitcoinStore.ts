@@ -78,27 +78,30 @@ export default class BitcoinStore {
         return this.bitcoinBlockchainInfoEntity?.blockReward ?? 0;
     }
 
-    calculateRewardsPerBlock(targetHashPowerInTh: number): BigNumber {
+    calculateRewardsPerBlock(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
         const blockReward = new BigNumber(this.getBlockReward());
         const hashPower = new BigNumber(targetHashPowerInTh);
-        const bitcoinHashPower = new BigNumber(this.getNetworkHashPowerInTh());
+        if (bitcoinHashPower === null) {
+            bitcoinHashPower = new BigNumber(this.getNetworkHashPowerInTh());
+        }
+
         return hashPower.dividedBy(bitcoinHashPower).multipliedBy(blockReward);
     }
 
-    calculateRewardsPerDay(targetHashPowerInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_DAY);
+    calculateRewardsPerDay(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_DAY);
     }
 
-    calculateRewardsPerWeek(targetHashPowerInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_WEEK);
+    calculateRewardsPerWeek(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_WEEK);
     }
 
-    calculateRewardsPerMonth(targetHashPowerInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_MONTH);
+    calculateRewardsPerMonth(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_MONTH);
     }
 
-    calculateRewardsPerYear(targetHashPowerInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_YEAR);
+    calculateRewardsPerYear(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_YEAR);
     }
 
 }
