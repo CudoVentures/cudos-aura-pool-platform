@@ -22,6 +22,8 @@ export default class CollectionApi {
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         const { data } = await axios.get('/api/v1/collection', { params: {
             ...collectionFilterModel,
+            ...(collectionFilterModel.collectionIds && { ids: collectionFilterModel.collectionIds.join(',') }),
+            farm_id: collectionFilterModel.farmId,
         } })
 
         return {
@@ -39,7 +41,7 @@ export default class CollectionApi {
         }
     }
 
-    async creditCollection(collectionEntity: CollectionEntity, nftEntities: NtEntity[]): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
+    async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
         const { data: collectionData } = await axios.put(
             '/api/v1/collection',
             {
@@ -47,17 +49,17 @@ export default class CollectionApi {
                 name: collectionEntity.name,
                 description: collectionEntity.description,
                 denom_id: collectionEntity.name,
-                hashing_power: collectionEntity.hashPower,
+                hashing_power: collectionEntity.hashPowerInEH,
                 royalties: collectionEntity.royalties,
-                maintenance_fee: Number(collectionEntity.maintenanceFees),
+                maintenance_fee: Number(collectionEntity.maintenanceFeeInBtc),
                 payout_address: collectionEntity.payoutAddress,
                 farm_id: collectionEntity.farmId,
                 nfts: nftEntities.map((nft) => ({
                     id: nft.id,
                     name: nft.name,
                     ...(nft.imageUrl && { uri: nft.imageUrl }),
-                    hashing_power: nft.hashPower,
-                    price: Number(nft.price),
+                    hashing_power: nft.hashPowerInEH,
+                    price: Number(nft.priceInAcudos),
                     expiration_date: new Date(nft.expiryDate),
                     collection_id: nft.collectionId,
                 })),
@@ -82,6 +84,6 @@ export default class CollectionApi {
     }
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
-        return null;
+        return collectionIds.map((id) => CollectionDetailsEntity.fromJson({ collectionId: id }));
     }
 }

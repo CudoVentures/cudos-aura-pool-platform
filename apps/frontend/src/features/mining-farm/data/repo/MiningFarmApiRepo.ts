@@ -7,6 +7,7 @@ import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEnt
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmApi from '../data-sources/MiningFarmApi';
+import JwtDecode from 'jwt-decode'
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -54,8 +55,9 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     }
 
     async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
+        const user = localStorage.getItem('access_token') && JwtDecode(localStorage.getItem('access_token'))
         const miningFarmFilterModel = new MiningFarmFilterModel();
-        miningFarmFilterModel.sessionAccount = S.INT_TRUE;
+        miningFarmFilterModel.sessionAccount = user.id;
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
         miningFarmFilterModel.status = status;

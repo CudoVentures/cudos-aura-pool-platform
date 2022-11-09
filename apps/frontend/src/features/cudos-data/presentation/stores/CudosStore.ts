@@ -50,7 +50,7 @@ export default class CudosStore {
     }
 
     convertAcudosInUsd(cudosPrice: BigNumber): BigNumber {
-        return cudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
+        return cudosPrice?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
     }
 
     convertAcudosInUsdAsString(cudosPrice: BigNumber): string {

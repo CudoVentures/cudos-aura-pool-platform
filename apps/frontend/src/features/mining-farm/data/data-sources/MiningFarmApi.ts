@@ -65,6 +65,7 @@ export default class MiningFarmApi {
             limit: miningFarmFilterModel.count,
             ...(miningFarmFilterModel.sessionAccount && { creator_id: miningFarmFilterModel.sessionAccount }),
             offset: miningFarmFilterModel.from,
+            ...(miningFarmFilterModel.miningFarmIds && { ids: miningFarmFilterModel.miningFarmIds.join(',') }),
         } })
 
         const result = { miningFarmEntities: data.map((farm) => MiningFarmEntity.fromJson({
@@ -114,7 +115,7 @@ export default class MiningFarmApi {
                 leftover_reward_payout_address: 'leftover_reward_payout_address',
                 maintenance_fee_payout_address: 'maintenance_fee_payout_address',
                 maintenance_fee_in_btc: miningFarmEntity.poolFee,
-                total_farm_hashrate: miningFarmEntity.hashRateTh,
+                total_farm_hashrate: miningFarmEntity.hashRateInEH,
                 manufacturers: miningFarmEntity.manufacturerIds,
                 miner_types: miningFarmEntity.minerIds,
                 energy_source: miningFarmEntity.energySourceIds,
