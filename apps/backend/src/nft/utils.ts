@@ -24,7 +24,7 @@ export class NftFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
-        collection_id: string;
+        collection_ids: string;
 
     @IsString()
     @IsOptional()

@@ -28,6 +28,11 @@ export class CollectionFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
+        farm_id: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
         status: string;
 
     @IsString()
