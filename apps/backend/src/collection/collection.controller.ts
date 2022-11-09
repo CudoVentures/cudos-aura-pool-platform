@@ -23,6 +23,7 @@ import { IsCreatorGuard } from './guards/is-creator.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { CollectionFilters } from './utils';
 import { ParseCollectionQueryPipe } from './pipes/collection-query.pipe';
+import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -50,7 +51,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+    @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard, IsFarmApprovedGuard)
     @Put()
     async createOrEdit(
         @Request() req,
