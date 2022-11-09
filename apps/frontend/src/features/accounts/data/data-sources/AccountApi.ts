@@ -17,7 +17,7 @@ export default class AccountApi {
         return null;
     }
 
-    async confirmBitcoinAddress(): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string): Promise < void > {
         return null;
     }
 
