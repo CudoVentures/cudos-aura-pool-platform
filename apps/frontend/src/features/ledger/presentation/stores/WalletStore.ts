@@ -3,6 +3,8 @@ import { KeplrWallet, Ledger } from 'cudosjs';
 import S from '../../../../core/utilities/Main';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import numeral from 'numeral';
 
 declare let Config;
 
@@ -111,6 +113,7 @@ export default class WalletStore {
         try {
             if (this.ledger !== null) {
                 this.balance = await this.ledger.getBalance();
+                return;
             }
 
             // TO DO: Cosmostation
@@ -151,5 +154,13 @@ export default class WalletStore {
 
     getName(): string {
         return this.name;
+    }
+
+    formatBalanceInCudosInt(): string {
+        return this.balance.toFixed(0);
+    }
+
+    formatBalanceInCudosFraction(): string {
+        return this.balance.minus(this.balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0);
     }
 }
