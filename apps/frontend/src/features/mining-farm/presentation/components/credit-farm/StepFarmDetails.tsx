@@ -11,7 +11,7 @@ import ImageEntity, { PictureType } from '../../../../upload-file/entities/Image
 import CreditMiningFarmDetailsPageStore from '../../stores/CreditMiningFarmDetailsPageStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
 
-import Input from '../../../../../core/presentation/components/Input';
+import Input, { InputType } from '../../../../../core/presentation/components/Input';
 import { InputAdornment } from '@mui/material';
 import Svg from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
@@ -25,6 +25,9 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/step-farm-details.css';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
+import FieldColumnWrapper from '../../../../../core/presentation/components/FieldColumnWrapper';
+import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
+import BigNumber from 'bignumber.js';
 
 type Props = {
     alertStore?: AlertStore;
@@ -45,8 +48,10 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmEnergySourceseValidation = useRef(validationState.addEmptyValidation('Empty energy source')).current;
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
+    const farmMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
 
     const [hashPowerInTh, setHashPowerInTh] = useState(miningFarmEntity.hashPowerInTh !== S.NOT_EXISTS ? miningFarmEntity.hashPowerInTh : '');
+    const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(miningFarmEntity.maintenanceFeeInBtc !== null ? miningFarmEntity.maintenanceFeeInBtc.toString() : '')
 
     function onChangeManufacturers(values) {
         miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
@@ -75,6 +80,11 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     function onChangeHashPowerInTh(value) {
         setHashPowerInTh(value);
         miningFarmEntity.hashPowerInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+    }
+
+    function onChangeMaintenanceFees(value) {
+        setMaintenanceFeeInBtc(value);
+        miningFarmEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
     }
 
     function onClickRemoveImage(i: number) {
@@ -212,6 +222,24 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                     Insert the Hashrate planned to be offered as NFTs
                 </div>
             </div>
+            <FieldColumnWrapper
+                field = {
+                    <Input
+                        label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
+                        placeholder={'Maintenance fees...'}
+                        value={maintenanceFeeInBtc}
+                        inputType={InputType.REAL}
+                        inputValidation={farmMainteannceFeesValidation}
+                        onChange={onChangeMaintenanceFees}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" >BTC</InputAdornment>
+                            ),
+                        }} />
+                }
+                helperText = { 'Maintenance fee calculation formula:' } >
+                <div className={'FormulaBox B2 Bold'}>{'[This Farm TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
+            </FieldColumnWrapper>
             <div className={'B2 Bold FullLine'}> 3. Upload photos from the farm</div>
             <div className={'Uploader FlexColumn'}>
                 <div className={'B3 SemiBold'}>Upload files here</div>

@@ -94,10 +94,6 @@ export default class CollectionEntity {
         return CollectionEntity.formatStatusName(this.status);
     }
 
-    formatHashPowerInTh(): string {
-        return `${this.hashPowerInTh === S.NOT_EXISTS ? 0 : this.hashPowerInTh} TH`
-    }
-
     formatMaintenanceFeesInBtc(): string {
         return this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(2) : '0.00';
     }
