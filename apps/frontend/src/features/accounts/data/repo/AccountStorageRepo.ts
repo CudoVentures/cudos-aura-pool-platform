@@ -6,6 +6,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
+import Ledger from 'cudosjs/build/ledgers/Ledger';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -140,8 +141,8 @@ export default class AccountStorageRepo implements AccountRepo {
             return json.accountId === this.storageHelper.sessionAdmin.accountId;
         });
 
-        this.storageHelper.sessionAdmin.bitcoinWalletAddress = adminJson;
-        adminJson.bitcoinWalletAddress = adminJson;
+        this.storageHelper.sessionAdmin.bitcoinWalletAddress = bitcoinAddress;
+        adminJson.bitcoinWalletAddress = bitcoinAddress;
         this.storageHelper.save();
     }
 
