@@ -73,7 +73,7 @@ function MarkedplacePage({ analyticsPageStore, cudosStore, walletStore }: Props)
                                         <span className={'H2 Bold'}>{walletStore.formatBalanceInCudosInt()}<span className={'SecondaryColor'}>.{walletStore.formatBalanceInCudosFraction()}</span></span>
                                         <span className={'H3 SecondaryColor'}> CUDOS</span>
                                     </div>
-                                    <div className={'SecondaryColor H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.balance)}</div>
+                                    <div className={'SecondaryColor H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.getBalanceSafe())}</div>
                                 </div>
                             </StyledContainer>
                             <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>

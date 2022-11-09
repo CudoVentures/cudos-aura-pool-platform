@@ -144,12 +144,16 @@ export default class WalletStore {
     //     return { signer, sender, client };
     // }
 
+    getBalanceSafe(): BigNumber {
+        return this.balance ?? new BigNumber(0);
+    }
+
     getAddress(): string {
         return this.address;
     }
 
-    getBalance(): string {
-        return this.balance?.toFixed() ?? '0';
+    formatBalance(): string {
+        return `${this.balance?.toFixed() ?? '0'} CUDOS`;
     }
 
     getName(): string {
@@ -157,10 +161,10 @@ export default class WalletStore {
     }
 
     formatBalanceInCudosInt(): string {
-        return this.balance.toFixed(0);
+        return this.balance?.toFixed(0) ?? '0';
     }
 
     formatBalanceInCudosFraction(): string {
-        return this.balance.minus(this.balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0);
+        return this.balance?.minus(this.balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0) ?? '0000';
     }
 }
