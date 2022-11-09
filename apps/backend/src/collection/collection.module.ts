@@ -7,10 +7,11 @@ import { Collection } from './collection.model';
 import { NFTModule } from '../nft/nft.module';
 import { NFTService } from '../nft/nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
+import { NFT } from '../nft/nft.model';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([Collection]),
+        SequelizeModule.forFeature([Collection, NFT]),
         forwardRef(() => NFTModule),
         HttpModule,
     ],

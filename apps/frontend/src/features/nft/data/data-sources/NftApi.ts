@@ -1,5 +1,6 @@
 import axios from 'axios';
-import NftEntity from '../../entities/NftEntity';
+import BigNumber from 'bignumber.js';
+import NftEntity, { NftStatus } from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 
 export default class NftApi {
@@ -14,10 +15,11 @@ export default class NftApi {
             id: nft.id,
             name: nft.name,
             collectionId: nft.collection_id,
-            hashPowerInEH: nft.hashing_power,
-            priceInAcudos: nft.price,
+            hashPowerInTh: nft.hashing_power,
+            priceInAcudos: new BigNumber(nft.price),
             imageUrl: nft.uri,
             expiryDate: new Date(nft.expiration_date).getTime(),
+            status: nft.status === 'approved' || nft.status === 'minted' ? NftStatus.LISTED : NftStatus.NOT_LISTED,
         }))
 
         return {

@@ -38,7 +38,10 @@ export class NFTController {
   @Get()
     async findAll(@Query(ParseNftQueryPipe) filters: NftFilters): Promise<NFT[]> {
         const result = await this.nftService.findAll(filters);
-        // const minted = await this.graphqlService.fetchNft({ denom_ids: [filters.collection_id] })
+
+        if (filters.collection_id) {
+            const minted = await this.graphqlService.fetchNft({ denom_ids: [...filters.collection_id] })
+        }
 
         return result;
     }

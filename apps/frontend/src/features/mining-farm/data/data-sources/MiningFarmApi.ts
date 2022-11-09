@@ -33,6 +33,7 @@ export default class MiningFarmApi {
             machinesLocation: farm.location,
             poolFee: farm.maintenance_fee_in_btc,
             status: MiningFarmStatusMap[farm.status],
+            hashRateInTh: farm.total_farm_hashrate,
         }))
     }
 
@@ -56,6 +57,7 @@ export default class MiningFarmApi {
             machinesLocation: farm.location,
             poolFee: farm.maintenance_fee_in_btc,
             status: MiningFarmStatusMap[farm.status],
+            hashRateInTh: farm.total_farm_hashrate,
         }))
     }
 
@@ -83,6 +85,7 @@ export default class MiningFarmApi {
             machinesLocation: farm.location,
             poolFee: farm.maintenance_fee_in_btc,
             status: MiningFarmStatusMap[farm.status],
+            hashRateInTh: farm.total_farm_hashrate,
         })),
         total: data.length,
         }
@@ -99,6 +102,8 @@ export default class MiningFarmApi {
             miningFarmId: farm.id,
             nftsOwned: farm.nftsOwned,
             totalNftsSold: farm.nftsSold,
+            activeWorkers: farm.activeWorkers,
+            averageHashRateInTh: farm.averageHashRate,
         }))
     }
 
@@ -115,7 +120,7 @@ export default class MiningFarmApi {
                 leftover_reward_payout_address: 'leftover_reward_payout_address',
                 maintenance_fee_payout_address: 'maintenance_fee_payout_address',
                 maintenance_fee_in_btc: miningFarmEntity.poolFee,
-                total_farm_hashrate: miningFarmEntity.hashRateInEH,
+                total_farm_hashrate: miningFarmEntity.hashRateInTh,
                 manufacturers: miningFarmEntity.manufacturerIds,
                 miner_types: miningFarmEntity.minerIds,
                 energy_source: miningFarmEntity.energySourceIds,
