@@ -17,7 +17,7 @@ export default class AccountStorageRepo implements AccountRepo {
 
     setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
 
-    async login(email: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async login(email: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
         const currentAccounts = this.storageHelper.accountsJson;
         const currentUsers = this.storageHelper.usersJson;
         const currentAdmins = this.storageHelper.adminsJson;
@@ -55,9 +55,9 @@ export default class AccountStorageRepo implements AccountRepo {
 
                 const lastUserEntity = currentUsers.last();
                 const nextUserId = 1 + (lastUserEntity !== null ? parseInt(lastUserEntity.userId) : 0);
-
                 const accountEntity = new AccountEntity();
                 accountEntity.accountId = nextAccountId.toString();
+                accountEntity.name = walletName;
                 accountEntity.emailVerified = S.INT_TRUE;
                 accountEntity.timestampLastLogin = S.NOT_EXISTS;
                 accountEntity.timestampRegister = Date.now() - 100000000;

@@ -234,9 +234,10 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
         }
 
         async function onClickCreateAccount() {
+            const walletName = await walletStore.getName();
             // prepare a signed tx for register
             await accountSessionStore.register(email, password, name, cudosWalletAddress, '');
-            await accountSessionStore.login(email, password, cudosWalletAddress, '');
+            await accountSessionStore.login(email, password, cudosWalletAddress, walletName, '');
             navigate(AppRoutes.HOME);
         }
 

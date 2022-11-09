@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
-import { KeplrWallet, SigningStargateClient } from 'cudosjs';
+import { KeplrWallet } from 'cudosjs';
 import S from '../../../../core/utilities/Main';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
@@ -20,13 +20,15 @@ export default class WalletStore {
     keplrWallet: KeplrWallet;
     balance: BigNumber;
     address: string;
+    name: string;
 
     constructor() {
         this.selectedNetwork = CHAIN_DETAILS.DEFAULT_NETWORK;
 
         this.keplrWallet = null;
         this.balance = null;
-        this.address = '';
+        this.address = S.Strings.EMPTY;
+        this.name = S.Strings.EMPTY;
 
         makeAutoObservable(this);
     }
@@ -55,6 +57,7 @@ export default class WalletStore {
             sessionStorage.setItem(SESSION_STORAGE_WALLET_KEY, SessionStorageWalletOptions.KEPLR);
 
             this.address = this.keplrWallet.accountAddress;
+            this.name = await this.keplrWallet.getName();
             this.loadBalance(); // to not wait for it
         } catch (ex) {
             console.error(ex);
@@ -144,5 +147,9 @@ export default class WalletStore {
 
     getBalance(): string {
         return this.balance?.toFixed() ?? '0';
+    }
+
+    getName(): string {
+        return this.name;
     }
 }

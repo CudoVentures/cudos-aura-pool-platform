@@ -55,7 +55,7 @@ function HeaderWallet({ accountSessionStore, walletStore }: Props) {
             return;
         }
 
-        await accountSessionStore.login('', '', walletStore.getAddress(), '');
+        await accountSessionStore.login('', '', walletStore.getAddress(), walletStore.getName(), '');
     }
 
     return (

@@ -22,10 +22,10 @@ export default class AccountStorageRepo implements AccountRepo {
         this.disableActions = disableActions;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletname: string, signedTx: any): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.login(username, password, cudosWalletAddress, signedTx);
+            return this.accountApi.login(username, password, cudosWalletAddress, walletname, signedTx);
         } finally {
             this.enableActions?.();
         }
