@@ -79,8 +79,8 @@ const creditCollectionStore = new CreditCollectionStore(accountSessionStore, col
 
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
-const buyNftModalStore = new BuyNftModalStore();
-const resellNftModalStore = new ResellNftModalStore();
+const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore);
+const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 

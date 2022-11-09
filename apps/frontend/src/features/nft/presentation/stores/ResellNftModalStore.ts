@@ -3,6 +3,9 @@ import { action, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import NftRepo from '../repos/NftRepo';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import BigNumber from 'bignumber.js';
 
 export enum ModalStage {
     PREVIEW,
@@ -12,10 +15,12 @@ export enum ModalStage {
 }
 
 export default class ResellNftModalStore extends ModalStore {
+    nftRepo: NftRepo;
+    walletStore: WalletStore;
 
     @observable nftEntity: NftEntity;
     @observable cudosPrice: number;
-    price: number;
+    price: BigNumber;
     @observable priceDisplay: string;
     @observable collectionName: string;
     @observable modalStage: ModalStage;
@@ -23,8 +28,11 @@ export default class ResellNftModalStore extends ModalStore {
     @observable autoPay: number;
     txHash: string;
 
-    constructor() {
+    constructor(nftRepo: NftRepo, walletStore: WalletStore) {
         super();
+
+        this.nftRepo = nftRepo;
+        this.walletStore = walletStore;
 
         this.resetValues();
 
@@ -33,7 +41,7 @@ export default class ResellNftModalStore extends ModalStore {
 
     resetValues() {
         this.cudosPrice = S.NOT_EXISTS;
-        this.price = S.NOT_EXISTS;
+        this.price = new BigNumber(S.NOT_EXISTS);
         this.priceDisplay = S.Strings.EMPTY;
         this.collectionName = S.Strings.EMPTY;
         this.modalStage = S.NOT_EXISTS;
@@ -59,7 +67,7 @@ export default class ResellNftModalStore extends ModalStore {
         this.cudosPrice = cudosPrice;
         this.collectionName = collectionName;
         this.modalStage = ModalStage.PREVIEW;
-        this.price = 0;
+        this.price = new BigNumber(0);
         this.priceDisplay = '0';
         this.autoPay = S.INT_FALSE;
         this.originalPaymentSchedule = S.INT_FALSE;
@@ -74,16 +82,7 @@ export default class ResellNftModalStore extends ModalStore {
 
     setPrice = (price: string) => {
         this.priceDisplay = price;
-        this.price = Number(price);
-    }
-
-    buyNft = () => {
-        this.modalStage = ModalStage.PROCESSING;
-
-        // TODO: really buy nftEntity
-        setTimeout(() => {
-            this.modalStage = ModalStage.SUCCESS;
-        }, 2000)
+        this.price = new BigNumber(price);
     }
 
     toggleAutoPay = () => {
@@ -94,14 +93,12 @@ export default class ResellNftModalStore extends ModalStore {
         this.originalPaymentSchedule = this.originalPaymentSchedule === S.INT_TRUE ? S.INT_FALSE : S.INT_TRUE;
     }
 
-    onClickSubmitForSell = () => {
+    onClickSubmitForSell = async () => {
         this.modalStage = ModalStage.PROCESSING;
 
-        // TODO: really buy nftEntity
-        this.txHash = 'aergaerhuaeruaeruaeruaeruearueru'
-        setTimeout(() => {
-            this.modalStage = ModalStage.SUCCESS;
-        }, 2000)
+        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.price, this.walletStore.ledger, this.walletStore.selectedNetwork);
+
+        this.modalStage = ModalStage.SUCCESS;
     }
 
     isStagePreview(): boolean {
@@ -120,9 +117,8 @@ export default class ResellNftModalStore extends ModalStore {
         return this.modalStage === ModalStage.FAIL;
     }
 
-    getTxLink(): string {
-        // TODO: dynamic link geenration for all networks
-        return `${CHAIN_DETAILS.EXPLORER_URL['PRIVATE']}/${this.txHash}`
+    getTxLink(network): string {
+        return `${CHAIN_DETAILS.EXPLORER_URL[network]}/${this.txHash}`
     }
 
 }

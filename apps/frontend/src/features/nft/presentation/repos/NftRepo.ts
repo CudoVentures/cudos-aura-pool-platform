@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+import Ledger from 'cudosjs/build/ledgers/Ledger';
 import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
@@ -11,4 +13,7 @@ export default interface NftRepo {
     fetchNewNftDrops(status?: CollectionStatus): Promise < NftEntity[] >;
     fetchTrendingNfts(status?: CollectionStatus): Promise < NftEntity[] >;
     fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } >;
+
+    buyNft(nftEntity: NftEntity, ledger: Ledger, network: string): Promise < string >;
+    listNftForSale(nftEntity: NftEntity, price: BigNumber, ledger: Ledger, network: string): Promise < string >;
 }

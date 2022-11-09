@@ -1,8 +1,15 @@
+import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
-import NftEntity from '../../entities/NftEntity';
+import NftEntity, { ListStatus, NftStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
+import { SigningStargateClient, GasPrice, Ledger } from 'cudosjs';
+import Long from 'long';
+import S from '../../../../core/utilities/Main';
+import BigNumber from 'bignumber.js';
+import { coin } from 'cudosjs/build/proto-signing';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -57,6 +64,45 @@ export default class NftApiRepo implements NftRepo {
         try {
             this.disableActions?.();
             return this.nftApi.fetchNftsByFilter(nftFilterModel);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async buyNft(nftEntity: NftEntity, ledger: Ledger, network: string): Promise < string > {
+        try {
+            this.disableActions?.();
+
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
+            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
+            let txHash = S.Strings.EMPTY;
+
+            if (nftEntity.status === NftStatus.APPROVED) {
+                // TODO: send tx to mint service
+            }
+
+            if (nftEntity.status === NftStatus.MINTED) {
+                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.id), gasPrice);
+                txHash = tx.transactionHash;
+            }
+
+            return txHash;
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async listNftForSale(nftEntity: NftEntity, price: BigNumber, ledger: Ledger, network: string): Promise < string > {
+        try {
+            this.disableActions?.();
+
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
+            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
+
+            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, Long.fromString(nftEntity.id), Long.fromString(nftEntity.collectionId), coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
+            const txHash = tx.transactionHash;
+
+            return txHash;
         } finally {
             this.enableActions?.();
         }

@@ -134,18 +134,4 @@ export default class RewardsCalculatorStore {
     formatNetRewardPerMonth(): string {
         return `${this.calculateNetRewardPetMonth().toFixed(5)} BTC`;
     }
-
-    // calculatePowerConsumption(): number {
-    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashPowerInTh;
-    // }
-
-    // calculateMonthlyRewardBtc(): BigNumber {
-    //     // TODO: calculate
-    //     return new BigNumber(1);
-    // }
-
-    // calculateBtcToUsd(btcAmount: BigNumber): BigNumber {
-    //     return btcAmount.multipliedBy(this.bitcoinStore.getBitcoinPriceInUsd());
-    // }
-
 }
