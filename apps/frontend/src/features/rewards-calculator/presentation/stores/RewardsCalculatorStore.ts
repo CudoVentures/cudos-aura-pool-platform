@@ -7,6 +7,7 @@ import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRe
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 import BigNumber from 'bignumber.js';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import BitcoinBlockchainInfoEntity from '../../../bitcoin-data/entities/BitcoinBlockchainInfoEntity';
 
 const MAINTENANCE_FEE = 0.01;
 
@@ -16,10 +17,10 @@ export default class RewardsCalculatorStore {
     miningFarmRepo: MiningFarmRepo;
 
     miningFarmsEntities: MiningFarmEntity[];
-    selectedMiningFarmEntity: MiningFarmEntity;
 
-    networkDifficultyEdit: string;
-    hashPowerInTh: number;
+    selectedMiningFarmEntity: MiningFarmEntity;
+    networkDifficultyEdit: BigNumber;
+    hashPowerInThInputValue: string;
 
     constructor(bitcoinStore: BitcoinStore, miningFarmRepo: MiningFarmRepo) {
         this.bitcoinStore = bitcoinStore;
@@ -34,8 +35,8 @@ export default class RewardsCalculatorStore {
 
     resetDefaults() {
         this.selectedMiningFarmEntity = null;
-        this.networkDifficultyEdit = S.Strings.EMPTY;
-        this.hashPowerInTh = 0;
+        this.networkDifficultyEdit = null;
+        this.hashPowerInThInputValue = '0';
     }
 
     isDefault() {
@@ -43,11 +44,11 @@ export default class RewardsCalculatorStore {
             return false;
         }
 
-        if (this.networkDifficultyEdit !== S.Strings.EMPTY) {
+        if (this.networkDifficultyEdit !== null) {
             return false;
         }
 
-        if (this.hashPowerInTh !== 0) {
+        if (this.hashPowerInThInputValue !== '0') {
             return false;
         }
 
@@ -56,73 +57,65 @@ export default class RewardsCalculatorStore {
 
     async init() {
         await this.bitcoinStore.init();
-
-        this.resetDefaults();
         this.miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
     }
 
-    hasNetworkDifficulty() {
-        return this.networkDifficultyEdit !== S.Strings.EMPTY;
+    hasSelectedMiningFarm(): boolean {
+        return this.selectedMiningFarmEntity !== null;
     }
 
-    getNetworkDifficulty() {
-        if (this.hasNetworkDifficulty() === true) {
-            return this.networkDifficultyEdit;
-        }
-
-        return this.bitcoinStore.getNetworkDifficulty();
+    getNetworkDifficultyInputValue(): string {
+        return this.networkDifficultyEdit !== null ? this.networkDifficultyEdit.toString() : this.bitcoinStore.getNetworkDifficulty();
     }
 
-    onChangeMiningFarm(selectedMiningFarmId: string) {
+    onChangeMiningFarm = (selectedMiningFarmId: string) => {
         this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
             return entity.id === selectedMiningFarmId;
         });
 
-        this.hashPowerInTh = this.selectedMiningFarmEntity.hashPowerInTh;
+        this.hashPowerInThInputValue = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+    }
+
+    onChangeHashPowerInInput = (value: string) => {
+        if (value === '') {
+            this.hashPowerInThInputValue = '0';
+            return;
+        }
+
+        const floatValue = parseFloat(value);
+        if (floatValue < 0) {
+            value = '0';
+        }
+        if (floatValue > this.selectedMiningFarmEntity.hashPowerInTh) {
+            value = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+        }
+
+        while (value[0] === '0') {
+            value = value.substring(1);
+        }
+
+        this.hashPowerInThInputValue = value;
     }
 
     onChangeHashPowerInThSlider = (event: MouseEvent, value: number) => {
-        this.hashPowerInTh = value;
+        this.hashPowerInThInputValue = value.toString();
     }
 
     onChangeNetworkDifficulty = (input: string) => {
-        this.networkDifficultyEdit = input;
+        this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
     }
-
-    // formatPowerCost(): string {
-    //     if (this.selectedMiningFarmEntity === null) {
-    //         return '-';
-    //     }
-
-    //     return this.selectedMiningFarmEntity.formatPowerCost();
-    // }
-
-    // formatPoolFee(): string {
-    //     if (this.selectedMiningFarmEntity === null) {
-    //         return '-';
-    //     }
-
-    //     return this.selectedMiningFarmEntity.formatPoolFee();
-    // }
-
-    // formatPowerConsumptionPerTH(): string {
-    //     if (this.selectedMiningFarmEntity === null) {
-    //         return '-';
-    //     }
-
-    //     return this.selectedMiningFarmEntity.formatPowerConsumptionPerTH();
-    // }
 
     formatCost(): string {
         return `${ProjectUtils.CUDOS_FEE_IN_PERCENT + MAINTENANCE_FEE} %`;
     }
 
     calculateGrossRewardPerMonth(): BigNumber {
-        if (this.selectedMiningFarmEntity === null) {
-            return new BigNumber(0);
+        let bitcoinHashPower = null;
+        if (this.networkDifficultyEdit !== null) {
+            bitcoinHashPower = BitcoinBlockchainInfoEntity.getNetworkHashPowerInTh(this.networkDifficultyEdit);
         }
 
-        return this.bitcoinStore.calculateRewardsPerMonth(this.selectedMiningFarmEntity.hashPowerInTh);
+        return this.bitcoinStore.calculateRewardsPerMonth(parseFloat(this.hashPowerInThInputValue), bitcoinHashPower);
     }
 
     @computed

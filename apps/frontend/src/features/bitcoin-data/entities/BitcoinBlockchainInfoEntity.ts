@@ -19,12 +19,16 @@ export default class BitcoinBlockchainInfoEntity {
         this.timestampLastUpdate = S.NOT_EXISTS;
     }
 
-    setNetworkDifficulty(networkDifficulty: BigNumber) {
+    static getNetworkHashPowerInTh(networkDifficulty: BigNumber): number {
         const multiplier = new BigNumber(2).pow(32);
         const teraDivider = new BigNumber(1000000000000);
 
+        return parseInt(networkDifficulty.multipliedBy(multiplier).dividedBy(600).dividedBy(teraDivider).toFixed(0));
+    }
+
+    setNetworkDifficulty(networkDifficulty: BigNumber) {
         this.networkDifficulty = networkDifficulty;
-        this.networkHashPowerInTh = parseInt(this.networkDifficulty.multipliedBy(multiplier).dividedBy(600).dividedBy(teraDivider).toFixed(0));
+        this.networkHashPowerInTh = BitcoinBlockchainInfoEntity.getNetworkHashPowerInTh(networkDifficulty);
     }
 
     shouldUpdate(): boolean {
