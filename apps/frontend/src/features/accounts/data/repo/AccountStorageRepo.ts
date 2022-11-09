@@ -135,13 +135,13 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
-    async confirmBitcoinAddress(): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
         const adminJson = this.storageHelper.adminsJson.find((json) => {
             return json.accountId === this.storageHelper.sessionAdmin.accountId;
         });
 
-        this.storageHelper.sessionAdmin.bitcoinWalletAddress = 'bc2qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
-        adminJson.bitcoinWalletAddress = 'bc2qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+        this.storageHelper.sessionAdmin.bitcoinWalletAddress = adminJson;
+        adminJson.bitcoinWalletAddress = adminJson;
         this.storageHelper.save();
     }
 

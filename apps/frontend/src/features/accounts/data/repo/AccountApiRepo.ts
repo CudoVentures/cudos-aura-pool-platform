@@ -1,17 +1,22 @@
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
+import { Ledger, SigningStargateClient, GasPrice } from 'cudosjs';
+import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
 export default class AccountStorageRepo implements AccountRepo {
 
     accountApi: AccountApi;
+    walletStore: WalletStore;
     enableActions: () => void;
     disableActions: () => void;
 
-    constructor() {
+    constructor(walletStore: WalletStore) {
+        this.walletStore = walletStore;
         this.accountApi = new AccountApi();
         this.enableActions = null;
         this.disableActions = null;
@@ -49,10 +54,15 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async confirmBitcoinAddress(): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.confirmBitcoinAddress();
+
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
+            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
+
+            await signingClient.addressbookCreateAddress(ledger.accountAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
+            this.accountApi.confirmBitcoinAddress(bitcoinAddress);
         } finally {
             this.enableActions?.();
         }
