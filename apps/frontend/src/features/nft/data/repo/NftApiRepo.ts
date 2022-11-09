@@ -78,7 +78,12 @@ export default class NftApiRepo implements NftRepo {
             let txHash = S.Strings.EMPTY;
 
             if (nftEntity.status === NftStatus.APPROVED) {
-                // TODO: send tx to mint service
+                // TODO:get real tx estimation
+                const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+                const amount = nftEntity.priceInAcudos.plus(mintFee);
+                const sendAmountCoin = coin(amount.toFixed(), 'acudos')
+                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network], sendAmountCoin, nftEntity.id);
+                txHash = tx.transactionHash;
             }
 
             if (nftEntity.status === NftStatus.MINTED) {
