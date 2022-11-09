@@ -28,7 +28,7 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                         dataPreviews = { [
                             createDataPreview('Collection Name', collectionEntity.name),
                             createDataPreview('Description', collectionEntity.description),
-                            createDataPreview('Hashing Power for collection', collectionEntity.formatHashRateInTh()),
+                            createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
                             createDataPreview('Royalties', collectionEntity.royalties),
                             createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
                             createDataPreview('Payout address', collectionEntity.payoutAddress),

@@ -38,7 +38,7 @@ function CollectionHorizontalPreview({ cudosStore, placeNumber, collectionEntity
                     <div className={'CollectionPriceCudos B2 StartRight'}>{collectionDetailsEntity.formatFloorPriceInCudos()}</div>
                 </div>
                 <div className = { 'PreviewDataRow SemiBold B3 FlexSplit' } >
-                    <div className={'HashRate'}>Hashrate: {collectionEntity.formatHashRateInTh()}</div>
+                    <div className={'HashPower'}>Hashrate: {collectionEntity.formatHashPowerInTh()}</div>
                     <div className={'FlexRow CollectionPriceUsd StartRight'}>
                         <div className={'CurrentPrice'}>{cudosStore.formatConvertedAcudosInUsd(collectionDetailsEntity.floorPriceInAcudos)}</div>
                         <div className={'CurrentPriceChange'}>{cudosStore.formatCudosPriceChangeInPercentage()}</div>

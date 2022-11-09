@@ -25,7 +25,7 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
     function createDataPreviews() {
         const previews = [];
 
-        previews.push(createDataPreview('Hashing Power', collectionEntity.formatHashRateInTh()));
+        previews.push(createDataPreview('Hashing Power', collectionEntity.formatHashPowerInTh()));
         if (collectionEntity.hasDefaultValuesPerNft() === true) {
             previews.push(createDataPreview('Hashing Power per NFT', collectionEntity.formatDefaultPricePerNftInCudos()));
             previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerPerNftInTh()));

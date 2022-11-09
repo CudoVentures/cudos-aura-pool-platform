@@ -107,13 +107,21 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
     async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
         return miningFarmIds.map((miningFarmId) => {
+            const miningFarmEntity = this.storageHelper.miningFarmsJson.find((miningFarmJson) => {
+                return miningFarmJson.id === miningFarmId;
+            });
+            const remainingHashPowerInTh = this.storageHelper.collectionsJson.reduce((accu, collectionJson) => {
+                return accu - (collectionJson.farmId === miningFarmId ? collectionJson.hashPowerInTh : 0);
+            }, miningFarmEntity.hashPowerInTh);
+
             const miningFarmDetailsEntity = new MiningFarmDetailsEntity();
 
             miningFarmDetailsEntity.miningFarmId = miningFarmId;
-            miningFarmDetailsEntity.averageHashRateInTh = Math.round(Math.random() * 200);
+            miningFarmDetailsEntity.averageHashPowerInTh = Math.round(Math.random() * 200);
             miningFarmDetailsEntity.activeWorkers = Math.round(Math.random() * 15);
             miningFarmDetailsEntity.nftsOwned = Math.round(Math.random() * 2000);
             miningFarmDetailsEntity.totalNftsSold = Math.round(Math.random() * 20000);
+            miningFarmDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTh;
 
             return miningFarmDetailsEntity;
         });

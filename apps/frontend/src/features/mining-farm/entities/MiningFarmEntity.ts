@@ -22,7 +22,7 @@ export default class MiningFarmEntity {
     manufacturerIds: string[];
     minerIds: string[];
     energySourceIds: string[];
-    hashRateInTh: number;
+    hashPowerInTh: number;
     machinesLocation: string
     profileImgUrl: string;
     coverImgUrl: string;
@@ -43,7 +43,7 @@ export default class MiningFarmEntity {
         this.manufacturerIds = [];
         this.minerIds = [];
         this.energySourceIds = [];
-        this.hashRateInTh = S.NOT_EXISTS;
+        this.hashPowerInTh = S.NOT_EXISTS;
         this.machinesLocation = S.Strings.EMPTY;
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
@@ -78,8 +78,8 @@ export default class MiningFarmEntity {
         this.status = MiningFarmStatus.APPROVED;
     }
 
-    formatHashRateInTh(): string {
-        return `${this.hashRateInTh !== S.NOT_EXISTS ? this.hashRateInTh : 0} TH`
+    formatHashPowerInTh(): string {
+        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`
     }
 
     formatPowerCost(): string {
@@ -111,7 +111,7 @@ export default class MiningFarmEntity {
             'manufacturerIds': entity.manufacturerIds,
             'minerIds': entity.minerIds,
             'energySourceIds': entity.energySourceIds,
-            'hashRateInTh': entity.hashRateInTh,
+            'hashPowerInTh': entity.hashPowerInTh,
             'machinesLocation': entity.machinesLocation,
             'profileImgUrl': entity.profileImgUrl,
             'coverImgUrl': entity.coverImgUrl,
@@ -139,7 +139,7 @@ export default class MiningFarmEntity {
         model.manufacturerIds = json.manufacturerIds ?? model.manufacturerIds;
         model.minerIds = json.minerIds ?? model.minerIds;
         model.energySourceIds = json.energySourceIds ?? model.energySourceIds;
-        model.hashRateInTh = Number(json.hashRateInTh) ?? model.hashRateInTh;
+        model.hashPowerInTh = Number(json.hashPowerInTh) ?? model.hashPowerInTh;
         model.machinesLocation = json.machinesLocation ?? model.machinesLocation;
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;

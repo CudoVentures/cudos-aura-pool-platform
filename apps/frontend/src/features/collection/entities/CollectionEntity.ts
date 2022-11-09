@@ -70,6 +70,10 @@ export default class CollectionEntity {
         return this.profileImgUrl !== '' && this.coverImgUrl !== '';
     }
 
+    hasHashPowerInTh(): boolean {
+        return this.hashPowerInTh !== S.NOT_EXISTS;
+    }
+
     getDefaultPricePerNftInAcudos(): BigNumber {
         return this.defaultPricePerNftInCudos.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }
@@ -90,7 +94,7 @@ export default class CollectionEntity {
         return CollectionEntity.formatStatusName(this.status);
     }
 
-    formatHashRateInTh(): string {
+    formatHashPowerInTh(): string {
         return `${this.hashPowerInTh === S.NOT_EXISTS ? 0 : this.hashPowerInTh} TH`
     }
 

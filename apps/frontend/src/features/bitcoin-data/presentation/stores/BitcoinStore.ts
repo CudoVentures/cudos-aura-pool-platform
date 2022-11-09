@@ -70,35 +70,35 @@ export default class BitcoinStore {
         return this.bitcoinBlockchainInfoEntity?.networkDifficulty.toString() ?? '';
     }
 
-    getNetworkHashRateInTh(): number {
-        return this.bitcoinBlockchainInfoEntity?.networkHashRateInTh ?? 1;
+    getNetworkHashPowerInTh(): number {
+        return this.bitcoinBlockchainInfoEntity?.networkHashPowerInTh ?? 1;
     }
 
     getBlockReward(): number {
         return this.bitcoinBlockchainInfoEntity?.blockReward ?? 0;
     }
 
-    calculateRewardsPerBlock(targetHashRateInTh: number): BigNumber {
+    calculateRewardsPerBlock(targetHashPowerInTh: number): BigNumber {
         const blockReward = new BigNumber(this.getBlockReward());
-        const hashRate = new BigNumber(targetHashRateInTh);
-        const bitcoinHashRate = new BigNumber(this.getNetworkHashRateInTh());
-        return hashRate.dividedBy(bitcoinHashRate).multipliedBy(blockReward);
+        const hashPower = new BigNumber(targetHashPowerInTh);
+        const bitcoinHashPower = new BigNumber(this.getNetworkHashPowerInTh());
+        return hashPower.dividedBy(bitcoinHashPower).multipliedBy(blockReward);
     }
 
-    calculateRewardsPerDay(targetHashRateInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashRateInTh).multipliedBy(BLOCKS_PER_DAY);
+    calculateRewardsPerDay(targetHashPowerInTh: number): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_DAY);
     }
 
-    calculateRewardsPerWeek(targetHashRateInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashRateInTh).multipliedBy(BLOCKS_PER_WEEK);
+    calculateRewardsPerWeek(targetHashPowerInTh: number): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_WEEK);
     }
 
-    calculateRewardsPerMonth(targetHashRateInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashRateInTh).multipliedBy(BLOCKS_PER_MONTH);
+    calculateRewardsPerMonth(targetHashPowerInTh: number): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_MONTH);
     }
 
-    calculateRewardsPerYear(targetHashRateInTh: number): BigNumber {
-        return this.calculateRewardsPerBlock(targetHashRateInTh).multipliedBy(BLOCKS_PER_YEAR);
+    calculateRewardsPerYear(targetHashPowerInTh: number): BigNumber {
+        return this.calculateRewardsPerBlock(targetHashPowerInTh).multipliedBy(BLOCKS_PER_YEAR);
     }
 
 }

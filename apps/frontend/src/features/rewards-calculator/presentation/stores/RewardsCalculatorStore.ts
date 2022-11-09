@@ -19,7 +19,7 @@ export default class RewardsCalculatorStore {
     selectedMiningFarmEntity: MiningFarmEntity;
 
     networkDifficultyEdit: string;
-    hashRateInTh: number;
+    hashPowerInTh: number;
 
     constructor(bitcoinStore: BitcoinStore, miningFarmRepo: MiningFarmRepo) {
         this.bitcoinStore = bitcoinStore;
@@ -35,7 +35,7 @@ export default class RewardsCalculatorStore {
     resetDefaults() {
         this.selectedMiningFarmEntity = null;
         this.networkDifficultyEdit = S.Strings.EMPTY;
-        this.hashRateInTh = 0;
+        this.hashPowerInTh = 0;
     }
 
     isDefault() {
@@ -47,7 +47,7 @@ export default class RewardsCalculatorStore {
             return false;
         }
 
-        if (this.hashRateInTh !== 0) {
+        if (this.hashPowerInTh !== 0) {
             return false;
         }
 
@@ -78,11 +78,11 @@ export default class RewardsCalculatorStore {
             return entity.id === selectedMiningFarmId;
         });
 
-        this.hashRateInTh = this.selectedMiningFarmEntity.hashRateInTh;
+        this.hashPowerInTh = this.selectedMiningFarmEntity.hashPowerInTh;
     }
 
-    onChangeHashRateInThSlider = (event: MouseEvent, value: number) => {
-        this.hashRateInTh = value;
+    onChangeHashPowerInThSlider = (event: MouseEvent, value: number) => {
+        this.hashPowerInTh = value;
     }
 
     onChangeNetworkDifficulty = (input: string) => {
@@ -122,7 +122,7 @@ export default class RewardsCalculatorStore {
             return new BigNumber(0);
         }
 
-        return this.bitcoinStore.calculateRewardsPerMonth(this.selectedMiningFarmEntity.hashRateInTh);
+        return this.bitcoinStore.calculateRewardsPerMonth(this.selectedMiningFarmEntity.hashPowerInTh);
     }
 
     @computed
@@ -136,7 +136,7 @@ export default class RewardsCalculatorStore {
     }
 
     // calculatePowerConsumption(): number {
-    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashRateInTh;
+    //     return this.miningFarms[this.selectedFarmId].powerConsumptionPerTh * this.hashPowerInTh;
     // }
 
     // calculateMonthlyRewardBtc(): BigNumber {

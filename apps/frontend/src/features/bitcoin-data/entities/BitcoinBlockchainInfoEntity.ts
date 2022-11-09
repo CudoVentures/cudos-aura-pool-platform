@@ -8,14 +8,14 @@ export default class BitcoinBlockchainInfoEntity {
     modelVersion: number;
     blockReward: number;
     networkDifficulty: BigNumber;
-    networkHashRateInTh: number;
+    networkHashPowerInTh: number;
     timestampLastUpdate: number;
 
     constructor() {
         this.modelVersion = BitcoinBlockchainInfoEntity.MODEL_VERSION;
         this.blockReward = S.NOT_EXISTS;
         this.networkDifficulty = null;
-        this.networkHashRateInTh = S.NOT_EXISTS;
+        this.networkHashPowerInTh = S.NOT_EXISTS;
         this.timestampLastUpdate = S.NOT_EXISTS;
     }
 
@@ -24,7 +24,7 @@ export default class BitcoinBlockchainInfoEntity {
         const teraDivider = new BigNumber(1000000000000);
 
         this.networkDifficulty = networkDifficulty;
-        this.networkHashRateInTh = parseInt(this.networkDifficulty.multipliedBy(multiplier).dividedBy(600).dividedBy(teraDivider).toFixed(0));
+        this.networkHashPowerInTh = parseInt(this.networkDifficulty.multipliedBy(multiplier).dividedBy(600).dividedBy(teraDivider).toFixed(0));
     }
 
     shouldUpdate(): boolean {
@@ -40,7 +40,7 @@ export default class BitcoinBlockchainInfoEntity {
             'modelVersion': entity.modelVersion,
             'blockReward': entity.blockReward,
             'networkDifficulty': entity.networkDifficulty.toString(),
-            'networkHashRateInTh': entity.networkHashRateInTh,
+            'networkHashPowerInTh': entity.networkHashPowerInTh,
             'timestampLastUpdate': entity.timestampLastUpdate,
         }
     }
@@ -55,7 +55,7 @@ export default class BitcoinBlockchainInfoEntity {
         model.modelVersion = parseInt(json.modelVersion) ?? model.modelVersion;
         model.blockReward = parseFloat(json.blockReward ?? model.blockReward);
         model.networkDifficulty = new BigNumber(json.networkDifficulty ?? model.networkDifficulty);
-        model.networkHashRateInTh = parseInt(json.networkHashRateInTh ?? model.networkHashRateInTh);
+        model.networkHashPowerInTh = parseInt(json.networkHashPowerInTh ?? model.networkHashPowerInTh);
         model.timestampLastUpdate = parseInt(json.timestampLastUpdate ?? model.timestampLastUpdate);
 
         return model;
