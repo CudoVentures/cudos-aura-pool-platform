@@ -12,16 +12,21 @@ import DailyChart from '../../../../analytics/presentation/components/DailyChart
 import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 import '../../styles/my-earnings-tab.css';
+import WalletStore from '../../../../ledger/presentation/stores/WalletStore';
+import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     bitcoinStore?: BitcoinStore
     userProfilePageStore?: UserProfilePageStore,
+    walletStore?: WalletStore,
+    cudosStore?: CudosStore,
 }
 
-function MyEarningsTab({ bitcoinStore, userProfilePageStore }: Props) {
+function MyEarningsTab({ bitcoinStore, cudosStore, userProfilePageStore, walletStore }: Props) {
     const { userEarningsEntity, defaultIntervalPickerState } = userProfilePageStore;
 
     useEffect(() => {
+        cudosStore.init();
         bitcoinStore.init();
     }, []);
 
@@ -48,10 +53,10 @@ function MyEarningsTab({ bitcoinStore, userProfilePageStore }: Props) {
                     <div className={'B1 SemiBold'}>Wallet Balance</div>
                     <div className={'FlexColumn ValueColumn'}>
                         <div>
-                            <span className={'H2 Bold'}>456,789<span className={'SecondaryColor'}>.123456</span></span>
+                            <span className={'H2 Bold'}>{walletStore.formatBalanceInCudosInt()}<span className={'SecondaryColor'}>.{walletStore.formatBalanceInCudosFraction()}</span></span>
                             <span className={'H3 SecondaryColor'}> CUDOS</span>
                         </div>
-                        <div className={'SecondaryColor H3 Bold'}>$345,678.00</div>
+                        <div className={'SecondaryColor H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.balance)}</div>
                     </div>
                 </StyledContainer>
                 <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
