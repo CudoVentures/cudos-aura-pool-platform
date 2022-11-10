@@ -6,7 +6,7 @@ export default class ManufacturerEntity {
 
     constructor() {
         this.manufacturerId = S.Strings.NOT_EXISTS;
-        this.name = S.Strings.EMPTY;
+        this.name = '';
     }
 
     static newInstance(manufacturerId: string, name: string) {

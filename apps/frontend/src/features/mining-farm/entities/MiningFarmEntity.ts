@@ -37,16 +37,16 @@ export default class MiningFarmEntity {
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
         this.accountId = S.Strings.NOT_EXISTS;
-        this.name = S.Strings.EMPTY;
-        this.legalName = S.Strings.EMPTY;
-        this.primaryAccountOwnerName = S.Strings.EMPTY;
-        this.primaryAccountOwnerEmail = S.Strings.EMPTY;
-        this.description = S.Strings.EMPTY;
+        this.name = '';
+        this.legalName = '';
+        this.primaryAccountOwnerName = '';
+        this.primaryAccountOwnerEmail = '';
+        this.description = '';
         this.manufacturerIds = [];
         this.minerIds = [];
         this.energySourceIds = [];
         this.hashPowerInTh = S.NOT_EXISTS;
-        this.machinesLocation = S.Strings.EMPTY;
+        this.machinesLocation = '';
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
         this.farmPhotoUrls = [];

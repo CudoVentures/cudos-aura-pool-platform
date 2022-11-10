@@ -38,17 +38,17 @@ export default class NftEntity {
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
-        this.name = S.Strings.EMPTY;
-        this.tokenId = S.Strings.EMPTY;
+        this.name = '';
+        this.tokenId = '';
         this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
-        this.imageUrl = S.Strings.EMPTY;
+        this.imageUrl = '';
         this.status = NftStatus.NONE;
         this.listStatus = ListStatus.NONE;
         this.expiryDate = S.NOT_EXISTS;
-        this.creatorAddress = S.Strings.EMPTY
-        this.currentOwnerAddress = S.Strings.EMPTY
+        this.creatorAddress = ''
+        this.currentOwnerAddress = ''
         this.farmRoyalties = S.NOT_EXISTS;
         this.maintenanceFeeInBtc = null;
 
