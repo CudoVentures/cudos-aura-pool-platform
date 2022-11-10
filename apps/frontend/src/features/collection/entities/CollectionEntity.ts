@@ -138,13 +138,13 @@ export default class CollectionEntity {
 
         return {
             'id': entity.id,
-            'farmId': entity.farmId,
+            'farm_id': entity.farmId,
             'name': entity.name,
-            'denomId': entity.denomId,
+            'denom_id': entity.denomId,
             'description': entity.description,
-            'hashPowerInTh': entity.hashPowerInTh,
-            'profileImgUrl': entity.profileImgUrl,
-            'coverImgUrl': entity.coverImgUrl,
+            'hashing_power': entity.hashPowerInTh,
+            'profile_img': entity.profileImgUrl,
+            'cover_img': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
             // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),

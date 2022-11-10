@@ -6,34 +6,22 @@ import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import axios from '../../../../core/utilities/AxiosWrapper';
 
-const MiningFarmStatusMap = {
-    queued: MiningFarmStatus.NOT_APPROVED,
-    approved: MiningFarmStatus.APPROVED,
-    deleted: MiningFarmStatus.DELETED,
-    rejected: MiningFarmStatus.DELETED,
-}
-
 export default class MiningFarmApi {
 
     async fetchPopularMiningFarms(): Promise < MiningFarmEntity[] > {
         const { data } = await axios.get('/api/v1/farm')
 
-        return data.map((farm) => MiningFarmEntity.fromJson({
-            id: farm.id,
-            accountId: farm.creator_id,
-            name: farm.name,
-            legalName: farm.sub_account_name,
-            primaryAccountOwnerName: farm.id || 'name',
-            primaryAccountOwnerEmail: 'mail',
-            description: farm.description,
-            manufacturerIds: farm.manufacturers,
-            minerIds: farm.miner_types,
-            energySourceIds: farm.energy_source,
-            machinesLocation: farm.location,
-            poolFee: farm.maintenance_fee_in_btc,
-            status: MiningFarmStatusMap[farm.status],
-            hashPowerInTh: farm.total_farm_hashrate,
-        }))
+        return data.map((farm) => {
+            // TODO: remove, they should come from backend
+            farm.primary_account_owner_name = 'name';
+            farm.primary_account_owner_email = 'email';
+            farm.miner_ids = farm.energy_source;
+            farm.energy_source_ids = farm.miner_types;
+            farm.manufacturer_ids = farm.manufacturers;
+            farm.farm_photos = [];
+
+            return MiningFarmEntity.fromJson(farm)
+        })
     }
 
     async fetchMiningFarmsByIds(miningFarmIds: string[]): Promise < MiningFarmEntity[] > {
@@ -41,23 +29,17 @@ export default class MiningFarmApi {
             ids: miningFarmIds.join(','),
         } })
 
-        return data.map((farm) => MiningFarmEntity.fromJson({
-            id: farm.id,
-            accountId: farm.creator_id,
-            name: farm.name,
-            legalName: farm.sub_account_name,
-            primaryAccountOwnerName: farm.id || 'name',
-            primaryAccountOwnerEmail: 'mail',
-            description: farm.description,
-            manufacturerIds: farm.manufacturers,
-            minerIds: farm.miner_types,
-            energySourceIds: farm.energy_source,
-            hashRateTh: farm.total_farm_hashrate,
-            machinesLocation: farm.location,
-            poolFee: farm.maintenance_fee_in_btc,
-            status: MiningFarmStatusMap[farm.status],
-            hashPowerInTh: farm.total_farm_hashrate,
-        }))
+        return data.map((farm) => {
+            // TODO: remove, they should come from backend
+            farm.primary_account_owner_name = 'name';
+            farm.primary_account_owner_email = 'email';
+            farm.miner_ids = farm.energy_source;
+            farm.energy_source_ids = farm.miner_types;
+            farm.manufacturer_ids = farm.manufacturers;
+            farm.farm_photos = [];
+
+            return MiningFarmEntity.fromJson(farm)
+        })
     }
 
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
@@ -69,23 +51,18 @@ export default class MiningFarmApi {
             ...(miningFarmFilterModel.miningFarmIds && { ids: miningFarmFilterModel.miningFarmIds.join(',') }),
         } })
 
-        const result = { miningFarmEntities: data.map((farm) => MiningFarmEntity.fromJson({
-            id: farm.id,
-            accountId: farm.creator_id,
-            name: farm.name,
-            legalName: farm.sub_account_name,
-            primaryAccountOwnerName: farm.id || 'name',
-            primaryAccountOwnerEmail: 'mail',
-            description: farm.description,
-            manufacturerIds: farm.manufacturers,
-            minerIds: farm.miner_types,
-            energySourceIds: farm.energy_source,
-            hashRateTh: farm.total_farm_hashrate,
-            machinesLocation: farm.location,
-            poolFee: farm.maintenance_fee_in_btc,
-            status: MiningFarmStatusMap[farm.status],
-            hashPowerInTh: farm.total_farm_hashrate,
-        })),
+        const result = { miningFarmEntities: data.map((farm) => {
+
+            // TODO: remove, they should come from backend
+            farm.primary_account_owner_name = 'name';
+            farm.primary_account_owner_email = 'email';
+            farm.miner_ids = farm.energy_source;
+            farm.energy_source_ids = farm.miner_types;
+            farm.manufacturer_ids = farm.manufacturers;
+            farm.farm_photos = [];
+
+            return MiningFarmEntity.fromJson(farm)
+        }),
         total: data.length,
         }
 
@@ -125,29 +102,15 @@ export default class MiningFarmApi {
                 energy_source: miningFarmEntity.energySourceIds,
             },
         )
-
+        // TODO: remove, they should come from backend
         farm.primary_account_owner_name = 'name';
         farm.primary_account_owner_email = 'email';
         farm.miner_ids = farm.energy_source;
         farm.energy_source_ids = farm.miner_types;
         farm.manufacturer_ids = farm.manufacturers;
+        farm.farm_photos = [];
 
-        return MiningFarmEntity.fromJson({
-            id: farm.id,
-            accountId: farm.creator_id,
-            name: farm.name,
-            legalName: farm.sub_account_name,
-            primaryAccountOwnerName: farm.id || 'name',
-            primaryAccountOwnerEmail: 'mail',
-            description: farm.description,
-            manufacturerIds: farm.manufacturers,
-            minerIds: farm.miner_types,
-            energySourceIds: farm.energy_source,
-            hashPowerInTh: farm.total_farm_hashrate,
-            machinesLocation: farm.location,
-            poolFee: farm.maintenance_fee_in_btc,
-            status: MiningFarmStatusMap[farm.status],
-        })
+        return MiningFarmEntity.fromJson(farm)
     }
 
     async approveMiningFarm(miningFarmId: string): Promise < void > {

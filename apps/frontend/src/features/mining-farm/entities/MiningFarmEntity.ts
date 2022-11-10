@@ -89,22 +89,22 @@ export default class MiningFarmEntity {
 
         return {
             'id': entity.id,
-            'accountId': entity.accountId,
+            'creator_id': entity.accountId,
             'name': entity.name,
-            'legalName': entity.legalName,
-            'primaryAccountOwnerName': entity.primaryAccountOwnerName,
-            'primaryAccountOwnerEmail': entity.primaryAccountOwnerEmail,
+            'sub_account_name': entity.legalName,
+            'primary_account_owner_name': entity.primaryAccountOwnerName,
+            'primary_account_owner_email': entity.primaryAccountOwnerEmail,
             'description': entity.description,
-            'manufacturerIds': entity.manufacturerIds,
-            'minerIds': entity.minerIds,
-            'energySourceIds': entity.energySourceIds,
-            'hashPowerInTh': entity.hashPowerInTh,
-            'machinesLocation': entity.machinesLocation,
-            'profileImgUrl': entity.profileImgUrl,
-            'coverImgUrl': entity.coverImgUrl,
-            'farmPhotoUrls': JSON.stringify(entity.farmPhotoUrls),
+            'manufacturer_ids': JSON.stringify(entity.manufacturerIds),
+            'miner_ids': JSON.stringify(entity.minerIds),
+            'energy_source_ids': JSON.stringify(entity.energySourceIds),
+            'total_farm_hashrate': entity.hashPowerInTh,
+            'location': entity.machinesLocation,
+            'profile_img': entity.profileImgUrl,
+            'cover_img': entity.coverImgUrl,
+            'farm_photos': JSON.stringify(entity.farmPhotoUrls),
             'status': entity.status,
-            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
+            'maintenance_fee_in_btc': entity.maintenanceFeeInBtc.toString(),
         }
     }
 
@@ -126,11 +126,11 @@ export default class MiningFarmEntity {
         model.energySourceIds = json.energy_source_ids ?? model.energySourceIds;
         model.hashPowerInTh = Number(json.total_farm_hashrate ?? model.hashPowerInTh);
         model.machinesLocation = json.location ?? model.machinesLocation;
-        model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
-        model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
-        model.farmPhotoUrls = json.farmPhotoUrls ?? model.farmPhotoUrls;
+        model.profileImgUrl = json.profile_img ?? model.profileImgUrl;
+        model.coverImgUrl = json.cover_img ?? model.coverImgUrl;
+        model.farmPhotoUrls = json.farm_photos ?? model.farmPhotoUrls;
         model.status = parseInt(json.status ?? model.status);
-        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
+        model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
 
         return model;
     }
