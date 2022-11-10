@@ -128,6 +128,9 @@ export default class MiningFarmApi {
 
         farm.primary_account_owner_name = 'name';
         farm.primary_account_owner_email = 'email';
+        farm.miner_ids = farm.energy_source;
+        farm.energy_source_ids = farm.miner_types;
+        farm.manufacturer_ids = farm.manufacturers;
 
         return MiningFarmEntity.fromJson({
             id: farm.id,

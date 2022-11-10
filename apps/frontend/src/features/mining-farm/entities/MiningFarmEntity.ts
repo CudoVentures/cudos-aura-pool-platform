@@ -152,7 +152,7 @@ export default class MiningFarmEntity {
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.farmPhotoUrls = json.farmPhotoUrls ?? model.farmPhotoUrls;
         model.status = parseInt(json.status ?? model.status);
-        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
+        model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
         model.powerCost = Number(json.powerCost) ?? model.powerCost;
         model.poolFee = Number(json.poolFee) ?? model.poolFee;
         model.powerConsumptionPerTh = Number(json.powerConsumptionPerTh) ?? model.powerConsumptionPerTh;
