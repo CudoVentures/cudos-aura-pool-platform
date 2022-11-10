@@ -15,9 +15,6 @@ export default class MiningFarmApi {
             // TODO: remove, they should come from backend
             farm.primary_account_owner_name = 'name';
             farm.primary_account_owner_email = 'email';
-            farm.miner_ids = farm.energy_source;
-            farm.energy_source_ids = farm.miner_types;
-            farm.manufacturer_ids = farm.manufacturers;
             farm.farm_photos = [];
 
             return MiningFarmEntity.fromJson(farm)
@@ -33,9 +30,6 @@ export default class MiningFarmApi {
             // TODO: remove, they should come from backend
             farm.primary_account_owner_name = 'name';
             farm.primary_account_owner_email = 'email';
-            farm.miner_ids = farm.energy_source;
-            farm.energy_source_ids = farm.miner_types;
-            farm.manufacturer_ids = farm.manufacturers;
             farm.farm_photos = [];
 
             return MiningFarmEntity.fromJson(farm)
@@ -50,9 +44,6 @@ export default class MiningFarmApi {
             // TODO: remove, they should come from backend
             farm.primary_account_owner_name = 'name';
             farm.primary_account_owner_email = 'email';
-            farm.miner_ids = farm.energy_source;
-            farm.energy_source_ids = farm.miner_types;
-            farm.manufacturer_ids = farm.manufacturers;
             farm.farm_photos = [];
 
             return MiningFarmEntity.fromJson(farm)
@@ -82,9 +73,6 @@ export default class MiningFarmApi {
         // TODO: remove, they should come from backend
         farm.primary_account_owner_name = 'name';
         farm.primary_account_owner_email = 'email';
-        farm.miner_ids = farm.energy_source;
-        farm.energy_source_ids = farm.miner_types;
-        farm.manufacturer_ids = farm.manufacturers;
         farm.farm_photos = [];
 
         return MiningFarmEntity.fromJson(farm)

@@ -130,9 +130,9 @@ export default class MiningFarmEntity {
         model.primaryAccountOwnerName = json.primary_account_owner_name ?? model.primaryAccountOwnerName;
         model.primaryAccountOwnerEmail = json.primary_account_owner_email ?? model.primaryAccountOwnerEmail;
         model.description = json.description ?? model.description;
-        model.manufacturerIds = json.manufacturer_ids ?? model.manufacturerIds;
-        model.minerIds = json.miner_ids ?? model.minerIds;
-        model.energySourceIds = json.energy_source_ids ?? model.energySourceIds;
+        model.manufacturerIds = json.manufacturers ? JSON.parse(json.manufacturers) : model.manufacturerIds;
+        model.minerIds = json.miner_types ? JSON.parse(json.miner_types) : model.minerIds;
+        model.energySourceIds = json.energy_source ? JSON.parse(json.energy_source) : model.energySourceIds;
         model.hashPowerInTh = Number(json.total_farm_hashrate ?? model.hashPowerInTh);
         model.machinesLocation = json.location ?? model.machinesLocation;
         model.profileImgUrl = json.profile_img ?? model.profileImgUrl;

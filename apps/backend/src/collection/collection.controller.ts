@@ -86,7 +86,7 @@ export class CollectionController {
             return {
                 collection,
                 nfts: nftsResult,
-                deletedNfts: [],
+                deletedNfts: 0,
             }
         }
 

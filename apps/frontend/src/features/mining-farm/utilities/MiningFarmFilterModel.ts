@@ -28,7 +28,7 @@ export default class MiningFarmFilterModel {
         }
 
         return {
-            'ids': entity.miningFarmIds.join(','),
+            'id': entity.miningFarmIds !== null ? entity.miningFarmIds.join(',') : null,
             'status': entity.status,
             'searchString': entity.searchString,
             'creator_id': entity.sessionAccount,
