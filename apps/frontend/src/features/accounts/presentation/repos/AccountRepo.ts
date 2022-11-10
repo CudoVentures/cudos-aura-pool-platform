@@ -11,7 +11,7 @@ export default interface AccountRepo {
     login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void >;
     register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void >;
     logout(): Promise < void >;
-    confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void >;
+    confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string, accountId: string): Promise < void >;
     creditAccount(accountEntity: AccountEntity): Promise < void >;
     changePassword(token: string, accountId: string, oldPassword: string, newPassword: string): Promise < void > ;
     forgottenPassword(email: string): Promise < void >

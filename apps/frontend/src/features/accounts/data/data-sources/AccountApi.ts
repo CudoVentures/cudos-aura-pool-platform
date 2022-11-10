@@ -29,8 +29,10 @@ export default class AccountApi {
         localStorage.removeItem('access_token')
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string): Promise < void > {
-        return null;
+    async confirmBitcoinAddress(bitcoinAddress: string, accountId: string): Promise < void > {
+        await axios.put(`/api/v1/user/${accountId}`, {
+            payout_address: bitcoinAddress,
+        })
     }
 
     async creditAccount(accountEntity: AccountEntity): Promise < AccountEntity > {
