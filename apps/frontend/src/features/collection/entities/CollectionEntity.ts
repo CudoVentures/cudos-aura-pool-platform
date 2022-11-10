@@ -137,8 +137,8 @@ export default class CollectionEntity {
         }
 
         return {
-            'id': entity.id,
-            'farm_id': entity.farmId,
+            'id': parseInt(entity.id),
+            'farm_id': parseInt(entity.farmId),
             'name': entity.name,
             'denom_id': entity.denomId,
             'description': entity.description,

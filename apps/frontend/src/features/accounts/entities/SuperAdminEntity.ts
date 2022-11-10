@@ -19,8 +19,8 @@ export default class SuperAdminEntity {
 
     static toJson(model: SuperAdminEntity) {
         return {
-            'superAdminId': model.superAdminId,
-            'accountId': model.accountId,
+            'super_admin_id': parseInt(model.superAdminId),
+            'account_id': parseInt(model.accountId),
         }
     }
 

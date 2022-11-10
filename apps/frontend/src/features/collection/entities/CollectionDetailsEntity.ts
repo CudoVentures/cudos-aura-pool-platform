@@ -34,7 +34,7 @@ export default class CollectionDetailsEntity {
         }
 
         return {
-            'id': entity.collectionId,
+            'id': parseInt(entity.collectionId),
             'floorPriceInAcudos': entity.floorPriceInAcudos.toString(),
             'volumeInAcudos': entity.volumeInAcudos.toString(),
             'owners': entity.owners,

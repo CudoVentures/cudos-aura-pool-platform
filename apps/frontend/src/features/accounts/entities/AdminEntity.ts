@@ -37,10 +37,10 @@ export default class AdminEntity {
         }
 
         return {
-            'adminId': entity.adminId,
-            'accountId': entity.accountId,
-            'cudosWalletAddress': entity.cudosWalletAddress,
-            'bitcoinWalletAddress': entity.bitcoinWalletAddress,
+            'id': parseInt(entity.adminId),
+            'account_id': parseInt(entity.accountId),
+            'cudos_address': entity.cudosWalletAddress,
+            'payout_address': entity.bitcoinWalletAddress,
         }
     }
 

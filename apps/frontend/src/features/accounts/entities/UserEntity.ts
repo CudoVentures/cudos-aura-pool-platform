@@ -32,13 +32,13 @@ export default class UserEntity {
         }
 
         return {
-            'userId': entity.userId,
-            'accountId': entity.accountId,
-            'cudosWalletAddress': entity.cudosWalletAddress,
-            'totalBtcEarned': entity.totalBtcEarned.toString(),
-            'totalHashPower': entity.totalHashPower,
-            'profileImgUrl': entity.profileImgUrl,
-            'coverImgUrl': entity.coverImgUrl,
+            'id': parseInt(entity.userId),
+            'account_id': parseInt(entity.accountId),
+            'cudos_address': entity.cudosWalletAddress,
+            'total_btc_earned': entity.totalBtcEarned.toString(),
+            'total_hashpower': entity.totalHashPower,
+            'profile_img': entity.profileImgUrl,
+            'cover_img': entity.coverImgUrl,
         }
     }
 
@@ -49,13 +49,13 @@ export default class UserEntity {
 
         const entity = new UserEntity();
 
-        entity.userId = json.userId ?? entity.userId;
-        entity.accountId = json.accountId ?? entity.accountId;
-        entity.cudosWalletAddress = json.cudosWalletAddress ?? entity.cudosWalletAddress;
-        entity.totalBtcEarned = new BigNumber(json.totalBtcEarned) ?? entity.totalBtcEarned;
-        entity.totalHashPower = Number(json.totalHashPower) ?? entity.totalHashPower;
-        entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;
-        entity.coverImgUrl = json.coverImgUrl ?? entity.coverImgUrl;
+        entity.userId = (json.id ?? entity.userId).toString();
+        entity.accountId = (json.account_id ?? entity.accountId).toString();
+        entity.cudosWalletAddress = json.cudos_address ?? entity.cudosWalletAddress;
+        entity.totalBtcEarned = new BigNumber(json.total_btc_earned ?? entity.totalBtcEarned);
+        entity.totalHashPower = Number(json.total_hashpower ?? entity.totalHashPower);
+        entity.profileImgUrl = json.profile_img ?? entity.profileImgUrl;
+        entity.coverImgUrl = json.cover_img ?? entity.coverImgUrl;
 
         return entity;
     }

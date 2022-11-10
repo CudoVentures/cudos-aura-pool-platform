@@ -28,7 +28,7 @@ export default class MiningFarmDetailsEntity {
         }
 
         return {
-            'miningFarmId': entity.miningFarmId,
+            'miningFarmId': parseInt(entity.miningFarmId),
             'averageHashPowerInTh': entity.averageHashPowerInTh,
             'activeWorkers': entity.activeWorkers,
             'nftsOwned': entity.nftsOwned,

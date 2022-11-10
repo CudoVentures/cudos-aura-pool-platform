@@ -71,14 +71,14 @@ export default class AccountEntity {
         }
 
         return {
-            'accountId': entity.accountId,
+            'id': parseInt(entity.accountId),
             'type': entity.type,
             'active': entity.active,
-            'emailVerified': entity.emailVerified,
+            'email_verified': entity.emailVerified,
             'name': entity.name,
             'email': entity.email,
-            'timestampLastLogin': entity.timestampLastLogin,
-            'timestampRegister': entity.timestampRegister,
+            'timestamp_last_login': entity.timestampLastLogin,
+            'timestamp_register': entity.timestampRegister,
         }
     }
 

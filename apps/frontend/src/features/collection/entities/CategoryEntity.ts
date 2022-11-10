@@ -16,7 +16,7 @@ export default class CategoryEntity {
 
     static toJson(model: CategoryEntity) {
         return {
-            'id': model.categoryId,
+            'id': parseInt(model.categoryId),
             'categoryName': model.categoryName,
         }
     }

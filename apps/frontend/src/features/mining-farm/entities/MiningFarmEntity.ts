@@ -94,8 +94,8 @@ export default class MiningFarmEntity {
         }
 
         return {
-            'id': entity.id,
-            'creator_id': entity.accountId,
+            'id': parseInt(entity.id),
+            'creator_id': parseInt(entity.accountId),
             'name': entity.name,
             'sub_account_name': entity.legalName,
             'primary_account_owner_name': entity.primaryAccountOwnerName,

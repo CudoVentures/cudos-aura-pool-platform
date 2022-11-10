@@ -22,9 +22,9 @@ export enum ListStatus {
 export default class NftEntity {
 
     id: string;
+    collectionId: string;
     name: string;
     tokenId: string;
-    collectionId: string;
     hashPowerInTh: number;
     priceInAcudos: BigNumber;
     imageUrl: string;
@@ -138,10 +138,10 @@ export default class NftEntity {
         }
 
         return {
-            'id': entity.id,
+            'id': parseInt(entity.id),
+            'collection_id': parseInt(entity.collectionId),
             'name': entity.name,
             'token_id': entity.tokenId,
-            'collection_id': entity.collectionId,
             'hashing_power': entity.hashPowerInTh,
             'price': entity.priceInAcudos.toString(),
             'uri': entity.imageUrl,
@@ -162,10 +162,10 @@ export default class NftEntity {
 
         const model = new NftEntity();
 
-        model.id = json.id ?? model.id;
+        model.id = (json.id ?? model.id).toString();
+        model.collectionId = (json.collection_id ?? model.collectionId).toString();
         model.name = json.name ?? model.name;
         model.tokenId = json.tokenId ?? model.tokenId;
-        model.collectionId = json.collection_id ?? model.collectionId;
         model.hashPowerInTh = parseInt(json.hashing_power ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.price ?? model.priceInAcudos);
         model.imageUrl = json.uri ?? model.imageUrl;
