@@ -24,7 +24,7 @@ export default class CollectionEntity {
     coverImgUrl: string;
     status: CollectionStatus;
     royalties: number;
-    maintenanceFeeInBtc: BigNumber;
+    // maintenanceFeeInBtc: BigNumber;
     payoutAddress: string;
     defaultPricePerNftInCudos: BigNumber;
     defaultHashPowerPerNftInTh: number;
@@ -39,7 +39,7 @@ export default class CollectionEntity {
         this.coverImgUrl = '';
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
-        this.maintenanceFeeInBtc = null;
+        // this.maintenanceFeeInBtc = null;
         this.payoutAddress = '';
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
@@ -94,9 +94,9 @@ export default class CollectionEntity {
         return CollectionEntity.formatStatusName(this.status);
     }
 
-    formatMaintenanceFeesInBtc(): string {
-        return this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(2) : '0.00';
-    }
+    // formatMaintenanceFeesInBtc(): string {
+    //     return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
+    // }
 
     formatRoyalties(): string {
         return this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00';
@@ -145,7 +145,7 @@ export default class CollectionEntity {
             'coverImgUrl': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
-            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
+            // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
             'payoutAddress': entity.payoutAddress,
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
@@ -168,7 +168,7 @@ export default class CollectionEntity {
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
-        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
+        // model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
         model.defaultHashPowerPerNftInTh = parseInt(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);

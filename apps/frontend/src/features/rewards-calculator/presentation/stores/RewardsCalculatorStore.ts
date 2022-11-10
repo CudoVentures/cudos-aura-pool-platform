@@ -9,8 +9,6 @@ import BigNumber from 'bignumber.js';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import BitcoinBlockchainInfoEntity from '../../../bitcoin-data/entities/BitcoinBlockchainInfoEntity';
 
-const MAINTENANCE_FEE = 0.01;
-
 export default class RewardsCalculatorStore {
 
     bitcoinStore: BitcoinStore;
@@ -68,6 +66,10 @@ export default class RewardsCalculatorStore {
         return this.networkDifficultyEdit !== null ? this.networkDifficultyEdit.toString() : this.bitcoinStore.getNetworkDifficulty();
     }
 
+    getHashPowerInTh(): number {
+        return parseFloat(this.hashPowerInThInputValue);
+    }
+
     onChangeMiningFarm = (selectedMiningFarmId: string) => {
         this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
             return entity.id === selectedMiningFarmId;
@@ -106,7 +108,11 @@ export default class RewardsCalculatorStore {
     }
 
     formatCost(): string {
-        return `${ProjectUtils.CUDOS_FEE_IN_PERCENT + MAINTENANCE_FEE} %`;
+        if (this.selectedMiningFarmEntity === null) {
+            return '-';
+        }
+
+        return `${ProjectUtils.CUDOS_FEE_IN_PERCENT} % + ${this.selectedMiningFarmEntity.formatMaintenanceFeesInBtc()}`;
     }
 
     calculateGrossRewardPerMonth(): BigNumber {
@@ -115,13 +121,21 @@ export default class RewardsCalculatorStore {
             bitcoinHashPower = BitcoinBlockchainInfoEntity.getNetworkHashPowerInTh(this.networkDifficultyEdit);
         }
 
-        return this.bitcoinStore.calculateRewardsPerMonth(parseFloat(this.hashPowerInThInputValue), bitcoinHashPower);
+        return this.bitcoinStore.calculateRewardsPerMonth(this.getHashPowerInTh(), bitcoinHashPower);
     }
 
     @computed
     calculateNetRewardPetMonth(): BigNumber {
-        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT - MAINTENANCE_FEE);
-        return this.calculateGrossRewardPerMonth().multipliedBy(fees);
+        if (this.selectedMiningFarmEntity === null) {
+            return new BigNumber(0);
+        }
+
+        const k = this.getHashPowerInTh() / this.selectedMiningFarmEntity.hashPowerInTh;
+        const maintenanceFeeInBtc = new BigNumber(k).multipliedBy(this.selectedMiningFarmEntity.maintenanceFeeInBtc);
+        const incomeAfterCudosFeeInBtc = this.calculateGrossRewardPerMonth().multipliedBy(new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT));
+        const incomeAfterMaitenanceFeeInBtc = incomeAfterCudosFeeInBtc.minus(maintenanceFeeInBtc);
+
+        return incomeAfterMaitenanceFeeInBtc;
     }
 
     formatNetRewardPerMonth(): string {

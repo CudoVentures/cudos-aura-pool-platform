@@ -22,9 +22,9 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
     const collectionName = creditCollectionStore.collectionEntity.name;
     const nftEntities = creditCollectionStore.nftEntities;
 
-    const TABLE_LEGEND = ['NFT', 'Name', 'Collection', 'Hashing Power', 'Price', 'Maintenance Fee', 'Action'];
-    const TABLE_WIDTHS = ['5%', '15%', '17%', '12%', '12%', '12%', '12%', '15%']
-    const TABLE_ALINGS = [ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_CENTER, ALIGN_LEFT];
+    const TABLE_LEGEND = ['NFT', 'Name', 'Collection', 'Hashing Power', 'Price', 'Action'];
+    const TABLE_WIDTHS = ['10%', '22%', '22%', '15%', '15%', '16%']
+    const TABLE_ALINGS = [ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT];
 
     function renderFarmsRows() {
         const rows = [];
@@ -36,7 +36,7 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                 createTableCell(collectionName),
                 createTableCell(nftEntity.formatHashPowerInTh()),
                 createTableCell(nftEntity.formatPriceInCudos()),
-                createTableCell(nftEntity.formatMaintenanceFeeInBtc()),
+                // createTableCell(nftEntity.formatMaintenanceFeeInBtc()),
                 createTableCell(
                     <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT}>
                         <Button onClick={creditCollectionStore.onClickEditNft.bind(creditCollectionStore, nftEntity)} type={ButtonType.TEXT_INLINE}>

@@ -36,6 +36,7 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                             createDataPreview('Energy sources', viewMiningFarmModalStore.getSelectedEnergySourcesNames()),
                             createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
                             createDataPreview('Hashrate', miningFarmEntity.formatHashPowerInTh()),
+                            createDataPreview('Maintenance fee', miningFarmEntity.formatMaintenanceFeesInBtc()),
                             createDataPreview('Power cost', miningFarmEntity.formatPowerCost()),
                             createDataPreview('Pool fee', miningFarmEntity.formatPoolFee()),
                             createDataPreview('Power consumption per TH', miningFarmEntity.formatPowerConsumptionPerTH()),

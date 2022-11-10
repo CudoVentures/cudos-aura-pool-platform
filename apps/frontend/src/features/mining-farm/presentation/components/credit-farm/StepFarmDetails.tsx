@@ -222,24 +222,18 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                     Insert the Hashrate planned to be offered as NFTs
                 </div>
             </div>
-            <FieldColumnWrapper
-                field = {
-                    <Input
-                        label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
-                        placeholder={'Maintenance fees...'}
-                        value={maintenanceFeeInBtc}
-                        inputType={InputType.REAL}
-                        inputValidation={farmMainteannceFeesValidation}
-                        onChange={onChangeMaintenanceFees}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end" >BTC</InputAdornment>
-                            ),
-                        }} />
-                }
-                helperText = { 'Maintenance fee calculation formula:' } >
-                <div className={'FormulaBox B2 Bold'}>{'[This Farm TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
-            </FieldColumnWrapper>
+            <Input
+                label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
+                placeholder={'Maintenance fees...'}
+                value={maintenanceFeeInBtc}
+                inputType={InputType.REAL}
+                inputValidation={farmMainteannceFeesValidation}
+                onChange={onChangeMaintenanceFees}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end" >BTC</InputAdornment>
+                    ),
+                }} />
             <div className={'B2 Bold FullLine'}> 3. Upload photos from the farm</div>
             <div className={'Uploader FlexColumn'}>
                 <div className={'B3 SemiBold'}>Upload files here</div>

@@ -29,9 +29,9 @@ export default class MiningFarmEntity {
     coverImgUrl: string;
     farmPhotoUrls: string[];
     status: MiningFarmStatus;
+    maintenanceFeeInBtc: BigNumber;
     powerCost: number;
     poolFee: number;
-    maintenanceFeeInBtc: BigNumber;
     powerConsumptionPerTh: number;
 
     constructor() {
@@ -51,9 +51,9 @@ export default class MiningFarmEntity {
         this.coverImgUrl = '/assets/temp/profile-cover.png';
         this.farmPhotoUrls = [];
         this.status = MiningFarmStatus.NOT_APPROVED;
+        this.maintenanceFeeInBtc = null;
         this.powerCost = S.NOT_EXISTS;
         this.poolFee = S.NOT_EXISTS;
-        this.maintenanceFeeInBtc = null;
         this.powerConsumptionPerTh = S.NOT_EXISTS;
 
         makeAutoObservable(this);
@@ -86,7 +86,7 @@ export default class MiningFarmEntity {
     }
 
     formatMaintenanceFeesInBtc(): string {
-        return this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(2) : '0.00';
+        return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
     }
 
     formatPowerCost(): string {
@@ -124,9 +124,9 @@ export default class MiningFarmEntity {
             'coverImgUrl': entity.coverImgUrl,
             'farmPhotoUrls': JSON.stringify(entity.farmPhotoUrls),
             'status': entity.status,
+            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
             'powerCost': entity.powerCost,
             'poolFee': entity.poolFee,
-            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
             'powerConsumptionPerTh': entity.powerConsumptionPerTh,
         }
     }
@@ -153,9 +153,9 @@ export default class MiningFarmEntity {
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.farmPhotoUrls = JSON.parse(json.farmPhotoUrls ?? model.farmPhotoUrls);
         model.status = parseInt(json.status ?? model.status);
+        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.powerCost = Number(json.powerCost) ?? model.powerCost;
         model.poolFee = Number(json.poolFee) ?? model.poolFee;
-        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.powerConsumptionPerTh = Number(json.powerConsumptionPerTh) ?? model.powerConsumptionPerTh;
 
         return model;

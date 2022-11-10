@@ -39,13 +39,13 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const collectionNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
-    const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
+    // const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
     const collectionPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Empty payout address')).current;
     const collectionHashPowerPerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
 
     const [hashPowerInTh, setHashPowerInTh] = useState(collectionEntity.hashPowerInTh !== S.NOT_EXISTS ? collectionEntity.hashPowerInTh : '');
-    const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString() : '')
+    // const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString() : '')
     const [defaultPricePerNftInCudos, setDefaultPricePerNftInCudos] = useState(collectionEntity.defaultPricePerNftInCudos !== null ? collectionEntity.defaultPricePerNftInCudos.toString() : '');
     const [defaultHashPowerPerNftInTh, setDefaultHashPowerPerNftInTh] = useState(collectionEntity.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInCudos : '');
 
@@ -55,13 +55,24 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     }
 
     function onChangeRoyalties(value) {
-        collectionEntity.royalties = value !== '' ? parseInt(value) : S.NOT_EXISTS;
+        if (value === '') {
+            collectionEntity.royalties = S.NOT_EXISTS;
+            return;
+        }
+
+        collectionEntity.royalties = parseFloat(value);
+        if (collectionEntity.royalties < 0) {
+            collectionEntity.royalties = 0;
+        }
+        if (collectionEntity.royalties > 10) {
+            collectionEntity.royalties = 10;
+        }
     }
 
-    function onChangeMaintenanceFees(value) {
-        setMaintenanceFeeInBtc(value);
-        collectionEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
-    }
+    // function onChangeMaintenanceFees(value) {
+    //     setMaintenanceFeeInBtc(value);
+    //     collectionEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
+    // }
 
     function onChangeDefaultPricePerNftInCudos(value) {
         setDefaultPricePerNftInCudos(value);
@@ -226,7 +237,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         label={<TextWithTooltip text={'Secondary Sale Royalties'} tooltipText={'Secondary Sale Royalties'} />}
                         placeholder={'Enter royalties...'}
                         value={collectionEntity.royalties !== S.NOT_EXISTS ? collectionEntity.royalties : ''}
-                        inputType={InputType.INTEGER}
+                        inputType={InputType.POSITIVE_INTEGER}
                         inputValidation={collectionRoyaltiesValidation}
                         onChange={onChangeRoyalties}
                         InputProps={{
@@ -237,7 +248,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 }
                 helperText = { 'Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.' } />
             <InfoGrayBox text={'Farm admins receives 80% of first NFT sale proceeds. 10% are Aura Pool Fees and 10% will be held to a Cudo account as escrow. Farm admin is able to change their payout address per collection.'} />
-            <FieldColumnWrapper
+            {/* <FieldColumnWrapper
                 field = {
                     <Input
                         label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
@@ -254,7 +265,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 }
                 helperText = { 'Maintenance fee calculation formula:' } >
                 <div className={'FormulaBox B2 Bold'}>{'[This Collection TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
-            </FieldColumnWrapper>
+            </FieldColumnWrapper> */}
             <Input
                 label={<TextWithTooltip text={'Set Payout Address'} tooltipText={'Set Payout Address'} />}
                 placeholder={'Enter address...'}
