@@ -27,10 +27,10 @@ export default class AccountStorageRepo implements AccountRepo {
         this.disableActions = disableActions;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx);
+            return this.accountApi.login(username, password, cudosWalletAddress, signedTx);
         } finally {
             this.enableActions?.();
         }
@@ -59,10 +59,12 @@ export default class AccountStorageRepo implements AccountRepo {
             this.disableActions?.();
 
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
 
             await signingClient.addressbookCreateAddress(ledger.accountAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
-            this.accountApi.confirmBitcoinAddress(bitcoinAddress, accountId);
+            const res = await this.accountApi.confirmBitcoinAddress(bitcoinAddress, accountId);
+
+            return res.data.payout_address;
         } finally {
             this.enableActions?.();
         }

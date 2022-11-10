@@ -28,13 +28,18 @@ export default class AccountApi {
         setTokenInStorage(null);
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, accountId: string): Promise < any > {
-        return axios.put(`/api/v1/user/${accountId}`, {
+    async confirmBitcoinAddress(bitcoinAddress: string, accountId: string): Promise < void > {
+        const data = axios.put(`/api/v1/user/${accountId}`, {
             payout_address: bitcoinAddress,
-        })
+        });
+
+        setTokenInStorage(data.access_token);
     }
 
     async creditAccount(accountEntity: AccountEntity): Promise < AccountEntity > {
+
+        // const data = ...
+        // setTokenInStorage(data.access_token);
         return null;
     }
 
@@ -77,6 +82,9 @@ export default class AccountApi {
     }
 
     async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+
+        // const data = ...
+        // setTokenInStorage(data.access_token);
         return null;
     }
 }
