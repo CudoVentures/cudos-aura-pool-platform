@@ -12,7 +12,7 @@ export enum MiningFarmStatus {
 }
 
 export default class MiningFarmEntity {
-    id: number;
+    id: string;
     accountId: string;
     name: string;
     legalName: string;
@@ -65,7 +65,7 @@ export default class MiningFarmEntity {
     }
 
     isNew(): boolean {
-        return this.id === S.NOT_EXISTS;
+        return this.id === S.Strings.NOT_EXISTS;
     }
 
     isApproved(): boolean {

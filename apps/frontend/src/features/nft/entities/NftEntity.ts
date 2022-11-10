@@ -30,7 +30,7 @@ export default class NftEntity {
     imageUrl: string;
     status: NftStatus;
     listStatus: ListStatus;
-    expiryDate: Date;
+    expiryDate: number;
     creatorAddress: string;
     currentOwnerAddress: string;
     farmRoyalties: number;
@@ -171,7 +171,7 @@ export default class NftEntity {
         model.imageUrl = json.imageUrl ?? model.imageUrl;
         model.status = json.status ?? model.status;
         model.listStatus = parseInt(json.listStatus) ?? model.listStatus;
-        model.expiryDate = parseInt(json.expiryDate ?? model.expiryDate);
+        model.expiryDate = parseInt(json.expiryDate) ?? model.expiryDate;
         model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
         model.currentOwnerAddress = json.currentOwnerAddress ?? model.currentOwnerAddress;
         model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);

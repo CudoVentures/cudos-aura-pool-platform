@@ -14,7 +14,7 @@ export enum CollectionStatus {
 }
 
 export default class CollectionEntity {
-    id: number;
+    id: string;
     farmId: number;
     name: string;
     denomId: string;
@@ -30,7 +30,7 @@ export default class CollectionEntity {
     defaultHashPowerPerNftInTh: number;
 
     constructor() {
-        this.id = S.NOT_EXISTS;
+        this.id = S.Strings.NOT_EXISTS;
         this.farmId = S.NOT_EXISTS;
         this.name = '';
         this.denomId = '';
