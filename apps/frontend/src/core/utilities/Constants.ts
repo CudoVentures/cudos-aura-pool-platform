@@ -43,6 +43,12 @@ export const CHAIN_DETAILS = {
         PUBLIC: Config.APP_PUBLIC_CHAIN_ID ?? '',
         MAINNET: Config.APP_MAINNET_CHAIN_ID ?? '',
     },
+    MINTING_SERVICE_ADDRESS: {
+        LOCAL: Config.APP_LOCAL_MINTING_SERVICE_ADDRESS ?? '',
+        PRIVATE: Config.APP_PRIVATE_MINTING_SERVICE_ADDRESS ?? '',
+        PUBLIC: Config.APP_PUBLIC_MINTING_SERVICE_ADDRESS ?? '',
+        MAINNET: Config.APP_MAINNET_MINTING_SERVICE_ADDRESS ?? '',
+    },
     LOCAL: {
         ALIAS_NAME: 'CUDOS Local Testnet',
         SHORT_NAMES: ['local'],

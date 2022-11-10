@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
-import ImageEntity from '../../../upload-file/entities/ImageEntity';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
 import MinerEntity from '../../entities/MinerEntity';

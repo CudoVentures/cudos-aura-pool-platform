@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
 import numeral from 'numeral';
 import S from '../../../core/utilities/Main';
@@ -29,6 +30,7 @@ export default class MiningFarmEntity {
     status: MiningFarmStatus;
     powerCost: number;
     poolFee: number;
+    maintenanceFeeInBtc: BigNumber;
     powerConsumptionPerTh: number;
 
     constructor() {
@@ -50,6 +52,7 @@ export default class MiningFarmEntity {
         this.status = MiningFarmStatus.NOT_APPROVED;
         this.powerCost = S.NOT_EXISTS;
         this.poolFee = S.NOT_EXISTS;
+        this.maintenanceFeeInBtc = null;
         this.powerConsumptionPerTh = S.NOT_EXISTS;
 
         makeAutoObservable(this);
@@ -79,6 +82,10 @@ export default class MiningFarmEntity {
 
     formatHashPowerInTh(): string {
         return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`
+    }
+
+    formatMaintenanceFeesInBtc(): string {
+        return this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(2) : '0.00';
     }
 
     formatPowerCost(): string {
@@ -118,6 +125,7 @@ export default class MiningFarmEntity {
             'status': entity.status,
             'powerCost': entity.powerCost,
             'poolFee': entity.poolFee,
+            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
             'powerConsumptionPerTh': entity.powerConsumptionPerTh,
         }
     }
@@ -146,6 +154,7 @@ export default class MiningFarmEntity {
         model.status = parseInt(json.status ?? model.status);
         model.powerCost = Number(json.powerCost) ?? model.powerCost;
         model.poolFee = Number(json.poolFee) ?? model.poolFee;
+        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.powerConsumptionPerTh = Number(json.powerConsumptionPerTh) ?? model.powerConsumptionPerTh;
 
         return model;
