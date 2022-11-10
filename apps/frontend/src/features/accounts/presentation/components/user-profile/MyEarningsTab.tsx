@@ -70,13 +70,12 @@ function MyEarningsTab({ bitcoinStore, cudosStore, userProfilePageStore, walletS
                     </div>
                 </StyledContainer>
                 <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
-                    <div className={'B1 SemiBold'}>Total Contract Hash Power</div>
+                    <div className={'B1 SemiBold'}>Total Hash Power</div>
                     <div className={'FlexColumn ValueColumn'}>
                         <div>
                             <span className={'H2 Bold'}>{userEarningsEntity.totalContractHashPowerInTh}</span>
                             <span className={'H3 SecondaryColor'}> TH/S</span>
                         </div>
-                        <div className={'SecondaryColor H3 Bold'}>{userEarningsEntity.formatTotalContractHashPowerInUsd()}</div>
                     </div>
                 </StyledContainer>
             </div>

@@ -39,7 +39,6 @@ export default class StatisticsStorageRepo implements StatisticsRepo {
         userEarningsEntity.totalEarningInBtc = new BigNumber(1.2);
         userEarningsEntity.totalNftBought = 34;
         userEarningsEntity.totalContractHashPowerInTh = 104135;
-        userEarningsEntity.totalContractHashPowerInUsd = 34124;
         userEarningsEntity.earningsPerDayInUsd = [100, 32, 231, 511, 531, 81];
         userEarningsEntity.btcEarnedInBtc = new BigNumber(0.321);
 
