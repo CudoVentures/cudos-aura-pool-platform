@@ -111,7 +111,7 @@ export default class AccountSessionStore {
 
     async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
         try {
-            this.accountRepo.confirmBitcoinAddress(bitcoinAddress, ledger, network);
+            this.accountRepo.confirmBitcoinAddress(bitcoinAddress, ledger, network, this.accountEntity.accountId);
         } finally {
             await this.loadSessionAccountsAndSync();
         }

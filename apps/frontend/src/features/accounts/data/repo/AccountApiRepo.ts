@@ -54,7 +54,7 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string, accountId: string): Promise < void > {
         try {
             this.disableActions?.();
 
@@ -62,7 +62,7 @@ export default class AccountStorageRepo implements AccountRepo {
             const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
 
             await signingClient.addressbookCreateAddress(ledger.accountAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
-            this.accountApi.confirmBitcoinAddress(bitcoinAddress);
+            this.accountApi.confirmBitcoinAddress(bitcoinAddress, accountId);
         } finally {
             this.enableActions?.();
         }
