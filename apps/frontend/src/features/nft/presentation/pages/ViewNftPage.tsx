@@ -104,7 +104,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
         ));
         profitDatapreviews.push(createDataPreview('Estimated Profit per Month', viewNftPageStore.formatNetProfitPerMonth()));
         profitDatapreviews.push(createDataPreview('Estimated Profit per Year', viewNftPageStore.formatNetProfitPerYear()));
-        profitDatapreviews.push(createDataPreview('Maintenance fee', nftEntity.formatMaintenanceFeeInBtc()));
+        // profitDatapreviews.push(createDataPreview('Maintenance fee', nftEntity.formatMaintenanceFeeInBtc()));
 
         return profitDatapreviews;
     }

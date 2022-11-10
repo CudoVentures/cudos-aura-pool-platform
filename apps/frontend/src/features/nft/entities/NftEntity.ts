@@ -33,8 +33,8 @@ export default class NftEntity {
     expiryDate: number;
     creatorAddress: string;
     currentOwnerAddress: string;
-    farmRoyalties: number;
-    maintenanceFeeInBtc: BigNumber;
+    // farmRoyalties: number;
+    // maintenanceFeeInBtc: BigNumber;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -49,8 +49,8 @@ export default class NftEntity {
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = ''
         this.currentOwnerAddress = ''
-        this.farmRoyalties = S.NOT_EXISTS;
-        this.maintenanceFeeInBtc = null;
+        // this.farmRoyalties = S.NOT_EXISTS;
+        // this.maintenanceFeeInBtc = null;
 
         makeAutoObservable(this);
     }
@@ -113,23 +113,23 @@ export default class NftEntity {
         return `${this.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0)} CUDOS`;
     }
 
-    formatMaintenanceFeeInBtc(): string {
-        return `${this.maintenanceFeeInBtc.toString()} BTC`;
-    }
+    // formatMaintenanceFeeInBtc(): string {
+    //     return `${this.maintenanceFeeInBtc.toString()} BTC`;
+    // }
 
     cloneDeep(): NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 
-        newNftEntity.priceInAcudos = new BigNumber(this.priceInAcudos);
-        newNftEntity.maintenanceFeeInBtc = new BigNumber(this.maintenanceFeeInBtc);
+        newNftEntity.priceInAcudos = this.priceInAcudos !== null ? new BigNumber(this.priceInAcudos) : null;
+        // newNftEntity.maintenanceFeeInBtc = new BigNumber(this.maintenanceFeeInBtc);
 
         return newNftEntity;
     }
 
     copyDeepFrom(nftEntity: NftEntity): void {
         Object.assign(this, nftEntity);
-        this.priceInAcudos = new BigNumber(nftEntity.priceInAcudos);
-        this.maintenanceFeeInBtc = new BigNumber(nftEntity.maintenanceFeeInBtc);
+        this.priceInAcudos = nftEntity.priceInAcudos !== null ? new BigNumber(nftEntity.priceInAcudos) : null;
+        // this.maintenanceFeeInBtc = new BigNumber(nftEntity.maintenanceFeeInBtc);
     }
 
     static toJson(entity: NftEntity): any {
@@ -150,8 +150,8 @@ export default class NftEntity {
             'expiryDate': entity.expiryDate,
             'creatorAddress': entity.creatorAddress,
             'currentOwnerAddress': entity.currentOwnerAddress,
-            'farmRoyalties': entity.farmRoyalties,
-            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
+            // 'farmRoyalties': entity.farmRoyalties,
+            // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
         }
     }
 
@@ -166,16 +166,16 @@ export default class NftEntity {
         model.name = json.name ?? model.name;
         model.tokenId = json.tokenId ?? model.tokenId;
         model.collectionId = json.collectionId ?? model.collectionId;
-        model.hashPowerInTh = Number(json.hashPowerInTh ?? model.hashPowerInTh);
+        model.hashPowerInTh = parseInt(json.hashPowerInTh ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
         model.imageUrl = json.imageUrl ?? model.imageUrl;
         model.status = json.status ?? model.status;
-        model.listStatus = parseInt(json.listStatus) ?? model.listStatus;
-        model.expiryDate = parseInt(json.expiryDate) ?? model.expiryDate;
+        model.listStatus = parseInt(json.listStatus ?? model.listStatus);
+        model.expiryDate = parseInt(json.expiryDate ?? model.expiryDate);
         model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
         model.currentOwnerAddress = json.currentOwnerAddress ?? model.currentOwnerAddress;
-        model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);
-        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
+        // model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);
+        // model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
 
         return model;
     }

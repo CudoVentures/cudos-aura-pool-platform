@@ -9,6 +9,7 @@ import '../styles/input.css';
 
 export enum InputType {
     INTEGER,
+    POSITIVE_INTEGER,
     REAL,
     TEXT,
     PHONE,
@@ -59,6 +60,11 @@ const Input = React.forwardRef(({ className, inputType, decimalLength, readOnly,
         switch (inputType) {
             case InputType.INTEGER:
                 if (filterInteger(event.target.value) === false) {
+                    return;
+                }
+                break;
+            case InputType.POSITIVE_INTEGER:
+                if (filterPositiveInteger(event.target.value) === false) {
                     return;
                 }
                 break;
@@ -164,6 +170,23 @@ function filterInteger(value: string) {
         if (c === '+' || c === '-') {
             return i === 0;
         }
+        if (c >= '0' && c <= '9') {
+            continue;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+function filterPositiveInteger(value: string) {
+    if (value.length === 0) {
+        return true;
+    }
+
+    for (let c, i = value.length; i-- > 0;) {
+        c = value[i];
         if (c >= '0' && c <= '9') {
             continue;
         }

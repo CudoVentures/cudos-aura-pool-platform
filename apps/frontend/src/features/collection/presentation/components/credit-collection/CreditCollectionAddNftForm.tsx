@@ -34,15 +34,15 @@ type Props = {
 function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoinStore }: Props) {
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
 
-    const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
-    const [editMaintenanceFeeDisabled, setEditMaintenanceFeeDisabled] = useState(true);
+    // const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
+    // const [editMaintenanceFeeDisabled, setEditMaintenanceFeeDisabled] = useState(true);
 
     const validationState = useRef(new ValidationState()).current;
     const nftNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const nftHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hash power')).current;
     const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
-    const nftRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
-    const nftMaintenanceFeeValidation = useRef(validationState.addEmptyValidation('Empty maintenance fee')).current;
+    // const nftRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
+    // const nftMaintenanceFeeValidation = useRef(validationState.addEmptyValidation('Empty maintenance fee')).current;
 
     function onClickAddToCollection() {
         if (validationState.getIsErrorPresent() === true) {
@@ -120,7 +120,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         placeholder={'Enter hashing power...'}
                         disabled = { selectedNftEntity === null }
                         value={creditCollectionStore.selectedNftHashingPowerInThInputValue}
-                        inputType={InputType.INTEGER}
+                        inputType={InputType.POSITIVE_INTEGER}
                         inputValidation={nftHashPowerValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
@@ -143,7 +143,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         }} />
                 }
                 helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
-            <FieldColumnWrapper
+            {/* <FieldColumnWrapper
                 field = {
                     <Input
                         label={
@@ -164,11 +164,11 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         placeholder={'Enter royalties...'}
                         inputValidation={nftRoyaltiesValidation}
                         value={creditCollectionStore.getSelectedNftRoyaltiesInputValue()}
-                        inputType={InputType.INTEGER}
+                        inputType={InputType.POSITIVE_INTEGER}
                         onChange={creditCollectionStore.onChangeSelectedNftRoyalties} />
                 }
-                helperText = { 'Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.' } />
-            <FieldColumnWrapper
+                helperText = { 'Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.' } /> */}
+            {/* <FieldColumnWrapper
                 field = {
                     <Input
                         label={
@@ -189,13 +189,13 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         inputValidation={nftMaintenanceFeeValidation || selectedNftEntity === null}
                         placeholder={'Enter Maintenance Fee...'}
                         value={creditCollectionStore.selectedNftMaintenanceFeeInBtcInputValue}
-                        inputType={InputType.INTEGER}
+                        inputType={InputType.POSITIVE_INTEGER}
                         onChange={creditCollectionStore.onChangeSelectedNftMaintenanceFeeInBtc}
                     />
                 }
                 helperText = { 'Maintenance fee calculation formula:' }>
                 <div className={'FormulaBox B2 Bold'}>{'[This NFT TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
-            </FieldColumnWrapper>
+            </FieldColumnWrapper> */}
             <SingleDatepicker
                 label = {
                     <TextWithTooltip text={'Valid Until'} tooltipText={'BTC rewards will be paid to the NFT holder until this date.'} />

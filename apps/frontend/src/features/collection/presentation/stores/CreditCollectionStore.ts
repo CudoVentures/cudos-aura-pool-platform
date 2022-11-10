@@ -47,7 +47,7 @@ export default class CreditCollectionStore {
     miningFarmRemainingHashPower: number;
     selectedNftHashingPowerInThInputValue: string;
     selectedNftPriceInCudosInputValue: string;
-    selectedNftMaintenanceFeeInBtcInputValue: string;
+    // selectedNftMaintenanceFeeInBtcInputValue: string;
 
     constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -70,7 +70,7 @@ export default class CreditCollectionStore {
         this.miningFarmRemainingHashPower = 0;
         this.selectedNftHashingPowerInThInputValue = '';
         this.selectedNftPriceInCudosInputValue = '';
-        this.selectedNftMaintenanceFeeInBtcInputValue = '';
+        // this.selectedNftMaintenanceFeeInBtcInputValue = '';
 
         makeAutoObservable(this);
     }
@@ -173,8 +173,8 @@ export default class CreditCollectionStore {
             nftEntity.priceInAcudos = this.collectionEntity.getDefaultPricePerNftInAcudos();
             nftEntity.hashPowerInTh = this.collectionEntity.defaultHashPowerPerNftInTh;
         }
-        nftEntity.farmRoyalties = this.collectionEntity.royalties;
-        nftEntity.maintenanceFeeInBtc = new BigNumber(this.collectionEntity.maintenanceFeeInBtc);
+        // nftEntity.farmRoyalties = this.collectionEntity.royalties;
+        // nftEntity.maintenanceFeeInBtc = new BigNumber(this.collectionEntity.maintenanceFeeInBtc);
 
         this.onClickEditNft(nftEntity);
     }
@@ -237,14 +237,14 @@ export default class CreditCollectionStore {
         this.selectedNftEntity.priceInAcudos = inputValue !== '' ? ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(new BigNumber(inputValue)) : null;
     }
 
-    onChangeSelectedNftRoyalties = (inputValue: string) => {
-        this.selectedNftEntity.farmRoyalties = inputValue !== '' ? parseInt(inputValue) : S.NOT_EXISTS;
-    }
+    // onChangeSelectedNftRoyalties = (inputValue: string) => {
+    //     this.selectedNftEntity.farmRoyalties = inputValue !== '' ? parseInt(inputValue) : S.NOT_EXISTS;
+    // }
 
-    onChangeSelectedNftMaintenanceFeeInBtc = (inputValue: string) => {
-        this.selectedNftMaintenanceFeeInBtcInputValue = inputValue;
-        this.selectedNftEntity.maintenanceFeeInBtc = inputValue !== '' ? new BigNumber(inputValue) : null;
-    }
+    // onChangeSelectedNftMaintenanceFeeInBtc = (inputValue: string) => {
+    //     this.selectedNftMaintenanceFeeInBtcInputValue = inputValue;
+    //     this.selectedNftEntity.maintenanceFeeInBtc = inputValue !== '' ? new BigNumber(inputValue) : null;
+    // }
 
     onChangeSelectedNftExpirationDate = (expirationDate: Date) => {
         this.selectedNftEntity.expiryDate = expirationDate !== null ? expirationDate.getTime() : S.NOT_EXISTS;
@@ -255,13 +255,13 @@ export default class CreditCollectionStore {
         return this.selectedNftEntity?.name ?? '';
     }
 
-    getSelectedNftRoyaltiesInputValue() {
-        if (this.selectedNftEntity === null || this.selectedNftEntity.farmRoyalties === S.NOT_EXISTS) {
-            return '';
-        }
+    // getSelectedNftRoyaltiesInputValue() {
+    //     if (this.selectedNftEntity === null || this.selectedNftEntity.farmRoyalties === S.NOT_EXISTS) {
+    //         return '';
+    //     }
 
-        return this.selectedNftEntity.farmRoyalties.toString();
-    }
+    //     return this.selectedNftEntity.farmRoyalties.toString();
+    // }
 
     getSelectedNftExpirationDateInputValue(): Date {
         if (this.selectedNftEntity === null || this.selectedNftEntity.expiryDate === S.NOT_EXISTS) {
@@ -277,7 +277,7 @@ export default class CreditCollectionStore {
 
         this.selectedNftHashingPowerInThInputValue = nftEntity.hashPowerInTh !== S.NOT_EXISTS ? nftEntity.hashPowerInTh.toString() : '';
         this.selectedNftPriceInCudosInputValue = nftEntity.priceInAcudos !== null ? nftEntity.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toString() : ''
-        this.selectedNftMaintenanceFeeInBtcInputValue = nftEntity.maintenanceFeeInBtc !== null ? nftEntity.maintenanceFeeInBtc.toString() : '';
+        // this.selectedNftMaintenanceFeeInBtcInputValue = nftEntity.maintenanceFeeInBtc !== null ? nftEntity.maintenanceFeeInBtc.toString() : '';
     }
 
     onClickSendForApproval = async () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
+import BigNumber from 'bignumber.js';
 
 import S from '../../../../core/utilities/Main';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
@@ -24,7 +24,6 @@ import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator-component.css';
-import BigNumber from 'bignumber.js';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -104,7 +103,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         />
                                     }
                                     disabled = { rewardsCalculatorStore.hasSelectedMiningFarm() === false }
-                                    inputType={InputType.INTEGER}
+                                    inputType={InputType.POSITIVE_INTEGER}
                                     value = { rewardsCalculatorStore.hashPowerInThInputValue }
                                     onChange = { rewardsCalculatorStore.onChangeHashPowerInInput }
                                     InputProps={{
@@ -133,7 +132,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                                 text={'Network Difficulty'}
                                                 tooltipText={'info'} />
                                         }
-                                        inputType={InputType.INTEGER}
+                                        inputType={InputType.POSITIVE_INTEGER}
                                         readOnly={networkDifficultyEditEnabled === false}
                                         value={rewardsCalculatorStore.getNetworkDifficultyInputValue()}
                                         onChange = { rewardsCalculatorStore.onChangeNetworkDifficulty }

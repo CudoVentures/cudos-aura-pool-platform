@@ -10,6 +10,7 @@ import Svg from '../../../../../core/presentation/components/Svg';
 import AccountSessionStore from '../../../../../features/accounts/presentation/stores/AccountSessionStore';
 import CreditMiningFarmDetailsPageStore from '../../stores/CreditMiningFarmDetailsPageStore';
 import DataPreviewLayout, { createDataPreview } from '../../../../../core/presentation/components/DataPreviewLayout';
+import S from '../../../../../core/utilities/Main';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -17,7 +18,7 @@ type Props = {
 }
 
 function StepReview({ accountSessionStore, creditMiningFarmDetailsPageStore }: Props) {
-    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(S.INT_FALSE);
 
     const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
     // const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;

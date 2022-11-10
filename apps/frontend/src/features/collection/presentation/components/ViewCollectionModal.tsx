@@ -29,8 +29,8 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             createDataPreview('Collection Name', collectionEntity.name),
                             createDataPreview('Description', collectionEntity.description),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
-                            createDataPreview('Royalties', collectionEntity.royalties),
-                            createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
+                            createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInBtc()),
+                            // createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
                             createDataPreview('Payout address', collectionEntity.payoutAddress),
                         ] } />
                     { nftEntities.map((nftEntity) => {
@@ -49,8 +49,8 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
                                         createDataPreview('Creator address', nftEntity.creatorAddress),
                                         createDataPreview('Current owner', nftEntity.currentOwnerAddress),
-                                        createDataPreview('Farm Royalties', nftEntity.farmRoyalties),
-                                        createDataPreview('Maintenance Fee', nftEntity.formatMaintenanceFeeInBtc()),
+                                        // createDataPreview('Farm Royalties', nftEntity.farmRoyalties),
+                                        // createDataPreview('Maintenance Fee', nftEntity.formatMaintenanceFeeInBtc()),
                                     ] } />
                             </div>
                         )
