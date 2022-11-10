@@ -136,26 +136,26 @@ export default class MiningFarmEntity {
         }
         const model = new MiningFarmEntity();
 
-        model.id = json.id ?? model.id;
-        model.accountId = json.accountId ?? model.accountId;
+        model.id = (json.id ?? model.id).toString();
+        model.accountId = (json.creator_id ?? model.accountId).toString();
         model.name = json.name ?? model.name;
-        model.legalName = json.legalName ?? model.legalName;
-        model.primaryAccountOwnerName = json.primaryAccountOwnerName ?? model.primaryAccountOwnerName;
-        model.primaryAccountOwnerEmail = json.primaryAccountOwnerEmail ?? model.primaryAccountOwnerEmail;
+        model.legalName = json.sub_account_name ?? model.legalName;
+        model.primaryAccountOwnerName = json.primary_account_owner_name ?? model.primaryAccountOwnerName;
+        model.primaryAccountOwnerEmail = json.primary_account_owner_email ?? model.primaryAccountOwnerEmail;
         model.description = json.description ?? model.description;
-        model.manufacturerIds = json.manufacturerIds ?? model.manufacturerIds;
-        model.minerIds = json.minerIds ?? model.minerIds;
-        model.energySourceIds = json.energySourceIds ?? model.energySourceIds;
-        model.hashPowerInTh = Number(json.hashPowerInTh) ?? model.hashPowerInTh;
-        model.machinesLocation = json.machinesLocation ?? model.machinesLocation;
+        model.manufacturerIds = json.manufacturer_ids ?? model.manufacturerIds;
+        model.minerIds = json.miner_ids ?? model.minerIds;
+        model.energySourceIds = json.energy_source_ids ?? model.energySourceIds;
+        model.hashPowerInTh = Number(json.total_farm_hashrate ?? model.hashPowerInTh);
+        model.machinesLocation = json.location ?? model.machinesLocation;
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
         model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
         model.farmPhotoUrls = json.farmPhotoUrls ?? model.farmPhotoUrls;
         model.status = parseInt(json.status ?? model.status);
-        model.powerCost = Number(json.powerCost) ?? model.powerCost;
-        model.poolFee = Number(json.poolFee) ?? model.poolFee;
+        model.powerCost = Number(json.powerCost ?? model.powerCost);
+        model.poolFee = Number(json.poolFee ?? model.poolFee);
         model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
-        model.powerConsumptionPerTh = Number(json.powerConsumptionPerTh) ?? model.powerConsumptionPerTh;
+        model.powerConsumptionPerTh = Number(json.powerConsumptionPerTh ?? model.powerConsumptionPerTh);
 
         return model;
     }

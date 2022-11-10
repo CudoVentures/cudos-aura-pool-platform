@@ -126,6 +126,9 @@ export default class MiningFarmApi {
             },
         )
 
+        farm.primary_account_owner_name = 'name';
+        farm.primary_account_owner_email = 'email';
+
         return MiningFarmEntity.fromJson({
             id: farm.id,
             accountId: farm.creator_id,
@@ -151,49 +154,31 @@ export default class MiningFarmApi {
     async fetchManufacturers(): Promise < ManufacturerEntity[] > {
         const { data } = await axios.get('/api/v1/farm/manufacturers')
 
-        return data.map((manufacturer) => ManufacturerEntity.fromJson({
-            manufacturerId: manufacturer.id,
-            name: manufacturer.name,
-        }))
+        return data.map((manufacturer) => ManufacturerEntity.fromJson(manufacturer))
     }
 
     async fetchMiners(): Promise < MinerEntity[] > {
         const { data } = await axios.get('/api/v1/farm/miners')
 
-        return data.map((miner) => MinerEntity.fromJson({
-            minerId: miner.id,
-            name: miner.name,
-        }))
+        return data.map((miner) => MinerEntity.fromJson(miner))
     }
 
     async fetchEnergySources(): Promise < EnergySourceEntity[] > {
         const { data } = await axios.get('/api/v1/farm/energy-sources')
 
-        return data.map((energySource) => EnergySourceEntity.fromJson({
-            energySourceId: energySource.id,
-            name: energySource.name,
-        }))
+        return data.map((energySource) => EnergySourceEntity.fromJson(energySource))
     }
 
     async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void > {
-        await axios.put('/api/v1/farm/manufacturers', {
-            id: Number(manufacturerEntity.manufacturerId),
-            name: manufacturerEntity.name,
-        })
+        await axios.put('/api/v1/farm/manufacturers', ManufacturerEntity.toJson(manufacturerEntity))
     }
 
     async creditMiner(minerEntity: MinerEntity): Promise < void > {
-        await axios.put('/api/v1/farm/miners', {
-            id: Number(minerEntity.minerId),
-            name: minerEntity.name,
-        })
+        await axios.put('/api/v1/farm/miners', MinerEntity.toJson(minerEntity))
     }
 
     async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void > {
-        await axios.put('/api/v1/farm/energy-sources', {
-            id: Number(energySourceEntity.energySourceId),
-            name: energySourceEntity.name,
-        })
+        await axios.put('/api/v1/farm/energy-sources', EnergySourceEntity.toJson(energySourceEntity))
     }
 
 }

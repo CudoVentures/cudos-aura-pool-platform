@@ -3,6 +3,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
+import { use } from 'passport';
 
 export default class AccountApi {
 
@@ -57,27 +58,20 @@ export default class AccountApi {
 
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
         const user = decodeStorageToken();
+        user.email_verified = 1;
+        user.active = 1;
+        user.timestamp_last_login = Date.now();
+        user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
+
+        user.admin_id = user.id;
+        user.super_admin_id = user.id;
+        user.account_id = user.id;
+
         return {
-            accountEntity: AccountEntity.fromJson(user ? {
-                accountId: user.id,
-                name: user.name,
-                type: user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN,
-                email: user.email,
-                emailVerified: 1,
-                active: 1,
-                timestampLastLogin: Date.now(),
-            } : AccountEntity.fromJson({})),
+            accountEntity: AccountEntity.fromJson(user),
             userEntity: UserEntity.fromJson(null),
-            adminEntity: AdminEntity.fromJson(user && user.role === 'farm_admin' ? {
-                accountId: user.id,
-                adminId: user.id,
-                cudosWalletAddress: user.cudos_address,
-                bitcoinWalletAddress: user.payout_address,
-            } : null),
-            superAdminEntity: SuperAdminEntity.fromJson(user && user.role === 'super_admin' ? {
-                accountId: user.id,
-                adminId: user.id,
-            } : null),
+            adminEntity: user && user.role === AccountType.ADMIN ? AdminEntity.fromJson(user) : null,
+            superAdminEntity: user && user.role === AccountType.SUPER_ADMIN ? SuperAdminEntity.fromJson(user) : null,
         }
     }
 

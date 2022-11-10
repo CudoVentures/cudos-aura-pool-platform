@@ -5,14 +5,6 @@ import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../../core/utilities/AxiosWrapper';
 
-const MiningFarmStatusMap = {
-    queued: CollectionStatus.QUEUED,
-    approved: CollectionStatus.APPROVED,
-    deleted: CollectionStatus.DELETED,
-    rejected: CollectionStatus.REJECTED,
-    issued: CollectionStatus.ISSUED,
-}
-
 export default class CollectionApi {
 
     async fetchCategories(): Promise < CategoryEntity [] > {
@@ -27,22 +19,13 @@ export default class CollectionApi {
         } })
 
         return {
-            collectionEntities: data.map((collection) => CollectionEntity.fromJson({
-                id: collection.id,
-                farmId: collection.farm_id,
-                name: collection.name,
-                description: collection.description,
-                hashPowerInTh: collection.hashing_power,
-                status: MiningFarmStatusMap[collection.status],
-                royalties: collection.royalties,
-                maintenanceFeeInBtc: collection.maintenance_fee,
-            })),
+            collectionEntities: data.map((collectionJson) => CollectionEntity.fromJson(collectionJson)),
             total: data.length,
         }
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
-        const { data: collectionData } = await axios.put(
+        const { data: collectionJson } = await axios.put(
             '/api/v1/collection',
             {
                 ...collectionEntity,
@@ -67,8 +50,8 @@ export default class CollectionApi {
         )
 
         return {
-            collectionEntity: collectionData,
-            nftEntities: collectionData.nfts,
+            collectionEntity: CollectionEntity.fromJson(collectionJson),
+            nftEntities: collectionJson.nfts.map((nftJson) => NftEntity.fromJson(nftJson)),
         }
     }
 
@@ -77,6 +60,6 @@ export default class CollectionApi {
     }
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
-        return collectionIds.map((id) => CollectionDetailsEntity.fromJson({ collectionId: id }));
+        return collectionIds.map((id) => CollectionDetailsEntity.fromJson({ id }));
     }
 }

@@ -28,7 +28,7 @@ export default class ManufacturerEntity {
         }
 
         return {
-            'manufacturerId': entity.manufacturerId,
+            'id': parseInt(entity.manufacturerId),
             'name': entity.name,
         }
     }
@@ -40,7 +40,7 @@ export default class ManufacturerEntity {
 
         const model = new ManufacturerEntity();
 
-        model.manufacturerId = (json.manufacturerId ?? model.manufacturerId).toString();
+        model.manufacturerId = (json.id ?? model.manufacturerId).toString();
         model.name = json.name ?? model.name;
 
         return model;

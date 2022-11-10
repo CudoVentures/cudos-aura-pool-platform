@@ -50,7 +50,7 @@ export default class CollectionDetailsEntity {
 
         const entity = new CollectionDetailsEntity();
 
-        entity.collectionId = (json.collectionId ?? entity.collectionId).toString();
+        entity.collectionId = (json.id ?? entity.collectionId).toString();
         entity.floorPriceInAcudos = new BigNumber(json.floorPriceInAcudos ?? entity.floorPriceInAcudos);
         entity.volumeInAcudos = new BigNumber(json.volumeInAcudos ?? entity.volumeInAcudos);
         entity.owners = parseInt(json.owners ?? entity.owners);

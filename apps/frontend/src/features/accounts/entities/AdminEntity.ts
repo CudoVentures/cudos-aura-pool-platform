@@ -51,10 +51,10 @@ export default class AdminEntity {
 
         const entity = new AdminEntity();
 
-        entity.adminId = (json.adminId ?? entity.adminId).toString();
-        entity.accountId = (json.accountId ?? entity.accountId).toString();
-        entity.cudosWalletAddress = (json.cudosWalletAddress ?? entity.cudosWalletAddress).toString();
-        entity.bitcoinWalletAddress = (json.bitcoinWalletAddress ?? entity.bitcoinWalletAddress).toString();
+        entity.adminId = (json.admin_id ?? entity.adminId).toString();
+        entity.accountId = (json.account_id ?? entity.accountId).toString();
+        entity.cudosWalletAddress = (json.cudos_address ?? entity.cudosWalletAddress).toString();
+        entity.bitcoinWalletAddress = (json.payout_address ?? entity.bitcoinWalletAddress).toString();
 
         return entity;
     }

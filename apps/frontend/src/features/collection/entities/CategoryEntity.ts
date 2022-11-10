@@ -28,7 +28,7 @@ export default class CategoryEntity {
 
         const entity = new CategoryEntity();
 
-        entity.categoryId = (json.categoryId ?? entity.categoryId).toString();
+        entity.categoryId = (json.id ?? entity.categoryId).toString();
         entity.categoryName = json.categoryName ?? entity.categoryName;
 
         return entity;
