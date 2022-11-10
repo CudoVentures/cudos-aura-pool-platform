@@ -25,13 +25,17 @@ function BitcoinConfirmPage({ accountSessionStore, walletStore }: Props) {
 
     const [bitcoinAddress, setBitcoinAddress] = useState('');
 
-    function onClickConfirmBitcoinAddress() {
+    async function onClickConfirmBitcoinAddress() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
             return;
         }
 
-        accountSessionStore.confirmBitcoinAddress(bitcoinAddress, walletStore.ledger, walletStore.selectedNetwork);
+        try {
+            await accountSessionStore.confirmBitcoinAddress(bitcoinAddress, walletStore.ledger, walletStore.selectedNetwork);
+        } finally {
+            await accountSessionStore.loadSessionAccountsAndSync();
+        }
     }
 
     return (

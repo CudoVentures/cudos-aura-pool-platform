@@ -56,13 +56,15 @@ const cudosRepo = new CudosApiRepo();
 const miningFarmRepo = new MiningFarmApiRepo();
 const collectionRepo = new CollectionApiRepo();
 const nftRepo = new NftApiRepo();
-const accountRepo = new AccountApiRepo();
 const statisticsRepo = new StatisticsStorageRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
 const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore();
+
+const accountRepo = new AccountApiRepo(walletStore);
+
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
 const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, miningFarmRepo);

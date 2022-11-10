@@ -9,6 +9,11 @@ export function setDefaultAuthorization() {
 
 export function setTokenInStorage(token) {
     localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN, token)
+
+    if (token === null) {
+        localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);
+    }
+
     setDefaultAuthorization();
 }
 

@@ -25,11 +25,11 @@ export default class AccountApi {
     }
 
     async logout(): Promise < void > {
-        localStorage.removeItem('access_token')
+        setTokenInStorage(null);
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, accountId: string): Promise < void > {
-        await axios.put(`/api/v1/user/${accountId}`, {
+    async confirmBitcoinAddress(bitcoinAddress: string, accountId: string): Promise < any > {
+        return axios.put(`/api/v1/user/${accountId}`, {
             payout_address: bitcoinAddress,
         })
     }
@@ -52,7 +52,6 @@ export default class AccountApi {
 
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
         const user = decodeStorageToken();
-
         return {
             accountEntity: AccountEntity.fromJson(user ? {
                 accountId: user.id,
