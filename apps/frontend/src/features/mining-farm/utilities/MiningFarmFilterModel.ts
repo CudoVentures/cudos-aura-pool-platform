@@ -28,30 +28,12 @@ export default class MiningFarmFilterModel {
         }
 
         return {
-            miningFarmIds: entity.miningFarmIds,
-            status: entity.status,
-            searchString: entity.searchString,
-            sessionAccount: entity.sessionAccount,
-            from: entity.from,
-            count: entity.count,
+            'ids': entity.miningFarmIds.join(','),
+            'status': entity.status,
+            'searchString': entity.searchString,
+            'creator_id': entity.sessionAccount,
+            'offset': entity.from,
+            'limit': entity.count,
         }
     }
-
-    static fromJson(json): MiningFarmFilterModel {
-        if (json === null) {
-            return null;
-        }
-
-        const model = new MiningFarmFilterModel();
-
-        model.miningFarmIds = json.miningFarmIds ?? model.miningFarmIds;
-        model.status = json.status ?? model.status;
-        model.searchString = json.searchString ?? model.searchString;
-        model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
-        model.from = parseInt(json.from ?? model.from);
-        model.count = parseInt(json.count ?? model.count);
-
-        return model;
-    }
-
 }

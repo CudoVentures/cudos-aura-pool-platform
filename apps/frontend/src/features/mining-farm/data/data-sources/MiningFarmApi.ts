@@ -43,13 +43,7 @@ export default class MiningFarmApi {
     }
 
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
-        const { data } = await axios.get('/api/v1/farm', { params: {
-            status: miningFarmFilterModel.status,
-            limit: miningFarmFilterModel.count,
-            ...(miningFarmFilterModel.sessionAccount && { creator_id: miningFarmFilterModel.sessionAccount }),
-            offset: miningFarmFilterModel.from,
-            ...(miningFarmFilterModel.miningFarmIds && { ids: miningFarmFilterModel.miningFarmIds.join(',') }),
-        } })
+        const { data } = await axios.get('/api/v1/farm', { params: MiningFarmFilterModel.toJson(miningFarmFilterModel) });
 
         const result = { miningFarmEntities: data.map((farm) => {
 
@@ -84,25 +78,7 @@ export default class MiningFarmApi {
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
-        const { data: farm } = await axios.put(
-            '/api/v1/farm',
-            {
-                ...miningFarmEntity,
-                name: miningFarmEntity.name,
-                description: miningFarmEntity.description,
-                sub_account_name: miningFarmEntity.legalName,
-                location: miningFarmEntity.machinesLocation,
-                address_for_receiving_rewards_from_pool: 'address_for_receiving_rewards_from_pool',
-                leftover_reward_payout_address: 'leftover_reward_payout_address',
-                maintenance_fee_payout_address: 'maintenance_fee_payout_address',
-                maintenance_fee_in_btc: miningFarmEntity.poolFee,
-                total_farm_hashrate: miningFarmEntity.hashPowerInTh,
-                manufacturers: miningFarmEntity.manufacturerIds,
-                miner_types: miningFarmEntity.minerIds,
-                energy_source: miningFarmEntity.energySourceIds,
-                images: miningFarmEntity.farmPhotoUrls,
-            },
-        )
+        const { data: farm } = await axios.put('/api/v1/farm', MiningFarmEntity.toJson(miningFarmEntity))
         // TODO: remove, they should come from backend
         farm.primary_account_owner_name = 'name';
         farm.primary_account_owner_email = 'email';

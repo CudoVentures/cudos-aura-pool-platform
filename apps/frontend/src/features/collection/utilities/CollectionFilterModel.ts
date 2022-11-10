@@ -32,30 +32,12 @@ export default class CollectionFilterModel {
         }
 
         return {
-            collectionIds: model.collectionIds,
-            status: model.status,
-            searchString: model.searchString,
-            farmId: model.farmId,
-            from: model.from,
-            count: model.count,
+            'ids': model.collectionIds.join(','),
+            'status': model.status,
+            'search_string': model.searchString,
+            'farm_id': parseInt(model.farmId),
+            'offset': model.from,
+            'limit': model.count,
         }
     }
-
-    static fromJson(json): CollectionFilterModel {
-        if (json === null) {
-            return null;
-        }
-
-        const model = new CollectionFilterModel();
-
-        model.collectionIds = json.collectionIds ?? model.collectionIds;
-        model.status = json.status ?? model.status;
-        model.searchString = json.searchString ?? model.searchString;
-        model.farmId = (json.farmId ?? model.farmId).toString();
-        model.from = parseInt(json.from ?? model.from);
-        model.count = parseInt(json.count ?? model.count);
-
-        return model;
-    }
-
 }

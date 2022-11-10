@@ -9,6 +9,7 @@ export const enum CollectionStatus {
     DELETED = 'deleted',
 }
 
+// TODO: add search string field
 export class CollectionFilters {
     @IsString()
     @IsOptional()

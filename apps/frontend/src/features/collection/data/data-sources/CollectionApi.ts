@@ -12,11 +12,7 @@ export default class CollectionApi {
     }
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
-        const { data } = await axios.get('/api/v1/collection', { params: {
-            ...collectionFilterModel,
-            ...(collectionFilterModel.collectionIds && { ids: collectionFilterModel.collectionIds.join(',') }),
-            farm_id: collectionFilterModel.farmId,
-        } })
+        const { data } = await axios.get('/api/v1/collection', { params: CollectionFilterModel.toJson(collectionFilterModel) })
 
         return {
             collectionEntities: data.map((collectionJson) => CollectionEntity.fromJson(collectionJson)),
@@ -28,24 +24,8 @@ export default class CollectionApi {
         const { data: collectionJson } = await axios.put(
             '/api/v1/collection',
             {
-                ...collectionEntity,
-                name: collectionEntity.name,
-                description: collectionEntity.description,
-                denom_id: collectionEntity.name,
-                hashing_power: collectionEntity.hashPowerInTh,
-                royalties: collectionEntity.royalties,
-                maintenance_fee: Number(collectionEntity.maintenanceFeeInBtc),
-                payout_address: collectionEntity.payoutAddress,
-                farm_id: collectionEntity.farmId,
-                nfts: nftEntities.map((nft) => ({
-                    id: nft.id,
-                    name: nft.name,
-                    ...(nft.imageUrl && { uri: nft.imageUrl }),
-                    hashing_power: nft.hashPowerInTh,
-                    price: Number(nft.priceInAcudos),
-                    expiration_date: new Date(nft.expiryDate),
-                    collection_id: nft.collectionId,
-                })),
+                ...CollectionEntity.toJson(collectionEntity),
+                nfts: nftEntities.map((nft) => NftEntity.toJson(nft)),
             },
         )
 

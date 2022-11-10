@@ -148,7 +148,7 @@ export default class CollectionEntity {
             'status': entity.status,
             'royalties': entity.royalties,
             // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
-            'payoutAddress': entity.payoutAddress,
+            'payout_address': entity.payoutAddress,
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
         }

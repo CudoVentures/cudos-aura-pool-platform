@@ -30,32 +30,13 @@ export default class NftFilterModel {
         }
 
         return {
-            nftIds: entity.nftIds,
-            collectionStatus: entity.collectionStatus,
-            collectionIds: entity.collectionIds,
-            searchString: entity.searchString,
-            sessionAccount: entity.sessionAccount,
-            from: entity.from,
-            count: entity.count,
+            'nftIds': entity.nftIds.join(','),
+            'status': entity.collectionStatus,
+            'collection_ids': entity.collectionIds.join(','),
+            'search_string': entity.searchString,
+            'session_account': entity.sessionAccount,
+            'offset': entity.from,
+            'limit': entity.count,
         }
     }
-
-    static fromJson(json): NftFilterModel {
-        if (json === null) {
-            return null;
-        }
-
-        const model = new NftFilterModel();
-
-        model.nftIds = json.nftIds ?? model.nftIds;
-        model.collectionStatus = json.collectionStatus ?? model.collectionStatus;
-        model.collectionIds = (json.collectionIds ?? model.collectionIds).map((j) => j.toString());
-        model.searchString = json.searchString ?? model.searchString;
-        model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
-        model.from = parseInt(json.from ?? model.from);
-        model.count = parseInt(json.count ?? model.count);
-
-        return model;
-    }
-
 }

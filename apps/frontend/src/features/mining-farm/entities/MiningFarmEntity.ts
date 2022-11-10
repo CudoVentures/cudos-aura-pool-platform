@@ -29,6 +29,9 @@ export default class MiningFarmEntity {
     farmPhotoUrls: string[];
     status: MiningFarmStatus;
     maintenanceFeeInBtc: BigNumber;
+    rewardsFromPoolAddress: string;
+    leftoverRewardsAddress: string;
+    maintenanceFeePayoutAddress: string;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -48,6 +51,9 @@ export default class MiningFarmEntity {
         this.farmPhotoUrls = [];
         this.status = MiningFarmStatus.NOT_APPROVED;
         this.maintenanceFeeInBtc = null;
+        this.rewardsFromPoolAddress = '';
+        this.leftoverRewardsAddress = '';
+        this.maintenanceFeePayoutAddress = '';
 
         makeAutoObservable(this);
     }
@@ -105,6 +111,9 @@ export default class MiningFarmEntity {
             'farm_photos': JSON.stringify(entity.farmPhotoUrls),
             'status': entity.status,
             'maintenance_fee_in_btc': entity.maintenanceFeeInBtc.toString(),
+            'address_for_receiving_rewards_from_pool': entity.rewardsFromPoolAddress,
+            'leftover_reward_payout_address': entity.leftoverRewardsAddress,
+            'maintenance_fee_payout_address': entity.maintenanceFeePayoutAddress,
         }
     }
 
@@ -131,6 +140,7 @@ export default class MiningFarmEntity {
         model.farmPhotoUrls = json.farm_photos ?? model.farmPhotoUrls;
         model.status = parseInt(json.status ?? model.status);
         model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
+        model.coverImgUrl = json.cover_img ?? model.coverImgUrl;
 
         return model;
     }
