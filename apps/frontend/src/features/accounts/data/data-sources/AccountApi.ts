@@ -1,9 +1,8 @@
-import axios from 'axios'
 import AccountEntity, { AccountType } from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
-import JwtDecode from 'jwt-decode'
+import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
 
 export default class AccountApi {
 
@@ -13,7 +12,7 @@ export default class AccountApi {
             password,
         })
 
-        localStorage.setItem('access_token', data.access_token)
+        setTokenInStorage(data.access_token);
     }
 
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
@@ -52,7 +51,7 @@ export default class AccountApi {
     }
 
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
-        const user = localStorage.getItem('access_token') && JwtDecode(localStorage.getItem('access_token'))
+        const user = decodeStorageToken();
 
         return {
             accountEntity: AccountEntity.fromJson(user ? {

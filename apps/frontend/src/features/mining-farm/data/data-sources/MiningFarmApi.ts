@@ -1,10 +1,10 @@
-import axios from 'axios';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
+import axios from '../../../../core/utilities/AxiosWrapper';
 
 const MiningFarmStatusMap = {
     queued: MiningFarmStatus.NOT_APPROVED,
@@ -124,11 +124,6 @@ export default class MiningFarmApi {
                 miner_types: miningFarmEntity.minerIds,
                 energy_source: miningFarmEntity.energySourceIds,
             },
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                },
-            },
         )
 
         return MiningFarmEntity.fromJson({
@@ -150,9 +145,7 @@ export default class MiningFarmApi {
     }
 
     async approveMiningFarm(miningFarmId: string): Promise < void > {
-        const { data } = await axios.patch(`/api/v1/farm/${miningFarmId}/status`, { status: 'approved' }, { headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        } })
+        const { data } = await axios.patch(`/api/v1/farm/${miningFarmId}/status`, { status: 'approved' });
     }
 
     async fetchManufacturers(): Promise < ManufacturerEntity[] > {
