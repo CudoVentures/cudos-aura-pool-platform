@@ -17,6 +17,7 @@ export default class CollectionEntity {
     id: number;
     farmId: number;
     name: string;
+    denomId: string;
     description: string;
     hashPowerInTh: number;
     profileImgUrl: string;
@@ -32,6 +33,7 @@ export default class CollectionEntity {
         this.id = S.NOT_EXISTS;
         this.farmId = S.NOT_EXISTS;
         this.name = '';
+        this.denomId = '';
         this.description = '';
         this.hashPowerInTh = S.NOT_EXISTS;
         this.profileImgUrl = '';
@@ -138,6 +140,7 @@ export default class CollectionEntity {
             'id': entity.id,
             'farmId': entity.farmId,
             'name': entity.name,
+            'denomId': entity.denomId,
             'description': entity.description,
             'hashPowerInTh': entity.hashPowerInTh,
             'profileImgUrl': entity.profileImgUrl,
@@ -161,6 +164,7 @@ export default class CollectionEntity {
         model.id = json.id ?? model.id;
         model.farmId = json.farmId ?? model.farmId;
         model.name = json.name ?? model.name;
+        model.denomId = json.denomId ?? model.denomId;
         model.description = json.description ?? model.description;
         model.hashPowerInTh = Number(json.hashPowerInTh ?? model.hashPowerInTh);
         model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
@@ -170,7 +174,7 @@ export default class CollectionEntity {
         model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
-        model.defaultHashPowerPerNftInTh = parseInt(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
+        model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
 
         return model;
     }

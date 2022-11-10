@@ -6,7 +6,7 @@ export default class MinerEntity {
 
     constructor() {
         this.minerId = S.Strings.NOT_EXISTS;
-        this.name = S.Strings.EMPTY;
+        this.name = '';
     }
 
     static newInstance(minerId: string, name: string) {
