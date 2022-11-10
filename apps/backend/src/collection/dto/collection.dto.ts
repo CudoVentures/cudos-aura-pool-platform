@@ -43,6 +43,16 @@ export class CollectionDto {
     @ApiProperty({ required: true, example: 'my_payout_address' })
         payout_address: string;
 
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'main image' })
+        main_image: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'banner image' })
+        banner_image: string;
+
     @IsNumber()
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 1 })

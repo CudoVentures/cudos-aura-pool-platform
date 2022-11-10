@@ -50,6 +50,14 @@ export class Collection extends Model {
   @Column
       maintenance_fee: number;
 
+    @AllowNull(false)
+    @Column
+        main_image: string;
+
+    @AllowNull(false)
+    @Column
+        banner_image: string;
+
   @AllowNull(false)
   @Column(DataType.ENUM('queued', 'approved', 'rejected', 'issued', 'deleted'))
       status: CollectionStatus;

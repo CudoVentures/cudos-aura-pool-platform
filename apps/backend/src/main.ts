@@ -3,6 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { json } from 'express';
 
 declare const module: any;
 
@@ -14,6 +15,7 @@ async function bootstrap() {
         type: VersioningType.URI,
         defaultVersion: '1',
     })
+    app.use(json({ limit: '50mb' }))
 
     app.useGlobalPipes(
         new ValidationPipe({

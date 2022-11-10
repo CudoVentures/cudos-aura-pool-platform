@@ -78,6 +78,10 @@ export class Farm extends Model {
         energy_source: string[];
 
     @AllowNull(false)
+    @Column({ type: DataType.ARRAY(DataType.STRING) })
+        images: string[];
+
+    @AllowNull(false)
     @Column(DataType.ENUM('queued', 'approved', 'rejected'))
         status: FarmStatus;
 

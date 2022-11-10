@@ -8,14 +8,21 @@ import { NFTModule } from '../nft/nft.module';
 import { NFTService } from '../nft/nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { NFT } from '../nft/nft.model';
+import { FarmService } from '../farm/farm.service';
+import { Farm } from '../farm/models/farm.model';
+import { FarmModule } from '../farm/farm.module';
+import { EnergySource } from '../farm/models/energy-source.model';
+import { Manufacturer } from '../farm/models/manufacturer.model';
+import { Miner } from '../farm/models/miner.model';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([Collection, NFT]),
+        SequelizeModule.forFeature([Collection, NFT, Farm, Miner, Manufacturer, EnergySource]),
         forwardRef(() => NFTModule),
+        forwardRef(() => FarmModule),
         HttpModule,
     ],
-    providers: [CollectionService, NFTService, GraphqlService],
+    providers: [CollectionService, NFTService, FarmService, GraphqlService],
     controllers: [CollectionController],
     exports: [SequelizeModule],
 })

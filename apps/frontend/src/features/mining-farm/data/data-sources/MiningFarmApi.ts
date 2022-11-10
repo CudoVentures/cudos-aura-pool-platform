@@ -100,6 +100,7 @@ export default class MiningFarmApi {
                 manufacturers: miningFarmEntity.manufacturerIds,
                 miner_types: miningFarmEntity.minerIds,
                 energy_source: miningFarmEntity.energySourceIds,
+                images: miningFarmEntity.farmPhotoUrls,
             },
         )
         // TODO: remove, they should come from backend

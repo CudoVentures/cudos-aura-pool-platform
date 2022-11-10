@@ -7,7 +7,6 @@ import {
     PrimaryKey,
     Unique,
     IsDate,
-    IsUrl,
     AllowNull,
     DataType,
     IsUUID,
@@ -34,7 +33,6 @@ export class NFT extends Model {
   @Column
       name: string;
 
-  @IsUrl
   @Column
       uri: string;
 

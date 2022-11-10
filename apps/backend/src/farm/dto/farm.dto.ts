@@ -68,4 +68,9 @@ export class FarmDto {
     @IsNotEmpty()
     @ApiProperty({ required: true, example: ['Oil', 'Solar'], type: [String], description: 'Energy source for the miners' })
         energy_source: string[];
+
+    @IsArray()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: ['snimka 1', 'snimka 2'], type: [String], description: 'Farm images' })
+        images: string[];
 }
