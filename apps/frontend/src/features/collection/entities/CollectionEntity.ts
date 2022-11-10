@@ -171,7 +171,7 @@ export default class CollectionEntity {
         model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
         model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
-        model.defaultHashPowerPerNftInTh = parseInt(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
+        model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
 
         return model;
     }

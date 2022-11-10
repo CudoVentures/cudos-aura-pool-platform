@@ -166,7 +166,7 @@ export default class NftEntity {
         model.name = json.name ?? model.name;
         model.tokenId = json.tokenId ?? model.tokenId;
         model.collectionId = json.collectionId ?? model.collectionId;
-        model.hashPowerInTh = parseInt(json.hashPowerInTh ?? model.hashPowerInTh);
+        model.hashPowerInTh = Number(json.hashPowerInTh ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
         model.imageUrl = json.imageUrl ?? model.imageUrl;
         model.status = json.status ?? model.status;
