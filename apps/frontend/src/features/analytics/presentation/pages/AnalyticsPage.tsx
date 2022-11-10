@@ -21,19 +21,22 @@ import LoadingIndicator from '../../../../core/presentation/components/LoadingIn
 
 import '../styles/analytics-page.css';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 type Props = {
     analyticsPageStore?: AnalyticsPageStore,
     cudosStore?: CudosStore,
+    bitcoinStore?: BitcoinStore;
     walletStore?: WalletStore
 }
 
-function MarkedplacePage({ analyticsPageStore, cudosStore, walletStore }: Props) {
+function MarkedplacePage({ analyticsPageStore, cudosStore, bitcoinStore, walletStore }: Props) {
     const { miningFarmEarningsEntity, defaultIntervalPickerState } = analyticsPageStore;
 
     useEffect(() => {
         async function run() {
             await cudosStore.init();
+            await bitcoinStore.init();
             await analyticsPageStore.init();
         }
         run();
@@ -80,10 +83,10 @@ function MarkedplacePage({ analyticsPageStore, cudosStore, walletStore }: Props)
                                 <div className={'B1 SemiBold'}>Maintenance Fee Deposited</div>
                                 <div className={'FlexColumn ValueColumn'}>
                                     <div>
-                                        <span className={'H2 Bold'}>{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInCudosInt()}<span className={'SecondaryColor'}>.{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInCudosFraction()}</span></span>
-                                        <span className={'H3 SecondaryColor'}> CUDOS</span>
+                                        <span className={'H2 Bold'}>{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcInt()}<span className={'SecondaryColor'}>.{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcFraction()}</span></span>
+                                        <span className={'H3 SecondaryColor'}> BTC</span>
                                     </div>
-                                    <div className={'SecondaryColor H3 Bold'}>{cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.maintenanceFeeDepositedInAcudos)}</div>
+                                    <div className={'SecondaryColor H3 Bold'}>{bitcoinStore.formatBtcInUsd(miningFarmEarningsEntity.maintenanceFeeDepositedInBtc)}</div>
                                 </div>
                             </StyledContainer>
                         </div>
