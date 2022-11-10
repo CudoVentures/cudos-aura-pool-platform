@@ -13,6 +13,7 @@ export default class ProjectUtils {
     static NUMERAL_USD = '$0,0.00';
     static CUDOS_CURRENCY_DIVIDER = new BigNumber('1000000000000000000');
     static CUDOS_FEE_IN_PERCENT = 0.02;
+    static REMAINDER_AFTER_CUDOS_FEE = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT);
 
     static makeBgImgStyle(url: string) {
         return {

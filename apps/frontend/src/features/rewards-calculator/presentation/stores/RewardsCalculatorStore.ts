@@ -132,7 +132,7 @@ export default class RewardsCalculatorStore {
 
         const k = this.getHashPowerInTh() / this.selectedMiningFarmEntity.hashPowerInTh;
         const maintenanceFeeInBtc = new BigNumber(k).multipliedBy(this.selectedMiningFarmEntity.maintenanceFeeInBtc);
-        const incomeAfterCudosFeeInBtc = this.calculateGrossRewardPerMonth().multipliedBy(new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT));
+        const incomeAfterCudosFeeInBtc = this.calculateGrossRewardPerMonth().multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE);
         const incomeAfterMaitenanceFeeInBtc = incomeAfterCudosFeeInBtc.minus(maintenanceFeeInBtc);
 
         return incomeAfterMaitenanceFeeInBtc;

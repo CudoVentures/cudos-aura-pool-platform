@@ -159,6 +159,15 @@ export default class ViewNftPageStore {
         return this.cudosStore.formatConvertedAcudosInUsd(this.nftEntity.priceInAcudos);
     }
 
+    getMonthlyMaintenanceFee(): BigNumber {
+        if (this.nftEntity === null || this.miningFarmEntity === null) {
+            return new BigNumber(0);
+        }
+
+        const k = new BigNumber(this.nftEntity.hashPowerInTh / this.miningFarmEntity.hashPowerInTh);
+        return this.miningFarmEntity.maintenanceFeeInBtc.multipliedBy(k);
+    }
+
     @computed
     calculateGrossProfitPerDay(): BigNumber {
         if (this.nftEntity === null || this.collectionEntity === null || this.miningFarmEntity === null) {
@@ -197,50 +206,46 @@ export default class ViewNftPageStore {
 
     @computed
     calculateNetProfitPerDay(): BigNumber {
-        if (this.nftEntity === null) {
+        if (this.miningFarmEntity === null) {
             return new BigNumber(0);
         }
 
-        const maintenanceFee = this.nftEntity.maintenanceFeeInBtc.multipliedBy(new BigNumber(1 / 30));
-        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT);
+        const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(1 / 30));
         const grossProfit = this.calculateGrossProfitPerDay()
-        return grossProfit.multipliedBy(fees).minus(maintenanceFee);
+        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
     }
 
     @computed
     calculateNetProfitPerWeek(): BigNumber {
-        if (this.nftEntity === null) {
+        if (this.miningFarmEntity === null) {
             return new BigNumber(0);
         }
 
-        const maintenanceFee = this.nftEntity.maintenanceFeeInBtc.multipliedBy(new BigNumber(7 * 1 / 30));
-        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT);
+        const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(7 * 1 / 30));
         const grossProfit = this.calculateGrossProfitPerWeek();
-        return grossProfit.multipliedBy(fees).minus(maintenanceFee);
+        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
     }
 
     @computed
     calculateNetProfitPerMonth(): BigNumber {
-        if (this.nftEntity === null) {
+        if (this.miningFarmEntity === null) {
             return new BigNumber(0);
         }
 
-        const maintenanceFee = this.nftEntity.maintenanceFeeInBtc;
-        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT);
+        const maintenanceFee = this.getMonthlyMaintenanceFee();
         const grossProfit = this.calculateGrossProfitPerMonth();
-        return grossProfit.multipliedBy(fees).minus(maintenanceFee);
+        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
     }
 
     @computed
     calculateNetProfitPerYear(): BigNumber {
-        if (this.nftEntity === null) {
+        if (this.miningFarmEntity === null) {
             return new BigNumber(0);
         }
 
-        const maintenanceFee = this.nftEntity.maintenanceFeeInBtc.multipliedBy(new BigNumber(12));
-        const fees = new BigNumber(1 - ProjectUtils.CUDOS_FEE_IN_PERCENT);
+        const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(12));
         const grossProfit = this.calculateGrossProfitPerYear();
-        return grossProfit.multipliedBy(fees).minus(maintenanceFee);
+        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
     }
 
     formatNetProfitPerDay(): string {

@@ -120,7 +120,7 @@ export default class NftEntity {
     cloneDeep(): NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 
-        newNftEntity.priceInAcudos = new BigNumber(this.priceInAcudos);
+        newNftEntity.priceInAcudos = this.priceInAcudos !== null ? new BigNumber(this.priceInAcudos) : null;
         // newNftEntity.maintenanceFeeInBtc = new BigNumber(this.maintenanceFeeInBtc);
 
         return newNftEntity;
@@ -128,7 +128,7 @@ export default class NftEntity {
 
     copyDeepFrom(nftEntity: NftEntity): void {
         Object.assign(this, nftEntity);
-        this.priceInAcudos = new BigNumber(nftEntity.priceInAcudos);
+        this.priceInAcudos = nftEntity.priceInAcudos !== null ? new BigNumber(nftEntity.priceInAcudos) : null;
         // this.maintenanceFeeInBtc = new BigNumber(nftEntity.maintenanceFeeInBtc);
     }
 

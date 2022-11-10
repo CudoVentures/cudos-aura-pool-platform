@@ -31,7 +31,7 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
             previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerPerNftInTh()));
         }
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));
-        previews.push(createDataPreview('Collection Royalties', collectionEntity.formatRoyalties()));
+        previews.push(createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInBtc()));
         // previews.push(createDataPreview('Maintenance Fee', collectionEntity.formatMaintenanceFeesInBtc()));
         previews.push(createDataPreview('Payout Address', ProjectUtils.shortenAddressString(collectionEntity.payoutAddress, 10)));
 

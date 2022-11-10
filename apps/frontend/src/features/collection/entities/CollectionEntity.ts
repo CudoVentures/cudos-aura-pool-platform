@@ -100,16 +100,16 @@ export default class CollectionEntity {
     //     return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
     // }
 
-    formatRoyalties(): string {
-        return this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00';
+    formatRoyaltiesInBtc(): string {
+        return `${this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00'} BTC`;
     }
 
     formatDefaultPricePerNftInCudos(): string {
-        return this.defaultPricePerNftInCudos !== null ? this.defaultPricePerNftInCudos.toFixed(2) : '0.00';
+        return `${this.defaultPricePerNftInCudos !== null ? this.defaultPricePerNftInCudos.toFixed(2) : '0.00'} CUDOS`;
     }
 
     formatDefaultHashPowerPerNftInTh(): string {
-        return this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? this.defaultHashPowerPerNftInTh.toString() : '0.00';
+        return `${this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? this.defaultHashPowerPerNftInTh.toString() : '0.00'} TH`;
     }
 
     static formatStatusName(status: CollectionStatus): string {

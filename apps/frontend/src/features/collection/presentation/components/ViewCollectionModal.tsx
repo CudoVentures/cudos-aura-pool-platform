@@ -29,7 +29,7 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             createDataPreview('Collection Name', collectionEntity.name),
                             createDataPreview('Description', collectionEntity.description),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
-                            createDataPreview('Royalties', collectionEntity.royalties),
+                            createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInBtc()),
                             // createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
                             createDataPreview('Payout address', collectionEntity.payoutAddress),
                         ] } />
