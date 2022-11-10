@@ -1,5 +1,5 @@
-import axios from 'axios';
 import BigNumber from 'bignumber.js';
+import axios from '../../../../core/utilities/AxiosWrapper';
 import NftEntity, { NftStatus } from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 

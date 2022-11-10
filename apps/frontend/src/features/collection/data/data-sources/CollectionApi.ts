@@ -1,9 +1,9 @@
-import axios from 'axios';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
+import axios from '../../../../core/utilities/AxiosWrapper';
 
 const MiningFarmStatusMap = {
     queued: CollectionStatus.QUEUED,
@@ -64,11 +64,6 @@ export default class CollectionApi {
                     collection_id: nft.collectionId,
                 })),
             },
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                },
-            },
         )
 
         return {
@@ -78,9 +73,7 @@ export default class CollectionApi {
     }
 
     async approveCollection(collectionId: number): Promise < void > {
-        const { data } = await axios.patch(`/api/v1/collection/${collectionId}/status`, { status: 'approved' }, { headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        } })
+        const { data } = await axios.patch(`/api/v1/collection/${collectionId}/status`, { status: 'approved' });
     }
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
