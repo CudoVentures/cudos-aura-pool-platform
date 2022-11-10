@@ -37,9 +37,6 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                             createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
                             createDataPreview('Hashrate', miningFarmEntity.formatHashPowerInTh()),
                             createDataPreview('Maintenance fee', miningFarmEntity.formatMaintenanceFeesInBtc()),
-                            createDataPreview('Power cost', miningFarmEntity.formatPowerCost()),
-                            createDataPreview('Pool fee', miningFarmEntity.formatPoolFee()),
-                            createDataPreview('Power consumption per TH', miningFarmEntity.formatPowerConsumptionPerTH()),
                         ] } />
                     <div className = { 'Grid GridColumns3' } >
                         { miningFarmEntity.farmPhotoUrls.map((url, i) => {
