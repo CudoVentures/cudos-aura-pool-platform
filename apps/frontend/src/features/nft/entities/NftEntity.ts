@@ -4,6 +4,7 @@ import S from '../../../core/utilities/Main';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum NftStatus {
+    NONE = '',
     QUEUED = 'queued',
     APPROVED = 'approved',
     REJECTED = 'rejected',
@@ -13,6 +14,7 @@ export enum NftStatus {
 }
 
 export enum ListStatus {
+    NONE = 0,
     NOT_LISTED = 1,
     LISTED = 2,
 }
@@ -21,6 +23,7 @@ export default class NftEntity {
 
     id: string;
     name: string;
+    tokenId: string;
     collectionId: string;
     hashPowerInTh: number;
     priceInAcudos: BigNumber;
@@ -35,16 +38,17 @@ export default class NftEntity {
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
-        this.name = S.Strings.EMPTY;
+        this.name = '';
+        this.tokenId = '';
         this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
-        this.imageUrl = S.Strings.EMPTY;
-        this.status = S.Strings.EMPTY;
-        this.listStatus = S.NOT_EXISTS;
+        this.imageUrl = '';
+        this.status = NftStatus.NONE;
+        this.listStatus = ListStatus.NONE;
         this.expiryDate = S.NOT_EXISTS;
-        this.creatorAddress = S.Strings.EMPTY
-        this.currentOwnerAddress = S.Strings.EMPTY
+        this.creatorAddress = ''
+        this.currentOwnerAddress = ''
         // this.farmRoyalties = S.NOT_EXISTS;
         // this.maintenanceFeeInBtc = null;
 
@@ -56,11 +60,11 @@ export default class NftEntity {
     }
 
     isStatusListed(): boolean {
-        return this.status === NftStatus.LISTED;
+        return this.listStatus === ListStatus.LISTED;
     }
 
     isStatusNotListed(): boolean {
-        return this.status === NftStatus.NOT_LISTED;
+        return this.listStatus === ListStatus.NOT_LISTED;
     }
 
     isOwnedByAddress(cudosWalletAddress: string): boolean {
@@ -136,6 +140,7 @@ export default class NftEntity {
         return {
             'id': entity.id,
             'name': entity.name,
+            'tokenId': entity.tokenId,
             'collectionId': entity.collectionId,
             'hashPowerInTh': entity.hashPowerInTh,
             'priceInAcudos': entity.priceInAcudos.toString(),
@@ -159,6 +164,7 @@ export default class NftEntity {
 
         model.id = json.id ?? model.id;
         model.name = json.name ?? model.name;
+        model.tokenId = json.tokenId ?? model.tokenId;
         model.collectionId = json.collectionId ?? model.collectionId;
         model.hashPowerInTh = parseInt(json.hashPowerInTh ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
