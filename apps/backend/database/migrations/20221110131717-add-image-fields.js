@@ -19,6 +19,7 @@ module.exports = {
             allowNull: true,
         })
 
+        await queryInterface.removeColumn('nfts', 'uri');
         await queryInterface.addColumn('nfts', 'uri', {
             type: Sequelize.BLOB,
             allowNull: true,
