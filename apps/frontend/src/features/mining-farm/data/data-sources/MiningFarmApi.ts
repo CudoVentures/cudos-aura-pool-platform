@@ -69,13 +69,17 @@ export default class MiningFarmApi {
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
+
+        // TODO: these should have an input?
+        miningFarmEntity.leftoverRewardsAddress = 'test';
+        miningFarmEntity.maintenanceFeePayoutAddress = 'test';
+        miningFarmEntity.rewardsFromPoolAddress = 'test';
         const { data: farm } = await axios.put('/api/v1/farm', MiningFarmEntity.toJson(miningFarmEntity))
         // TODO: remove, they should come from backend
         farm.primary_account_owner_name = 'name';
         farm.primary_account_owner_email = 'email';
-        farm.farm_photos = [];
 
-        return MiningFarmEntity.fromJson(farm)
+        return MiningFarmEntity.fromJson(farm);
     }
 
     async approveMiningFarm(miningFarmId: string): Promise < void > {

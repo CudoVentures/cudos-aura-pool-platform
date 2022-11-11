@@ -30,7 +30,7 @@ export default class MiningFarmFilterModel {
         return {
             'id': entity.miningFarmIds !== null ? entity.miningFarmIds.join(',') : null,
             'status': entity.status,
-            'searchString': entity.searchString,
+            'search_string': entity.searchString,
             'creator_id': entity.sessionAccount,
             'offset': entity.from,
             'limit': entity.count,

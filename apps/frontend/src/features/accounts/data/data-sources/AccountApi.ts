@@ -34,7 +34,7 @@ export default class AccountApi {
             payout_address: bitcoinAddress,
         });
 
-        setTokenInStorage(data.access_token);
+        // setTokenInStorage(data.access_token);
     }
 
     async creditAccount(accountEntity: AccountEntity): Promise < AccountEntity > {

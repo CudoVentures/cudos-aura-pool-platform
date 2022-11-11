@@ -144,7 +144,9 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 }) }
                 multiple
                 onChange = { onChangeManufacturers }
-                onInputChange = { onChangeManufaccreditMiningFarmDetailsPageStorersValidation}
+                onInputChange = { onChangeManufacturerInput }
+                placeholder={'Select manufacturers...'}
+                inputValidation={farmManufacturersValidation}
                 options = { creditMiningFarmDetailsPageStore.manufacturerEntities.map((manufacturerEntity: ManufacturerEntity) => {
                     return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
                 }) }

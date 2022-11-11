@@ -146,6 +146,9 @@ export default class AccountSessionStore {
 
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
+
+        // TODO: remove after backend starts returning new token
+        adminEntity.bitcoinWalletAddress = 'egerger'
         runInAction(() => {
             this.accountEntity = accountEntity;
             this.userEntity = userEntity;

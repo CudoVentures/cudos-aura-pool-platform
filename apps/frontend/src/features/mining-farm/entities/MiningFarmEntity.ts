@@ -101,14 +101,14 @@ export default class MiningFarmEntity {
             'primary_account_owner_name': entity.primaryAccountOwnerName,
             'primary_account_owner_email': entity.primaryAccountOwnerEmail,
             'description': entity.description,
-            'manufacturer_ids': JSON.stringify(entity.manufacturerIds),
-            'miner_ids': JSON.stringify(entity.minerIds),
-            'energy_source_ids': JSON.stringify(entity.energySourceIds),
+            'manufacturers': entity.manufacturerIds,
+            'miner_types': entity.minerIds,
+            'energy_source': entity.energySourceIds,
             'total_farm_hashrate': entity.hashPowerInTh,
             'location': entity.machinesLocation,
             'profile_img': entity.profileImgUrl,
             'cover_img': entity.coverImgUrl,
-            'farm_photos': JSON.stringify(entity.farmPhotoUrls),
+            'images': entity.farmPhotoUrls,
             'status': entity.status,
             'maintenance_fee_in_btc': entity.maintenanceFeeInBtc.toString(),
             'address_for_receiving_rewards_from_pool': entity.rewardsFromPoolAddress,
@@ -137,7 +137,7 @@ export default class MiningFarmEntity {
         model.machinesLocation = json.location ?? model.machinesLocation;
         model.profileImgUrl = json.profile_img ?? model.profileImgUrl;
         model.coverImgUrl = json.cover_img ?? model.coverImgUrl;
-        model.farmPhotoUrls = json.farm_photos ?? model.farmPhotoUrls;
+        model.farmPhotoUrls = json.images ?? model.farmPhotoUrls;
         model.status = parseInt(json.status ?? model.status);
         model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
         model.coverImgUrl = json.cover_img ?? model.coverImgUrl;
