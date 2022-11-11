@@ -89,8 +89,6 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
 
     function onClickRemoveImage(i: number) {
         miningFarmEntity.farmPhotoUrls.splice(i, 1);
-        // const imageEntityIndex = imageEntities.findIndex((imageEntity: ImageEntity) => imageEntity.id === imageEntityToRemove.id);
-        // imageEntities.splice(imageEntityIndex, 1);
     }
 
     function onClickNextStep() {
@@ -146,9 +144,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 }) }
                 multiple
                 onChange = { onChangeManufacturers }
-                onInputChange = { onChangeManufacturerInput }
-                placeholder={'Select manufacturers...'}
-                inputValidation={farmManufacturersValidation}
+                onInputChange = { onChangeManufaccreditMiningFarmDetailsPageStorersValidation}
                 options = { creditMiningFarmDetailsPageStore.manufacturerEntities.map((manufacturerEntity: ManufacturerEntity) => {
                     return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
                 }) }
@@ -253,9 +249,8 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                         },
                         'multi': true,
                         onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
+                            // onAddFarmPhoto(base64File);
                             miningFarmEntity.farmPhotoUrls.push(base64File);
-                            // const imageEntity = ImageEntity.new(base64File, PictureType.FARM_PHOTO);
-                            // imageEntities.push(imageEntity);
                         },
                     } } />
             </div>

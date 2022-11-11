@@ -23,6 +23,7 @@ export default function UploaderComponent({ className, id, params }: Props) {
             setInitedId(id);
         } else {
             uploaderCache.connect();
+            Object.assign(uploaderCache, params);
         }
 
         return () => {
