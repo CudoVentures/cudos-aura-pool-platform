@@ -3,14 +3,12 @@ import S from '../../../../core/utilities/Main';
 import { Ledger, GasPrice, SigningStargateClient } from 'cudosjs';
 
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../repos/AccountRepo';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
 export default class AccountSessionStore {
 
@@ -148,7 +146,9 @@ export default class AccountSessionStore {
         const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
 
         // TODO: remove after backend starts returning new token
-        adminEntity.bitcoinWalletAddress = 'egerger'
+        if (adminEntity) {
+            adminEntity.bitcoinWalletAddress = 'egerger'
+        }
         runInAction(() => {
             this.accountEntity = accountEntity;
             this.userEntity = userEntity;
@@ -190,7 +190,7 @@ export default class AccountSessionStore {
     }
 
     async loadAdminMiningFarmApproval(): Promise < void > {
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
         this.approvedMiningFarm = miningFarmEntity?.isApproved() ?? false;
     }
 

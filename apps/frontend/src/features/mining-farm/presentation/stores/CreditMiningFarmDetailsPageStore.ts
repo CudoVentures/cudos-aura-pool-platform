@@ -74,7 +74,7 @@ export default class CreditMiningFarmDetailsPageStore {
             energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
         });
 
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
 
         runInAction(() => {
             this.manufacturerEntities = manufacturerEntities;

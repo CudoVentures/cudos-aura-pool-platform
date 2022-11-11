@@ -118,7 +118,7 @@ export class FarmController {
     }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+  @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorGuard)
   @Put()
   async creditFarm(
     @Request() req,
@@ -131,7 +131,6 @@ export class FarmController {
       }
 
       return this.farmService.createOne(farm, req.user.id)
-
   }
 
   @ApiBearerAuth('access-token')

@@ -59,7 +59,7 @@ export class Farm extends Model {
 
     @AllowNull(false)
     @Column
-        maintenance_fee_in_btc: number;
+        maintenance_fee_in_btc: string;
 
     @AllowNull(false)
     @Column

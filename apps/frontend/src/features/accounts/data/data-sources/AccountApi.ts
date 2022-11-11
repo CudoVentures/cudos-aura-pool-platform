@@ -3,7 +3,6 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
-import { use } from 'passport';
 
 export default class AccountApi {
 
@@ -58,20 +57,21 @@ export default class AccountApi {
 
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
         const user = decodeStorageToken();
-        user.email_verified = 1;
-        user.active = 1;
-        user.timestamp_last_login = Date.now();
-        user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
+        if (user) {
+            user.email_verified = 1;
+            user.active = 1;
+            user.timestamp_last_login = Date.now();
+            user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
 
-        user.admin_id = user.id;
-        user.super_admin_id = user.id;
-        user.account_id = user.id;
-
+            user.admin_id = user.id;
+            user.super_admin_id = user.id;
+            user.account_id = user.id;
+        }
         return {
             accountEntity: AccountEntity.fromJson(user),
             userEntity: UserEntity.fromJson(null),
-            adminEntity: user && user.role === AccountType.ADMIN ? AdminEntity.fromJson(user) : null,
-            superAdminEntity: user && user.role === AccountType.SUPER_ADMIN ? SuperAdminEntity.fromJson(user) : null,
+            adminEntity: user && user.role === 'farm_admin' ? AdminEntity.fromJson(user) : null,
+            superAdminEntity: user && user.role === 'super_admin' ? SuperAdminEntity.fromJson(user) : null,
         }
     }
 

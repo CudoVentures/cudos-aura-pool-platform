@@ -21,7 +21,7 @@ export class FarmFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
-        status: number;
+        status: string;
 
     @IsString()
     @IsOptional()

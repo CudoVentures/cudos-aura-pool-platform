@@ -17,6 +17,11 @@ export class FarmDto {
         description: string;
 
     @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false, example: 'queued' })
+        status: string;
+
+    @IsString()
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 'sub_account_name' })
         sub_account_name: string;
@@ -44,10 +49,10 @@ export class FarmDto {
     @ApiProperty({ required: true, example: 'maintenance_fee_payout_address' })
         maintenance_fee_payout_address: string;
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: 0.0001 })
-        maintenance_fee_in_btc: number;
+    @ApiProperty({ required: true, example: '0.0001' })
+        maintenance_fee_in_btc: string;
 
     @IsNumber()
     @IsNotEmpty()

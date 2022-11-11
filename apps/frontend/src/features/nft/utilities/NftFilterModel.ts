@@ -30,9 +30,9 @@ export default class NftFilterModel {
         }
 
         return {
-            'nftIds': entity.nftIds.join(','),
+            'nftIds': entity.nftIds,
             'status': entity.collectionStatus,
-            'collection_ids': entity.collectionIds.join(','),
+            'collection_ids': entity.collectionIds,
             'search_string': entity.searchString,
             'session_account': entity.sessionAccount,
             'offset': entity.from,

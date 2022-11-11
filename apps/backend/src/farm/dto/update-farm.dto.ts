@@ -47,11 +47,11 @@ export class UpdateFarmDto {
     @ApiProperty({ example: 'New maintenance_fee_payout_address' })
         maintenance_fee_payout_address: string;
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
     @IsOptional()
-    @ApiProperty({ example: 0.0001 })
-        maintenance_fee_in_btc: number;
+    @ApiProperty({ example: '0.0001' })
+        maintenance_fee_in_btc: string;
 
     @IsNumber()
     @IsNotEmpty()

@@ -15,9 +15,9 @@ export default class MiningFarmFilterModel {
 
     constructor() {
         this.miningFarmIds = null;
-        this.status = MiningFarmStatus.APPROVED;
+        this.status = null;
         this.searchString = '';
-        this.sessionAccount = S.INT_FALSE;
+        this.sessionAccount = undefined; // if null or else, backend sets it as default 0
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
     }

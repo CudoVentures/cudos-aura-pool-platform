@@ -5,10 +5,9 @@ import S from '../../../core/utilities/Main';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum MiningFarmStatus {
-    APPROVED = 1,
-    NOT_APPROVED = 2,
-    DELETED = 3,
-    ANY = 4
+    APPROVED = 'approved',
+    QUEUED = 'queued',
+    DELETED = 'deleted',
 }
 
 export default class MiningFarmEntity {
@@ -49,7 +48,7 @@ export default class MiningFarmEntity {
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
         this.farmPhotoUrls = [];
-        this.status = MiningFarmStatus.NOT_APPROVED;
+        this.status = MiningFarmStatus.QUEUED;
         this.maintenanceFeeInBtc = null;
         this.rewardsFromPoolAddress = '';
         this.leftoverRewardsAddress = '';
@@ -70,6 +69,10 @@ export default class MiningFarmEntity {
 
     isApproved(): boolean {
         return this.status === MiningFarmStatus.APPROVED;
+    }
+
+    isQueued(): boolean {
+        return this.status === MiningFarmStatus.QUEUED;
     }
 
     hasPhotos(): boolean {
@@ -130,9 +133,9 @@ export default class MiningFarmEntity {
         model.primaryAccountOwnerName = json.primary_account_owner_name ?? model.primaryAccountOwnerName;
         model.primaryAccountOwnerEmail = json.primary_account_owner_email ?? model.primaryAccountOwnerEmail;
         model.description = json.description ?? model.description;
-        model.manufacturerIds = json.manufacturers ? JSON.parse(json.manufacturers) : model.manufacturerIds;
-        model.minerIds = json.miner_types ? JSON.parse(json.miner_types) : model.minerIds;
-        model.energySourceIds = json.energy_source ? JSON.parse(json.energy_source) : model.energySourceIds;
+        model.manufacturerIds = json.manufacturers ?? model.manufacturerIds;
+        model.minerIds = json.miner_types ?? model.minerIds;
+        model.energySourceIds = json.energy_source ?? model.energySourceIds;
         model.hashPowerInTh = Number(json.total_farm_hashrate ?? model.hashPowerInTh);
         model.machinesLocation = json.location ?? model.machinesLocation;
         model.profileImgUrl = json.profile_img ?? model.profileImgUrl;

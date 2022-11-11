@@ -15,7 +15,7 @@ export class ParseFarmQueryPipe implements PipeTransform {
                     parsedQuery['id'] = value.ids.split(',')
                     break;
                 case 'status':
-                    parsedQuery['status'] = statusMap[Number(value.status) - 1] || FarmStatus.APPROVED
+                    parsedQuery['status'] = value.status
                     break;
                 case 'limit':
                     parsedQuery['limit'] = Number(value.limit)
