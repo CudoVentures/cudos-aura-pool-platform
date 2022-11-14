@@ -19,6 +19,9 @@ export class ParseNftQueryPipe implements PipeTransform {
                 case 'status':
                     parsedQuery['status'] = value.status;
                     break;
+                case 'order_by':
+                    parsedQuery['order_by'] = Number(value.order_by)
+                    break;
                 default:
                     break;
             }

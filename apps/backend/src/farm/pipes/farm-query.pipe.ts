@@ -26,6 +26,9 @@ export class ParseFarmQueryPipe implements PipeTransform {
                 case 'creator_id':
                     parsedQuery['creator_id'] = Number(value.creator_id)
                     break;
+                case 'order_by':
+                    parsedQuery['order_by'] = Number(value.order_by)
+                    break;
                 default:
                     break;
             }

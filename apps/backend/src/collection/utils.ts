@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export const enum CollectionStatus {
     QUEUED = 'queued',
@@ -7,6 +7,10 @@ export const enum CollectionStatus {
     REJECTED = 'rejected',
     ISSUED = 'issued',
     DELETED = 'deleted',
+}
+
+export const enum CollectionOrderBy {
+    TIMESTAMP_DESC = 1,
 }
 
 // TODO: add search string field
@@ -35,6 +39,21 @@ export class CollectionFilters {
     @IsOptional()
     @ApiProperty({ required: false })
         status: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        from_timestamp: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        to_timestamp: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        order_by: number;
 
     @IsString()
     @IsOptional()

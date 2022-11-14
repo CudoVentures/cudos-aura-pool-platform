@@ -7,6 +7,10 @@ export const enum FarmStatus {
     REJECTED = 'rejected',
 }
 
+export const enum FarmOrderBy {
+    POPULAR_DESC = 1,
+}
+
 export class FarmFilters {
     @IsString()
     @IsOptional()
@@ -22,6 +26,11 @@ export class FarmFilters {
     @IsOptional()
     @ApiProperty({ required: false })
         status: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        order_by: number;
 
     @IsString()
     @IsOptional()

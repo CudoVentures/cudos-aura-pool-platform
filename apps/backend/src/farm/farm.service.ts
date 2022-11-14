@@ -11,7 +11,7 @@ import { EnergySource } from './models/energy-source.model';
 import { Farm } from './models/farm.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { Miner } from './models/miner.model';
-import { FarmFilters, FarmStatus } from './utils';
+import { FarmFilters, FarmOrderBy, FarmStatus } from './utils';
 
 @Injectable()
 export class FarmService {
@@ -29,8 +29,21 @@ export class FarmService {
     ) {}
 
     async findAll(filters: FarmFilters): Promise<Farm[]> {
-        const { limit, offset, ...rest } = filters
-        const farms = await this.farmModel.findAll({ where: { ...rest }, offset, limit });
+        const { limit, offset, order_by, ...rest } = filters
+
+        let order;
+        switch (order_by) {
+            // TODO: SORT BY POPULARITY
+            // case FarmOrderBy.POPULAR_DESC:
+            //     order = [['createdAt', 'DESC']]
+            //     break;
+            default:
+                order = undefined;
+                break;
+
+        }
+
+        const farms = await this.farmModel.findAll({ where: { ...rest }, order, offset, limit });
 
         return farms;
     }

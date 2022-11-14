@@ -2,10 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CollectionDto } from './dto/collection.dto';
 import { Collection } from './collection.model';
-import { CollectionFilters, CollectionStatus } from './utils';
+import { CollectionFilters, CollectionOrderBy, CollectionStatus } from './utils';
 import { NFTService } from '../nft/nft.service';
 import { NFT } from '../nft/nft.model';
 import { NftStatus } from '../nft/utils';
+import sequelize from 'sequelize/types/sequelize';
 
 @Injectable()
 export class CollectionService {
@@ -18,9 +19,23 @@ export class CollectionService {
     ) {}
 
     async findAll(filters: Partial<CollectionFilters>): Promise<Collection[]> {
-        const { limit, offset, ...rest } = filters
+        const { limit, offset, order_by, ...rest } = filters
+
+        let order;
+
+        switch (order_by) {
+            case CollectionOrderBy.TIMESTAMP_DESC:
+                order = [['createdAt', 'DESC']]
+                break;
+            default:
+                order = undefined;
+                break;
+
+        }
+
         const collections = await this.collectionModel.findAll({
             where: { ...rest },
+            order,
             offset,
             limit,
         });

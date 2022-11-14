@@ -4,7 +4,7 @@ import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
-import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
+import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../utilities/MiningFarmFilterModel';
 import MiningFarmApi from '../data-sources/MiningFarmApi';
 import JwtDecode from 'jwt-decode'
 import { decodeStorageToken } from '../../../../core/utilities/AxiosWrapper';
@@ -40,7 +40,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.sortKey = MiningFarmFilterModel.SORT_KEY_POPULAR;
+        miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
         miningFarmFilterModel.status = status;
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);

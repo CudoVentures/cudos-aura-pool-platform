@@ -1,15 +1,17 @@
 import S from '../../../core/utilities/Main';
 import { MiningFarmStatus } from '../entities/MiningFarmEntity';
 
-export default class MiningFarmFilterModel {
+export enum MiningFarmOrderBy {
+    POPULAR_DESC = 1,
+}
 
-    static SORT_KEY_NAME = 1;
-    static SORT_KEY_POPULAR = 2;
+export default class MiningFarmFilterModel {
 
     miningFarmIds: string[];
     status: MiningFarmStatus;
     searchString: string;
     sessionAccount: number;
+    orderBy: MiningFarmOrderBy;
     from: number;
     count: number;
 
@@ -18,6 +20,7 @@ export default class MiningFarmFilterModel {
         this.status = null;
         this.searchString = '';
         this.sessionAccount = null;
+        this.orderBy = 0;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
     }
@@ -32,6 +35,7 @@ export default class MiningFarmFilterModel {
             'status': entity.status ?? undefined,
             'search_string': entity.searchString,
             'creator_id': entity.sessionAccount ?? undefined,
+            'order_by': entity.orderBy,
             'offset': entity.from,
             'limit': entity.count,
         }

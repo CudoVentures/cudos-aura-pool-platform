@@ -10,6 +10,11 @@ export const enum NftStatus {
     MINTED = 'minted',
 }
 
+export enum NftOrderBy {
+    TRENDING_DESC = 1,
+    TIMESTAMP_DESC = 2
+}
+
 export class NftFilters {
     @IsString()
     @IsOptional()
@@ -29,7 +34,22 @@ export class NftFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
+        order_by: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
         status: NftStatus;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        limit: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
+        offset: number;
 }
 
 export type MarketplaceNftFilters = {

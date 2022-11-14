@@ -4,7 +4,7 @@ import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 import { NFTDto } from './dto/nft.dto';
 import { NFT } from './nft.model';
-import { NftFilters, NftStatus } from './utils';
+import { NftFilters, NftOrderBy, NftStatus } from './utils';
 
 @Injectable()
 export class NFTService {
@@ -14,8 +14,29 @@ export class NFTService {
     ) {}
 
     async findAll(filters: Partial<NftFilters>): Promise<NFT[]> {
+        const { limit, offset, order_by, ...rest } = filters
+
+        console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', order_by)
+        let order;
+        switch (order_by) {
+            case NftOrderBy.TIMESTAMP_DESC:
+                order = [['createdAt', 'DESC']]
+                break;
+            // TODO: SORT BY POPULARITY
+            // case NftOrderBy.POPULAR_DESC:
+            //     order = [['createdAt', 'DESC']]
+            //     break;
+            default:
+                order = undefined;
+                break;
+
+        }
+
         const nfts = await this.nftModel.findAll({
-            where: { ...filters },
+            where: { ...rest },
+            order,
+            limit,
+            offset,
         });
 
         return nfts;
