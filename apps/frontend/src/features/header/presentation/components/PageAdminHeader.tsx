@@ -62,7 +62,9 @@ function PageAdminHeader({ accountSessionStore }: Props) {
                 { accountSessionStore.isAdmin() === true && (
                     <>
                         <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.CREDIT_MINING_FARM)}`} onClick={onClickCreditMiningFarm}>Farm Profile</div>
-                        <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.FARM_ANALYTICS)}`} onClick={onClickAnalytics}>Analytics</div>
+                        { accountSessionStore.hasApprovedMiningFarm() === true && (
+                            <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.FARM_ANALYTICS)}`} onClick={onClickAnalytics}>Analytics</div>
+                        ) }
                         <HeaderWallet />
                     </>
                 ) }

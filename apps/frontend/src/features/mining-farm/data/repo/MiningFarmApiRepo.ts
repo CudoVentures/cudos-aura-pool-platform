@@ -7,6 +7,7 @@ import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmApi from '../data-sources/MiningFarmApi';
 import JwtDecode from 'jwt-decode'
+import { decodeStorageToken } from '../../../../core/utilities/AxiosWrapper';
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -62,13 +63,14 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
     }
 
-    async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
-        const user = localStorage.getItem('access_token') && JwtDecode(localStorage.getItem('access_token'))
+    async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus): Promise < MiningFarmEntity > {
+        const user = decodeStorageToken();
+
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.sessionAccount = user.id;
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.status = status;
+        miningFarmFilterModel.status = status
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
