@@ -110,7 +110,7 @@ export default class SuperAdminApprovePageStore {
             miningFarmEntities.push(miningFarmEntity)
         });
 
-        await this.miningFarmRepo.creditMiningFarms(miningFarmEntities);
+        await this.miningFarmRepo.approveMiningFarms(miningFarmEntities);
         this.fetch();
     }
 

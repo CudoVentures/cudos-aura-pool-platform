@@ -1,4 +1,3 @@
-import S from '../../../../core/utilities/Main';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
@@ -111,6 +110,12 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     async creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
         for (let i = miningFarmEntities.length; i-- > 0;) {
             await this.creditMiningFarm(miningFarmEntities[i]);
+        }
+    }
+
+    async approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
+        for (let i = miningFarmEntities.length; i-- > 0;) {
+            await this.miningFarmApi.approveMiningFarm(miningFarmEntities[i].id);
         }
     }
 

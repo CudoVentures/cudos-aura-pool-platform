@@ -67,6 +67,7 @@ export default class AccountSessionStore {
     }
 
     isSuperAdmin(): boolean {
+        console.log(this.superAdminEntity)
         if (!this.accountEntity) {
             return false;
         }
@@ -144,6 +145,7 @@ export default class AccountSessionStore {
 
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
+        console.log(superAdminEntity);
 
         // TODO: remove after backend starts returning new token
         if (adminEntity) {

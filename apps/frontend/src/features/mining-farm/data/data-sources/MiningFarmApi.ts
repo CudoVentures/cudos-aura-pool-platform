@@ -1,4 +1,4 @@
-import MiningFarmEntity from '../../entities/MiningFarmEntity';
+import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
@@ -76,6 +76,10 @@ export default class MiningFarmApi {
         farm.primary_account_owner_name = 'name';
         farm.primary_account_owner_email = 'email';
         return MiningFarmEntity.fromJson(farm);
+    }
+
+    async approveMiningFarm(miningFarmId: string): Promise < void > {
+        const { data } = await axios.patch(`/api/v1/farm/${miningFarmId}/status`, { status: MiningFarmStatus.APPROVED });
     }
 
     async fetchManufacturers(): Promise < ManufacturerEntity[] > {

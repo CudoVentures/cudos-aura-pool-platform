@@ -70,8 +70,8 @@ export default class AccountApi {
         return {
             accountEntity: AccountEntity.fromJson(user),
             userEntity: UserEntity.fromJson(null),
-            adminEntity: user && user.role === 'farm_admin' ? AdminEntity.fromJson(user) : null,
-            superAdminEntity: user && user.role === 'super_admin' ? SuperAdminEntity.fromJson(user) : null,
+            adminEntity: user && user.role === AccountType.ADMIN ? AdminEntity.fromJson(user) : null,
+            superAdminEntity: user && user.role === AccountType.SUPER_ADMIN ? SuperAdminEntity.fromJson(user) : null,
         }
     }
 
