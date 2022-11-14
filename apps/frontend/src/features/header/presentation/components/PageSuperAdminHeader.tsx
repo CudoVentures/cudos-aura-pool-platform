@@ -14,9 +14,10 @@ import '../styles/page-super-admin-header.css'
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
+    changePasswordModalStore?: ChangePasswordModalStore;
 }
 
-function PageSuperAdminHeader({ accountSessionStore }: Props) {
+function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore }: Props) {
     const navigate = useNavigate();
 
     function onClickLogo() {
@@ -28,6 +29,10 @@ function PageSuperAdminHeader({ accountSessionStore }: Props) {
         navigate(AppRoutes.HOME);
     }
 
+    function onClickChangePassword() {
+        changePasswordModalStore.showSignal();
+    }
+
     return (
         <header className={'PageAdminHeader FlexRow FlexSplit'}>
             <div className={'LogoHeader FlexRow'}>
@@ -35,6 +40,7 @@ function PageSuperAdminHeader({ accountSessionStore }: Props) {
                 <div className={'AdminPortalNav B2 SemiBold'}>Super Admin</div>
             </div>
             <Actions className = { 'StartRight' }>
+                <Button onClick={onClickChangePassword}>Change Password</Button>
                 <Button onClick={onClickLogout}>Logout</Button>
             </Actions>
         </header>

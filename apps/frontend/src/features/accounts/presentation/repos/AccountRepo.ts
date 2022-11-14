@@ -13,7 +13,7 @@ export default interface AccountRepo {
     logout(): Promise < void >;
     confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void >;
     creditAccount(accountEntity: AccountEntity): Promise < void >;
-    changePassword(token: string, accountId: string, oldPassword: string, newPassword: string): Promise < void > ;
+    changePassword(oldPassword: string, newPassword: string): Promise < void > ;
     forgottenPassword(email: string): Promise < void >
     sendVerificationEmail(): Promise < void >
     fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } >;

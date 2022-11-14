@@ -25,7 +25,7 @@ export default class AccountApi {
         return null;
     }
 
-    async changePassword(token: string, accountId: string, oldPassword: string, newPassword: string): Promise < void > {
+    async changePassword(oldPassword: string, newPassword: string): Promise < void > {
         return null;
     }
 

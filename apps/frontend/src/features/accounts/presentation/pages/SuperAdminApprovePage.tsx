@@ -18,6 +18,7 @@ import ViewCollectionModal from '../../../collection/presentation/components/Vie
 import ViewMiningFarmModal from '../../../mining-farm/presentation/components/ViewMiningFarmModal';
 import ViewCollectionModalStore from '../../../collection/presentation/stores/ViewCollectionModalStore';
 import ViewMiningFarmModalStore from '../../../mining-farm/presentation/stores/ViewMiningFarmModalStore';
+import ChangePasswordModal from '../components/ChangePasswordModal';
 
 type Props = {
     appStore?: AppStore;
@@ -92,6 +93,7 @@ function SuperAdminApprovePage({ appStore, superAdminApprovePageStore, viewMinin
             className = { 'PageSuperAdminApprove' }
             modals = { (
                 <>
+                    <ChangePasswordModal />
                     <ViewCollectionModal />
                     <ViewMiningFarmModal />
                 </>

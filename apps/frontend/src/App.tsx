@@ -41,6 +41,7 @@ import ViewCollectionModalStore from './features/collection/presentation/stores/
 import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores/ViewMiningFarmModalStore';
 import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
 import CudosApiRepo from './features/cudos-data/data/repo/CudosApiRepo';
+import ChangePasswordModalStore from './features/accounts/presentation/stores/ChangePasswordModalStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -83,6 +84,7 @@ const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore);
 const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
+const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
 
 bitcoinRepo.setPresentationCallbacks(appStore.enableActions, appStore.disableActions);
 
@@ -128,7 +130,8 @@ const App = () => {
                 creditCollectionStore = { creditCollectionStore }
                 analyticsPageStore = { analyticsPageStore }
                 viewCollectionModalStore = { viewCollectionModalStore }
-                viewMiningFarmModalStore = { viewMiningFarmModalStore } >
+                viewMiningFarmModalStore = { viewMiningFarmModalStore }
+                changePasswordModalStore = { changePasswordModalStore }>
                 <BrowserRouter>
                     <AppRouter />
                 </BrowserRouter>
