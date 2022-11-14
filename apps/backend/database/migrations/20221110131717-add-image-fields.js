@@ -8,6 +8,14 @@ module.exports = {
             type: Sequelize.ARRAY(Sequelize.BLOB),
             allowNull: true,
         })
+        await queryInterface.addColumn('farms', 'profile_img', {
+            type: Sequelize.BLOB,
+            allowNull: true,
+        })
+        await queryInterface.addColumn('farms', 'cover_img', {
+            type: Sequelize.BLOB,
+            allowNull: true,
+        })
 
         await queryInterface.addColumn('collections', 'main_image', {
             type: Sequelize.BLOB,

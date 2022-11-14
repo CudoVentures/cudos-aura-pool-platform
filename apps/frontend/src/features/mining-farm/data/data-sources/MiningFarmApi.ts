@@ -12,11 +12,6 @@ export default class MiningFarmApi {
         const { data } = await axios.get('/api/v1/farm')
 
         return data.map((farm) => {
-            // TODO: remove, they should come from backend
-            farm.primary_account_owner_name = 'name';
-            farm.primary_account_owner_email = 'email';
-            farm.farm_photos = [];
-
             return MiningFarmEntity.fromJson(farm)
         })
     }
@@ -27,11 +22,6 @@ export default class MiningFarmApi {
         } })
 
         return data.map((farm) => {
-            // TODO: remove, they should come from backend
-            farm.primary_account_owner_name = 'name';
-            farm.primary_account_owner_email = 'email';
-            farm.farm_photos = [];
-
             return MiningFarmEntity.fromJson(farm)
         })
     }
@@ -39,11 +29,6 @@ export default class MiningFarmApi {
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
         const { data } = await axios.get('/api/v1/farm', { params: MiningFarmFilterModel.toJson(miningFarmFilterModel) });
         const result = { miningFarmEntities: data.map((farm) => {
-
-            // TODO: remove, they should come from backend
-            farm.primary_account_owner_name = 'name';
-            farm.primary_account_owner_email = 'email';
-            farm.farm_photos = [];
             return MiningFarmEntity.fromJson(farm)
         }),
         total: data.length,
@@ -72,9 +57,7 @@ export default class MiningFarmApi {
         miningFarmEntity.maintenanceFeePayoutAddress = 'test';
         miningFarmEntity.rewardsFromPoolAddress = 'test';
         const { data: farm } = await axios.put('/api/v1/farm', MiningFarmEntity.toJson(miningFarmEntity))
-        // TODO: remove, they should come from backend
-        farm.primary_account_owner_name = 'name';
-        farm.primary_account_owner_email = 'email';
+
         return MiningFarmEntity.fromJson(farm);
     }
 

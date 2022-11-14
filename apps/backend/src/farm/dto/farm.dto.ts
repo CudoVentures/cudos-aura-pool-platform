@@ -29,6 +29,16 @@ export class FarmDto {
     @IsString()
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 'Somewhere' })
+        primary_account_owner_name: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'Somewhere' })
+        primary_account_owner_email: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'Somewhere' })
         location: string;
 
     @IsString()
@@ -78,4 +88,14 @@ export class FarmDto {
     @IsNotEmpty()
     @ApiProperty({ required: true, example: ['snimka 1', 'snimka 2'], type: [String], description: 'Farm images' })
         images: string[];
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'snimka 1', type: String, description: 'Farm images' })
+        profile_img: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'snimka 1', type: String, description: 'Farm images' })
+        cover_img: string;
 }

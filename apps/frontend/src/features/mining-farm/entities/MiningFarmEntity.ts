@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
-import numeral from 'numeral';
 import S from '../../../core/utilities/Main';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum MiningFarmStatus {
     APPROVED = 'approved',
@@ -125,7 +123,6 @@ export default class MiningFarmEntity {
             return null;
         }
         const model = new MiningFarmEntity();
-
         model.id = (json.id ?? model.id).toString();
         model.accountId = (json.creator_id ?? model.accountId).toString();
         model.name = json.name ?? model.name;
@@ -138,12 +135,11 @@ export default class MiningFarmEntity {
         model.energySourceIds = json.energy_source ?? model.energySourceIds;
         model.hashPowerInTh = Number(json.total_farm_hashrate ?? model.hashPowerInTh);
         model.machinesLocation = json.location ?? model.machinesLocation;
-        model.profileImgUrl = json.profile_img ?? model.profileImgUrl;
-        model.coverImgUrl = json.cover_img ?? model.coverImgUrl;
+        model.profileImgUrl = String.fromCharCode(...json.profile_img.data) ?? model.profileImgUrl;
+        model.coverImgUrl = String.fromCharCode(...json.cover_img.data) ?? model.coverImgUrl;
         model.farmPhotoUrls = json.images ?? model.farmPhotoUrls;
-        model.status = parseInt(json.status ?? model.status);
+        model.status = json.status ?? model.status;
         model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
-        model.coverImgUrl = json.cover_img ?? model.coverImgUrl;
 
         return model;
     }

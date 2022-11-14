@@ -47,6 +47,14 @@ export class Farm extends Model {
 
     @AllowNull(false)
     @Column
+        primary_account_owner_name: string;
+
+    @AllowNull(false)
+    @Column
+        primary_account_owner_email: string;
+
+    @AllowNull(false)
+    @Column
         address_for_receiving_rewards_from_pool: string;
     // @TODO add default address_for_receiving_rewards_from_pool
     @AllowNull(false)
@@ -80,6 +88,14 @@ export class Farm extends Model {
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
         images: string[];
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        cover_img: string;
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        profile_img: string;
 
     @AllowNull(false)
     @Column(DataType.ENUM('queued', 'approved', 'rejected'))
