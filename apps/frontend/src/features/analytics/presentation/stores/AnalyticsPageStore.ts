@@ -69,7 +69,7 @@ export default class AnalyticsPageStore {
 
         const nftEntitiesMap = this.nftEntitiesMap;
         if (nftIds.length > 0) {
-            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds, CollectionStatus.ANY);
+            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds);
 
             nftEntities.forEach((nftEntity) => {
                 nftEntitiesMap.set(nftEntity.id, nftEntity);

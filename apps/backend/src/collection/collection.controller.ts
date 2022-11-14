@@ -76,6 +76,7 @@ export class CollectionController {
 
             const nfts = nftArray.map(async (nft) => {
                 const { id: tempId, uri, ...nftRest } = nft
+                nftRest.uri = uri;
                 const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.user.id)
 
                 return createdNft

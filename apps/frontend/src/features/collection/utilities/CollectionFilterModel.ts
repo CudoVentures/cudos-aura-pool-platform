@@ -32,7 +32,7 @@ export default class CollectionFilterModel {
         }
 
         return {
-            'ids': model.collectionIds,
+            'ids': model.collectionIds ? model.collectionIds.join(',') : null,
             'status': model.status,
             'search_string': model.searchString,
             'farm_id': parseInt(model.farmId),

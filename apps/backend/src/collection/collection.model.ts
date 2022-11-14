@@ -46,10 +46,6 @@ export class Collection extends Model {
   @Column
       royalties: number;
 
-  @AllowNull(false)
-  @Column
-      maintenance_fee: number;
-
     @AllowNull(false)
     @Column
         main_image: string;

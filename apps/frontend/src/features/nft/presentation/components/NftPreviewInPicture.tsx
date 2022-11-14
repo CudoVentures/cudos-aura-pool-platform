@@ -29,7 +29,7 @@ export default function NftPreviewInPicture({ nftEntity, collectionEntity }: Pro
                 }} >
                 <div className={'TextHolder'}>
                     <div className={'NftName Dots'}>{nftEntity.name}</div>
-                    <div className={'CollectionName Dots'}>{collectionEntity.name}</div>
+                    <div className={'CollectionName Dots'}>{collectionEntity ? collectionEntity.name : ''}</div>
                 </div>
             </div>
         </div>

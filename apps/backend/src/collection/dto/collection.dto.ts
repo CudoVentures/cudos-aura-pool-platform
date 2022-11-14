@@ -19,8 +19,8 @@ export class CollectionDto {
         description?: string;
 
     @IsString()
-    @IsNotEmpty()
-    @ApiProperty({ required: true, example: 'mydenom' })
+    @IsOptional()
+    @ApiProperty({ required: false, example: 'mydenom' })
         denom_id: string;
 
     @IsNumber()
@@ -32,11 +32,6 @@ export class CollectionDto {
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 2 })
         royalties: number;
-
-    @IsNumber()
-    @IsNotEmpty()
-    @ApiProperty({ required: true, example: 5 })
-        maintenance_fee: number;
 
     @IsString()
     @IsNotEmpty()

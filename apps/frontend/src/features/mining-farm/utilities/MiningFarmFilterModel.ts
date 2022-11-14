@@ -17,7 +17,7 @@ export default class MiningFarmFilterModel {
         this.miningFarmIds = null;
         this.status = null;
         this.searchString = '';
-        this.sessionAccount = undefined; // if null or else, backend sets it as default 0
+        this.sessionAccount = null;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
     }
@@ -29,9 +29,9 @@ export default class MiningFarmFilterModel {
 
         return {
             'id': entity.miningFarmIds !== null ? entity.miningFarmIds.join(',') : null,
-            'status': entity.status,
+            'status': entity.status ?? undefined,
             'search_string': entity.searchString,
-            'creator_id': entity.sessionAccount,
+            'creator_id': entity.sessionAccount ?? undefined,
             'offset': entity.from,
             'limit': entity.count,
         }

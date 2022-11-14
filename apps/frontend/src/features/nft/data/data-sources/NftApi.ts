@@ -8,7 +8,6 @@ export default class NftApi {
         const { data } = await axios.get('/api/v1/nft', { params: NftFilterModel.toJson(nftFilterModel) })
 
         const nfts = data.map((nftJson) => NftEntity.fromJson(nftJson))
-
         return {
             nftEntities: nfts,
             total: nfts.length,

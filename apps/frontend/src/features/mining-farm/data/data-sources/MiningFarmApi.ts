@@ -41,13 +41,7 @@ export default class MiningFarmApi {
             ids: miningFarmIds.join(','),
         } })
 
-        return data.map((farm) => MiningFarmDetailsEntity.fromJson({
-            miningFarmId: farm.id,
-            nftsOwned: farm.nftsOwned,
-            totalNftsSold: farm.nftsSold,
-            activeWorkers: farm.activeWorkers,
-            averageHashRateInTh: farm.averageHashRate,
-        }))
+        return data.map((farmDetails) => MiningFarmDetailsEntity.fromJson(farmDetails))
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {

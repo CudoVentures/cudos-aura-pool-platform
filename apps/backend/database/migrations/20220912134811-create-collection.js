@@ -26,10 +26,6 @@ module.exports = {
                 type: Sequelize.DECIMAL,
                 allowNull: false,
             },
-            maintenance_fee: {
-                type: Sequelize.DECIMAL,
-                allowNull: false,
-            },
             status: {
                 type: Sequelize.ENUM([
                     'queued',

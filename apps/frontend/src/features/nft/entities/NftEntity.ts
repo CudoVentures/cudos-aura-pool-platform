@@ -168,7 +168,7 @@ export default class NftEntity {
         model.tokenId = json.tokenId ?? model.tokenId;
         model.hashPowerInTh = parseInt(json.hashing_power ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.price ?? model.priceInAcudos);
-        model.imageUrl = json.uri ?? model.imageUrl;
+        model.imageUrl = String.fromCharCode(...(json.uri ? json.uri.data : [])) ?? model.imageUrl;
         model.status = json.status ?? model.status;
         model.listStatus = parseInt(json.list_status ?? model.listStatus);
         model.expiryDate = parseInt(json.expiration_date ?? model.expiryDate);
