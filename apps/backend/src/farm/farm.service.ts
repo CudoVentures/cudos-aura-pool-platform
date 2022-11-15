@@ -11,7 +11,10 @@ import { EnergySource } from './models/energy-source.model';
 import { Farm } from './models/farm.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { Miner } from './models/miner.model';
-import { FarmFilters, FarmOrderBy, FarmStatus } from './utils';
+import { FarmFilters, FarmStatus } from './utils';
+import { HttpService } from '@nestjs/axios';
+import { AxiosResponse } from 'axios';
+import { FoundryWorkersDetails } from './dto/foundry-workers-details.dto';
 
 @Injectable()
 export class FarmService {
@@ -26,6 +29,7 @@ export class FarmService {
     private minerModel: typeof Miner,
     @InjectModel(EnergySource)
     private energySourceModel: typeof EnergySource,
+    private httpService: HttpService
     ) {}
 
     async findAll(filters: FarmFilters): Promise<Farm[]> {
@@ -180,16 +184,45 @@ export class FarmService {
         return manufacturer;
     }
 
-    async getDetails(farmId: number): Promise <{ totalHashRate: number, id: number, nftsOwned: number, nftsSold: number }> {
+    async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number }> {
         const farm = await this.farmModel.findByPk(farmId)
         const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }] })
         const minted = nfts.filter((nft) => nft.status === NftStatus.MINTED)
-
+        
         return {
             id: farmId,
+            subAccountName: farm.sub_account_name,
             totalHashRate: farm.total_farm_hashrate,
             nftsOwned: nfts.length,
             nftsSold: minted.length,
         }
     }
+
+    async getFoundryFarmWorkersDetails(subAccountName: string): Promise<{ activeWorkersCount: number, averageHashRateH1: number }> {
+        // TODO: Iterate if there are more than 100 workers
+        const res: AxiosResponse<{ data: FoundryWorkersDetails }> = await this.httpService.axiosRef.get(`${process.env.App_Foundry_API}/workers/${subAccountName}?${this.foundryWorkersDetailsURI}`, {
+            headers: {
+                'x-api-key': process.env.App_Foundry_API_Auth_Token
+            }
+        });
+
+        if (!res.data.data.workersList.length || !res.data.data.totalWorkerCount) {
+            throw new NotFoundException();
+        }
+
+        let workersDetails = {
+            activeWorkersCount: res.data.data.totalWorkerCount,
+            averageHashRateH1: 0
+        };
+
+        res.data.data.workersList.forEach((worker) => {
+            workersDetails.averageHashRateH1 += worker.hashrate_1h;
+        });
+
+        workersDetails.averageHashRateH1 /= workersDetails.activeWorkersCount;
+
+        return workersDetails;
+    }
+
+    private readonly foundryWorkersDetailsURI = 'coin=BTC&sort=highestHashrate&status=all&tag=all&pageNumber=0&pageSize=100&workerNameSearchStr=';
 }
