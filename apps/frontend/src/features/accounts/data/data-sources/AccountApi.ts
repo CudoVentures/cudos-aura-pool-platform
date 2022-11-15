@@ -44,7 +44,12 @@ export default class AccountApi {
     }
 
     async changePassword(oldPassword: string, newPassword: string): Promise < void > {
-        return null;
+        const user = decodeStorageToken();
+
+        const data = await axios.patch(`/api/v1/user/${user.id}/password`, {
+            old_password: oldPassword,
+            password: newPassword,
+        });
     }
 
     async forgottenPassword(email: string): Promise < void > {
