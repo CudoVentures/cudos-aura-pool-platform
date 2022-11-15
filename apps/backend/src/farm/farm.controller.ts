@@ -98,11 +98,10 @@ export class FarmController {
         const getFarmsDetails = farmIds.map(async (farmId) => this.farmService.getDetails(farmId))
         const farmsDetails = await Promise.all(getFarmsDetails)
 
-        // Get activeWorkers and averageHashRate from Foundry api for each farm
-        const activeWorkers = 10
-        const averageHashRate = 12345
-
-        return farmsDetails.map((details) => ({ ...details, activeWorkers, averageHashRate }))
+        return Promise.all(farmsDetails.map(async (details) => {
+            const { activeWorkersCount, averageHashRateH1 } = await this.farmService.getFoundryFarmWorkersDetails(details.subAccountName);
+            return { ...details, activeWorkersCount, averageHashRateH1};
+        }));
     }
 
     @Get(':id')

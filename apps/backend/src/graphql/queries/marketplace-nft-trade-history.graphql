@@ -1,0 +1,10 @@
+query MarketplaceNftTradeHistory($tokenId: bigint!, $denomId: String!) {
+  marketplace_nft_buy_history(where: {token_id: {_eq: $tokenId}, denom_id: {_eq: $denomId}}) {
+    btc_price
+    price
+    usd_price
+    timestamp
+    seller
+    buyer
+  }
+}
