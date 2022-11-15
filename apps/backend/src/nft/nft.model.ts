@@ -56,6 +56,10 @@ export class NFT extends Model {
   @Column(DataType.ENUM('queued', 'approved', 'rejected', 'expired', 'deleted'))
       status: NftStatus;
 
+  @AllowNull(true)
+  @Column
+      token_id: string
+
   @Column
   @ForeignKey(() => Collection)
       collection_id: number;
