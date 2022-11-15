@@ -25,6 +25,7 @@ import { CheckStatusDto } from './dto/check-status.dto';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionStatus } from '../collection/utils';
 import { Collection } from '../collection/collection.model';
+import { NFTResponseDto } from './dto/nft-response.dto';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -70,8 +71,18 @@ export class NFTController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<NFT> {
-      return this.nftService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<NFTResponseDto> {
+      const nft = await this.nftService.findOne(id);
+
+      let response: NFTResponseDto = {
+        ...nft,
+        data: {
+          expiration_date: Math.floor(nft.expiration_date.getTime() / 1000),
+          hash_rate_owned: nft.hashing_power
+        }
+      }
+
+      return response;
   }
 
   //   @ApiBearerAuth('access-token')
