@@ -47,7 +47,7 @@ export default class CollectionFilterModel {
             'search_string': model.searchString,
             'farm_id': parseInt(model.farmId),
             'from_timestamp': parseInt(model.fromTimestamp),
-            'to_timestamp': model.toTimestamp,
+            'to_timestamp': parseInt(model.toTimestamp),
             'order_by': model.orderBy,
             'offset': model.from,
             'limit': model.count,

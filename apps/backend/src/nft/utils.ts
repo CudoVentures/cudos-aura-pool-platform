@@ -44,6 +44,11 @@ export class NftFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
+        search_string: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
         limit: number;
 
     @IsString()

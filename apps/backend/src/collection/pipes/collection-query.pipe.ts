@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
-import { Op } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import { CollectionFilters } from '../utils';
 
 @Injectable()
@@ -28,17 +28,25 @@ export class ParseCollectionQueryPipe implements PipeTransform {
                         parsedQuery['creator_id'] = Number(value.creator_id)
                     }
                     break;
+                case 'search_string':
+                    parsedQuery[Op.or] = [
+                        sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${value.search_string.toLowerCase()}%` }),
+                        sequelize.where(sequelize.fn('LOWER', sequelize.col('description')), { [Op.like]: `%${value.search_string.toLowerCase()}%` }),
+                    ]
+                    break;
                 case 'farm_id':
                     if (Number(value.farm_id) > 0) {
                         parsedQuery['farm_id'] = Number(value.farm_id)
                     }
                     break;
                 case 'from_timestamp':
+                    if (value.from_timestamp <= 0) break;
                     parsedQuery['createdAt'] = {
                         [Op.gt]: Number(value.from_timestamp),
                     }
                     break;
                 case 'to_timestamp':
+                    if (value.to_timestamp <= 0) break;
                     parsedQuery['createdAt'] = {
                         [Op.lt]: Number(value.to_timestamp),
                     }

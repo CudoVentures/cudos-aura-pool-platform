@@ -30,6 +30,11 @@ export class FarmFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
+        search_string: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
         order_by: number;
 
     @IsString()

@@ -1,4 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import sequelize, { Op } from 'sequelize';
 import { NftFilters } from '../utils';
 
 @Injectable()
@@ -18,6 +19,11 @@ export class ParseNftQueryPipe implements PipeTransform {
                     break;
                 case 'status':
                     parsedQuery['status'] = value.status;
+                    break;
+                case 'search_string':
+                    parsedQuery[Op.or] = [
+                        sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${value.search_string.toLowerCase()}%` }),
+                    ]
                     break;
                 case 'order_by':
                     parsedQuery['order_by'] = Number(value.order_by)

@@ -28,6 +28,11 @@ export class CollectionFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
+        search_string: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false })
         creator_id: number;
 
     @IsString()

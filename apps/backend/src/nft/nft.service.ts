@@ -16,7 +16,6 @@ export class NFTService {
     async findAll(filters: Partial<NftFilters>): Promise<NFT[]> {
         const { limit, offset, order_by, ...rest } = filters
 
-        console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', order_by)
         let order;
         switch (order_by) {
             case NftOrderBy.TIMESTAMP_DESC:
