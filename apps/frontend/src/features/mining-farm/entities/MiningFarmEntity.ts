@@ -123,6 +123,7 @@ export default class MiningFarmEntity {
             return null;
         }
         const model = new MiningFarmEntity();
+
         model.id = (json.id ?? model.id).toString();
         model.accountId = (json.creator_id ?? model.accountId).toString();
         model.name = json.name ?? model.name;
@@ -140,6 +141,9 @@ export default class MiningFarmEntity {
         model.farmPhotoUrls = json.images ?? model.farmPhotoUrls;
         model.status = json.status ?? model.status;
         model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
+        model.rewardsFromPoolAddress = json.address_for_receiving_rewards_from_pool ?? model.rewardsFromPoolAddress;
+        model.leftoverRewardsAddress = json.leftover_reward_payout_address ?? model.leftoverRewardsAddress;
+        model.maintenanceFeePayoutAddress = json.maintenance_fee_payout_address ?? model.maintenanceFeePayoutAddress;
 
         return model;
     }

@@ -40,7 +40,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     // const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
-    const collectionPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Empty payout address')).current;
+    // const collectionPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Empty payout address')).current;
     const collectionHashPowerPerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
 
@@ -266,12 +266,12 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 helperText = { 'Maintenance fee calculation formula:' } >
                 <div className={'FormulaBox B2 Bold'}>{'[This Collection TH/s] / [Total TH/s] * [Maintenance fee]'}</div>
             </FieldColumnWrapper> */}
-            <Input
+            {/* <Input
                 label={<TextWithTooltip text={'Set Payout Address'} tooltipText={'Set Payout Address'} />}
                 placeholder={'Enter address...'}
                 value={collectionEntity.payoutAddress}
                 inputValidation={collectionPayoutAddressValidation}
-                onChange={creditCollectionStore.onChangeCollectionPayoutAddress} />
+                onChange={creditCollectionStore.onChangeCollectionPayoutAddress} /> */}
             <Checkbox
                 value={creditCollectionStore.defaultHashAndPriceValues}
                 onChange={onChangeAcceptDefaultHashPowerCheckboxValue}

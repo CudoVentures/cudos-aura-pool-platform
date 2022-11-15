@@ -25,7 +25,7 @@ export default class CollectionEntity {
     status: CollectionStatus;
     royalties: number;
     // maintenanceFeeInBtc: BigNumber;
-    payoutAddress: string;
+    // payoutAddress: string;
     defaultPricePerNftInCudos: BigNumber;
     defaultHashPowerPerNftInTh: number;
 
@@ -41,7 +41,7 @@ export default class CollectionEntity {
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
         // this.maintenanceFeeInBtc = null;
-        this.payoutAddress = '';
+        // this.payoutAddress = '';
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
 
@@ -148,7 +148,7 @@ export default class CollectionEntity {
             'status': entity.status,
             'royalties': entity.royalties,
             // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
-            'payout_address': entity.payoutAddress,
+            // 'payout_address': entity.payoutAddress,
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
         }
@@ -172,7 +172,7 @@ export default class CollectionEntity {
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
         // model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
-        model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
+        // model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
         model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
 

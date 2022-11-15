@@ -218,9 +218,9 @@ export default class CreditCollectionStore {
         this.collectionEntity.description = inputValue;
     }
 
-    onChangeCollectionPayoutAddress = (inputValue: string) => {
-        this.collectionEntity.payoutAddress = inputValue;
-    }
+    // onChangeCollectionPayoutAddress = (inputValue: string) => {
+    //     this.collectionEntity.payoutAddress = inputValue;
+    // }
 
     // on change nft
     onChangeSelectedNftName = (nftName: string) => {
