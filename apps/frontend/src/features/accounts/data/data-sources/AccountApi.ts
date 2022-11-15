@@ -72,6 +72,8 @@ export default class AccountApi {
             user.super_admin_id = user.id;
             user.account_id = user.id;
         }
+
+        console.log(user)
         return {
             accountEntity: AccountEntity.fromJson(user),
             userEntity: UserEntity.fromJson(null),

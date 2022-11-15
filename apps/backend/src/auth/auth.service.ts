@@ -4,6 +4,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '../user/user.model';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService,
     ) {}
 
-    async validateUser(email: string, password: string): Promise<any> {
+    async validateUser(email: string, password: string): Promise<User> {
         const user = await this.userService.findOne(email);
         if (!user) {
             throw new NotFoundException('Incorrect email');
@@ -25,16 +26,7 @@ export class AuthService {
             throw new UnauthorizedException('Incorrect password');
         }
 
-        const result = {
-            id: user.id,
-            email: user.email,
-            role: user.role,
-            cudos_address: user.cudos_address,
-            payout_address: user.payout_address,
-            farms: user.farms,
-        };
-
-        return result;
+        return user.toJSON();
     }
 
     async login(user: any) {
