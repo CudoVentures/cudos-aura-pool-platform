@@ -33,7 +33,8 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));
         previews.push(createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInBtc()));
         // previews.push(createDataPreview('Maintenance Fee', collectionEntity.formatMaintenanceFeesInBtc()));
-        previews.push(createDataPreview('Payout Address', ProjectUtils.shortenAddressString(collectionEntity.payoutAddress, 10)));
+        // TODO: maybe get from farm?
+        // previews.push(createDataPreview('Payout Address', ProjectUtils.shortenAddressString(collectionEntity.payoutAddress, 10)));
 
         return previews
     }

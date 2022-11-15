@@ -105,11 +105,15 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
     }
 
     async function onClickChangePass() {
-        await accountSessionStore.changePassword(oldPass, pass);
-        alertStore.show('Your password has been changed. Please, login again.', async () => {
-            await accountSessionStore.logout();
-            navigate(AppRoutes.LOGIN);
-        });
+        try {
+            await accountSessionStore.changePassword(oldPass, pass);
+            alertStore.show('Your password has been changed. Please, login again.', async () => {
+                await accountSessionStore.logout();
+                navigate(AppRoutes.LOGIN);
+            });
+        } catch (e) {
+            alertStore.show('Wrong old password');
+        }
     }
 
     const accountEntity = accountSessionStore.accountEntity;
@@ -211,14 +215,17 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
                             <Input
                                 label = { 'Current Password' }
                                 value = { oldPass }
+                                type = {'password'}
                                 onChange = { setOldPass } />
                             <Input
                                 label = { 'New Password' }
                                 value = { pass }
+                                type = {'password'}
                                 onChange = { setPass } />
                             <Input
                                 label = { 'Confirm Password' }
                                 value = { confirmPass }
+                                type = {'password'}
                                 onChange = { setConfirmPass } />
                             <Actions layout = { ActionsLayout.LAYOUT_ROW_RIGHT } >
                                 <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickCancelEditPass } >Discard Changes</Button>

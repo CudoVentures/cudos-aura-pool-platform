@@ -31,7 +31,8 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
                             createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInBtc()),
                             // createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
-                            createDataPreview('Payout address', collectionEntity.payoutAddress),
+                            // TODO: take from farm maybe?
+                            // createDataPreview('Payout address', collectionEntity.payoutAddress),
                         ] } />
                     { nftEntities.map((nftEntity) => {
                         return (

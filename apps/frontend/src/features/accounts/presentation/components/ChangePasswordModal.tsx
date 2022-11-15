@@ -15,12 +15,14 @@ import Svg from '../../../../core/presentation/components/Svg';
 
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
+    alertStore?: AlertStore;
     changePasswordModalStore?: ChangePasswordModalStore;
 }
 
-function ChangePasswordModal({ changePasswordModalStore }: Props) {
+function ChangePasswordModal({ alertStore, changePasswordModalStore }: Props) {
     const validationState = useRef(new ValidationState()).current;
 
     const validationOldPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
@@ -44,8 +46,12 @@ function ChangePasswordModal({ changePasswordModalStore }: Props) {
         setShowRepeatPassword(!showRepeatPassword);
     }
 
-    function onClickChangePassword() {
-        changePasswordModalStore.changePassword();
+    async function onClickChangePassword() {
+        try {
+            await changePasswordModalStore.changePassword();
+        } catch (e) {
+            alertStore.show('Wrong old password');
+        }
     }
 
     return (

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import nodemailer from 'nodemailer';
 import * as crypto from 'crypto';
@@ -96,7 +96,19 @@ export class UserService {
         return user;
     }
 
-    async changePassword(id: number, password: string) {
+    async changePassword(id: number, oldPassword: string, password: string) {
+        const userToCheck = await this.userModel.findByPk(id);
+
+        if (!userToCheck) {
+            throw new NotFoundException('Incorrect id');
+        }
+
+        const hashedPass = this.generateHashedPass(oldPassword, userToCheck.salt);
+
+        if (userToCheck.hashed_pass !== hashedPass) {
+            throw new UnauthorizedException('Incorrect password');
+        }
+
         const salt = this.generateSalt();
         const hashed_pass = this.generateHashedPass(password, salt);
 

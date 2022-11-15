@@ -7,7 +7,6 @@ import ManufacturerEntity from '../../../entities/ManufacturerEntity';
 import MinerEntity from '../../../entities/MinerEntity';
 import EnergySourceEntity from '../../../entities/EnergySourceEntity';
 import AlertStore from '../../../../../core/presentation/stores/AlertStore';
-import ImageEntity, { PictureType } from '../../../../upload-file/entities/ImageEntity';
 import CreditMiningFarmDetailsPageStore from '../../stores/CreditMiningFarmDetailsPageStore';
 import ValidationState from '../../../../../core/presentation/stores/ValidationState';
 
@@ -25,7 +24,6 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/step-farm-details.css';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
-import FieldColumnWrapper from '../../../../../core/presentation/components/FieldColumnWrapper';
 import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
 import BigNumber from 'bignumber.js';
 
@@ -49,6 +47,9 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
     const farmMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
+    const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
+    const farmLeftoversAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
+    const farmMainteannceFeesAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
 
     const [hashPowerInTh, setHashPowerInTh] = useState(miningFarmEntity.hashPowerInTh !== S.NOT_EXISTS ? miningFarmEntity.hashPowerInTh : '');
     const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(miningFarmEntity.maintenanceFeeInBtc !== null ? miningFarmEntity.maintenanceFeeInBtc.toString() : '')
@@ -137,6 +138,24 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 value={miningFarmEntity.primaryAccountOwnerEmail}
                 inputValidation={farmOwnerEmailValidation}
                 onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }} />
+            <Input
+                label={'BTC Address to receive awards'}
+                placeholder={'bc1qxy...'}
+                value={miningFarmEntity.rewardsFromPoolAddress}
+                inputValidation={farmPayoutAddressValidation}
+                onChange={(string) => { miningFarmEntity.rewardsFromPoolAddress = string }} />
+            <Input
+                label={'BTC Address to receive awards leftovers'}
+                placeholder={'bc1qxy...'}
+                value={miningFarmEntity.leftoverRewardsAddress}
+                inputValidation={farmLeftoversAddressValidation}
+                onChange={(string) => { miningFarmEntity.leftoverRewardsAddress = string }} />
+            <Input
+                label={'BTC Address to receive maintenance fees'}
+                placeholder={'bc1qxy...'}
+                value={miningFarmEntity.maintenanceFeePayoutAddress}
+                inputValidation={farmMainteannceFeesAddressValidation}
+                onChange={(string) => { miningFarmEntity.maintenanceFeePayoutAddress = string }} />
             <Autocomplete
                 label={'Manufacturers'}
                 value = { creditMiningFarmDetailsPageStore.getSelectedManufacturers().map((manufacturerEntity) => {

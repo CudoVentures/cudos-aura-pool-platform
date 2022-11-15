@@ -1,6 +1,6 @@
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
-import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
+import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../../core/utilities/AxiosWrapper';

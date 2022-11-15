@@ -1,8 +1,7 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import sequelize, { Op } from 'sequelize';
 import { FarmStatus } from '../models/farm.model';
 import { FarmFilters } from '../utils';
-
-const statusMap = [FarmStatus.APPROVED, FarmStatus.QUEUED, FarmStatus.REJECTED]
 
 @Injectable()
 export class ParseFarmQueryPipe implements PipeTransform {
@@ -16,6 +15,12 @@ export class ParseFarmQueryPipe implements PipeTransform {
                     break;
                 case 'status':
                     parsedQuery['status'] = value.status
+                    break;
+                case 'search_string':
+                    parsedQuery[Op.or] = [
+                        sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${value.search_string.toLowerCase()}%` }),
+                        sequelize.where(sequelize.fn('LOWER', sequelize.col('description')), { [Op.like]: `%${value.search_string.toLowerCase()}%` }),
+                    ]
                     break;
                 case 'limit':
                     parsedQuery['limit'] = Number(value.limit)

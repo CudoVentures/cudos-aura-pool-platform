@@ -45,11 +45,6 @@ export default class MiningFarmApi {
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
-
-        // TODO: these should have an input?
-        miningFarmEntity.leftoverRewardsAddress = 'test';
-        miningFarmEntity.maintenanceFeePayoutAddress = 'test';
-        miningFarmEntity.rewardsFromPoolAddress = 'test';
         const { data: farm } = await axios.put('/api/v1/farm', MiningFarmEntity.toJson(miningFarmEntity))
 
         return MiningFarmEntity.fromJson(farm);
