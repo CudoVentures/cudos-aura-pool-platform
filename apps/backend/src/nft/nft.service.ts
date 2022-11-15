@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
+import { Collection } from '../collection/collection.model';
 import { NFTDto } from './dto/nft.dto';
 import { NFT } from './nft.model';
 import { NftFilters, NftOrderBy, NftStatus } from './utils';
@@ -63,7 +64,7 @@ export class NFTService {
     }
 
     async findOne(id: string): Promise<NFT> {
-        const nft = this.nftModel.findByPk(id);
+        const nft = this.nftModel.findByPk(id, { include: [{ model: Collection }] });
 
         if (!nft) {
             throw new NotFoundException();
@@ -113,6 +114,18 @@ export class NFTService {
         return nft;
     }
 
+    async updateTokenId(id: string, token_id: string): Promise<NFT> {
+        const [count, [nft]] = await this.nftModel.update(
+            { token_id },
+            {
+                where: { id },
+                returning: true,
+            },
+        )
+
+        return nft
+    }
+
     async deleteOne(id: string): Promise<NFT> {
         const [count, [nft]] = await this.nftModel.update(
             { deleted_at: new Date(), status: NftStatus.DELETED },
@@ -127,8 +140,14 @@ export class NFTService {
         return nft;
     }
 
-    async getTokenId(txHash: string): Promise<string> {
+    async getNftAttributes(txHash: string): Promise<{ token_id: string, uuid: string }> {
         let tokenId;
+        let uuid;
+
+        enum Attribute {
+            uid = 'uid',
+            nft_id = 'nft_id'
+        }
 
         try {
             const res = await axios.get(
@@ -143,16 +162,20 @@ export class NFTService {
             const mintNFTObj = data[0].events.find(
                 (el) => el.type === 'marketplace_mint_nft',
             );
-            // TODO: get the proper uuid from the memo of the transaction
-            tokenId = mintNFTObj.attributes.find((el) => el.key === 'nft_id').value;
+
+            tokenId = mintNFTObj.attributes.find((el) => el.key === Attribute.nft_id).value;
+            uuid = mintNFTObj.attributes.find((el) => el.key === Attribute.uid).value;
         } catch (err) {
             throw new NotFoundException();
         }
 
-        if (!tokenId) {
+        if (!tokenId || !uuid) {
             throw new NotFoundException();
         }
 
-        return tokenId.toString();
+        return {
+            token_id: tokenId.toString(),
+            uuid,
+        }
     }
 }
