@@ -96,16 +96,16 @@ export class UserService {
         return user;
     }
 
-    async changePassword(id: number, old_password: string, password: string) {
-        const user_to_check = await this.userModel.findByPk(id);
+    async changePassword(id: number, oldPassword: string, password: string) {
+        const userToCheck = await this.userModel.findByPk(id);
 
-        if (!user_to_check) {
+        if (!userToCheck) {
             throw new NotFoundException('Incorrect id');
         }
 
-        const hashedPass = this.generateHashedPass(old_password, user_to_check.salt);
+        const hashedPass = this.generateHashedPass(oldPassword, userToCheck.salt);
 
-        if (user_to_check.hashed_pass !== hashedPass) {
+        if (userToCheck.hashed_pass !== hashedPass) {
             throw new UnauthorizedException('Incorrect password');
         }
 
