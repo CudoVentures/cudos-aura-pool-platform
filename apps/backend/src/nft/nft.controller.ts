@@ -64,9 +64,10 @@ export class NFTController {
   async mint(@Body() checkStatusDto: CheckStatusDto): Promise<NFT> {
       const { tx_hash } = checkStatusDto;
 
-      const uuid = await this.nftService.getTokenId(tx_hash);
+      const { token_id, uuid } = await this.nftService.getNftAttributes(tx_hash);
 
-      return this.nftService.updateStatus(uuid, NftStatus.MINTED);
+      await this.nftService.updateStatus(uuid, NftStatus.MINTED);
+      return this.nftService.updateTokenId(uuid, token_id)
   }
 
   @Get(':id')
