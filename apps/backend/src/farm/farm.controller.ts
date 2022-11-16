@@ -100,7 +100,7 @@ export class FarmController {
 
         return Promise.all(farmsDetails.map(async (details) => {
             const { activeWorkersCount, averageHashRateH1 } = await this.farmService.getFoundryFarmWorkersDetails(details.subAccountName);
-            return { ...details, activeWorkersCount, averageHashRateH1};
+            return { ...details, activeWorkersCount, averageHashRateH1 };
         }));
     }
 

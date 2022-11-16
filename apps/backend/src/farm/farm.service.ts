@@ -29,7 +29,7 @@ export class FarmService {
     private minerModel: typeof Miner,
     @InjectModel(EnergySource)
     private energySourceModel: typeof EnergySource,
-    private httpService: HttpService
+    private httpService: HttpService,
     ) {}
 
     async findAll(filters: FarmFilters): Promise<Farm[]> {
@@ -184,44 +184,39 @@ export class FarmService {
         return manufacturer;
     }
 
-    async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number }> {
+    async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number, remainingHashPowerInTH: number }> {
         const farm = await this.farmModel.findByPk(farmId)
         const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }] })
         const minted = nfts.filter((nft) => nft.status === NftStatus.MINTED)
-        
+
         return {
             id: farmId,
             subAccountName: farm.sub_account_name,
             totalHashRate: farm.total_farm_hashrate,
             nftsOwned: nfts.length,
             nftsSold: minted.length,
+            remainingHashPowerInTH: farm.total_farm_hashrate,
         }
     }
 
     async getFoundryFarmWorkersDetails(subAccountName: string): Promise<{ activeWorkersCount: number, averageHashRateH1: number }> {
         // TODO: Iterate if there are more than 100 workers
-        const res: AxiosResponse<{ data: FoundryWorkersDetails }> = await this.httpService.axiosRef.get(`${process.env.App_Foundry_API}/workers/${subAccountName}?${this.foundryWorkersDetailsURI}`, {
-            headers: {
-                'x-api-key': process.env.App_Foundry_API_Auth_Token
-            }
-        });
+        try {
+            const res = await this.httpService.axiosRef.get(`${process.env.App_Foundry_API}/subaccount_stats/${subAccountName}`, {
+                headers: {
+                    'x-api-key': process.env.App_Foundry_API_Auth_Token,
+                },
+            });
 
-        if (!res.data.data.workersList.length || !res.data.data.totalWorkerCount) {
+            const workersDetails = {
+                activeWorkersCount: res.data.activeWorkers,
+                averageHashRateH1: res.data.hashrate1hrAvg,
+            };
+
+            return workersDetails;
+        } catch (err) {
             throw new NotFoundException();
         }
-
-        let workersDetails = {
-            activeWorkersCount: res.data.data.totalWorkerCount,
-            averageHashRateH1: 0
-        };
-
-        res.data.data.workersList.forEach((worker) => {
-            workersDetails.averageHashRateH1 += worker.hashrate_1h;
-        });
-
-        workersDetails.averageHashRateH1 /= workersDetails.activeWorkersCount;
-
-        return workersDetails;
     }
 
     private readonly foundryWorkersDetailsURI = 'coin=BTC&sort=highestHashrate&status=all&tag=all&pageNumber=0&pageSize=100&workerNameSearchStr=';
