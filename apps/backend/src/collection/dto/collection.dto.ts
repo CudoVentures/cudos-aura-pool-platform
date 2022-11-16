@@ -34,8 +34,8 @@ export class CollectionDto {
         royalties: number;
 
     @IsString()
-    @IsNotEmpty()
-    @ApiProperty({ required: true, example: 'my_payout_address' })
+    @IsOptional()
+    @ApiProperty({ required: false, example: 'my_payout_address' })
         payout_address: string;
 
     @IsString()
