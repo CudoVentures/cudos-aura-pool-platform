@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { MathHelper, Decimal, GasPrice, SigningStargateClient } from 'cudosjs';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
@@ -109,6 +110,10 @@ export default class CollectionApiRepo implements CollectionRepo {
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
 
+        const decimals = (new BigNumber(10)).pow(18);
+        const innitialRoyalty = (new BigNumber(100)).multipliedBy(decimals);
+        const secondaryRoyalty = (new BigNumber(100)).multipliedBy(decimals);
+
         const tx = await signingClient.marketplaceCreateCollection(
             ledger.accountAddress,
             collectionEntity.name, // TODO: should this be something else?
@@ -120,10 +125,10 @@ export default class CollectionApiRepo implements CollectionRepo {
             CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
             '',
             [
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: Decimal.fromUserInput('1', 10) }),
+                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialRoyalty.toFixed(0) }),
             ],
             [
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: Decimal.fromUserInput('1', 10) }),
+                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: secondaryRoyalty.toFixed(0) }),
             ],
             true,
             gasPrice,
