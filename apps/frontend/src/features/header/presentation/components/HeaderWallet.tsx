@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { inject, observer } from 'mobx-react';
 
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
@@ -22,7 +22,7 @@ type Props = {
     walletStore?: WalletStore;
 }
 
-function HeaderWallet({ accountSessionStore, walletStore }: Props) {
+function HeaderWallet({ accountSessionStore, walletStore, alertStore }: Props) {
 
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -48,11 +48,11 @@ function HeaderWallet({ accountSessionStore, walletStore }: Props) {
             throw Error('Super admins should not have wallets for now');
         }
 
-        await walletStore.connectKeplr();
+        await walletStore.tryConnect(SessionStorageWalletOptions.KEPLR);
 
         if (accountSessionStore.isAdmin() === true) {
             await accountSessionStore.loadSessionAccountsAndSync();
-            return;
+
         }
 
         await accountSessionStore.login('', '', walletStore.getAddress(), walletStore.getName(), '');
