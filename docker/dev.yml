@@ -24,6 +24,7 @@ services:
     restart: unless-stopped
     volumes:
       - '../:/usr/cudos-aura-platform'
+      - '../../CudosJs:/usr/CudosJs'
     ports:
       - "$HOST_PORT:$DOCKER_PORT"
     networks:

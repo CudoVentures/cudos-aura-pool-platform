@@ -4,9 +4,9 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../../core/utilities/AxiosWrapper';
+import Ledger from 'cudosjs/build/ledgers/Ledger';
 
 export default class CollectionApi {
-
     async fetchCategories(): Promise < CategoryEntity [] > {
         return null;
     }
@@ -35,8 +35,10 @@ export default class CollectionApi {
         }
     }
 
-    async approveCollection(collectionId: number): Promise < void > {
-        const { data } = await axios.patch(`/api/v1/collection/${collectionId}/status`, { status: 'approved' });
+    // mint transaction to the chain
+    async approveCollection(collectionEntity: CollectionEntity, ledger: Ledger, network: string): Promise < string > {
+        // const { data } = await axios.patch(`/api/v1/collection/${collectionEntity.id}/status`, { status: 'approved' });
+
     }
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {

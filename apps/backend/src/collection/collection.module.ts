@@ -14,6 +14,7 @@ import { FarmModule } from '../farm/farm.module';
 import { EnergySource } from '../farm/models/energy-source.model';
 import { Manufacturer } from '../farm/models/manufacturer.model';
 import { Miner } from '../farm/models/miner.model';
+import { User } from '../user/user.model';
 
 @Module({
     imports: [

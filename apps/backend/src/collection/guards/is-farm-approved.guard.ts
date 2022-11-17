@@ -20,17 +20,18 @@ export class IsFarmApprovedGuard extends JwtAuthGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const { farm_id } = request.body;
 
-        const farmId = farm_id
+        const farmId = farm_id;
 
         if (!farmId) return false;
+        console.log(farmId)
+        const farm = await this.farmService.findOne(farmId);
 
-        return this.farmService.findOne(farmId).then((farm: Farm) => {
-            if (farm.status !== FarmStatus.APPROVED) {
-                throw new UnauthorizedException(
-                    `Farm with id ${farmId} is not verified`,
-                );
-            }
-            return true;
-        });
+        if (farm.status !== FarmStatus.APPROVED) {
+            throw new UnauthorizedException(
+                `Farm with id ${farmId} is not verified`,
+            );
+        }
+
+        return true;
     }
 }

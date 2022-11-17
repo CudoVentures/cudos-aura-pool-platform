@@ -76,7 +76,7 @@ export default class NftApiRepo implements NftRepo {
             this.disableActions?.();
 
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
             let txHash = S.Strings.EMPTY;
 
             if (nftEntity.status === NftStatus.APPROVED) {
@@ -104,7 +104,7 @@ export default class NftApiRepo implements NftRepo {
             this.disableActions?.();
 
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
 
             const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, Long.fromString(nftEntity.id), Long.fromString(nftEntity.collectionId), coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;

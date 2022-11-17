@@ -11,9 +11,9 @@ export class IsCreatorGuard extends JwtAuthGuard implements CanActivate {
         super();
     }
 
-    canActivate(
+    async canActivate(
         context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    ) {
         const request = context.switchToHttp().getRequest<RequestWithUser>();
         const { user, body } = request;
 
@@ -26,8 +26,8 @@ export class IsCreatorGuard extends JwtAuthGuard implements CanActivate {
         const userId = user.id;
         const collectionId = parseInt(body.id);
 
-        return this.collectionService
-            .findOne(collectionId)
-            .then((collection: Collection) => collection.creator_id === userId);
+        const collection = await this.collectionService.findOne(collectionId);
+
+        return collection.creator_id === userId;
     }
 }

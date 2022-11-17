@@ -7,10 +7,12 @@ import MiningFarmFilterModel from '../../../mining-farm/utilities/MiningFarmFilt
 import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 export default class SuperAdminApprovePageStore {
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
+    walletStore: WalletStore;
 
     miningFarmsTableState: TableState;
     collectionsTableState: TableState;
@@ -21,9 +23,10 @@ export default class SuperAdminApprovePageStore {
     selectedMiningFarmEntities: Map < string, MiningFarmEntity >;
     selectedCollectionEntities: Map < string, CollectionEntity >;
 
-    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo) {
+    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore) {
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
+        this.walletStore = walletStore;
 
         this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarmEntities, 50);
         this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 50);
@@ -115,6 +118,10 @@ export default class SuperAdminApprovePageStore {
     }
 
     approveCollections = async () => {
+        if (!this.walletStore.isConnected()) {
+            this.walletStore.connectKeplr();
+        }
+
         const collectionEntities = [];
 
         this.selectedCollectionEntities.forEach((collectionEntity) => {
@@ -123,7 +130,7 @@ export default class SuperAdminApprovePageStore {
         });
 
         for (let i = collectionEntities.length; i-- > 0;) {
-            await this.collectionRepo.approveCollection(collectionEntities[i]);
+            await this.collectionRepo.approveCollection(collectionEntities[i], this.walletStore.ledger, this.walletStore.selectedNetwork);
         }
 
         this.fetch();

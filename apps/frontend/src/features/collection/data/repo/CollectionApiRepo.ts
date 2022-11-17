@@ -1,3 +1,8 @@
+import { MathHelper, Decimal, GasPrice, SigningStargateClient } from 'cudosjs';
+import Ledger from 'cudosjs/build/ledgers/Ledger';
+import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
+import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import AccountApi from '../../../accounts/data/data-sources/AccountApi';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
@@ -7,13 +12,16 @@ import CollectionFilterModel, { CollectionorderBy } from '../../utilities/Collec
 import CollectionApi from '../data-sources/CollectionApi';
 
 export default class CollectionApiRepo implements CollectionRepo {
-
+    accountApi: AccountApi;
     collectionApi: CollectionApi;
+
     enableActions: () => void;
     disableActions: () => void;
 
     constructor() {
         this.collectionApi = new CollectionApi();
+        this.accountApi = new AccountApi();
+
         this.enableActions = null;
         this.disableActions = null;
     }
@@ -95,7 +103,36 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
-    async approveCollection(collectionEntity: CollectionEntity): Promise < void > {
-        await this.collectionApi.approveCollection(collectionEntity.id);
+    async approveCollection(collectionEntity: CollectionEntity, ledger: Ledger, network: string): Promise < string > {
+        const adminEntity = await this.accountApi.getFarmAdminByFarmId(collectionEntity.farmId);
+
+        const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
+        const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
+
+        const tx = await signingClient.marketplaceCreateCollection(
+            ledger.accountAddress,
+            collectionEntity.name, // TODO: should this be something else?
+            collectionEntity.name,
+            'CudosAuraPoolSchema',
+            'CudosAuraPoolSymbol',
+            'NotEditable',
+            `CudosAuraPoolService collection for farm: ${collectionEntity.farmId}`,
+            CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
+            '',
+            [
+                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: Decimal.fromUserInput('1', 10) }),
+            ],
+            [
+                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: Decimal.fromUserInput('1', 10) }),
+            ],
+            true,
+            gasPrice,
+            undefined,
+            `Minted by Cudos Aura Pool Service, approved by Super Admin: ${ledger.accountAddress}`,
+        )
+
+        const txHash = tx.transactionHash;
+
+        return txHash;
     }
 }

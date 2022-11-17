@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
+import { FarmService } from '../farm/farm.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,7 +23,7 @@ import { UserService } from './user.service';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService, private farmService: FarmService) {}
 
   @Get(':email')
     async findOne(@Param('email') email: string): Promise<Partial<User>> {
@@ -31,6 +32,16 @@ export class UserController {
 
         return rest
     }
+
+  @Get('farm/:farmId')
+  async findOneByFarmId(@Param('farmId') farmId: number): Promise<Partial<User>> {
+      const farm = await this.farmService.findOne(farmId);
+      const user = await this.userService.findOneById(farm.creator_id);
+
+      const { salt, hashed_pass, ...rest } = user.toJSON()
+
+      return rest
+  }
 
   @ApiBearerAuth('access-token')
   @UseGuards(RoleGuard([Role.SUPER_ADMIN]))

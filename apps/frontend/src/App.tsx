@@ -62,7 +62,7 @@ const statisticsRepo = new StatisticsStorageRepo();
 const appStore = new AppStore();
 const alertStore = new AlertStore();
 const exampleModalStore = new ExampleModalStore();
-const walletStore = new WalletStore();
+const walletStore = new WalletStore(alertStore);
 
 const accountRepo = new AccountApiRepo(walletStore);
 
@@ -72,7 +72,7 @@ const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, mi
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, miningFarmRepo);
 const marketplaceStore = new MarketplaceStore(collectionRepo, nftRepo, miningFarmRepo);
-const superAdminApprovePageStore = new SuperAdminApprovePageStore(miningFarmRepo, collectionRepo);
+const superAdminApprovePageStore = new SuperAdminApprovePageStore(miningFarmRepo, collectionRepo, walletStore);
 const exploreCollectionsPageStore = new ExploreCollectionsPageStore(collectionRepo, miningFarmRepo);
 const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRepo);
 const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);

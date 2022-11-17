@@ -1,3 +1,4 @@
+import Ledger from 'cudosjs/build/ledgers/Ledger';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
@@ -17,5 +18,5 @@ export default interface CollectionRepo {
     fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] >;
     creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < void >;
 
-    approveCollection(collectionEntity: CollectionEntity): Promise < void >;
+    approveCollection(collectionEntity: CollectionEntity, ledger: Ledger, network: string): Promise < string >;
 }

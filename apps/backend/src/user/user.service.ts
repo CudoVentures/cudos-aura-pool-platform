@@ -83,6 +83,16 @@ export class UserService {
         return user;
     }
 
+    async findOneById(id: number): Promise<User> {
+        const user = await this.userModel.findOne({
+            where: {
+                id,
+            },
+        });
+
+        return user;
+    }
+
     async updateOne(
         id: number,
         updateUserDto: Partial<UpdateUserDto>,

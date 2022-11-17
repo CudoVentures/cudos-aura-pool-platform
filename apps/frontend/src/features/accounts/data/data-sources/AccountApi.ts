@@ -89,4 +89,20 @@ export default class AccountApi {
         // setTokenInStorage(data.access_token);
         return null;
     }
+
+    async getFarmAdminByFarmId(farmId: string): Promise < AdminEntity > {
+        const user = (await axios.get(`/api/v1/user/farm/${farmId}`)).data;
+        console.log(user);
+        if (user) {
+            user.email_verified = 1;
+            user.active = 1;
+            user.timestamp_last_login = Date.now();
+            user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
+
+            user.admin_id = user.id;
+            user.super_admin_id = user.id;
+            user.account_id = user.id;
+        }
+        return AdminEntity.fromJson(user);
+    }
 }
