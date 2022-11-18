@@ -29,10 +29,13 @@ function StepReview({ accountSessionStore, creditMiningFarmDetailsPageStore }: P
             <div className={'B3 FullLine Descripton'}>{miningFarmEntity.description}</div>
             <DataPreviewLayout
                 dataPreviews = { [
-                    createDataPreview('Account Email', accountSessionStore.accountEntity.email),
+                    createDataPreview('Account Email', accountSessionStore?.accountEntity?.email),
                     createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
                     createDataPreview('Primary Account Owner', miningFarmEntity.primaryAccountOwnerName),
                     createDataPreview('Primary Account Owner Email', miningFarmEntity.primaryAccountOwnerEmail),
+                    createDataPreview('BTC Address to receive awards', miningFarmEntity.rewardsFromPoolAddress),
+                    createDataPreview('BTC Address to receive awards leftovers', miningFarmEntity.leftoverRewardsAddress),
+                    createDataPreview('BTC Address to receive maintenance fees', miningFarmEntity.maintenanceFeePayoutAddress),
                     createDataPreview('Manufacturers', creditMiningFarmDetailsPageStore.getSelectedManufacturersNames()),
                     createDataPreview('Miners', creditMiningFarmDetailsPageStore.getSelectedMinersNames()),
                     createDataPreview('Energy Source', creditMiningFarmDetailsPageStore.getSelectedEnergySourcesNames()),

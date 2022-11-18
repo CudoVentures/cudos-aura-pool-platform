@@ -7,6 +7,7 @@ import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
 import { Ledger, SigningStargateClient, GasPrice } from 'cudosjs';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import e from 'express';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -27,10 +28,10 @@ export default class AccountStorageRepo implements AccountRepo {
         this.disableActions = disableActions;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx);
+            return this.accountApi.login(username, password, cudosWalletAddress, signedTx);
         } finally {
             this.enableActions?.();
         }
@@ -54,15 +55,17 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
+    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string, accountId: string): Promise < void > {
         try {
             this.disableActions?.();
 
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
 
             await signingClient.addressbookCreateAddress(ledger.accountAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
-            this.accountApi.confirmBitcoinAddress(bitcoinAddress);
+            const res = await this.accountApi.confirmBitcoinAddress(bitcoinAddress, accountId);
+
+            return res.data.payout_address;
         } finally {
             this.enableActions?.();
         }

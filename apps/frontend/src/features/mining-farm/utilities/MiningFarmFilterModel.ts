@@ -1,23 +1,26 @@
 import S from '../../../core/utilities/Main';
 import { MiningFarmStatus } from '../entities/MiningFarmEntity';
 
-export default class MiningFarmFilterModel {
+export enum MiningFarmOrderBy {
+    POPULAR_DESC = 1,
+}
 
-    static SORT_KEY_NAME = 1;
-    static SORT_KEY_POPULAR = 2;
+export default class MiningFarmFilterModel {
 
     miningFarmIds: string[];
     status: MiningFarmStatus;
     searchString: string;
     sessionAccount: number;
+    orderBy: MiningFarmOrderBy;
     from: number;
     count: number;
 
     constructor() {
         this.miningFarmIds = null;
-        this.status = MiningFarmStatus.APPROVED;
+        this.status = null;
         this.searchString = '';
-        this.sessionAccount = S.INT_FALSE;
+        this.sessionAccount = null;
+        this.orderBy = 0;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
     }
@@ -28,30 +31,13 @@ export default class MiningFarmFilterModel {
         }
 
         return {
-            miningFarmIds: entity.miningFarmIds,
-            status: entity.status,
-            searchString: entity.searchString,
-            sessionAccount: entity.sessionAccount,
-            from: entity.from,
-            count: entity.count,
+            'id': entity.miningFarmIds !== null ? entity.miningFarmIds.join(',') : null,
+            'status': entity.status ?? undefined,
+            'search_string': entity.searchString,
+            'creator_id': entity.sessionAccount ?? undefined,
+            'order_by': entity.orderBy,
+            'offset': entity.from,
+            'limit': entity.count,
         }
     }
-
-    static fromJson(json): MiningFarmFilterModel {
-        if (json === null) {
-            return null;
-        }
-
-        const model = new MiningFarmFilterModel();
-
-        model.miningFarmIds = json.miningFarmIds ?? model.miningFarmIds;
-        model.status = json.status ?? model.status;
-        model.searchString = json.searchString ?? model.searchString;
-        model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
-        model.from = parseInt(json.from ?? model.from);
-        model.count = parseInt(json.count ?? model.count);
-
-        return model;
-    }
-
 }

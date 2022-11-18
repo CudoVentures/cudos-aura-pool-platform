@@ -31,7 +31,6 @@ function CreditCollectionAddNftsStep({ alertStore, creditCollectionStore }: Prop
         creditCollectionStore.moveToStepFinish();
     }
 
-    console.log(selectedNftEntity);
     return (
         <div className={'CreditCollectionAddNftsStep FlexColumn'}>
             <div className={'Grid FormAndPreviewContainer'}>

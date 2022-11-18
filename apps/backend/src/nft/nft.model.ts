@@ -7,7 +7,6 @@ import {
     PrimaryKey,
     Unique,
     IsDate,
-    IsUrl,
     AllowNull,
     DataType,
     IsUUID,
@@ -34,7 +33,6 @@ export class NFT extends Model {
   @Column
       name: string;
 
-  @IsUrl
   @Column
       uri: string;
 
@@ -57,6 +55,10 @@ export class NFT extends Model {
   @AllowNull(false)
   @Column(DataType.ENUM('queued', 'approved', 'rejected', 'expired', 'deleted'))
       status: NftStatus;
+
+  @AllowNull(true)
+  @Column
+      token_id: string
 
   @Column
   @ForeignKey(() => Collection)

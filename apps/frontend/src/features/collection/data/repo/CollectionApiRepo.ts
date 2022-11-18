@@ -3,10 +3,10 @@ import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionRepo from '../../presentation/repos/CollectionRepo';
-import CollectionFilterModel from '../../utilities/CollectionFilterModel';
+import CollectionFilterModel, { CollectionorderBy } from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
 
-export default class CollectionStorageRepo implements CollectionRepo {
+export default class CollectionApiRepo implements CollectionRepo {
 
     collectionApi: CollectionApi;
     enableActions: () => void;
@@ -36,6 +36,9 @@ export default class CollectionStorageRepo implements CollectionRepo {
         const collectionFilterModel = new CollectionFilterModel();
         // TO DO: add top collection sort
         collectionFilterModel.status = status;
+        collectionFilterModel.fromTimestamp = timestampFrom;
+        collectionFilterModel.toTimestamp = timestampTo;
+        collectionFilterModel.orderBy = CollectionorderBy.TIMESTAMP_DESC;
 
         const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
@@ -92,4 +95,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         }
     }
 
+    async approveCollection(collectionEntity: CollectionEntity): Promise < void > {
+        await this.collectionApi.approveCollection(collectionEntity.id);
+    }
 }

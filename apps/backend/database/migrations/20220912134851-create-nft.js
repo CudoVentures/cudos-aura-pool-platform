@@ -12,10 +12,8 @@ module.exports = {
                 allowNull: false,
             },
             uri: {
-                type: Sequelize.STRING,
-                validate: {
-                    isUrl: true,
-                },
+                type: Sequelize.BLOB,
+                allowNull: true,
             },
             data: {
                 type: Sequelize.STRING,
@@ -42,6 +40,10 @@ module.exports = {
                     'minted',
                 ]),
                 allowNull: false,
+            },
+            token_id: {
+                type: Sequelize.STRING,
+                allowNull: true,
             },
             collection_id: {
                 type: Sequelize.INTEGER,

@@ -12,6 +12,7 @@ import TempIdGenerator from '../../../../core/utilities/TempIdGenerator';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
+import { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 
 enum CreditCollectionDetailsSteps {
     COLLECTION_DETAILS = 1,
@@ -76,7 +77,7 @@ export default class CreditCollectionStore {
     }
 
     async initAsCreate() {
-        const farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId()).id;
+        const farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED)).id;
 
         runInAction(() => {
             this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -116,7 +117,6 @@ export default class CreditCollectionStore {
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
         nftFilter.count = Number.MAX_SAFE_INTEGER;
-        nftFilter.collectionStatus = CollectionStatus.ANY;
 
         const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
         this.nftEntities = nftEntities;
@@ -218,9 +218,9 @@ export default class CreditCollectionStore {
         this.collectionEntity.description = inputValue;
     }
 
-    onChangeCollectionPayoutAddress = (inputValue: string) => {
-        this.collectionEntity.payoutAddress = inputValue;
-    }
+    // onChangeCollectionPayoutAddress = (inputValue: string) => {
+    //     this.collectionEntity.payoutAddress = inputValue;
+    // }
 
     // on change nft
     onChangeSelectedNftName = (nftName: string) => {
@@ -291,6 +291,7 @@ export default class CreditCollectionStore {
 
     onClickDeleteNft = (nftEntityId: string) => {
         this.nftEntities = this.nftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
+        this.addedOrEdittedNftEntities = this.addedOrEdittedNftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
     }
 
     onClickAddToCollection = () => {

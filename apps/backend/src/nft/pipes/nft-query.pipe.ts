@@ -1,4 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import sequelize, { Op } from 'sequelize';
 import { NftFilters } from '../utils';
 
 @Injectable()
@@ -7,10 +8,28 @@ export class ParseNftQueryPipe implements PipeTransform {
         const parsedQuery = {};
 
         Object.keys(value).map((key) => {
-            if (key !== 'status') {
-                parsedQuery[key] = Number(value[key]);
-            } else {
-                parsedQuery[key] = value[key];
+            switch (key) {
+                case 'ids':
+                    if (!value.ids) break;
+                    parsedQuery['id'] = value.ids.split(',');
+                    break
+                case 'collection_ids':
+                    if (!value.collection_ids) break;
+                    parsedQuery['collection_id'] = value.collection_ids.split(',').map((id) => parseInt(id));
+                    break;
+                case 'status':
+                    parsedQuery['status'] = value.status;
+                    break;
+                case 'search_string':
+                    parsedQuery[Op.or] = [
+                        sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${value.search_string.toLowerCase()}%` }),
+                    ]
+                    break;
+                case 'order_by':
+                    parsedQuery['order_by'] = Number(value.order_by)
+                    break;
+                default:
+                    break;
             }
         });
 

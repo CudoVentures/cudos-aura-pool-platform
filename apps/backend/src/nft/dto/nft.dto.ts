@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsDate, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsDateString } from 'class-validator';
 
-export class CreateNFTDto {
+export class NFTDto {
+    @IsString()
+    @IsOptional()
+    @ApiProperty({ required: false, example: 1 })
+        id: string;
+
     @IsString()
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 'The coolest NFT' })

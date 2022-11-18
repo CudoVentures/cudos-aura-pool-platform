@@ -3,12 +3,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { print } from 'graphql';
 import { AxiosResponse } from 'axios';
 import {
-    MarketplaceNftQuery,
-    MarketplaceNftDocument,
+    MarketplaceNftsByDenomIdQuery,
+    MarketplaceNftsByDenomIdDocument,
+    MarketplaceNftByUidQuery,
+    MarketplaceNftByUidDocument,
     MarketplaceCollectionQuery,
     MarketplaceCollectionDocument,
     GetNftByTxHashQuery,
     GetNftByTxHashDocument,
+    NftTransferHistoryQuery,
+    NftTransferHistoryDocument,
+    MarketplaceNftTradeHistoryQuery,
+    MarketplaceNftTradeHistoryDocument,
 } from './types';
 import { MarketplaceNftFilters } from '../nft/utils';
 
@@ -16,15 +22,27 @@ import { MarketplaceNftFilters } from '../nft/utils';
 export class GraphqlService {
     constructor(private readonly httpService: HttpService) {}
 
-    async fetchNft(
+    async fetchNfts(
         filters: Partial<MarketplaceNftFilters>,
-    ): Promise<MarketplaceNftQuery> {
+    ): Promise<MarketplaceNftsByDenomIdQuery> {
         const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
-            query: print(MarketplaceNftDocument),
+            query: print(MarketplaceNftsByDenomIdDocument),
             variables: { ...filters },
         });
 
-        return res.data;
+        console.log('ei ti ot hasura', res.data)
+
+        return res.data.data.marketplace_nft;
+    }
+
+    async fetchNft(uid: string): Promise<MarketplaceNftByUidQuery> {
+        const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftByUidDocument),
+            variables: { uid },
+        })
+
+        console.log(res.data)
+        return res.data.data.marketplace_nft
     }
 
     async getMintedNftUuid(tx_hash: string): Promise<{ uuid: string }> {
@@ -50,5 +68,23 @@ export class GraphqlService {
         });
 
         return res.data;
+    }
+
+    async fetchNftTransferHistory(tokenId: string, denomId: string): Promise<{ old_owner: string, new_owner: string, timestamp: number }[]> {
+        const res: AxiosResponse<{ data: NftTransferHistoryQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(NftTransferHistoryDocument),
+            variables: { tokenId, denomId },
+        });
+
+        return res.data.data.nft_transfer_history;
+    }
+
+    async fetchMarketplaceNftTradeHistory(tokenId: string, denomId: string): Promise<{ btc_price: number, price: number, usd_price: number, timestamp: number, seller: string, buyer: string }[]> {
+        const res: AxiosResponse<{ data: MarketplaceNftTradeHistoryQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftTradeHistoryDocument),
+            variables: { tokenId, denomId },
+        });
+
+        return res.data.data.marketplace_nft_buy_history;
     }
 }

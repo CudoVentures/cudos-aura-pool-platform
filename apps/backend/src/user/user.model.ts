@@ -12,7 +12,7 @@ import {
 } from 'sequelize-typescript';
 import { Collection } from '../collection/collection.model';
 import { NFT } from '../nft/nft.model';
-import { Farm } from '../farm/farm.model';
+import { Farm } from '../farm/models/farm.model';
 import { Role } from './roles';
 
 @Table({
@@ -31,6 +31,10 @@ export class User extends Model {
   @IsEmail
   @Column
       email: string;
+
+  @AllowNull(false)
+  @Column
+      name: string;
 
   @Unique
   @AllowNull(false)

@@ -22,9 +22,9 @@ export enum ListStatus {
 export default class NftEntity {
 
     id: string;
+    collectionId: string;
     name: string;
     tokenId: string;
-    collectionId: string;
     hashPowerInTh: number;
     priceInAcudos: BigNumber;
     imageUrl: string;
@@ -138,18 +138,18 @@ export default class NftEntity {
         }
 
         return {
-            'id': entity.id,
+            'id': parseInt(entity.id),
+            'collection_id': parseInt(entity.collectionId),
             'name': entity.name,
-            'tokenId': entity.tokenId,
-            'collectionId': entity.collectionId,
-            'hashPowerInTh': entity.hashPowerInTh,
-            'priceInAcudos': entity.priceInAcudos.toString(),
-            'imageUrl': entity.imageUrl,
+            'token_id': entity.tokenId,
+            'hashing_power': entity.hashPowerInTh,
+            'price': entity.priceInAcudos.toString(),
+            'uri': entity.imageUrl,
             'status': entity.status,
-            'listStatus': entity.listStatus,
-            'expiryDate': entity.expiryDate,
-            'creatorAddress': entity.creatorAddress,
-            'currentOwnerAddress': entity.currentOwnerAddress,
+            'list_status': entity.listStatus,
+            'expiration_date': entity.expiryDate,
+            'creator_address': entity.creatorAddress,
+            'current_owner_address': entity.currentOwnerAddress,
             // 'farmRoyalties': entity.farmRoyalties,
             // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
         }
@@ -162,18 +162,18 @@ export default class NftEntity {
 
         const model = new NftEntity();
 
-        model.id = json.id ?? model.id;
+        model.id = (json.id ?? model.id).toString();
+        model.collectionId = (json.collection_id ?? model.collectionId).toString();
         model.name = json.name ?? model.name;
         model.tokenId = json.tokenId ?? model.tokenId;
-        model.collectionId = json.collectionId ?? model.collectionId;
-        model.hashPowerInTh = parseInt(json.hashPowerInTh ?? model.hashPowerInTh);
-        model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
-        model.imageUrl = json.imageUrl ?? model.imageUrl;
+        model.hashPowerInTh = parseInt(json.hashing_power ?? model.hashPowerInTh);
+        model.priceInAcudos = new BigNumber(json.price ?? model.priceInAcudos);
+        model.imageUrl = String.fromCharCode(...(json.uri ? json.uri.data : [])) ?? model.imageUrl;
         model.status = json.status ?? model.status;
-        model.listStatus = parseInt(json.listStatus ?? model.listStatus);
-        model.expiryDate = parseInt(json.expiryDate ?? model.expiryDate);
-        model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
-        model.currentOwnerAddress = json.currentOwnerAddress ?? model.currentOwnerAddress;
+        model.listStatus = parseInt(json.list_status ?? model.listStatus);
+        model.expiryDate = parseInt(json.expiration_date ?? model.expiryDate);
+        model.creatorAddress = json.creator_address ?? model.creatorAddress;
+        model.currentOwnerAddress = json.current_owner_address ?? model.currentOwnerAddress;
         // model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);
         // model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
 

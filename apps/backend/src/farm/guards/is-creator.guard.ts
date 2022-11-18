@@ -2,8 +2,9 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import RequestWithUser from '../../auth/interfaces/requestWithUser.interface';
-import { Farm } from '../farm.model';
+import { Farm } from '../models/farm.model';
 import { FarmService } from '../farm.service';
+import { Role } from '../../user/roles';
 
 @Injectable()
 export class IsCreatorGuard extends JwtAuthGuard implements CanActivate {
@@ -15,12 +16,20 @@ export class IsCreatorGuard extends JwtAuthGuard implements CanActivate {
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithUser>();
-        const { user, params } = request;
+        const { user, body } = request;
 
-        if (!user || !params) return false;
+        if (!user || !body) return false;
+
+        if (body.id < 0) {
+            return true
+        }
+
+        if (user.role === Role.SUPER_ADMIN) {
+            return true;
+        }
 
         const userId = user.id;
-        const farmId = parseInt(params.id);
+        const farmId = parseInt(body.id);
 
         return this.farmService
             .findOne(farmId)

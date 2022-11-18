@@ -1,12 +1,13 @@
-import S from '../../../../core/utilities/Main';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
-import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
+import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../utilities/MiningFarmFilterModel';
 import MiningFarmApi from '../data-sources/MiningFarmApi';
+import JwtDecode from 'jwt-decode'
+import { decodeStorageToken } from '../../../../core/utilities/AxiosWrapper';
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -39,7 +40,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.sortKey = MiningFarmFilterModel.SORT_KEY_POPULAR;
+        miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
         miningFarmFilterModel.status = status;
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
@@ -62,12 +63,14 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
     }
 
-    async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
+    async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus): Promise < MiningFarmEntity > {
+        const user = decodeStorageToken();
+
         const miningFarmFilterModel = new MiningFarmFilterModel();
-        miningFarmFilterModel.sessionAccount = S.INT_TRUE;
+        miningFarmFilterModel.sessionAccount = user.id;
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.status = status;
+        miningFarmFilterModel.status = status
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
@@ -109,6 +112,12 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     async creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
         for (let i = miningFarmEntities.length; i-- > 0;) {
             await this.creditMiningFarm(miningFarmEntities[i]);
+        }
+    }
+
+    async approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
+        for (let i = miningFarmEntities.length; i-- > 0;) {
+            await this.miningFarmApi.approveMiningFarm(miningFarmEntities[i].id);
         }
     }
 

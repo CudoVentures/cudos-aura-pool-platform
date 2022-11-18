@@ -8,10 +8,11 @@ import { GraphqlModule } from '../graphql/graphql.module';
 import { GraphqlService } from '../graphql/graphql.service';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionModule } from '../collection/collection.module';
+import { Collection } from '../collection/collection.model';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([NFT]),
+        SequelizeModule.forFeature([NFT, Collection]),
         HttpModule,
         GraphqlModule,
         forwardRef(() => CollectionModule),

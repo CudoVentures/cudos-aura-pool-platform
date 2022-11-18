@@ -1,18 +1,14 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
-import numeral from 'numeral';
 import S from '../../../core/utilities/Main';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum MiningFarmStatus {
-    APPROVED = 1,
-    NOT_APPROVED = 2,
-    DELETED = 3,
-    ANY = 4
+    APPROVED = 'approved',
+    QUEUED = 'queued',
+    DELETED = 'deleted',
 }
 
 export default class MiningFarmEntity {
-
     id: string;
     accountId: string;
     name: string;
@@ -30,6 +26,9 @@ export default class MiningFarmEntity {
     farmPhotoUrls: string[];
     status: MiningFarmStatus;
     maintenanceFeeInBtc: BigNumber;
+    rewardsFromPoolAddress: string;
+    leftoverRewardsAddress: string;
+    maintenanceFeePayoutAddress: string;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -47,8 +46,11 @@ export default class MiningFarmEntity {
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
         this.farmPhotoUrls = [];
-        this.status = MiningFarmStatus.NOT_APPROVED;
+        this.status = MiningFarmStatus.QUEUED;
         this.maintenanceFeeInBtc = null;
+        this.rewardsFromPoolAddress = '';
+        this.leftoverRewardsAddress = '';
+        this.maintenanceFeePayoutAddress = '';
 
         makeAutoObservable(this);
     }
@@ -65,6 +67,10 @@ export default class MiningFarmEntity {
 
     isApproved(): boolean {
         return this.status === MiningFarmStatus.APPROVED;
+    }
+
+    isQueued(): boolean {
+        return this.status === MiningFarmStatus.QUEUED;
     }
 
     hasPhotos(): boolean {
@@ -89,23 +95,26 @@ export default class MiningFarmEntity {
         }
 
         return {
-            'id': entity.id,
-            'accountId': entity.accountId,
+            'id': parseInt(entity.id),
+            'creator_id': parseInt(entity.accountId),
             'name': entity.name,
-            'legalName': entity.legalName,
-            'primaryAccountOwnerName': entity.primaryAccountOwnerName,
-            'primaryAccountOwnerEmail': entity.primaryAccountOwnerEmail,
+            'sub_account_name': entity.legalName,
+            'primary_account_owner_name': entity.primaryAccountOwnerName,
+            'primary_account_owner_email': entity.primaryAccountOwnerEmail,
             'description': entity.description,
-            'manufacturerIds': entity.manufacturerIds,
-            'minerIds': entity.minerIds,
-            'energySourceIds': entity.energySourceIds,
-            'hashPowerInTh': entity.hashPowerInTh,
-            'machinesLocation': entity.machinesLocation,
-            'profileImgUrl': entity.profileImgUrl,
-            'coverImgUrl': entity.coverImgUrl,
-            'farmPhotoUrls': JSON.stringify(entity.farmPhotoUrls),
+            'manufacturers': entity.manufacturerIds,
+            'miner_types': entity.minerIds,
+            'energy_source': entity.energySourceIds,
+            'total_farm_hashrate': entity.hashPowerInTh,
+            'location': entity.machinesLocation,
+            'profile_img': entity.profileImgUrl,
+            'cover_img': entity.coverImgUrl,
+            'images': entity.farmPhotoUrls,
             'status': entity.status,
-            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
+            'maintenance_fee_in_btc': entity.maintenanceFeeInBtc.toString(),
+            'address_for_receiving_rewards_from_pool': entity.rewardsFromPoolAddress,
+            'leftover_reward_payout_address': entity.leftoverRewardsAddress,
+            'maintenance_fee_payout_address': entity.maintenanceFeePayoutAddress,
         }
     }
 
@@ -115,23 +124,26 @@ export default class MiningFarmEntity {
         }
         const model = new MiningFarmEntity();
 
-        model.id = json.id ?? model.id;
-        model.accountId = json.accountId ?? model.accountId;
+        model.id = (json.id ?? model.id).toString();
+        model.accountId = (json.creator_id ?? model.accountId).toString();
         model.name = json.name ?? model.name;
-        model.legalName = json.legalName ?? model.legalName;
-        model.primaryAccountOwnerName = json.primaryAccountOwnerName ?? model.primaryAccountOwnerName;
-        model.primaryAccountOwnerEmail = json.primaryAccountOwnerEmail ?? model.primaryAccountOwnerEmail;
+        model.legalName = json.sub_account_name ?? model.legalName;
+        model.primaryAccountOwnerName = json.primary_account_owner_name ?? model.primaryAccountOwnerName;
+        model.primaryAccountOwnerEmail = json.primary_account_owner_email ?? model.primaryAccountOwnerEmail;
         model.description = json.description ?? model.description;
-        model.manufacturerIds = json.manufacturerIds ?? model.manufacturerIds;
-        model.minerIds = json.minerIds ?? model.minerIds;
-        model.energySourceIds = json.energySourceIds ?? model.energySourceIds;
-        model.hashPowerInTh = Number(json.hashPowerInTh) ?? model.hashPowerInTh;
-        model.machinesLocation = json.machinesLocation ?? model.machinesLocation;
-        model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
-        model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
-        model.farmPhotoUrls = JSON.parse(json.farmPhotoUrls ?? model.farmPhotoUrls);
-        model.status = parseInt(json.status ?? model.status);
-        model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
+        model.manufacturerIds = json.manufacturers ?? model.manufacturerIds;
+        model.minerIds = json.miner_types ?? model.minerIds;
+        model.energySourceIds = json.energy_source ?? model.energySourceIds;
+        model.hashPowerInTh = Number(json.total_farm_hashrate ?? model.hashPowerInTh);
+        model.machinesLocation = json.location ?? model.machinesLocation;
+        model.profileImgUrl = String.fromCharCode(...json.profile_img.data) ?? model.profileImgUrl;
+        model.coverImgUrl = String.fromCharCode(...json.cover_img.data) ?? model.coverImgUrl;
+        model.farmPhotoUrls = json.images ?? model.farmPhotoUrls;
+        model.status = json.status ?? model.status;
+        model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
+        model.rewardsFromPoolAddress = json.address_for_receiving_rewards_from_pool ?? model.rewardsFromPoolAddress;
+        model.leftoverRewardsAddress = json.leftover_reward_payout_address ?? model.leftoverRewardsAddress;
+        model.maintenanceFeePayoutAddress = json.maintenance_fee_payout_address ?? model.maintenanceFeePayoutAddress;
 
         return model;
     }

@@ -56,6 +56,6 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<User> {
-      return this.userService.changePassword(id, changePasswordDto.password);
+      return this.userService.changePassword(id, changePasswordDto.old_password, changePasswordDto.password);
   }
 }

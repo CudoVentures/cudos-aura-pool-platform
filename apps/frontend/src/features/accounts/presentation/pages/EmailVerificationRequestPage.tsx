@@ -29,7 +29,7 @@ function EmailVerificationRequestPage({ alertStore, accountSessionStore }: Props
     const validationState = useRef(new ValidationState()).current;
     const emailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
 
-    const email = accountSessionStore.accountEntity.email;
+    const email = accountSessionStore.accountEntity?.email;
 
     async function onClickResend() {
         if (validationState.getIsErrorPresent() === true) {

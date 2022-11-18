@@ -2,6 +2,11 @@ import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 import { CollectionStatus } from '../../collection/entities/CollectionEntity';
 
+export enum NftOrderBy {
+    TRENDING_DESC = 1,
+    TIMESTAMP_DESC = 2
+}
+
 export default class NftFilterModel {
 
     nftIds: string[];
@@ -9,6 +14,7 @@ export default class NftFilterModel {
     collectionIds: string[];
     searchString: string;
     sessionAccount: number;
+    orderBy: NftOrderBy;
     from: number;
     count: number;
 
@@ -18,6 +24,7 @@ export default class NftFilterModel {
         this.collectionIds = null;
         this.searchString = '';
         this.sessionAccount = S.INT_FALSE;
+        this.orderBy = 0;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
 
@@ -30,32 +37,14 @@ export default class NftFilterModel {
         }
 
         return {
-            nftIds: entity.nftIds,
-            collectionStatus: entity.collectionStatus,
-            collectionIds: entity.collectionIds,
-            searchString: entity.searchString,
-            sessionAccount: entity.sessionAccount,
-            from: entity.from,
-            count: entity.count,
+            'ids': entity.nftIds ? entity.nftIds.join(',') : null,
+            'status': entity.collectionStatus,
+            'collection_ids': entity.collectionIds ? entity.collectionIds.join(',') : null,
+            'search_string': entity.searchString,
+            'session_account': entity.sessionAccount,
+            'order_by': entity.orderBy,
+            'offset': entity.from,
+            'limit': entity.count,
         }
     }
-
-    static fromJson(json): NftFilterModel {
-        if (json === null) {
-            return null;
-        }
-
-        const model = new NftFilterModel();
-
-        model.nftIds = json.nftIds ?? model.nftIds;
-        model.collectionStatus = json.collectionStatus ?? model.collectionStatus;
-        model.collectionIds = (json.collectionIds ?? model.collectionIds).map((j) => j.toString());
-        model.searchString = json.searchString ?? model.searchString;
-        model.sessionAccount = parseInt(json.sessionAccount ?? model.sessionAccount);
-        model.from = parseInt(json.from ?? model.from);
-        model.count = parseInt(json.count ?? model.count);
-
-        return model;
-    }
-
 }

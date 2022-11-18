@@ -56,7 +56,7 @@ export default class SuperAdminApprovePageStore {
         const miningFarmFilter = new MiningFarmFilterModel();
         miningFarmFilter.from = this.miningFarmsTableState.tableFilterState.from;
         miningFarmFilter.count = this.miningFarmsTableState.tableFilterState.itemsPerPage;
-        miningFarmFilter.status = MiningFarmStatus.NOT_APPROVED;
+        miningFarmFilter.status = MiningFarmStatus.QUEUED;
 
         this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter).then(({ miningFarmEntities, total }) => {
             this.miningFarmEntities = miningFarmEntities;
@@ -110,7 +110,7 @@ export default class SuperAdminApprovePageStore {
             miningFarmEntities.push(miningFarmEntity)
         });
 
-        await this.miningFarmRepo.creditMiningFarms(miningFarmEntities);
+        await this.miningFarmRepo.approveMiningFarms(miningFarmEntities);
         this.fetch();
     }
 
@@ -123,7 +123,7 @@ export default class SuperAdminApprovePageStore {
         });
 
         for (let i = collectionEntities.length; i-- > 0;) {
-            await this.collectionRepo.creditCollection(collectionEntities[i], null);
+            await this.collectionRepo.approveCollection(collectionEntities[i]);
         }
 
         this.fetch();

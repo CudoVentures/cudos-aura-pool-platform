@@ -33,9 +33,9 @@ export class UpdateNFTDto {
     @ApiProperty({ example: 1000 })
         price: number;
 
-    @IsDateString()
+    @IsNumber()
     @IsNotEmpty()
     @IsOptional()
-    @ApiProperty({ example: '2022-10-17T13:25:19.503Z' })
-        expiration_date: Date;
+    @ApiProperty({ example: 123124124 })
+        expiration_date: number;
 }

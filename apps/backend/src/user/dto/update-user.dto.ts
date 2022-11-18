@@ -12,6 +12,12 @@ export class UpdateUserDto {
     @IsString()
     @IsNotEmpty()
     @IsOptional()
+    @ApiProperty({ required: false, example: 'Name Surname' })
+        name: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @IsOptional()
     @ApiProperty({ required: false, example: 'new payout address' })
         payout_address: string;
 

@@ -19,7 +19,7 @@ export default interface MiningFarmRepo {
     fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] >;
     creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void >;
     creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
-
+    approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
     fetchManufacturers(): Promise < ManufacturerEntity[] >;
     fetchMiners(): Promise < MinerEntity[] >;
     fetchEnergySources(): Promise < EnergySourceEntity[] >;

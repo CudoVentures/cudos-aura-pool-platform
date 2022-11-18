@@ -2,7 +2,7 @@ import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity, { ListStatus, NftStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
-import NftFilterModel from '../../utilities/NftFilterModel';
+import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
 import { SigningStargateClient, GasPrice, Ledger } from 'cudosjs';
 import Long from 'long';
@@ -44,8 +44,9 @@ export default class NftApiRepo implements NftRepo {
 
     async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
-        // TO DO: sort by newest
+
         nftFilterModel.collectionStatus = status;
+        nftFilterModel.orderBy = NftOrderBy.TIMESTAMP_DESC;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
@@ -53,8 +54,9 @@ export default class NftApiRepo implements NftRepo {
 
     async fetchTrendingNfts(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
-        // TO DO: sort by trending
+
         nftFilterModel.collectionStatus = status;
+        nftFilterModel.orderBy = NftOrderBy.TRENDING_DESC;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;

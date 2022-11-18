@@ -19,5 +19,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsOptional()
     @ApiProperty({ required: false, example: 'cudos1akak4uxq0mn5qq38nhm5dahghfqt6wn9g4zc7u' })
-        cudosAddress: string;
+        cudos_address: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: '12345' })
+        password: string;
 }

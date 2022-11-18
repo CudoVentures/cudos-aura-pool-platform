@@ -1,20 +1,43 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateCollectionDto } from './dto/create-collection.dto';
-import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { CollectionDto } from './dto/collection.dto';
 import { Collection } from './collection.model';
-import { CollectionFilters, CollectionStatus } from './utils';
+import { CollectionFilters, CollectionOrderBy, CollectionStatus } from './utils';
+import { NFTService } from '../nft/nft.service';
+import { NFT } from '../nft/nft.model';
+import { NftStatus } from '../nft/utils';
+import sequelize from 'sequelize/types/sequelize';
 
 @Injectable()
 export class CollectionService {
     constructor(
     @InjectModel(Collection)
     private collectionModel: typeof Collection,
+    @InjectModel(NFT)
+    private nftModel: typeof NFT,
+    private nftService: NFTService,
     ) {}
 
     async findAll(filters: Partial<CollectionFilters>): Promise<Collection[]> {
+        const { limit, offset, order_by, ...rest } = filters
+
+        let order;
+
+        switch (order_by) {
+            case CollectionOrderBy.TIMESTAMP_DESC:
+                order = [['createdAt', 'DESC']]
+                break;
+            default:
+                order = undefined;
+                break;
+
+        }
+
         const collections = await this.collectionModel.findAll({
-            where: { ...filters },
+            where: { ...rest },
+            order,
+            offset,
+            limit,
         });
         return collections;
     }
@@ -50,11 +73,11 @@ export class CollectionService {
     }
 
     async createOne(
-        createCollectionDto: CreateCollectionDto,
+        collectionDto: Partial<CollectionDto>,
         creator_id: number,
     ): Promise<Collection> {
         const collection = this.collectionModel.create({
-            ...createCollectionDto,
+            ...collectionDto,
             status: CollectionStatus.QUEUED,
             creator_id,
         });
@@ -64,10 +87,10 @@ export class CollectionService {
 
     async updateOne(
         id: number,
-        updateCollectionDto: Partial<UpdateCollectionDto>,
+        collectionDto: Partial<CollectionDto>,
     ): Promise<Collection> {
         const [count, [collection]] = await this.collectionModel.update(
-            { ...updateCollectionDto, status: CollectionStatus.QUEUED },
+            { ...collectionDto, status: CollectionStatus.QUEUED },
             {
                 where: { id },
                 returning: true,
@@ -106,5 +129,25 @@ export class CollectionService {
         );
 
         return collection;
+    }
+
+    async getDetails(collectionId: number): Promise <{ id: number, floorPrice: string, volumeInAcudos: string, owners: number }> {
+        // Get the lowest priced NFT from this collection "floorPrice"
+        const approvedNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: NftStatus.APPROVED }, order: [['price', 'ASC']] }) // Approved but not bought NFT-s
+        const soldNfts = [] // <==== NFTS from Hasura
+        const floorPrice = '1000000000000000000' // lowest price NFT from both approvedNfts and soldNfts
+
+        // Get the total value spent on NFTs from this collection "volumeInAcudos"
+        const volumeInAcudos = '10000000000000000000'
+
+        // Get the unique owners of NFTs from this collection
+        const owners = 25
+
+        return {
+            id: collectionId,
+            floorPrice,
+            volumeInAcudos,
+            owners,
+        }
     }
 }

@@ -12,7 +12,7 @@ import {
     AutoIncrement,
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
-import { Farm } from '../farm/farm.model';
+import { Farm } from '../farm/models/farm.model';
 import { NFT } from '../nft/nft.model';
 import { CollectionStatus } from './utils';
 
@@ -48,7 +48,11 @@ export class Collection extends Model {
 
   @AllowNull(false)
   @Column
-      maintenance_fee: number;
+      main_image: string;
+
+  @AllowNull(false)
+  @Column
+      banner_image: string;
 
   @AllowNull(false)
   @Column(DataType.ENUM('queued', 'approved', 'rejected', 'issued', 'deleted'))

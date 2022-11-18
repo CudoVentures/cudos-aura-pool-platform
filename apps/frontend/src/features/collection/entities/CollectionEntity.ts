@@ -14,7 +14,6 @@ export enum CollectionStatus {
 }
 
 export default class CollectionEntity {
-
     id: string;
     farmId: string;
     name: string;
@@ -26,7 +25,7 @@ export default class CollectionEntity {
     status: CollectionStatus;
     royalties: number;
     // maintenanceFeeInBtc: BigNumber;
-    payoutAddress: string;
+    // payoutAddress: string;
     defaultPricePerNftInCudos: BigNumber;
     defaultHashPowerPerNftInTh: number;
 
@@ -42,7 +41,7 @@ export default class CollectionEntity {
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
         // this.maintenanceFeeInBtc = null;
-        this.payoutAddress = '';
+        // this.payoutAddress = '';
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
 
@@ -138,18 +137,18 @@ export default class CollectionEntity {
         }
 
         return {
-            'id': entity.id,
-            'farmId': entity.farmId,
+            'id': parseInt(entity.id),
+            'farm_id': parseInt(entity.farmId),
             'name': entity.name,
-            'denomId': entity.denomId,
+            'denom_id': entity.denomId,
             'description': entity.description,
-            'hashPowerInTh': entity.hashPowerInTh,
-            'profileImgUrl': entity.profileImgUrl,
-            'coverImgUrl': entity.coverImgUrl,
+            'hashing_power': entity.hashPowerInTh,
+            'main_image': entity.profileImgUrl,
+            'banner_image': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
             // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
-            'payoutAddress': entity.payoutAddress,
+            // 'payout_address': entity.payoutAddress,
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
         }
@@ -162,18 +161,18 @@ export default class CollectionEntity {
 
         const model = new CollectionEntity();
 
-        model.id = json.id ?? model.id;
-        model.farmId = json.farmId ?? model.farmId;
+        model.id = (json.id ?? model.id).toString();
+        model.farmId = (json.farm_id ?? model.farmId).toString();
         model.name = json.name ?? model.name;
-        model.denomId = json.denomId ?? model.denomId;
+        model.denomId = json.denom_id ?? model.denomId;
         model.description = json.description ?? model.description;
-        model.hashPowerInTh = Number(json.hashPowerInTh ?? model.hashPowerInTh);
-        model.profileImgUrl = json.profileImgUrl ?? model.profileImgUrl;
-        model.coverImgUrl = json.coverImgUrl ?? model.coverImgUrl;
+        model.hashPowerInTh = Number(json.hashing_power ?? model.hashPowerInTh);
+        model.profileImgUrl = String.fromCharCode(...(json.main_image ? json.main_image.data : [])) ?? model.profileImgUrl;
+        model.coverImgUrl = String.fromCharCode(...(json.banner_image ? json.banner_image.data : [])) ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
         // model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
-        model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
+        // model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
         model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
 

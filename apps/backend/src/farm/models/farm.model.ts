@@ -11,8 +11,8 @@ import {
     AutoIncrement,
     DataType,
 } from 'sequelize-typescript';
-import { Collection } from '../collection/collection.model';
-import { User } from '../user/user.model';
+import { Collection } from '../../collection/collection.model';
+import { User } from '../../user/user.model';
 
 export const enum FarmStatus {
     QUEUED = 'queued',
@@ -47,6 +47,14 @@ export class Farm extends Model {
 
     @AllowNull(false)
     @Column
+        primary_account_owner_name: string;
+
+    @AllowNull(false)
+    @Column
+        primary_account_owner_email: string;
+
+    @AllowNull(false)
+    @Column
         address_for_receiving_rewards_from_pool: string;
     // @TODO add default address_for_receiving_rewards_from_pool
     @AllowNull(false)
@@ -59,7 +67,7 @@ export class Farm extends Model {
 
     @AllowNull(false)
     @Column
-        maintenance_fee_in_btc: number;
+        maintenance_fee_in_btc: string;
 
     @AllowNull(false)
     @Column
@@ -76,6 +84,18 @@ export class Farm extends Model {
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
         energy_source: string[];
+
+    @AllowNull(false)
+    @Column({ type: DataType.ARRAY(DataType.STRING) })
+        images: string[];
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        cover_img: string;
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        profile_img: string;
 
     @AllowNull(false)
     @Column(DataType.ENUM('queued', 'approved', 'rejected'))

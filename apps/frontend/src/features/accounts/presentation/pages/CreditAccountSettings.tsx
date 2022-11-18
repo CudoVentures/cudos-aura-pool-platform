@@ -35,7 +35,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
     const accountNameValidation = useRef(validationStateOwner.addEmptyValidation('Name can\'t be empty.')).current;
 
     const self = useRef({
-        accountEntity: accountSessionStore.accountEntity.deepClone(),
+        accountEntity: accountSessionStore.accountEntity?.deepClone() || null,
     }).current;
 
     const [changedEmail, setChangedEmail] = useState(false);
@@ -133,7 +133,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
                         <div className = { 'SettingsDisplay FlexRow' } >
                             <Input
                                 gray = { true }
-                                value={accountEntity.email} />
+                                value={accountEntity?.email} />
                             <Actions>
                                 <Button onClick={onClickEditEmail} disabled = { editEmail } >
                                     <Svg svg={BorderColorIcon} />
@@ -147,7 +147,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
                                     <Input
                                         label = { 'Enter new email address' }
                                         inputValidation = { accountEmailValidation }
-                                        value = { self.accountEntity.email }
+                                        value = { self.accountEntity?.email }
                                         onChange = { onChangeEmail } />
                                     <Actions layout = { ActionsLayout.LAYOUT_ROW_RIGHT } >
                                         <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickCancelEditEmail } >Discard Changes</Button>

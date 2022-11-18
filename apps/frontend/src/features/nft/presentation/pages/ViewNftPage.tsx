@@ -136,11 +136,11 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
             } >
             <PageHeader />
 
-            { nftEntity === null && (
+            { (nftEntity === null || collectionEntity === null) && (
                 <LoadingIndicator />
             ) }
 
-            { nftEntity !== null && (
+            { nftEntity !== null && collectionEntity !== null && (
                 <div className={'PageContent AppContent'} >
 
                     <Breadcrumbs crumbs={ [

@@ -8,11 +8,11 @@ import {
     Unique,
     AllowNull,
 } from 'sequelize-typescript';
-import { Farm } from '../../farm/farm.model';
+import { Farm } from '../../farm/models/farm.model';
 
 @Table({
     freezeTableName: true,
-    tableName: 'statistics_destination_address_withamount',
+    tableName: 'statistics_destination_address_with_amount',
 })
 export class DestinationAddressesWithAmount extends Model {
   @PrimaryKey

@@ -3,7 +3,6 @@ import TableState from '../../../../core/presentation/stores/TableState';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import StatisticsRepo from '../repos/StatisticsRepo';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
-import { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
@@ -45,7 +44,7 @@ export default class AnalyticsPageStore {
     }
 
     async init() {
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
         this.nftEventFilterModel.miningFarmId = miningFarmEntity.id;
 
         await this.fetchEarnings();
@@ -70,7 +69,7 @@ export default class AnalyticsPageStore {
 
         const nftEntitiesMap = this.nftEntitiesMap;
         if (nftIds.length > 0) {
-            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds, CollectionStatus.ANY);
+            const nftEntities = await this.nftRepo.fetchNftByIds(nftIds);
 
             nftEntities.forEach((nftEntity) => {
                 nftEntitiesMap.set(nftEntity.id, nftEntity);

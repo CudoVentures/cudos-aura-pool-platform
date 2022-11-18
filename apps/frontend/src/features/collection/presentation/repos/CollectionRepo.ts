@@ -16,4 +16,6 @@ export default interface CollectionRepo {
     fetchCollectionDetailsById(collectionId: string): Promise < CollectionDetailsEntity >;
     fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] >;
     creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < void >;
+
+    approveCollection(collectionEntity: CollectionEntity): Promise < void >;
 }

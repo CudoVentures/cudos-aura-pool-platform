@@ -13,8 +13,8 @@ export default class CollectionDetailsEntity {
 
     constructor() {
         this.collectionId = S.Strings.NOT_EXISTS;
-        this.floorPriceInAcudos = null;
-        this.volumeInAcudos = null;
+        this.floorPriceInAcudos = new BigNumber(0);
+        this.volumeInAcudos = new BigNumber(0);
         this.owners = 0;
         this.cudosAddress = '';
         this.remainingHashPowerInTH = 0;
@@ -34,7 +34,7 @@ export default class CollectionDetailsEntity {
         }
 
         return {
-            'collectionId': entity.collectionId,
+            'id': parseInt(entity.collectionId),
             'floorPriceInAcudos': entity.floorPriceInAcudos.toString(),
             'volumeInAcudos': entity.volumeInAcudos.toString(),
             'owners': entity.owners,
@@ -50,7 +50,7 @@ export default class CollectionDetailsEntity {
 
         const entity = new CollectionDetailsEntity();
 
-        entity.collectionId = (json.collectionId ?? entity.collectionId).toString();
+        entity.collectionId = (json.id ?? entity.collectionId).toString();
         entity.floorPriceInAcudos = new BigNumber(json.floorPriceInAcudos ?? entity.floorPriceInAcudos);
         entity.volumeInAcudos = new BigNumber(json.volumeInAcudos ?? entity.volumeInAcudos);
         entity.owners = parseInt(json.owners ?? entity.owners);
