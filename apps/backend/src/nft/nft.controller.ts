@@ -88,11 +88,15 @@ export class NFTController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<NFTResponseDto> {
+  async findOne(@Param('id') id: string): Promise<any> {
       const nft = await this.nftService.findOne(id);
 
-      const response: NFTResponseDto = {
-          ...nft,
+      // TODO uri will crash minting service until we make it a normal uri
+      const response = {
+          ...nft.dataValues,
+          denom_id: nft.collection.denom_id,
+          nft_data: 'CudosAuraMintService',
+          price_coin: { amount: '123', denom: 'acudos' },
           data: {
               expiration_date: Math.floor(nft.expiration_date.getTime() / 1000),
               hash_rate_owned: nft.hashing_power,

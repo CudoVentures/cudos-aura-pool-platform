@@ -1341,12 +1341,25 @@
     "@walletconnect/client" "^1.7.8"
     "@walletconnect/utils" "^1.6.5"
 
+"@cosmostation/cosmos-client@^0.0.4":
+  "integrity" "sha512-zYScOoPB20vleklvL6qJ2eglzYhIqtleJJXtXdCMSLf3mn/BuZ9rLecgETrPZDGPPEOcxJ9VgFOoZz0i2nfviw=="
+  "resolved" "https://registry.npmjs.org/@cosmostation/cosmos-client/-/cosmos-client-0.0.4.tgz"
+  "version" "0.0.4"
+  dependencies:
+    "@cosmjs/amino" "^0.28.4"
+    "@cosmjs/proto-signing" "^0.28.4"
+    "@cosmostation/extension-client" "^0.1.3"
+    "@cosmostation/wc-modal" "^0.0.4"
+    "@walletconnect/browser-utils" "^1.6.5"
+    "@walletconnect/client" "^1.7.8"
+    "@walletconnect/utils" "^1.6.5"
+
 "@cosmostation/extension-client@^0.0.6":
   "integrity" "sha512-3N7NOz8JMOpJlVaGS++zha4AZoijJTnPkq8djEfpk/mJ6+laUNo4a1/mxANFm9i1KUZcU9HX6GKKx9v9nL/VDg=="
   "resolved" "https://registry.npmjs.org/@cosmostation/extension-client/-/extension-client-0.0.6.tgz"
   "version" "0.0.6"
 
-"@cosmostation/extension-client@^0.1.9":
+"@cosmostation/extension-client@^0.1.3", "@cosmostation/extension-client@^0.1.9":
   "integrity" "sha512-CkmNPmYn07UhP0z3PxGRRpgTcBJ/gS1ay/J2jfYsBi/4gnXvpQ3xOZdMU0qdxhFOjh1Xt7kflYsztk9ljMnJcw=="
   "resolved" "https://registry.npmjs.org/@cosmostation/extension-client/-/extension-client-0.1.11.tgz"
   "version" "0.1.11"
@@ -1355,6 +1368,17 @@
   "integrity" "sha512-Y88onIqSKzMzrSROI7myK+BON8AbfoMAXaTOftzboJ7Cfnj3+g43tZ4F6jWFA2zr9hQlnRYmYbcN39HlUxRYIg=="
   "resolved" "https://registry.npmjs.org/@cosmostation/wc-modal/-/wc-modal-0.0.1.tgz"
   "version" "0.0.1"
+  dependencies:
+    "@walletconnect/browser-utils" "^1.6.5"
+    "@walletconnect/types" "^1.6.5"
+    "qrcode.react" "^1.0.1"
+    "react" "^16.14.0"
+    "react-dom" "^16.14.0"
+
+"@cosmostation/wc-modal@^0.0.4":
+  "integrity" "sha512-/SkbFKKQxUCMI8ZnULVTsWLFUx9pG+p7MFvv/Ifgz+xBAPe9nBCJlJ/LdvJ6HuAIPajc1vcXB2/OzGL9TjMpNw=="
+  "resolved" "https://registry.npmjs.org/@cosmostation/wc-modal/-/wc-modal-0.0.4.tgz"
+  "version" "0.0.4"
   dependencies:
     "@walletconnect/browser-utils" "^1.6.5"
     "@walletconnect/types" "^1.6.5"
@@ -5159,16 +5183,18 @@
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.1.1.tgz"
   "version" "3.1.1"
 
-"cudosjs@1.2.0":
-  "integrity" "sha512-YMnlntW/pzrEkKiZUuD3VdzlqJMaipOzRWlTgYHym3aGeV5tsSl9dntr4XdnNBNzq1swG2QQbGsEE2US4RZZVg=="
-  "resolved" "https://registry.npmjs.org/cudosjs/-/cudosjs-1.2.0.tgz"
-  "version" "1.2.0"
+"cudosjs@1.2.2":
+  "integrity" "sha512-Tq5q/7gawdyi1LtWStBC8ILa9dIkjRvjJep8VgSTgLinrhH2R9VNBR902DNbmHSmpo496Obklcmeptmg+wpS0A=="
+  "resolved" "https://registry.npmjs.org/cudosjs/-/cudosjs-1.2.2.tgz"
+  "version" "1.2.2"
   dependencies:
     "@cosmjs/cosmwasm-stargate" "^0.28.4"
     "@cosmjs/crypto" "^0.28.4"
     "@cosmjs/proto-signing" "^0.28.4"
     "@cosmjs/stargate" "^0.28.4"
     "@cosmjs/tendermint-rpc" "^0.28.4"
+    "@cosmostation/cosmos-client" "^0.0.4"
+    "@cosmostation/extension-client" "^0.1.9"
     "bignumber.js" "^9.0.2"
     "yarn" "^1.22.19"
 
