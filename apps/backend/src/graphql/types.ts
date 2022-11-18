@@ -2810,13 +2810,13 @@ export type Cw20token_Info = {
   balances: Array<Cw20token_Balance>;
   /** An aggregate relationship */
   balances_aggregate: Cw20token_Balance_Aggregate;
-  circulating_supply: Scalars['bigint'];
+  circulating_supply: Scalars['String'];
   code_id: Scalars['Int'];
   decimals: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
   marketing_admin?: Maybe<Scalars['String']>;
-  max_supply?: Maybe<Scalars['bigint']>;
+  max_supply?: Maybe<Scalars['String']>;
   minter?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   project_url?: Maybe<Scalars['String']>;
@@ -2876,10 +2876,8 @@ export type Cw20token_Info_Aggregate_FieldsCountArgs = {
 /** aggregate avg on columns */
 export type Cw20token_Info_Avg_Fields = {
   __typename?: 'cw20token_info_avg_fields';
-  circulating_supply?: Maybe<Scalars['Float']>;
   code_id?: Maybe<Scalars['Float']>;
   decimals?: Maybe<Scalars['Float']>;
-  max_supply?: Maybe<Scalars['Float']>;
 };
 
 /** Boolean expression to filter rows from the table "cw20token_info". All fields are combined with a logical 'AND'. */
@@ -2889,13 +2887,13 @@ export type Cw20token_Info_Bool_Exp = {
   _or?: InputMaybe<Array<Cw20token_Info_Bool_Exp>>;
   address?: InputMaybe<String_Comparison_Exp>;
   balances?: InputMaybe<Cw20token_Balance_Bool_Exp>;
-  circulating_supply?: InputMaybe<Bigint_Comparison_Exp>;
+  circulating_supply?: InputMaybe<String_Comparison_Exp>;
   code_id?: InputMaybe<Int_Comparison_Exp>;
   decimals?: InputMaybe<Int_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
   logo?: InputMaybe<String_Comparison_Exp>;
   marketing_admin?: InputMaybe<String_Comparison_Exp>;
-  max_supply?: InputMaybe<Bigint_Comparison_Exp>;
+  max_supply?: InputMaybe<String_Comparison_Exp>;
   minter?: InputMaybe<String_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   project_url?: InputMaybe<String_Comparison_Exp>;
@@ -2906,13 +2904,13 @@ export type Cw20token_Info_Bool_Exp = {
 export type Cw20token_Info_Max_Fields = {
   __typename?: 'cw20token_info_max_fields';
   address?: Maybe<Scalars['String']>;
-  circulating_supply?: Maybe<Scalars['bigint']>;
+  circulating_supply?: Maybe<Scalars['String']>;
   code_id?: Maybe<Scalars['Int']>;
   decimals?: Maybe<Scalars['Int']>;
   description?: Maybe<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
   marketing_admin?: Maybe<Scalars['String']>;
-  max_supply?: Maybe<Scalars['bigint']>;
+  max_supply?: Maybe<Scalars['String']>;
   minter?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   project_url?: Maybe<Scalars['String']>;
@@ -2923,13 +2921,13 @@ export type Cw20token_Info_Max_Fields = {
 export type Cw20token_Info_Min_Fields = {
   __typename?: 'cw20token_info_min_fields';
   address?: Maybe<Scalars['String']>;
-  circulating_supply?: Maybe<Scalars['bigint']>;
+  circulating_supply?: Maybe<Scalars['String']>;
   code_id?: Maybe<Scalars['Int']>;
   decimals?: Maybe<Scalars['Int']>;
   description?: Maybe<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
   marketing_admin?: Maybe<Scalars['String']>;
-  max_supply?: Maybe<Scalars['bigint']>;
+  max_supply?: Maybe<Scalars['String']>;
   minter?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   project_url?: Maybe<Scalars['String']>;
@@ -2984,64 +2982,50 @@ export enum Cw20token_Info_Select_Column {
 /** aggregate stddev on columns */
 export type Cw20token_Info_Stddev_Fields = {
   __typename?: 'cw20token_info_stddev_fields';
-  circulating_supply?: Maybe<Scalars['Float']>;
   code_id?: Maybe<Scalars['Float']>;
   decimals?: Maybe<Scalars['Float']>;
-  max_supply?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Cw20token_Info_Stddev_Pop_Fields = {
   __typename?: 'cw20token_info_stddev_pop_fields';
-  circulating_supply?: Maybe<Scalars['Float']>;
   code_id?: Maybe<Scalars['Float']>;
   decimals?: Maybe<Scalars['Float']>;
-  max_supply?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Cw20token_Info_Stddev_Samp_Fields = {
   __typename?: 'cw20token_info_stddev_samp_fields';
-  circulating_supply?: Maybe<Scalars['Float']>;
   code_id?: Maybe<Scalars['Float']>;
   decimals?: Maybe<Scalars['Float']>;
-  max_supply?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate sum on columns */
 export type Cw20token_Info_Sum_Fields = {
   __typename?: 'cw20token_info_sum_fields';
-  circulating_supply?: Maybe<Scalars['bigint']>;
   code_id?: Maybe<Scalars['Int']>;
   decimals?: Maybe<Scalars['Int']>;
-  max_supply?: Maybe<Scalars['bigint']>;
 };
 
 /** aggregate var_pop on columns */
 export type Cw20token_Info_Var_Pop_Fields = {
   __typename?: 'cw20token_info_var_pop_fields';
-  circulating_supply?: Maybe<Scalars['Float']>;
   code_id?: Maybe<Scalars['Float']>;
   decimals?: Maybe<Scalars['Float']>;
-  max_supply?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate var_samp on columns */
 export type Cw20token_Info_Var_Samp_Fields = {
   __typename?: 'cw20token_info_var_samp_fields';
-  circulating_supply?: Maybe<Scalars['Float']>;
   code_id?: Maybe<Scalars['Float']>;
   decimals?: Maybe<Scalars['Float']>;
-  max_supply?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate variance on columns */
 export type Cw20token_Info_Variance_Fields = {
   __typename?: 'cw20token_info_variance_fields';
-  circulating_supply?: Maybe<Scalars['Float']>;
   code_id?: Maybe<Scalars['Float']>;
   decimals?: Maybe<Scalars['Float']>;
-  max_supply?: Maybe<Scalars['Float']>;
 };
 
 /** columns and relationships of "delegation" */
@@ -5949,6 +5933,7 @@ export type Marketplace_Nft = {
   /** An object relationship */
   transaction: Transaction;
   transaction_hash: Scalars['String'];
+  uid?: Maybe<Scalars['String']>;
 };
 
 /** aggregated selection of "marketplace_nft" */
@@ -6003,6 +5988,7 @@ export type Marketplace_Nft_Bool_Exp = {
   token_id?: InputMaybe<Bigint_Comparison_Exp>;
   transaction?: InputMaybe<Transaction_Bool_Exp>;
   transaction_hash?: InputMaybe<String_Comparison_Exp>;
+  uid?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** columns and relationships of "marketplace_nft_buy_history" */
@@ -6229,6 +6215,7 @@ export type Marketplace_Nft_Max_Fields = {
   price?: Maybe<Scalars['numeric']>;
   token_id?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uid?: Maybe<Scalars['String']>;
 };
 
 /** aggregate min on columns */
@@ -6240,6 +6227,7 @@ export type Marketplace_Nft_Min_Fields = {
   price?: Maybe<Scalars['numeric']>;
   token_id?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uid?: Maybe<Scalars['String']>;
 };
 
 /** Ordering options when selecting data from "marketplace_nft". */
@@ -6253,6 +6241,7 @@ export type Marketplace_Nft_Order_By = {
   token_id?: InputMaybe<Order_By>;
   transaction?: InputMaybe<Transaction_Order_By>;
   transaction_hash?: InputMaybe<Order_By>;
+  uid?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "marketplace_nft" */
@@ -6268,7 +6257,9 @@ export enum Marketplace_Nft_Select_Column {
   /** column name */
   TokenId = 'token_id',
   /** column name */
-  TransactionHash = 'transaction_hash'
+  TransactionHash = 'transaction_hash',
+  /** column name */
+  Uid = 'uid'
 }
 
 /** aggregate stddev on columns */
@@ -17013,7 +17004,7 @@ export type MarketplaceCollectionQueryVariables = Exact<{
 }>;
 
 
-export type MarketplaceCollectionQuery = { marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string }> };
+export type MarketplaceCollectionQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string }> };
 
 export type MarketplaceNftTradeHistoryQueryVariables = Exact<{
   tokenId: Scalars['bigint'];
@@ -17021,21 +17012,28 @@ export type MarketplaceNftTradeHistoryQueryVariables = Exact<{
 }>;
 
 
-export type MarketplaceNftTradeHistoryQuery = { marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', btc_price: any, price: any, usd_price: any, timestamp: any, seller: string, buyer: string }> };
+export type MarketplaceNftTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', btc_price: any, price: any, usd_price: any, timestamp: any, seller: string, buyer: string }> };
 
-export type MarketplaceNftQueryVariables = Exact<{
+export type MarketplaceNftsByDenomIdQueryVariables = Exact<{
   denom_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type MarketplaceNftQuery = { marketplace_nft: Array<{ __typename?: 'marketplace_nft', denom_id: string, creator: string, id?: any | null, price?: any | null, token_id: any, transaction_hash: string, transaction: { __typename?: 'transaction', memo?: string | null }, nft_nft: { __typename?: 'nft_nft', burned?: boolean | null, data_json: any, data_text: string, denom_id: string, name: string, owner: string, sender: string, uri: string, transaction_hash: string } }> };
+export type MarketplaceNftsByDenomIdQuery = { __typename?: 'query_root', marketplace_nft: Array<{ __typename?: 'marketplace_nft', token_id: any, price?: any | null, id?: any | null, denom_id: string, creator: string, transaction_hash: string, uid?: string | null, nft_nft: { __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string } }> };
+
+export type MarketplaceNftByUidQueryVariables = Exact<{
+  uid: Scalars['String'];
+}>;
+
+
+export type MarketplaceNftByUidQuery = { __typename?: 'query_root', marketplace_nft: Array<{ __typename?: 'marketplace_nft', token_id: any, price?: any | null, id?: any | null, denom_id: string, creator: string, transaction_hash: string, uid?: string | null, nft_nft: { __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string } }> };
 
 export type GetNftByTxHashQueryVariables = Exact<{
   tx_hash: Scalars['String'];
 }>;
 
 
-export type GetNftByTxHashQuery = { nft_nft: Array<{ __typename?: 'nft_nft', transaction: { __typename?: 'transaction', memo?: string | null, success: boolean } }> };
+export type GetNftByTxHashQuery = { __typename?: 'query_root', nft_nft: Array<{ __typename?: 'nft_nft', transaction: { __typename?: 'transaction', memo?: string | null, success: boolean } }> };
 
 export type NftTransferHistoryQueryVariables = Exact<{
   tokenId: Scalars['bigint'];
@@ -17043,7 +17041,7 @@ export type NftTransferHistoryQueryVariables = Exact<{
 }>;
 
 
-export type NftTransferHistoryQuery = { nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', timestamp: any, old_owner: string, new_owner: string }> };
+export type NftTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', timestamp: any, old_owner: string, new_owner: string }> };
 
 
 export const MarketplaceCollectionDocument = gql`
@@ -17075,28 +17073,52 @@ export const MarketplaceNftTradeHistoryDocument = gql`
   }
 }
     `;
-export const MarketplaceNftDocument = gql`
-    query MarketplaceNft($denom_ids: [String!]) {
+export const MarketplaceNftsByDenomIdDocument = gql`
+    query MarketplaceNftsByDenomId($denom_ids: [String!]) {
   marketplace_nft(where: {denom_id: {_in: $denom_ids}}) {
+    token_id
+    price
+    id
     denom_id
     creator
-    id
-    price
-    token_id
-    transaction {
-      memo
-    }
     transaction_hash
+    uid
     nft_nft {
-      burned
-      data_json
-      data_text
-      denom_id
-      name
       owner
       sender
       uri
       transaction_hash
+      name
+      id
+      denom_id
+      burned
+      contract_address_signer
+      data_text
+    }
+  }
+}
+    `;
+export const MarketplaceNftByUidDocument = gql`
+    query MarketplaceNftByUid($uid: String!) {
+  marketplace_nft(where: {uid: {_eq: $uid}}) {
+    token_id
+    price
+    id
+    denom_id
+    creator
+    transaction_hash
+    uid
+    nft_nft {
+      owner
+      sender
+      uri
+      transaction_hash
+      name
+      id
+      denom_id
+      burned
+      contract_address_signer
+      data_text
     }
   }
 }
@@ -17134,8 +17156,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     MarketplaceNftTradeHistory(variables: MarketplaceNftTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryQuery>(MarketplaceNftTradeHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistory', 'query');
     },
-    MarketplaceNft(variables?: MarketplaceNftQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftQuery>(MarketplaceNftDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNft', 'query');
+    MarketplaceNftsByDenomId(variables?: MarketplaceNftsByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftsByDenomIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByDenomIdQuery>(MarketplaceNftsByDenomIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftsByDenomId', 'query');
+    },
+    MarketplaceNftByUid(variables: MarketplaceNftByUidQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftByUidQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftByUidQuery>(MarketplaceNftByUidDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftByUid', 'query');
     },
     GetNftByTxHash(variables: GetNftByTxHashQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetNftByTxHashQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetNftByTxHashQuery>(GetNftByTxHashDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetNftByTxHash', 'query');

@@ -20,7 +20,7 @@ import { IsCreatorGuard } from './guards/is-creator.guard';
 import { NftFilters, MarketplaceNftFilters, NftStatus } from './utils';
 import { ParseNftQueryPipe } from './pipes/nft-query.pipe';
 import { GraphqlService } from '../graphql/graphql.service';
-import { MarketplaceNftQuery } from '../graphql/types';
+import { MarketplaceNftsByDenomIdQuery } from '../graphql/types';
 import { CheckStatusDto } from './dto/check-status.dto';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionStatus } from '../collection/utils';
@@ -38,19 +38,35 @@ export class NFTController {
 
   @Get()
     async findAll(@Query(ParseNftQueryPipe) filters: NftFilters): Promise<NFT[]> {
-        const result = await this.nftService.findAll(filters);
+        const nfts = await this.nftService.findAll(filters);
 
-        if (filters.collection_ids) {
-            const minted = await this.graphqlService.fetchNft({ denom_ids: [...filters.collection_ids] })
-        }
+        const nftDetails = nfts.map(async (nft) => {
+            if (nft.status !== NftStatus.MINTED || !nft.token_id) {
+                return {
+                    ...nft.toJSON(),
+                    listed_status: NftStatus.APPROVED ? 2 : 1,
+                }
+            }
 
+            const [nftDetails] = await this.graphqlService.fetchNft(nft.id)
+
+            return {
+                ...nft.toJSON(),
+                listed_status: nftDetails.price ? 2 : 1,
+                price: nftDetails.price,
+                creator_address: nftDetails.creator,
+                current_owner_address: nftDetails.nft_nft.owner,
+            }
+        })
+
+        const result = await Promise.all(nftDetails)
         return result;
     }
 
   @Get('minted')
   async findMinted(
     @Query() filters: Partial<MarketplaceNftFilters>,
-  ): Promise<MarketplaceNftQuery> {
+  ): Promise<MarketplaceNftsByDenomIdQuery> {
       const collections = await this.collectionService.findAll({
           status: CollectionStatus.APPROVED,
       });
@@ -75,12 +91,12 @@ export class NFTController {
   async findOne(@Param('id') id: string): Promise<NFTResponseDto> {
       const nft = await this.nftService.findOne(id);
 
-      let response: NFTResponseDto = {
-        ...nft,
-        data: {
-          expiration_date: Math.floor(nft.expiration_date.getTime() / 1000),
-          hash_rate_owned: nft.hashing_power
-        }
+      const response: NFTResponseDto = {
+          ...nft,
+          data: {
+              expiration_date: Math.floor(nft.expiration_date.getTime() / 1000),
+              hash_rate_owned: nft.hashing_power,
+          },
       }
 
       return response;
