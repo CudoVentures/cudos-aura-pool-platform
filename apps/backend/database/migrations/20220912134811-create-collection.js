@@ -35,6 +35,14 @@ module.exports = {
                     'deleted',
                 ]),
             },
+            main_image: {
+                type: Sequelize.BLOB,
+                allowNull: true,
+            },
+            banner_image: {
+                type: Sequelize.BLOB,
+                allowNull: true,
+            },
             farm_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,

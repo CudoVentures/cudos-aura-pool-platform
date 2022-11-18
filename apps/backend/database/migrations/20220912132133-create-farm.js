@@ -38,6 +38,50 @@ module.exports = {
                 type: Sequelize.DECIMAL,
                 allowNull: false,
             },
+            manufacturers: {
+                type: Sequelize.ARRAY(Sequelize.STRING),
+                allowNull: true,
+            },
+            miner_types: {
+                type: Sequelize.ARRAY(Sequelize.STRING),
+                allowNull: true,
+            },
+            energy_source: {
+                type: Sequelize.ARRAY(Sequelize.STRING),
+                allowNull: true,
+            },
+            total_farm_hashrate: {
+                type: Sequelize.DECIMAL,
+                allowNull: true,
+            },
+            status: {
+                type: Sequelize.ENUM([
+                    'queued',
+                    'approved',
+                    'rejected',
+                ]),
+                allowNull: true,
+            },
+            images: {
+                type: Sequelize.ARRAY(Sequelize.BLOB),
+                allowNull: true,
+            },
+            profile_img: {
+                type: Sequelize.BLOB,
+                allowNull: true,
+            },
+            cover_img: {
+                type: Sequelize.BLOB,
+                allowNull: true,
+            },
+            primary_account_owner_name: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            primary_account_owner_email: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
             creator_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
