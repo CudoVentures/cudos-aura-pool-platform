@@ -26,7 +26,7 @@ services:
       - '../:/usr/cudos-aura-platform'
       - '../../CudosJs:/usr/CudosJs'
     ports:
-      - "$HOST_PORT:$DOCKER_PORT"
+      - $HOST_PORT:$DOCKER_PORT
     networks:
       - shared-cudos-network
     extra_hosts:
