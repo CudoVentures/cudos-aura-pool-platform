@@ -113,7 +113,7 @@ export default class CreditCollectionStore {
     }
 
     async fetchCollectionData(collectionId: string) {
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
         nftFilter.count = Number.MAX_SAFE_INTEGER;

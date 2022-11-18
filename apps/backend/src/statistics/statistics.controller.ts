@@ -8,6 +8,7 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { TransferHistoryEntry } from './dto/transfer-history.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
+import { NFTService } from '../nft/nft.service';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -15,16 +16,16 @@ export class StatisticsController {
     constructor(
         private graphqlService: GraphqlService,
         private statisticsService: StatisticsService,
+        private nftService: NFTService,
     ) {}
 
     @Get('history/nft/:uid')
     async getTransferHistory(@Param('uid') uid: string): Promise<TransferHistoryEntry[]> {
-        // TODO: Get tokenId and denomId via uid
-        const tokenId = 1;
-        const denomId = 'testdenom';
+        const { token_id, collection } = await this.nftService.findOne(uid)
+        const { denom_id } = collection
 
-        const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(tokenId, denomId);
-        const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(tokenId, denomId);
+        const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(token_id, denom_id);
+        const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(token_id, denom_id);
 
         const history: TransferHistoryEntry[] = [];
 
@@ -64,9 +65,16 @@ export class StatisticsController {
     }
 
     @Get('earnings/nft/:id')
-    async findAll(@Param('id') id: string, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise<any> {
+    async getNftEarnings(@Param('id') id: string, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise<any> {
         const nftEarnings = await this.statisticsService.fetchNftEarnings(id, { timestampFrom, timestampTo });
 
         return { earningsPerDayInBtc: nftEarnings };
+    }
+
+    @Get('earnings/address/:cudosAddress')
+    async getAddressEarnings(@Param('cudosAddress') cudosAddress: string, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise <any> {
+        const addressEarnings = await this.statisticsService.fetchAddressEarnings(cudosAddress, { timestampFrom, timestampTo })
+
+        return addressEarnings
     }
 }
