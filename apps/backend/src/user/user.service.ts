@@ -54,16 +54,15 @@ export class UserService {
     }
 
     async createFarmAdmin(createUserDto: CreateUserDto): Promise<User> {
-        const { password, cudos_address } = createUserDto
+        const { password } = createUserDto
         const salt = this.generateSalt();
         const hashed_pass = this.generateHashedPass(password, salt);
 
         const user = {
-            email: createUserDto.email,
-            salt,
+            ...createUserDto,
             hashed_pass,
+            salt,
             role: 'farm_admin',
-            cudos_address,
             is_active: true,
         };
 

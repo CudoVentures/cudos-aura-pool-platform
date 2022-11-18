@@ -32,6 +32,10 @@ export class User extends Model {
   @Column
       email: string;
 
+  @AllowNull(false)
+  @Column
+      name: string;
+
   @Unique
   @AllowNull(false)
   @Column

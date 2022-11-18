@@ -33,14 +33,16 @@ export default class AccountApi {
             payout_address: bitcoinAddress,
         });
 
+        // TODO: uncomment when backend returns token
         // setTokenInStorage(data.access_token);
     }
 
-    async creditAccount(accountEntity: AccountEntity): Promise < AccountEntity > {
+    async creditAccount(accountEntity: AccountEntity): Promise < void > {
 
-        // const data = ...
+        const data = axios.put(`/api/v1/user/${accountEntity.accountId}`, AccountEntity.toJson(accountEntity));
+
+        // TODO: uncomment when backend returns token
         // setTokenInStorage(data.access_token);
-        return null;
     }
 
     async changePassword(oldPassword: string, newPassword: string): Promise < void > {
@@ -72,6 +74,7 @@ export default class AccountApi {
             user.super_admin_id = user.id;
             user.account_id = user.id;
         }
+
         return {
             accountEntity: AccountEntity.fromJson(user),
             userEntity: UserEntity.fromJson(null),
