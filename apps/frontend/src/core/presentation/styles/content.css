@@ -1,6 +1,6 @@
 :root {
     --color-primary: #000;
-    --color-primary-light: rgba(0, 0, 0, 0.5);
+    --color-primary-light: #52A6F8;
     --color-secondary: #888;
     --color-gray-000: #000;
     --color-gray-010: #3c3c3c;
@@ -112,6 +112,9 @@ html.OverflowHidden {
     overflow:hidden;
 }
 
+.ExtraBold {
+    font-weight: 800;
+}
 .Bold {
     font-weight: 700;
 }
@@ -158,6 +161,10 @@ html.OverflowHidden {
 
 .B4 {
     font-size: 10px;
+}
+
+.ColorPrimary {
+    color: var(--color-primary-light);
 }
 
 /* PageContent */

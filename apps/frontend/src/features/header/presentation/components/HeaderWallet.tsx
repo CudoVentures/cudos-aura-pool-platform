@@ -16,13 +16,15 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import '../styles/header-wallet.css'
+import WalletSelectModalStore from '../stores/WalletSelectModalStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
     walletStore?: WalletStore;
+    walletSelectModalStore?: WalletSelectModalStore;
 }
 
-function HeaderWallet({ accountSessionStore, walletStore, alertStore }: Props) {
+function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore }: Props) {
 
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -44,18 +46,7 @@ function HeaderWallet({ accountSessionStore, walletStore, alertStore }: Props) {
     }
 
     async function onClickLogin() {
-        if (accountSessionStore.isSuperAdmin() === true) {
-            throw Error('Super admins should not have wallets for now');
-        }
-
-        await walletStore.tryConnect(SessionStorageWalletOptions.KEPLR);
-
-        if (accountSessionStore.isAdmin() === true) {
-            await accountSessionStore.loadSessionAccountsAndSync();
-
-        }
-
-        await accountSessionStore.login('', '', walletStore.getAddress(), walletStore.getName(), '');
+        walletSelectModalStore.show();
     }
 
     return (
