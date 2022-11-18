@@ -215,7 +215,11 @@ export class FarmService {
 
             return workersDetails;
         } catch (err) {
-            throw new NotFoundException();
+            const workersDetails = {
+                activeWorkersCount: 0,
+                averageHashRateH1: 0,
+            };
+
         }
     }
 
