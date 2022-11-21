@@ -113,7 +113,7 @@ export default class CreditCollectionStore {
     }
 
     async fetchCollectionData(collectionId: string) {
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
         nftFilter.count = Number.MAX_SAFE_INTEGER;
@@ -123,10 +123,14 @@ export default class CreditCollectionStore {
     }
 
     async fetchMiningFarmDetails() {
-        this.miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.collectionEntity.farmId);
-        this.miningFarmRemainingHashPower = this.miningFarmDetailsEntity.remainingHashPowerInTH;
-        if (this.collectionEntity.isNew() === false) {
-            this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
+        try {
+            this.miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.collectionEntity.farmId);
+            this.miningFarmRemainingHashPower = this.miningFarmDetailsEntity.remainingHashPowerInTH;
+            if (this.collectionEntity.isNew() === false) {
+                this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
+            }
+        } catch (e) {
+            console.log(e);
         }
     }
 

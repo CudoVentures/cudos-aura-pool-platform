@@ -21,7 +21,7 @@ export default class CollectionApi {
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
-        const { data: collectionJson } = await axios.put(
+        const { data } = await axios.put(
             '/api/v1/collection',
             {
                 ...CollectionEntity.toJson(collectionEntity),
@@ -30,8 +30,8 @@ export default class CollectionApi {
         )
 
         return {
-            collectionEntity: CollectionEntity.fromJson(collectionJson),
-            nftEntities: collectionJson.nfts.map((nftJson) => NftEntity.fromJson(nftJson)),
+            collectionEntity: CollectionEntity.fromJson(data.collection),
+            nftEntities: data.nfts.map((nftJson) => NftEntity.fromJson(nftJson)),
         }
     }
 

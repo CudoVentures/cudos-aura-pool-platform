@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
@@ -8,14 +8,27 @@ import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../../core/presentation/components/DataPreviewLayout';
 
 import '../styles/view-collection-modal.css';
+import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
     viewCollectionModalStore?: ViewCollectionModalStore;
+    alertStore?: AlertStore
 }
 
-function ViewCollectionModal({ viewCollectionModalStore }: Props) {
+function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
 
     const { collectionEntity, nftEntities } = viewCollectionModalStore;
+
+    function saveChanges() {
+        try {
+            viewCollectionModalStore.saveChanges();
+        } catch (e) {
+            console.log(e);
+            alertStore.show('Failed to save changes.')
+        }
+    }
 
     return (
         <ModalWindow
@@ -51,6 +64,15 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             </div>
                         )
                     })}
+
+                    <Actions layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
+                        <Button
+                            disabled = { !viewCollectionModalStore.areChangesMade() }
+                            onClick = { saveChanges }
+                        >
+                            Save Changes
+                        </Button>
+                    </Actions>
                 </>
             ) }
 

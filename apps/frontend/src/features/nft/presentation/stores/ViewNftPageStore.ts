@@ -89,7 +89,7 @@ export default class ViewNftPageStore {
         this.bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
 
         this.nftEntity = await this.nftRepo.fetchNftById(nftId);
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId, CollectionStatus.APPROVED);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId, CollectionStatus.ANY);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
 
         this.nftEventFilterModel.nftId = this.nftEntity.id;

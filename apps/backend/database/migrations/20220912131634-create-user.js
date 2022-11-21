@@ -35,6 +35,10 @@ module.exports = {
             payout_address: {
                 type: Sequelize.STRING,
             },
+            name: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
             is_active: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,

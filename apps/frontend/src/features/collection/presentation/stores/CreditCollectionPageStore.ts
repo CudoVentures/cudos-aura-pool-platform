@@ -41,7 +41,7 @@ export default class CreditCollectionPageStore {
 
     async init(collectionId: string) {
         this.nftFilterModel.collectionIds = [collectionId];
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.APPROVED);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
         await this.fetchCollectionDetails();
         await this.fetchNfts();

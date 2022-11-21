@@ -1,24 +1,47 @@
-query MarketplaceNft($denom_ids: [String!]) {
+query MarketplaceNftsByDenomId($denom_ids: [String!]) {
   marketplace_nft(where: { denom_id: { _in: $denom_ids } }) {
+    token_id
+    price
+    id
     denom_id
     creator
-    id
-    price
-    token_id
-    transaction {
-      memo
-    }
     transaction_hash
+    uid
     nft_nft {
-      burned
-      data_json
-      data_text
-      denom_id
-      name
       owner
       sender
       uri
       transaction_hash
+      name
+      id
+      denom_id
+      burned
+      contract_address_signer
+      data_text
+    }
+  }
+}
+
+query MarketplaceNftByUid($uid: String!) {
+  marketplace_nft(where: {uid: {_eq: $uid}}) {
+    token_id
+    price
+    id
+    denom_id
+    creator
+    transaction_hash
+    uid
+    nft_nft {
+      owner
+      sender
+      uri
+      transaction_hash
+      name
+      id
+      denom_id
+      burned
+      contract_address_signer
+      data_text
     }
   }
 }

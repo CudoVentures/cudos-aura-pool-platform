@@ -98,11 +98,10 @@ export class FarmController {
         const getFarmsDetails = farmIds.map(async (farmId) => this.farmService.getDetails(farmId))
         const farmsDetails = await Promise.all(getFarmsDetails)
 
-        // return Promise.all(farmsDetails.map(async (details) => {
-        //     const { activeWorkersCount, averageHashRateH1 } = await this.farmService.getFoundryFarmWorkersDetails(details.subAccountName);
-        //     return { ...details, activeWorkersCount, averageHashRateH1};
-        // }));
-        return [];
+        return Promise.all(farmsDetails.map(async (details) => {
+            const { activeWorkersCount, averageHashRateH1 } = await this.farmService.getFoundryFarmWorkersDetails(details.subAccountName);
+            return { ...details, activeWorkersCount, averageHashRateH1 };
+        }));
     }
 
     @Get(':id')

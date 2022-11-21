@@ -1,5 +1,5 @@
 import Path from 'path';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -11,6 +11,8 @@ import { CollectionModule } from './collection/collection.module';
 import { NFTModule } from './nft/nft.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { GraphqlModule } from './graphql/graphql.module';
+import { VisitorsMiddleware } from './visitors/visitors.middleware';
+import { VisitorsModule } from './visitors/visitors.module';
 
 @Module({
     imports: [
@@ -21,6 +23,7 @@ import { GraphqlModule } from './graphql/graphql.module';
         NFTModule,
         StatisticsModule,
         GraphqlModule,
+        VisitorsModule,
         SequelizeModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
@@ -58,4 +61,11 @@ import { GraphqlModule } from './graphql/graphql.module';
     ],
     providers: [AppService],
 })
-export class AppModule {}
+
+export class AppModule implements NestModule {
+
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(VisitorsMiddleware).forRoutes('*')
+    }
+
+}

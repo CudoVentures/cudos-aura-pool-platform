@@ -57,7 +57,11 @@ export default class CreditMiningFarmPageStore {
     }
 
     async fetchMiningFarmDetails() {
-        this.miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
+        try {
+            this.miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     fetchCollections = async () => {

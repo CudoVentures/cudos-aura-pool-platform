@@ -62,7 +62,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard, IsFarmApprovedGuard)
+    @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorGuard, IsFarmApprovedGuard)
     @Put()
     async createOrEdit(
         @Request() req,

@@ -47,6 +47,7 @@ import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores
 import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
 import CudosApiRepo from './features/cudos-data/data/repo/CudosApiRepo';
 import ChangePasswordModalStore from './features/accounts/presentation/stores/ChangePasswordModalStore';
+import WalletSelectModalStore from './features/header/presentation/stores/WalletSelectModalStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -88,9 +89,10 @@ const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
 const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore);
 const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
-const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo);
+const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
+const walletSelectModalStore = new WalletSelectModalStore();
 
 bitcoinRepo.setPresentationCallbacks(appStore.enableActions, appStore.disableActions);
 
@@ -137,7 +139,8 @@ const App = () => {
                 analyticsPageStore = { analyticsPageStore }
                 viewCollectionModalStore = { viewCollectionModalStore }
                 viewMiningFarmModalStore = { viewMiningFarmModalStore }
-                changePasswordModalStore = { changePasswordModalStore }>
+                changePasswordModalStore = { changePasswordModalStore }
+                walletSelectModalStore = { walletSelectModalStore }>
                 <BrowserRouter>
                     <AppRouter />
                 </BrowserRouter>
