@@ -4,11 +4,15 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { json } from 'express';
+import cookieParser from 'cookie-parser';
 
 declare const module: any;
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+    const configService = app.get(ConfigService);
+    const appPort = configService.get < number >('APP_PORT');
+    const appCookiesSecret = configService.get < string >('APP_COOKIES_SECRET') ?? undefined;
 
     app.setGlobalPrefix('api')
     app.enableVersioning({
@@ -16,6 +20,7 @@ async function bootstrap() {
         defaultVersion: '1',
     })
     app.use(json({ limit: '50mb' }))
+    app.use(cookieParser(appCookiesSecret));
 
     app.useGlobalPipes(
         new ValidationPipe({
@@ -24,8 +29,8 @@ async function bootstrap() {
     );
 
     const config = new DocumentBuilder()
-        .setTitle('Cudos Dapp')
-        .setDescription('Cudos Dapp descrition')
+        .setTitle('Cudos Aura Pool')
+        .setDescription('Cudos Aura Pool')
         .setVersion('1.0')
         .addBearerAuth(
             { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
@@ -35,8 +40,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 
-    const configService = app.get(ConfigService);
-    const appPort = configService.get < number >('APP_PORT');
     await app.listen(appPort);
 
     if (module.hot) {
