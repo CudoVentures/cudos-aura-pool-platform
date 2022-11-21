@@ -28,6 +28,7 @@ export class UserController {
   @Get(':email')
     async findOne(@Param('email') email: string): Promise<Partial<User>> {
         const user = await this.userService.findOne(email);
+        // TODO: get user btc address from addressbook module
         const { salt, hashed_pass, ...rest } = user.toJSON()
 
         return rest
@@ -37,6 +38,7 @@ export class UserController {
   async findOneByFarmId(@Param('farmId') farmId: number): Promise<Partial<User>> {
       const farm = await this.farmService.findOne(farmId);
       const user = await this.userService.findOneById(farm.creator_id);
+      // TODO: get user btc address from addressbook module
 
       const { salt, hashed_pass, ...rest } = user.toJSON()
 
