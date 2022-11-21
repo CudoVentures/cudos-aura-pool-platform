@@ -41,6 +41,11 @@ export default class CreditMiningFarmPageStore {
     }
 
     async init(farmId = S.Strings.NOT_EXISTS) {
+        this.inited = false;
+        this.miningFarmEntity = null;
+        this.miningFarmDetailsEntity = null;
+        this.collectionEntities = null;
+
         if (farmId === S.Strings.NOT_EXISTS) {
             this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
             this.collectionFilterModel.status = CollectionStatus.ANY;
@@ -48,12 +53,12 @@ export default class CreditMiningFarmPageStore {
             this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(farmId);
         }
 
-        this.inited = true;
         if (this.miningFarmEntity !== null) {
             this.collectionFilterModel.farmId = this.miningFarmEntity.id;
             await this.fetchMiningFarmDetails();
             await this.fetchCollections();
         }
+        this.inited = true;
     }
 
     async fetchMiningFarmDetails() {
