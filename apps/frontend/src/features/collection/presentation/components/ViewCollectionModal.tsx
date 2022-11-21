@@ -25,13 +25,8 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
 
     const { collectionEntity, nftEntities } = viewCollectionModalStore;
 
-    function saveChanges() {
-        try {
-            viewCollectionModalStore.saveChanges();
-        } catch (e) {
-            console.log(e);
-            alertStore.show('Failed to save changes.')
-        }
+    async function saveChanges() {
+        await viewCollectionModalStore.saveChanges();
     }
 
     return (
@@ -59,11 +54,7 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
                                         </InputAdornment>,
                                     }}
                                 />,
-                                // collectionEntity.formatRoyaltiesInBtc(),
                             ),
-                            // createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
-                            // TODO: take from farm maybe?
-                            // createDataPreview('Payout address', collectionEntity.payoutAddress),
                         ] } />
                     { nftEntities.map((nftEntity) => {
                         return (
@@ -88,11 +79,10 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
                         )
                     })}
 
-                    <Actions layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
+                    <Actions className = { 'ViewCollectionsActions' } layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
                         <Button
                             disabled = { !viewCollectionModalStore.areChangesMade() }
-                            onClick = { saveChanges }
-                        >
+                            onClick = { saveChanges } >
                             Save Changes
                         </Button>
                     </Actions>

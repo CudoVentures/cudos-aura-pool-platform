@@ -138,7 +138,7 @@ export default class NftEntity {
         }
 
         return {
-            'id': parseInt(entity.id),
+            'id': entity.id,
             'collection_id': parseInt(entity.collectionId),
             'name': entity.name,
             'token_id': entity.tokenId,
@@ -147,7 +147,7 @@ export default class NftEntity {
             'uri': entity.imageUrl,
             'status': entity.status,
             'list_status': entity.listStatus,
-            'expiration_date': entity.expiryDate,
+            'expiration_date': new Date(entity.expiryDate).toISOString(),
             'creator_address': entity.creatorAddress,
             'current_owner_address': entity.currentOwnerAddress,
             // 'farmRoyalties': entity.farmRoyalties,
@@ -162,16 +162,17 @@ export default class NftEntity {
 
         const model = new NftEntity();
 
+        console.log(json);
         model.id = (json.id ?? model.id).toString();
         model.collectionId = (json.collection_id ?? model.collectionId).toString();
         model.name = json.name ?? model.name;
         model.tokenId = json.tokenId ?? model.tokenId;
         model.hashPowerInTh = parseInt(json.hashing_power ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.price ?? model.priceInAcudos);
-        model.imageUrl = String.fromCharCode(...(json.uri ? json.uri.data : [])) ?? model.imageUrl;
+        model.imageUrl = json.uri ?? model.imageUrl;
         model.status = json.status ?? model.status;
         model.listStatus = parseInt(json.list_status ?? model.listStatus);
-        model.expiryDate = parseInt(json.expiration_date ?? model.expiryDate);
+        model.expiryDate = new Date(json.expiration_date ?? model.expiryDate).getTime();
         model.creatorAddress = json.creator_address ?? model.creatorAddress;
         model.currentOwnerAddress = json.current_owner_address ?? model.currentOwnerAddress;
         // model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);

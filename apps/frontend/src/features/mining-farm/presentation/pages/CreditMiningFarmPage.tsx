@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import SearchIcon from '@mui/icons-material/Search';
 import CreditMiningFarmPageStore from '../stores/CreditMiningFarmPageStore';
+import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
@@ -42,9 +43,10 @@ type Props = {
     creditMiningFarmPageStore?: CreditMiningFarmPageStore,
     accountSessionStore?: AccountSessionStore
     editMiningFarmModalStore?: EditMiningFarmModalStore
+    visitorStore?: VisitorStore
 }
 
-function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore }: Props) {
+function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore, visitorStore }: Props) {
     const { farmId } = useParams();
     const navigate = useNavigate();
 
@@ -56,6 +58,11 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     useEffect(() => {
         appStore.useLoading(async () => {
             await creditMiningFarmPageStore.init(farmId);
+            if (farmId !== undefined) {
+                if (creditMiningFarmPageStore.miningFarmEntity !== null) {
+                    visitorStore.signalVisitMiningFarm(creditMiningFarmPageStore.miningFarmEntity); // no need to wait for it
+                }
+            }
         });
     }, []);
 

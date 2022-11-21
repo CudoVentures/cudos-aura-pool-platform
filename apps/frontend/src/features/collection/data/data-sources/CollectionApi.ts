@@ -35,7 +35,7 @@ export default class CollectionApi {
         }
     }
 
-    async approveCollection(collectionId: number): Promise < void > {
+    async approveCollection(collectionId: string): Promise < void > {
         const { data } = await axios.patch(`/api/v1/collection/${collectionId}/status`, { status: 'approved' });
     }
 

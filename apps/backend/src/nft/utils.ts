@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
+import { CollectionStatus } from '../collection/utils';
 
 export const enum NftStatus {
     QUEUED = 'queued',
@@ -39,7 +40,7 @@ export class NftFilters {
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false })
-        status: NftStatus;
+        collectionStatus: CollectionStatus;
 
     @IsString()
     @IsOptional()

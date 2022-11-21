@@ -14,6 +14,8 @@
     "start:backend:dev": "nest build --webpack --webpackPath webpack-hmr.config.js --watch",
     "start:backend:debug": "nest start backend --debug --watch",
     "start:backend:prod": "nest build backend && node dist/apps/backend/main",
+    "seed": "npx sequelize db:seed:all --config=./apps/backend/database/config/config.js --seeders-path=./apps/backend/database/seeders",
+    "migrate": "npx sequelize db:migrate --config=./apps/backend/database/config/config.js --migrations-path=./apps/backend/database/migrations",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",

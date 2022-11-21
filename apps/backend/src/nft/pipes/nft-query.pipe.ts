@@ -7,7 +7,7 @@ export class ParseNftQueryPipe implements PipeTransform {
     transform(value: NftFilters, metadata: ArgumentMetadata) {
         const parsedQuery = {};
 
-        Object.keys(value).map((key) => {
+        Object.keys(value).forEach((key) => {
             switch (key) {
                 case 'ids':
                     if (!value.ids) break;
@@ -17,8 +17,8 @@ export class ParseNftQueryPipe implements PipeTransform {
                     if (!value.collection_ids) break;
                     parsedQuery['collection_id'] = value.collection_ids.split(',').map((id) => parseInt(id));
                     break;
-                case 'status':
-                    parsedQuery['status'] = value.status;
+                case 'collectionStatus':
+                    parsedQuery['collectionStatus'] = value.collectionStatus;
                     break;
                 case 'search_string':
                     parsedQuery[Op.or] = [

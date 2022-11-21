@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UUID_COOKIE_KEY } from './utils';
 
 @Injectable()
-export class VisitorsMiddleware implements NestMiddleware {
+export class VisitorMiddleware implements NestMiddleware {
 
     constructor(private configService: ConfigService) {}
 

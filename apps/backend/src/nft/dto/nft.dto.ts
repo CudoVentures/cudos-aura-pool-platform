@@ -29,10 +29,10 @@ export class NFTDto {
     @ApiProperty({ required: true, example: 200 })
         hashing_power: number;
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 1000 })
-        price: number;
+        price: string;
 
     @IsDateString()
     @IsNotEmpty()

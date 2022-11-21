@@ -11,8 +11,8 @@ import { CollectionModule } from './collection/collection.module';
 import { NFTModule } from './nft/nft.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { GraphqlModule } from './graphql/graphql.module';
-import { VisitorsMiddleware } from './visitors/visitors.middleware';
-import { VisitorsModule } from './visitors/visitors.module';
+import { VisitorMiddleware } from './visitor/visitor.middleware';
+import { VisitorModule } from './visitor/visitor.module';
 
 @Module({
     imports: [
@@ -23,7 +23,7 @@ import { VisitorsModule } from './visitors/visitors.module';
         NFTModule,
         StatisticsModule,
         GraphqlModule,
-        VisitorsModule,
+        VisitorModule,
         SequelizeModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
@@ -65,7 +65,7 @@ import { VisitorsModule } from './visitors/visitors.module';
 export class AppModule implements NestModule {
 
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(VisitorsMiddleware).forRoutes('*')
+        consumer.apply(VisitorMiddleware).forRoutes('*')
     }
 
 }
