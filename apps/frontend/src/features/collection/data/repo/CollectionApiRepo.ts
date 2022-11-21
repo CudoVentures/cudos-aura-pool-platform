@@ -112,22 +112,24 @@ export default class CollectionApiRepo implements CollectionRepo {
 
         const decimals = (new BigNumber(10)).pow(18);
         const innitialRoyalty = (new BigNumber(100)).multipliedBy(decimals);
-        const secondaryRoyalty = (new BigNumber(100)).multipliedBy(decimals);
+        const secondaryRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
+        const data = `{"farm_id":"${collectionEntity.farmId}"}`;
 
         const tx = await signingClient.marketplaceCreateCollection(
             ledger.accountAddress,
-            collectionEntity.name, // TODO: should this be something else?
+            collectionEntity.name.toLowerCase().replace(' ', '_'),
             collectionEntity.name,
             'CudosAuraPoolSchema',
-            'CudosAuraPoolSymbol',
-            'NotEditable',
-            `CudosAuraPoolService collection for farm: ${collectionEntity.farmId}`,
-            CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
             '',
+            'NotEditable',
+            '',
+            CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
+            data,
             [
                 Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialRoyalty.toFixed(0) }),
             ],
             [
+                // TODO: add cudos royalty
                 Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: secondaryRoyalty.toFixed(0) }),
             ],
             true,
