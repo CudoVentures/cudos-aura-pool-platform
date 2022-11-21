@@ -3,13 +3,11 @@ import { KeplrWallet, Ledger, CosmostationWallet } from 'cudosjs';
 import S from '../../../../core/utilities/Main';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
-import numeral from 'numeral';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 declare let Config;
 
-const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
+export const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
 export enum SessionStorageWalletOptions {
     KEPLR = 'keplr',
@@ -49,7 +47,7 @@ export default class WalletStore {
             STAKING: CHAIN_DETAILS.STAKING_URL[this.selectedNetwork],
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
-        await this.connectLedger();
+        await this.connectLedger(SessionStorageWalletOptions.KEPLR);
     }
 
     @action
@@ -62,10 +60,10 @@ export default class WalletStore {
             STAKING: CHAIN_DETAILS.STAKING_URL[this.selectedNetwork],
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
-        await this.connectLedger();
+        await this.connectLedger(SessionStorageWalletOptions.COSMOSTATION);
     }
 
-    private async connectLedger(): Promise < void > {
+    private async connectLedger(ledgerType: SessionStorageWalletOptions): Promise < void > {
         makeObservable(this.ledger, {
             'connected': observable,
             'accountAddress': observable,
@@ -76,7 +74,7 @@ export default class WalletStore {
 
         try {
             await this.ledger.connect();
-            sessionStorage.setItem(SESSION_STORAGE_WALLET_KEY, SessionStorageWalletOptions.KEPLR);
+            sessionStorage.setItem(SESSION_STORAGE_WALLET_KEY, ledgerType);
 
             this.address = this.ledger.accountAddress;
             this.name = await this.ledger.getName();

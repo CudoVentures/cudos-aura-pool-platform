@@ -59,11 +59,11 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 </div>
 
                 <div className = { 'WalletOptions FlexColumn' } >
-                    <div className = { 'ConnectButton FlexRow Transition H3 SemiBold' } onClick = { onClickToggleKeplr } >
+                    <div className = { 'ConnectButton Pointer FlexRow Transition H3 SemiBold' } onClick = { onClickToggleKeplr } >
                         <img className = { 'WalletIcon' } src={'/assets/img/keplr-icon.png'} />
                         Connect to Keplr
                     </div>
-                    <div className = { 'ConnectButton FlexRow Transition H3 SemiBold' } onClick = { onClickToggleCosmostation } >
+                    <div className = { 'ConnectButton Pointer FlexRow Transition H3 SemiBold' } onClick = { onClickToggleCosmostation } >
                         <img className = { 'WalletIcon' } src={'/assets/img/cosmostation-icon.png'} />
                         Connect to Cosmostation
                     </div>

@@ -65,8 +65,8 @@ function AppRouter({ accountSessionStore }: Props) {
             }
 
             if (accountSessionStore.isAdmin() === true) {
-                const adminEntity = accountSessionStore.adminEntity;
-                if (adminEntity.isBitcointAddressConfirmed() === false) {
+                const userEntity = accountSessionStore.userEntity;
+                if (userEntity.isBitcointAddressConfirmed() === false) {
                     return <BitcoinConfirmPage />
                 }
 

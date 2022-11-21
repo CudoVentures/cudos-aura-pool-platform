@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import S from '../../../../core/utilities/Main';
 import { Ledger, GasPrice, SigningStargateClient } from 'cudosjs';
 
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import WalletStore, { SESSION_STORAGE_WALLET_KEY } from '../../../ledger/presentation/stores/WalletStore';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
@@ -147,7 +147,7 @@ export default class AccountSessionStore {
 
         // TODO: remove after backend starts returning new token
         if (adminEntity) {
-            adminEntity.bitcoinWalletAddress = 'egerger'
+            userEntity.bitcoinWalletAddress = 'egerger'
         }
         runInAction(() => {
             this.accountEntity = accountEntity;
@@ -157,7 +157,7 @@ export default class AccountSessionStore {
         });
 
         if (this.isUser() === true) {
-            await this.walletStore.tryConnect();
+            await this.walletStore.tryConnect(sessionStorage.getItem(SESSION_STORAGE_WALLET_KEY));
 
             if (this.walletStore.isConnected() === true) {
                 if (this.userEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
@@ -169,7 +169,7 @@ export default class AccountSessionStore {
 
             console.log('Logged as user => wallet:', this.walletStore.isConnected())
         } else if (this.isAdmin() === true) {
-            await this.walletStore.tryConnect();
+            await this.walletStore.tryConnect(sessionStorage.getItem(SESSION_STORAGE_WALLET_KEY));
 
             if (this.walletStore.isConnected() === true) {
                 if (this.adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {

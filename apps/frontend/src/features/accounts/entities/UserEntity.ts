@@ -11,6 +11,7 @@ export default class UserEntity {
     totalHashPower: number;
     profileImgUrl: string;
     coverImgUrl: string;
+    bitcoinWalletAddress: string;
 
     constructor() {
         this.userId = S.Strings.NOT_EXISTS;
@@ -20,10 +21,15 @@ export default class UserEntity {
         this.totalHashPower = S.NOT_EXISTS;
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
+        this.bitcoinWalletAddress = '';
     }
 
     isNew(): boolean {
         return this.userId === S.Strings.NOT_EXISTS;
+    }
+
+    isBitcointAddressConfirmed(): boolean {
+        return this.bitcoinWalletAddress !== '';
     }
 
     static toJson(entity: UserEntity): any {
@@ -39,6 +45,7 @@ export default class UserEntity {
             'total_hashpower': entity.totalHashPower,
             'profile_img': entity.profileImgUrl,
             'cover_img': entity.coverImgUrl,
+            'payout_address': entity.bitcoinWalletAddress,
         }
     }
 
@@ -56,6 +63,7 @@ export default class UserEntity {
         entity.totalHashPower = Number(json.total_hashpower ?? entity.totalHashPower);
         entity.profileImgUrl = json.profile_img ?? entity.profileImgUrl;
         entity.coverImgUrl = json.cover_img ?? entity.coverImgUrl;
+        entity.bitcoinWalletAddress = (json.payout_address ?? entity.bitcoinWalletAddress).toString();
 
         return entity;
     }
