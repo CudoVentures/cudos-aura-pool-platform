@@ -54,9 +54,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     const collectionFilterModel = creditMiningFarmPageStore.collectionFilterModel;
 
     useEffect(() => {
-        appStore.useLoading(async () => {
-            await creditMiningFarmPageStore.init(farmId);
-        });
+        creditMiningFarmPageStore.init(farmId);
     }, []);
 
     function onClickNavigateMarketplace() {
