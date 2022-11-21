@@ -95,10 +95,6 @@ export default class CollectionEntity {
         return CollectionEntity.formatStatusName(this.status);
     }
 
-    // formatMaintenanceFeesInBtc(): string {
-    //     return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
-    // }
-
     formatRoyaltiesInBtc(): string {
         return `${this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00'} BTC`;
     }
@@ -147,8 +143,6 @@ export default class CollectionEntity {
             'banner_image': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
-            // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
-            // 'payout_address': entity.payoutAddress,
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
         }

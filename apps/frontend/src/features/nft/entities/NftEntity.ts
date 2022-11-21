@@ -33,8 +33,6 @@ export default class NftEntity {
     expiryDate: number;
     creatorAddress: string;
     currentOwnerAddress: string;
-    // farmRoyalties: number;
-    // maintenanceFeeInBtc: BigNumber;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -49,8 +47,6 @@ export default class NftEntity {
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = ''
         this.currentOwnerAddress = ''
-        // this.farmRoyalties = S.NOT_EXISTS;
-        // this.maintenanceFeeInBtc = null;
 
         makeAutoObservable(this);
     }
@@ -113,15 +109,10 @@ export default class NftEntity {
         return `${this.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0)} CUDOS`;
     }
 
-    // formatMaintenanceFeeInBtc(): string {
-    //     return `${this.maintenanceFeeInBtc.toString()} BTC`;
-    // }
-
     cloneDeep(): NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 
         newNftEntity.priceInAcudos = this.priceInAcudos !== null ? new BigNumber(this.priceInAcudos) : null;
-        // newNftEntity.maintenanceFeeInBtc = new BigNumber(this.maintenanceFeeInBtc);
 
         return newNftEntity;
     }
@@ -129,7 +120,6 @@ export default class NftEntity {
     copyDeepFrom(nftEntity: NftEntity): void {
         Object.assign(this, nftEntity);
         this.priceInAcudos = nftEntity.priceInAcudos !== null ? new BigNumber(nftEntity.priceInAcudos) : null;
-        // this.maintenanceFeeInBtc = new BigNumber(nftEntity.maintenanceFeeInBtc);
     }
 
     static toJson(entity: NftEntity): any {
@@ -150,8 +140,6 @@ export default class NftEntity {
             'expiration_date': entity.expiryDate,
             'creator_address': entity.creatorAddress,
             'current_owner_address': entity.currentOwnerAddress,
-            // 'farmRoyalties': entity.farmRoyalties,
-            // 'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
         }
     }
 
@@ -174,8 +162,6 @@ export default class NftEntity {
         model.expiryDate = parseInt(json.expiration_date ?? model.expiryDate);
         model.creatorAddress = json.creator_address ?? model.creatorAddress;
         model.currentOwnerAddress = json.current_owner_address ?? model.currentOwnerAddress;
-        // model.farmRoyalties = Number(json.farmRoyalties ?? model.farmRoyalties);
-        // model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
 
         return model;
     }
