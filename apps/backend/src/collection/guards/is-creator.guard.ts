@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import RequestWithUser from '../../auth/interfaces/requestWithUser.interface';
+import { Role } from '../../user/roles';
 import { Collection } from '../collection.model';
 import { CollectionService } from '../collection.service';
 
@@ -21,6 +22,10 @@ export class IsCreatorGuard extends JwtAuthGuard implements CanActivate {
 
         if (body.id < 0) {
             return true
+        }
+
+        if (user.role === Role.SUPER_ADMIN) {
+            return true;
         }
 
         const userId = user.id;

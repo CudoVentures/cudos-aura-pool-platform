@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
@@ -8,14 +8,31 @@ import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../../core/presentation/components/DataPreviewLayout';
 
 import '../styles/view-collection-modal.css';
+import Input, { InputType } from '../../../../core/presentation/components/Input';
+import Svg from '../../../../core/presentation/components/Svg';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
     viewCollectionModalStore?: ViewCollectionModalStore;
+    alertStore?: AlertStore
 }
 
-function ViewCollectionModal({ viewCollectionModalStore }: Props) {
+function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
 
     const { collectionEntity, nftEntities } = viewCollectionModalStore;
+
+    function saveChanges() {
+        try {
+            viewCollectionModalStore.saveChanges();
+        } catch (e) {
+            console.log(e);
+            alertStore.show('Failed to save changes.')
+        }
+    }
 
     return (
         <ModalWindow
@@ -29,7 +46,21 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             createDataPreview('Collection Name', collectionEntity.name),
                             createDataPreview('Description', collectionEntity.description),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
-                            createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInBtc()),
+                            createDataPreview(
+                                'Collection Royalties',
+                                <Input
+                                    className={'FlexRow RoyaliesInput'}
+                                    value = { viewCollectionModalStore.editedRoyalties }
+                                    onChange = { viewCollectionModalStore.setRoyalties }
+                                    inputType = {InputType.INTEGER}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end" >
+                                            BTC
+                                        </InputAdornment>,
+                                    }}
+                                />,
+                                // collectionEntity.formatRoyaltiesInBtc(),
+                            ),
                             // createDataPreview('Maintenance Fees (per month)', collectionEntity.formatMaintenanceFeesInBtc()),
                             // TODO: take from farm maybe?
                             // createDataPreview('Payout address', collectionEntity.payoutAddress),
@@ -56,6 +87,15 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                             </div>
                         )
                     })}
+
+                    <Actions layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
+                        <Button
+                            disabled = { !viewCollectionModalStore.areChangesMade() }
+                            onClick = { saveChanges }
+                        >
+                            Save Changes
+                        </Button>
+                    </Actions>
                 </>
             ) }
 
