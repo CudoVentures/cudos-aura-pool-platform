@@ -5,6 +5,8 @@ import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import AccountApi from '../../../accounts/data/data-sources/AccountApi';
 import SuperAdminEntity from '../../../accounts/entities/SuperAdminEntity';
+import MiningFarmApi from '../../../mining-farm/data/data-sources/MiningFarmApi';
+import MiningFarmFilterModel from '../../../mining-farm/utilities/MiningFarmFilterModel';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
@@ -16,6 +18,7 @@ import CollectionApi from '../data-sources/CollectionApi';
 export default class CollectionApiRepo implements CollectionRepo {
     accountApi: AccountApi;
     collectionApi: CollectionApi;
+    miningFarmApi: MiningFarmApi;
 
     enableActions: () => void;
     disableActions: () => void;
@@ -23,6 +26,7 @@ export default class CollectionApiRepo implements CollectionRepo {
     constructor() {
         this.collectionApi = new CollectionApi();
         this.accountApi = new AccountApi();
+        this.miningFarmApi = new MiningFarmApi();
 
         this.enableActions = null;
         this.disableActions = null;
@@ -107,15 +111,19 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger, network: string): Promise < string > {
         const farmAdminEntity = await this.accountApi.getFarmAdminByFarmId(collectionEntity.farmId);
+        const miningFarmEntity = (await this.miningFarmApi.fetchMiningFarmsByIds([collectionEntity.farmId]))[0];
 
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
 
         const decimals = (new BigNumber(10)).pow(18);
-        const innitialOwnerRoyalty = (new BigNumber(100 - superAdminEntity.firstSaleCudosRoyaltiesPercent)).multipliedBy(decimals);
-        const innitialCudosRoyalty = (new BigNumber(superAdminEntity.firstSaleCudosRoyaltiesPercent)).multipliedBy(decimals);
+        const cudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;
+
+        const innitialOwnerRoyalty = (new BigNumber(100 - cudosMintRoyalties)).multipliedBy(decimals);
+        const innitialCudosRoyalty = (new BigNumber(cudosMintRoyalties)).multipliedBy(decimals);
+
         const secondaryFarmOwnerRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
-        const secondaryCudosRoyalty = (new BigNumber(superAdminEntity.resaleCudosRoyaltiesPercent)).multipliedBy(decimals);
+        const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
 
         const data = `{"farm_id":"${collectionEntity.farmId}"}`;
 
