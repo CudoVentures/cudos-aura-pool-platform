@@ -31,9 +31,9 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import '../styles/page-register.css';
 
 enum RegisterStep {
-    ACCOUNT_DETAILS,
-    WALLET_DETAILS,
-    FINISH,
+    ACCOUNT_DETAILS = 1,
+    WALLET_DETAILS = 2,
+    FINISH = 3,
 }
 
 type Props = {

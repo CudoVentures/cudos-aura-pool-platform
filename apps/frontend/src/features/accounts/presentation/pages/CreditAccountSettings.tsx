@@ -117,6 +117,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
     }
 
     const accountEntity = accountSessionStore.accountEntity;
+    const adminEntity = accountSessionStore.adminEntity;
 
     return (
         <PageLayoutComponent className = { 'CreditAccountSettings' }>
@@ -232,6 +233,16 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
                                 <Button onClick = { onClickChangePass } >Save Changes</Button>
                             </Actions>
                         </AnimationContainer>
+                    </div>
+                </div>
+                <div className={'SettingsItem'}>
+                    <div className={'SettingsName'}>Connected Wallet Address</div>
+                    <div className={'SettingsOptions'}>
+                        <div className = { 'SettingsDisplay FlexRow' } >
+                            <Input
+                                gray = { true }
+                                value={adminEntity.cudosWalletAddress} />
+                        </div>
                     </div>
                 </div>
             </div>
