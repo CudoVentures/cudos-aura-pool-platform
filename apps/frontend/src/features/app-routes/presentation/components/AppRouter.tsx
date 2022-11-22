@@ -65,13 +65,9 @@ function AppRouter({ accountSessionStore }: Props) {
             }
 
             if (accountSessionStore.isAdmin() === true) {
-                const adminEntity = accountSessionStore.adminEntity;
-                if (adminEntity.isBitcointAddressConfirmed() === false) {
-                    return <BitcoinConfirmPage />
-                }
-
-                // if (accountSessionStore.hasApprovedMiningFarm() === false) {
-                //     return <CreditMiningFarmDetailsPage />
+                // const adminEntity = accountSessionStore.adminEntity;
+                // if (adminEntity.isBitcointAddressConfirmed() === false) {
+                //     return <BitcoinConfirmPage />
                 // }
 
                 return <CreditMiningFarmPage />;
