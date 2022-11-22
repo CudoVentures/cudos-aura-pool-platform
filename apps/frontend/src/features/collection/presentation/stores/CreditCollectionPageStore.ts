@@ -59,7 +59,6 @@ export default class CreditCollectionPageStore {
 
         const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel);
 
-        console.log(this.collectionEntity, this.miningFarmEntity, nftEntities);
         runInAction(() => {
             this.nftEntities = nftEntities;
             this.gridViewState.setTotalItems(total);
