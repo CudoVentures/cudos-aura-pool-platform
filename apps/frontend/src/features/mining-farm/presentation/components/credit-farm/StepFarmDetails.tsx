@@ -138,24 +138,6 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 value={miningFarmEntity.primaryAccountOwnerEmail}
                 inputValidation={farmOwnerEmailValidation}
                 onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }} />
-            <Input
-                label={'BTC Address to receive awards'}
-                placeholder={'bc1qxy...'}
-                value={miningFarmEntity.rewardsFromPoolAddress}
-                inputValidation={farmPayoutAddressValidation}
-                onChange={(string) => { miningFarmEntity.rewardsFromPoolAddress = string }} />
-            <Input
-                label={'BTC Address to receive awards leftovers'}
-                placeholder={'bc1qxy...'}
-                value={miningFarmEntity.leftoverRewardsAddress}
-                inputValidation={farmLeftoversAddressValidation}
-                onChange={(string) => { miningFarmEntity.leftoverRewardsAddress = string }} />
-            <Input
-                label={'BTC Address to receive maintenance fees'}
-                placeholder={'bc1qxy...'}
-                value={miningFarmEntity.maintenanceFeePayoutAddress}
-                inputValidation={farmMainteannceFeesAddressValidation}
-                onChange={(string) => { miningFarmEntity.maintenanceFeePayoutAddress = string }} />
             <Autocomplete
                 label={'Manufacturers'}
                 value = { creditMiningFarmDetailsPageStore.getSelectedManufacturers().map((manufacturerEntity) => {
@@ -239,18 +221,45 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                     Insert the Hashrate planned to be offered as NFTs
                 </div>
             </div>
+            <div className={'FlexColumn FeeInputHolder'}>
+                <Input
+                    label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
+                    placeholder={'Maintenance fees...'}
+                    value={maintenanceFeeInBtc}
+                    inputType={InputType.REAL}
+                    inputValidation={farmMainteannceFeesValidation}
+                    onChange={onChangeMaintenanceFees}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end" >BTC</InputAdornment>
+                        ),
+                    }} />
+                <div className={'B3 SemiBold FullLine'}> Maintenance fee calculation formula:</div>
+                <div className={'FormulaBox FlexColumn'}>
+                    <div>- Maintenance fee amount/current hashing power = Fee per Th/s</div>
+                    <div>- Fee per Th/s / Payout period = Daily fee</div>
+                    <div>- Daily fee / 24 = Hourly fee</div>
+                    <div>- Total user payout hours * Hourly fee = Maintenance fee amount</div>
+                </div>
+            </div>
             <Input
-                label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
-                placeholder={'Maintenance fees...'}
-                value={maintenanceFeeInBtc}
-                inputType={InputType.REAL}
-                inputValidation={farmMainteannceFeesValidation}
-                onChange={onChangeMaintenanceFees}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end" >BTC</InputAdornment>
-                    ),
-                }} />
+                label={'BTC Address to receive awards'}
+                placeholder={'bc1qxy...'}
+                value={miningFarmEntity.rewardsFromPoolAddress}
+                inputValidation={farmPayoutAddressValidation}
+                onChange={(string) => { miningFarmEntity.rewardsFromPoolAddress = string }} />
+            <Input
+                label={'BTC Address to receive awards leftovers'}
+                placeholder={'bc1qxy...'}
+                value={miningFarmEntity.leftoverRewardsAddress}
+                inputValidation={farmLeftoversAddressValidation}
+                onChange={(string) => { miningFarmEntity.leftoverRewardsAddress = string }} />
+            <Input
+                label={'BTC Address to receive maintenance fees'}
+                placeholder={'bc1qxy...'}
+                value={miningFarmEntity.maintenanceFeePayoutAddress}
+                inputValidation={farmMainteannceFeesAddressValidation}
+                onChange={(string) => { miningFarmEntity.maintenanceFeePayoutAddress = string }} />
             <div className={'B2 Bold FullLine'}> 3. Upload photos from the farm</div>
             <div className={'Uploader FlexColumn'}>
                 <div className={'B3 SemiBold'}>Upload files here</div>

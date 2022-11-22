@@ -7,6 +7,17 @@
     margin-top: 8px;
 }
 
+.StepMiningFarmDetails .FeeInputHolder {
+    gap: 10px;
+}
+
+.StepMiningFarmDetails .FeeInputHolder .FormulaBox {
+    gap: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    background: var(--color-gray-090);
+}
+
 .StepMiningFarmDetails .Uploader {
     width: 100%; height: 152px;
     background: var(--color-gray-090);
