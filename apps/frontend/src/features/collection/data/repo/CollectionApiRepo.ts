@@ -4,6 +4,7 @@ import Ledger from 'cudosjs/build/ledgers/Ledger';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import AccountApi from '../../../accounts/data/data-sources/AccountApi';
+import SuperAdminEntity from '../../../accounts/entities/SuperAdminEntity';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
@@ -104,15 +105,18 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
-    async approveCollection(collectionEntity: CollectionEntity, ledger: Ledger, network: string): Promise < string > {
-        const adminEntity = await this.accountApi.getFarmAdminByFarmId(collectionEntity.farmId);
+    async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger, network: string): Promise < string > {
+        const farmAdminEntity = await this.accountApi.getFarmAdminByFarmId(collectionEntity.farmId);
 
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
 
         const decimals = (new BigNumber(10)).pow(18);
-        const innitialRoyalty = (new BigNumber(100)).multipliedBy(decimals);
-        const secondaryRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
+        const innitialOwnerRoyalty = (new BigNumber(100 - superAdminEntity.firstSaleCudosRoyaltiesPercent)).multipliedBy(decimals);
+        const innitialCudosRoyalty = (new BigNumber(superAdminEntity.firstSaleCudosRoyaltiesPercent)).multipliedBy(decimals);
+        const secondaryFarmOwnerRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
+        const secondaryCudosRoyalty = (new BigNumber(superAdminEntity.resaleCudosRoyaltiesPercent)).multipliedBy(decimals);
+
         const data = `{"farm_id":"${collectionEntity.farmId}"}`;
 
         const tx = await signingClient.marketplaceCreateCollection(
@@ -126,11 +130,12 @@ export default class CollectionApiRepo implements CollectionRepo {
             CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
             data,
             [
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: farmAdminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
             ],
             [
-                // TODO: add cudos royalty
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: secondaryRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: farmAdminEntity.cudosWalletAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: farmAdminEntity.cudosWalletAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
             ],
             true,
             gasPrice,

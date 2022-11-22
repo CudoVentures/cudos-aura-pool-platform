@@ -8,11 +8,13 @@ import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import AccountSessionStore from './AccountSessionStore';
 
 export default class SuperAdminApprovePageStore {
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
     walletStore: WalletStore;
+    accountSessionStore: AccountSessionStore;
 
     miningFarmsTableState: TableState;
     collectionsTableState: TableState;
@@ -23,10 +25,11 @@ export default class SuperAdminApprovePageStore {
     selectedMiningFarmEntities: Map < string, MiningFarmEntity >;
     selectedCollectionEntities: Map < string, CollectionEntity >;
 
-    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore) {
+    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore) {
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
         this.walletStore = walletStore;
+        this.accountSessionStore = accountSessionStore;
 
         this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarmEntities, 50);
         this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 50);
@@ -133,7 +136,12 @@ export default class SuperAdminApprovePageStore {
         });
 
         for (let i = collectionEntities.length; i-- > 0;) {
-            await this.collectionRepo.approveCollection(collectionEntities[i], this.walletStore.ledger, this.walletStore.selectedNetwork);
+            await this.collectionRepo.approveCollection(
+                collectionEntities[i],
+                this.accountSessionStore.superAdminEntity,
+                this.walletStore.ledger,
+                this.walletStore.selectedNetwork,
+            );
         }
 
         this.selectedCollectionEntities.clear();
