@@ -11,10 +11,11 @@ import { Miner } from './models/miner.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { EnergySource } from './models/energy-source.model';
 import { HttpModule } from '@nestjs/axios';
+import { GraphqlService } from '../graphql/graphql.service';
 
 @Module({
     imports: [SequelizeModule.forFeature([Farm, Miner, Manufacturer, EnergySource]), forwardRef(() => CollectionModule), NFTModule, HttpModule],
     controllers: [FarmController],
-    providers: [FarmService, CollectionService, NFTService],
+    providers: [FarmService, CollectionService, NFTService, GraphqlService],
 })
 export class FarmModule {}
