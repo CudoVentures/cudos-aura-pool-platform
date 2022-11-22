@@ -8,26 +8,14 @@ import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../../core/presentation/components/DataPreviewLayout';
 
 import '../styles/view-collection-modal.css';
-import Input, { InputType } from '../../../../core/presentation/components/Input';
-import Svg from '../../../../core/presentation/components/Svg';
-import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button from '../../../../core/presentation/components/Button';
-import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
     viewCollectionModalStore?: ViewCollectionModalStore;
-    alertStore?: AlertStore
 }
 
-function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
+function ViewCollectionModal({ viewCollectionModalStore }: Props) {
 
     const { collectionEntity, nftEntities } = viewCollectionModalStore;
-
-    async function saveChanges() {
-        await viewCollectionModalStore.saveChanges();
-    }
 
     return (
         <ModalWindow
@@ -41,20 +29,7 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
                             createDataPreview('Collection Name', collectionEntity.name),
                             createDataPreview('Description', collectionEntity.description),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
-                            createDataPreview(
-                                'Collection Royalties',
-                                <Input
-                                    className={'FlexRow RoyaliesInput'}
-                                    value = { viewCollectionModalStore.editedRoyalties }
-                                    onChange = { viewCollectionModalStore.setRoyalties }
-                                    inputType = {InputType.INTEGER}
-                                    InputProps={{
-                                        endAdornment: <InputAdornment position="end" >
-                                            BTC
-                                        </InputAdornment>,
-                                    }}
-                                />,
-                            ),
+                            createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInPercentage()),
                         ] } />
                     { nftEntities.map((nftEntity) => {
                         return (
@@ -72,20 +47,10 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
                                         createDataPreview('Creator address', nftEntity.creatorAddress),
                                         createDataPreview('Current owner', nftEntity.currentOwnerAddress),
-                                        // createDataPreview('Farm Royalties', nftEntity.farmRoyalties),
-                                        // createDataPreview('Maintenance Fee', nftEntity.formatMaintenanceFeeInBtc()),
                                     ] } />
                             </div>
                         )
                     })}
-
-                    <Actions className = { 'ViewCollectionsActions' } layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
-                        <Button
-                            disabled = { !viewCollectionModalStore.areChangesMade() }
-                            onClick = { saveChanges } >
-                            Save Changes
-                        </Button>
-                    </Actions>
                 </>
             ) }
 

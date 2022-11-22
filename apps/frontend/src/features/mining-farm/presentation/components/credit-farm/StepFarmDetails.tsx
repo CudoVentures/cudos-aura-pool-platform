@@ -47,6 +47,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
     const farmMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
+    const resaleFarmRoyaltiesCudosAddressValidation = useRef(validationState.addCudosAddressValidation('Invalid cudos address')).current;
     const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const farmLeftoversAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const farmMainteannceFeesAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
@@ -243,23 +244,29 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                 </div>
             </div>
             <Input
+                label={'Cudos address to receive NFT resale royalties'}
+                placeholder={'cudos1...'}
+                value={miningFarmEntity.resaleFarmRoyaltiesCudosAddress}
+                inputValidation={resaleFarmRoyaltiesCudosAddressValidation}
+                onChange={(string) => { miningFarmEntity.resaleFarmRoyaltiesCudosAddress = string }} />
+            <Input
                 label={'BTC Address to receive awards'}
                 placeholder={'bc1qxy...'}
-                value={miningFarmEntity.rewardsFromPoolAddress}
+                value={miningFarmEntity.rewardsFromPoolBtcAddress}
                 inputValidation={farmPayoutAddressValidation}
-                onChange={(string) => { miningFarmEntity.rewardsFromPoolAddress = string }} />
+                onChange={(string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string }} />
             <Input
                 label={'BTC Address to receive awards leftovers'}
                 placeholder={'bc1qxy...'}
-                value={miningFarmEntity.leftoverRewardsAddress}
+                value={miningFarmEntity.leftoverRewardsBtcAddress}
                 inputValidation={farmLeftoversAddressValidation}
-                onChange={(string) => { miningFarmEntity.leftoverRewardsAddress = string }} />
+                onChange={(string) => { miningFarmEntity.leftoverRewardsBtcAddress = string }} />
             <Input
                 label={'BTC Address to receive maintenance fees'}
                 placeholder={'bc1qxy...'}
-                value={miningFarmEntity.maintenanceFeePayoutAddress}
+                value={miningFarmEntity.maintenanceFeePayoutBtcAddress}
                 inputValidation={farmMainteannceFeesAddressValidation}
-                onChange={(string) => { miningFarmEntity.maintenanceFeePayoutAddress = string }} />
+                onChange={(string) => { miningFarmEntity.maintenanceFeePayoutBtcAddress = string }} />
             <div className={'B2 Bold FullLine'}> 3. Upload photos from the farm</div>
             <div className={'Uploader FlexColumn'}>
                 <div className={'B3 SemiBold'}>Upload files here</div>

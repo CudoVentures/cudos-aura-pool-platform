@@ -6,3 +6,12 @@
 .ViewMiningFarmModal .ImgsCnt {
     margin-top: var(--item-spacing);
 }
+
+.ViewMiningFarmModal .RoyaliesInput {
+    width: 90px;
+    float: right;
+}
+
+.ViewMiningFarmModal .ViewMiningFarmsActions {
+    margin-top: var(--item-spacing);
+}
