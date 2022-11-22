@@ -9,6 +9,12 @@ import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { StatisticsController } from './statistics.controller';
 import { StatisticsService } from './statistics.service';
 import { GraphqlService } from '../graphql/graphql.service';
+import { FarmService } from '../farm/farm.service';
+import { CollectionService } from '../collection/collection.service';
+import { Farm } from '../farm/models/farm.model';
+import { EnergySource } from '../farm/models/energy-source.model';
+import { Manufacturer } from '../farm/models/manufacturer.model';
+import { Miner } from '../farm/models/miner.model';
 
 @Module({
     imports: [
@@ -16,11 +22,15 @@ import { GraphqlService } from '../graphql/graphql.service';
             DestinationAddressesWithAmount,
             NftOwnersPayoutHistory,
             NftPayoutHistory,
+            Farm,
+            Miner,
+            Manufacturer,
+            EnergySource,
         ]),
         NFTModule,
         HttpModule,
     ],
     controllers: [StatisticsController],
-    providers: [StatisticsService, NFTService, GraphqlService],
+    providers: [StatisticsService, NFTService, GraphqlService, FarmService, CollectionService],
 })
 export class StatisticsModule {}
