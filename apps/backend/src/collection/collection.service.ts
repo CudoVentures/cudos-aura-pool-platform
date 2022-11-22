@@ -137,7 +137,8 @@ export class CollectionService {
             throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
         }
 
-        const approvedNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: NftStatus.APPROVED }, order: [['price', 'ASC']] }) // Approved but not bought NFT-s
+        const allNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } }, order: [['price', 'ASC']] })
+        const approvedNfts = allNfts.filter((nft) => nft.status === NftStatus.APPROVED) // Approved but not bought NFT-s
         const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denom_id] }) // Sold NFTs
 
         const uniqueOwnersArray = [...new Set(soldNfts.marketplace_nft.map((nft) => nft.nft_nft.owner))] // Unique owners of all the NFTs in the collection
@@ -151,9 +152,8 @@ export class CollectionService {
         const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denom_id])
 
         // Get remaining hash power
-        const allNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } } })
         const nftsHashPowerSum = allNfts.reduce((pervVal, currVal) => pervVal + Number(currVal.hashing_power), 0)
-        const remainingHashPowerInTH = collection.hashing_power - nftsHashPowerSum
+        const remainingHashPowerInTH = Number(collection.hashing_power) - nftsHashPowerSum
 
         return {
             id: collectionId,
