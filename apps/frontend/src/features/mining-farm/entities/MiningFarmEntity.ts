@@ -26,9 +26,16 @@ export default class MiningFarmEntity {
     farmPhotoUrls: string[];
     status: MiningFarmStatus;
     maintenanceFeeInBtc: BigNumber;
-    rewardsFromPoolAddress: string;
-    leftoverRewardsAddress: string;
-    maintenanceFeePayoutAddress: string;
+
+    // royalties paid to cudos percents
+    cudosMintNftRoyaltiesPercent: number;
+    cudosResaleNftRoyaltiesPercent: number;
+
+    // ADRESSES
+    resaleFarmRoyaltiesCudosAddress: string;
+    rewardsFromPoolBtcAddress: string;
+    leftoverRewardsBtcAddress: string;
+    maintenanceFeePayoutBtcAddress: string;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -48,9 +55,12 @@ export default class MiningFarmEntity {
         this.farmPhotoUrls = [];
         this.status = MiningFarmStatus.QUEUED;
         this.maintenanceFeeInBtc = null;
-        this.rewardsFromPoolAddress = '';
-        this.leftoverRewardsAddress = '';
-        this.maintenanceFeePayoutAddress = '';
+        this.cudosMintNftRoyaltiesPercent = S.NOT_EXISTS;
+        this.cudosResaleNftRoyaltiesPercent = S.NOT_EXISTS;
+        this.resaleFarmRoyaltiesCudosAddress = '';
+        this.rewardsFromPoolBtcAddress = '';
+        this.leftoverRewardsBtcAddress = '';
+        this.maintenanceFeePayoutBtcAddress = '';
 
         makeAutoObservable(this);
     }
@@ -112,9 +122,12 @@ export default class MiningFarmEntity {
             'images': entity.farmPhotoUrls,
             'status': entity.status,
             'maintenance_fee_in_btc': entity.maintenanceFeeInBtc.toString(),
-            'address_for_receiving_rewards_from_pool': entity.rewardsFromPoolAddress,
-            'leftover_reward_payout_address': entity.leftoverRewardsAddress,
-            'maintenance_fee_payout_address': entity.maintenanceFeePayoutAddress,
+            'cudos_mint_nft_royalties_percent': entity.cudosMintNftRoyaltiesPercent,
+            'cudos_resale_nft_royalties_percent': entity.cudosResaleNftRoyaltiesPercent,
+            'resale_farm_royalties_cudos_address': entity.resaleFarmRoyaltiesCudosAddress,
+            'address_for_receiving_rewards_from_pool': entity.rewardsFromPoolBtcAddress,
+            'leftover_reward_payout_address': entity.leftoverRewardsBtcAddress,
+            'maintenance_fee_payout_address': entity.maintenanceFeePayoutBtcAddress,
         }
     }
 
@@ -141,9 +154,12 @@ export default class MiningFarmEntity {
         model.farmPhotoUrls = json.images ?? model.farmPhotoUrls;
         model.status = json.status ?? model.status;
         model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
-        model.rewardsFromPoolAddress = json.address_for_receiving_rewards_from_pool ?? model.rewardsFromPoolAddress;
-        model.leftoverRewardsAddress = json.leftover_reward_payout_address ?? model.leftoverRewardsAddress;
-        model.maintenanceFeePayoutAddress = json.maintenance_fee_payout_address ?? model.maintenanceFeePayoutAddress;
+        model.cudosMintNftRoyaltiesPercent = Number(json.cudos_mint_nft_royalties_percent ?? model.cudosMintNftRoyaltiesPercent);
+        model.cudosResaleNftRoyaltiesPercent = Number(json.cudos_resale_nft_royalties_percent ?? model.cudosResaleNftRoyaltiesPercent);
+        model.resaleFarmRoyaltiesCudosAddress = json.resale_farm_royalties_cudos_address ?? model.resaleFarmRoyaltiesCudosAddress;
+        model.rewardsFromPoolBtcAddress = json.address_for_receiving_rewards_from_pool ?? model.rewardsFromPoolBtcAddress;
+        model.leftoverRewardsBtcAddress = json.leftover_reward_payout_address ?? model.leftoverRewardsBtcAddress;
+        model.maintenanceFeePayoutBtcAddress = json.maintenance_fee_payout_address ?? model.maintenanceFeePayoutBtcAddress;
 
         return model;
     }

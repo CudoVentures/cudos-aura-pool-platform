@@ -150,7 +150,6 @@ export default class NftEntity {
 
         const model = new NftEntity();
 
-        console.log(json);
         model.id = (json.id ?? model.id).toString();
         model.collectionId = (json.collection_id ?? model.collectionId).toString();
         model.name = json.name ?? model.name;

@@ -113,6 +113,16 @@ export default class CreditMiningFarmDetailsPageStore {
 
     finishCreation = async () => {
         this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity?.accountId;
+        const superAdminEntity = this.accountSessionStore.superAdminEntity;
+
+        // add fees from super admin by default
+        // TODO USE SUPER ADMIN ENTITY WHEN IT IS ALWAYS RETURNED
+        // this.miningFarmEntity.cudosMintNftRoyaltiesPercent = superAdminEntity.firstSaleCudosRoyaltiesPercent;
+        // this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = superAdminEntity.resaleCudosRoyaltiesPercent;
+
+        this.miningFarmEntity.cudosMintNftRoyaltiesPercent = 10;
+        this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = 2.5;
+
         await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
 
         runInAction(() => {

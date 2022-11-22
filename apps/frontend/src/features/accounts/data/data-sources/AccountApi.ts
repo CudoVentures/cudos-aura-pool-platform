@@ -3,6 +3,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
+import S from '../../../../core/utilities/Main';
 
 export default class AccountApi {
 
@@ -12,7 +13,7 @@ export default class AccountApi {
             password,
         })
 
-        setTokenInStorage(data.access_token);
+        setTokenInStorage(data.accessToken);
     }
 
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
@@ -63,10 +64,10 @@ export default class AccountApi {
     }
 
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
-        const user = decodeStorageToken();
+        const user = (await axios.get('/api/v1/auth/fetchSessionAccounts')).data;
         if (user) {
-            user.email_verified = 1;
-            user.active = 1;
+            user.email_verified = S.INT_TRUE;
+            user.active = S.INT_TRUE;
             user.timestamp_last_login = Date.now();
             user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
 

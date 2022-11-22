@@ -23,4 +23,4 @@ WORKDIR ${WORKING_DIR}
 
 USER ${USER_NAME}
 
-CMD ["/bin/bash", "-c", "npm i && npx sequelize db:migrate --config=./apps/backend/database/config/config.js --migrations-path=./apps/backend/database/migrations && (trap 'kill 0' SIGINT; npm run start:backend:dev & npm run build:frontend:dev)"] 
+CMD ["/bin/bash", "-c", "npm i && npm run migrate && (trap 'kill 0' SIGINT; npm run start:backend:dev & npm run build:frontend:dev)"] 

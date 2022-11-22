@@ -1,14 +1,15 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import ModalWindow from '../../../../core/presentation/components/ModalWindow';
-
-import '../styles/wallet-select-modal.css';
 import WalletSelectModalStore from '../stores/WalletSelectModalStore';
 import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+
+import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import Svg from '../../../../core/presentation/components/Svg';
+
 import FlashOnIcon from '@mui/icons-material/FlashOn';
+import '../styles/wallet-select-modal.css';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
@@ -30,14 +31,14 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
             throw Error('Super admins should not have wallets for now');
         }
 
-        await walletStore.tryConnect(walletType);
+        await walletStore.connectWallet(walletType);
 
         if (accountSessionStore.isAdmin() === true) {
             await accountSessionStore.loadSessionAccountsAndSync();
-
+        } else {
+            await accountSessionStore.login('', '', walletStore.getAddress(), walletStore.getName(), '');
         }
 
-        await accountSessionStore.login('', '', walletStore.getAddress(), walletStore.getName(), '');
         walletSelectModalStore.hide();
     }
 

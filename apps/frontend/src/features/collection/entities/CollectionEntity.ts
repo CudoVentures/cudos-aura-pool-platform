@@ -91,8 +91,8 @@ export default class CollectionEntity {
         return CollectionEntity.formatStatusName(this.status);
     }
 
-    formatRoyaltiesInBtc(): string {
-        return `${this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00'} BTC`;
+    formatRoyaltiesInPercentage(): string {
+        return `${this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00'} %`;
     }
 
     formatDefaultPricePerNftInCudos(): string {

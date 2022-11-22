@@ -73,6 +73,10 @@ export class UserService {
         return farmAdmin;
     }
 
+    async findById(userId: number): Promise < User > {
+        return this.userModel.findByPk(userId);
+    }
+
     async findOne(email: string): Promise<User> {
         const user = await this.userModel.findOne({
             where: {

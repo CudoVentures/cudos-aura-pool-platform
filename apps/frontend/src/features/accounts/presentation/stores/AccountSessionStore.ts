@@ -145,10 +145,6 @@ export default class AccountSessionStore {
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
 
-        // TODO: remove after backend starts returning new token
-        if (adminEntity) {
-            userEntity.bitcoinWalletAddress = 'egerger'
-        }
         runInAction(() => {
             this.accountEntity = accountEntity;
             this.userEntity = userEntity;
@@ -157,7 +153,7 @@ export default class AccountSessionStore {
         });
 
         if (this.isUser() === true) {
-            await this.walletStore.tryConnect(sessionStorage.getItem(SESSION_STORAGE_WALLET_KEY));
+            await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
                 if (this.userEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
@@ -169,7 +165,7 @@ export default class AccountSessionStore {
 
             console.log('Logged as user => wallet:', this.walletStore.isConnected())
         } else if (this.isAdmin() === true) {
-            await this.walletStore.tryConnect(sessionStorage.getItem(SESSION_STORAGE_WALLET_KEY));
+            await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
                 if (this.adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {

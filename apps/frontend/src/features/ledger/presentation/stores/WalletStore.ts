@@ -5,9 +5,7 @@ import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
-declare let Config;
-
-export const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
+const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
 export enum SessionStorageWalletOptions {
     KEPLR = 'keplr',
@@ -98,8 +96,23 @@ export default class WalletStore {
         sessionStorage.removeItem(SESSION_STORAGE_WALLET_KEY);
     }
 
-    public async tryConnect(walletType: SessionStorageWalletOptions): Promise < void > {
-        switch (walletType) {
+    public async connectWallet(sessionStorageWalletOptions: SessionStorageWalletOptions): Promise < void > {
+        switch (sessionStorageWalletOptions) {
+            case SessionStorageWalletOptions.KEPLR:
+                await this.connectKeplr();
+                break;
+            case SessionStorageWalletOptions.COSMOSTATION:
+                await this.connectCosmostation();
+                break;
+            default:
+                this.alertStore.show('Unknow alert Type');
+                throw Error('Unknown wallet type');
+        }
+    }
+
+    public async tryConnect(): Promise < void > {
+        const sessionStorageWalletOptions = sessionStorage.getItem(SESSION_STORAGE_WALLET_KEY);
+        switch (sessionStorageWalletOptions) {
             case SessionStorageWalletOptions.KEPLR:
                 await this.connectKeplr();
                 break;
@@ -112,49 +125,20 @@ export default class WalletStore {
     }
 
     public isConnected(): boolean {
-        if (this.ledger !== null) {
-            return this.ledger.isConnected();
-        }
-
-        // TO DO: Cosmostation
-
-        return false;
+        return this.ledger?.isConnected() ?? false;
     }
 
     private async loadBalance(): Promise < void > {
         try {
-            if (this.ledger !== null) {
-                this.balance = await this.ledger.getBalance();
-                return;
-            }
-
-            // TO DO: Cosmostation
-
-            this.balance = new BigNumber(0);
+            this.balance = await this.ledger?.getBalance() ?? new BigNumber(0);
         } catch (ex) {
             this.balance = new BigNumber(0);
         }
     }
 
-    // onClickToggleKeplr = async () => {
-    //     if (this.isKeplrConnected() === true) {
-    //         await this.disconnectKeplr();
-    //     } else {
-    //         await this.connectKeplr();
-    //     }
-    // }
-
     onChangeAccount = () => {
         window.location.reload();
     }
-
-    // async getSignerData() {
-    //     const signer = this.ledger.offlineSigner;
-    //     const sender = this.ledger.accountAddress;
-    //     const client = await SigningStargateClient.connectWithSigner(Config.CUDOS_NETWORK.RPC, signer);
-
-    //     return { signer, sender, client };
-    // }
 
     getBalanceSafe(): BigNumber {
         return this.balance ?? new BigNumber(0);
