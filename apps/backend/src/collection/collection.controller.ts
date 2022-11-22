@@ -25,6 +25,7 @@ import { CollectionFilters } from './utils';
 import { ParseCollectionQueryPipe } from './pipes/collection-query.pipe';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { NftStatus } from '../nft/utils';
+import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -42,7 +43,7 @@ export class CollectionController {
     }
 
     @Get('details')
-    async getDetails(@Query('ids') ids: string): Promise<any> {
+    async getDetails(@Query('ids') ids: string): Promise<CollectionDetailsResponseDto[]> {
         const collectionIds = ids.split(',').map((id) => Number(id))
 
         const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(collectionId))

@@ -87,7 +87,7 @@ export class GraphqlService {
         return res.data.data.marketplace_nft_buy_history;
     }
 
-    async fetchMarketplaceCollectionPriceSum(denomId: string): Promise<number> {
+    async fetchMarketplaceNftPriceSum(denomId: string): Promise<number> {
         const res: AxiosResponse<{ data: MarketplaceNftPriceSumByDenomIdQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceNftPriceSumByDenomIdDocument),
             variables: { denomId },
