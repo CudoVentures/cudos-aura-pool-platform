@@ -15,3 +15,13 @@ query MarketplaceCollection($denom_id: String, $creator: String) {
     transaction_hash
   }
 }
+
+query MarketplaceNftPriceSumByDenomId($denomId: String!) {
+  marketplace_nft_buy_history_aggregate(where: {denom_id: {_eq: $denomId}}) {
+    aggregate {
+      sum {
+        price
+      }
+    }
+  }
+}
