@@ -148,7 +148,7 @@ export class CollectionService {
         const floorPriceInAcudos = cheapestNfts[0] || 0 // Price of the cheapest NFT
 
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
-        const volumeInAcudos = await this.graphqlService.fetchMarketplaceNftPriceSum(collection.denom_id)
+        const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denom_id])
 
         // Get remaining hash power
         const allNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } } })
@@ -158,7 +158,7 @@ export class CollectionService {
         return {
             id: collectionId,
             floorPriceInAcudos,
-            volumeInAcudos,
+            volumeInAcudos: collectionTotalSales.salesInAcudos || 0,
             owners: uniqueOwnersArray.length,
             remainingHashPowerInTH,
         }
