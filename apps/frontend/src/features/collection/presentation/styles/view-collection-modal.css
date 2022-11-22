@@ -16,12 +16,3 @@
     width: 0;
     flex: 1 1 auto;
 }
-
-.ViewCollectionModal .RoyaliesInput {
-    width: 90px;
-    float: right;
-}
-
-.ViewCollectionModal .ViewCollectionsActions {
-    margin-top: var(--item-spacing);
-}

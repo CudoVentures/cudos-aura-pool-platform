@@ -1,6 +1,7 @@
 import { action, makeObservable, observable, runInAction } from 'mobx';
 
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
+import S from '../../../../core/utilities/Main';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
@@ -16,6 +17,8 @@ export default class ViewMiningFarmModalStore extends ModalStore {
     energySourceEntitiesMap: Map < string, EnergySourceEntity >;
 
     @observable miningFarmEntity: MiningFarmEntity;
+    @observable editedCudosMintRoyalties: number;
+    @observable editedCudosResaleRoyalties: number;
 
     constructor(miningFarmRepo: MiningFarmRepo) {
         super();
@@ -27,6 +30,8 @@ export default class ViewMiningFarmModalStore extends ModalStore {
         this.energySourceEntitiesMap = null;
 
         this.miningFarmEntity = null;
+        this.editedCudosMintRoyalties = S.NOT_EXISTS;
+        this.editedCudosResaleRoyalties = S.NOT_EXISTS;
 
         makeObservable(this);
     }
@@ -75,6 +80,10 @@ export default class ViewMiningFarmModalStore extends ModalStore {
             this.manufacturerEntitiesMap = manufacturerEntitiesMap;
             this.minerEntitiesMap = minerEntitiesMap;
             this.energySourceEntitiesMap = energySourceEntitiesMap;
+
+            this.editedCudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;
+            this.editedCudosResaleRoyalties = miningFarmEntity.cudosResaleNftRoyaltiesPercent;
+
             this.show();
         });
 
@@ -86,4 +95,23 @@ export default class ViewMiningFarmModalStore extends ModalStore {
         super.hide();
     }
 
+    setEditedCudosMintRoyalties = (value) => {
+        this.editedCudosMintRoyalties = Number(value);
+    }
+
+    setEditedCudosResaleRoyalties = (value) => {
+        this.editedCudosResaleRoyalties = Number(value);
+    }
+
+    areChangesMade(): boolean {
+        return this.editedCudosMintRoyalties !== this.miningFarmEntity.cudosMintNftRoyaltiesPercent
+            || this.editedCudosResaleRoyalties !== this.miningFarmEntity.cudosResaleNftRoyaltiesPercent
+    }
+
+    saveChanges = async () => {
+        this.miningFarmEntity.cudosMintNftRoyaltiesPercent = this.editedCudosMintRoyalties
+        this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.editedCudosResaleRoyalties
+        await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
+        this.hide();
+    }
 }

@@ -41,22 +41,40 @@ export class FarmDto {
     @ApiProperty({ required: true, example: 'Somewhere' })
         location: string;
 
+    @IsNumber()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 10, description: 'Royalties for Cudos for first sale/mint of nft' })
+        cudos_mint_nft_royalties_percent: number;
+
+    @IsNumber()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 2.5, description: 'Royalties for Cudos for first resale of nft' })
+        cudos_resale_nft_royalties_percent: number;
+
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
         required: true,
-        example: 'address_for_receiving_rewards_from_pool',
+        example: 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0',
+    })
+        resale_farm_royalties_cudos_address: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({
+        required: true,
+        example: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
     })
         address_for_receiving_rewards_from_pool: string;
 
     @IsString()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: 'leftover_reward_payout_address' })
+    @ApiProperty({ required: true, example: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' })
         leftover_reward_payout_address: string;
 
     @IsString()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: 'maintenance_fee_payout_address' })
+    @ApiProperty({ required: true, example: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' })
         maintenance_fee_payout_address: string;
 
     @IsString()

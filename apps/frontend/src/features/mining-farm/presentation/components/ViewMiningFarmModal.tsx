@@ -8,6 +8,10 @@ import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 
 import '../styles/view-mining-farm-modal.css';
+import Input, { InputType } from '../../../../core/presentation/components/Input';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
+import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
 
 type Props = {
     viewMiningFarmModalStore?: ViewMiningFarmModalStore;
@@ -36,7 +40,38 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                             createDataPreview('Energy sources', viewMiningFarmModalStore.getSelectedEnergySourcesNames()),
                             createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
                             createDataPreview('Hashrate', miningFarmEntity.formatHashPowerInTh()),
-                            createDataPreview('Maintenance fee', miningFarmEntity.formatMaintenanceFeesInBtc()),
+                            createDataPreview('Resale royalties address', miningFarmEntity.cudosResaleNftRoyaltiesPercent),
+                            createDataPreview('Pool rewards address', miningFarmEntity.rewardsFromPoolBtcAddress),
+                            createDataPreview('Leftover rewards address', miningFarmEntity.leftoverRewardsBtcAddress),
+                            createDataPreview('Maintenance fee address', miningFarmEntity.maintenanceFeePayoutBtcAddress),
+                            createDataPreview(
+                                'Cudos NFT Mint Royalties',
+                                <Input
+                                    className={'FlexRow RoyaliesInput'}
+                                    value = { viewMiningFarmModalStore.editedCudosMintRoyalties }
+                                    onChange = { viewMiningFarmModalStore.setEditedCudosMintRoyalties }
+                                    inputType = {InputType.REAL}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end" >
+                                            %
+                                        </InputAdornment>,
+                                    }}
+                                />,
+                            ),
+                            createDataPreview(
+                                'Cudos NFT Resale Royalties',
+                                <Input
+                                    className={'FlexRow RoyaliesInput'}
+                                    value = { viewMiningFarmModalStore.editedCudosResaleRoyalties }
+                                    onChange = { viewMiningFarmModalStore.setEditedCudosResaleRoyalties }
+                                    inputType = {InputType.REAL}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end" >
+                                            %
+                                        </InputAdornment>,
+                                    }}
+                                />,
+                            ),
                         ] } />
                     <div className = { 'ImgsCnt Grid GridColumns3' } >
                         { miningFarmEntity.farmPhotoUrls.map((url, i) => {
@@ -50,6 +85,13 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                             )
                         }) }
                     </div>
+                    <Actions className = { 'ViewMiningFarmsActions' } layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
+                        <Button
+                            disabled = { !viewMiningFarmModalStore.areChangesMade() }
+                            onClick = { viewMiningFarmModalStore.saveChanges } >
+                            Save Changes
+                        </Button>
+                    </Actions>
                 </>
             ) }
 

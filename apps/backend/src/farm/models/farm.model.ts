@@ -55,6 +55,18 @@ export class Farm extends Model {
 
     @AllowNull(false)
     @Column
+        cudos_mint_nft_royalties_percent: number;
+
+    @AllowNull(false)
+    @Column
+        cudos_resale_nft_royalties_percent: number;
+
+    @AllowNull(false)
+    @Column
+        resale_farm_royalties_cudos_address: string;
+
+    @AllowNull(false)
+    @Column
         address_for_receiving_rewards_from_pool: string;
     // @TODO add default address_for_receiving_rewards_from_pool
     @AllowNull(false)
