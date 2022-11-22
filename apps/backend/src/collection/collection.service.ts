@@ -3,10 +3,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CollectionDto } from './dto/collection.dto';
 import { Collection } from './collection.model';
 import { CollectionFilters, CollectionOrderBy, CollectionStatus } from './utils';
-import { NFTService } from '../nft/nft.service';
 import { NFT } from '../nft/nft.model';
 import { NftStatus } from '../nft/utils';
-import sequelize from 'sequelize/types/sequelize';
 
 @Injectable()
 export class CollectionService {
@@ -15,7 +13,6 @@ export class CollectionService {
     private collectionModel: typeof Collection,
     @InjectModel(NFT)
     private nftModel: typeof NFT,
-    private nftService: NFTService,
     ) {}
 
     async findAll(filters: Partial<CollectionFilters>): Promise<Collection[]> {
@@ -40,6 +37,18 @@ export class CollectionService {
             limit,
         });
         return collections;
+    }
+
+    async findIdsByStatus(status: CollectionStatus): Promise < number[] > {
+        const collections = await this.collectionModel.findAll({
+            where: {
+                status,
+            },
+        })
+
+        return collections.map((collection) => {
+            return collection.id;
+        })
     }
 
     async findOne(id: number): Promise<Collection> {

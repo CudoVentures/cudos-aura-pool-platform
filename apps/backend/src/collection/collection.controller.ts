@@ -127,7 +127,7 @@ export class CollectionController {
             updateCollectionStatusDto.status,
         );
 
-        const nftsToUpdate = await this.nftService.findAll({ collection_id: id })
+        const nftsToUpdate = await this.nftService.findByFilter({ collection_id: id })
         const nftsToApprove = nftsToUpdate.map(async (nft) => this.nftService.updateStatus(nft.id, NftStatus.APPROVED))
 
         await Promise.all(nftsToApprove)

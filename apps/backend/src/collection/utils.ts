@@ -1,7 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export const enum CollectionStatus {
+    QUEUED = 'queued',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
+    ISSUED = 'issued',
+    DELETED = 'deleted',
+}
+
+export enum CollectionStatusWithAny {
     QUEUED = 'queued',
     APPROVED = 'approved',
     REJECTED = 'rejected',

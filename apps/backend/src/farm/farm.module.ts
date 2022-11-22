@@ -11,10 +11,14 @@ import { Miner } from './models/miner.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { EnergySource } from './models/energy-source.model';
 import { HttpModule } from '@nestjs/axios';
+import { VisitorService } from '../visitor/visitor.service';
+import { VisitorModule } from '../visitor/visitor.module';
+import { VisitorEntity } from '../visitor/visitor.entity';
 
 @Module({
-    imports: [SequelizeModule.forFeature([Farm, Miner, Manufacturer, EnergySource]), forwardRef(() => CollectionModule), NFTModule, HttpModule],
+    imports: [SequelizeModule.forFeature([Farm, Miner, Manufacturer, EnergySource, VisitorEntity]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
     controllers: [FarmController],
-    providers: [FarmService, CollectionService, NFTService],
+    providers: [FarmService, CollectionService, NFTService, VisitorService],
+    exports: [VisitorService],
 })
 export class FarmModule {}

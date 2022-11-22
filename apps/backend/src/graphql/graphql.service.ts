@@ -41,7 +41,6 @@ export class GraphqlService {
             variables: { uid },
         })
 
-        console.log(res.data)
         return res.data.data.marketplace_nft
     }
 

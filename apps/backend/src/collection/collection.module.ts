@@ -14,6 +14,7 @@ import { FarmModule } from '../farm/farm.module';
 import { EnergySource } from '../farm/models/energy-source.model';
 import { Manufacturer } from '../farm/models/manufacturer.model';
 import { Miner } from '../farm/models/miner.model';
+import { VisitorModule } from '../visitor/visitor.module';
 
 @Module({
     imports: [
@@ -21,9 +22,10 @@ import { Miner } from '../farm/models/miner.model';
         forwardRef(() => NFTModule),
         forwardRef(() => FarmModule),
         HttpModule,
+        VisitorModule,
     ],
     providers: [CollectionService, NFTService, FarmService, GraphqlService],
     controllers: [CollectionController],
-    exports: [SequelizeModule],
+    exports: [SequelizeModule, CollectionService],
 })
 export class CollectionModule {}
