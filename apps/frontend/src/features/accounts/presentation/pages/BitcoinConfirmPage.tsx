@@ -13,13 +13,15 @@ import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import '../styles/page-bitcoin-confirm.css';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
+    alertStore?: AlertStore;
     walletStore?: WalletStore;
 }
 
-function BitcoinConfirmPage({ accountSessionStore, walletStore }: Props) {
+function BitcoinConfirmPage({ accountSessionStore, alertStore, walletStore }: Props) {
     const validationState = useRef(new ValidationState()).current;
     const validationBitcoin = useRef(validationState.addBitcoinAddressValidation('Invalid address')).current;
 
@@ -28,6 +30,12 @@ function BitcoinConfirmPage({ accountSessionStore, walletStore }: Props) {
     async function onClickConfirmBitcoinAddress() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
+            return;
+        }
+
+        await walletStore.tryConnect();
+        if (walletStore.isConnected() === false) {
+            alertStore.show('Please connect wallet first');
             return;
         }
 

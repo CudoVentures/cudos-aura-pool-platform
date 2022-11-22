@@ -22,6 +22,7 @@
     justify-content: flex-start;
     flex-grow: 1;
     gap: 18px;
+    cursor: pointer;
 
     padding: 27px;
     border: 2px solid var(--color-gray-060);

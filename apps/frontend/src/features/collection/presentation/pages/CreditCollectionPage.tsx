@@ -86,11 +86,9 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         <PageLayoutComponent className = { 'PageCreditCollection' }>
             <PageHeader />
 
-            { collectionEntity === null && (
+            { collectionEntity !== null || miningFarmEntity === null || nftEntities === null ? (
                 <LoadingIndicator />
-            ) }
-
-            { collectionEntity !== null && miningFarmEntity !== null && nftEntities !== null && (
+            ) : (
                 <div className={'PageContent AppContent'} >
 
                     <Breadcrumbs crumbs={ [
@@ -175,7 +173,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
 
                     </DataGridLayout>
                 </div>
-            ) }
+            )}
             <PageFooter />
         </PageLayoutComponent>
 
