@@ -35,6 +35,7 @@ export default class ViewCollectionModalStore extends ModalStore {
     async showSignal(collectionEntity: CollectionEntity) {
         const nftFilterModel = new NftFilterModel();
         nftFilterModel.collectionIds = [collectionEntity.id];
+        nftFilterModel.collectionStatus = CollectionStatus.ANY;
 
         const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(nftFilterModel);
 

@@ -15,17 +15,13 @@ export class NFTService {
     ) {}
 
     async findAll(filters: Partial<NftFilters>): Promise<NFT[]> {
-        const { limit, offset, order_by, ...rest } = filters
+        const { limit, offset, order_by, collectionStatus, ...rest } = filters
 
         let order;
         switch (order_by) {
             case NftOrderBy.TIMESTAMP_DESC:
                 order = [['createdAt', 'DESC']]
                 break;
-            // TODO: SORT BY POPULARITY
-            // case NftOrderBy.POPULAR_DESC:
-            //     order = [['createdAt', 'DESC']]
-            //     break;
             default:
                 order = undefined;
                 break;

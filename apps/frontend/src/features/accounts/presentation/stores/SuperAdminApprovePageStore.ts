@@ -114,6 +114,9 @@ export default class SuperAdminApprovePageStore {
         });
 
         await this.miningFarmRepo.approveMiningFarms(miningFarmEntities);
+
+        this.selectedCollectionEntities.clear();
+
         this.fetch();
     }
 
@@ -132,6 +135,8 @@ export default class SuperAdminApprovePageStore {
         for (let i = collectionEntities.length; i-- > 0;) {
             await this.collectionRepo.approveCollection(collectionEntities[i], this.walletStore.ledger, this.walletStore.selectedNetwork);
         }
+
+        this.selectedCollectionEntities.clear();
 
         this.fetch();
     }

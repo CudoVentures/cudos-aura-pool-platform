@@ -59,7 +59,7 @@ export class FarmController {
     }
 
     @Put('miners')
-    async creditMiners(minerDto: MinerDto): Promise<Miner> {
+    async creditMiners(@Body() minerDto: MinerDto): Promise<Miner> {
         const { id } = minerDto
 
         if (!id) {
@@ -70,7 +70,7 @@ export class FarmController {
     }
 
     @Put('energy-sources')
-    async creditEnergySources(energySourceDto: EnergySourceDto): Promise<EnergySource> {
+    async creditEnergySources(@Body() energySourceDto: EnergySourceDto): Promise<EnergySource> {
         const { id } = energySourceDto
 
         if (!id) {
@@ -81,7 +81,8 @@ export class FarmController {
     }
 
     @Put('manufacturers')
-    async creditManufacturers(manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
+    async creditManufacturers(@Body() manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
+        console.log(manufacturerDto);
         const { id } = manufacturerDto
 
         if (!id) {

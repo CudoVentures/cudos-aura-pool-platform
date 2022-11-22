@@ -11,6 +11,8 @@ import '../styles/view-collection-modal.css';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button from '../../../../core/presentation/components/Button';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import Input, { InputType } from '../../../../core/presentation/components/Input';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 
 type Props = {
     viewCollectionModalStore?: ViewCollectionModalStore;
@@ -21,13 +23,8 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
 
     const { collectionEntity, nftEntities } = viewCollectionModalStore;
 
-    function saveChanges() {
-        try {
-            viewCollectionModalStore.saveChanges();
-        } catch (e) {
-            console.log(e);
-            alertStore.show('Failed to save changes.')
-        }
+    async function saveChanges() {
+        await viewCollectionModalStore.saveChanges();
     }
 
     return (
@@ -42,7 +39,20 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
                             createDataPreview('Collection Name', collectionEntity.name),
                             createDataPreview('Description', collectionEntity.description),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
-                            createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInBtc()),
+                            createDataPreview(
+                                'Collection Royalties',
+                                <Input
+                                    className={'FlexRow RoyaliesInput'}
+                                    value = { viewCollectionModalStore.editedRoyalties }
+                                    onChange = { viewCollectionModalStore.setRoyalties }
+                                    inputType = {InputType.INTEGER}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end" >
+                                            BTC
+                                        </InputAdornment>,
+                                    }}
+                                />,
+                            ),
                         ] } />
                     { nftEntities.map((nftEntity) => {
                         return (
@@ -65,11 +75,10 @@ function ViewCollectionModal({ viewCollectionModalStore, alertStore }: Props) {
                         )
                     })}
 
-                    <Actions layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
+                    <Actions className = { 'ViewCollectionsActions' } layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
                         <Button
                             disabled = { !viewCollectionModalStore.areChangesMade() }
-                            onClick = { saveChanges }
-                        >
+                            onClick = { saveChanges } >
                             Save Changes
                         </Button>
                     </Actions>

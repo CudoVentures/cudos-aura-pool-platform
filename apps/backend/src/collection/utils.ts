@@ -7,6 +7,7 @@ export const enum CollectionStatus {
     REJECTED = 'rejected',
     ISSUED = 'issued',
     DELETED = 'deleted',
+    ANY = 'any',
 }
 
 export const enum CollectionOrderBy {

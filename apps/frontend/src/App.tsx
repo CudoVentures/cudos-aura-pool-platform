@@ -24,7 +24,6 @@ import StorageHelper from './core/helpers/StorageHelper';
 import BitcoinStore from './features/bitcoin-data/presentation/stores/BitcoinStore';
 import CudosStore from './features/cudos-data/presentation/stores/CudosStore';
 import UserProfilePageStore from './features/accounts/presentation/stores/UserProfilePageStore';
-import AccountStorageRepo from './features/accounts/data/repo/AccountStorageRepo';
 import AccountSessionStore from './features/accounts/presentation/stores/AccountSessionStore';
 import CategoriesStore from './features/collection/presentation/stores/CategoriesStore';
 import ExploreCollectionsPageStore from './features/collection/presentation/stores/ExploreCollectionsPageStore';
@@ -37,7 +36,6 @@ import CreditCollectionStore from './features/collection/presentation/stores/Cre
 import CreditCollectionSuccessModalStore from './features/collection/presentation/stores/CreditCollectionSuccessModalStore';
 import AnalyticsPageStore from './features/analytics/presentation/stores/AnalyticsPageStore';
 import StatisticsStorageRepo from './features/analytics/data/repo/StatisticsStorageRepo';
-import UserStorageRepo from './features/accounts/data/repo/UserStorageRepo';
 import AccountApiRepo from './features/accounts/data/repo/AccountApiRepo';
 import MiningFarmApiRepo from './features/mining-farm/data/repo/MiningFarmApiRepo';
 import CollectionApiRepo from './features/collection/data/repo/CollectionApiRepo';
@@ -48,6 +46,8 @@ import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
 import CudosApiRepo from './features/cudos-data/data/repo/CudosApiRepo';
 import ChangePasswordModalStore from './features/accounts/presentation/stores/ChangePasswordModalStore';
 import WalletSelectModalStore from './features/header/presentation/stores/WalletSelectModalStore';
+import VisitorApiRepo from './features/visitor/data/repos/VisitorApiRepo';
+import VisitorStore from './features/visitor/presentation/stores/VisitorStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -58,6 +58,7 @@ const cudosRepo = new CudosApiRepo();
 const miningFarmRepo = new MiningFarmApiRepo();
 const collectionRepo = new CollectionApiRepo();
 const nftRepo = new NftApiRepo();
+const visitorRepo = new VisitorApiRepo();
 const statisticsRepo = new StatisticsStorageRepo();
 
 const appStore = new AppStore();
@@ -73,7 +74,7 @@ const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, mi
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, miningFarmRepo);
 const marketplaceStore = new MarketplaceStore(collectionRepo, nftRepo, miningFarmRepo);
-const superAdminApprovePageStore = new SuperAdminApprovePageStore(miningFarmRepo, collectionRepo, walletStore);
+const superAdminApprovePageStore = new SuperAdminApprovePageStore(miningFarmRepo, collectionRepo);
 const exploreCollectionsPageStore = new ExploreCollectionsPageStore(collectionRepo, miningFarmRepo);
 const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRepo);
 const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
@@ -84,6 +85,7 @@ const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, coll
 const analyticsPageStore = new AnalyticsPageStore(statisticsRepo, nftRepo, collectionRepo, miningFarmRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo);
 const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
+const visitorStore = new VisitorStore(visitorRepo);
 
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
@@ -136,6 +138,7 @@ const App = () => {
                 creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
                 superAdminApprovePageStore = { superAdminApprovePageStore }
                 creditCollectionStore = { creditCollectionStore }
+                visitorStore = { visitorStore }
                 analyticsPageStore = { analyticsPageStore }
                 viewCollectionModalStore = { viewCollectionModalStore }
                 viewMiningFarmModalStore = { viewMiningFarmModalStore }

@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import S from '../../../../core/utilities/Main';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import ViewNftPageStore from '../stores/ViewNftPageStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import BuyNftModalStore from '../stores/BuyNftModalStore';
+import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 import ResellNftModalStore from '../stores/ResellNftModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftEntity from '../../entities/NftEntity';
@@ -31,7 +31,7 @@ import { ContainerBackground } from '../../../../core/presentation/components/St
 
 import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 
 type Props = {
     walletStore?: WalletStore;
@@ -39,9 +39,10 @@ type Props = {
     viewNftPageStore?: ViewNftPageStore;
     buyNftModalStore?: BuyNftModalStore;
     resellNftModalStore?: ResellNftModalStore;
+    visitorStore?: VisitorStore;
 }
 
-function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore }: Props) {
+function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -52,6 +53,9 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
     useEffect(() => {
         async function run() {
             await viewNftPageStore.init(nftId);
+            if (nftId !== undefined) {
+                visitorStore.signalVisitNft(viewNftPageStore.nftEntity); // no need to wait for it
+            }
         }
 
         run();

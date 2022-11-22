@@ -45,7 +45,7 @@ export class NFT extends Model {
 
   @AllowNull(false)
   @Column
-      price: number;
+      price: string;
 
   @AllowNull(false)
   @IsDate

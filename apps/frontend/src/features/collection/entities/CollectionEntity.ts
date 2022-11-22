@@ -24,8 +24,6 @@ export default class CollectionEntity {
     coverImgUrl: string;
     status: CollectionStatus;
     royalties: number;
-    // maintenanceFeeInBtc: BigNumber;
-    // payoutAddress: string;
     defaultPricePerNftInCudos: BigNumber;
     defaultHashPowerPerNftInTh: number;
 
@@ -40,8 +38,6 @@ export default class CollectionEntity {
         this.coverImgUrl = '';
         this.status = CollectionStatus.NOT_SUBMITTED;
         this.royalties = S.NOT_EXISTS;
-        // this.maintenanceFeeInBtc = null;
-        // this.payoutAddress = '';
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
 
@@ -161,12 +157,10 @@ export default class CollectionEntity {
         model.denomId = json.denom_id ?? model.denomId;
         model.description = json.description ?? model.description;
         model.hashPowerInTh = Number(json.hashing_power ?? model.hashPowerInTh);
-        model.profileImgUrl = String.fromCharCode(...(json.main_image ? json.main_image.data : [])) ?? model.profileImgUrl;
-        model.coverImgUrl = String.fromCharCode(...(json.banner_image ? json.banner_image.data : [])) ?? model.coverImgUrl;
+        model.profileImgUrl = json.main_image ?? model.profileImgUrl;
+        model.coverImgUrl = json.banner_image ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
-        // model.maintenanceFeeInBtc = new BigNumber(json.maintenanceFeeInBtc ?? model.maintenanceFeeInBtc);
-        // model.payoutAddress = json.payoutAddress ?? model.payoutAddress;
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
         model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
 
