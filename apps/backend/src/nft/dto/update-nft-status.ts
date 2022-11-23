@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
-import { NftStatus } from '../utils';
+import { NftStatus } from '../nft.types';
 
 export class UpdateNFTStatusDto {
     @IsString()

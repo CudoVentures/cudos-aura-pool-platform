@@ -10,7 +10,7 @@ import { VisitorService } from '../visitor/visitor.service';
 import NftFilterModel, { NftOrderBy } from './dto/nft-filter.model';
 import { NFTDto } from './dto/nft.dto';
 import { NFT } from './nft.model';
-import { NftStatus } from './utils';
+import { NftStatus } from './nft.types';
 
 @Injectable()
 export class NFTService {

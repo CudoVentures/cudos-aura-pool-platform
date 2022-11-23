@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Collection } from '../collection/collection.model';
 import { NFT } from '../nft/nft.model';
-import { NftStatus } from '../nft/utils';
+import { NftStatus } from '../nft/nft.types';
 import { EnergySourceDto } from './dto/energy-source.dto';
 import { FarmDto } from './dto/farm.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';

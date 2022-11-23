@@ -16,7 +16,7 @@ import {
     MarketplaceNftTradeHistoryQuery,
     MarketplaceNftTradeHistoryDocument,
 } from './types';
-import { MarketplaceNftFilters } from '../nft/utils';
+import { MarketplaceNftFilters } from '../nft/nft.types';
 
 @Injectable()
 export class GraphqlService {

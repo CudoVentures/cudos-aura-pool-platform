@@ -13,7 +13,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
 import { Collection } from '../collection/collection.model';
-import { NftStatus } from './utils';
+import { NftStatus } from './nft.types';
 
 export enum ListStatus {
     NOT_LISTED = 1,

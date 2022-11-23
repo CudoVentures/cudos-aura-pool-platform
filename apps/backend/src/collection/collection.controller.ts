@@ -25,7 +25,7 @@ import { Role } from '../user/roles';
 import { IsCreatorGuard } from './guards/is-creator.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
-import { NftStatus } from '../nft/utils';
+import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel from './dto/collection-filter.model';
 import NftFilterModel from '../nft/dto/nft-filter.model';
 import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
