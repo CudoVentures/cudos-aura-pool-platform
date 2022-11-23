@@ -13,10 +13,10 @@ import { EnergySource } from './models/energy-source.model';
 import { HttpModule } from '@nestjs/axios';
 import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
-import { VisitorEntity } from '../visitor/visitor.entity';
+import VisitorRepo from '../visitor/visitor.repo';
 
 @Module({
-    imports: [SequelizeModule.forFeature([Farm, Miner, Manufacturer, EnergySource, VisitorEntity]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
+    imports: [SequelizeModule.forFeature([Farm, Miner, Manufacturer, EnergySource, VisitorRepo]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
     controllers: [FarmController],
     providers: [FarmService, CollectionService, NFTService, VisitorService],
     exports: [VisitorService],

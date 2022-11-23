@@ -1,47 +1,17 @@
-import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table } from 'sequelize-typescript';
 import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../common/utils';
+import VisitorRepo from './visitor.repo';
+import { RefType } from './visitor.types';
 
-export enum RefType {
-    NFT = 1,
-    MINING_FARM = 2,
-}
+export default class VisitorEntity {
 
-export const VISITOR_TABLE_NAME = 'visitors'
+    id: number;
+    refType: RefType;
+    refId: string;
+    visitorUuid: string
+    createdAt: Date
+    updatedAt: Date
 
-@Table({
-    freezeTableName: true,
-    tableName: VISITOR_TABLE_NAME,
-    underscored: true,
-})
-export class VisitorEntity extends Model {
-    @Unique
-    @PrimaryKey
-    @AutoIncrement
-    @Column
-        id: number;
-
-    @AllowNull(false)
-    @Column
-        refType: RefType;
-
-    @AllowNull(false)
-    @Column
-        refId: string;
-
-    @AllowNull(false)
-    @Column
-        visitorUuid: string
-
-    @AllowNull(false)
-    @Column
-        createdAt: Date
-
-    @AllowNull(false)
-    @Column
-        updatedAt: Date
-
-    constructor(...args) {
-        super(...args);
+    constructor() {
         this.id = NOT_EXISTS_INT;
         this.refType = RefType.NFT;
         this.refId = NOT_EXISTS_STRING;
@@ -66,6 +36,41 @@ export class VisitorEntity extends Model {
         entity.visitorUuid = visitorUuid;
 
         return entity;
+    }
+
+    static fromRepo(repoJson: VisitorRepo): VisitorEntity {
+        if (repoJson === null) {
+            return null;
+        }
+
+        const entity = new VisitorEntity();
+
+        repoJson = repoJson.toJSON();
+        entity.id = repoJson.id ?? entity.id;
+        entity.refType = repoJson.refType ?? entity.refType;
+        entity.refId = repoJson.refId ?? entity.refId;
+        entity.visitorUuid = repoJson.visitorUuid ?? entity.visitorUuid;
+        entity.createdAt = repoJson.createdAt ?? entity.createdAt;
+        entity.updatedAt = repoJson.updatedAt ?? entity.updatedAt;
+
+        return entity;
+    }
+
+    static toRepo(entity: VisitorEntity): VisitorRepo {
+        if (entity === null) {
+            return null;
+        }
+
+        const repoJson = new VisitorRepo();
+
+        if (entity.id !== NOT_EXISTS_INT) {
+            repoJson.id = entity.id;
+        }
+        repoJson.refType = entity.refType ?? repoJson.refType;
+        repoJson.refId = entity.refId ?? repoJson.refId;
+        repoJson.visitorUuid = entity.visitorUuid ?? repoJson.visitorUuid;
+
+        return repoJson;
     }
 
 }
