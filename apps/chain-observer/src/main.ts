@@ -6,7 +6,7 @@ type Module = {
 
 async function main() {
     const app = new App();
-    app.start();
+    await app.start();
 
     const mod = module as unknown as Module;
     if (mod.hot) {
