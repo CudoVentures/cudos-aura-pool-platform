@@ -1,7 +1,6 @@
 import { IsArray, IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { MiningFarmStatus } from '../../../../frontend/src/features/mining-farm/entities/MiningFarmEntity';
 import { IntBoolValue } from '../../common/utils';
-import { FarmStatusWithAny } from '../utils';
+import { FarmStatus, FarmStatusWithAny } from '../utils';
 
 export enum MiningFarmOrderBy {
     POPULAR_ASC = 1,
@@ -65,8 +64,8 @@ export default class MiningFarmFilterModel {
         return this.orderBy === MiningFarmOrderBy.POPULAR_ASC || this.orderBy === MiningFarmOrderBy.POPULAR_DESC;
     }
 
-    getMiningFarmStatus(): MiningFarmStatus {
-        return this.status as unknown as MiningFarmStatus;
+    getMiningFarmStatus(): FarmStatus {
+        return this.status as unknown as FarmStatus;
     }
 
 }

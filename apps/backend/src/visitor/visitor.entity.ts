@@ -1,13 +1,5 @@
-import {
-    Column,
-    Model,
-    AllowNull,
-    PrimaryKey,
-    Unique,
-    DataType,
-    AutoIncrement,
-    Table,
-} from 'sequelize-typescript';
+import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table } from 'sequelize-typescript';
+import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../common/utils';
 
 export enum RefType {
     NFT = 1,
@@ -47,6 +39,16 @@ export class VisitorEntity extends Model {
     @AllowNull(false)
     @Column
         updatedAt: Date
+
+    constructor(...args) {
+        super(...args);
+        this.id = NOT_EXISTS_INT;
+        this.refType = RefType.NFT;
+        this.refId = NOT_EXISTS_STRING;
+        this.visitorUuid = '';
+        this.createdAt = null;
+        this.updatedAt = null;
+    }
 
     static newInstanceForMiningFarm(refId: number, visitorUuid: string): VisitorEntity {
         return VisitorEntity.newInstance(RefType.MINING_FARM, refId.toString(), visitorUuid);
