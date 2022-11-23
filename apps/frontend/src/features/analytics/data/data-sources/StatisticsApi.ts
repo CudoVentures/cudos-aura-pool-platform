@@ -8,7 +8,7 @@ import UserEarningsEntity from '../../entities/UserEarningsEntity';
 export default class StatisticsApi {
 
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
-        const { data } = await axios.get(`/api/v1/statistics/hostory/nft/${nftEventFilterModel.nftId}`, { params: { ...nftEventFilterModel } })
+        const { data } = await axios.get(`/api/v1/statistics/history/nft/${nftEventFilterModel.nftId}`, { params: { ...nftEventFilterModel } })
 
         return data
     }

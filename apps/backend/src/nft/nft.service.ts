@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
-import sequelize, { Op, Sequelize } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { Collection } from '../collection/collection.model';
 import { CollectionService } from '../collection/collection.service';
@@ -16,7 +16,7 @@ import { NftStatus } from './utils';
 export class NFTService {
     constructor(
         @InjectModel(NFT)
-        private nftModel: typeof NFT,
+        private nftRepo: typeof NFT,
         private collectionService: CollectionService,
         private visitorService: VisitorService,
     ) {}
@@ -59,7 +59,7 @@ export class NFTService {
             orderByClause[0].push(nftFilterModel.orderBy > 0 ? 'ASC' : 'DESC');
         }
 
-        let nftEntities = await this.nftModel.findAll({
+        let nftEntities = await this.nftRepo.findAll({
             where: whereClause,
             order: orderByClause,
         });
@@ -88,7 +88,7 @@ export class NFTService {
     }
 
     async findByCollectionId(id: number): Promise<NFT[]> {
-        const nfts = await this.nftModel.findAll({
+        const nfts = await this.nftRepo.findAll({
             where: {
                 collection_id: id,
             },
@@ -98,7 +98,7 @@ export class NFTService {
     }
 
     async findByCreatorId(id: number): Promise<NFT[]> {
-        const nfts = await this.nftModel.findAll({
+        const nfts = await this.nftRepo.findAll({
             where: {
                 creator_id: id,
             },
@@ -107,8 +107,8 @@ export class NFTService {
         return nfts;
     }
 
-    async findOne(id: string): Promise<NFT> {
-        const nft = this.nftModel.findByPk(id, { include: [{ model: Collection }] });
+    async findOne(id: string): Promise < NFT > {
+        const nft = this.nftRepo.findByPk(id, { include: [{ model: Collection }] });
 
         if (!nft) {
             throw new NotFoundException();
@@ -117,25 +117,19 @@ export class NFTService {
         return nft;
     }
 
-    async createOne(
-        nftDto: Partial<NFTDto>,
-        creator_id: number,
-    ): Promise<NFT> {
-        const nft = await this.nftModel.create({
+    async createOne(nftDto: Partial<NFTDto>, creatorId: number): Promise < NFT > {
+        const nft = await this.nftRepo.create({
             ...nftDto,
             id: uuid(),
-            creator_id,
+            creator_id: creatorId,
             status: NftStatus.QUEUED,
         });
 
         return nft;
     }
 
-    async updateOne(
-        id: string,
-        updateNFTDto: Partial<NFTDto>,
-    ): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async updateOne(id: string, updateNFTDto: Partial<NFTDto>): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { ...updateNFTDto, status: NftStatus.QUEUED },
             {
                 where: { id },
@@ -146,8 +140,8 @@ export class NFTService {
         return nft;
     }
 
-    async updateStatus(id: string, status: NftStatus): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async updateStatus(id: string, status: NftStatus): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { status },
             {
                 where: { id },
@@ -158,8 +152,8 @@ export class NFTService {
         return nft;
     }
 
-    async updateTokenId(id: string, token_id: string): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async updateTokenId(id: string, token_id: string): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { token_id },
             {
                 where: { id },
@@ -170,8 +164,8 @@ export class NFTService {
         return nft
     }
 
-    async deleteOne(id: string): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async deleteOne(id: string): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { deleted_at: new Date(), status: NftStatus.DELETED },
             {
                 where: {

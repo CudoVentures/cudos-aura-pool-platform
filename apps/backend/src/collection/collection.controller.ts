@@ -6,10 +6,13 @@ import {
     Param,
     ParseIntPipe,
     Patch,
+    Post,
     Put,
     Query,
+    Req,
     Request,
     UseGuards,
+    ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CollectionDto } from './dto/collection.dto';
@@ -21,10 +24,11 @@ import RoleGuard from '../auth/guards/role.guard';
 import { Role } from '../user/roles';
 import { IsCreatorGuard } from './guards/is-creator.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
-import { CollectionFilters } from './utils';
-import { ParseCollectionQueryPipe } from './pipes/collection-query.pipe';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { NftStatus } from '../nft/utils';
+import CollectionFilterModel from './dto/collection-filter.model';
+import NftFilterModel from '../nft/dto/nft-filter.model';
+import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -34,11 +38,11 @@ export class CollectionController {
     private nftService: NFTService,
     ) {}
 
-    @Get()
+    @Post()
     async findAll(
-        @Query(ParseCollectionQueryPipe) filters: CollectionFilters,
-    ): Promise<Collection[]> {
-        return this.collectionService.findAll({ ...filters });
+        @Body(new ValidationPipe({ transform: true })) collectionFilterModel: CollectionFilterModel,
+    ): Promise < { collectionEntities: Collection[], total: number } > {
+        return this.collectionService.findByFilter(collectionFilterModel);
     }
 
     @Get('details')
@@ -119,6 +123,7 @@ export class CollectionController {
     @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
     @Patch(':id/status')
     async updateStatus(
+        @Req() req: RequestWithSessionUser,
         @Param('id', ParseIntPipe) id: number,
         @Body() updateCollectionStatusDto: UpdateCollectionStatusDto,
     ): Promise<void> {
@@ -127,8 +132,10 @@ export class CollectionController {
             updateCollectionStatusDto.status,
         );
 
-        const nftsToUpdate = await this.nftService.findByFilter({ collection_id: id })
-        const nftsToApprove = nftsToUpdate.map(async (nft) => this.nftService.updateStatus(nft.id, NftStatus.APPROVED))
+        const nftFilterModel = new NftFilterModel();
+        nftFilterModel.collectionIds = [id.toString()];
+        const { nftEntities } = await this.nftService.findByFilter(req.sessionUser, nftFilterModel);
+        const nftsToApprove = nftEntities.map(async (nft) => this.nftService.updateStatus(nft.id, NftStatus.APPROVED))
 
         await Promise.all(nftsToApprove)
     }

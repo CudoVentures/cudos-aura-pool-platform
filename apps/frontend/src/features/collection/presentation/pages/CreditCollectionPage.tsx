@@ -86,7 +86,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         <PageLayoutComponent className = { 'PageCreditCollection' }>
             <PageHeader />
 
-            { collectionEntity !== null || miningFarmEntity === null || nftEntities === null ? (
+            { collectionEntity === null || miningFarmEntity === null || nftEntities === null ? (
                 <LoadingIndicator />
             ) : (
                 <div className={'PageContent AppContent'} >

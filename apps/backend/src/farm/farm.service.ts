@@ -11,45 +11,77 @@ import { EnergySource } from './models/energy-source.model';
 import { Farm } from './models/farm.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { Miner } from './models/miner.model';
-import { FarmFilters, FarmStatus } from './utils';
+import { FarmStatus } from './utils';
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
-import { FoundryWorkersDetails } from './dto/foundry-workers-details.dto';
+import MiningFarmFilterModel from './dto/farm-filter.mdel';
+import sequelize, { Op } from 'sequelize';
+import { User } from '../user/user.model';
+import { VisitorService } from '../visitor/visitor.service';
 
 @Injectable()
 export class FarmService {
     constructor(
-    @InjectModel(Farm)
-    private farmModel: typeof Farm,
-    @InjectModel(NFT)
-    private nftModel: typeof NFT,
-    @InjectModel(Manufacturer)
-    private manufacturerModel: typeof Manufacturer,
-    @InjectModel(Miner)
-    private minerModel: typeof Miner,
-    @InjectModel(EnergySource)
-    private energySourceModel: typeof EnergySource,
-    private httpService: HttpService,
+        @InjectModel(Farm)
+        private farmModel: typeof Farm,
+        @InjectModel(NFT)
+        private nftModel: typeof NFT,
+        @InjectModel(Manufacturer)
+        private manufacturerModel: typeof Manufacturer,
+        @InjectModel(Miner)
+        private minerModel: typeof Miner,
+        @InjectModel(EnergySource)
+        private energySourceModel: typeof EnergySource,
+        private httpService: HttpService,
+        private visitorService: VisitorService,
     ) {}
 
-    async findAll(filters: FarmFilters): Promise<Farm[]> {
-        const { limit, offset, order_by, ...rest } = filters
+    async findByFilter(user: User, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
+        let whereClause: any = {};
 
-        let order;
-        switch (order_by) {
-            // TODO: SORT BY POPULARITY
-            // case FarmOrderBy.POPULAR_DESC:
-            //     order = [['createdAt', 'DESC']]
-            //     break;
-            default:
-                order = undefined;
-                break;
-
+        console.log('1');
+        if (miningFarmFilterModel.hasMiningFarmIds() === true) {
+            whereClause.id = miningFarmFilterModel.miningFarmIds;
         }
 
-        const farms = await this.farmModel.findAll({ where: { ...rest }, order, offset, limit });
+        if (miningFarmFilterModel.hasMiningFarmStatus() === true) {
+            whereClause.status = miningFarmFilterModel.getMiningFarmStatus();
+        }
 
-        return farms;
+        if (miningFarmFilterModel.inOnlyForSessionAccount() === true) {
+            whereClause.creator_id = user.id;
+        }
+
+        if (miningFarmFilterModel.hasSearchString() === true) {
+            whereClause = [
+                whereClause,
+                sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${miningFarmFilterModel.searchString.toLowerCase()}%` }),
+            ]
+        }
+
+        let miningFarmEntities = await this.farmModel.findAll({
+            where: whereClause,
+        });
+
+        if (miningFarmFilterModel.isSortByPopular() === true) {
+            const miningFarmIds = miningFarmEntities.map((miningFarm) => {
+                return miningFarm.id;
+            });
+            const sortDirection = Math.floor(Math.abs(miningFarmFilterModel.orderBy) / miningFarmFilterModel.orderBy);
+            const visitorMap = await this.visitorService.fetchMiningFarmVisitsCount(miningFarmIds);
+            miningFarmEntities.sort((a: Farm, b: Farm) => {
+                const visitsA = visitorMap.get(a.id) ?? 0;
+                const visitsB = visitorMap.get(b.id) ?? 0;
+                return sortDirection * (visitsA - visitsB);
+            });
+        }
+
+        const total = miningFarmEntities.length;
+        miningFarmEntities = miningFarmEntities.slice(miningFarmFilterModel.from, miningFarmFilterModel.from + miningFarmFilterModel.count);
+
+        return {
+            miningFarmEntities,
+            total,
+        };
     }
 
     async findOne(id: number): Promise<Farm> {

@@ -23,7 +23,7 @@ export class VisitorService {
 
     async fetchMiningFarmVisitsCount(miningFarmIds: number[]): Promise < Map < number, number > > {
         const visitorMap = new Map < number, number >();
-        const sqlResult = await this.fetchCounts(RefType.MINING_FARM, miningFarmIds);
+        const sqlResult = await this.fetchCounts(RefType.MINING_FARM, miningFarmIds.map((i) => i.toString()));
 
         sqlResult.forEach((sqlEntry) => {
             visitorMap.set(parseInt(sqlEntry.getDataValue('refId')), parseInt(sqlEntry.getDataValue('count')));
@@ -43,7 +43,7 @@ export class VisitorService {
         return visitorMap;
     }
 
-    async fetchCounts(refType: RefType, refIds: any[]): Promise < any[] > {
+    async fetchCounts(refType: RefType, refIds: string[]): Promise < any[] > {
         return this.visitorRepo.findAll({
             where: {
                 refType,
