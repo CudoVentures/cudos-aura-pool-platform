@@ -5,12 +5,11 @@ import NftFilterModel from '../../utilities/NftFilterModel';
 export default class NftApi {
 
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
-        const { data } = await axios.get('/api/v1/nft', { params: NftFilterModel.toJson(nftFilterModel) })
+        const { data } = await axios.post('/api/v1/nft', NftFilterModel.toJson(nftFilterModel))
 
-        const nfts = data.map((nftJson) => NftEntity.fromJson(nftJson))
         return {
-            nftEntities: nfts,
-            total: nfts.length,
+            nftEntities: data.nftEntities.map((json) => NftEntity.fromJson(json)),
+            total: data.total,
         }
     }
 

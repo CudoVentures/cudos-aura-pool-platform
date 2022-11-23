@@ -6,10 +6,13 @@ import {
     Param,
     ParseIntPipe,
     Patch,
+    Post,
     Put,
     Query,
+    Req,
     Request,
     UseGuards,
+    ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CollectionDto } from './dto/collection.dto';
@@ -26,6 +29,7 @@ import { ParseCollectionQueryPipe } from './pipes/collection-query.pipe';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { NftStatus } from '../nft/utils';
 import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
+import CollectionFilterModel from './dto/collection-filter.model';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -35,11 +39,11 @@ export class CollectionController {
     private nftService: NFTService,
     ) {}
 
-    @Get()
+    @Post()
     async findAll(
-        @Query(ParseCollectionQueryPipe) filters: CollectionFilters,
-    ): Promise<Collection[]> {
-        return this.collectionService.findAll({ ...filters });
+        @Body(new ValidationPipe({ transform: true })) collectionFilterModel: CollectionFilterModel,
+    ): Promise < { collectionEntities: Collection[], total: number } > {
+        return this.collectionService.findByFilter(collectionFilterModel);
     }
 
     @Get('details')
@@ -128,7 +132,7 @@ export class CollectionController {
             updateCollectionStatusDto.status,
         );
 
-        const nftsToUpdate = await this.nftService.findAll({ collection_id: id })
+        const nftsToUpdate = await this.nftService.findByFilter({ collection_id: id })
         const nftsToApprove = nftsToUpdate.map(async (nft) => this.nftService.updateStatus(nft.id, NftStatus.APPROVED))
 
         await Promise.all(nftsToApprove)

@@ -1,8 +1,10 @@
+import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 import { MiningFarmStatus } from '../entities/MiningFarmEntity';
 
 export enum MiningFarmOrderBy {
-    POPULAR_DESC = 1,
+    POPULAR_ASC = 1,
+    POPULAR_DESC = -MiningFarmOrderBy.POPULAR_ASC,
 }
 
 export default class MiningFarmFilterModel {
@@ -17,12 +19,14 @@ export default class MiningFarmFilterModel {
 
     constructor() {
         this.miningFarmIds = null;
-        this.status = null;
+        this.status = MiningFarmStatus.APPROVED;
         this.searchString = '';
-        this.sessionAccount = null;
-        this.orderBy = 0;
+        this.sessionAccount = S.INT_FALSE;
+        this.orderBy = MiningFarmOrderBy.POPULAR_ASC;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
+
+        makeAutoObservable(this);
     }
 
     static toJson(entity: MiningFarmFilterModel) {
@@ -31,13 +35,13 @@ export default class MiningFarmFilterModel {
         }
 
         return {
-            'id': entity.miningFarmIds !== null ? entity.miningFarmIds.join(',') : null,
-            'status': entity.status ?? undefined,
-            'search_string': entity.searchString,
-            'creator_id': entity.sessionAccount ?? undefined,
-            'order_by': entity.orderBy,
-            'offset': entity.from,
-            'limit': entity.count,
+            'miningFarmIds': entity.miningFarmIds,
+            'status': entity.status,
+            'searchString': entity.searchString,
+            'sessionAccount': entity.sessionAccount,
+            'orderBy': entity.orderBy,
+            'from': entity.from,
+            'count': entity.count,
         }
     }
 }

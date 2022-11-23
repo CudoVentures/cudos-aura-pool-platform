@@ -3,7 +3,7 @@ import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionRepo from '../../presentation/repos/CollectionRepo';
-import CollectionFilterModel, { CollectionorderBy } from '../../utilities/CollectionFilterModel';
+import CollectionFilterModel, { CollectionOrderBy } from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
 
 export default class CollectionApiRepo implements CollectionRepo {
@@ -34,11 +34,10 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
-        // TO DO: add top collection sort
         collectionFilterModel.status = status;
-        collectionFilterModel.fromTimestamp = timestampFrom;
-        collectionFilterModel.toTimestamp = timestampTo;
-        collectionFilterModel.orderBy = CollectionorderBy.TIMESTAMP_DESC;
+        collectionFilterModel.timestampFrom = timestampFrom;
+        collectionFilterModel.timestampTo = timestampTo;
+        collectionFilterModel.orderBy = CollectionOrderBy.TOP_DESC;
 
         const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
@@ -46,7 +45,6 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     async fetchCollectionsByIds(collectionIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
-        // TO DO: add top collection sort
         collectionFilterModel.collectionIds = collectionIds;
         collectionFilterModel.status = status;
 

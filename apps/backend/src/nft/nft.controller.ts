@@ -8,6 +8,9 @@ import {
     UseGuards,
     Delete,
     Query,
+    Post,
+    ValidationPipe,
+    Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
@@ -17,75 +20,96 @@ import { UpdateNFTStatusDto } from './dto/update-nft-status';
 import { NFT } from './nft.model';
 import { NFTService } from './nft.service';
 import { IsCreatorGuard } from './guards/is-creator.guard';
-import { NftFilters, MarketplaceNftFilters, NftStatus } from './utils';
-import { ParseNftQueryPipe } from './pipes/nft-query.pipe';
+import { MarketplaceNftFilters, NftStatus } from './utils';
+// import { ParseNftQueryPipe } from './pipes/nft-query.pipe';
 import { GraphqlService } from '../graphql/graphql.service';
 import { MarketplaceNftsByDenomIdQuery } from '../graphql/types';
 import { CheckStatusDto } from './dto/check-status.dto';
 import { CollectionService } from '../collection/collection.service';
-import { CollectionStatus } from '../collection/utils';
+import { CollectionStatus, CollectionStatusWithAny } from '../collection/utils';
 import { Collection } from '../collection/collection.model';
-import { NFTResponseDto } from './dto/nft-response.dto';
+import NftFilterModel from './dto/nft-filter.model';
+import CollectionFilterModel from '../collection/dto/collection-filter.model';
 
 @ApiTags('NFT')
 @Controller('nft')
 export class NFTController {
     constructor(
-    private nftService: NFTService,
-    private graphqlService: GraphqlService,
-    private collectionService: CollectionService,
+        private nftService: NFTService,
+        private graphqlService: GraphqlService,
+        private collectionService: CollectionService,
     ) {}
 
-  @Get()
-    async findAll(@Query(ParseNftQueryPipe) filters: NftFilters): Promise<NFT[]> {
-        const nfts = await this.nftService.findAll(filters);
+    @Post()
+    async findAll(
+        @Req() req,
+        @Body(new ValidationPipe({ transform: true })) nftFilterModel: NftFilterModel,
+    ): Promise< { nftEntities: NFT[], total: number } > {
+        const { nftEntities, total } = await this.nftService.findByFilter(req.sessionUser, nftFilterModel);
 
-        const nftDetails = nfts.map(async (nft) => {
-            if (nft.status !== NftStatus.MINTED || !nft.token_id) {
-                return {
-                    ...nft.toJSON(),
-                    listed_status: NftStatus.APPROVED ? 2 : 1,
+        for (let i = nftEntities.length; i-- > 0;) {
+            const nftEntity = nftEntities[i];
+
+            if (nftEntity.isApproved() === true) {
+                const nftDetails = await this.graphqlService.fetchNft(nftEntity.id)
+                if (nftDetails?.marketplace_nft?.length === 1) {
+                    const details = nftDetails.marketplace_nft[0];
+                    nftEntity.price = details.price;
+                    nftEntity.creatorAddress = details.creator;
+                    nftEntity.currentOwnerAddress = details.nft_nft.owner ?? '';
                 }
             }
+        }
 
-            const [nftDetails] = await this.graphqlService.fetchNft(nft.id)
+        // const nftDetails = nftEntities.map(async (nftEntity) => {
+        // if (nft.status !== NftStatus.MINTED || !nft.token_id) {
+        //     return {
+        //         ...nft.toJSON(),
+        //         listed_status: NftStatus.APPROVED ? 2 : 1,
+        //     }
+        // }
 
-            return {
-                ...nft.toJSON(),
-                listed_status: nftDetails.price ? 2 : 1,
-                price: nftDetails.price,
-                creator_address: nftDetails.creator,
-                current_owner_address: nftDetails.nft_nft.owner,
-            }
-        })
+        // const [nftDetails] = await this.graphqlService.fetchNft(nft.id)
 
-        const result = await Promise.all(nftDetails)
-        return result;
+        // return {
+        //     ...nft.toJSON(),
+        //     listed_status: nftDetails.price ? 2 : 1,
+        //     price: nftDetails.price,
+        //     creator_address: nftDetails.creator,
+        //     current_owner_address: nftDetails.nft_nft.owner,
+        // }
+        // })
+
+        return {
+            nftEntities,
+            total,
+        };
     }
 
-  @Get('minted')
-  async findMinted(
-    @Query() filters: Partial<MarketplaceNftFilters>,
-  ): Promise<MarketplaceNftsByDenomIdQuery> {
-      const collections = await this.collectionService.findAll({
-          status: CollectionStatus.APPROVED,
-      });
-      const denom_ids = collections.map(
-          (collection: Collection) => collection.denom_id,
-      );
+    @Get('minted')
+    async findMinted(
+        @Query() filters: Partial<MarketplaceNftFilters>,
+    ): Promise < MarketplaceNftsByDenomIdQuery > {
+        const collectionFilterModel = new CollectionFilterModel();
+        collectionFilterModel.status = CollectionStatusWithAny.APPROVED;
 
-      return this.graphqlService.fetchNft({ denom_ids });
-  }
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterModel);
+        const denomIds = collectionEntities.map((collection: Collection) => collection.denom_id);
+
+        return this.graphqlService.fetchNft({
+            denom_ids: denomIds,
+        });
+    }
 
   @Put('minted/check-status')
-  async mint(@Body() checkStatusDto: CheckStatusDto): Promise<NFT> {
-      const { tx_hash } = checkStatusDto;
+    async mint(@Body() checkStatusDto: CheckStatusDto): Promise<NFT> {
+        const { tx_hash } = checkStatusDto;
 
-      const { token_id, uuid } = await this.nftService.getNftAttributes(tx_hash);
+        const { token_id, uuid } = await this.nftService.getNftAttributes(tx_hash);
 
-      await this.nftService.updateStatus(uuid, NftStatus.MINTED);
-      return this.nftService.updateTokenId(uuid, token_id)
-  }
+        await this.nftService.updateStatus(uuid, NftStatus.MINTED);
+        return this.nftService.updateTokenId(uuid, token_id)
+    }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<any> {

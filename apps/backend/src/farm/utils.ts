@@ -7,6 +7,13 @@ export const enum FarmStatus {
     REJECTED = 'rejected',
 }
 
+export enum FarmStatusWithAny {
+    QUEUED = 'queued',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
+    ANY = 'any',
+}
+
 export const enum FarmOrderBy {
     POPULAR_DESC = 1,
 }

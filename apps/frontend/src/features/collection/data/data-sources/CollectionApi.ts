@@ -12,11 +12,11 @@ export default class CollectionApi {
     }
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
-        const { data } = await axios.get('/api/v1/collection', { params: CollectionFilterModel.toJson(collectionFilterModel) })
+        const { data } = await axios.post('/api/v1/collection', CollectionFilterModel.toJson(collectionFilterModel))
 
         return {
-            collectionEntities: data.map((collectionJson) => CollectionEntity.fromJson(collectionJson)),
-            total: data.length,
+            collectionEntities: data.collectionEntities.map((collectionJson) => CollectionEntity.fromJson(collectionJson)),
+            total: data.total,
         }
     }
 

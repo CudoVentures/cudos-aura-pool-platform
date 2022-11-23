@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import sequelize from 'sequelize';
 import { RefType, VisitorEntity } from './visitor.entity'
 
 @Injectable()
@@ -20,26 +21,40 @@ export class VisitorService {
         await this.credit(visitorEntity);
     }
 
-    async fetchMiningFarmVisitsCount(miningFarmId: number) {
-        const { rows, count } = await this.visitorRepo.findAndCountAll({
-            where: {
-                refType: RefType.MINING_FARM,
-                refId: miningFarmId.toString(),
-            },
-        })
+    async fetchMiningFarmVisitsCount(miningFarmIds: number[]): Promise < Map < number, number > > {
+        const visitorMap = new Map < number, number >();
+        const sqlResult = await this.fetchCounts(RefType.MINING_FARM, miningFarmIds.map((i) => i.toString()));
 
-        return count;
+        sqlResult.forEach((sqlEntry) => {
+            visitorMap.set(parseInt(sqlEntry.getDataValue('refId')), parseInt(sqlEntry.getDataValue('count')));
+        });
+
+        return visitorMap;
     }
 
-    async fetchNftsVisitsCount(nftId: string) {
-        const { rows, count } = await this.visitorRepo.findAndCountAll({
-            where: {
-                refType: RefType.NFT,
-                refId: nftId,
-            },
-        })
+    async fetchNftsVisitsCountAsMap(nftIds: string[]): Promise < Map < string, number > > {
+        const visitorMap = new Map < string, number >();
+        const sqlResult = await this.fetchCounts(RefType.NFT, nftIds);
 
-        return count;
+        sqlResult.forEach((sqlEntry) => {
+            visitorMap.set(sqlEntry.getDataValue('refId'), parseInt(sqlEntry.getDataValue('count')));
+        });
+
+        return visitorMap;
+    }
+
+    async fetchCounts(refType: RefType, refIds: string[]): Promise < any[] > {
+        return this.visitorRepo.findAll({
+            where: {
+                refType,
+                refId: refIds,
+            },
+            attributes: [
+                ['ref_id', 'refId'],
+                [sequelize.fn('COUNT', sequelize.col('visitor_uuid')), 'count'],
+            ],
+            group: 'ref_id',
+        });
     }
 
     private async credit(visitorEntity: VisitorEntity) {

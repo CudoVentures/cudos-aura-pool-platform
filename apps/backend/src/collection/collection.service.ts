@@ -2,11 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CollectionDto } from './dto/collection.dto';
 import { Collection } from './collection.model';
-import { CollectionFilters, CollectionOrderBy, CollectionStatus } from './utils';
+import { CollectionStatus } from './utils';
 import { NFT } from '../nft/nft.model';
 import { NftStatus } from '../nft/utils';
+import CollectionFilterModel, { CollectionOrderBy } from './dto/collection-filter.model';
+import sequelize, { Op } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
-import { Op } from 'sequelize';
 
 @Injectable()
 export class CollectionService {
@@ -18,28 +19,88 @@ export class CollectionService {
     private graphqlService: GraphqlService,
     ) {}
 
-    async findAll(filters: Partial<CollectionFilters>): Promise<Collection[]> {
-        const { limit, offset, order_by, ...rest } = filters
+    async findByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: Collection[], total: number } > {
+        let whereClause: any = {};
+        let orderByClause: any[] = null;
 
-        let order;
-
-        switch (order_by) {
-            case CollectionOrderBy.TIMESTAMP_DESC:
-                order = [['createdAt', 'DESC']]
-                break;
-            default:
-                order = undefined;
-                break;
-
+        if (collectionFilterModel.hasCollectionIds() === true) {
+            whereClause.id = collectionFilterModel.collectionIds;
         }
 
-        const collections = await this.collectionModel.findAll({
-            where: { ...rest },
-            order,
-            offset,
-            limit,
+        if (collectionFilterModel.hasCollectionStatus() === true) {
+            whereClause.status = collectionFilterModel.getCollectionStatus();
+        }
+
+        if (collectionFilterModel.hasFarmId() === true) {
+            whereClause.farm_id = collectionFilterModel.farmId;
+        }
+
+        if (collectionFilterModel.hasTimestampFrom() === true) {
+            whereClause.createdAt = { [Op.gte]: new Date(collectionFilterModel.timestampFrom).toISOString() }
+        }
+
+        if (collectionFilterModel.hasTimestampTo() === true) {
+            if (whereClause.createdAt === undefined) {
+                whereClause.createdAt = {};
+            }
+            whereClause.createdAt[Op.lte] = new Date(collectionFilterModel.timestampTo).toISOString();
+        }
+
+        if (collectionFilterModel.hasSearchString() === true) {
+            whereClause = [
+                whereClause,
+                sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${collectionFilterModel.searchString.toLowerCase()}%` }),
+            ]
+        }
+
+        switch (collectionFilterModel.orderBy) {
+            case CollectionOrderBy.TIMESTAMP_ASC:
+            case CollectionOrderBy.TIMESTAMP_DESC:
+            default:
+                orderByClause = [['createdAt']]
+                break;
+        }
+        if (orderByClause !== null) {
+            orderByClause[0].push(collectionFilterModel.orderBy > 0 ? 'ASC' : 'DESC');
+        }
+
+        let collectionEntities = await this.collectionModel.findAll({
+            where: whereClause,
+            order: orderByClause,
         });
-        return collections;
+
+        // if (collectionFilterModel.isSortByTrending() === true) {
+        //     const nftIds = collectionEntities.map((nftEntity) => {
+        //         return nftEntity.id;
+        //     });
+        //     const sortDirection = Math.floor(Math.abs(collectionFilterModel.orderBy) / collectionFilterModel.orderBy);
+        //     const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
+        //     collectionEntities.sort((a: NFT, b: NFT) => {
+        //         const visitsA = visitorMap.get(a.id) ?? 0;
+        //         const visitsB = visitorMap.get(b.id) ?? 0;
+        //         return sortDirection * (visitsA - visitsB);
+        //     });
+        // }
+
+        const total = collectionEntities.length;
+        collectionEntities = collectionEntities.slice(collectionFilterModel.from, collectionFilterModel.from + collectionFilterModel.count);
+
+        return {
+            collectionEntities,
+            total,
+        };
+    }
+
+    async findIdsByStatus(status: CollectionStatus): Promise < number[] > {
+        const collections = await this.collectionModel.findAll({
+            where: {
+                status,
+            },
+        })
+
+        return collections.map((collection) => {
+            return collection.id;
+        })
     }
 
     async findOne(id: number): Promise<Collection> {
