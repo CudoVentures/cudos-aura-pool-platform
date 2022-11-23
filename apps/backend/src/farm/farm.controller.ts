@@ -10,6 +10,9 @@ import {
     UseGuards,
     Patch,
     Query,
+    Post,
+    ValidationPipe,
+    Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CollectionService } from '../collection/collection.service';
@@ -29,18 +32,22 @@ import { Miner } from './models/miner.model';
 import { MinerDto } from './dto/miner.dto';
 import { EnergySourceDto } from './dto/energy-source.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
+import MiningFarmFilterModel from './dto/farm-filter.mdel';
 
 @ApiTags('Farm')
 @Controller('farm')
 export class FarmController {
     constructor(
-    private farmService: FarmService,
-    private collectionService: CollectionService,
+        private farmService: FarmService,
+        private collectionService: CollectionService,
     ) { }
 
-    @Get()
-    async findAll(@Query(ParseFarmQueryPipe) filters: FarmFilters): Promise<Farm[]> {
-        return this.farmService.findAll({ ...filters });
+    @Post()
+    async findAll(
+        @Req() req,
+        @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
+    ): Promise < { miningFarmEntities: Farm[], total: number } > {
+        return this.farmService.findByFilter(req.sessionUser, miningFarmFilterModel);
     }
 
     @Get('miners')

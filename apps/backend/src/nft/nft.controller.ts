@@ -26,9 +26,10 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { MarketplaceNftsByDenomIdQuery } from '../graphql/types';
 import { CheckStatusDto } from './dto/check-status.dto';
 import { CollectionService } from '../collection/collection.service';
-import { CollectionStatus } from '../collection/utils';
+import { CollectionStatus, CollectionStatusWithAny } from '../collection/utils';
 import { Collection } from '../collection/collection.model';
 import NftFilterModel from './dto/nft-filter.model';
+import CollectionFilterModel from '../collection/dto/collection-filter.model';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -85,29 +86,30 @@ export class NFTController {
         };
     }
 
-  @Get('minted')
+    @Get('minted')
     async findMinted(
-    @Query() filters: Partial<MarketplaceNftFilters>,
-    ): Promise<MarketplaceNftsByDenomIdQuery> {
-        const collections = await this.collectionService.findAll({
-            status: CollectionStatus.APPROVED,
-        });
-        const denom_ids = collections.map(
-            (collection: Collection) => collection.denom_id,
-        );
+        @Query() filters: Partial<MarketplaceNftFilters>,
+    ): Promise < MarketplaceNftsByDenomIdQuery > {
+        const collectionFilterModel = new CollectionFilterModel();
+        collectionFilterModel.status = CollectionStatusWithAny.APPROVED;
 
-        return this.graphqlService.fetchNft({ denom_ids });
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterModel);
+        const denomIds = collectionEntities.map((collection: Collection) => collection.denom_id);
+
+        return this.graphqlService.fetchNft({
+            denom_ids: denomIds,
+        });
     }
 
   @Put('minted/check-status')
-  async mint(@Body() checkStatusDto: CheckStatusDto): Promise<NFT> {
-      const { tx_hash } = checkStatusDto;
+    async mint(@Body() checkStatusDto: CheckStatusDto): Promise<NFT> {
+        const { tx_hash } = checkStatusDto;
 
-      const { token_id, uuid } = await this.nftService.getNftAttributes(tx_hash);
+        const { token_id, uuid } = await this.nftService.getNftAttributes(tx_hash);
 
-      await this.nftService.updateStatus(uuid, NftStatus.MINTED);
-      return this.nftService.updateTokenId(uuid, token_id)
-  }
+        await this.nftService.updateStatus(uuid, NftStatus.MINTED);
+        return this.nftService.updateTokenId(uuid, token_id)
+    }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<any> {

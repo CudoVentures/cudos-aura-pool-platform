@@ -7,7 +7,7 @@ import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
 import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../utilities/MiningFarmFilterModel';
 import MiningFarmApi from '../data-sources/MiningFarmApi';
 import JwtDecode from 'jwt-decode'
-import { decodeStorageToken } from '../../../../core/utilities/AxiosWrapper';
+import S from '../../../../core/utilities/Main';
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -64,10 +64,8 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     }
 
     async fetchMiningFarmBySessionAccountId(status: MiningFarmStatus): Promise < MiningFarmEntity > {
-        const user = decodeStorageToken();
-
         const miningFarmFilterModel = new MiningFarmFilterModel();
-        miningFarmFilterModel.sessionAccount = user.id;
+        miningFarmFilterModel.sessionAccount = S.INT_TRUE;
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
         miningFarmFilterModel.status = status

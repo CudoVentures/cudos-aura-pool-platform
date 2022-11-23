@@ -6,10 +6,13 @@ import {
     Param,
     ParseIntPipe,
     Patch,
+    Post,
     Put,
     Query,
+    Req,
     Request,
     UseGuards,
+    ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CollectionDto } from './dto/collection.dto';
@@ -25,6 +28,7 @@ import { CollectionFilters } from './utils';
 import { ParseCollectionQueryPipe } from './pipes/collection-query.pipe';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { NftStatus } from '../nft/utils';
+import CollectionFilterModel from './dto/collection-filter.model';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -34,11 +38,11 @@ export class CollectionController {
     private nftService: NFTService,
     ) {}
 
-    @Get()
+    @Post()
     async findAll(
-        @Query(ParseCollectionQueryPipe) filters: CollectionFilters,
-    ): Promise<Collection[]> {
-        return this.collectionService.findAll({ ...filters });
+        @Body(new ValidationPipe({ transform: true })) collectionFilterModel: CollectionFilterModel,
+    ): Promise < { collectionEntities: Collection[], total: number } > {
+        return this.collectionService.findByFilter(collectionFilterModel);
     }
 
     @Get('details')

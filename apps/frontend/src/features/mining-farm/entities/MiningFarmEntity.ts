@@ -6,6 +6,7 @@ export enum MiningFarmStatus {
     APPROVED = 'approved',
     QUEUED = 'queued',
     DELETED = 'deleted',
+    ANY = 'any',
 }
 
 export default class MiningFarmEntity {
