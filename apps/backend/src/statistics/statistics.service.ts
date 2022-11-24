@@ -18,6 +18,7 @@ export class StatisticsService {
         @InjectModel(NftPayoutHistory)
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
         @InjectModel(NftOwnersPayoutHistory)
+        private nftOwnersPayoutHistoryModel: typeof NftPayoutHistory,
     ) {}
 
     async fetchNftEarnings(nftId: string, filters: { timestampFrom: string, timestampTo: string }): Promise<string[]> {
@@ -94,7 +95,7 @@ export class StatisticsService {
         const fetchNfts = collections.map((collection) => this.nftService.findByCollectionId(collection.id))
         const nfts = (await Promise.all(fetchNfts)).flat().filter((nft) => nft.status === NftStatus.MINTED || nft.status === NftStatus.EXPIRED)
 
-        const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map(collection => collection.denom_id))
+        const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map((collection) => collection.denom_id))
 
         const nftsWithPayoutHistoryForPeriod = await Promise.all(nfts.map(async (nft) => {
             const payoutHistoryForPeriod = await this.nftPayoutHistoryModel.findAll({ where: {

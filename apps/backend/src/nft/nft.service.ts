@@ -22,6 +22,7 @@ export class NFTService {
     ) {}
 
     async findByFilter(user: User, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
+        console.log(nftFilterModel);
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
@@ -34,7 +35,14 @@ export class NFTService {
         }
 
         if (nftFilterModel.hasCollectionIds() === true) {
-            whereClause.collection_id = whereClause.collection_id.concat(nftFilterModel.collectionIds);
+            if (whereClause.collection_id === undefined) {
+                whereClause.collection_id = nftFilterModel.collectionIds;
+            } else {
+                const set = new Set(whereClause.collection_id);
+                whereClause.collection_id = nftFilterModel.collectionIds.filter((colId) => {
+                    return set.has(colId);
+                });
+            }
         }
 
         if (nftFilterModel.inOnlyForSessionAccount() === true) {

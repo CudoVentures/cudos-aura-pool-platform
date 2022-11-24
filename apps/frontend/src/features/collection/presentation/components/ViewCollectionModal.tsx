@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';

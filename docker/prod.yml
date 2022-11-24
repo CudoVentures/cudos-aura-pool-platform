@@ -5,7 +5,7 @@ networks:
     name: shared-cudos-network
 
 volumes:
-  cudosdappdbdata:
+  cudosdappdata:
     driver: local
 
 services:
@@ -18,6 +18,8 @@ services:
     restart: unless-stopped
     ports:
       - "$HOST_PORT:$DOCKER_PORT"
+    volumes:
+      - cudosdappdata:/usr/src/cudos-aura-platform/dist/data
     networks:
       - shared-cudos-network
     extra_hosts:
