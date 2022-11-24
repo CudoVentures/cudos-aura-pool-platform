@@ -1,4 +1,6 @@
-FROM node:16-buster
+FROM amd64/golang:1.18-buster
+
+RUN apt-get update && apt-get install git
 
 ARG USER_ID
 ARG USER_NAME
@@ -6,16 +8,36 @@ ARG GROUP_ID
 ARG GROUP_NAME
 ARG WORKING_DIR="/usr/cudos-on-demand-minting-service"
 
-RUN if [ $USER_NAME != 'root' ]; then \
-        groupmod -g 2000 node; \
-        usermod -u 2000 -g 2000 node; \
-        groupadd --gid ${GROUP_ID} ${GROUP_NAME}; \
-        useradd --no-log-init --create-home --shell /bin/bash --uid ${USER_ID} --gid ${GROUP_ID} ${USER_NAME}; \
-    fi
+ARG MINTER_WALLET_MNEMONIC
+ARG AURA_POOL_BACKEND
+ARG MINTER_STATE_FILE
+ARG MINTER_MAX_RETRIES
+ARG MINTER_RETRY_INTERVAL
+ARG MINTER_RELAY_INTERVAL
+ARG MINTER_PAYMENT_DENOM
+ARG MINTER_PORT
+ARG CHAIN_ID
+ARG CHAIN_RPC
+ARG CHAIN_GRPC
+
+ENV WALLET_MNEMONIC=${MINTER_WALLET_MNEMONIC}
+ENV AURA_POOL_BACKEND=${AURA_POOL_BACKEND}
+ENV STATE_FILE=${MINTER_STATE_FILE}
+ENV MAX_RETRIES=${MINTER_MAX_RETRIES}
+ENV RETRY_INTERVAL=${MINTER_RETRY_INTERVAL}
+ENV RELAY_INTERVAL=${MINTER_RELAY_INTERVAL}
+ENV PAYMENT_DENOM=${MINTER_PAYMENT_DENOM}
+ENV PORT=${MINTER_PORT}
+ENV CHAIN_ID=${CHAIN_ID}
+ENV CHAIN_RPC=${CHAIN_RPC}
+ENV CHAIN_GRPC=${CHAIN_GRPC}
 
 WORKDIR ${WORKING_DIR}
 
-USER ${USER_NAME}
+COPY ./CudosOnDemandMintingService ./CudosOnDemandMintingService
 
-# CMD ["/bin/bash", "-c", "npm i && (trap 'kill 0' SIGINT; npm run start:chain-observer:dev)"] 
-CMD ["sleep", "infinity"]
+WORKDIR ${WORKING_DIR}/CudosOnDemandMintingService
+
+RUN go build -mod=readonly ./cmd/cudos-ondemand-minting-service
+
+CMD ["/bin/bash", "-c", "./cudos-ondemand-minting-service"]

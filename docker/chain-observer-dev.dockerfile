@@ -4,6 +4,7 @@ ARG USER_ID
 ARG USER_NAME
 ARG GROUP_ID
 ARG GROUP_NAME
+ARG AURA_POOL_BACKEND
 ARG WORKING_DIR="/usr/cudos-aura-chain-observer"
 
 RUN if [ $USER_NAME != 'root' ]; then \
@@ -23,6 +24,6 @@ WORKDIR ${WORKING_DIR}
 
 USER ${USER_NAME}
 
-ENV App_Host="http://cudos-aura-platform-dev"
+ENV App_Host=AURA_POOL_BACKEND
 
 CMD ["/bin/bash", "-c", "npm i && (trap 'kill 0' SIGINT; npm run start:chain-observer:dev)"] 
