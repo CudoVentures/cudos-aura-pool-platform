@@ -77,7 +77,7 @@ export class StatisticsService {
                 },
             }],
         })
-        const rewardsPerDay = days.map((day) => ownerPayoutHistoryForPeriod.filter((ophp) => (ophp.nft_payout_history.payout_period_start * 1000) >= day && (ophp.nft_payout_history.payout_period_end * 1000) <= day + dayInMs).reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0))
+        const rewardsPerDay = days.map((day) => ownerPayoutHistoryForPeriod.filter((row) => (row.nft_payout_history.payout_period_start * 1000) >= day && (row.nft_payout_history.payout_period_end * 1000) <= day + dayInMs).reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0))
 
         const ownerPayoutHistory = await this.nftOwnersPayoutHistoryModel.findAll({
             where: {
