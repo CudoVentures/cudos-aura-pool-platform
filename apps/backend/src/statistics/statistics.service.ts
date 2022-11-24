@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 import { CollectionService } from '../collection/collection.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { NFTService } from '../nft/nft.service';
-import { NftStatus } from '../nft/utils';
+import { NftStatus } from '../nft/nft.types';
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { dayInMs, getDays } from './utils';
