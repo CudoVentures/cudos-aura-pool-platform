@@ -24,6 +24,6 @@ WORKDIR ${WORKING_DIR}
 
 USER ${USER_NAME}
 
-ENV App_Host=AURA_POOL_BACKEND
+ENV App_Host=${AURA_POOL_BACKEND}
 
 CMD ["/bin/bash", "-c", "npm i && (trap 'kill 0' SIGINT; npm run start:chain-observer:dev)"] 
