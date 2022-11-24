@@ -45,3 +45,11 @@ query MarketplaceNftByUid($uid: String!) {
     }
   }
 }
+
+query MarketplaceNftCountByOwner ($ownerAddress: String!) {
+  marketplace_nft_aggregate(where: {nft_nft: {owner: {_eq: $ownerAddress}}}) {
+    aggregate {
+      count
+    }
+  }
+}

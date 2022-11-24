@@ -86,9 +86,11 @@ export class StatisticsService {
         })
         const totalEarningInBtc = ownerPayoutHistory.reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0)
 
+        const totalNftsOwned = await this.graphqlService.fetchTotalNftsByAddress(cudosAddress)
+
         return {
             totalEarningInBtc,
-            totalNftBought: 0,
+            totalNftBought: totalNftsOwned,
             earningsPerDayInUsd: rewardsPerDay,
             btcEarnedInBtc: 0,
         }

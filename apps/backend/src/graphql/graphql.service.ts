@@ -17,6 +17,8 @@ import {
     MarketplaceNftTradeHistoryDocument,
     MarketplaceNftPriceSumByDenomIdQuery,
     MarketplaceNftPriceSumByDenomIdDocument,
+    MarketplaceNftCountByOwnerQuery,
+    MarketplaceNftCountByOwnerDocument,
 } from './types';
 import { MarketplaceNftFilters } from '../nft/nft.types';
 
@@ -98,5 +100,14 @@ export class GraphqlService {
             salesInBtc: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.btc_price,
             salesInUsd: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.usd_price,
         };
+    }
+
+    async fetchTotalNftsByAddress(address: string): Promise<number> {
+        const res: AxiosResponse<{ data: MarketplaceNftCountByOwnerQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftCountByOwnerDocument),
+            variables: { ownerAddress: address },
+        });
+
+        return res.data.data.marketplace_nft_aggregate.aggregate.count;
     }
 }
