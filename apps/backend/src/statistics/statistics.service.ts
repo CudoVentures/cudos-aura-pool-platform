@@ -42,8 +42,8 @@ export class StatisticsService {
             },
             payout_period_end: {
                 [Op.or]: {
-                    [Op.lt]: Number(filters.timestampTo + dayInMs) / 1000,
-                    [Op.eq]: Number(filters.timestampTo + dayInMs) / 1000,
+                    [Op.lt]: Number(filters.timestampTo) / 1000,
+                    [Op.eq]: Number(filters.timestampTo) / 1000,
                 },
             },
         } })
@@ -71,8 +71,8 @@ export class StatisticsService {
                 },
                 payout_period_end: {
                     [Op.or]: {
-                        [Op.lt]: Number(filters.timestampTo + dayInMs) / 1000,
-                        [Op.eq]: Number(filters.timestampTo + dayInMs) / 1000,
+                        [Op.lt]: Number(filters.timestampTo) / 1000,
+                        [Op.eq]: Number(filters.timestampTo) / 1000,
                     },
                 },
             },
@@ -109,8 +109,8 @@ export class StatisticsService {
                 },
                 payout_period_end: {
                     [Op.or]: {
-                        [Op.lt]: Number(filters.timestampTo + dayInMs) / 1000,
-                        [Op.eq]: Number(filters.timestampTo + dayInMs) / 1000,
+                        [Op.lt]: Number(filters.timestampTo) / 1000,
+                        [Op.eq]: Number(filters.timestampTo) / 1000,
                     },
                 },
             } })
