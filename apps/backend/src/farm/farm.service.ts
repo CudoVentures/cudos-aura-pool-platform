@@ -13,6 +13,7 @@ import { Manufacturer } from './models/manufacturer.model';
 import { Miner } from './models/miner.model';
 import { FarmStatus } from './utils';
 import { HttpService } from '@nestjs/axios';
+import { CollectionStatus } from '../collection/utils';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import sequelize, { Op } from 'sequelize';
 import { User } from '../user/user.model';
@@ -23,6 +24,8 @@ export class FarmService {
     constructor(
         @InjectModel(Farm)
         private farmModel: typeof Farm,
+        @InjectModel(Collection)
+        private collectionModel: typeof Collection,
         @InjectModel(NFT)
         private nftModel: typeof NFT,
         @InjectModel(Manufacturer)
@@ -218,16 +221,27 @@ export class FarmService {
 
     async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number, remainingHashPowerInTH: number }> {
         const farm = await this.farmModel.findByPk(farmId)
-        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }] })
-        const minted = nfts.filter((nft) => nft.status === NftStatus.MINTED)
+        if (!farm) {
+            throw new NotFoundException(`Farm with id '${farmId}' doesn't exist`)
+        }
+
+        const collections = await this.collectionModel.findAll({ where: { farm_id: farmId, status: { [Op.notIn]: [CollectionStatus.DELETED, CollectionStatus.REJECTED] } } })
+
+        // Get number of total and sold NFTs
+        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }], where: { status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } } })
+        const soldNfts = nfts.filter((nft) => nft.status === NftStatus.MINTED || nft.status === NftStatus.EXPIRED)
+
+        // Calculate remaining hash power of the farm
+        const collectionsHashPowerSum = collections.reduce((prevVal, currVal) => prevVal + Number(currVal.hashing_power), 0)
+        const remainingHashPowerInTH = farm.total_farm_hashrate - collectionsHashPowerSum
 
         return {
             id: farmId,
             subAccountName: farm.sub_account_name,
             totalHashRate: farm.total_farm_hashrate,
             nftsOwned: nfts.length,
-            nftsSold: minted.length,
-            remainingHashPowerInTH: farm.total_farm_hashrate,
+            nftsSold: soldNfts.length,
+            remainingHashPowerInTH,
         }
     }
 
@@ -252,6 +266,7 @@ export class FarmService {
                 averageHashRateH1: 0,
             };
 
+            return workersDetails
         }
     }
 

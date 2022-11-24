@@ -7,14 +7,16 @@ import { NFT } from '../nft/nft.model';
 import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel, { CollectionOrderBy } from './dto/collection-filter.model';
 import sequelize, { Op } from 'sequelize';
+import { GraphqlService } from '../graphql/graphql.service';
 
 @Injectable()
 export class CollectionService {
     constructor(
-        @InjectModel(Collection)
-        private collectionModel: typeof Collection,
-        @InjectModel(NFT)
-        private nftModel: typeof NFT,
+    @InjectModel(Collection)
+    private collectionModel: typeof Collection,
+    @InjectModel(NFT)
+    private nftModel: typeof NFT,
+    private graphqlService: GraphqlService,
     ) {}
 
     async findByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: Collection[], total: number } > {
@@ -190,23 +192,36 @@ export class CollectionService {
         return collection;
     }
 
-    async getDetails(collectionId: number): Promise <{ id: number, floorPrice: string, volumeInAcudos: string, owners: number }> {
-        // Get the lowest priced NFT from this collection "floorPrice"
-        const approvedNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: NftStatus.APPROVED }, order: [['price', 'ASC']] }) // Approved but not bought NFT-s
-        const soldNfts = [] // <==== NFTS from Hasura
-        const floorPrice = '1000000000000000000' // lowest price NFT from both approvedNfts and soldNfts
+    async getDetails(collectionId: number): Promise <{ id: number, floorPriceInAcudos: number, volumeInAcudos: number, owners: number, remainingHashPowerInTH: number }> {
+        const collection = await this.collectionModel.findOne({ where: { id: collectionId } })
+        if (!collection) {
+            throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
+        }
+
+        const allNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } }, order: [['price', 'ASC']] })
+        const approvedNfts = allNfts.filter((nft) => nft.status === NftStatus.APPROVED) // Approved but not bought NFT-s
+        const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denom_id] }) // Sold NFTs
+
+        const uniqueOwnersArray = [...new Set(soldNfts.marketplace_nft.map((nft) => nft.nft_nft.owner))] // Unique owners of all the NFTs in the collection
+
+        // Get the lowest priced NFT from this collection "floorPriceInAcudos"
+        const sortedByPriceSoldNfts = soldNfts.marketplace_nft.sort((a, b) => a.price - b.price).filter((nft) => nft.price) // Sorting by price and filtering out nfts with price "null" (price "null" means they're not listed for sale)
+        const cheapestNfts = [approvedNfts[0]?.price, sortedByPriceSoldNfts[0]?.price].filter((price) => price).sort((a, b) => Number(a) - Number(b)) // filtering out "undefined" price since both approved and sold NFTs arrays could be empty
+        const floorPriceInAcudos = cheapestNfts[0] || 0 // Price of the cheapest NFT
 
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
-        const volumeInAcudos = '10000000000000000000'
+        const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denom_id])
 
-        // Get the unique owners of NFTs from this collection
-        const owners = 25
+        // Get remaining hash power
+        const nftsHashPowerSum = allNfts.reduce((pervVal, currVal) => pervVal + Number(currVal.hashing_power), 0)
+        const remainingHashPowerInTH = Number(collection.hashing_power) - nftsHashPowerSum
 
         return {
             id: collectionId,
-            floorPrice,
-            volumeInAcudos,
-            owners,
+            floorPriceInAcudos,
+            volumeInAcudos: collectionTotalSales.salesInAcudos || 0,
+            owners: uniqueOwnersArray.length,
+            remainingHashPowerInTH,
         }
     }
 }

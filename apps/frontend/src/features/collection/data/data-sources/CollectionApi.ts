@@ -40,6 +40,8 @@ export default class CollectionApi {
     }
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
-        return collectionIds.map((id) => CollectionDetailsEntity.fromJson({ id }));
+        const { data } = await axios.get('/api/v1/collection/details', { params: { ids: collectionIds.join(',') } });
+
+        return data.map((details) => CollectionDetailsEntity.fromJson(details))
     }
 }

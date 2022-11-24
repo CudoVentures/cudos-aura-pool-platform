@@ -15,6 +15,8 @@ import {
     NftTransferHistoryDocument,
     MarketplaceNftTradeHistoryQuery,
     MarketplaceNftTradeHistoryDocument,
+    MarketplaceNftPriceSumByDenomIdQuery,
+    MarketplaceNftPriceSumByDenomIdDocument,
 } from './types';
 import { MarketplaceNftFilters } from '../nft/nft.types';
 
@@ -22,7 +24,7 @@ import { MarketplaceNftFilters } from '../nft/nft.types';
 export class GraphqlService {
     constructor(private readonly httpService: HttpService) {}
 
-    async fetchNfts(
+    async fetchNftsByDenomId(
         filters: Partial<MarketplaceNftFilters>,
     ): Promise<MarketplaceNftsByDenomIdQuery> {
         const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
@@ -30,9 +32,7 @@ export class GraphqlService {
             variables: { ...filters },
         });
 
-        console.log('ei ti ot hasura', res.data)
-
-        return res.data.data.marketplace_nft;
+        return res.data.data;
     }
 
     async fetchNft(uid: string): Promise<MarketplaceNftByUidQuery> {
@@ -66,7 +66,7 @@ export class GraphqlService {
             query: print(MarketplaceCollectionDocument),
         });
 
-        return res.data;
+        return res.data.data;
     }
 
     async fetchNftTransferHistory(tokenId: string, denomId: string): Promise<{ old_owner: string, new_owner: string, timestamp: number }[]> {
@@ -85,5 +85,18 @@ export class GraphqlService {
         });
 
         return res.data.data.marketplace_nft_buy_history;
+    }
+
+    async fetchCollectionTotalSales(denomIds: string[]): Promise<{ salesInAcudos: number, salesInBtc: number, salesInUsd: number }> {
+        const res: AxiosResponse<{ data: MarketplaceNftPriceSumByDenomIdQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftPriceSumByDenomIdDocument),
+            variables: { denomIds },
+        });
+
+        return {
+            salesInAcudos: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.price,
+            salesInBtc: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.btc_price,
+            salesInUsd: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.usd_price,
+        };
     }
 }

@@ -3,6 +3,7 @@ import {
     Param,
     Controller,
     Query,
+    ParseIntPipe,
 } from '@nestjs/common';
 import { GraphqlService } from '../graphql/graphql.service';
 import { TransferHistoryEntry } from './dto/transfer-history.dto';
@@ -76,5 +77,12 @@ export class StatisticsController {
         const addressEarnings = await this.statisticsService.fetchAddressEarnings(cudosAddress, { timestampFrom, timestampTo })
 
         return addressEarnings
+    }
+
+    @Get('earnings/farm/:farmId')
+    async getFarmEarnings(@Param('farmId', ParseIntPipe) farmId: number, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise <any> {
+        const farmEarnings = await this.statisticsService.fetchFarmEarnings(farmId, { timestampFrom, timestampTo })
+
+        return farmEarnings
     }
 }
