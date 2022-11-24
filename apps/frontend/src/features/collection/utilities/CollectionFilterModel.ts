@@ -2,8 +2,11 @@ import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 import { CollectionStatus } from '../entities/CollectionEntity';
 
-export enum CollectionorderBy {
-    TIMESTAMP_DESC = 1,
+export enum CollectionOrderBy {
+    TOP_ASC = 1,
+    TOP_DESC = -CollectionOrderBy.TOP_ASC,
+    TIMESTAMP_ASC = 2,
+    TIMESTAMP_DESC = -CollectionOrderBy.TIMESTAMP_ASC,
 }
 
 export default class CollectionFilterModel {
@@ -12,9 +15,9 @@ export default class CollectionFilterModel {
     status: CollectionStatus;
     searchString: string;
     farmId: string;
-    fromTimestamp: number;
-    toTimestamp: number;
-    orderBy: CollectionorderBy;
+    timestampFrom: number;
+    timestampTo: number;
+    orderBy: CollectionOrderBy;
     from: number;
     count: number;
 
@@ -23,9 +26,9 @@ export default class CollectionFilterModel {
         this.status = CollectionStatus.APPROVED;
         this.searchString = '';
         this.farmId = S.Strings.NOT_EXISTS;
-        this.fromTimestamp = 0;
-        this.toTimestamp = 0;
-        this.orderBy = 0;
+        this.timestampFrom = S.NOT_EXISTS;
+        this.timestampTo = S.NOT_EXISTS;
+        this.orderBy = CollectionOrderBy.TIMESTAMP_ASC;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
 
@@ -42,15 +45,15 @@ export default class CollectionFilterModel {
         }
 
         return {
-            'ids': model.collectionIds ? model.collectionIds.join(',') : null,
+            'collectionIds': model.collectionIds,
             'status': model.status,
-            'search_string': model.searchString,
-            'farm_id': parseInt(model.farmId),
-            'from_timestamp': parseInt(model.fromTimestamp),
-            'to_timestamp': parseInt(model.toTimestamp),
-            'order_by': model.orderBy,
-            'offset': model.from,
-            'limit': model.count,
+            'searchString': model.searchString,
+            'farmId': model.farmId,
+            'timestampFrom': model.timestampFrom,
+            'timestampTo': model.timestampTo,
+            'orderBy': model.orderBy,
+            'from': model.from,
+            'count': model.count,
         }
     }
 }

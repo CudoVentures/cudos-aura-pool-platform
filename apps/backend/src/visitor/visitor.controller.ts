@@ -2,8 +2,8 @@ import { Body, Controller, Put, Request } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FarmDto } from '../farm/dto/farm.dto';
 import { NFTDto } from '../nft/dto/nft.dto';
-import { UUID_COOKIE_KEY } from './utils';
 import { VisitorService } from './visitor.service';
+import { UUID_COOKIE_KEY } from './visitor.types';
 
 @ApiTags('Visitor')
 @Controller('visitor')

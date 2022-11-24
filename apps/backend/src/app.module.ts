@@ -13,6 +13,9 @@ import { StatisticsModule } from './statistics/statistics.module';
 import { GraphqlModule } from './graphql/graphql.module';
 import { VisitorMiddleware } from './visitor/visitor.middleware';
 import { VisitorModule } from './visitor/visitor.module';
+import { AuthMiddleware } from './auth/auth.middleware';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './auth/constants';
 
 @Module({
     imports: [
@@ -24,6 +27,10 @@ import { VisitorModule } from './visitor/visitor.module';
         StatisticsModule,
         GraphqlModule,
         VisitorModule,
+        JwtModule.register({
+            secret: jwtConstants.secret,
+            signOptions: { expiresIn: '7d' },
+        }),
         SequelizeModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
@@ -65,7 +72,8 @@ import { VisitorModule } from './visitor/visitor.module';
 export class AppModule implements NestModule {
 
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(VisitorMiddleware).forRoutes('*')
+        consumer.apply(VisitorMiddleware).forRoutes('*');
+        consumer.apply(AuthMiddleware).forRoutes('*');
     }
 
 }

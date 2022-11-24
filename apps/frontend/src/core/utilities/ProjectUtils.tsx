@@ -167,7 +167,7 @@ export default class ProjectUtils {
         const timestampTo = date.getTime();
 
         date.setDate(date.getDate() - 1);
-        const timestampFrom = date.getTime();
+        const timestampFrom = date.getTime() + 1;
 
         return { timestampFrom, timestampTo };
     }
@@ -180,7 +180,7 @@ export default class ProjectUtils {
         const timestampTo = date.getTime();
 
         date.setDate(date.getDate() - 7);
-        const timestampFrom = date.getTime();
+        const timestampFrom = date.getTime() + 1;
 
         return { timestampFrom, timestampTo };
     }
@@ -193,7 +193,7 @@ export default class ProjectUtils {
         const timestampTo = date.getTime();
 
         date.setDate(date.getDate() - 30);
-        const timestampFrom = date.getTime();
+        const timestampFrom = date.getTime() + 1;
 
         return { timestampFrom, timestampTo };
     }

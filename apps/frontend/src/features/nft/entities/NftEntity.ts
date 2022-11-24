@@ -14,7 +14,7 @@ export enum NftStatus {
 }
 
 export enum ListStatus {
-    NONE = 0,
+    // NONE = 0,
     NOT_LISTED = 1,
     LISTED = 2,
 }
@@ -43,7 +43,7 @@ export default class NftEntity {
         this.priceInAcudos = null;
         this.imageUrl = '';
         this.status = NftStatus.NONE;
-        this.listStatus = ListStatus.NONE;
+        this.listStatus = ListStatus.NOT_LISTED;
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = ''
         this.currentOwnerAddress = ''

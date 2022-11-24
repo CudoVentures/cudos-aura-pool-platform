@@ -3,8 +3,10 @@ import S from '../../../core/utilities/Main';
 import { CollectionStatus } from '../../collection/entities/CollectionEntity';
 
 export enum NftOrderBy {
-    TRENDING_DESC = 1,
-    TIMESTAMP_DESC = 2
+    TRENDING_ASC = 1,
+    TRENDING_DESC = -NftOrderBy.TRENDING_ASC,
+    TIMESTAMP_ASC = 2,
+    TIMESTAMP_DESC = -NftOrderBy.TIMESTAMP_ASC,
 }
 
 export default class NftFilterModel {
@@ -24,7 +26,7 @@ export default class NftFilterModel {
         this.collectionIds = null;
         this.searchString = '';
         this.sessionAccount = S.INT_FALSE;
-        this.orderBy = 0;
+        this.orderBy = NftOrderBy.TIMESTAMP_DESC;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
 
@@ -37,14 +39,14 @@ export default class NftFilterModel {
         }
 
         return {
-            'ids': entity.nftIds ? entity.nftIds.join(',') : null,
+            'nftIds': entity.nftIds,
             'collectionStatus': entity.collectionStatus,
-            'collection_ids': entity.collectionIds ? entity.collectionIds.join(',') : null,
-            'search_string': entity.searchString,
-            'session_account': entity.sessionAccount,
-            'order_by': entity.orderBy,
-            'offset': entity.from,
-            'limit': entity.count,
+            'collection_ids': entity.collectionIds,
+            'searchString': entity.searchString,
+            'sessionAccount': entity.sessionAccount,
+            'orderBy': entity.orderBy,
+            'from': entity.from,
+            'count': entity.count,
         }
     }
 }

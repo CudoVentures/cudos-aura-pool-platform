@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Collection } from '../collection/collection.model';
 import { NFT } from '../nft/nft.model';
-import { NftStatus } from '../nft/utils';
+import { NftStatus } from '../nft/nft.types';
 import { EnergySourceDto } from './dto/energy-source.dto';
 import { FarmDto } from './dto/farm.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
@@ -11,45 +11,80 @@ import { EnergySource } from './models/energy-source.model';
 import { Farm } from './models/farm.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { Miner } from './models/miner.model';
-import { FarmFilters, FarmStatus } from './utils';
+import { FarmStatus } from './utils';
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
-import { FoundryWorkersDetails } from './dto/foundry-workers-details.dto';
+import { CollectionStatus } from '../collection/utils';
+import MiningFarmFilterModel from './dto/farm-filter.mdel';
+import sequelize, { Op } from 'sequelize';
+import { User } from '../user/user.model';
+import { VisitorService } from '../visitor/visitor.service';
 
 @Injectable()
 export class FarmService {
     constructor(
-    @InjectModel(Farm)
-    private farmModel: typeof Farm,
-    @InjectModel(NFT)
-    private nftModel: typeof NFT,
-    @InjectModel(Manufacturer)
-    private manufacturerModel: typeof Manufacturer,
-    @InjectModel(Miner)
-    private minerModel: typeof Miner,
-    @InjectModel(EnergySource)
-    private energySourceModel: typeof EnergySource,
-    private httpService: HttpService,
+        @InjectModel(Farm)
+        private farmModel: typeof Farm,
+        @InjectModel(Collection)
+        private collectionModel: typeof Collection,
+        @InjectModel(NFT)
+        private nftModel: typeof NFT,
+        @InjectModel(Manufacturer)
+        private manufacturerModel: typeof Manufacturer,
+        @InjectModel(Miner)
+        private minerModel: typeof Miner,
+        @InjectModel(EnergySource)
+        private energySourceModel: typeof EnergySource,
+        private httpService: HttpService,
+        private visitorService: VisitorService,
     ) {}
 
-    async findAll(filters: FarmFilters): Promise<Farm[]> {
-        const { limit, offset, order_by, ...rest } = filters
+    async findByFilter(user: User, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
+        let whereClause: any = {};
 
-        let order;
-        switch (order_by) {
-            // TODO: SORT BY POPULARITY
-            // case FarmOrderBy.POPULAR_DESC:
-            //     order = [['createdAt', 'DESC']]
-            //     break;
-            default:
-                order = undefined;
-                break;
-
+        console.log('1');
+        if (miningFarmFilterModel.hasMiningFarmIds() === true) {
+            whereClause.id = miningFarmFilterModel.miningFarmIds;
         }
 
-        const farms = await this.farmModel.findAll({ where: { ...rest }, order, offset, limit });
+        if (miningFarmFilterModel.hasMiningFarmStatus() === true) {
+            whereClause.status = miningFarmFilterModel.getMiningFarmStatus();
+        }
 
-        return farms;
+        if (miningFarmFilterModel.inOnlyForSessionAccount() === true) {
+            whereClause.creator_id = user.id;
+        }
+
+        if (miningFarmFilterModel.hasSearchString() === true) {
+            whereClause = [
+                whereClause,
+                sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${miningFarmFilterModel.searchString.toLowerCase()}%` }),
+            ]
+        }
+
+        let miningFarmEntities = await this.farmModel.findAll({
+            where: whereClause,
+        });
+
+        if (miningFarmFilterModel.isSortByPopular() === true) {
+            const miningFarmIds = miningFarmEntities.map((miningFarm) => {
+                return miningFarm.id;
+            });
+            const sortDirection = Math.floor(Math.abs(miningFarmFilterModel.orderBy) / miningFarmFilterModel.orderBy);
+            const visitorMap = await this.visitorService.fetchMiningFarmVisitsCount(miningFarmIds);
+            miningFarmEntities.sort((a: Farm, b: Farm) => {
+                const visitsA = visitorMap.get(a.id) ?? 0;
+                const visitsB = visitorMap.get(b.id) ?? 0;
+                return sortDirection * (visitsA - visitsB);
+            });
+        }
+
+        const total = miningFarmEntities.length;
+        miningFarmEntities = miningFarmEntities.slice(miningFarmFilterModel.from, miningFarmFilterModel.from + miningFarmFilterModel.count);
+
+        return {
+            miningFarmEntities,
+            total,
+        };
     }
 
     async findOne(id: number): Promise<Farm> {
@@ -186,16 +221,27 @@ export class FarmService {
 
     async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number, remainingHashPowerInTH: number }> {
         const farm = await this.farmModel.findByPk(farmId)
-        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }] })
-        const minted = nfts.filter((nft) => nft.status === NftStatus.MINTED)
+        if (!farm) {
+            throw new NotFoundException(`Farm with id '${farmId}' doesn't exist`)
+        }
+
+        const collections = await this.collectionModel.findAll({ where: { farm_id: farmId, status: { [Op.notIn]: [CollectionStatus.DELETED, CollectionStatus.REJECTED] } } })
+
+        // Get number of total and sold NFTs
+        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }], where: { status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } } })
+        const soldNfts = nfts.filter((nft) => nft.status === NftStatus.MINTED || nft.status === NftStatus.EXPIRED)
+
+        // Calculate remaining hash power of the farm
+        const collectionsHashPowerSum = collections.reduce((prevVal, currVal) => prevVal + Number(currVal.hashing_power), 0)
+        const remainingHashPowerInTH = farm.total_farm_hashrate - collectionsHashPowerSum
 
         return {
             id: farmId,
             subAccountName: farm.sub_account_name,
             totalHashRate: farm.total_farm_hashrate,
             nftsOwned: nfts.length,
-            nftsSold: minted.length,
-            remainingHashPowerInTH: farm.total_farm_hashrate,
+            nftsSold: soldNfts.length,
+            remainingHashPowerInTH,
         }
     }
 
@@ -220,6 +266,7 @@ export class FarmService {
                 averageHashRateH1: 0,
             };
 
+            return workersDetails
         }
     }
 

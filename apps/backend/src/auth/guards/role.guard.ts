@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
-import RequestWithUser from '../interfaces/requestWithUser.interface';
+import { RequestWithUser } from '../interfaces/request.interface';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { Role } from '../../user/roles';
 

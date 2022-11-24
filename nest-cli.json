@@ -26,6 +26,15 @@
         "webpack": true,
         "tsConfigPath": "apps/frontend/tsconfig.app.json"
       }
+    },
+    "chain-observer": {
+      "type": "application",
+      "root": "apps/chain-observer",
+      "entryFile": "main",
+      "sourceRoot": "apps/chain-observer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/chain-observer/tsconfig.app.json"
+      }
     }
   }
 }

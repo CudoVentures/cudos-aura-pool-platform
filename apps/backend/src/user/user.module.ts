@@ -3,19 +3,12 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { FarmService } from '../farm/farm.service';
-import { FarmModule } from '../farm/farm.module';
-import { Farm } from '../farm/models/farm.model';
-import { NFT } from '../nft/nft.model';
-import { Manufacturer } from '../farm/models/manufacturer.model';
-import { Miner } from '../farm/models/miner.model';
-import { EnergySource } from '../farm/models/energy-source.model';
-import { HttpModule } from '@nestjs/axios';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
-    imports: [SequelizeModule.forFeature([User, Farm, NFT, Manufacturer, Miner, EnergySource]), forwardRef(() => FarmModule), HttpModule],
-    providers: [UserService, FarmService],
+    imports: [SequelizeModule.forFeature([User])],
+    providers: [UserService, JwtService],
     controllers: [UserController],
-    exports: [SequelizeModule],
+    exports: [SequelizeModule, UserService],
 })
 export class UserModule {}

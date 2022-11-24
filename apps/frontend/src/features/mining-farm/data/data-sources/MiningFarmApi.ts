@@ -8,32 +8,13 @@ import axios from '../../../../core/utilities/AxiosWrapper';
 
 export default class MiningFarmApi {
 
-    async fetchPopularMiningFarms(): Promise < MiningFarmEntity[] > {
-        const { data } = await axios.get('/api/v1/farm')
-
-        return data.map((farm) => {
-            return MiningFarmEntity.fromJson(farm)
-        })
-    }
-
-    async fetchMiningFarmsByIds(miningFarmIds: string[]): Promise < MiningFarmEntity[] > {
-        const { data } = await axios.get('/api/v1/farm', { params: {
-            ids: miningFarmIds.join(','),
-        } })
-
-        return data.map((farm) => {
-            return MiningFarmEntity.fromJson(farm)
-        })
-    }
-
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
-        const { data } = await axios.get('/api/v1/farm', { params: MiningFarmFilterModel.toJson(miningFarmFilterModel) });
-        const result = { miningFarmEntities: data.map((farm) => {
-            return MiningFarmEntity.fromJson(farm)
-        }),
-        total: data.length,
+        const { data } = await axios.post('/api/v1/farm', MiningFarmFilterModel.toJson(miningFarmFilterModel));
+
+        return {
+            miningFarmEntities: data.miningFarmEntities.map((json) => MiningFarmEntity.fromJson(json)),
+            total: data.total,
         }
-        return result
     }
 
     async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {

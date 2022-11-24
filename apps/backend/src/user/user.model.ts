@@ -59,6 +59,9 @@ export class User extends Model {
   @Column
       is_active: boolean;
 
+  @Column
+      email_verified: boolean;
+
   @HasMany(() => Farm)
       farms: Farm[];
 

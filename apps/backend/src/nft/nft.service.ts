@@ -1,55 +1,106 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
+import sequelize, { Op } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { Collection } from '../collection/collection.model';
+import { CollectionService } from '../collection/collection.service';
+import { User } from '../user/user.model';
+import { VisitorService } from '../visitor/visitor.service';
+import NftFilterModel, { NftOrderBy } from './dto/nft-filter.model';
 import { NFTDto } from './dto/nft.dto';
 import { NFT } from './nft.model';
-import { NftFilters, NftOrderBy, NftStatus } from './utils';
+import { NftStatus } from './nft.types';
 
 @Injectable()
 export class NFTService {
     constructor(
-    @InjectModel(NFT)
-    private nftModel: typeof NFT,
+        @InjectModel(NFT)
+        private nftRepo: typeof NFT,
+        private collectionService: CollectionService,
+        private visitorService: VisitorService,
     ) {}
 
-    async findAll(filters: Partial<NftFilters>): Promise<NFT[]> {
-        const { limit, offset, order_by, collectionStatus, ...rest } = filters
+    async findByFilter(user: User, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
+        let whereClause: any = {};
+        let orderByClause: any[] = null;
 
-        let order;
-        switch (order_by) {
-            case NftOrderBy.TIMESTAMP_DESC:
-                order = [['createdAt', 'DESC']]
-                break;
-            default:
-                order = undefined;
-                break;
-
+        if (nftFilterModel.hasNftIds() === true) {
+            whereClause.id = nftFilterModel.nftIds;
         }
 
-        const nfts = await this.nftModel.findAll({
-            where: { ...rest },
-            order,
-            limit,
-            offset,
+        if (nftFilterModel.hasCollectionStatus() === true) {
+            whereClause.collection_id = await this.collectionService.findIdsByStatus(nftFilterModel.getCollectionStatus());
+        }
+
+        if (nftFilterModel.hasCollectionIds() === true) {
+            whereClause.collection_id = whereClause.collection_id.concat(nftFilterModel.collectionIds);
+        }
+
+        if (nftFilterModel.inOnlyForSessionAccount() === true) {
+            whereClause.creator_id = user.id;
+        }
+
+        if (nftFilterModel.hasSearchString() === true) {
+            whereClause = [
+                whereClause,
+                sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${nftFilterModel.searchString.toLowerCase()}%` }),
+            ]
+        }
+
+        switch (nftFilterModel.orderBy) {
+            case NftOrderBy.TIMESTAMP_ASC:
+            case NftOrderBy.TIMESTAMP_DESC:
+            default:
+                orderByClause = [['createdAt']]
+                break;
+        }
+        if (orderByClause !== null) {
+            orderByClause[0].push(nftFilterModel.orderBy > 0 ? 'ASC' : 'DESC');
+        }
+
+        let nftEntities = await this.nftRepo.findAll({
+            where: whereClause,
+            order: orderByClause,
         });
 
-        return nfts;
+        if (nftFilterModel.isSortByTrending() === true) {
+            const nftIds = nftEntities.map((nftEntity) => {
+                return nftEntity.id;
+            });
+            const sortDirection = Math.floor(Math.abs(nftFilterModel.orderBy) / nftFilterModel.orderBy);
+            const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
+            console.log(visitorMap);
+            nftEntities.sort((a: NFT, b: NFT) => {
+                const visitsA = visitorMap.get(a.id) ?? 0;
+                const visitsB = visitorMap.get(b.id) ?? 0;
+                return sortDirection * (visitsA - visitsB);
+            });
+        }
+
+        const total = nftEntities.length;
+        nftEntities = nftEntities.slice(nftFilterModel.from, nftFilterModel.from + nftFilterModel.count);
+
+        return {
+            nftEntities,
+            total,
+        };
+
     }
 
     async findByCollectionId(id: number): Promise<NFT[]> {
-        const nfts = await this.nftModel.findAll({
+        const nfts = await this.nftRepo.findAll({
             where: {
                 collection_id: id,
             },
+            include: [{ model: Collection }],
         });
 
         return nfts;
     }
 
     async findByCreatorId(id: number): Promise<NFT[]> {
-        const nfts = await this.nftModel.findAll({
+        const nfts = await this.nftRepo.findAll({
             where: {
                 creator_id: id,
             },
@@ -58,8 +109,8 @@ export class NFTService {
         return nfts;
     }
 
-    async findOne(id: string): Promise<NFT> {
-        const nft = this.nftModel.findByPk(id, { include: [{ model: Collection }] });
+    async findOne(id: string): Promise < NFT > {
+        const nft = this.nftRepo.findByPk(id, { include: [{ model: Collection }] });
 
         if (!nft) {
             throw new NotFoundException();
@@ -68,25 +119,19 @@ export class NFTService {
         return nft;
     }
 
-    async createOne(
-        nftDto: Partial<NFTDto>,
-        creator_id: number,
-    ): Promise<NFT> {
-        const nft = await this.nftModel.create({
+    async createOne(nftDto: Partial<NFTDto>, creatorId: number): Promise < NFT > {
+        const nft = await this.nftRepo.create({
             ...nftDto,
             id: uuid(),
-            creator_id,
+            creator_id: creatorId,
             status: NftStatus.QUEUED,
         });
 
         return nft;
     }
 
-    async updateOne(
-        id: string,
-        updateNFTDto: Partial<NFTDto>,
-    ): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async updateOne(id: string, updateNFTDto: Partial<NFTDto>): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { ...updateNFTDto, status: NftStatus.QUEUED },
             {
                 where: { id },
@@ -97,8 +142,8 @@ export class NFTService {
         return nft;
     }
 
-    async updateStatus(id: string, status: NftStatus): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async updateStatus(id: string, status: NftStatus): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { status },
             {
                 where: { id },
@@ -109,8 +154,8 @@ export class NFTService {
         return nft;
     }
 
-    async updateTokenId(id: string, token_id: string): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async updateTokenId(id: string, token_id: string): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { token_id },
             {
                 where: { id },
@@ -121,8 +166,8 @@ export class NFTService {
         return nft
     }
 
-    async deleteOne(id: string): Promise<NFT> {
-        const [count, [nft]] = await this.nftModel.update(
+    async deleteOne(id: string): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
             { deleted_at: new Date(), status: NftStatus.DELETED },
             {
                 where: {
