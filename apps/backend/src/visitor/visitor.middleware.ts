@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { UUID_COOKIE_KEY } from './utils';
+import { UUID_COOKIE_KEY } from './visitor.types';
 
 @Injectable()
 export class VisitorMiddleware implements NestMiddleware {

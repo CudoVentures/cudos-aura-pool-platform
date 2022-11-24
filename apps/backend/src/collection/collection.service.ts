@@ -4,7 +4,7 @@ import { CollectionDto } from './dto/collection.dto';
 import { Collection } from './collection.model';
 import { CollectionStatus } from './utils';
 import { NFT } from '../nft/nft.model';
-import { NftStatus } from '../nft/utils';
+import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel, { CollectionOrderBy } from './dto/collection-filter.model';
 import sequelize, { Op } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';

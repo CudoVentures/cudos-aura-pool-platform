@@ -1,10 +1,11 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt } from 'passport-jwt';
 import { JwtService } from '@nestjs/jwt';
 import JwtToken from './jwtToken.entity';
 import { UserService } from '../user/user.service';
+import { RequestWithSessionUser } from './interfaces/request.interface';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -15,7 +16,7 @@ export class AuthMiddleware implements NestMiddleware {
         private userService: UserService,
     ) {}
 
-    async use(req: Request, res: Response, next: NextFunction) {
+    async use(req: RequestWithSessionUser, res: Response, next: NextFunction) {
         const extractorFunction = ExtractJwt.fromAuthHeaderAsBearerToken();
         const encodedToken = extractorFunction(req);
 
