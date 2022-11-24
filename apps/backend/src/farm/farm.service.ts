@@ -41,7 +41,6 @@ export class FarmService {
     async findByFilter(user: User, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
         let whereClause: any = {};
 
-        console.log('1');
         if (miningFarmFilterModel.hasMiningFarmIds() === true) {
             whereClause.id = miningFarmFilterModel.miningFarmIds;
         }

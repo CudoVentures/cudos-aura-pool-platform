@@ -47,7 +47,7 @@ export default class AccountSessionStore {
             return false;
         }
 
-        if (this.accountEntity.isUser() === true || this.accountEntity.isAdmin() === true) {
+        if (this.accountEntity.isUser() === true) {
             return this.userEntity !== null;
         }
 

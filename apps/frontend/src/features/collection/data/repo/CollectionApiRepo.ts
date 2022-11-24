@@ -109,7 +109,10 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger, network: string): Promise < string > {
         const farmAdminEntity = await this.accountApi.getFarmAdminByFarmId(collectionEntity.farmId);
-        const miningFarmEntity = (await this.miningFarmApi.fetchMiningFarmsByIds([collectionEntity.farmId]))[0];
+        const filter = new MiningFarmFilterModel()
+        filter.miningFarmIds = [collectionEntity.farmId];
+        const miningFarmEntities = (await this.miningFarmApi.fetchMiningFarmsByFilter(filter)).miningFarmEntities;
+        const miningFarmEntity = miningFarmEntities[0];
 
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
@@ -130,7 +133,7 @@ export default class CollectionApiRepo implements CollectionRepo {
             collectionEntity.name.toLowerCase().replace(' ', '_'),
             collectionEntity.name,
             'CudosAuraPoolSchema',
-            '',
+            'symbol',
             'NotEditable',
             '',
             CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],

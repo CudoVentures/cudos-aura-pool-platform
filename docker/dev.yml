@@ -67,6 +67,7 @@ services:
         GROUP_ID: "$GROUP_ID"
         GROUP_NAME: "$GROUP_NAME"
         AURA_POOL_BACKEND: "$AURA_POOL_BACKEND"
+        CHAIN_RPC: "$CHAIN_RPC"
     restart: unless-stopped
     volumes:
       - '../:/usr/cudos-aura-chain-observer'
