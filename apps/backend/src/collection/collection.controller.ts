@@ -25,6 +25,7 @@ import { Role } from '../user/roles';
 import { IsCreatorGuard } from './guards/is-creator.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
+import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
 import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel from './dto/collection-filter.model';
 import NftFilterModel from '../nft/dto/nft-filter.model';
@@ -46,7 +47,7 @@ export class CollectionController {
     }
 
     @Get('details')
-    async getDetails(@Query('ids') ids: string): Promise<any> {
+    async getDetails(@Query('ids') ids: string): Promise<CollectionDetailsResponseDto[]> {
         const collectionIds = ids.split(',').map((id) => Number(id))
 
         const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(collectionId))
