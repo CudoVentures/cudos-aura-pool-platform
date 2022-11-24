@@ -18,7 +18,7 @@ export class StatisticsService {
         @InjectModel(NftPayoutHistory)
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
         @InjectModel(NftOwnersPayoutHistory)
-        private nftOwnersPayoutHistoryModel: typeof NftPayoutHistory,
+        private nftOwnersPayoutHistoryModel: typeof NftOwnersPayoutHistory,
     ) {}
 
     async fetchNftEarnings(nftId: string, filters: { timestampFrom: string, timestampTo: string }): Promise<string[]> {
@@ -56,32 +56,38 @@ export class StatisticsService {
     async fetchAddressEarnings(cudosAddress: string, filters: { timestampFrom: string, timestampTo: string }): Promise<any> {
         const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
 
-        const ownerPayoutHistory = await this.nftPayoutHistoryModel.findAll({
-            include: [{ model: NftOwnersPayoutHistory,
+        const ownerPayoutHistoryForPeriod = await this.nftOwnersPayoutHistoryModel.findAll({
+            where: {
+                owner: cudosAddress,
+            },
+            include: [{ model: NftPayoutHistory,
                 where: {
-                    owner: cudosAddress,
+                    payout_period_start: {
+                        [Op.or]: {
+                            [Op.gt]: Number(filters.timestampFrom) / 1000,
+                            [Op.eq]: Number(filters.timestampFrom) / 1000,
+                        },
+                    },
+                    payout_period_end: {
+                        [Op.or]: {
+                            [Op.lt]: Number(filters.timestampTo) / 1000,
+                            [Op.eq]: Number(filters.timestampTo) / 1000,
+                        },
+                    },
                 },
             }],
+        })
+        const rewardsPerDay = days.map((day) => ownerPayoutHistoryForPeriod.filter((ophp) => (ophp.nft_payout_history.payout_period_start * 1000) >= day && (ophp.nft_payout_history.payout_period_end * 1000) <= day + dayInMs).reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0))
+
+        const ownerPayoutHistory = await this.nftOwnersPayoutHistoryModel.findAll({
             where: {
-                payout_period_start: {
-                    [Op.or]: {
-                        [Op.gt]: Number(filters.timestampFrom) / 1000,
-                        [Op.eq]: Number(filters.timestampFrom) / 1000,
-                    },
-                },
-                payout_period_end: {
-                    [Op.or]: {
-                        [Op.lt]: Number(filters.timestampTo) / 1000,
-                        [Op.eq]: Number(filters.timestampTo) / 1000,
-                    },
-                },
+                owner: cudosAddress,
             },
         })
-
-        const rewardsPerDay = days.map(((day) => ownerPayoutHistory.find((row) => (row.payout_period_start * 1000) >= day && (row.payout_period_end * 1000) <= day + dayInMs)?.reward.toString() || null))
+        const totalEarningInBtc = ownerPayoutHistory.reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0)
 
         return {
-            totalEarningInBtc: 0,
+            totalEarningInBtc,
             totalNftBought: 0,
             earningsPerDayInUsd: rewardsPerDay,
             btcEarnedInBtc: 0,
