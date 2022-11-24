@@ -162,7 +162,6 @@ export class FarmController {
 
     @Put('manufacturers')
     async creditManufacturers(@Body() manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
-        console.log(manufacturerDto);
         const { id } = manufacturerDto
 
         if (!id) {

@@ -22,7 +22,6 @@ export class NFTService {
     ) {}
 
     async findByFilter(user: User, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
-        console.log(nftFilterModel);
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
@@ -78,7 +77,6 @@ export class NFTService {
             });
             const sortDirection = Math.floor(Math.abs(nftFilterModel.orderBy) / nftFilterModel.orderBy);
             const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
-            console.log(visitorMap);
             nftEntities.sort((a: NFT, b: NFT) => {
                 const visitsA = visitorMap.get(a.id) ?? 0;
                 const visitsB = visitorMap.get(b.id) ?? 0;
