@@ -48,7 +48,7 @@ export class CollectionController {
 
     @Get('details')
     async getDetails(@Query('ids') ids: string): Promise<CollectionDetailsResponseDto[]> {
-        const collectionIds = ids.split(',').map((id) => Number(id))
+        const collectionIds = ids === '' ? [] : ids.split(',').map((id) => Number(id))
 
         const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(collectionId))
         const collectionDetails = await Promise.all(getCollectionDetails)
