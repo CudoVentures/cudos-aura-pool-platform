@@ -52,3 +52,55 @@ services:
       - cudosdappdbdata:/var/lib/postgresql/data
     networks:
       - shared-cudos-network
+  
+  cudos-aura-platform-chain-observer-dev:
+    image: cudos-aura-platform-chain-observer-dev
+    container_name: cudos-aura-platform-chain-observer-dev
+    build:
+      dockerfile: docker/chain-observer-dev.dockerfile
+      context: ../
+      args:
+        args:
+        USER_ID: "$USER_ID"
+        USER_NAME: "$USER_NAME"
+        GROUP_ID: "$GROUP_ID"
+        GROUP_NAME: "$GROUP_NAME"
+    restart: unless-stopped
+    volumes:
+      - '../:/usr/cudos-aura-chain-observer'
+    networks:
+      - shared-cudos-network
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+        max-file: "1"
+    depends_on: 
+      - cudos-aura-platform-dev
+
+  cudos-on-demant-minting-service-dev:
+    image: cudos-on-demant-minting-service-dev
+    container_name: cudos-on-demant-minting-service-dev
+    build:
+      dockerfile: docker/on-demant-mingint-service-dev.dockerfile
+      context: ../
+      args:
+        args:
+        USER_ID: "$USER_ID"
+        USER_NAME: "$USER_NAME"
+        GROUP_ID: "$GROUP_ID"
+        GROUP_NAME: "$GROUP_NAME"
+    restart: unless-stopped
+    volumes:
+      - '../../CudosOnDemandMintingService:/usr/cudos-on-demand-minting-service'
+    networks:
+      - shared-cudos-network
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+        max-file: "1"
