@@ -6,13 +6,10 @@ import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import NftEntity from '../../../nft/entities/NftEntity';
-import NftFilterModel from '../../../nft/utilities/NftFilterModel';
-import { CollectionStatus } from '../../entities/CollectionEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import CreditCollectionPageStore from '../stores/CreditCollectionPageStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
-import { MenuItem } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ProfileHeader from '../components/ProfileHeader';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
@@ -21,9 +18,8 @@ import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
-import Select from '../../../../core/presentation/components/Select';
-import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
+import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
 import GridView from '../../../../core/presentation/components/GridView';
 import NftPreview from '../../../nft/presentation/components/NftPreview';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
@@ -44,8 +40,6 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
     const collectionDetailsEntity = creditCollectionPageStore.collectionDetailsEntity;
     const miningFarmEntity = creditCollectionPageStore.miningFarmEntity;
     const nftEntities = creditCollectionPageStore.nftEntities;
-
-    const nftFilterModel = creditCollectionPageStore.nftFilterModel;
 
     const { collectionId } = useParams();
     const navigate = useNavigate();
