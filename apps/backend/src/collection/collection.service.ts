@@ -10,6 +10,7 @@ import sequelize, { Op } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
 import { ChainCollectionDto, ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
 import { ChainNftCollectionDto } from './dto/chain-nft-collection.dto';
+import { checkValidNftDenomId } from 'cudosjs';
 
 @Injectable()
 export class CollectionService {
@@ -134,7 +135,8 @@ export class CollectionService {
         creator_id: number,
     ): Promise<Collection> {
 
-        collectionDto.denom_id = collectionDto.name.toLowerCase();
+        collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '_');
+        checkValidNftDenomId(collectionDto.denom_id);
         const collection = this.collectionModel.create({
             ...collectionDto,
             status: CollectionStatus.QUEUED,
