@@ -133,7 +133,7 @@ export default class CollectionApiRepo implements CollectionRepo {
             collectionEntity.name.toLowerCase().replace(' ', '_'),
             collectionEntity.name,
             'CudosAuraPoolSchema',
-            'symbol',
+            collectionEntity.name,
             'NotEditable',
             '',
             CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],

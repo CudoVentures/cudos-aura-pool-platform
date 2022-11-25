@@ -5,7 +5,11 @@ import { UpdateLastCheckedBlockRequest } from './dto/update-last-checked-height-
 @ApiTags('GENERAL')
 @Controller('general')
 export class GeneralController {
-    constructor() {}
+    height: number;
+
+    constructor() {
+        this.height = 1110000
+    }
 
     @Get('heartbeat')
     async getAlive(): Promise<any> {
@@ -14,11 +18,12 @@ export class GeneralController {
 
     @Get('last-checked-block')
     async getLastCheckedBlock(): Promise<any> {
-        return { height: 1000 };
+        return { height: this.height };
     }
 
     @Put('last-checked-block')
     async updatelastCheckedBlock(@Body() updateLastCheckedBlockRequest: UpdateLastCheckedBlockRequest): Promise<any> {
+        this.height = updateLastCheckedBlockRequest.height;
         return {};
     }
 }

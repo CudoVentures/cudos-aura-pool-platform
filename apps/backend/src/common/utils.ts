@@ -4,6 +4,7 @@ export enum IntBoolValue {
 }
 
 export function parseIntBoolValue(value: boolean | IntBoolValue): IntBoolValue {
+
     if (typeof value === 'boolean') {
         return value === true ? IntBoolValue.TRUE : IntBoolValue.FALSE;
     }

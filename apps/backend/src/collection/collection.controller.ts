@@ -165,8 +165,7 @@ export class CollectionController {
                 // collection.denom_id = denomId;
                 // collection.royalties = chainMarketplaceCollectionDto.;
                 // collection.creator = chainMarketplaceCollectionDto.creator;
-
-                collection.status = chainMarketplaceCollectionDto.verified === IntBoolValue.TRUE ? CollectionStatus.APPROVED : CollectionStatus.REJECTED;
+                collection.status = chainMarketplaceCollectionDto.verified === true ? CollectionStatus.APPROVED : CollectionStatus.REJECTED;
 
                 await this.collectionService.updateOneByDenomId(denomId, collection);
             }

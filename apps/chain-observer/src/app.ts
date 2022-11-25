@@ -21,11 +21,7 @@ export default class App {
         const worker = new TxFindWorker(client, api);
 
         this.p = setInterval(async () => {
-            try {
-                await worker.run();
-            } catch (e) {
-                console.log(e);
-            }
+            await worker.run();
         }, Config.LOOP_INTERVAL_MILIS);
     }
 

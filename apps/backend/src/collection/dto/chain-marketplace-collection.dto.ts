@@ -14,14 +14,14 @@ type GraphQlCollection = {
 export class ChainMarketplaceCollectionDto {
     mintRoyalties: Royalty[];
     resaleRoyalties: Royalty[];
-    verified: IntBoolValue;
+    verified: boolean;
     creator: string;
     denomId: string;
 
     constructor() {
         this.mintRoyalties = [];
         this.resaleRoyalties = [];
-        this.verified = IntBoolValue.FALSE;
+        this.verified = false;
         this.creator = '';
         this.denomId = '';
     }
@@ -29,23 +29,23 @@ export class ChainMarketplaceCollectionDto {
     static fromQuery(queryCollection: GraphQlCollection): ChainMarketplaceCollectionDto {
         const collectionDto = new ChainMarketplaceCollectionDto();
 
-        collectionDto.verified = parseIntBoolValue(queryCollection.verified ?? collectionDto.verified);
+        collectionDto.verified = queryCollection.verified ?? collectionDto.verified;
         collectionDto.denomId = queryCollection.denom_id ?? collectionDto.denomId;
 
-        collectionDto.mintRoyalties = queryCollection.mint_royalties
-            ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
-                console.log(royaltyString)
-                const royaltyJson = JSON.parse(royaltyString);
-                return Royalty.fromJSON(royaltyJson);
-            })
-            : collectionDto.mintRoyalties;
+        // TODO: make it work
+        // collectionDto.mintRoyalties = queryCollection.mint_royalties
+        //     ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
+        //         const royaltyJson = JSON.parse(royaltyString);
+        //         return Royalty.fromJSON(royaltyJson);
+        //     })
+        //     : collectionDto.mintRoyalties;
 
-        collectionDto.resaleRoyalties = queryCollection.resale_royalties
-            ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
-                const royaltyJson = JSON.parse(royaltyString);
-                return Royalty.fromJSON(royaltyJson);
-            })
-            : collectionDto.resaleRoyalties;
+        // collectionDto.resaleRoyalties = queryCollection.resale_royalties
+        //     ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
+        //         const royaltyJson = JSON.parse(royaltyString);
+        //         return Royalty.fromJSON(royaltyJson);
+        //     })
+        //     : collectionDto.resaleRoyalties;
 
         return collectionDto;
 
