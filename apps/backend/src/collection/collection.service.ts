@@ -133,6 +133,8 @@ export class CollectionService {
         collectionDto: Partial<CollectionDto>,
         creator_id: number,
     ): Promise<Collection> {
+
+        collectionDto.denom_id = collectionDto.name.toLowerCase();
         const collection = this.collectionModel.create({
             ...collectionDto,
             status: CollectionStatus.QUEUED,
