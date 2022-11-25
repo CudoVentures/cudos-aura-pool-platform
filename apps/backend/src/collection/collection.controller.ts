@@ -30,13 +30,15 @@ import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel from './dto/collection-filter.model';
 import NftFilterModel from '../nft/dto/nft-filter.model';
 import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
+import DataService from '../data/data.service';
 
 @ApiTags('Collection')
 @Controller('collection')
 export class CollectionController {
     constructor(
-    private collectionService: CollectionService,
-    private nftService: NFTService,
+        private collectionService: CollectionService,
+        private nftService: NFTService,
+        private dataService: DataService,
     ) {}
 
     @Post()
@@ -70,53 +72,75 @@ export class CollectionController {
     @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorGuard, IsFarmApprovedGuard)
     @Put()
     async createOrEdit(
-        @Request() req,
+        @Request() req: RequestWithSessionUser,
         @Body() collectionDto: CollectionDto,
     ): Promise<{collection: Collection, nfts: NFT[], deletedNfts: number}> {
         const { id, nfts: nftArray, ...collectionRest } = collectionDto
 
-        // Collection doesn't exist
-        if (id < 0) {
-            const collection = await this.collectionService.createOne(collectionRest, req.user.id);
-
-            const nfts = nftArray.map(async (nft) => {
-                const { id: tempId, uri, ...nftRest } = nft
-                nftRest.uri = uri;
-                const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.user.id)
-
-                return createdNft
-            })
-
-            const nftsResult = await Promise.all(nfts)
-
-            return {
-                collection,
-                nfts: nftsResult,
-                deletedNfts: 0,
-            }
+        collectionRest.banner_image = await this.dataService.trySaveUri(req.sessionUser.id, collectionRest.banner_image);
+        collectionRest.main_image = await this.dataService.trySaveUri(req.sessionUser.id, collectionRest.main_image);
+        for (let i = nftArray.length; i-- > 0;) {
+            nftArray[i].uri = await this.dataService.trySaveUri(req.sessionUser.id, nftArray[i].uri);
         }
 
-        const collection = await this.collectionService.updateOne(id, collectionRest);
-        const collectionNfts = await this.nftService.findByCollectionId(id)
+        const collectionDb = await this.collectionService.findOne(id);
+        const collectionNftsDb = await this.nftService.findByCollectionId(id)
 
-        const nftsToDelete = collectionNfts.filter((nft) => nftArray.findIndex((item) => item.id === nft.id))
-        const deleteNfts = nftsToDelete.map(async (nft) => { return nft.destroy() })
-        const deletedResult = await Promise.all(deleteNfts)
+        let oldUris = [];
+        if (collectionDb !== null) {
+            oldUris = [collectionDb.main_image, collectionDb.banner_image];
+            collectionNftsDb.forEach((nft) => {
+                oldUris.push(nft.uri);
+            });
+        }
 
-        const nftsToCreateOrEdit = nftArray.map(async (nft) => {
-            if (!Number(nft.id)) {
-                return this.nftService.updateOne(nft.id, nft)
+        const newUris = [collectionRest.main_image, collectionRest.banner_image];
+        nftArray.forEach((nft) => {
+            newUris.push(nft.uri);
+        });
+
+        let collection, nftResults, deletedNfts = [];
+        try {
+            if (id < 0) {
+                collection = await this.collectionService.createOne(collectionRest, req.sessionUser.id);
+
+                const nfts = nftArray.map(async (nft) => {
+                    const { id: tempId, uri, ...nftRest } = nft
+                    nftRest.uri = uri;
+                    const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.sessionUser.id)
+
+                    return createdNft
+                })
+
+                nftResults = await Promise.all(nfts)
+            } else {
+
+                collection = await this.collectionService.updateOne(id, collectionRest);
+                const collectionNfts = await this.nftService.findByCollectionId(id)
+
+                const nftsToDelete = collectionNfts.filter((nft) => nftArray.findIndex((item) => item.id === nft.id))
+                const deleteNfts = nftsToDelete.map(async (nft) => { return nft.destroy() })
+                deletedNfts = await Promise.all(deleteNfts)
+
+                const nftsToCreateOrEdit = nftArray.map(async (nft) => {
+                    if (!Number(nft.id)) {
+                        return this.nftService.updateOne(nft.id, nft)
+                    }
+
+                    return this.nftService.createOne({ ...nft, collection_id: collection.id }, req.sessionUser.id)
+                })
+
+                nftResults = await Promise.all(nftsToCreateOrEdit)
             }
-
-            return this.nftService.createOne({ ...nft, collection_id: collection.id }, req.user.id)
-        })
-
-        const creditedNfts = await Promise.all(nftsToCreateOrEdit)
-
+            this.dataService.cleanUpOldUris(oldUris, newUris);
+        } catch (ex) {
+            this.dataService.cleanUpNewUris(oldUris, newUris);
+            throw ex;
+        }
         return {
             collection,
-            nfts: creditedNfts,
-            deletedNfts: deletedResult.length,
+            nfts: nftResults,
+            deletedNfts: deletedNfts.length,
         }
     }
 

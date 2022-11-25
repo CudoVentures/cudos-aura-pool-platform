@@ -41,7 +41,7 @@ export default class NftFilterModel {
         return {
             'nftIds': entity.nftIds,
             'collectionStatus': entity.collectionStatus,
-            'collection_ids': entity.collectionIds,
+            'collectionIds': entity.collectionIds,
             'searchString': entity.searchString,
             'sessionAccount': entity.sessionAccount,
             'orderBy': entity.orderBy,

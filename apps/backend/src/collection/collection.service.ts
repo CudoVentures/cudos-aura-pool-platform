@@ -104,13 +104,7 @@ export class CollectionService {
     }
 
     async findOne(id: number): Promise<Collection> {
-        const collection = await this.collectionModel.findByPk(id);
-
-        if (!collection) {
-            throw new NotFoundException();
-        }
-
-        return collection;
+        return this.collectionModel.findByPk(id);
     }
 
     async findByCreatorId(id: number): Promise<Collection[]> {

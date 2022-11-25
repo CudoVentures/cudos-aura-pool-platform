@@ -25,7 +25,7 @@ export class IsFarmApprovedGuard extends JwtAuthGuard implements CanActivate {
         if (!farmId) return false;
 
         return this.farmService.findOne(farmId).then((farm: Farm) => {
-            if (farm.status !== FarmStatus.APPROVED) {
+            if (farm === null || farm.status !== FarmStatus.APPROVED) {
                 throw new UnauthorizedException(
                     `Farm with id ${farmId} is not verified`,
                 );

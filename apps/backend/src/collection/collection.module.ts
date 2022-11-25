@@ -15,6 +15,7 @@ import { EnergySource } from '../farm/models/energy-source.model';
 import { Manufacturer } from '../farm/models/manufacturer.model';
 import { Miner } from '../farm/models/miner.model';
 import { VisitorModule } from '../visitor/visitor.module';
+import DataService from '../data/data.service';
 
 @Module({
     imports: [
@@ -24,8 +25,8 @@ import { VisitorModule } from '../visitor/visitor.module';
         HttpModule,
         VisitorModule,
     ],
-    providers: [CollectionService, NFTService, FarmService, GraphqlService],
+    providers: [CollectionService, NFTService, FarmService, GraphqlService, DataService],
     controllers: [CollectionController],
-    exports: [SequelizeModule, CollectionService],
+    exports: [SequelizeModule, CollectionService, DataService],
 })
 export class CollectionModule {}

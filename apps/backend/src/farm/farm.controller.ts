@@ -15,8 +15,6 @@ import {
     Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CollectionService } from '../collection/collection.service';
-import { Collection } from '../collection/collection.model';
 import RoleGuard from '../auth/guards/role.guard';
 import { Role } from '../user/roles';
 import { FarmDto } from './dto/farm.dto';
@@ -31,13 +29,15 @@ import { MinerDto } from './dto/miner.dto';
 import { EnergySourceDto } from './dto/energy-source.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
+import DataService from '../data/data.service';
+import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
 
 @ApiTags('Farm')
 @Controller('farm')
 export class FarmController {
     constructor(
         private farmService: FarmService,
-        private collectionService: CollectionService,
+        private dataService: DataService,
     ) { }
 
     @Post()
@@ -77,16 +77,36 @@ export class FarmController {
     @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorGuard)
     @Put()
     async creditFarm(
-        @Request() req,
+        @Request() req: RequestWithSessionUser,
         @Body() farmDto: FarmDto,
     ): Promise<Farm> {
         const { id, ...farm } = farmDto
 
-        if (id > 0) {
-            return this.farmService.updateOne(id, farm);
+        let farmModel;
+
+        farm.cover_img = await this.dataService.trySaveUri(req.sessionUser.id, farm.cover_img);
+        farm.profile_img = await this.dataService.trySaveUri(req.sessionUser.id, farm.profile_img);
+        for (let i = farm.images.length; i-- > 0;) {
+            farm.images[i] = await this.dataService.trySaveUri(req.sessionUser.id, farm.images[i]);
         }
 
-        return this.farmService.createOne(farm, req.user.id)
+        const farmModelDb = await this.farmService.findOne(id);
+        const oldUris = farmModelDb === null ? [] : [farmModelDb.cover_img, farmModelDb.profile_img].concat(farmModelDb.images);
+        const newUris = [farm.cover_img, farm.profile_img].concat(farm.images);
+
+        try {
+            if (id > 0) {
+                farmModel = await this.farmService.updateOne(id, farm);
+            } else {
+                farmModel = await this.farmService.createOne(farm, req.sessionUser.id)
+            }
+            this.dataService.cleanUpOldUris(oldUris, newUris);
+        } catch (ex) {
+            this.dataService.cleanUpNewUris(oldUris, newUris);
+            throw ex;
+        }
+
+        return farmModel
     }
 
     //   @ApiBearerAuth('access-token')
@@ -142,7 +162,6 @@ export class FarmController {
 
     @Put('manufacturers')
     async creditManufacturers(@Body() manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
-        console.log(manufacturerDto);
         const { id } = manufacturerDto
 
         if (!id) {

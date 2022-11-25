@@ -18,6 +18,7 @@ import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
 import VisitorRepo from '../visitor/visitor.repo';
+import DataService from '../data/data.service';
 
 @Module({
     imports: [
@@ -36,7 +37,7 @@ import VisitorRepo from '../visitor/visitor.repo';
         HttpModule,
     ],
     controllers: [StatisticsController],
-    providers: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, FarmService],
-    exports: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService],
+    providers: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService, FarmService],
+    exports: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService],
 })
 export class StatisticsModule {}

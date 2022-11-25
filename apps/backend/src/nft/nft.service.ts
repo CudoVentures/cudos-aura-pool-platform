@@ -34,7 +34,14 @@ export class NFTService {
         }
 
         if (nftFilterModel.hasCollectionIds() === true) {
-            whereClause.collection_id = whereClause.collection_id.concat(nftFilterModel.collectionIds);
+            if (whereClause.collection_id === undefined) {
+                whereClause.collection_id = nftFilterModel.collectionIds;
+            } else {
+                const set = new Set(whereClause.collection_id);
+                whereClause.collection_id = nftFilterModel.collectionIds.filter((colId) => {
+                    return set.has(colId);
+                });
+            }
         }
 
         if (nftFilterModel.inOnlyForSessionAccount() === true) {
@@ -70,7 +77,6 @@ export class NFTService {
             });
             const sortDirection = Math.floor(Math.abs(nftFilterModel.orderBy) / nftFilterModel.orderBy);
             const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
-            console.log(visitorMap);
             nftEntities.sort((a: NFT, b: NFT) => {
                 const visitsA = visitorMap.get(a.id) ?? 0;
                 const visitsB = visitorMap.get(b.id) ?? 0;
