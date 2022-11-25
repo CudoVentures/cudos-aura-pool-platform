@@ -1,0 +1,15 @@
+
+query NftCollectionsByDenomIds($denomIds: [String!]) {
+  nft_denom(where: {id: {_in: $denomIds}}) {
+    data_text
+    description
+    id
+    minter
+    name
+    owner
+    schema
+    symbol
+    traits
+    transaction_hash
+  }
+}

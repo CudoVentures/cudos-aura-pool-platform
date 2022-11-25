@@ -19,6 +19,14 @@ import {
     MarketplaceNftPriceSumByDenomIdDocument,
     MarketplaceNftCountByOwnerQuery,
     MarketplaceNftCountByOwnerDocument,
+    MarketplaceCollectionsByDenomIdsDocument,
+    MarketplaceCollectionsByDenomIdsQuery,
+    NftCollectionsByDenomIdsQuery,
+    NftCollectionsByDenomIdsDocument,
+    MarketplaceNftsByTokenIdQuery,
+    MarketplaceNftsByTokenIdDocument,
+    NftNftsByTokenIdsQuery,
+    NftNftsByTokenIdsDocument,
 } from './types';
 import { MarketplaceNftFilters } from '../nft/nft.types';
 
@@ -66,6 +74,42 @@ export class GraphqlService {
     async fetchCollection(): Promise<MarketplaceCollectionQuery> {
         const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceCollectionDocument),
+        });
+
+        return res.data.data;
+    }
+
+    async fetchMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise< MarketplaceCollectionsByDenomIdsQuery > {
+        const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceCollectionsByDenomIdsDocument),
+            variables: { denomIds },
+        });
+
+        return res.data.data;
+    }
+
+    async fetchNftCollectionsByDenomIds(denomIds: string[]): Promise< NftCollectionsByDenomIdsQuery > {
+        const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(NftCollectionsByDenomIdsDocument),
+            variables: { denomIds },
+        });
+
+        return res.data.data;
+    }
+
+    async fetchMarketplaceNftsByTokenIds(tokenIds: string[]): Promise< MarketplaceNftsByTokenIdQuery > {
+        const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftsByTokenIdDocument),
+            variables: { tokenIds },
+        });
+
+        return res.data.data;
+    }
+
+    async fetchNftNftsByTokenIds(tokenIds: string[]): Promise< NftNftsByTokenIdsQuery > {
+        const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(NftNftsByTokenIdsDocument),
+            variables: { tokenIds },
         });
 
         return res.data.data;
