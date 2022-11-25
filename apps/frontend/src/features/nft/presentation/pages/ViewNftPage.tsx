@@ -198,7 +198,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
                             <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
                                 { walletStore.isConnected() && (
                                     <>
-                                        { nftEntity.isStatusListed() === true ? (
+                                        { nftEntity.isBuyable() === true ? (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                                                 <Button onClick={onClickBuyNft}>Buy now for {nftEntity.formatPriceInCudos()} </Button>
                                             </Actions>

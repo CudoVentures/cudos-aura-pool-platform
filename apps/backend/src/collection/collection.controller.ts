@@ -160,15 +160,20 @@ export class CollectionController {
             for (let i = 0; i < chainMarketplaceCollectionDtos.length; i++) {
                 const chainMarketplaceCollectionDto = chainMarketplaceCollectionDtos[i];
                 const denomId = chainMarketplaceCollectionDto.denomId;
-                const collection = new UpdateCollectionDto();
+                const updateCollectionDto = new UpdateCollectionDto();
 
                 // TODO: those shouldnt be changeable?
-                // collection.denom_id = denomId;
-                // collection.royalties = chainMarketplaceCollectionDto.;
-                // collection.creator = chainMarketplaceCollectionDto.creator;
-                collection.status = chainMarketplaceCollectionDto.verified === true ? CollectionStatus.APPROVED : CollectionStatus.REJECTED;
+                // updateCollectionDto.denom_id = denomId;
+                // updateCollectionDto.royalties = chainMarketplaceCollectionDto.;
+                // updateCollectionDto.creator = chainMarketplaceCollectionDto.creator;
+                updateCollectionDto.status = chainMarketplaceCollectionDto.verified === true ? CollectionStatus.APPROVED : CollectionStatus.REJECTED;
 
-                await this.collectionService.updateOneByDenomId(denomId, collection);
+                await this.collectionService.updateOneByDenomId(denomId, updateCollectionDto);
+
+                // TODO: should we update nft status as well?
+                // const collection = await this.collectionService.findOneByDenomId(denomId);
+
+                // await this.nftService.updateStatusByCollectionId(collection.id, NftStatus.APPROVED);
             }
         } else if (module === ModuleName.NFT) {
             const chainNftCollectionDtos = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);

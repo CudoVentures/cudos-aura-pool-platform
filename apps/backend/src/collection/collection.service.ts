@@ -131,6 +131,16 @@ export class CollectionService {
         return collections;
     }
 
+    async findOneByDenomId(denomId: string): Promise<Collection> {
+        const collection = await this.collectionModel.findOne({
+            where: {
+                denom_id: denomId,
+            },
+        });
+
+        return collection;
+    }
+
     async createOne(
         collectionDto: Partial<CollectionDto>,
         creator_id: number,

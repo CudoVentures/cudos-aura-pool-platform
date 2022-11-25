@@ -59,6 +59,10 @@ export default class NftEntity {
         return this.listStatus === ListStatus.LISTED;
     }
 
+    isBuyable(): boolean {
+        return this.listStatus === ListStatus.LISTED || this.tokenId === '';
+    }
+
     isStatusNotListed(): boolean {
         return this.listStatus === ListStatus.NOT_LISTED;
     }
