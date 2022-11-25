@@ -77,7 +77,7 @@ export class GraphqlService {
             variables: { tokenId, denomId },
         });
 
-        return res.data.data.nft_transfer_history;
+        return res.data.data?.nft_transfer_history || [];
     }
 
     async fetchMarketplaceNftTradeHistory(tokenId: string, denomId: string): Promise<{ btc_price: number, price: number, usd_price: number, timestamp: number, seller: string, buyer: string }[]> {
@@ -86,7 +86,7 @@ export class GraphqlService {
             variables: { tokenId, denomId },
         });
 
-        return res.data.data.marketplace_nft_buy_history;
+        return res.data.data?.marketplace_nft_buy_history || [];
     }
 
     async fetchCollectionTotalSales(denomIds: string[]): Promise<{ salesInAcudos: number, salesInBtc: number, salesInUsd: number }> {
