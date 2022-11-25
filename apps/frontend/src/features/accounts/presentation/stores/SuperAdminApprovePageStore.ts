@@ -9,12 +9,14 @@ import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRe
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountSessionStore from './AccountSessionStore';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 export default class SuperAdminApprovePageStore {
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
     walletStore: WalletStore;
     accountSessionStore: AccountSessionStore;
+    alertStore: AlertStore;
 
     miningFarmsTableState: TableState;
     collectionsTableState: TableState;
@@ -25,11 +27,12 @@ export default class SuperAdminApprovePageStore {
     selectedMiningFarmEntities: Map < string, MiningFarmEntity >;
     selectedCollectionEntities: Map < string, CollectionEntity >;
 
-    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore) {
+    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
         this.walletStore = walletStore;
         this.accountSessionStore = accountSessionStore;
+        this.alertStore = alertStore;
 
         this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarmEntities, 50);
         this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 50);
@@ -124,29 +127,33 @@ export default class SuperAdminApprovePageStore {
     }
 
     approveCollections = async () => {
-        if (!this.walletStore.isConnected()) {
-            this.walletStore.connectKeplr();
+        try {
+            if (!this.walletStore.isConnected()) {
+                this.walletStore.connectKeplr();
+            }
+
+            const collectionEntities = [];
+
+            this.selectedCollectionEntities.forEach((collectionEntity) => {
+                collectionEntity.markApproved();
+                collectionEntities.push(collectionEntity);
+            });
+
+            for (let i = collectionEntities.length; i-- > 0;) {
+                await this.collectionRepo.approveCollection(
+                    collectionEntities[i],
+                    this.accountSessionStore.superAdminEntity,
+                    this.walletStore.ledger,
+                    this.walletStore.selectedNetwork,
+                );
+            }
+
+            this.selectedCollectionEntities.clear();
+
+            this.fetch();
+        } catch (e) {
+            this.alertStore.show(e.message);
         }
-
-        const collectionEntities = [];
-
-        this.selectedCollectionEntities.forEach((collectionEntity) => {
-            collectionEntity.markApproved();
-            collectionEntities.push(collectionEntity);
-        });
-
-        for (let i = collectionEntities.length; i-- > 0;) {
-            await this.collectionRepo.approveCollection(
-                collectionEntities[i],
-                this.accountSessionStore.superAdminEntity,
-                this.walletStore.ledger,
-                this.walletStore.selectedNetwork,
-            );
-        }
-
-        this.selectedCollectionEntities.clear();
-
-        this.fetch();
     }
 
 }

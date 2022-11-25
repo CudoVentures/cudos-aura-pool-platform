@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { MathHelper, Decimal, GasPrice, SigningStargateClient } from 'cudosjs';
+import { MathHelper, Decimal, GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
@@ -108,6 +108,9 @@ export default class CollectionApiRepo implements CollectionRepo {
     }
 
     async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger, network: string): Promise < string > {
+
+        checkValidNftDenomId(collectionEntity.denomId)
+
         const farmAdminEntity = await this.accountApi.getFarmAdminByFarmId(collectionEntity.farmId);
         const filter = new MiningFarmFilterModel()
         filter.miningFarmIds = [collectionEntity.farmId];
@@ -130,7 +133,7 @@ export default class CollectionApiRepo implements CollectionRepo {
 
         const tx = await signingClient.marketplaceCreateCollection(
             ledger.accountAddress,
-            collectionEntity.name.toLowerCase().replace(' ', '_'),
+            collectionEntity.denomId,
             collectionEntity.name,
             'CudosAuraPoolSchema',
             collectionEntity.name,

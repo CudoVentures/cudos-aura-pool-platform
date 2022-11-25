@@ -42,7 +42,7 @@ export default class TxFindWorker {
 
             await this.cudosAuraPoolServiceApi.updateLastCheckedheight(lastBlock);
         } catch (e) {
-            console.log(e);
+            console.log(e.data);
         }
     }
 
@@ -58,7 +58,7 @@ export default class TxFindWorker {
                 const collectionId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
                 return collectionId;
             })
-            this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(collectionIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(collectionIds);
         }
 
         if (marketplaceModuleNftEvents.length > 0) {
@@ -68,7 +68,7 @@ export default class TxFindWorker {
                 return collectionId;
             })
 
-            this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds);
         }
     }
 
@@ -86,7 +86,7 @@ export default class TxFindWorker {
                 return denomId;
             })
 
-            this.cudosAuraPoolServiceApi.triggerUpdateNftModuleCollections(denomIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleCollections(denomIds);
         }
 
         if (nftModuleNftEvents.length > 0) {
@@ -96,7 +96,7 @@ export default class TxFindWorker {
                 return tokenId;
             })
 
-            this.cudosAuraPoolServiceApi.triggerUpdateNftModuleNfts(tokenIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleNfts(tokenIds);
         }
 
     }

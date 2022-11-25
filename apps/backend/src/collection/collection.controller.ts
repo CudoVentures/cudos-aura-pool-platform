@@ -34,6 +34,7 @@ import DataService from '../data/data.service';
 import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
 import { IntBoolValue } from '../common/utils';
 import { CollectionStatus } from './utils';
+import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -159,9 +160,9 @@ export class CollectionController {
             for (let i = 0; i < chainMarketplaceCollectionDtos.length; i++) {
                 const chainMarketplaceCollectionDto = chainMarketplaceCollectionDtos[i];
                 const denomId = chainMarketplaceCollectionDto.denomId;
-                const collection = new Collection();
+                const collection = new UpdateCollectionDto();
 
-                // those shouldnt be changeable?
+                // TODO: those shouldnt be changeable?
                 // collection.denom_id = denomId;
                 // collection.royalties = chainMarketplaceCollectionDto.;
                 // collection.creator = chainMarketplaceCollectionDto.creator;
@@ -175,12 +176,11 @@ export class CollectionController {
                 const chainNftCollectionDto = chainNftCollectionDtos[i];
                 const denomId = chainNftCollectionDto.id;
 
-                const collection = new Collection();
+                const collection = new UpdateCollectionDto();
                 collection.name = chainNftCollectionDto.name;
                 collection.description = chainNftCollectionDto.description;
                 collection.denom_id = denomId;
                 collection.description = chainNftCollectionDto.description;
-                collection.updatedAt = Date.now();
 
                 await this.collectionService.updateOneByDenomId(denomId, collection);
             }
