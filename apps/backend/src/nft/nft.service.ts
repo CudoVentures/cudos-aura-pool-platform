@@ -5,8 +5,11 @@ import sequelize, { Op } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { Collection } from '../collection/collection.model';
 import { CollectionService } from '../collection/collection.service';
+import { ChainMarketplaceNftDto } from '../collection/dto/chain-marketplace-collection.dto';
+import { GraphqlService } from '../graphql/graphql.service';
 import { User } from '../user/user.model';
 import { VisitorService } from '../visitor/visitor.service';
+import { ChainNftNftDto } from './dto/chain-nft-nft.dto';
 import NftFilterModel, { NftOrderBy } from './dto/nft-filter.model';
 import { NFTDto } from './dto/nft.dto';
 import { NFT } from './nft.model';
@@ -19,6 +22,7 @@ export class NFTService {
         private nftRepo: typeof NFT,
         private collectionService: CollectionService,
         private visitorService: VisitorService,
+        private graphqlService: GraphqlService,
     ) {}
 
     async findByFilter(user: User, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
@@ -34,7 +38,14 @@ export class NFTService {
         }
 
         if (nftFilterModel.hasCollectionIds() === true) {
-            whereClause.collection_id = whereClause.collection_id.concat(nftFilterModel.collectionIds);
+            if (whereClause.collection_id === undefined) {
+                whereClause.collection_id = nftFilterModel.collectionIds;
+            } else {
+                const set = new Set(whereClause.collection_id);
+                whereClause.collection_id = nftFilterModel.collectionIds.filter((colId) => {
+                    return set.has(colId);
+                });
+            }
         }
 
         if (nftFilterModel.inOnlyForSessionAccount() === true) {
@@ -70,7 +81,6 @@ export class NFTService {
             });
             const sortDirection = Math.floor(Math.abs(nftFilterModel.orderBy) / nftFilterModel.orderBy);
             const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
-            console.log(visitorMap);
             nftEntities.sort((a: NFT, b: NFT) => {
                 const visitsA = visitorMap.get(a.id) ?? 0;
                 const visitsB = visitorMap.get(b.id) ?? 0;
@@ -135,6 +145,18 @@ export class NFTService {
             { ...updateNFTDto, status: NftStatus.QUEUED },
             {
                 where: { id },
+                returning: true,
+            },
+        );
+
+        return nft;
+    }
+
+    async updateOneByTokenId(tokenId: string, updateNFTDto: Partial<NFT>): Promise < NFT > {
+        const [count, [nft]] = await this.nftRepo.update(
+            { ...updateNFTDto },
+            {
+                where: { token_id: tokenId },
                 returning: true,
             },
         );
@@ -217,5 +239,15 @@ export class NFTService {
             token_id: tokenId.toString(),
             uuid,
         }
+    }
+
+    async getChainMarketplaceNftsByTokenIds(tokenIds: string[]): Promise < ChainMarketplaceNftDto[] > {
+        const queryRes = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds);
+        return queryRes.marketplace_nft.map((queryNft) => ChainMarketplaceNftDto.fromQuery(queryNft));
+    }
+
+    async getChainNftNftsByTokenIds(tokenIds: string[]): Promise < ChainNftNftDto[] > {
+        const queryRes = await this.graphqlService.fetchNftNftsByTokenIds(tokenIds);
+        return queryRes.nft_nft.map((queryNft) => ChainNftNftDto.fromQuery(queryNft));
     }
 }

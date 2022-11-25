@@ -18,7 +18,7 @@ export const getDays = (start, end) => {
 
     const dates = [];
 
-    while (date <= new Date(end)) {
+    while (date < new Date(end)) {
         dates.push(new Date(date).getTime());
         date.setDate(date.getDate() + 1);
     }

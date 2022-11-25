@@ -1,9 +1,15 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { NFT } from './nft.model';
+import { ListStatus, NFT } from './nft.model';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterModel from './dto/nft-filter.model';
+import { UpdateNftChainDataRequestDto } from './dto/update-nft-chain-data-request.dto';
+import { ModuleName } from '../collection/dto/update-collection-chain-data-request.dto';
+import { ChainMarketplaceNftDto } from './dto/chain-marketplace-nft.dto';
+import { NftStatus } from './nft.types';
+import { ChainNftNftDto } from './dto/chain-nft-nft.dto';
+import { IntBoolValue } from '../common/utils';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -149,10 +155,47 @@ export class NFTController {
     //         return this.nftService.updateStatus(id, updateNftStatusDto.status);
     //     }
 
-//   @ApiBearerAuth('access-token')
-//   @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
-//   @Delete(':id')
-//   async delete(@Param('id') id: string): Promise<NFT> {
-//       return this.nftService.deleteOne(id);
-//   }
+    //   @ApiBearerAuth('access-token')
+    //   @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+    //   @Delete(':id')
+    //   async delete(@Param('id') id: string): Promise<NFT> {
+    //       return this.nftService.deleteOne(id);
+    //   }
+
+@Put('trigger-updates')
+    async updateNftsChainData(
+    @Body() updateNftChainDataRequestDto: UpdateNftChainDataRequestDto,
+    ): Promise<void> {
+        const tokenIds = updateNftChainDataRequestDto.tokenIds;
+        const module = updateNftChainDataRequestDto.module;
+
+        if (module === ModuleName.MARKETPLACE) {
+            const chainMarketplaceNftDtos = await this.nftService.getChainMarketplaceNftsByTokenIds(tokenIds);
+            for (let i = 0; i < chainMarketplaceNftDtos.length; i++) {
+                const chainMarketplaceNftDto: ChainMarketplaceNftDto = chainMarketplaceNftDtos[i];
+
+                const nft = new NFT();
+                nft.price = chainMarketplaceNftDto.price;
+                nft.listedStatus = chainMarketplaceNftDto.price ? ListStatus.LISTED : ListStatus.NOT_LISTED;
+
+                await this.nftService.updateOneByTokenId(chainMarketplaceNftDto.tokenId, nft);
+            }
+        } else if (module === ModuleName.NFT) {
+            const chainNftNftsDtos = await this.nftService.getChainNftNftsByTokenIds(tokenIds);
+            for (let i = 0; i < chainNftNftsDtos.length; i++) {
+                const chainNftNftDto: ChainNftNftDto = chainNftNftsDtos[i];
+
+                const nft = new NFT();
+
+                nft.status = chainNftNftDto.burned === IntBoolValue.TRUE ? NftStatus.DELETED : null;
+                nft.data = chainNftNftDto.data;
+                nft.name = chainNftNftDto.name;
+                nft.currentOwnerAddress = chainNftNftDto.owner;
+                nft.uri = chainNftNftDto.uri;
+
+                await this.nftService.updateOneByTokenId(chainNftNftDto.tokenId, nft);
+            }
+        }
+    }
+
 }

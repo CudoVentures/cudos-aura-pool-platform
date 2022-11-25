@@ -21,8 +21,7 @@ export default class TxFindWorker {
 
     async run() {
         // get last checked block
-        // const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedBlock();
-        const lastCheckedBlock = 1;
+        const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedBlock();
 
         // get last block
         // limit to 10000 blocks per run if the service is lagging behind
@@ -40,7 +39,7 @@ export default class TxFindWorker {
         await this.checkMarketplaceTransactions(heightFilter);
         await this.checkNftTransactions(heightFilter);
 
-        await this.cudosAuraPoolServiceApi.updateLastCheckedheight(lastBlock);
+        // await this.cudosAuraPoolServiceApi.updateLastCheckedheight(lastBlock);
     }
 
     async checkMarketplaceTransactions(heightFilter) {
@@ -50,8 +49,8 @@ export default class TxFindWorker {
         const marketplaceModuleNftEvents = marketplaceEvents.filter((event) => MarketplaceNftEventTypes.includes(event.type));
         const marketplaceModuleCollectionEvents = marketplaceEvents.filter((event) => MarketplaceCollectionEventTypes.includes(event.type));
 
-        if (marketplaceModuleNftEvents.length > 0) {
-            const collectionIds = marketplaceModuleNftEvents.map((event) => {
+        if (marketplaceModuleCollectionEvents.length > 0) {
+            const collectionIds = marketplaceModuleCollectionEvents.map((event) => {
                 const collectionId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
                 return collectionId;
             })
@@ -59,13 +58,14 @@ export default class TxFindWorker {
             this.cudosAuraPoolServiceApi.triggerUpdateCollections(collectionIds);
         }
 
-        if (marketplaceModuleCollectionEvents.length > 0) {
-            const nftIds = marketplaceModuleCollectionEvents.map((event) => {
+        if (marketplaceModuleNftEvents.length > 0) {
+
+            const tokenIds = marketplaceModuleNftEvents.map((event) => {
                 const collectionId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
                 return collectionId;
             })
 
-            this.cudosAuraPoolServiceApi.triggerUpdateNfts(nftIds);
+            this.cudosAuraPoolServiceApi.triggerUpdateNfts(tokenIds);
         }
     }
 
@@ -76,22 +76,24 @@ export default class TxFindWorker {
         const nftModuleNftEvents = nftModuleEvents.filter((event) => NftModuleNftEventTypes.includes(event.type));
         const nftModuleCollectionEvents = nftModuleEvents.filter((event) => NftModuleCollectionEventTypes.includes(event.type));
 
-        if (nftModuleNftEvents.length > 0) {
-            const collectionIds = nftModuleNftEvents.map((event) => {
-                const collectionId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
-                return collectionId;
+        if (nftModuleCollectionEvents.length > 0) {
+
+            const denomIds = nftModuleCollectionEvents.map((event) => {
+                const denomId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
+                return denomId;
             })
 
-            this.cudosAuraPoolServiceApi.triggerUpdateCollections(collectionIds);
+            this.cudosAuraPoolServiceApi.triggerUpdateCollections(denomIds);
         }
 
-        if (nftModuleCollectionEvents.length > 0) {
-            const nftIds = nftModuleCollectionEvents.map((event) => {
-                const collectionId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
-                return collectionId;
+        if (nftModuleNftEvents.length > 0) {
+
+            const tokenIds = nftModuleNftEvents.map((event) => {
+                const tokenId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
+                return tokenId;
             })
 
-            this.cudosAuraPoolServiceApi.triggerUpdateNfts(nftIds);
+            this.cudosAuraPoolServiceApi.triggerUpdateNfts(tokenIds);
         }
 
     }

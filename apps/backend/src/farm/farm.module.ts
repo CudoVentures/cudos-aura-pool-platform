@@ -15,11 +15,12 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
 import VisitorRepo from '../visitor/visitor.repo';
+import DataService from '../data/data.service';
 
 @Module({
     imports: [SequelizeModule.forFeature([Farm, Miner, Manufacturer, EnergySource, VisitorRepo]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
     controllers: [FarmController],
-    providers: [FarmService, CollectionService, NFTService, VisitorService, GraphqlService],
+    providers: [FarmService, CollectionService, NFTService, VisitorService, GraphqlService, DataService],
     exports: [VisitorService],
 })
 export class FarmModule {}

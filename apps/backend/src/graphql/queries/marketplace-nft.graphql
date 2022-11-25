@@ -22,6 +22,18 @@ query MarketplaceNftsByDenomId($denom_ids: [String!]) {
   }
 }
 
+query MarketplaceNftsByTokenId($tokenIds: [bigint!]) {
+  marketplace_nft(where: { token_id: { _in: $tokenIds } }) {
+    token_id
+    price
+    id
+    denom_id
+    creator
+    transaction_hash
+    uid
+  }
+}
+
 query MarketplaceNftByUid($uid: String!) {
   marketplace_nft(where: {uid: {_eq: $uid}}) {
     token_id
@@ -42,6 +54,14 @@ query MarketplaceNftByUid($uid: String!) {
       burned
       contract_address_signer
       data_text
+    }
+  }
+}
+
+query MarketplaceNftCountByOwner ($ownerAddress: String!) {
+  marketplace_nft_aggregate(where: {nft_nft: {owner: {_eq: $ownerAddress}}}) {
+    aggregate {
+      count
     }
   }
 }

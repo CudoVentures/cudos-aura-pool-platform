@@ -52,7 +52,9 @@ export default class App {
         while (this.running) {
             try {
                 const cudosAuraPoolApi = new CudosAuraPoolServiceApi();
-                // await cudosAuraPoolApi.fetchHeartbeat();
+
+                await cudosAuraPoolApi.fetchHeartbeat();
+
                 return cudosAuraPoolApi;
             } catch (e) {
                 console.log('Failed to get a heartbeat from AuraPoolService. Retrying...');

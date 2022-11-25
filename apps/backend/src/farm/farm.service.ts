@@ -87,13 +87,7 @@ export class FarmService {
     }
 
     async findOne(id: number): Promise<Farm> {
-        const farm = await this.farmModel.findByPk(id);
-
-        if (!farm) {
-            throw new NotFoundException();
-        }
-
-        return farm
+        return this.farmModel.findByPk(id);
     }
 
     async findByCreatorId(id: number): Promise<Farm[]> {
@@ -123,9 +117,7 @@ export class FarmService {
         id: number,
         updateFarmDto: FarmDto,
     ): Promise<Farm> {
-        console.log(updateFarmDto);
-
-        const [count, [farm]] = await this.farmModel.update({ ...updateFarmDto, status: FarmStatus.QUEUED }, {
+        const [count, [farm]] = await this.farmModel.update({ ...updateFarmDto }, {
             where: { id },
             returning: true,
         });

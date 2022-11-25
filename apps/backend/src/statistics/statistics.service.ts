@@ -18,18 +18,18 @@ export class StatisticsService {
         @InjectModel(NftPayoutHistory)
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
         @InjectModel(NftOwnersPayoutHistory)
+        private nftOwnersPayoutHistoryModel: typeof NftOwnersPayoutHistory,
     ) {}
 
     async fetchNftEarnings(nftId: string, filters: { timestampFrom: string, timestampTo: string }): Promise<string[]> {
         const { token_id, collection } = await this.nftService.findOne(nftId)
         const { denom_id } = collection
 
-        if (!token_id) {
-            throw new HttpException('NFT not minted yet', 400)
-        }
-
         const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
 
+        if (!token_id) {
+            return days.map((day) => null)
+        }
         const payoutHistory = await this.nftPayoutHistoryModel.findAll({ where: {
             token_id,
             denom_id,
@@ -41,8 +41,8 @@ export class StatisticsService {
             },
             payout_period_end: {
                 [Op.or]: {
-                    [Op.lt]: Number(filters.timestampTo + dayInMs) / 1000,
-                    [Op.eq]: Number(filters.timestampTo + dayInMs) / 1000,
+                    [Op.lt]: Number(filters.timestampTo) / 1000,
+                    [Op.eq]: Number(filters.timestampTo) / 1000,
                 },
             },
         } })
@@ -55,33 +55,41 @@ export class StatisticsService {
     async fetchAddressEarnings(cudosAddress: string, filters: { timestampFrom: string, timestampTo: string }): Promise<any> {
         const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
 
-        const ownerPayoutHistory = await this.nftPayoutHistoryModel.findAll({
-            include: [{ model: NftOwnersPayoutHistory,
+        const ownerPayoutHistoryForPeriod = await this.nftOwnersPayoutHistoryModel.findAll({
+            where: {
+                owner: cudosAddress,
+            },
+            include: [{ model: NftPayoutHistory,
                 where: {
-                    owner: cudosAddress,
+                    payout_period_start: {
+                        [Op.or]: {
+                            [Op.gt]: Number(filters.timestampFrom) / 1000,
+                            [Op.eq]: Number(filters.timestampFrom) / 1000,
+                        },
+                    },
+                    payout_period_end: {
+                        [Op.or]: {
+                            [Op.lt]: Number(filters.timestampTo) / 1000,
+                            [Op.eq]: Number(filters.timestampTo) / 1000,
+                        },
+                    },
                 },
             }],
+        })
+        const rewardsPerDay = days.map((day) => ownerPayoutHistoryForPeriod.filter((row) => (row.nft_payout_history.payout_period_start * 1000) >= day && (row.nft_payout_history.payout_period_end * 1000) <= day + dayInMs).reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0))
+
+        const ownerPayoutHistory = await this.nftOwnersPayoutHistoryModel.findAll({
             where: {
-                payout_period_start: {
-                    [Op.or]: {
-                        [Op.gt]: Number(filters.timestampFrom) / 1000,
-                        [Op.eq]: Number(filters.timestampFrom) / 1000,
-                    },
-                },
-                payout_period_end: {
-                    [Op.or]: {
-                        [Op.lt]: Number(filters.timestampTo + dayInMs) / 1000,
-                        [Op.eq]: Number(filters.timestampTo + dayInMs) / 1000,
-                    },
-                },
+                owner: cudosAddress,
             },
         })
+        const totalEarningInBtc = ownerPayoutHistory.reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0)
 
-        const rewardsPerDay = days.map(((day) => ownerPayoutHistory.find((row) => (row.payout_period_start * 1000) >= day && (row.payout_period_end * 1000) <= day + dayInMs)?.reward.toString() || null))
+        const totalNftsOwned = await this.graphqlService.fetchTotalNftsByAddress(cudosAddress)
 
         return {
-            totalEarningInBtc: 0,
-            totalNftBought: 0,
+            totalEarningInBtc,
+            totalNftBought: totalNftsOwned,
             earningsPerDayInUsd: rewardsPerDay,
             btcEarnedInBtc: 0,
         }
@@ -94,7 +102,7 @@ export class StatisticsService {
         const fetchNfts = collections.map((collection) => this.nftService.findByCollectionId(collection.id))
         const nfts = (await Promise.all(fetchNfts)).flat().filter((nft) => nft.status === NftStatus.MINTED || nft.status === NftStatus.EXPIRED)
 
-        const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map(collection => collection.denom_id))
+        const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map((collection) => collection.denom_id))
 
         const nftsWithPayoutHistoryForPeriod = await Promise.all(nfts.map(async (nft) => {
             const payoutHistoryForPeriod = await this.nftPayoutHistoryModel.findAll({ where: {
@@ -108,8 +116,8 @@ export class StatisticsService {
                 },
                 payout_period_end: {
                     [Op.or]: {
-                        [Op.lt]: Number(filters.timestampTo + dayInMs) / 1000,
-                        [Op.eq]: Number(filters.timestampTo + dayInMs) / 1000,
+                        [Op.lt]: Number(filters.timestampTo) / 1000,
+                        [Op.eq]: Number(filters.timestampTo) / 1000,
                     },
                 },
             } })

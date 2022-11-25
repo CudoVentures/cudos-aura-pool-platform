@@ -16,9 +16,13 @@ import { VisitorModule } from './visitor/visitor.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
+import { DataModule } from './data/data.module';
+import DataService from './data/data.service';
+import { GeneralModule } from './general/general.module';
 
 @Module({
     imports: [
+        GeneralModule,
         AuthModule,
         UserModule,
         FarmModule,
@@ -27,6 +31,7 @@ import { jwtConstants } from './auth/constants';
         StatisticsModule,
         GraphqlModule,
         VisitorModule,
+        DataModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },
@@ -45,6 +50,10 @@ import { jwtConstants } from './auth/constants';
                     synchronize: true,
                 }
             },
+        }),
+        ServeStaticModule.forRoot({
+            rootPath: Path.join(__dirname, '..', '..', 'data'),
+            serveRoot: DataService.URI_PREFIX,
         }),
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', 'frontend', 'src', 'public'),
@@ -70,6 +79,10 @@ import { jwtConstants } from './auth/constants';
 })
 
 export class AppModule implements NestModule {
+
+    constructor() {
+        DataService.prepareDataFolder();
+    }
 
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(VisitorMiddleware).forRoutes('*');
