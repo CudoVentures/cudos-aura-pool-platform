@@ -65,7 +65,7 @@ services:
         USER_NAME: "$USER_NAME"
         GROUP_ID: "$GROUP_ID"
         GROUP_NAME: "$GROUP_NAME"
-        AURA_POOL_BACKEND: "$AURA_POOL_BACKEND"
+        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
     restart: unless-stopped
     volumes:
       - '../:/usr/cudos-aura-chain-observer'
@@ -93,7 +93,7 @@ services:
         USER_NAME: "$USER_NAME"
         GROUP_ID: "$GROUP_ID"
         GROUP_NAME: "$GROUP_NAME"
-        AURA_POOL_BACKEND: "$AURA_POOL_BACKEND"
+        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
         MINTER_WALLET_MNEMONIC: "$MINTER_WALLET_MNEMONIC"
         MINTER_STATE_FILE: "$MINTER_STATE_FILE"
         MINTER_MAX_RETRIES: "$MINTER_MAX_RETRIES"
