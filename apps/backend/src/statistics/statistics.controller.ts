@@ -21,7 +21,7 @@ export class StatisticsController {
     ) {}
 
     @Get('history/nft/:uid')
-    async getTransferHistory(@Param('uid') uid: string): Promise<TransferHistoryEntry[]> {
+    async getTransferHistory(@Param('uid') uid: string): Promise<{ nftEventEntities: TransferHistoryEntry[], total: number }> {
         const { token_id, collection } = await this.nftService.findOne(uid)
         const { denom_id } = collection
 
@@ -37,6 +37,7 @@ export class StatisticsController {
             }
 
             history.push({
+                nftId: uid,
                 from: transfer.old_owner,
                 to: transfer.new_owner,
                 timestamp: transfer.timestamp,
@@ -51,18 +52,23 @@ export class StatisticsController {
             }
 
             history.push({
+                nftId: uid,
                 from: trade.seller,
                 to: trade.buyer,
                 timestamp: trade.timestamp,
                 btcPrice: trade.btc_price,
                 usdPrice: trade.usd_price,
+                acudosPrice: trade.price,
                 eventType,
             });
         });
 
         history.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
 
-        return history;
+        return {
+            nftEventEntities: history,
+            total: history.length,
+        };
     }
 
     @Get('earnings/nft/:id')

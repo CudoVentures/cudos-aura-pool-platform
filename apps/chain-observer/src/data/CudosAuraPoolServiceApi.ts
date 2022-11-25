@@ -15,7 +15,7 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
     }
 
     async fetchHeartbeat(): Promise< void > {
-        await await axios.get(`${this.api_url}${HEARTBEAT_ENDPOINT}`);
+        await axios.get(`${this.api_url}${HEARTBEAT_ENDPOINT}`);
     }
 
     async fetchLastCheckedBlock(): Promise < number > {

@@ -18,9 +18,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
 import { DataModule } from './data/data.module';
 import DataService from './data/data.service';
+import { GeneralModule } from './general/general.module';
 
 @Module({
     imports: [
+        GeneralModule,
         AuthModule,
         UserModule,
         FarmModule,

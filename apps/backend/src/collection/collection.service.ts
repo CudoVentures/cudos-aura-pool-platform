@@ -8,6 +8,9 @@ import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel, { CollectionOrderBy } from './dto/collection-filter.model';
 import sequelize, { Op } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
+import { ChainCollectionDto, ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
+import { ChainNftCollectionDto } from './dto/chain-nft-collection.dto';
+import { checkValidNftDenomId } from 'cudosjs';
 
 @Injectable()
 export class CollectionService {
@@ -131,6 +134,9 @@ export class CollectionService {
         collectionDto: Partial<CollectionDto>,
         creator_id: number,
     ): Promise<Collection> {
+
+        collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '_');
+        checkValidNftDenomId(collectionDto.denom_id);
         const collection = this.collectionModel.create({
             ...collectionDto,
             status: CollectionStatus.QUEUED,
@@ -148,6 +154,21 @@ export class CollectionService {
             { ...collectionDto, status: CollectionStatus.QUEUED },
             {
                 where: { id },
+                returning: true,
+            },
+        );
+
+        return collection;
+    }
+
+    async updateOneByDenomId(
+        denomId: string,
+        collectionDto: Partial<Collection>,
+    ): Promise<Collection> {
+        const [count, [collection]] = await this.collectionModel.update(
+            { ...collectionDto, status: CollectionStatus.QUEUED },
+            {
+                where: { denom_id: denomId },
                 returning: true,
             },
         );
@@ -184,6 +205,16 @@ export class CollectionService {
         );
 
         return collection;
+    }
+
+    async getChainMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise < ChainMarketplaceCollectionDto[] > {
+        const queryRes = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
+        return queryRes.marketplace_collection.map((queryCollection) => ChainMarketplaceCollectionDto.fromQuery(queryCollection));
+    }
+
+    async getChainNftCollectionsByDenomIds(denomIds: string[]): Promise < ChainNftCollectionDto[] > {
+        const queryRes = await this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
+        return queryRes.nft_denom.map((queryCollection) => ChainNftCollectionDto.fromQuery(queryCollection));
     }
 
     async getDetails(collectionId: number): Promise <{ id: number, floorPriceInAcudos: number, volumeInAcudos: number, owners: number, remainingHashPowerInTH: number }> {

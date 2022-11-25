@@ -31,6 +31,9 @@ import CollectionFilterModel from './dto/collection-filter.model';
 import NftFilterModel from '../nft/dto/nft-filter.model';
 import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
 import DataService from '../data/data.service';
+import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
+import { IntBoolValue } from '../common/utils';
+import { CollectionStatus } from './utils';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -141,6 +144,47 @@ export class CollectionController {
             collection,
             nfts: nftResults,
             deletedNfts: deletedNfts.length,
+        }
+    }
+
+    @Put('trigger-updates')
+    async updateCollectionsChainData(
+        @Body() updateCollectionChainDataRequestDto: UpdateCollectionChainDataRequestDto,
+    ): Promise<void> {
+        const denomIds = updateCollectionChainDataRequestDto.denomIds;
+        const module = updateCollectionChainDataRequestDto.module;
+
+        if (module === ModuleName.MARKETPLACE) {
+            const chainMarketplaceCollectionDtos = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
+            for (let i = 0; i < chainMarketplaceCollectionDtos.length; i++) {
+                const chainMarketplaceCollectionDto = chainMarketplaceCollectionDtos[i];
+                const denomId = chainMarketplaceCollectionDto.denomId;
+                const collection = new Collection();
+
+                // those shouldnt be changeable?
+                // collection.denom_id = denomId;
+                // collection.royalties = chainMarketplaceCollectionDto.;
+                // collection.creator = chainMarketplaceCollectionDto.creator;
+
+                collection.status = chainMarketplaceCollectionDto.verified === IntBoolValue.TRUE ? CollectionStatus.APPROVED : CollectionStatus.REJECTED;
+
+                await this.collectionService.updateOneByDenomId(denomId, collection);
+            }
+        } else if (module === ModuleName.NFT) {
+            const chainNftCollectionDtos = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);
+            for (let i = 0; i < chainNftCollectionDtos.length; i++) {
+                const chainNftCollectionDto = chainNftCollectionDtos[i];
+                const denomId = chainNftCollectionDto.id;
+
+                const collection = new Collection();
+                collection.name = chainNftCollectionDto.name;
+                collection.description = chainNftCollectionDto.description;
+                collection.denom_id = denomId;
+                collection.description = chainNftCollectionDto.description;
+                collection.updatedAt = Date.now();
+
+                await this.collectionService.updateOneByDenomId(denomId, collection);
+            }
         }
     }
 

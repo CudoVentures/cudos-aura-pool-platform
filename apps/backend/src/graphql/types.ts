@@ -17028,6 +17028,13 @@ export type MarketplaceNftsByDenomIdQueryVariables = Exact<{
 
 export type MarketplaceNftsByDenomIdQuery = { __typename?: 'query_root', marketplace_nft: Array<{ __typename?: 'marketplace_nft', token_id: any, price?: any | null, id?: any | null, denom_id: string, creator: string, transaction_hash: string, uid?: string | null, nft_nft: { __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string } }> };
 
+export type MarketplaceNftsByTokenIdQueryVariables = Exact<{
+  tokenIds?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
+}>;
+
+
+export type MarketplaceNftsByTokenIdQuery = { __typename?: 'query_root', marketplace_nft: Array<{ __typename?: 'marketplace_nft', token_id: any, price?: any | null, id?: any | null, denom_id: string, creator: string, transaction_hash: string, uid?: string | null }> };
+
 export type MarketplaceNftByUidQueryVariables = Exact<{
   uid: Scalars['String'];
 }>;
@@ -17048,6 +17055,20 @@ export type GetNftByTxHashQueryVariables = Exact<{
 
 
 export type GetNftByTxHashQuery = { __typename?: 'query_root', nft_nft: Array<{ __typename?: 'nft_nft', transaction: { __typename?: 'transaction', memo?: string | null, success: boolean } }> };
+
+export type NftCollectionsByDenomIdsQueryVariables = Exact<{
+  denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type NftCollectionsByDenomIdsQuery = { __typename?: 'query_root', nft_denom: Array<{ __typename?: 'nft_denom', data_text?: string | null, description?: string | null, id: string, minter?: string | null, name: string, owner: string, schema: string, symbol: string, traits?: string | null, transaction_hash: string }> };
+
+export type NftNftsByTokenIdsQueryVariables = Exact<{
+  tokenIds?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
+}>;
+
+
+export type NftNftsByTokenIdsQuery = { __typename?: 'query_root', nft_nft: Array<{ __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string }> };
 
 export type NftTransferHistoryQueryVariables = Exact<{
   tokenId: Scalars['bigint'];
@@ -17125,6 +17146,19 @@ export const MarketplaceNftsByDenomIdDocument = gql`
   }
 }
     `;
+export const MarketplaceNftsByTokenIdDocument = gql`
+    query MarketplaceNftsByTokenId($tokenIds: [bigint!]) {
+  marketplace_nft(where: {token_id: {_in: $tokenIds}}) {
+    token_id
+    price
+    id
+    denom_id
+    creator
+    transaction_hash
+    uid
+  }
+}
+    `;
 export const MarketplaceNftByUidDocument = gql`
     query MarketplaceNftByUid($uid: String!) {
   marketplace_nft(where: {uid: {_eq: $uid}}) {
@@ -17169,6 +17203,38 @@ export const GetNftByTxHashDocument = gql`
   }
 }
     `;
+export const NftCollectionsByDenomIdsDocument = gql`
+    query NftCollectionsByDenomIds($denomIds: [String!]) {
+  nft_denom(where: {id: {_in: $denomIds}}) {
+    data_text
+    description
+    id
+    minter
+    name
+    owner
+    schema
+    symbol
+    traits
+    transaction_hash
+  }
+}
+    `;
+export const NftNftsByTokenIdsDocument = gql`
+    query NftNftsByTokenIds($tokenIds: [bigint!]) {
+  nft_nft(where: {id: {_in: $tokenIds}}) {
+    owner
+    sender
+    uri
+    transaction_hash
+    name
+    id
+    denom_id
+    burned
+    contract_address_signer
+    data_text
+  }
+}
+    `;
 export const NftTransferHistoryDocument = gql`
     query NftTransferHistory($tokenId: bigint!, $denomId: String!) {
   nft_transfer_history(where: {id: {_eq: $tokenId}, denom_id: {_eq: $denomId}}) {
@@ -17198,6 +17264,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     MarketplaceNftsByDenomId(variables?: MarketplaceNftsByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftsByDenomIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByDenomIdQuery>(MarketplaceNftsByDenomIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftsByDenomId', 'query');
     },
+    MarketplaceNftsByTokenId(variables?: MarketplaceNftsByTokenIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftsByTokenIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByTokenIdQuery>(MarketplaceNftsByTokenIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftsByTokenId', 'query');
+    },
     MarketplaceNftByUid(variables: MarketplaceNftByUidQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftByUidQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftByUidQuery>(MarketplaceNftByUidDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftByUid', 'query');
     },
@@ -17206,6 +17275,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetNftByTxHash(variables: GetNftByTxHashQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetNftByTxHashQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetNftByTxHashQuery>(GetNftByTxHashDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetNftByTxHash', 'query');
+    },
+    NftCollectionsByDenomIds(variables?: NftCollectionsByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftCollectionsByDenomIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftCollectionsByDenomIdsQuery>(NftCollectionsByDenomIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftCollectionsByDenomIds', 'query');
+    },
+    NftNftsByTokenIds(variables?: NftNftsByTokenIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftNftsByTokenIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftNftsByTokenIdsQuery>(NftNftsByTokenIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftNftsByTokenIds', 'query');
     },
     NftTransferHistory(variables: NftTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryQuery>(NftTransferHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistory', 'query');
