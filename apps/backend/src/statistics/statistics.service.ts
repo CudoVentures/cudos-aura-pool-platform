@@ -25,12 +25,11 @@ export class StatisticsService {
         const { token_id, collection } = await this.nftService.findOne(nftId)
         const { denom_id } = collection
 
-        if (!token_id) {
-            throw new HttpException('NFT not minted yet', 400)
-        }
-
         const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
 
+        if (!token_id) {
+            return days.map((day) => null)
+        }
         const payoutHistory = await this.nftPayoutHistoryModel.findAll({ where: {
             token_id,
             denom_id,
