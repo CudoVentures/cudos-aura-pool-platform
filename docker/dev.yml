@@ -54,33 +54,36 @@ services:
     networks:
       - shared-cudos-network
   
-  # cudos-aura-platform-chain-observer-dev:
-  #   image: cudos-aura-platform-chain-observer-dev
-  #   container_name: cudos-aura-platform-chain-observer-dev
-  #   build:
-  #     dockerfile: docker/chain-observer-dev.dockerfile
-  #     context: ../
-  #     args:
-  #       args:
-  #       USER_ID: "$USER_ID"
-  #       USER_NAME: "$USER_NAME"
-  #       GROUP_ID: "$GROUP_ID"
-  #       GROUP_NAME: "$GROUP_NAME"
-  #       AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
-  #   restart: unless-stopped
-  #   volumes:
-  #     - '../:/usr/cudos-aura-chain-observer'
-  #   networks:
-  #     - shared-cudos-network
-  #   extra_hosts:
-  #   - "host.docker.internal:host-gateway"
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "128m"
-  #       max-file: "1"
-  #   depends_on: 
-  #     - cudos-aura-platform-dev
+  cudos-aura-platform-chain-observer-dev:
+    image: cudos-aura-platform-chain-observer-dev
+    container_name: cudos-aura-platform-chain-observer-dev
+    build:
+      dockerfile: docker/chain-observer-dev.dockerfile
+      context: ../
+      args:
+        args:
+        USER_ID: "$USER_ID"
+        USER_NAME: "$USER_NAME"
+        GROUP_ID: "$GROUP_ID"
+        GROUP_NAME: "$GROUP_NAME"
+        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
+        CHAIN_ID: "$CHAIN_ID"
+        CHAIN_RPC: "$CHAIN_RPC"
+        CHAIN_GRPC: "$CHAIN_GRPC"
+    restart: unless-stopped
+    volumes:
+      - '../:/usr/cudos-aura-chain-observer'
+    networks:
+      - shared-cudos-network
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+        max-file: "1"
+    depends_on: 
+      - cudos-aura-platform-dev
 
   # cudos-on-demant-minting-service-dev:
   #   image: cudos-on-demant-minting-service-dev
