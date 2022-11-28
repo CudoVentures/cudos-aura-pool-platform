@@ -20,7 +20,7 @@ export class AuthController {
     // @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@Request() req, @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin): Promise < ResLogin > {
-        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.walletName, reqLogin.signedTx);
+        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, reqLogin.sequence, reqLogin.accountNumber);
         return new ResLogin(accessToken);
     }
 

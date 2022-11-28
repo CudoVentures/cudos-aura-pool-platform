@@ -1,6 +1,8 @@
 // CONFIGURATIONS
 declare let Config;
 
+export const SIGN_NONCE = -74563;
+
 export const CHAIN_DETAILS = {
     ADMIN_TOKEN_DENOM: 'cudosAdmin',
     NATIVE_TOKEN_DENOM: 'acudos',

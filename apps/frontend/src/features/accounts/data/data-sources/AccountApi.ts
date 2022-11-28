@@ -9,8 +9,8 @@ import { ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 
 export default class AccountApi {
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
-        const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, walletName, signedTx));
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any, sequence: number, accountNumber: number): Promise < void > {
+        const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber));
         const res = new ResLogin(data);
 
         setTokenInStorage(res.accessToken);

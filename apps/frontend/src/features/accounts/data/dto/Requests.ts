@@ -1,17 +1,27 @@
+import { StdSignature } from '@cosmjs/amino';
+
 export class ReqLogin {
 
     email: string;
     password: string;
     cudosWalletAddress: string;
     walletName: string;
-    signedTx: any;
+    pubKeyType: string;
+    pubKeyValue: string;
+    signature: string;
+    sequence: number;
+    accountNumber: number;
 
-    constructor(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any) {
+    constructor(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature, sequence: number, accountNumber: number) {
         this.email = username;
         this.password = password;
         this.cudosWalletAddress = cudosWalletAddress;
         this.walletName = walletName;
-        this.signedTx = signedTx;
+        this.pubKeyType = signedTx.pub_key.type;
+        this.pubKeyValue = signedTx.pub_key.value;
+        this.signature = signedTx.signature;
+        this.sequence = sequence;
+        this.accountNumber = accountNumber;
     }
 
 }

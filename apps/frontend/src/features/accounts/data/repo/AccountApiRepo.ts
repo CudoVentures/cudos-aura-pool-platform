@@ -7,7 +7,6 @@ import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
 import { Ledger, SigningStargateClient, GasPrice } from 'cudosjs';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
-import e from 'express';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -28,10 +27,10 @@ export default class AccountStorageRepo implements AccountRepo {
         this.disableActions = disableActions;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any, sequence?: number, accountNumber?: number): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx);
+            return this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
         } finally {
             this.enableActions?.();
         }

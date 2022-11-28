@@ -22,6 +22,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
+import { CHAIN_DETAILS, SIGN_NONCE } from '../../../../core/utilities/Constants';
+import { SigningStargateClient } from 'cudosjs/build/stargate';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
@@ -60,7 +62,10 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         if (accountSessionStore.isAdmin() === true) {
             await accountSessionStore.loadSessionAccountsAndSync();
         } else {
-            await accountSessionStore.login('', '', walletStore.getAddress(), walletStore.getName(), '');
+            const client = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[CHAIN_DETAILS.DEFAULT_NETWORK], walletStore.ledger.offlineSigner);
+            const address = walletStore.getAddress()
+            const { signature, sequence, accountNumber } = await client.signNonceMsg(address, SIGN_NONCE);
+            await accountSessionStore.login('', '', address, walletStore.getName(), signature, sequence, accountNumber);
         }
     }
 

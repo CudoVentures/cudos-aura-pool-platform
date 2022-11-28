@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ReqLogin {
 
@@ -15,6 +15,18 @@ export class ReqLogin {
         walletName: string;
 
     @IsString()
-        signedTx: any;
+        pubKeyType: string;
+
+    @IsString()
+        pubKeyValue: string;
+
+    @IsString()
+        signature: string;
+
+    @IsNumber()
+        sequence: number;
+
+    @IsNumber()
+        accountNumber: number;
 
 }

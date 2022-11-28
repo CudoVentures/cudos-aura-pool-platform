@@ -41,7 +41,7 @@ import { AccountModule } from './account/account.module';
         SequelizeModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
-                return {
+                const resultConfig = {
                     dialect: 'postgres',
                     host: config.get('APP_DATABASE_HOST'),
                     port: 5432,
@@ -50,7 +50,10 @@ import { AccountModule } from './account/account.module';
                     database: config.get('APP_DATABASE_DB_NAME'),
                     autoLoadModels: true,
                     synchronize: true,
+                    signNonce: 74563,
                 }
+
+                return resultConfig;
             },
         }),
         ServeStaticModule.forRoot({
