@@ -1,10 +1,7 @@
-export const enum NftStatus {
+export enum NftStatus {
     QUEUED = 'queued',
-    APPROVED = 'approved',
-    REJECTED = 'rejected',
-    EXPIRED = 'expired',
-    DELETED = 'deleted',
     MINTED = 'minted',
+    REMOVED = 'removed',
 }
 
 export type MarketplaceNftFilters = {

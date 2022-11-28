@@ -9,7 +9,6 @@ import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
 import DefaultIntervalPickerState from './DefaultIntervalPickerState';
-import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 
 export default class AnalyticsPageStore {
 

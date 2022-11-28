@@ -100,7 +100,7 @@ export class StatisticsService {
 
         const collections = await this.collectionService.findByFarmId(farmId)
         const fetchNfts = collections.map((collection) => this.nftService.findByCollectionId(collection.id))
-        const nfts = (await Promise.all(fetchNfts)).flat().filter((nft) => nft.status === NftStatus.MINTED || nft.status === NftStatus.EXPIRED)
+        const nfts = (await Promise.all(fetchNfts)).flat().filter((nft) => nft.token_id !== '')
 
         const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map((collection) => collection.denom_id))
 

@@ -8,7 +8,7 @@ import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel, { CollectionOrderBy } from './dto/collection-filter.model';
 import sequelize, { Op } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
-import { ChainCollectionDto, ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
+import { ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
 import { ChainNftCollectionDto } from './dto/chain-nft-collection.dto';
 import { checkValidNftDenomId } from 'cudosjs';
 
@@ -223,8 +223,8 @@ export class CollectionService {
             throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
         }
 
-        const allNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } }, order: [['price', 'ASC']] })
-        const approvedNfts = allNfts.filter((nft) => nft.status === NftStatus.APPROVED) // Approved but not bought NFT-s
+        const allNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.REMOVED] } }, order: [['price', 'ASC']] })
+        const approvedNfts = allNfts.filter((nft) => nft.status === NftStatus.QUEUED) // Approved but not bought NFT-s
         const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denom_id] }) // Sold NFTs
 
         const uniqueOwnersArray = [...new Set(soldNfts.marketplace_nft.map((nft) => nft.nft_nft.owner))] // Unique owners of all the NFTs in the collection

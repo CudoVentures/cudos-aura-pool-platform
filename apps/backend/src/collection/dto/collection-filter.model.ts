@@ -1,6 +1,6 @@
 import { IsArray, IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../../common/utils';
-import { CollectionStatus, CollectionStatusWithAny } from '../utils';
+import { CollectionStatus } from '../utils';
 
 export enum CollectionOrderBy {
     TOP_ASC = 1,
@@ -16,8 +16,8 @@ export default class CollectionFilterModel {
     @IsOptional()
         collectionIds: string[];
 
-    @IsEnum(CollectionStatusWithAny)
-        status: CollectionStatusWithAny;
+    @IsEnum(CollectionStatus)
+        status: CollectionStatus;
 
     @IsString()
     @IsOptional()
@@ -43,7 +43,7 @@ export default class CollectionFilterModel {
 
     constructor() {
         this.collectionIds = null;
-        this.status = CollectionStatusWithAny.APPROVED;
+        this.status = CollectionStatus.APPROVED;
         this.searchString = '';
         this.farmId = NOT_EXISTS_STRING;
         this.timestampFrom = NOT_EXISTS_INT;
@@ -58,7 +58,7 @@ export default class CollectionFilterModel {
     }
 
     hasCollectionStatus(): boolean {
-        return this.status !== CollectionStatusWithAny.ANY;
+        return this.status !== CollectionStatus.ANY;
     }
 
     hasSearchString(): boolean {

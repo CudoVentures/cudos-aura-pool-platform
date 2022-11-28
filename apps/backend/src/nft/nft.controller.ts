@@ -29,7 +29,7 @@ export class NFTController {
         for (let i = nftEntities.length; i-- > 0;) {
             const nftEntity = nftEntities[i];
 
-            if (nftEntity.isApproved() === true) {
+            if (nftEntity.isMinted() === true) {
                 const nftDetails = await this.graphqlService.fetchNft(nftEntity.id)
                 if (nftDetails?.marketplace_nft?.length === 1) {
                     const details = nftDetails.marketplace_nft[0];
@@ -70,7 +70,7 @@ export class NFTController {
     //     @Query() filters: Partial<MarketplaceNftFilters>,
     // ): Promise < MarketplaceNftsByDenomIdQuery > {
     //     const collectionFilterModel = new CollectionFilterModel();
-    //     collectionFilterModel.status = CollectionStatusWithAny.APPROVED;
+    //     collectionFilterModel.status = CollectionStatus.APPROVED;
 
     //     const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterModel);
     //     const denomIds = collectionEntities.map((collection: Collection) => collection.denom_id);
@@ -187,7 +187,7 @@ export class NFTController {
 
                 const nft = new NFT();
 
-                nft.status = chainNftNftDto.burned === IntBoolValue.TRUE ? NftStatus.DELETED : null;
+                nft.status = chainNftNftDto.burned === IntBoolValue.TRUE ? NftStatus.REMOVED : null;
                 nft.data = chainNftNftDto.data;
                 nft.name = chainNftNftDto.name;
                 nft.currentOwnerAddress = chainNftNftDto.owner;

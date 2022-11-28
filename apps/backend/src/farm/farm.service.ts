@@ -216,11 +216,11 @@ export class FarmService {
             throw new NotFoundException(`Farm with id '${farmId}' doesn't exist`)
         }
 
-        const collections = await this.collectionModel.findAll({ where: { farm_id: farmId, status: { [Op.notIn]: [CollectionStatus.DELETED, CollectionStatus.REJECTED] } } })
+        const collections = await this.collectionModel.findAll({ where: { farm_id: farmId, status: { [Op.notIn]: [CollectionStatus.DELETED] } } })
 
         // Get number of total and sold NFTs
-        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }], where: { status: { [Op.notIn]: [NftStatus.DELETED, NftStatus.REJECTED] } } })
-        const soldNfts = nfts.filter((nft) => nft.status === NftStatus.MINTED || nft.status === NftStatus.EXPIRED)
+        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }], where: { status: { [Op.notIn]: [NftStatus.REMOVED] } } })
+        const soldNfts = nfts.filter((nft) => nft.token_id !== '')
 
         // Calculate remaining hash power of the farm
         const collectionsHashPowerSum = collections.reduce((prevVal, currVal) => prevVal + Number(currVal.hashing_power), 0)

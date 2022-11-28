@@ -190,7 +190,7 @@ export class NFTService {
 
     async deleteOne(id: string): Promise < NFT > {
         const [count, [nft]] = await this.nftRepo.update(
-            { deleted_at: new Date(), status: NftStatus.DELETED },
+            { deleted_at: new Date(), status: NftStatus.REMOVED },
             {
                 where: {
                     id,

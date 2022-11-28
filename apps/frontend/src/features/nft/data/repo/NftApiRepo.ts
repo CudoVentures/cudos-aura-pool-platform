@@ -79,7 +79,7 @@ export default class NftApiRepo implements NftRepo {
             const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE[network]);
             let txHash = S.Strings.EMPTY;
 
-            if (nftEntity.status === NftStatus.APPROVED) {
+            if (nftEntity.status === NftStatus.QUEUED) {
                 // TODO:get real tx estimation
                 const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);

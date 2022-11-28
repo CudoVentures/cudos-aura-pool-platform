@@ -4,17 +4,12 @@ import S from '../../../core/utilities/Main';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum NftStatus {
-    NONE = '',
     QUEUED = 'queued',
-    APPROVED = 'approved',
-    REJECTED = 'rejected',
     MINTED = 'minted',
-    EXPIRED = 'expired',
-    DELETED = 'deleted',
+    REMOVED = 'removed',
 }
 
 export enum ListStatus {
-    // NONE = 0,
     NOT_LISTED = 1,
     LISTED = 2,
 }
@@ -44,7 +39,7 @@ export default class NftEntity {
         this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
         this.imageUrl = '';
-        this.status = NftStatus.NONE;
+        this.status = NftStatus.QUEUED;
         this.listStatus = ListStatus.NOT_LISTED;
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = ''
