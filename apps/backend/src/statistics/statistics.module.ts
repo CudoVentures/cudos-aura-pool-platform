@@ -17,7 +17,7 @@ import { Miner } from '../farm/models/miner.model';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
-import VisitorRepo from '../visitor/visitor.repo';
+import VisitorRepo from '../visitor/repo/visitor.repo';
 import DataService from '../data/data.service';
 
 @Module({

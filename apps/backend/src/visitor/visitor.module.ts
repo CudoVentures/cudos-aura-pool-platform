@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { VisitorController } from './visitor.controller';
-import VisitorRepo from './visitor.repo';
+import VisitorRepo from './repo/visitor.repo';
 import { VisitorService } from './visitor.service';
 
 @Module({

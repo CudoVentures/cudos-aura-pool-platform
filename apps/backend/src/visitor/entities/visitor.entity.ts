@@ -1,6 +1,6 @@
-import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../common/utils';
-import VisitorRepo from './visitor.repo';
-import { RefType } from './visitor.types';
+import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../../common/utils';
+import VisitorRepo from '../repo/visitor.repo';
+import { RefType } from '../visitor.types';
 
 export default class VisitorEntity {
 
