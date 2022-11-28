@@ -15,6 +15,14 @@ export default class AdminEntity {
         this.bitcoinWalletAddress = '';
     }
 
+    static newInstanceForAccount(accountId: number) {
+        const entity = new AdminEntity();
+
+        entity.accountId = accountId;
+
+        return entity;
+    }
+
     isNew(): boolean {
         return this.adminId === NOT_EXISTS_INT;
     }

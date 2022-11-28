@@ -30,3 +30,22 @@ export class ReqLogin {
         accountNumber: number;
 
 }
+
+export class ReqRegister {
+
+    @IsString()
+        email: string;
+
+    @IsString()
+        password: string;
+
+    @IsString()
+        cudosWalletAddress: string;
+
+    @IsString()
+        name: string;
+
+    @IsString()
+        signedTx: any;
+
+}

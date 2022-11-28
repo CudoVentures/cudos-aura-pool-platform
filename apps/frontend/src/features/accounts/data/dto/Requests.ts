@@ -25,3 +25,21 @@ export class ReqLogin {
     }
 
 }
+
+export class ReqRegister {
+
+    email: string;
+    password: string;
+    cudosWalletAddress: string;
+    name: string;
+    signedTx: any;
+
+    constructor(username: string, password: string, cudosWalletAddress: string, name: string, signedTx: any) {
+        this.email = username;
+        this.password = password;
+        this.cudosWalletAddress = cudosWalletAddress;
+        this.name = name;
+        this.signedTx = signedTx;
+    }
+
+}

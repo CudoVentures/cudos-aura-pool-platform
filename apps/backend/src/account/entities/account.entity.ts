@@ -19,13 +19,21 @@ export default class AccountEntity {
         this.accountId = NOT_EXISTS_INT;
         this.type = AccountType.USER;
         this.active = IntBoolValue.TRUE;
-        this.emailVerified = IntBoolValue.FALSE;
+        this.emailVerified = IntBoolValue.TRUE;
         this.name = '';
         this.email = '';
         this.timestampLastLogin = NOT_EXISTS_INT;
         this.timestampRegister = NOT_EXISTS_INT;
         this.salt = '';
         this.hashedPass = '';
+    }
+
+    static newInstanceAdmin(): AccountEntity {
+        const entity = new AccountEntity();
+
+        entity.type = AccountType.ADMIN;
+
+        return entity;
     }
 
     isNew(): boolean {

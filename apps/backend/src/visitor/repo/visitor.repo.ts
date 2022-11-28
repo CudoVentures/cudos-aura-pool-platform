@@ -1,5 +1,5 @@
 import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table } from 'sequelize-typescript';
-import { VISITOR_TABLE_NAME } from './visitor.types';
+import { VISITOR_TABLE_NAME } from '../visitor.types';
 
 export const enum VisitorRepoColumn {
     ID = 'id',

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import sequelize from 'sequelize';
-import { SqlFetchCounts } from './dto/sql-fetch-counts.dto';
-import VisitorEntity from './visitor.entity';
-import VisitorRepo, { VisitorRepoColumn } from './visitor.repo'
+import { SqlFetchCounts } from './dto/sql.dto';
+import VisitorEntity from './entities/visitor.entity';
+import VisitorRepo, { VisitorRepoColumn } from './repo/visitor.repo'
 import { RefType } from './visitor.types';
 
 @Injectable()

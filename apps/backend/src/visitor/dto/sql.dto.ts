@@ -1,5 +1,5 @@
 import { Model } from 'sequelize';
-import { VisitorRepoColumn } from '../visitor.repo';
+import { VisitorRepoColumn } from '../repo/visitor.repo';
 
 export class SqlFetchCounts {
 

@@ -9,6 +9,7 @@ import { verifyNonceMsgSigner } from 'cudosjs/build/utils/nonce';
 import app from '../../../chain-observer/src/app';
 import AccountService from '../account/account.service';
 import AccountEntity from '../account/entities/account.entity';
+import AdminEntity from '../account/entities/admin.entity';
 import UserEntity from '../account/entities/user.entity';
 import { IntBoolValue } from '../common/utils';
 import { SIGN_NONCE } from './constants';
@@ -22,24 +23,44 @@ export class AuthService {
     private configService: ConfigService,
     ) {}
 
-    async validateUser(email: string, password: string): Promise < AccountEntity > {
-        const accountEntity = await this.accountService.findAccountByEmail(email);
-        if (accountEntity === null) {
-            throw new NotFoundException('Incorrect email');
-        }
+    // async validateUser(email: string, password: string): Promise < AccountEntity > {
+    //     const accountEntity = await this.accountService.findAccountByEmail(email);
+    //     if (accountEntity === null) {
+    //         throw new NotFoundException('Incorrect email');
+    //     }
 
-        if (AccountService.isPassValid(accountEntity, password) === false) {
-            throw new UnauthorizedException('Incorrect password');
-        }
+    //     if (AccountService.isPassValid(accountEntity, password) === false) {
+    //         throw new UnauthorizedException('Incorrect password');
+    //     }
 
-        return accountEntity;
-    }
+    //     return accountEntity;
+    // }
 
     // async login(accountEntity: AccountEntity) {
     //     const jwtToken = JwtToken.newInstance(accountEntity);
     //     const accessToken = this.jwtService.sign(JwtToken.toJson(jwtToken));
     //     return { accessToken }
     // }
+
+    async register(email: string, pass: string, cudosWalletAddress: string, name: string, signedTx: any): Promise < void > {
+        let accountEntity = await this.accountService.findAccountByEmail(email);
+        let adminEntity = null;
+        if (accountEntity !== null) {
+            throw new NotFoundException('Email is already in use');
+        }
+
+        accountEntity = AccountEntity.newInstanceAdmin();
+        accountEntity.email = email;
+        accountEntity.name = name;
+        accountEntity.salt = AccountService.generateSalt();
+        accountEntity.hashedPass = AccountService.generateHashedPass(pass, accountEntity.salt);
+        accountEntity = await this.accountService.creditAccount(accountEntity);
+
+        adminEntity = AdminEntity.newInstanceForAccount(accountEntity.accountId);
+        adminEntity.cudosWalletAddress = cudosWalletAddress;
+
+        adminEntity = await this.accountService.creditAdmin(adminEntity);
+    }
 
     async login(email: string, pass: string, cudosWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number): Promise < string > {
         if (email !== '' || pass !== '') {
@@ -54,7 +75,14 @@ export class AuthService {
     }
 
     private async loginUsingCredentials(email: string, pass: string): Promise < string > {
-        const accountEntity = await this.validateUser(email, pass);
+        const accountEntity = await this.accountService.findAccountByEmail(email);
+        if (accountEntity === null) {
+            throw new NotFoundException('Incorrect email');
+        }
+
+        if (AccountService.isPassValid(accountEntity, pass) === false) {
+            throw new UnauthorizedException('Incorrect password');
+        }
 
         const jwtToken = JwtToken.newInstance(accountEntity);
         return this.jwtService.sign(JwtToken.toJson(jwtToken));
