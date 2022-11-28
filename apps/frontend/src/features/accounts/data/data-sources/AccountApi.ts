@@ -4,7 +4,7 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
 import S from '../../../../core/utilities/Main';
-import { ReqLogin } from '../dto/Requests';
+import { ReqLogin, ReqRegister } from '../dto/Requests';
 import { ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 
 export default class AccountApi {
@@ -17,12 +17,7 @@ export default class AccountApi {
     }
 
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
-        await axios.post('/api/v1/auth/register', {
-            email,
-            password,
-            name,
-            cudos_address: cudosWalletAddress,
-        })
+        await axios.post('/api/v1/auth/register', new ReqRegister(email, password, cudosWalletAddress, name, signedTx));
     }
 
     async logout(): Promise < void > {

@@ -134,4 +134,21 @@ export default class AccountService {
         return UserEntity.fromRepo(userRepo);
     }
 
+    async creditAdmin(adminEntity: AdminEntity): Promise < AdminEntity > {
+        let adminRepo = AdminEntity.toRepo(adminEntity);
+        if (adminEntity.isNew() === true) {
+            adminRepo = await this.adminRepo.create(adminRepo.toJSON(), {
+                returning: true,
+            })
+        } else {
+            const whereAdminRepo = new AdminRepo();
+            whereAdminRepo.adminId = adminRepo.adminId;
+            adminRepo = await this.adminRepo.update(adminRepo.toJSON(), {
+                where: AppRepo.toJsonWhere(whereAdminRepo),
+            });
+        }
+
+        return AdminEntity.fromRepo(adminRepo);
+    }
+
 }

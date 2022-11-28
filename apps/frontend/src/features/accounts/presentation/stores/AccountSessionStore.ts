@@ -145,22 +145,11 @@ export default class AccountSessionStore {
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
 
-        // // TODO: remove after backend starts returning new token
-        // if (adminEntity) {
-        //     adminEntity.bitcoinWalletAddress = 'egerger'
-        // }
-        runInAction(() => {
-            this.accountEntity = accountEntity;
-            this.userEntity = userEntity;
-            this.adminEntity = adminEntity;
-            this.superAdminEntity = superAdminEntity;
-        });
-
         if (this.isUser() === true) {
             await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
-                if (this.userEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
+                if (userEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
                     await this.logout();
                     window.location.reload();
                     return;
@@ -172,7 +161,7 @@ export default class AccountSessionStore {
             await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
-                if (this.adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
+                if (adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
                     await this.logout();
                     window.location.reload();
                     return;
@@ -186,7 +175,13 @@ export default class AccountSessionStore {
             console.log('Logged as super admin => wallet:', false);
         }
 
-        this.inited = true;
+        runInAction(() => {
+            this.accountEntity = accountEntity;
+            this.userEntity = userEntity;
+            this.adminEntity = adminEntity;
+            this.superAdminEntity = superAdminEntity;
+            this.inited = true;
+        });
     }
 
     async loadAdminMiningFarmApproval(): Promise < void > {

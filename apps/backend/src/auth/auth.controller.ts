@@ -5,7 +5,7 @@ import { User } from '../user/user.model';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
-import { ReqLogin } from './dto/requests.dto';
+import { ReqLogin, ReqRegister } from './dto/requests.dto';
 import { ResFetchSessionAccounts, ResLogin } from './dto/responses.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithSessionAccounts } from './interfaces/request.interface';
@@ -19,14 +19,14 @@ export class AuthController {
 
     // @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Request() req, @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin): Promise < ResLogin > {
+    async login(@Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin): Promise < ResLogin > {
         const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.walletName, reqLogin.signedTx);
         return new ResLogin(accessToken);
     }
 
     @Post('register')
-    async register(@Request() req, @Body() registerDto: RegisterDto) {
-        // return this.userService.createFarmAdmin(registerDto)
+    async register(@Body(new ValidationPipe({ transform: true })) reqRegister: ReqRegister): Promise < void > {
+        return this.authService.register(reqRegister.email, reqRegister.password, reqRegister.cudosWalletAddress, reqRegister.name, reqRegister.signedTx);
     }
 
     @Get('fetchSessionAccounts')
