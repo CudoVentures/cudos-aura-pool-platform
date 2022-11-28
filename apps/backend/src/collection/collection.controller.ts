@@ -26,13 +26,10 @@ import { IsCreatorGuard } from './guards/is-creator.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
-import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel from './dto/collection-filter.model';
-import NftFilterModel from '../nft/dto/nft-filter.model';
 import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
 import DataService from '../data/data.service';
 import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
-import { IntBoolValue } from '../common/utils';
 import { CollectionStatus } from './utils';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 
@@ -166,7 +163,7 @@ export class CollectionController {
                 // updateCollectionDto.denom_id = denomId;
                 // updateCollectionDto.royalties = chainMarketplaceCollectionDto.;
                 // updateCollectionDto.creator = chainMarketplaceCollectionDto.creator;
-                updateCollectionDto.status = chainMarketplaceCollectionDto.verified === true ? CollectionStatus.APPROVED : CollectionStatus.REJECTED;
+                updateCollectionDto.status = chainMarketplaceCollectionDto.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
 
                 await this.collectionService.updateOneByDenomId(denomId, updateCollectionDto);
 
@@ -205,12 +202,12 @@ export class CollectionController {
             updateCollectionStatusDto.status,
         );
 
-        const nftFilterModel = new NftFilterModel();
-        nftFilterModel.collectionIds = [id.toString()];
-        const { nftEntities } = await this.nftService.findByFilter(req.sessionUser, nftFilterModel);
-        const nftsToApprove = nftEntities.map(async (nft) => this.nftService.updateStatus(nft.id, NftStatus.APPROVED))
+        // const nftFilterModel = new NftFilterModel();
+        // nftFilterModel.collectionIds = [id.toString()];
+        // const { nftEntities } = await this.nftService.findByFilter(req.sessionUser, nftFilterModel);
+        // const nftsToApprove = nftEntities.map(async (nft) => this.nftService.updateStatus(nft.id, NftStatus.APPROVED))
 
-        await Promise.all(nftsToApprove)
+        // await Promise.all(nftsToApprove)
     }
 
     @ApiBearerAuth('access-token')

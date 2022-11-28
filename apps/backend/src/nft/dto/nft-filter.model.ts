@@ -1,5 +1,5 @@
 import { IsString, IsArray, IsEnum, IsOptional, IsNumber, IsPositive } from 'class-validator';
-import { CollectionStatus, CollectionStatusWithAny } from '../../collection/utils';
+import { CollectionStatus } from '../../collection/utils';
 import { IntBoolValue } from '../../common/utils';
 
 export enum NftOrderBy {
@@ -16,8 +16,8 @@ export default class NftFilterModel {
     @IsOptional()
         nftIds: string[];
 
-    @IsEnum(CollectionStatusWithAny)
-        collectionStatus: CollectionStatusWithAny;
+    @IsEnum(CollectionStatus)
+        collectionStatus: CollectionStatus;
 
     @IsArray()
     @IsString({ each: true })
@@ -43,7 +43,7 @@ export default class NftFilterModel {
 
     constructor() {
         this.nftIds = null;
-        this.collectionStatus = CollectionStatusWithAny.APPROVED;
+        this.collectionStatus = CollectionStatus.APPROVED;
         this.collectionIds = null;
         this.searchString = '';
         this.sessionAccount = IntBoolValue.FALSE;
@@ -57,7 +57,7 @@ export default class NftFilterModel {
     }
 
     hasCollectionStatus(): boolean {
-        return this.collectionStatus !== CollectionStatusWithAny.ANY;
+        return this.collectionStatus !== CollectionStatus.ANY;
     }
 
     hasCollectionIds(): boolean {

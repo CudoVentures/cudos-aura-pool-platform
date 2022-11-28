@@ -3,7 +3,7 @@ import { computed, makeAutoObservable, runInAction } from 'mobx';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../entities/NftEntity';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
-import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
+import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
@@ -53,7 +53,7 @@ export default class ViewNftPageStore {
     historyTableState: TableState;
 
     constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo) {
-        this.bitcoinStore = bitcoinStore;
+        this.bitcoinStore = bitcoinStore; CollectionStatus
         this.cudosStore = cudosStore;
 
         this.nftRepo = nftRepo;

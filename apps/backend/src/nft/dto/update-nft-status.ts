@@ -5,6 +5,6 @@ import { NftStatus } from '../nft.types';
 export class UpdateNFTStatusDto {
     @IsString()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: 'approved' })
-        status: NftStatus.APPROVED | NftStatus.REJECTED;
+    @ApiProperty({ required: true, example: 'minted' })
+        status: NftStatus.MINTED | NftStatus.REMOVED;
 }

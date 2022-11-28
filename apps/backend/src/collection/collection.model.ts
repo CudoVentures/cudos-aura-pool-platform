@@ -55,7 +55,11 @@ export class Collection extends Model {
       banner_image: string;
 
   @AllowNull(false)
-  @Column(DataType.ENUM('queued', 'approved', 'rejected', 'issued', 'deleted'))
+  @Column(DataType.ENUM(
+      CollectionStatus.QUEUED,
+      CollectionStatus.APPROVED,
+      CollectionStatus.DELETED,
+  ))
       status: CollectionStatus;
 
   @Column

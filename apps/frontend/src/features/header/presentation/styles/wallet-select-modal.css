@@ -1,23 +1,62 @@
-.SelectWalletPopup .SelectWalletContent {
+/* .SelectWalletPopup .SelectWalletContent {
     padding: 8px;
     align-items: flex-start;
-    gap: 24px;
+} */
+
+.SelectWalletPopup .ModalWalletNavRow {
+    margin-bottom: 38px;
 }
 
-.SelectWalletPopup .SelectWalletContent .ModalHeader {
-    border-radius: 28px;
-    background-color: #000;
-    padding: 8px 24px;
-    color: white;
-    gap: 11px;
+.SelectWalletPopup .ModalWalletSubtitle {
+    color: var(--color-gray-025);
+    font-size: 16px;
+    margin: 8px 0 32px 0;
 }
 
-.SelectWalletPopup .SelectWalletContent .WalletOptions {
-    gap: 16px;
+.SelectWalletPopup .LoadingSection {
+    text-align: center;
+}
+
+.SelectWalletPopup .LoadingSection .WavesLoading {
     width: 100%;
 }
 
-.SelectWalletPopup .SelectWalletContent .WalletOptions .ConnectButton {
+.SelectWalletPopup .LoadingSection .LoadingTitle {
+    margin-top: 32px;
+}
+
+.SelectWalletPopup .LoadingSection .LoadingSubtitle {
+    color: var(--color-gray-025);
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.SelectWalletPopup .IconInputAdornment {
+    width: 18px; height: 18px;
+    box-sizing: border-box;
+    color: #fff;
+    padding: 3px;
+    border-radius: 50%;
+}
+
+.SelectWalletPopup .IconInputAdornment.IconInputAdornmentSuccess {
+    background: var(--color-green);
+}
+
+.SelectWalletPopup .IconInputAdornment.IconInputAdornmentError {
+    background: var(--color-red);
+}
+
+.SelectWalletPopup .ModalWalletFooter {
+    margin-top: 24px;
+}
+
+.SelectWalletPopup .ModalWalletFooter .WalletInfo {
+    gap: 7px
+}
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton {
+    position: relative;
     align-items: center;
     justify-content: flex-start;
     flex-grow: 1;
@@ -27,13 +66,55 @@
     padding: 27px;
     border: 2px solid var(--color-gray-060);
     border-radius: 20px;
+
+    transition-property: border-color, background;
 }
 
-.SelectWalletPopup .SelectWalletContent .WalletOptions .ConnectButton .WalletIcon {
-    width: 32px;
-    height: 32px;    
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton:not(:last-child) {
+    margin-bottom: 16px;
 }
 
-.SelectWalletPopup .SelectWalletContent .Footer {
-    gap: 7px;
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton:hover {
+    border-color: var(--color-gray-010);
+    background: var(--color-gray-090);
+}
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton.ConnectButtonSuccess {
+    border-color: var(--color-green);
+    background: #E3FFEB;
+}
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton.ConnectButtonError {
+    border-color: var(--color-red);
+    background: #ffe3e3;
+}
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton .WalletIcon {
+    width: 32px; height: 32px;
+}
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton .IconWalletConnectionStatus {
+    width: 20px; height: 20px;
+    visibility: hidden;
+    box-sizing: border-box;
+    position: absolute;
+    right: 32px; top: 0; bottom: 0;
+    color: #fff;
+    padding: 4px;
+    border-radius: 50%;
+    margin: auto;
+}
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton.ConnectButtonSuccess .IconWalletConnectionStatus {
+    visibility: visible;
+    background: var(--color-green);
+}
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton.ConnectButtonError .IconWalletConnectionStatus {
+    visibility: visible;
+    background: var(--color-red);
+}
+
+.SelectWalletPopup .ProgressStepKyc .KycInfo {
+    margin: 16px 0;
 }

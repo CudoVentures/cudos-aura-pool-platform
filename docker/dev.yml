@@ -54,67 +54,64 @@ services:
     networks:
       - shared-cudos-network
   
-  cudos-aura-platform-chain-observer-dev:
-    image: cudos-aura-platform-chain-observer-dev
-    container_name: cudos-aura-platform-chain-observer-dev
-    build:
-      dockerfile: docker/chain-observer-dev.dockerfile
-      context: ../
-      args:
-        args:
-        USER_ID: "$USER_ID"
-        USER_NAME: "$USER_NAME"
-        GROUP_ID: "$GROUP_ID"
-        GROUP_NAME: "$GROUP_NAME"
-        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
-        CHAIN_ID: "$CHAIN_ID"
-        CHAIN_RPC: "$CHAIN_RPC"
-        CHAIN_GRPC: "$CHAIN_GRPC"
-    restart: unless-stopped
-    volumes:
-      - '../:/usr/cudos-aura-chain-observer'
-    networks:
-      - shared-cudos-network
-    extra_hosts:
-    - "host.docker.internal:host-gateway"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "128m"
-        max-file: "1"
-    depends_on: 
-      - cudos-aura-platform-dev
+  # cudos-aura-platform-chain-observer-dev:
+  #   image: cudos-aura-platform-chain-observer-dev
+  #   container_name: cudos-aura-platform-chain-observer-dev
+  #   build:
+  #     dockerfile: docker/chain-observer-dev.dockerfile
+  #     context: ../
+  #     args:
+  #       args:
+  #       USER_ID: "$USER_ID"
+  #       USER_NAME: "$USER_NAME"
+  #       GROUP_ID: "$GROUP_ID"
+  #       GROUP_NAME: "$GROUP_NAME"
+  #       AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
+  #   restart: unless-stopped
+  #   volumes:
+  #     - '../:/usr/cudos-aura-chain-observer'
+  #   networks:
+  #     - shared-cudos-network
+  #   extra_hosts:
+  #   - "host.docker.internal:host-gateway"
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "128m"
+  #       max-file: "1"
+  #   depends_on: 
+  #     - cudos-aura-platform-dev
 
-  cudos-on-demant-minting-service-dev:
-    image: cudos-on-demant-minting-service-dev
-    container_name: cudos-on-demant-minting-service-dev
-    build:
-      dockerfile: CudosAuraPoolService/docker/on-demant-mingint-service-dev.dockerfile
-      context: ../../
-      args:
-        args:
-        USER_ID: "$USER_ID"
-        USER_NAME: "$USER_NAME"
-        GROUP_ID: "$GROUP_ID"
-        GROUP_NAME: "$GROUP_NAME"
-        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
-        MINTER_WALLET_MNEMONIC: "$MINTER_WALLET_MNEMONIC"
-        MINTER_STATE_FILE: "$MINTER_STATE_FILE"
-        MINTER_MAX_RETRIES: "$MINTER_MAX_RETRIES"
-        MINTER_RETRY_INTERVAL: "$MINTER_RETRY_INTERVAL"
-        MINTER_RELAY_INTERVAL: "$MINTER_RELAY_INTERVAL"
-        MINTER_PAYMENT_DENOM: "$MINTER_PAYMENT_DENOM"
-        MINTER_PORT: "$MINTER_PORT"
-        CHAIN_ID: "$CHAIN_ID"
-        CHAIN_RPC: "$CHAIN_RPC"
-        CHAIN_GRPC: "$CHAIN_GRPC"
-    restart: unless-stopped
-    networks:
-      - shared-cudos-network
-    extra_hosts:
-    - "host.docker.internal:host-gateway"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "128m"
-        max-file: "1"
+  # cudos-on-demant-minting-service-dev:
+  #   image: cudos-on-demant-minting-service-dev
+  #   container_name: cudos-on-demant-minting-service-dev
+  #   build:
+  #     dockerfile: CudosAuraPoolService/docker/on-demant-mingint-service-dev.dockerfile
+  #     context: ../../
+  #     args:
+  #       args:
+  #       USER_ID: "$USER_ID"
+  #       USER_NAME: "$USER_NAME"
+  #       GROUP_ID: "$GROUP_ID"
+  #       GROUP_NAME: "$GROUP_NAME"
+  #       AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
+  #       MINTER_WALLET_MNEMONIC: "$MINTER_WALLET_MNEMONIC"
+  #       MINTER_STATE_FILE: "$MINTER_STATE_FILE"
+  #       MINTER_MAX_RETRIES: "$MINTER_MAX_RETRIES"
+  #       MINTER_RETRY_INTERVAL: "$MINTER_RETRY_INTERVAL"
+  #       MINTER_RELAY_INTERVAL: "$MINTER_RELAY_INTERVAL"
+  #       MINTER_PAYMENT_DENOM: "$MINTER_PAYMENT_DENOM"
+  #       MINTER_PORT: "$MINTER_PORT"
+  #       CHAIN_ID: "$CHAIN_ID"
+  #       CHAIN_RPC: "$CHAIN_RPC"
+  #       CHAIN_GRPC: "$CHAIN_GRPC"
+  #   restart: unless-stopped
+  #   networks:
+  #     - shared-cudos-network
+  #   extra_hosts:
+  #   - "host.docker.internal:host-gateway"
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "128m"
+  #       max-file: "1"

@@ -4,11 +4,8 @@ import S from '../../../core/utilities/Main';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum CollectionStatus {
-    NOT_SUBMITTED = 'not_submitted',
     QUEUED = 'queued',
     APPROVED = 'approved',
-    REJECTED = 'rejected',
-    ISSUED = 'issued',
     DELETED = 'deleted',
     ANY = 'any'
 }
@@ -36,7 +33,7 @@ export default class CollectionEntity {
         this.hashPowerInTh = S.NOT_EXISTS;
         this.profileImgUrl = '';
         this.coverImgUrl = '';
-        this.status = CollectionStatus.NOT_SUBMITTED;
+        this.status = CollectionStatus.QUEUED;
         this.royalties = S.NOT_EXISTS;
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
@@ -51,7 +48,6 @@ export default class CollectionEntity {
     // TO DO: what will happen when queue collection is updated and approved at the same time
     isEditable(): boolean {
         switch (this.status) {
-            case CollectionStatus.NOT_SUBMITTED:
             case CollectionStatus.QUEUED:
                 return true;
             default:
@@ -105,16 +101,10 @@ export default class CollectionEntity {
 
     static formatStatusName(status: CollectionStatus): string {
         switch (status) {
-            case CollectionStatus.NOT_SUBMITTED:
-                return 'Not submitted';
             case CollectionStatus.QUEUED:
                 return 'Queued';
             case CollectionStatus.APPROVED:
                 return 'Approved';
-            case CollectionStatus.REJECTED:
-                return 'Rejected';
-            case CollectionStatus.ISSUED:
-                return 'Issued';
             case CollectionStatus.DELETED:
                 return 'Deleted';
             case CollectionStatus.ANY:

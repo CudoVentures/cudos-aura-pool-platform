@@ -78,7 +78,7 @@ export default class WalletStore {
             this.name = await this.ledger.getName();
             this.loadBalance(); // to not wait for it
         } catch (ex) {
-            this.alertStore.show(ex.message)
+            // this.alertStore.show(ex.message)
             await this.disconnect();
         }
     }

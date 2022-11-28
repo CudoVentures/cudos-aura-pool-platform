@@ -58,7 +58,11 @@ export class NFT extends Model {
         expiration_date: Date;
 
     @AllowNull(false)
-    @Column(DataType.ENUM('queued', 'approved', 'rejected', 'expired', 'deleted'))
+    @Column(DataType.ENUM(
+        NftStatus.MINTED,
+        NftStatus.QUEUED,
+        NftStatus.REMOVED,
+    ))
         status: NftStatus;
 
     @AllowNull(true)
@@ -94,8 +98,8 @@ export class NFT extends Model {
         this.currentOwnerAddress = '';
     }
 
-    isApproved(): boolean {
-        return this.status === NftStatus.APPROVED;
+    isMinted(): boolean {
+        return this.token_id !== ''
     }
 
 }

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { inject, observer } from 'mobx-react';
 
-import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import WalletSelectModalStore from '../stores/WalletSelectModalStore';
 
 import Svg from '../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
@@ -16,7 +17,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import '../styles/header-wallet.css'
-import WalletSelectModalStore from '../stores/WalletSelectModalStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -46,13 +46,13 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
     }
 
     async function onClickLogin() {
-        walletSelectModalStore.show();
+        walletSelectModalStore.showSignal();
     }
 
     return (
         <div className = { 'HeaderWallet FlexRow' } >
-            {walletStore.isConnected()
-                ? <>
+            {walletStore.isConnected() === true ? (
+                <>
                     <div className={'FlexRow BalanceRow B2'}>
                         <Svg svg={AccountBalanceWalletIcon} />
                         <div className={'SemiBold Gray'}>Balance:</div>
@@ -87,11 +87,13 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
                         </div>
                     </Popover>
                 </>
-                : <>
+            ) : (
+                <>
                     <Actions height={ActionsHeight.HEIGHT_48}>
                         <Button onClick={onClickLogin}>Connect Wallet</Button>
                     </Actions>
                 </>
+            )
             }
         </div>
     )

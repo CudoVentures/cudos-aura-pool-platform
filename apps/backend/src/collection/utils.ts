@@ -1,16 +1,6 @@
-export const enum CollectionStatus {
+export enum CollectionStatus {
     QUEUED = 'queued',
     APPROVED = 'approved',
-    REJECTED = 'rejected',
-    ISSUED = 'issued',
-    DELETED = 'deleted',
-}
-
-export enum CollectionStatusWithAny {
-    QUEUED = 'queued',
-    APPROVED = 'approved',
-    REJECTED = 'rejected',
-    ISSUED = 'issued',
     DELETED = 'deleted',
     ANY = 'any',
 }

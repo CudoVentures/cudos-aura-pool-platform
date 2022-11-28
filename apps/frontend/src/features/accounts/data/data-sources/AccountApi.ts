@@ -64,7 +64,11 @@ export default class AccountApi {
     }
 
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
-        const user = (await axios.get('/api/v1/auth/fetchSessionAccounts')).data;
+        let user = (await axios.get('/api/v1/auth/fetchSessionAccounts')).data;
+        if (user === '') {
+            user = null;
+        }
+
         if (user) {
             user.email_verified = S.INT_TRUE;
             user.active = S.INT_TRUE;

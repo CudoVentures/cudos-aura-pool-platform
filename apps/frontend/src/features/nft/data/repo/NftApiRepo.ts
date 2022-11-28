@@ -79,8 +79,8 @@ export default class NftApiRepo implements NftRepo {
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
             let txHash = S.Strings.EMPTY;
 
-            if (nftEntity.status === NftStatus.APPROVED) {
-                // TODO:get real tx estimation for the mint
+            if (nftEntity.status === NftStatus.QUEUED) {
+                // TODO:get real tx estimation
                 const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(), 'acudos')

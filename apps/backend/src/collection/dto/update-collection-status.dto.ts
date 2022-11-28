@@ -6,5 +6,5 @@ export class UpdateCollectionStatusDto {
     @IsString()
     @IsNotEmpty()
     @ApiProperty({ required: true, example: CollectionStatus.APPROVED })
-        status: CollectionStatus.APPROVED | CollectionStatus.REJECTED;
+        status: CollectionStatus.APPROVED | CollectionStatus.QUEUED;
 }
