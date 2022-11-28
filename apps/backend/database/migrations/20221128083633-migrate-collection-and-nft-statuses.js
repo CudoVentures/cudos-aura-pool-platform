@@ -12,7 +12,7 @@ module.exports = {
             Sequelize.literal('status = \'issued\''),
         )
 
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'removed\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'removed\'');
 
         await queryInterface.bulkUpdate(
             'nfts',
@@ -42,10 +42,10 @@ module.exports = {
                 allowNull: false,
             },
         );
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'removed\'');
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'approved\'');
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'expired\'');
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'deleted\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'removed\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'approved\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'expired\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'deleted\'');
 
         await queryInterface.bulkUpdate(
             'nfts',
