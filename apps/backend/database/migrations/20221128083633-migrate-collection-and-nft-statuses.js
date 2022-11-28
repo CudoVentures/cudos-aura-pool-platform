@@ -1,23 +1,25 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        queryInterface.bulkUpdate(
+        await queryInterface.bulkUpdate(
             'collections',
             { status: 'queued' },
             Sequelize.literal('status = \'rejected\''),
         )
-        queryInterface.bulkUpdate(
+        await queryInterface.bulkUpdate(
             'collections',
             { status: 'approved' },
             Sequelize.literal('status = \'issued\''),
         )
 
-        queryInterface.bulkUpdate(
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'removed\'');
+
+        await queryInterface.bulkUpdate(
             'nfts',
             { status: 'minted' },
             Sequelize.literal('status = \'approved\''),
         )
-        queryInterface.bulkUpdate(
+        await queryInterface.bulkUpdate(
             'nfts',
             { status: 'removed' },
             Sequelize.literal('status = \'rejected\' OR status = \'expired\' OR status = \'deleted\''),
@@ -25,11 +27,33 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+        await queryInterface.changeColumn(
+            'nfts',
+            'status',
+            {
+                type: Sequelize.ENUM([
+                    'queued',
+                    'approved',
+                    'rejected',
+                    'expired',
+                    'deleted',
+                    'minted',
+                ]),
+                allowNull: false,
+            },
+        );
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'removed\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'approved\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'expired\'');
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE \'deleted\'');
+
+        await queryInterface.bulkUpdate(
+            'nfts',
+            { status: 'deleted' },
+            Sequelize.literal('status = \'removed\''),
+        )
+
+        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" DELETE VALUE \'removed\'');
+
     },
 };
