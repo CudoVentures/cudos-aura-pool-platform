@@ -70,8 +70,6 @@ export default class AccountStorageRepo implements AccountRepo {
                 userEntity.userId = nextUserId.toString();
                 userEntity.accountId = accountEntity.accountId;
                 userEntity.cudosWalletAddress = cudosWalletAddress;
-                userEntity.totalBtcEarned = new BigNumber(0);
-                userEntity.totalHashPower = 0;
 
                 userJson = UserEntity.toJson(userEntity);
                 currentUsers.push(userJson);
