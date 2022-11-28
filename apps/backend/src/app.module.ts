@@ -19,12 +19,14 @@ import { jwtConstants } from './auth/constants';
 import { DataModule } from './data/data.module';
 import DataService from './data/data.service';
 import { GeneralModule } from './general/general.module';
+import { AccountModule } from './account/account.module';
 
 @Module({
     imports: [
         GeneralModule,
         AuthModule,
         UserModule,
+        AccountModule,
         FarmModule,
         CollectionModule,
         NFTModule,

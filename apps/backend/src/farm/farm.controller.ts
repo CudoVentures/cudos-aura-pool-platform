@@ -45,7 +45,7 @@ export class FarmController {
         @Req() req,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
     ): Promise < { miningFarmEntities: Farm[], total: number } > {
-        return this.farmService.findByFilter(req.sessionUser, miningFarmFilterModel);
+        return this.farmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
     }
 
     @Get('details')
@@ -84,10 +84,10 @@ export class FarmController {
 
         let farmModel;
 
-        farm.cover_img = await this.dataService.trySaveUri(req.sessionUser.id, farm.cover_img);
-        farm.profile_img = await this.dataService.trySaveUri(req.sessionUser.id, farm.profile_img);
+        farm.cover_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.cover_img);
+        farm.profile_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.profile_img);
         for (let i = farm.images.length; i-- > 0;) {
-            farm.images[i] = await this.dataService.trySaveUri(req.sessionUser.id, farm.images[i]);
+            farm.images[i] = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.images[i]);
         }
 
         const farmModelDb = await this.farmService.findOne(id);
@@ -98,7 +98,7 @@ export class FarmController {
             if (id > 0) {
                 farmModel = await this.farmService.updateOne(id, farm);
             } else {
-                farmModel = await this.farmService.createOne(farm, req.sessionUser.id)
+                farmModel = await this.farmService.createOne(farm, req.sessionAccountEntity.accountId)
             }
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {

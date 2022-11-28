@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
 import sequelize, { Op } from 'sequelize';
 import { v4 as uuid } from 'uuid';
+import AccountEntity from '../account/entities/account.entity';
 import { Collection } from '../collection/collection.model';
 import { CollectionService } from '../collection/collection.service';
 import { ChainMarketplaceNftDto } from '../collection/dto/chain-marketplace-collection.dto';
@@ -25,7 +26,7 @@ export class NFTService {
         private graphqlService: GraphqlService,
     ) {}
 
-    async findByFilter(user: User, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
+    async findByFilter(accountEntity: AccountEntity, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
@@ -49,7 +50,7 @@ export class NFTService {
         }
 
         if (nftFilterModel.inOnlyForSessionAccount() === true) {
-            whereClause.creator_id = user.id;
+            whereClause.creator_id = accountEntity.accountId;
         }
 
         if (nftFilterModel.hasSearchString() === true) {

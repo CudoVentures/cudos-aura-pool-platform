@@ -37,10 +37,10 @@ export default class AdminEntity {
         }
 
         return {
-            'id': parseInt(entity.adminId),
-            'account_id': parseInt(entity.accountId),
-            'cudos_address': entity.cudosWalletAddress,
-            'payout_address': entity.bitcoinWalletAddress,
+            'adminId': entity.adminId,
+            'accountId': entity.accountId,
+            'cudosWalletAddress': entity.cudosWalletAddress,
+            'bitcoinWalletAddress': entity.bitcoinWalletAddress,
         }
     }
 
@@ -51,10 +51,10 @@ export default class AdminEntity {
 
         const entity = new AdminEntity();
 
-        entity.adminId = (json.admin_id ?? entity.adminId).toString();
-        entity.accountId = (json.account_id ?? entity.accountId).toString();
-        entity.cudosWalletAddress = (json.cudos_address ?? entity.cudosWalletAddress).toString();
-        entity.bitcoinWalletAddress = (json.payout_address ?? entity.bitcoinWalletAddress).toString();
+        entity.adminId = (json.adminId ?? entity.adminId).toString();
+        entity.accountId = (json.accountId ?? entity.accountId).toString();
+        entity.cudosWalletAddress = json.cudos_address ?? entity.cudosWalletAddress;
+        entity.bitcoinWalletAddress = json.payout_address ?? entity.bitcoinWalletAddress;
 
         return entity;
     }

@@ -38,6 +38,23 @@ export default class VisitorEntity {
         return entity;
     }
 
+    static toRepo(entity: VisitorEntity): VisitorRepo {
+        if (entity === null) {
+            return null;
+        }
+
+        const repoJson = new VisitorRepo();
+
+        if (entity.id !== NOT_EXISTS_INT) {
+            repoJson.id = entity.id;
+        }
+        repoJson.refType = entity.refType ?? repoJson.refType;
+        repoJson.refId = entity.refId ?? repoJson.refId;
+        repoJson.visitorUuid = entity.visitorUuid ?? repoJson.visitorUuid;
+
+        return repoJson;
+    }
+
     static fromRepo(repoJson: VisitorRepo): VisitorEntity {
         if (repoJson === null) {
             return null;
@@ -54,23 +71,6 @@ export default class VisitorEntity {
         entity.updatedAt = repoJson.updatedAt ?? entity.updatedAt;
 
         return entity;
-    }
-
-    static toRepo(entity: VisitorEntity): VisitorRepo {
-        if (entity === null) {
-            return null;
-        }
-
-        const repoJson = new VisitorRepo();
-
-        if (entity.id !== NOT_EXISTS_INT) {
-            repoJson.id = entity.id;
-        }
-        repoJson.refType = entity.refType ?? repoJson.refType;
-        repoJson.refId = entity.refId ?? repoJson.refId;
-        repoJson.visitorUuid = entity.visitorUuid ?? repoJson.visitorUuid;
-
-        return repoJson;
     }
 
 }

@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js';
-
 import S from '../../../core/utilities/Main';
 
 export default class UserEntity {
@@ -28,11 +26,11 @@ export default class UserEntity {
         }
 
         return {
-            'id': parseInt(entity.userId),
-            'account_id': parseInt(entity.accountId),
-            'cudos_address': entity.cudosWalletAddress,
-            'profile_img': entity.profileImgUrl,
-            'cover_img': entity.coverImgUrl,
+            'userId': entity.userId,
+            'accountId': entity.accountId,
+            'cudosWalletAddress': entity.cudosWalletAddress,
+            'profileImgUrl': entity.profileImgUrl,
+            'coverImgUrl': entity.coverImgUrl,
         }
     }
 
@@ -43,11 +41,11 @@ export default class UserEntity {
 
         const entity = new UserEntity();
 
-        entity.userId = (json.id ?? entity.userId).toString();
-        entity.accountId = (json.account_id ?? entity.accountId).toString();
-        entity.cudosWalletAddress = json.cudos_address ?? entity.cudosWalletAddress;
-        entity.profileImgUrl = json.profile_img ?? entity.profileImgUrl;
-        entity.coverImgUrl = json.cover_img ?? entity.coverImgUrl;
+        entity.userId = (json.userId ?? entity.userId).toString();
+        entity.accountId = (json.accountId ?? entity.accountId).toString();
+        entity.cudosWalletAddress = json.cudosWalletAddress ?? entity.cudosWalletAddress;
+        entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;
+        entity.coverImgUrl = json.coverImgUrl ?? entity.coverImgUrl;
 
         return entity;
     }

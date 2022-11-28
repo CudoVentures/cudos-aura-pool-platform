@@ -1,17 +1,18 @@
-import { User } from '../user/user.model';
+import AccountEntity from '../account/entities/account.entity';
+import { NOT_EXISTS_INT } from '../common/utils';
 
 export default class JwtToken {
 
     id: number;
 
     constructor() {
-        this.id = -1;
+        this.id = NOT_EXISTS_INT;
     }
 
-    static newInstance(user: User) {
+    static newInstance(accountEntity: AccountEntity) {
         const entity = new JwtToken();
 
-        entity.id = user.id;
+        entity.id = accountEntity.accountId;
 
         return entity;
     }

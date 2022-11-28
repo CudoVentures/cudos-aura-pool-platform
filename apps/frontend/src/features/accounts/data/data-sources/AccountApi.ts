@@ -4,16 +4,16 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
 import S from '../../../../core/utilities/Main';
+import { ReqLogin } from '../dto/Requests';
+import { ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 
 export default class AccountApi {
 
-    async login(username: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
-        const { data } = await axios.post('/api/v1/auth/login', {
-            email: username,
-            password,
-        })
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
+        const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, walletName, signedTx));
+        const res = new ResLogin(data);
 
-        setTokenInStorage(data.accessToken);
+        setTokenInStorage(res.accessToken);
     }
 
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
@@ -64,28 +64,38 @@ export default class AccountApi {
     }
 
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
-        let user = (await axios.get('/api/v1/auth/fetchSessionAccounts')).data;
-        if (user === '') {
-            user = null;
-        }
-
-        if (user) {
-            user.email_verified = S.INT_TRUE;
-            user.active = S.INT_TRUE;
-            user.timestamp_last_login = Date.now();
-            user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
-
-            user.admin_id = user.id;
-            user.super_admin_id = user.id;
-            user.account_id = user.id;
-        }
+        const { data } = await axios.get('/api/v1/auth/fetchSessionAccounts');
+        const res = new ResFetchSessionAccounts(data);
 
         return {
-            accountEntity: AccountEntity.fromJson(user),
-            userEntity: UserEntity.fromJson(null),
-            adminEntity: user && user.role === AccountType.ADMIN ? AdminEntity.fromJson(user) : null,
-            superAdminEntity: user && user.role === AccountType.SUPER_ADMIN ? SuperAdminEntity.fromJson(user) : null,
+            accountEntity: res.accountEntity,
+            userEntity: res.userEntity,
+            adminEntity: res.adminEntity,
+            superAdminEntity: res.superAdminEntity,
         }
+
+        // console.log(user);
+        // if (user === '') {
+        //     user = null;
+        // }
+
+        // if (user) {
+        //     user.email_verified = S.INT_TRUE;
+        //     user.active = S.INT_TRUE;
+        //     user.timestamp_last_login = Date.now();
+        //     user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
+
+        //     user.admin_id = user.id;
+        //     user.super_admin_id = user.id;
+        //     user.account_id = user.id;
+        // }
+
+        // return {
+        //     accountEntity: AccountEntity.fromJson(user),
+        //     userEntity: UserEntity.fromJson(null),
+        //     adminEntity: user && user.role === AccountType.ADMIN ? AdminEntity.fromJson(user) : null,
+        //     superAdminEntity: user && user.role === AccountType.SUPER_ADMIN ? SuperAdminEntity.fromJson(user) : null,
+        // }
     }
 
     async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {

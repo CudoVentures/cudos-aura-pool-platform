@@ -117,7 +117,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 if (walletSelectModalStore.isIdentityTxDoneSuccessfully() === false) {
                     sendIdentityTx();
                 } else {
-                    // await register();
+                    await register();
                     walletSelectModalStore.moveToProgressStepKyc();
                 }
                 break;

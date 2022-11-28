@@ -18,6 +18,7 @@ import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import sequelize, { Op } from 'sequelize';
 import { User } from '../user/user.model';
 import { VisitorService } from '../visitor/visitor.service';
+import AccountEntity from '../account/entities/account.entity';
 
 @Injectable()
 export class FarmService {
@@ -38,7 +39,7 @@ export class FarmService {
         private visitorService: VisitorService,
     ) {}
 
-    async findByFilter(user: User, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
+    async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
         let whereClause: any = {};
 
         if (miningFarmFilterModel.hasMiningFarmIds() === true) {
@@ -50,7 +51,8 @@ export class FarmService {
         }
 
         if (miningFarmFilterModel.inOnlyForSessionAccount() === true) {
-            whereClause.creator_id = user.id;
+            console.log(accountEntity);
+            whereClause.creator_id = accountEntity.accountId;
         }
 
         if (miningFarmFilterModel.hasSearchString() === true) {

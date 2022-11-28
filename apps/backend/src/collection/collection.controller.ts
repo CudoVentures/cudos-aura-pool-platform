@@ -27,7 +27,7 @@ import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
 import CollectionFilterModel from './dto/collection-filter.model';
-import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts, RequestWithSessionUser } from '../auth/interfaces/request.interface';
 import DataService from '../data/data.service';
 import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
 import { IntBoolValue } from '../common/utils';
@@ -73,15 +73,15 @@ export class CollectionController {
     @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorGuard, IsFarmApprovedGuard)
     @Put()
     async createOrEdit(
-        @Request() req: RequestWithSessionUser,
+        @Request() req: RequestWithSessionAccounts,
         @Body() collectionDto: CollectionDto,
     ): Promise<{collection: Collection, nfts: NFT[], deletedNfts: number}> {
         const { id, nfts: nftArray, ...collectionRest } = collectionDto
 
-        collectionRest.banner_image = await this.dataService.trySaveUri(req.sessionUser.id, collectionRest.banner_image);
-        collectionRest.main_image = await this.dataService.trySaveUri(req.sessionUser.id, collectionRest.main_image);
+        collectionRest.banner_image = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionRest.banner_image);
+        collectionRest.main_image = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionRest.main_image);
         for (let i = nftArray.length; i-- > 0;) {
-            nftArray[i].uri = await this.dataService.trySaveUri(req.sessionUser.id, nftArray[i].uri);
+            nftArray[i].uri = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, nftArray[i].uri);
         }
 
         const collectionDb = await this.collectionService.findOne(id);
@@ -103,12 +103,12 @@ export class CollectionController {
         let collection, nftResults, deletedNfts = [];
         try {
             if (id < 0) {
-                collection = await this.collectionService.createOne(collectionRest, req.sessionUser.id);
+                collection = await this.collectionService.createOne(collectionRest, req.sessionAdminEntity.accountId);
 
                 const nfts = nftArray.map(async (nft) => {
                     const { id: tempId, uri, ...nftRest } = nft
                     nftRest.uri = uri;
-                    const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.sessionUser.id)
+                    const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.sessionAdminEntity.accountId)
 
                     return createdNft
                 })
@@ -128,7 +128,7 @@ export class CollectionController {
                         return this.nftService.updateOne(nft.id, nft)
                     }
 
-                    return this.nftService.createOne({ ...nft, collection_id: collection.id }, req.sessionUser.id)
+                    return this.nftService.createOne({ ...nft, collection_id: collection.id }, req.sessionAccountEntity.accountId)
                 })
 
                 nftResults = await Promise.all(nftsToCreateOrEdit)

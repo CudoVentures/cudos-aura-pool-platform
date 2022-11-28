@@ -24,7 +24,7 @@ export class NFTController {
         @Req() req,
         @Body(new ValidationPipe({ transform: true })) nftFilterModel: NftFilterModel,
     ): Promise < { nftEntities: NFT[], total: number } > {
-        const { nftEntities, total } = await this.nftService.findByFilter(req.sessionUser, nftFilterModel);
+        const { nftEntities, total } = await this.nftService.findByFilter(req.sessionAccountEntity, nftFilterModel);
 
         for (let i = nftEntities.length; i-- > 0;) {
             const nftEntity = nftEntities[i];
