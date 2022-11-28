@@ -154,6 +154,11 @@ export class CollectionController {
 
         if (module === ModuleName.MARKETPLACE) {
             const chainMarketplaceCollectionDtos = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
+
+            if (chainMarketplaceCollectionDtos.length !== denomIds.length) {
+                throw new Error('Collections not yet found in BDJuno');
+            }
+
             for (let i = 0; i < chainMarketplaceCollectionDtos.length; i++) {
                 const chainMarketplaceCollectionDto = chainMarketplaceCollectionDtos[i];
                 const denomId = chainMarketplaceCollectionDto.denomId;
@@ -174,6 +179,11 @@ export class CollectionController {
             }
         } else if (module === ModuleName.NFT) {
             const chainNftCollectionDtos = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);
+
+            if (chainNftCollectionDtos.length !== denomIds.length) {
+                throw new Error('Collections not yet found in BDJuno');
+            }
+
             for (let i = 0; i < chainNftCollectionDtos.length; i++) {
                 const chainNftCollectionDto = chainNftCollectionDtos[i];
                 const denomId = chainNftCollectionDto.id;

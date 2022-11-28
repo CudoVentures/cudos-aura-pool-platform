@@ -171,6 +171,11 @@ export class NFTController {
 
         if (module === ModuleName.MARKETPLACE) {
             const chainMarketplaceNftDtos = await this.nftService.getChainMarketplaceNftsByTokenIds(tokenIds);
+
+            if (chainMarketplaceNftDtos.length !== tokenIds.length) {
+                throw new Error('NFTs not yet found in BDJuno');
+            }
+
             for (let i = 0; i < chainMarketplaceNftDtos.length; i++) {
                 const chainMarketplaceNftDto: ChainMarketplaceNftDto = chainMarketplaceNftDtos[i];
 
@@ -182,6 +187,11 @@ export class NFTController {
             }
         } else if (module === ModuleName.NFT) {
             const chainNftNftsDtos = await this.nftService.getChainNftNftsByTokenIds(tokenIds);
+
+            if (chainNftNftsDtos.length !== tokenIds.length) {
+                throw new Error('NFTs not yet found in BDJuno');
+            }
+
             for (let i = 0; i < chainNftNftsDtos.length; i++) {
                 const chainNftNftDto: ChainNftNftDto = chainNftNftsDtos[i];
 

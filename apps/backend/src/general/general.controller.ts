@@ -8,7 +8,7 @@ export class GeneralController {
     height: number;
 
     constructor() {
-        this.height = 1110000
+        this.height = 1160000
     }
 
     @Get('heartbeat')

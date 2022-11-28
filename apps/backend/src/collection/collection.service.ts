@@ -145,7 +145,8 @@ export class CollectionService {
         creator_id: number,
     ): Promise<Collection> {
 
-        collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '_');
+        collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '');
+        console.log(collectionDto.denom_id)
         checkValidNftDenomId(collectionDto.denom_id);
         const collection = this.collectionModel.create({
             ...collectionDto,
