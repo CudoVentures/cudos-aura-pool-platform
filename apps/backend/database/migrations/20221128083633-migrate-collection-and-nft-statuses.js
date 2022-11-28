@@ -27,33 +27,10 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.changeColumn(
-            'nfts',
-            'status',
-            {
-                type: Sequelize.ENUM([
-                    'queued',
-                    'approved',
-                    'rejected',
-                    'expired',
-                    'deleted',
-                    'minted',
-                ]),
-                allowNull: false,
-            },
-        );
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'removed\'');
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'approved\'');
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'expired\'');
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" ADD VALUE IF NOT EXISTS \'deleted\'');
-
         await queryInterface.bulkUpdate(
             'nfts',
             { status: 'deleted' },
             Sequelize.literal('status = \'removed\''),
         )
-
-        await queryInterface.sequelize.query('ALTER TYPE "enum_nfts_status" DELETE VALUE \'removed\'');
-
     },
 };
