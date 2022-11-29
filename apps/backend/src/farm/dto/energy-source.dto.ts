@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { NOT_EXISTS_INT } from '../../common/utils';
 
 export class EnergySourceDto {
     @IsNumber()
@@ -10,4 +11,8 @@ export class EnergySourceDto {
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 'Farm Name' })
         name: string;
+
+    static isNew(energySourceDto: EnergySourceDto): boolean {
+        return energySourceDto.id === NOT_EXISTS_INT;
+    }
 }

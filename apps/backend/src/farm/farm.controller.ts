@@ -140,9 +140,8 @@ export class FarmController {
 
     @Put('miners')
     async creditMiners(@Body() minerDto: MinerDto): Promise<Miner> {
-        const { id } = minerDto
 
-        if (!id) {
+        if (MinerDto.isNew(minerDto)) {
             return this.farmService.createMiner(minerDto)
         }
 
@@ -151,9 +150,8 @@ export class FarmController {
 
     @Put('energy-sources')
     async creditEnergySources(@Body() energySourceDto: EnergySourceDto): Promise<EnergySource> {
-        const { id } = energySourceDto
 
-        if (!id) {
+        if (EnergySourceDto.isNew(energySourceDto)) {
             return this.farmService.createEnergySource(energySourceDto)
         }
 
@@ -162,9 +160,8 @@ export class FarmController {
 
     @Put('manufacturers')
     async creditManufacturers(@Body() manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
-        const { id } = manufacturerDto
 
-        if (!id) {
+        if (ManufacturerDto.isNew(manufacturerDto)) {
             return this.farmService.createManufacturer(manufacturerDto)
         }
 
