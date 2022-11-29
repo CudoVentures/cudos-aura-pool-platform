@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { StdSignature } from 'cudosjs';
 import { verifyNonceMsgSigner } from 'cudosjs/build/utils/nonce';
-import app from '../../../chain-observer/src/app';
 import AccountService from '../account/account.service';
 import AccountEntity from '../account/entities/account.entity';
 import AdminEntity from '../account/entities/admin.entity';
@@ -42,7 +42,12 @@ export class AuthService {
     //     return { accessToken }
     // }
 
-    async register(email: string, pass: string, cudosWalletAddress: string, name: string, signedTx: any): Promise < void > {
+    async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number): Promise < void > {
+        const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
+        if (!isSigner) {
+            throw new Error('Message not signed by user address.');
+        }
+
         let accountEntity = await this.accountService.findAccountByEmail(email);
         let adminEntity = null;
         if (accountEntity !== null) {
@@ -85,23 +90,13 @@ export class AuthService {
     }
 
     private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number): Promise < string > {
-        let accountEntity = null;
-        let userEntity = await this.accountService.findUserByCudosWalletAddress(cudosWalletAddress);
-        const chainId = this.configService.get(`APP_${this.configService.get('APP_DEFAULT_NETWORK')}_CHAIN_ID`);
-
-        const signedTx = {
-            pub_key: {
-                type: pubKeyType,
-                value: pubKeyValue,
-            },
-            signature,
-        }
-
-        const isSigner = await verifyNonceMsgSigner(signedTx, cudosWalletAddress, SIGN_NONCE, sequence, accountNumber, chainId);
-
+        const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
         if (!isSigner) {
             throw new Error('Message not signed by user address.');
         }
+
+        let accountEntity = null;
+        let userEntity = await this.accountService.findUserByCudosWalletAddress(cudosWalletAddress);
 
         if (userEntity === null) { // register new wallet
             accountEntity = new AccountEntity();
@@ -120,6 +115,19 @@ export class AuthService {
 
         const jwtToken = JwtToken.newInstance(accountEntity);
         return this.jwtService.sign(JwtToken.toJson(jwtToken));
+    }
+
+    private async verifySignature(cudosWalletAddress: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number): Promise < boolean > {
+        const signedTx: StdSignature = {
+            pub_key: {
+                type: pubKeyType,
+                value: pubKeyValue,
+            },
+            signature,
+        }
+
+        const chainId = this.configService.get(`APP_${this.configService.get('APP_DEFAULT_NETWORK')}_CHAIN_ID`);
+        return verifyNonceMsgSigner(signedTx, cudosWalletAddress, SIGN_NONCE, sequence, accountNumber, chainId);
     }
 
 }
