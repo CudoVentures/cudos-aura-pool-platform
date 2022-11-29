@@ -62,12 +62,12 @@ export class AuthService {
         adminEntity = await this.accountService.creditAdmin(adminEntity);
     }
 
-    async login(email: string, pass: string, cudosWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number): Promise < string > {
+    async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number): Promise < string > {
         if (email !== '' || pass !== '') {
             return this.loginUsingCredentials(email, pass);
         }
 
-        return this.loginUsingWallet(cudosWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
+        return this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
     }
 
     private async loginUsingCredentials(email: string, pass: string): Promise < string > {
@@ -84,7 +84,7 @@ export class AuthService {
         return this.jwtService.sign(JwtToken.toJson(jwtToken));
     }
 
-    private async loginUsingWallet(cudosWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number): Promise < string > {
+    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number): Promise < string > {
         let accountEntity = null;
         let userEntity = await this.accountService.findUserByCudosWalletAddress(cudosWalletAddress);
         const chainId = this.configService.get(`APP_${this.configService.get('APP_DEFAULT_NETWORK')}_CHAIN_ID`);
@@ -105,16 +105,14 @@ export class AuthService {
 
         if (userEntity === null) { // register new wallet
             accountEntity = new AccountEntity();
-            userEntity = new UserEntity();
-
             accountEntity.name = walletName;
             accountEntity.emailVerified = IntBoolValue.TRUE;
-
-            userEntity.cudosWalletAddress = cudosWalletAddress;
-
             accountEntity = await this.accountService.creditAccount(accountEntity);
-            userEntity.accountId = accountEntity.accountId;
 
+            userEntity = new UserEntity();
+            userEntity.accountId = accountEntity.accountId;
+            userEntity.cudosWalletAddress = cudosWalletAddress;
+            userEntity.bitcoinPayoutWalletAddress = bitcoinPayoutWalletAddress;
             userEntity = await this.accountService.creditUser(userEntity);
         } else {
             accountEntity = await this.accountService.findAccountById(userEntity.accountId);

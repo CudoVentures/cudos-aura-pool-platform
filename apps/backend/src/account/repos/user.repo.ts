@@ -7,6 +7,7 @@ export const enum UserRepoColumn {
     USER_ID = 'user_id',
     ACCOUNT_ID = 'account_id',
     CUDOS_WALLET_ADDRESS = 'cudos_wallet_address',
+    BITCOIN_PAYOUT_WALLET_ADDRESS = 'bitcoin_payout_wallet_address',
     PROFILE_IMG_URL = 'profile_img_url',
     COVER_IMG_URL = 'cover_img_url',
 }
@@ -34,6 +35,10 @@ export default class UserRepo extends Model {
     @AllowNull(false)
     @Column
         cudosWalletAddress: string;
+
+    @AllowNull(false)
+    @Column
+        bitcoinPayoutWalletAddress: string;
 
     @AllowNull(false)
     @Column

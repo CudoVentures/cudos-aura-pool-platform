@@ -5,6 +5,7 @@ export default class UserEntity {
     userId: string;
     accountId: string;
     cudosWalletAddress: string;
+    bitcoinPayoutWalletAddress: string;
     profileImgUrl: string;
     coverImgUrl: string;
 
@@ -12,6 +13,7 @@ export default class UserEntity {
         this.userId = S.Strings.NOT_EXISTS;
         this.accountId = S.Strings.NOT_EXISTS;
         this.cudosWalletAddress = '';
+        this.bitcoinPayoutWalletAddress = '';
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
     }
@@ -29,6 +31,7 @@ export default class UserEntity {
             'userId': entity.userId,
             'accountId': entity.accountId,
             'cudosWalletAddress': entity.cudosWalletAddress,
+            'bitcoinPayoutWalletAddress': entity.bitcoinPayoutWalletAddress,
             'profileImgUrl': entity.profileImgUrl,
             'coverImgUrl': entity.coverImgUrl,
         }
@@ -44,6 +47,7 @@ export default class UserEntity {
         entity.userId = (json.userId ?? entity.userId).toString();
         entity.accountId = (json.accountId ?? entity.accountId).toString();
         entity.cudosWalletAddress = json.cudosWalletAddress ?? entity.cudosWalletAddress;
+        entity.bitcoinPayoutWalletAddress = json.bitcoinPayoutWalletAddress ?? entity.bitcoinPayoutWalletAddress;
         entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;
         entity.coverImgUrl = json.coverImgUrl ?? entity.coverImgUrl;
 
