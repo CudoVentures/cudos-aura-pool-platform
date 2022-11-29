@@ -5,6 +5,7 @@ import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import NftRepo from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 
 export enum ModalStage {
     PREVIEW,
@@ -15,6 +16,7 @@ export enum ModalStage {
 
 export default class BuyNftModalStore extends ModalStore {
     nftRepo: NftRepo;
+    accountRepo: AccountRepo
     walletStore: WalletStore;
 
     @observable nftEntity: NftEntity;
@@ -24,10 +26,12 @@ export default class BuyNftModalStore extends ModalStore {
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
-    constructor(nftRepo: NftRepo, walletStore: WalletStore) {
+    constructor(nftRepo: NftRepo, walletStore: WalletStore, accountRepo: AccountRepo) {
         super();
 
         this.nftRepo = nftRepo;
+        this.accountRepo = accountRepo;
+
         this.walletStore = walletStore;
 
         this.resetValues();
@@ -58,6 +62,10 @@ export default class BuyNftModalStore extends ModalStore {
         this.collectionName = collectionName;
         this.modalStage = ModalStage.PREVIEW;
         this.txHash = S.Strings.EMPTY;
+
+        this.accountRepo.fetchBitcoinAddress(this.walletStore.address).then((btcAddress) => {
+            this.recipient = btcAddress;
+        });
 
         this.show();
     }

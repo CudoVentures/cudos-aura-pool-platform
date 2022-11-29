@@ -5,7 +5,7 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
-import { GasPrice, StdSignature } from 'cudosjs';
+import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 
@@ -60,12 +60,23 @@ export default class AccountStorageRepo implements AccountRepo {
             this.disableActions?.();
 
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
-            // await client.addressbookCreateAddress(cudosWalletAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
+            await client.addressbookCreateAddress(cudosWalletAddress, 'BTC', 'aurapool', bitcoinAddress, gasPrice);
             return true;
         } catch (ex) {
             return false;
         } finally {
             this.enableActions?.();
+        }
+    }
+
+    async fetchBitcoinAddress(cudosAddress: string): Promise < string > {
+        try {
+            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS[CHAIN_DETAILS.DEFAULT_NETWORK]);
+            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, 'BTC', 'aurapool');
+
+            return res.address.value
+        } catch (e) {
+            return '';
         }
     }
 

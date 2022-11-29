@@ -79,6 +79,7 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
                             onChange={buyNftModalStore.setRecipient}
                             label={'Set Rewards Recepient Address'}
                             inputValidation={rewardsRecipientAddress}
+                            readOnly={true}
                             placeholder={'e.g bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'} />
                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                             <Button onClick={onClickPurchaseNft}>Complete Purchase</Button>
