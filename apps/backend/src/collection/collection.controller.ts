@@ -22,12 +22,12 @@ import { NFTService } from '../nft/nft.service';
 import { NFT } from '../nft/nft.model';
 import RoleGuard from '../auth/guards/role.guard';
 import { Role } from '../user/roles';
-import { IsCreatorGuard } from './guards/is-creator.guard';
+import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
 import CollectionFilterModel from './dto/collection-filter.model';
-import { RequestWithSessionAccounts, RequestWithSessionUser } from '../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../auth/interfaces/request.interface';
 import DataService from '../data/data.service';
 import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
 import { IntBoolValue } from '../common/utils';
@@ -70,7 +70,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorGuard, IsFarmApprovedGuard)
+    @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
     @Put()
     async createOrEdit(
         @Request() req: RequestWithSessionAccounts,
@@ -190,7 +190,7 @@ export class CollectionController {
     @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
     @Patch(':id/status')
     async updateStatus(
-        @Req() req: RequestWithSessionUser,
+        @Req() req: RequestWithSessionAccounts,
         @Param('id', ParseIntPipe) id: number,
         @Body() updateCollectionStatusDto: UpdateCollectionStatusDto,
     ): Promise<void> {
@@ -208,7 +208,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+    @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorOrSuperAdminGuard)
     @Delete(':id')
     async delete(@Param('id', ParseIntPipe) id: number): Promise<Collection> {
         return this.collectionService.deleteOne(id);

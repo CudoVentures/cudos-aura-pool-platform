@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsArray } from 'class-validator';
+import { NOT_EXISTS_INT } from '../../common/utils';
 
 export class FarmDto {
     @IsNumber()
     @ApiProperty({ required: true, example: 1 })
-        id?: number;
+        id: number;
 
     @IsString()
     @IsNotEmpty()
@@ -116,4 +117,63 @@ export class FarmDto {
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 'snimka 1', type: String, description: 'Farm images' })
         cover_img: string;
+
+    constructor() {
+        this.id = NOT_EXISTS_INT;
+        this.name = '';
+        this.description = '';
+        this.status = '';
+        this.sub_account_name = '';
+        this.primary_account_owner_name = '';
+        this.primary_account_owner_email = '';
+        this.location = '';
+        this.cudos_mint_nft_royalties_percent = NOT_EXISTS_INT;
+        this.cudos_resale_nft_royalties_percent = NOT_EXISTS_INT;
+        this.resale_farm_royalties_cudos_address = '';
+        this.address_for_receiving_rewards_from_pool = '';
+        this.leftover_reward_payout_address = '';
+        this.maintenance_fee_payout_address = '';
+        this.maintenance_fee_in_btc = '';
+        this.total_farm_hashrate = NOT_EXISTS_INT;
+        this.manufacturers = [];
+        this.miner_types = [];
+        this.energy_source = [];
+        this.images = [];
+        this.profile_img = '';
+        this.cover_img = '';
+    }
+
+    isNew(): boolean {
+        return this.id === NOT_EXISTS_INT;
+    }
+
+    static fromJson(json): FarmDto {
+        const farmDto = new FarmDto();
+
+        farmDto.id = parseInt(json.id ?? farmDto.id);
+        farmDto.name = json.name ?? farmDto.name;
+        farmDto.description = json.description ?? farmDto.description;
+        farmDto.status = json.status ?? farmDto.status;
+        farmDto.sub_account_name = json.sub_account_name ?? farmDto.sub_account_name;
+        farmDto.primary_account_owner_name = json.primary_account_owner_name ?? farmDto.primary_account_owner_name;
+        farmDto.primary_account_owner_email = json.primary_account_owner_email ?? farmDto.primary_account_owner_email;
+        farmDto.location = json.location ?? farmDto.location;
+        farmDto.cudos_mint_nft_royalties_percent = parseInt(json.cudos_mint_nft_royalties_percent ?? farmDto.cudos_mint_nft_royalties_percent);
+        farmDto.cudos_resale_nft_royalties_percent = parseInt(json.cudos_resale_nft_royalties_percent ?? farmDto.cudos_resale_nft_royalties_percent);
+        farmDto.resale_farm_royalties_cudos_address = json.resale_farm_royalties_cudos_address ?? farmDto.resale_farm_royalties_cudos_address;
+        farmDto.address_for_receiving_rewards_from_pool = json.address_for_receiving_rewards_from_pool ?? farmDto.address_for_receiving_rewards_from_pool;
+        farmDto.leftover_reward_payout_address = json.leftover_reward_payout_address ?? farmDto.leftover_reward_payout_address;
+        farmDto.maintenance_fee_payout_address = json.maintenance_fee_payout_address ?? farmDto.maintenance_fee_payout_address;
+        farmDto.maintenance_fee_in_btc = json.maintenance_fee_in_btc ?? farmDto.maintenance_fee_in_btc;
+        farmDto.total_farm_hashrate = parseInt(json.total_farm_hashrate ?? farmDto.total_farm_hashrate);
+        farmDto.manufacturers = JSON.parse(json.manufacturers ?? farmDto.manufacturers);
+        farmDto.miner_types = json.miner_types ?? farmDto.miner_types;
+        farmDto.energy_source = json.energy_source ?? farmDto.energy_source;
+        farmDto.images = json.images ?? farmDto.images;
+        farmDto.profile_img = json.profile_img ?? farmDto.profile_img;
+        farmDto.cover_img = json.cover_img ?? farmDto.cover_img;
+
+        return farmDto;
+    }
+
 }

@@ -1,16 +1,19 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RequestWithUser } from '../../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../../auth/interfaces/request.interface';
 
 @Injectable()
 export class IsUserGuard extends JwtAuthGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest<RequestWithUser>();
-        const { user, params } = request;
+        const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
+        const {
+            sessionUserEntity,
+            params,
+        } = request;
 
-        if (!user || !params) return false;
+        if (sessionUserEntity === null || !params || !params.id) return false;
 
-        const userId = user.id;
+        const userId = sessionUserEntity.accountId;
         const userToUpdateId = Number(params.id);
 
         return userId === userToUpdateId;

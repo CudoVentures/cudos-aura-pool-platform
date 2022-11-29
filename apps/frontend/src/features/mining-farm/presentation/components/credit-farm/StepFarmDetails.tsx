@@ -160,6 +160,8 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
             <Autocomplete
                 label={'Miners'}
                 value = { creditMiningFarmDetailsPageStore.getSelectedMiners().map((minerEntity) => {
+                    console.log('minerEntity')
+                    console.log(minerEntity)
                     return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
                 }) }
                 multiple

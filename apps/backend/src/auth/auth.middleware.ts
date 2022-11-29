@@ -20,7 +20,6 @@ export class AuthMiddleware implements NestMiddleware {
     async use(req: RequestWithSessionAccounts, res: Response, next: NextFunction) {
         const extractorFunction = ExtractJwt.fromAuthHeaderAsBearerToken();
         const encodedToken = extractorFunction(req);
-
         try {
             this.jwtService.verify(encodedToken);
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));

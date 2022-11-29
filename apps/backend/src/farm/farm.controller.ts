@@ -21,7 +21,7 @@ import { FarmDto } from './dto/farm.dto';
 import { UpdateFarmStatusDto } from './dto/update-status.dto';
 import { Farm } from './models/farm.model';
 import { FarmService } from './farm.service';
-import { IsCreatorGuard } from './guards/is-creator.guard';
+import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import { EnergySource } from './models/energy-source.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { Miner } from './models/miner.model';
@@ -30,7 +30,7 @@ import { EnergySourceDto } from './dto/energy-source.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import DataService from '../data/data.service';
-import { RequestWithSessionUser } from '../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../auth/interfaces/request.interface';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -74,10 +74,10 @@ export class FarmController {
     //     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorGuard)
+    @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
     @Put()
     async creditFarm(
-        @Request() req: RequestWithSessionUser,
+        @Request() req: RequestWithSessionAccounts,
         @Body() farmDto: FarmDto,
     ): Promise<Farm> {
         const { id, ...farm } = farmDto
@@ -110,7 +110,7 @@ export class FarmController {
     }
 
     //   @ApiBearerAuth('access-token')
-    //   @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorGuard)
+    //   @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorOrSuperAdminGuard)
     //   @Delete(':id')
     //   async delete(@Param('id', ParseIntPipe) id: number): Promise<Farm> {
     //       return this.farmService.deleteOne(id);
