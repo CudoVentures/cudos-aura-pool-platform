@@ -21,6 +21,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../styles/page-login.css';
+import S from '../../../../core/utilities/Main';
 
 type Props = {
     alertStore?: AlertStore;
@@ -63,7 +64,7 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
 
         setLogging(true);
         try {
-            await accountSessionStore.login(email, password, '', '', '');
+            await accountSessionStore.loginWithCredentials(email, password);
             navigate(AppRoutes.HOME);
         } catch (e) {
             alertStore.show('Wrong username/password');

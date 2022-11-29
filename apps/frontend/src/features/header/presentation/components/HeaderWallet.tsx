@@ -45,8 +45,22 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
         setAnchorEl(null);
     }
 
-    async function onClickLogin() {
-        walletSelectModalStore.showSignal();
+    async function onClickConnectWallet() {
+        await walletStore.tryConnect();
+        if (walletStore.isConnected() === true) {
+            if (accountSessionStore.doesAddressMatchAgainstSessionAccount(walletStore.getAddress()) === true) {
+                return;
+            }
+
+            await walletStore.disconnect();
+        }
+
+        if (accountSessionStore.isAdmin() === true) {
+            walletSelectModalStore.showSignalAsAdmin(null);
+        } else {
+            walletSelectModalStore.showSignalAsUser();
+        }
+
     }
 
     return (
@@ -90,7 +104,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
             ) : (
                 <>
                     <Actions height={ActionsHeight.HEIGHT_48}>
-                        <Button onClick={onClickLogin}>Connect Wallet</Button>
+                        <Button onClick={onClickConnectWallet}>Connect Wallet</Button>
                     </Actions>
                 </>
             )

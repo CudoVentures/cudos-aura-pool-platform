@@ -68,10 +68,6 @@ export class AuthService {
         }
 
         return this.loginUsingWallet(cudosWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
-
-        // const jwtToken = JwtToken.newInstance(accountEntity);
-        // const accessToken = this.jwtService.sign(JwtToken.toJson(jwtToken));
-        // return { accessToken }
     }
 
     private async loginUsingCredentials(email: string, pass: string): Promise < string > {

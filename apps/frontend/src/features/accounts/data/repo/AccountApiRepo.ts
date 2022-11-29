@@ -5,7 +5,7 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
-import { Ledger, SigningStargateClient, GasPrice } from 'cudosjs';
+import { Ledger, SigningStargateClient, GasPrice, StdSignature } from 'cudosjs';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
 export default class AccountStorageRepo implements AccountRepo {
@@ -27,7 +27,7 @@ export default class AccountStorageRepo implements AccountRepo {
         this.disableActions = disableActions;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any, sequence?: number, accountNumber?: number): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
             return this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
@@ -36,10 +36,10 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.register(email, password, name, cudosWalletAddress, signedTx);
+            return this.accountApi.register(email, password, name, cudosWalletAddress, signedTx, sequence, accountNumber);
         } finally {
             this.enableActions?.();
         }

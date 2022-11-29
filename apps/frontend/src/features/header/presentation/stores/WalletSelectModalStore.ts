@@ -1,6 +1,13 @@
+import { StdSignature } from 'cudosjs';
 import { action, observable, makeObservable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
+import S from '../../../../core/utilities/Main';
 import { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
+
+enum WalletSelectMode {
+    USER = 1,
+    ADMIN = 2,
+}
 
 export enum ProgressSteps {
     CONNECT_WALLET = 1,
@@ -25,23 +32,32 @@ enum TransactionStatus {
 
 export default class WalletSelectModal extends ModalStore {
 
+    @observable walletSelectMode: WalletSelectMode;
     @observable progressStep: ProgressSteps;
     @observable walletConnectionStep: WalletConnectionSteps;
     @observable walletOption: SessionStorageWalletOptions;
-    @observable bitcoinAddress: string;
     @observable bitcoinAddressTx: TransactionStatus;
     @observable identityTx: TransactionStatus;
+    @observable bitcoinAddress: string;
+    @observable signature: StdSignature;
+    @observable sequence: number;
+    @observable accountNumber: number;
+    @observable onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void;
 
     constructor() {
         super();
 
+        this.walletSelectMode = WalletSelectMode.USER;
         this.progressStep = ProgressSteps.CONNECT_WALLET;
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
         this.walletOption = SessionStorageWalletOptions.KEPLR;
         this.bitcoinAddressTx = TransactionStatus.NOT_INITIALIZED;
         this.identityTx = TransactionStatus.NOT_INITIALIZED;
-
         this.bitcoinAddress = '';
+        this.signature = null;
+        this.sequence = S.NOT_EXISTS;
+        this.accountNumber = S.NOT_EXISTS;
+        this.onFinish = null;
 
         makeObservable(this);
     }
@@ -97,6 +113,14 @@ export default class WalletSelectModal extends ModalStore {
 
     markIdentityTxError() {
         this.identityTx = TransactionStatus.ERROR;
+    }
+
+    isModeUser(): boolean {
+        return this.walletSelectMode === WalletSelectMode.USER;
+    }
+
+    isModeAdmin(): boolean {
+        return this.walletSelectMode === WalletSelectMode.ADMIN;
     }
 
     isProgressStepConnectWallet(): boolean {
@@ -191,14 +215,25 @@ export default class WalletSelectModal extends ModalStore {
     }
 
     @action
-    showSignal() {
+    showSignalAsUser() {
+        this.showSignal(WalletSelectMode.USER, null);
+    }
+
+    @action
+    showSignalAsAdmin(onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void) {
+        this.showSignal(WalletSelectMode.ADMIN, onFinish);
+    }
+
+    @action
+    showSignal(walletSelectMode: WalletSelectMode, onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void) {
+        this.walletSelectMode = walletSelectMode;
         this.progressStep = ProgressSteps.CONNECT_WALLET;
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
         this.walletOption = SessionStorageWalletOptions.KEPLR;
         this.bitcoinAddressTx = TransactionStatus.NOT_INITIALIZED;
         this.identityTx = TransactionStatus.NOT_INITIALIZED;
-
         this.bitcoinAddress = '';
+        this.onFinish = onFinish;
 
         this.show();
     }
@@ -206,11 +241,17 @@ export default class WalletSelectModal extends ModalStore {
     hide = () => {
         super.hide();
 
+        this.walletSelectMode = WalletSelectMode.USER;
         this.progressStep = ProgressSteps.CONNECT_WALLET;
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
         this.walletOption = SessionStorageWalletOptions.KEPLR;
         this.bitcoinAddressTx = TransactionStatus.NOT_INITIALIZED;
         this.identityTx = TransactionStatus.NOT_INITIALIZED;
+        this.bitcoinAddress = '';
+        this.signature = null;
+        this.sequence = S.NOT_EXISTS;
+        this.accountNumber = S.NOT_EXISTS;
+        this.onFinish = null;
 
         this.bitcoinAddress = '';
     }

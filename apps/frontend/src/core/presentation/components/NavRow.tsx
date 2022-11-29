@@ -19,7 +19,7 @@ export type NavStep = {
     isDone: boolean,
 }
 
-export function createNavStep(navNumber: number, navName: string, isActive: boolean, isDone: boolean) {
+export function createNavStep(navNumber: number, navName: string, isActive: boolean, isDone: boolean): NavStep {
     return {
         navNumber, navName, isActive, isDone,
     }

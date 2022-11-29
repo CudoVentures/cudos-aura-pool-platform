@@ -1,23 +1,23 @@
-import AccountEntity, { AccountType } from '../../entities/AccountEntity';
+import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
-import S from '../../../../core/utilities/Main';
 import { ReqLogin, ReqRegister } from '../dto/Requests';
 import { ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
+import { StdSignature } from 'cudosjs';
 
 export default class AccountApi {
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any, sequence: number, accountNumber: number): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber));
         const res = new ResLogin(data);
 
         setTokenInStorage(res.accessToken);
     }
 
-    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
-        await axios.post('/api/v1/auth/register', new ReqRegister(email, password, cudosWalletAddress, name, signedTx));
+    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
+        await axios.post('/api/v1/auth/register', new ReqRegister(email, password, cudosWalletAddress, name, signedTx, sequence, accountNumber));
     }
 
     async logout(): Promise < void > {

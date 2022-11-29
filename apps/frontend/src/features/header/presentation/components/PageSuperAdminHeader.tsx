@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import ChangePasswordModalStore from '../../../accounts/presentation/stores/ChangePasswordModalStore';
 
 import Svg from '../../../../core/presentation/components/Svg';
 import Actions from '../../../../core/presentation/components/Actions';

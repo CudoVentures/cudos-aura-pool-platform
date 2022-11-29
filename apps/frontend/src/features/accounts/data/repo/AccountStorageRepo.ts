@@ -1,5 +1,4 @@
 import S from '../../../../core/utilities/Main';
-import BigNumber from 'bignumber.js';
 import StorageHelper from '../../../../core/helpers/StorageHelper';
 import AccountEntity, { AccountType } from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
@@ -7,6 +6,7 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
+import { StdSignature } from 'cudosjs';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -18,7 +18,7 @@ export default class AccountStorageRepo implements AccountRepo {
 
     setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
 
-    async login(email: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
+    async login(email: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         const currentAccounts = this.storageHelper.accountsJson;
         const currentUsers = this.storageHelper.usersJson;
         const currentAdmins = this.storageHelper.adminsJson;
@@ -85,7 +85,7 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
-    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
         const currentAccounts = this.storageHelper.accountsJson;
         const currentAdmins = this.storageHelper.adminsJson;
 

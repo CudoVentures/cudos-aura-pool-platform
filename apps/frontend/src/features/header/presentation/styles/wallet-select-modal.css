@@ -93,6 +93,12 @@
     width: 32px; height: 32px;
 }
 
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton .WalletErrorLabel {
+    color: var(--color-red);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
 .SelectWalletPopup .ProgressStepConnectWallet .ConnectButton .IconWalletConnectionStatus {
     width: 20px; height: 20px;
     visibility: hidden;

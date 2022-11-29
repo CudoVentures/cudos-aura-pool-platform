@@ -15,12 +15,15 @@ export class ReqLogin {
         walletName: string;
 
     @IsString()
+    @IsOptional()
         pubKeyType: string;
 
     @IsString()
+    @IsOptional()
         pubKeyValue: string;
 
     @IsString()
+    @IsOptional()
         signature: string;
 
     @IsNumber()
@@ -46,6 +49,18 @@ export class ReqRegister {
         name: string;
 
     @IsString()
-        signedTx: any;
+        pubKeyType: string;
+
+    @IsString()
+        pubKeyValue: string;
+
+    @IsString()
+        signature: string;
+
+    @IsNumber()
+        sequence: number;
+
+    @IsNumber()
+        accountNumber: number;
 
 }

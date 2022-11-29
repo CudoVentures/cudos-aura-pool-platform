@@ -1,9 +1,10 @@
 import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
-import { KeplrWallet, Ledger, CosmostationWallet } from 'cudosjs';
+import { KeplrWallet, Ledger, CosmostationWallet, StdSignature } from 'cudosjs';
 import S from '../../../../core/utilities/Main';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import { CHAIN_DETAILS, SIGN_NONCE } from '../../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
@@ -134,6 +135,15 @@ export default class WalletStore {
         } catch (ex) {
             this.balance = new BigNumber(0);
         }
+    }
+
+    async getClient(): Promise < CudosSigningStargateClient > {
+        return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[CHAIN_DETAILS.DEFAULT_NETWORK], this.ledger.offlineSigner);
+    }
+
+    async signNonceMsg(): Promise < { signature: StdSignature; chainId: string; sequence: number; accountNumber: number } > {
+        const client = await this.getClient();
+        return client.signNonceMsg(this.getAddress(), SIGN_NONCE);
     }
 
     onChangeAccount = () => {
