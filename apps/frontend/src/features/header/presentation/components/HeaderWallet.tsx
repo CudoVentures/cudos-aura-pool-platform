@@ -57,10 +57,10 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
 
         if (accountSessionStore.isAdmin() === true) {
             walletSelectModalStore.showSignalAsAdmin(null);
-        } else {
-            walletSelectModalStore.showSignalAsUser();
+            return;
         }
 
+        walletSelectModalStore.showSignalAsUser();
     }
 
     return (

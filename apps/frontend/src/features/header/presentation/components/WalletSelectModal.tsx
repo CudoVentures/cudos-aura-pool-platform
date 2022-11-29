@@ -120,7 +120,11 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 if (walletSelectModalStore.isModeUser() === true) {
                     walletSelectModalStore.moveToProgressStepBtc();
                 } else if (walletSelectModalStore.isModeAdmin() === true) {
-                    walletSelectModalStore.moveToProgressStepSign();
+                    if (accountSessionStore.isLoggedIn() === false) {
+                        walletSelectModalStore.moveToProgressStepSign();
+                    } else {
+                        walletSelectModalStore.hide();
+                    }
                 }
                 break;
             case ProgressSteps.BTC:

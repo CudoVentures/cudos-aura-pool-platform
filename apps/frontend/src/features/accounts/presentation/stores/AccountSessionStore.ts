@@ -155,14 +155,6 @@ export default class AccountSessionStore {
         this.superAdminEntity = null;
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
-        try {
-            this.accountRepo.confirmBitcoinAddress(bitcoinAddress, ledger, network, this.accountEntity.accountId);
-        } finally {
-            await this.loadSessionAccountsAndSync();
-        }
-    }
-
     async editPassword(token: string, pass: string): Promise < void > {
         this.accountRepo.changePassword(token, pass);
     }

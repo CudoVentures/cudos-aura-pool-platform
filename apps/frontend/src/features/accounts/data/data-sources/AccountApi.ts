@@ -24,15 +24,6 @@ export default class AccountApi {
         setTokenInStorage(null);
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, accountId: string): Promise < void > {
-        const data = axios.put(`/api/v1/user/${accountId}`, {
-            payout_address: bitcoinAddress,
-        });
-
-        // TODO: uncomment when backend returns token
-        // setTokenInStorage(data.access_token);
-    }
-
     async creditAccount(accountEntity: AccountEntity): Promise < void > {
 
         const data = axios.put(`/api/v1/user/${accountEntity.accountId}`, AccountEntity.toJson(accountEntity));
