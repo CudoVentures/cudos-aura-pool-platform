@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
+import { StdSignature } from 'cudosjs';
 
 import S from '../../../../core/utilities/Main';
 import AccountSessionStore from '../stores/AccountSessionStore';
@@ -30,7 +31,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import '../styles/page-register.css';
-import { StdSignature } from 'cudosjs';
 
 enum RegisterStep {
     ACCOUNT_DETAILS = 1,
@@ -126,6 +126,8 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, 
                 validationState.setShowErrors(true);
                 return;
             }
+
+            await accountSessionStore.logout();
 
             walletSelectModalStore.showSignalAsAdmin((signedTx_: StdSignature | null, sequence_: number, accountNumber_: number) => {
                 moveToWalletDetails();

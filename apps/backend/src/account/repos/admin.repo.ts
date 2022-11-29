@@ -7,7 +7,6 @@ export const enum AdminRepoColumn {
     ADMIN_ID = 'admin_id',
     ACCOUNT_ID = 'account_id',
     CUDOS_WALLET_ADDRESS = 'cudos_wallet_address',
-    BITCOIN_WALLET_ADDRESS = 'bitcoin_wallet_address',
 }
 
 @Table({
@@ -33,9 +32,5 @@ export default class AdminRepo extends Model {
     @AllowNull(false)
     @Column
         cudosWalletAddress: string;
-
-    @AllowNull(false)
-    @Column
-        bitcoinWalletAddress: string;
 
 }

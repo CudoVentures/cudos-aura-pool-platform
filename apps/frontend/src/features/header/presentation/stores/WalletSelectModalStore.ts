@@ -2,7 +2,8 @@ import { StdSignature } from 'cudosjs';
 import { action, observable, makeObservable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import S from '../../../../core/utilities/Main';
-import { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
+import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
+import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
 
 enum WalletSelectMode {
     USER = 1,
@@ -44,8 +45,14 @@ export default class WalletSelectModal extends ModalStore {
     @observable accountNumber: number;
     @observable onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void;
 
-    constructor() {
+    accountRepo: AccountRepo;
+    walletStore: WalletStore;
+
+    constructor(walletStore: WalletStore, accountRepo: AccountRepo) {
         super();
+
+        this.walletStore = walletStore;
+        this.accountRepo = accountRepo;
 
         this.walletSelectMode = WalletSelectMode.USER;
         this.progressStep = ProgressSteps.CONNECT_WALLET;
@@ -211,6 +218,14 @@ export default class WalletSelectModal extends ModalStore {
                 return true;
             default:
                 return false;
+        }
+    }
+
+    async confirmBitcoinAddress(): Promise < void > {
+        const client = await this.walletStore.getClient();
+        const result = await this.accountRepo.confirmBitcoinAddress(client, this.walletStore.getAddress(), this.bitcoinAddress);
+        if (result === false) {
+            throw Error('Unable to confirm bitcoint address');
         }
     }
 

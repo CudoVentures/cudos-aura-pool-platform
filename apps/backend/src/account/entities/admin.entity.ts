@@ -12,7 +12,6 @@ export default class AdminEntity {
         this.adminId = NOT_EXISTS_INT;
         this.accountId = NOT_EXISTS_INT;
         this.cudosWalletAddress = '';
-        this.bitcoinWalletAddress = '';
     }
 
     static newInstanceForAccount(accountId: number) {
@@ -39,7 +38,6 @@ export default class AdminEntity {
         }
         repoJson.accountId = entity.accountId;
         repoJson.cudosWalletAddress = entity.cudosWalletAddress;
-        repoJson.bitcoinWalletAddress = entity.bitcoinWalletAddress;
 
         return repoJson;
     }
@@ -54,7 +52,6 @@ export default class AdminEntity {
         entity.adminId = repoJson.adminId ?? entity.adminId;
         entity.accountId = repoJson.accountId ?? entity.accountId;
         entity.cudosWalletAddress = repoJson.cudosWalletAddress ?? entity.cudosWalletAddress;
-        entity.bitcoinWalletAddress = repoJson.bitcoinWalletAddress ?? entity.bitcoinWalletAddress;
 
         return entity;
     }
@@ -68,7 +65,6 @@ export default class AdminEntity {
             'adminId': entity.adminId,
             'accountId': entity.accountId,
             'cudosWalletAddress': entity.cudosWalletAddress,
-            'bitcoinWalletAddress': entity.bitcoinWalletAddress,
         }
     }
 
@@ -82,7 +78,6 @@ export default class AdminEntity {
         entity.adminId = parseInt(json.adminId ?? entity.adminId);
         entity.accountId = parseInt(json.accountId ?? entity.accountId);
         entity.cudosWalletAddress = json.cudos_address ?? entity.cudosWalletAddress;
-        entity.bitcoinWalletAddress = json.payout_address ?? entity.bitcoinWalletAddress;
 
         return entity;
     }

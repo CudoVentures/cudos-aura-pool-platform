@@ -94,7 +94,7 @@ const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
-const walletSelectModalStore = new WalletSelectModalStore();
+const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
 
 bitcoinRepo.setPresentationCallbacks(appStore.enableActions, appStore.disableActions);
 

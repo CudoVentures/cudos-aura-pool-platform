@@ -9,8 +9,8 @@ import { StdSignature } from 'cudosjs';
 
 export default class AccountApi {
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
-        const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber));
+    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
+        const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber));
         const res = new ResLogin(data);
 
         setTokenInStorage(res.accessToken);
@@ -22,15 +22,6 @@ export default class AccountApi {
 
     async logout(): Promise < void > {
         setTokenInStorage(null);
-    }
-
-    async confirmBitcoinAddress(bitcoinAddress: string, accountId: string): Promise < void > {
-        const data = axios.put(`/api/v1/user/${accountId}`, {
-            payout_address: bitcoinAddress,
-        });
-
-        // TODO: uncomment when backend returns token
-        // setTokenInStorage(data.access_token);
     }
 
     async creditAccount(accountEntity: AccountEntity): Promise < void > {

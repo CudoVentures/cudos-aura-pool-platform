@@ -5,8 +5,9 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
-import { Ledger, SigningStargateClient, GasPrice, StdSignature } from 'cudosjs';
+import { GasPrice, StdSignature } from 'cudosjs';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -27,10 +28,10 @@ export default class AccountStorageRepo implements AccountRepo {
         this.disableActions = disableActions;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
+            return this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
         } finally {
             this.enableActions?.();
         }
@@ -54,17 +55,15 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string, accountId: string): Promise < void > {
+    async confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean > {
         try {
             this.disableActions?.();
 
-            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
-
-            await signingClient.addressbookCreateAddress(ledger.accountAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
-            const res = await this.accountApi.confirmBitcoinAddress(bitcoinAddress, accountId);
-
-            return res.data.payout_address;
+            // await client.addressbookCreateAddress(cudosWalletAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
+            return true;
+        } catch (ex) {
+            return false;
         } finally {
             this.enableActions?.();
         }

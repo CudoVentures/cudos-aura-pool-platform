@@ -69,7 +69,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     async function register() {
         if (walletSelectModalStore.isModeUser() === true) {
             const address = walletStore.getAddress()
-            await accountSessionStore.loginWithWallet(address, walletStore.getName(), walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
+            await accountSessionStore.loginWithWallet(address, walletSelectModalStore.bitcoinAddress, walletStore.getName(), walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
         }
 
         walletSelectModalStore.onFinish?.(walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
@@ -77,9 +77,13 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
     async function sendBitcoinAddressTx() {
         walletSelectModalStore.markBitcoinAddressTxWaiting();
-        setTimeout(() => {
+        try {
+            await walletSelectModalStore.confirmBitcoinAddress();
             walletSelectModalStore.markBitcoinAddressTxDoneSuccessfully();
-        }, 2000);
+        } catch (ex) {
+            console.log(ex);
+            walletSelectModalStore.markBitcoinAddressTxError();
+        }
     }
 
     async function sendIdentityTx() {
@@ -91,6 +95,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
             walletSelectModalStore.accountNumber = accountNumber;
             walletSelectModalStore.markIdentityTxDoneSuccessfully();
         } catch (ex) {
+            console.log(ex);
             walletSelectModalStore.markIdentityTxError();
         }
     }
@@ -120,7 +125,11 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 if (walletSelectModalStore.isModeUser() === true) {
                     walletSelectModalStore.moveToProgressStepBtc();
                 } else if (walletSelectModalStore.isModeAdmin() === true) {
-                    walletSelectModalStore.moveToProgressStepSign();
+                    if (accountSessionStore.isLoggedIn() === false) {
+                        walletSelectModalStore.moveToProgressStepSign();
+                    } else {
+                        walletSelectModalStore.hide();
+                    }
                 }
                 break;
             case ProgressSteps.BTC:

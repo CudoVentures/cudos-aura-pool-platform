@@ -13,14 +13,14 @@ export class AuthController {
     ) {}
 
     @Post('login')
-    async login(@Request() req, @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin): Promise < ResLogin > {
-        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, reqLogin.sequence, reqLogin.accountNumber);
+    async login(@Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin): Promise < ResLogin > {
+        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.bitcoinPayoutWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, reqLogin.sequence, reqLogin.accountNumber);
         return new ResLogin(accessToken);
     }
 
     @Post('register')
     async register(@Body(new ValidationPipe({ transform: true })) reqRegister: ReqRegister): Promise < void > {
-        return this.authService.register(reqRegister.email, reqRegister.password, reqRegister.cudosWalletAddress, reqRegister.name, reqRegister.signedTx);
+        return this.authService.register(reqRegister.email, reqRegister.password, reqRegister.cudosWalletAddress, reqRegister.name, reqRegister.pubKeyType, reqRegister.pubKeyValue, reqRegister.signature, reqRegister.sequence, reqRegister.accountNumber);
     }
 
     @Get('fetchSessionAccounts')
