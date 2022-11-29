@@ -190,7 +190,7 @@ export default class AccountSessionStore {
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
 
-        if (accountEntity.isUser() === true && userEntity !== null) {
+        if (accountEntity?.isUser() === true && userEntity !== null) {
             await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
@@ -201,7 +201,7 @@ export default class AccountSessionStore {
             }
 
             console.log('Logged as user => wallet:', this.walletStore.isConnected())
-        } else if (accountEntity.isAdmin() === true && adminEntity !== null) {
+        } else if (accountEntity?.isAdmin() === true && adminEntity !== null) {
             await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
