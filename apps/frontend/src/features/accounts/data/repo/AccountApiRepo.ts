@@ -71,7 +71,7 @@ export default class AccountStorageRepo implements AccountRepo {
 
     async fetchBitcoinAddress(cudosAddress: string): Promise < string > {
         try {
-            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS[CHAIN_DETAILS.DEFAULT_NETWORK]);
+            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
             const res = await cudosClient.addressbookModule.getAddress(cudosAddress, 'BTC', 'aurapool');
 
             return res.address.value

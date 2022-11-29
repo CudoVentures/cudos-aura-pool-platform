@@ -93,7 +93,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
                             <div className={'Address B2'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
                             <div className={'ButtonRow FlexRow'}>
                                 <Svg className={'Clickable'} svg={FileCopyIcon} onClick={onClickCopyAddress}/>
-                                <a href={`${CHAIN_DETAILS.EXPLORER_URL[walletStore.selectedNetwork]}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
+                                <a href={`${CHAIN_DETAILS.EXPLORER_URL}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
                             </div>
                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
                                 <Button radius={ButtonRadius.RADIUS_16} onClick={onClickDisconnect}>Logout</Button>

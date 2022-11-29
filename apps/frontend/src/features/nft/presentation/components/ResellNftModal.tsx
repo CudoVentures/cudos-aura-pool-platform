@@ -105,7 +105,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                 <div className={'H3 Info'}>Transaction was successfully executed.</div>
                 <div className={'FlexRow TransactionView H3'}>
                     Transaction details
-                    <a className={'Clickable'} href={resellNftModalStore.getTxLink(walletStore.selectedNetwork)} target={'_blank'} rel={'noreferrer'}>
+                    <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
                         <Svg svg={LaunchIcon} />
                     </a>
                 </div>

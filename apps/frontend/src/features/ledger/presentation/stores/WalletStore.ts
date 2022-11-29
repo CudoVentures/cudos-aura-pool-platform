@@ -16,8 +16,6 @@ export enum SessionStorageWalletOptions {
 export default class WalletStore {
     alertStore: AlertStore;
 
-    selectedNetwork: string;
-
     ledger: Ledger;
     balance: BigNumber;
     address: string;
@@ -25,8 +23,6 @@ export default class WalletStore {
 
     constructor(alertStore: AlertStore) {
         this.alertStore = alertStore;
-
-        this.selectedNetwork = CHAIN_DETAILS.DEFAULT_NETWORK;
 
         this.ledger = null;
         this.balance = null;
@@ -39,11 +35,11 @@ export default class WalletStore {
     @action
     public async connectKeplr(): Promise<void> {
         this.ledger = new KeplrWallet({
-            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID[this.selectedNetwork],
-            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME[this.selectedNetwork],
-            RPC: CHAIN_DETAILS.RPC_ADDRESS[this.selectedNetwork],
-            API: CHAIN_DETAILS.API_ADDRESS[this.selectedNetwork],
-            STAKING: CHAIN_DETAILS.STAKING_URL[this.selectedNetwork],
+            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
+            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME,
+            RPC: CHAIN_DETAILS.RPC_ADDRESS,
+            API: CHAIN_DETAILS.API_ADDRESS,
+            STAKING: CHAIN_DETAILS.STAKING_URL,
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
         await this.connectLedger();
@@ -52,11 +48,11 @@ export default class WalletStore {
     @action
     public async connectCosmostation(): Promise < void > {
         this.ledger = new CosmostationWallet({
-            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID[this.selectedNetwork],
-            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME[this.selectedNetwork],
-            RPC: CHAIN_DETAILS.RPC_ADDRESS[this.selectedNetwork],
-            API: CHAIN_DETAILS.API_ADDRESS[this.selectedNetwork],
-            STAKING: CHAIN_DETAILS.STAKING_URL[this.selectedNetwork],
+            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
+            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME,
+            RPC: CHAIN_DETAILS.RPC_ADDRESS,
+            API: CHAIN_DETAILS.API_ADDRESS,
+            STAKING: CHAIN_DETAILS.STAKING_URL,
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
         await this.connectLedger();
@@ -138,7 +134,7 @@ export default class WalletStore {
     }
 
     async getClient(): Promise < CudosSigningStargateClient > {
-        return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[CHAIN_DETAILS.DEFAULT_NETWORK], this.ledger.offlineSigner);
+        return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, this.ledger.offlineSigner);
     }
 
     async signNonceMsg(): Promise < { signature: StdSignature; chainId: string; sequence: number; accountNumber: number } > {

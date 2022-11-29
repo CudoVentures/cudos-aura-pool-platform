@@ -82,13 +82,13 @@ export default class BuyNftModalStore extends ModalStore {
     buyNft = async () => {
         this.modalStage = ModalStage.PROCESSING;
 
-        this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger, this.walletStore.selectedNetwork);
+        this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger);
 
         this.modalStage = ModalStage.SUCCESS;
     }
 
-    getTxLink(network): string {
-        return `${CHAIN_DETAILS.EXPLORER_URL[network]}/${this.txHash}`
+    getTxLink(): string {
+        return `${CHAIN_DETAILS.EXPLORER_URL}/${this.txHash}`
     }
 
     isStagePreview(): boolean {

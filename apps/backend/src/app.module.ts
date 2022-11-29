@@ -50,7 +50,6 @@ import { AccountModule } from './account/account.module';
                     database: config.get('APP_DATABASE_DB_NAME'),
                     autoLoadModels: true,
                     synchronize: true,
-                    signNonce: 74563,
                 }
             },
         }),
