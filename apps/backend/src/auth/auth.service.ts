@@ -126,7 +126,7 @@ export class AuthService {
             signature,
         }
 
-        const chainId = this.configService.get(`APP_${this.configService.get('APP_DEFAULT_NETWORK')}_CHAIN_ID`);
+        const chainId = this.configService.get('APP_CUDOS_CHAIN_ID');
         return verifyNonceMsgSigner(signedTx, cudosWalletAddress, SIGN_NONCE, sequence, accountNumber, chainId);
     }
 
