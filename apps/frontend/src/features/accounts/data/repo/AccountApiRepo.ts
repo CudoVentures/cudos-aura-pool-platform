@@ -74,10 +74,10 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async changePassword(oldPassword: string, newPassword: string): Promise < void > {
+    async editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.changePassword(oldPassword, newPassword);
+            return this.accountApi.editSessionAccountPass(oldPassword, newPassword, token);
         } finally {
             this.enableActions?.();
         }

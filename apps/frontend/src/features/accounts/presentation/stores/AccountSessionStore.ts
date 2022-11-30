@@ -156,11 +156,11 @@ export default class AccountSessionStore {
     }
 
     async editPassword(token: string, pass: string): Promise < void > {
-        this.accountRepo.changePassword(token, pass);
+        this.accountRepo.editSessionAccountPass('', pass, token);
     }
 
     async changePassword(oldPass: string, newPass: string): Promise < void > {
-        await this.accountRepo.changePassword(oldPass, newPass);
+        await this.accountRepo.editSessionAccountPass(oldPass, newPass, '');
     }
 
     async forgottenPassword(email: string): Promise < void > {

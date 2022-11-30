@@ -34,7 +34,6 @@ export class ChainMarketplaceCollectionDto {
 
         collectionDto.mintRoyalties = queryCollection.mint_royalties
             ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
-                console.log(royaltyString)
                 const royaltyJson = JSON.parse(royaltyString);
                 return Royalty.fromJSON(royaltyJson);
             })

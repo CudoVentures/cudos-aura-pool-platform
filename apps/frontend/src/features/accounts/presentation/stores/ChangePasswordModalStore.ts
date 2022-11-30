@@ -24,7 +24,7 @@ export default class ChangePasswordModalStore extends ModalStore {
     }
 
     async changePassword(): Promise <void> {
-        await this.accountRepo.changePassword(this.oldPassword, this.newPassword);
+        await this.accountRepo.editSessionAccountPass(this.oldPassword, this.newPassword, '');
         this.hide();
     }
 

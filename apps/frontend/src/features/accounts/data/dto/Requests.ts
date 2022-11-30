@@ -64,3 +64,17 @@ export class ReqCreditSessionAccount {
     }
 
 }
+
+export class ReqEditSessionAccountPass {
+
+    oldPass: string;
+    newPass: string;
+    token: string;
+
+    constructor(oldPass: string, newPass: string, token: string) {
+        this.oldPass = oldPass;
+        this.newPass = newPass;
+        this.token = token;
+    }
+
+}
