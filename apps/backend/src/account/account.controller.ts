@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { Role } from '../user/roles';
 import AccountService from './account.service';
+import { AccountType } from './account.types';
 import { ReqCreditSessionAccount, ReqEditSessionAccountPass } from './dto/requests.dto';
 import { ResCreditSessionAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
@@ -16,7 +16,7 @@ export class AccountController {
         private accountService: AccountService,
     ) {}
 
-    @UseGuards(RoleGuard([Role.FARM_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Post('creditSessionAccount')
     async creditSessionAccount(
@@ -25,6 +25,10 @@ export class AccountController {
     ): Promise < ResCreditSessionAccount > {
         let accountEntity = AccountEntity.fromJson(reqCreditSessionAccount.accountEntity);
         accountEntity.accountId = req.sessionAccountEntity.accountId;
+
+        const dbAccount = await this.accountService.findAccountById(accountEntity.accountId);
+        accountEntity.salt = dbAccount.salt;
+        accountEntity.hashedPass = dbAccount.hashedPass;
 
         accountEntity = await this.accountService.creditAccount(accountEntity, req.transaction);
         return new ResCreditSessionAccount(accountEntity);
