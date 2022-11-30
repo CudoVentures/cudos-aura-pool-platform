@@ -1,5 +1,5 @@
 import { IntBoolValue, NOT_EXISTS_INT } from '../../common/utils';
-import { AccountType } from '../account.types';
+import { AccountJsonValidator, AccountType } from '../account.types';
 import AccountRepo from '../repos/account.repo';
 
 export default class AccountEntity {
@@ -99,38 +99,38 @@ export default class AccountEntity {
         return entity;
     }
 
-    static toJson(entity: AccountEntity): any {
+    static toJson(entity: AccountEntity): AccountJsonValidator {
         if (entity === null) {
             return null;
         }
 
         return {
-            'accountId': entity.accountId,
+            'accountId': entity.accountId.toString(),
             'type': entity.type,
             'active': entity.active,
             'emailVerified': entity.emailVerified,
             'name': entity.name,
             'email': entity.email,
-            'timestamp_last_login': entity.timestampLastLogin,
-            'timestamp_register': entity.timestampRegister,
+            'timestampLastLogin': entity.timestampLastLogin,
+            'timestampRegister': entity.timestampRegister,
         }
     }
 
-    static fromJson(json): AccountEntity {
+    static fromJson(json: AccountJsonValidator): AccountEntity {
         if (json === null) {
             return null;
         }
 
         const entity = new AccountEntity();
 
-        entity.accountId = parseInt(json.accountId ?? entity.accountId);
-        entity.type = parseInt(json.type ?? entity.type);
-        entity.active = parseInt(json.active ?? entity.active);
-        entity.emailVerified = parseInt(json.emailVerified ?? entity.emailVerified);
+        entity.accountId = parseInt(json.accountId ?? entity.accountId.toString());
+        entity.type = json.type ?? entity.type;
+        entity.active = json.active ?? entity.active;
+        entity.emailVerified = json.emailVerified ?? entity.emailVerified;
         entity.name = json.name ?? entity.name;
         entity.email = json.email ?? entity.email;
-        entity.timestampLastLogin = parseInt(json.timestampLastLogin ?? entity.timestampLastLogin);
-        entity.timestampRegister = parseInt(json.timestampRegister ?? entity.timestampRegister);
+        entity.timestampLastLogin = json.timestampLastLogin ?? entity.timestampLastLogin;
+        entity.timestampRegister = json.timestampRegister ?? entity.timestampRegister;
 
         return entity;
     }

@@ -77,8 +77,8 @@ export default class AccountEntity {
             'emailVerified': entity.emailVerified,
             'name': entity.name,
             'email': entity.email,
-            'timestamp_last_login': entity.timestampLastLogin,
-            'timestamp_register': entity.timestampRegister,
+            'timestampLastLogin': entity.timestampLastLogin,
+            'timestampRegister': entity.timestampRegister,
         }
     }
 

@@ -134,17 +134,16 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
-        const adminJson = this.storageHelper.adminsJson.find((json) => {
-            return json.accountId === this.storageHelper.sessionAdmin.accountId;
-        });
-
-        this.storageHelper.sessionAdmin.bitcoinWalletAddress = bitcoinAddress;
-        adminJson.bitcoinWalletAddress = bitcoinAddress;
-        this.storageHelper.save();
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+        return {
+            accountEntity: AccountEntity.fromJson(this.storageHelper.sessionAccount),
+            userEntity: UserEntity.fromJson(this.storageHelper.sessionUser),
+            adminEntity: AdminEntity.fromJson(this.storageHelper.sessionAdmin),
+            superAdminEntity: SuperAdminEntity.fromJson(this.storageHelper.sessionSuperAdmin),
+        }
     }
 
-    async creditAccount(accountEntity: AccountEntity): Promise < void > {
+    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
         const accountJson = this.storageHelper.accountsJson.find((account: AccountEntity) => account.accountId === accountEntity.accountId);
         Object.assign(accountJson, AccountEntity.toJson(accountEntity));
 
@@ -163,13 +162,14 @@ export default class AccountStorageRepo implements AccountRepo {
 
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
-        return {
-            accountEntity: AccountEntity.fromJson(this.storageHelper.sessionAccount),
-            userEntity: UserEntity.fromJson(this.storageHelper.sessionUser),
-            adminEntity: AdminEntity.fromJson(this.storageHelper.sessionAdmin),
-            superAdminEntity: SuperAdminEntity.fromJson(this.storageHelper.sessionSuperAdmin),
-        }
+    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
+        const adminJson = this.storageHelper.adminsJson.find((json) => {
+            return json.accountId === this.storageHelper.sessionAdmin.accountId;
+        });
+
+        this.storageHelper.sessionAdmin.bitcoinWalletAddress = bitcoinAddress;
+        adminJson.bitcoinWalletAddress = bitcoinAddress;
+        this.storageHelper.save();
     }
 
 }

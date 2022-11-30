@@ -55,35 +55,19 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean > {
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
         try {
             this.disableActions?.();
-
-            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
-            await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
-            return true;
-        } catch (ex) {
-            return false;
+            return this.accountApi.fetchSessionAccounts();
         } finally {
             this.enableActions?.();
         }
     }
 
-    async fetchBitcoinAddress(cudosAddress: string): Promise < string > {
-        try {
-            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
-            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
-
-            return res.address.value
-        } catch (e) {
-            return '';
-        }
-    }
-
-    async creditAccount(accountEntity: AccountEntity): Promise < void > {
+    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
         try {
             this.disableActions?.();
-            const resultAccountEntity = await this.accountApi.creditAccount(accountEntity);
+            const resultAccountEntity = await this.accountApi.creditSessionAccount(accountEntity);
             Object.assign(accountEntity, resultAccountEntity);
         } finally {
             this.enableActions?.();
@@ -117,21 +101,28 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+    async confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean > {
         try {
             this.disableActions?.();
-            return this.accountApi.fetchSessionAccounts();
+
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
+            await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
+            return true;
+        } catch (ex) {
+            return false;
         } finally {
             this.enableActions?.();
         }
     }
 
-    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+    async fetchBitcoinAddress(cudosAddress: string): Promise < string > {
         try {
-            this.disableActions?.();
-            return this.accountApi.creditAdminSettings(adminEntity, accountEntity);
-        } finally {
-            this.enableActions?.();
+            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
+            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
+
+            return res.address.value
+        } catch (e) {
+            return '';
         }
     }
 
