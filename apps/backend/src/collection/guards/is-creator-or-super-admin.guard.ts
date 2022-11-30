@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RequestWithSessionAccounts } from '../../auth/auth.types';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 import { Collection } from '../collection.model';
 import { CollectionService } from '../collection.service';
 import { CollectionDto } from '../dto/collection.dto';

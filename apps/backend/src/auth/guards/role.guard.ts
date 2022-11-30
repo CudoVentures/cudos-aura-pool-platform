@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 import { Role } from '../../user/roles';
-import { RequestWithSessionAccounts } from '../auth.types';
 
 const RoleGuard = (roles: Role[]): Type<CanActivate> => {
 

@@ -1,12 +1,10 @@
 import {
     Body,
     Controller,
-    Delete,
     Get,
     Param,
     ParseIntPipe,
     Put,
-    Request,
     UseGuards,
     Patch,
     Query,
@@ -30,7 +28,7 @@ import { EnergySourceDto } from './dto/energy-source.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import DataService from '../data/data.service';
-import { RequestWithSessionAccounts } from '../auth/auth.types';
+import { RequestWithSessionAccounts } from '../common/commont.types';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -77,7 +75,7 @@ export class FarmController {
     @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
     @Put()
     async creditFarm(
-        @Request() req: RequestWithSessionAccounts,
+        @Req() req: RequestWithSessionAccounts,
         @Body() farmDto: FarmDto,
     ): Promise<Farm> {
         const { id, ...farm } = farmDto

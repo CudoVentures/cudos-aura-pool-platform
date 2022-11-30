@@ -10,7 +10,6 @@ import {
     Put,
     Query,
     Req,
-    Request,
     UseGuards,
     ValidationPipe,
 } from '@nestjs/common';
@@ -27,11 +26,11 @@ import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
 import CollectionFilterModel from './dto/collection-filter.model';
-import { RequestWithSessionAccounts } from '../auth/auth.types';
 import DataService from '../data/data.service';
 import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
 import { IntBoolValue } from '../common/utils';
 import { CollectionStatus } from './utils';
+import { RequestWithSessionAccounts } from '../common/commont.types';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -73,7 +72,7 @@ export class CollectionController {
     @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
     @Put()
     async createOrEdit(
-        @Request() req: RequestWithSessionAccounts,
+        @Req() req: RequestWithSessionAccounts,
         @Body() collectionDto: CollectionDto,
     ): Promise<{collection: Collection, nfts: NFT[], deletedNfts: number}> {
         const { id, nfts: nftArray, ...collectionRest } = collectionDto
@@ -190,7 +189,6 @@ export class CollectionController {
     @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
     @Patch(':id/status')
     async updateStatus(
-        @Req() req: RequestWithSessionAccounts,
         @Param('id', ParseIntPipe) id: number,
         @Body() updateCollectionStatusDto: UpdateCollectionStatusDto,
     ): Promise<void> {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ListStatus, NFT } from './nft.model';
 import { NFTService } from './nft.service';
@@ -10,6 +10,8 @@ import { ChainMarketplaceNftDto } from './dto/chain-marketplace-nft.dto';
 import { NftStatus } from './nft.types';
 import { ChainNftNftDto } from './dto/chain-nft-nft.dto';
 import { IntBoolValue } from '../common/utils';
+import { TransactionInterceptor } from '../common/common.interceptors';
+import { AppRequest } from '../common/commont.types';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -19,9 +21,10 @@ export class NFTController {
         private graphqlService: GraphqlService,
     ) {}
 
+    @UseInterceptors(TransactionInterceptor)
     @Post()
     async findAll(
-        @Req() req,
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) nftFilterModel: NftFilterModel,
     ): Promise < { nftEntities: NFT[], total: number } > {
         const { nftEntities, total } = await this.nftService.findByFilter(req.sessionAccountEntity, nftFilterModel);

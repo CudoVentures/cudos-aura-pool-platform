@@ -1,10 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RequestWithSessionAccounts } from '../../auth/auth.types';
 import { Farm } from '../models/farm.model';
 import { FarmService } from '../farm.service';
 import { FarmDto } from '../dto/farm.dto';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActivate {

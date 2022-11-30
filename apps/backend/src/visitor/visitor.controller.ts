@@ -1,4 +1,4 @@
-import { Body, Controller, Put, Request } from '@nestjs/common';
+import { Body, Controller, Put, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FarmDto } from '../farm/dto/farm.dto';
 import { NFTDto } from '../nft/dto/nft.dto';
@@ -12,7 +12,7 @@ export class VisitorController {
     constructor(private visitorService: VisitorService) {}
 
     @Put('signalVisitMiningFarm')
-    async signalVisitMiningFarm(@Request() req, @Body() farmDto: FarmDto): Promise < void > {
+    async signalVisitMiningFarm(@Req() req, @Body() farmDto: FarmDto): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {
             return;
@@ -22,7 +22,7 @@ export class VisitorController {
     }
 
     @Put('signalVisitNft')
-    async signalVisitNft(@Request() req, @Body() nftDto: NFTDto): Promise < void > {
+    async signalVisitNft(@Req() req, @Body() nftDto: NFTDto): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {
             return;

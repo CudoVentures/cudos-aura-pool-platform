@@ -51,7 +51,6 @@ export class FarmService {
         }
 
         if (miningFarmFilterModel.inOnlyForSessionAccount() === true) {
-            console.log(accountEntity);
             whereClause.creator_id = accountEntity.accountId;
         }
 

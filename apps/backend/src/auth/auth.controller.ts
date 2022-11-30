@@ -1,9 +1,9 @@
-import { Body, Controller, Request, Post, Get, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post, Get, ValidationPipe, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { RequestWithSessionAccounts } from '../common/commont.types';
 import { AuthService } from './auth.service';
 import { ReqLogin, ReqRegister } from './dto/requests.dto';
 import { ResFetchSessionAccounts, ResLogin } from './dto/responses.dto';
-import { RequestWithSessionAccounts } from './auth.types';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -24,7 +24,7 @@ export class AuthController {
     }
 
     @Get('fetchSessionAccounts')
-    async fetchSessionAccounts(@Request() req: RequestWithSessionAccounts): Promise < ResFetchSessionAccounts > {
+    async fetchSessionAccounts(@Req() req: RequestWithSessionAccounts): Promise < ResFetchSessionAccounts > {
         return new ResFetchSessionAccounts(req.sessionAccountEntity, req.sessionUserEntity, req.sessionAdminEntity, req.sessionSuperAdminEntity);
     }
 }
