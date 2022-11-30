@@ -21,7 +21,6 @@ import { Collection } from './collection.model';
 import { NFTService } from '../nft/nft.service';
 import { NFT } from '../nft/nft.model';
 import RoleGuard from '../auth/guards/role.guard';
-import { Role } from '../user/roles';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
@@ -33,6 +32,7 @@ import { IntBoolValue } from '../common/utils';
 import { CollectionStatus } from './utils';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
+import { AccountType } from '../account/account.types';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -71,7 +71,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
     @UseInterceptors(TransactionInterceptor)
     @Put()
     async createOrEdit(
@@ -191,7 +191,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Patch(':id/status')
     async updateStatus(
@@ -214,7 +214,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorOrSuperAdminGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN]), IsCreatorOrSuperAdminGuard)
     @UseInterceptors(TransactionInterceptor)
     @Delete(':id')
     async delete(

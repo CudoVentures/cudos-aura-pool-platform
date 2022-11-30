@@ -113,7 +113,7 @@ export class NFTController {
 
     //   @ApiBearerAuth('access-token')
     //   @ApiBody({ type: [NFTDto] })
-    //   @UseGuards(RoleGuard([Role.FARM_ADMIN]))
+    //   @UseGuards(RoleGuard([AccountType.ADMIN]))
     //   @Post()
     //   async create(
     //     @Request() req,
@@ -138,7 +138,7 @@ export class NFTController {
     //   }
 
     //     @ApiBearerAuth('access-token')
-    //     @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorOrSuperAdminGuard)
+    //     @UseGuards(RoleGuard([AccountType.ADMIN]), IsCreatorOrSuperAdminGuard)
     //     @Put(':id')
     //   async update(
     //             @Param('id') id: string,
@@ -148,7 +148,7 @@ export class NFTController {
     //   }
 
     //   @ApiBearerAuth('access-token')
-    //   @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
+    //   @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     //   @Patch(':id/status')
     //     async updateStatus(
     //     @Param('id') id: string,
@@ -158,7 +158,7 @@ export class NFTController {
     //     }
 
     //   @ApiBearerAuth('access-token')
-    //   @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorOrSuperAdminGuard)
+    //   @UseGuards(RoleGuard([AccountType.ADMIN]), IsCreatorOrSuperAdminGuard)
     //   @Delete(':id')
     //   async delete(@Param('id') id: string): Promise<NFT> {
     //       return this.nftService.deleteOne(id);
