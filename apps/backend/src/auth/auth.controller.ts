@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { ReqLogin, ReqRegister } from './dto/requests.dto';
 import { ResFetchSessionAccounts, ResLogin } from './dto/responses.dto';
-import { RequestWithSessionAccounts } from './interfaces/request.interface';
+import { RequestWithSessionAccounts } from './auth.types';
 
 @ApiTags('Auth')
 @Controller('auth')

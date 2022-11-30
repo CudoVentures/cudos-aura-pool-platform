@@ -5,7 +5,7 @@ import { ExtractJwt } from 'passport-jwt';
 import { JwtService } from '@nestjs/jwt';
 import JwtToken from './jwtToken.entity';
 import { UserService } from '../user/user.service';
-import { RequestWithSessionAccounts } from './interfaces/request.interface';
+import { RequestWithSessionAccounts } from './auth.types';
 import AccountService from '../account/account.service';
 
 @Injectable()

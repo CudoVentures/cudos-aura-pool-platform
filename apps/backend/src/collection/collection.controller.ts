@@ -27,7 +27,7 @@ import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
 import { IsFarmApprovedGuard } from './guards/is-farm-approved.guard';
 import { CollectionDetailsResponseDto } from './dto/collection-details-response.dto';
 import CollectionFilterModel from './dto/collection-filter.model';
-import { RequestWithSessionAccounts } from '../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../auth/auth.types';
 import DataService from '../data/data.service';
 import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
 import { IntBoolValue } from '../common/utils';

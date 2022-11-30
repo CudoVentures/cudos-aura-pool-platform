@@ -12,7 +12,7 @@ import AccountEntity from '../account/entities/account.entity';
 import AdminEntity from '../account/entities/admin.entity';
 import UserEntity from '../account/entities/user.entity';
 import { IntBoolValue } from '../common/utils';
-import { SIGN_NONCE } from './constants';
+import { SIGN_NONCE } from './auth.types';
 import JwtToken from './jwtToken.entity';
 
 @Injectable()

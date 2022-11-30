@@ -1,21 +1,19 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RequestWithSessionAccounts } from '../../auth/interfaces/request.interface';
-import { NOT_EXISTS_INT } from '../../common/utils';
+import { RequestWithSessionAccounts } from '../../auth/auth.types';
 import { Collection } from '../collection.model';
 import { CollectionService } from '../collection.service';
 import { CollectionDto } from '../dto/collection.dto';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActivate {
+
     constructor(private collectionService: CollectionService) {
         super();
     }
 
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,
@@ -45,4 +43,5 @@ export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActiv
             .findOne(collectionDto.id)
             .then((collection: Collection) => collection.creator_id === sessionAdminEntity.accountId);
     }
+
 }

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RequestWithSessionAccounts } from '../../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../../auth/auth.types';
 import { NFTDto } from '../dto/nft.dto';
 import { NFT } from '../nft.model';
 import { NFTService } from '../nft.service';
@@ -12,9 +12,7 @@ export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActiv
         super();
     }
 
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,

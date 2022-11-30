@@ -1,12 +1,11 @@
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import { Role } from '../../user/roles';
-import { RequestWithSessionAccounts } from '../interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../auth.types';
 
 const RoleGuard = (roles: Role[]): Type<CanActivate> => {
-    class RoleGuardMixin {
-        async canActivate(context: ExecutionContext) {
 
-            // await super.canActivate(context);
+    class RoleGuardMixin implements CanActivate {
+        async canActivate(context: ExecutionContext) {
 
             const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
 

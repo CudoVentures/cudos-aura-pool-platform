@@ -1,22 +1,19 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RequestWithSessionAccounts } from '../../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../../auth/auth.types';
 import { Farm } from '../models/farm.model';
 import { FarmService } from '../farm.service';
-import { Role } from '../../user/roles';
 import { FarmDto } from '../dto/farm.dto';
-import { NOT_EXISTS_INT } from '../../common/utils';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActivate {
+
     constructor(private farmService: FarmService) {
         super();
     }
 
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,

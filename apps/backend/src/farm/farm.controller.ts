@@ -30,7 +30,7 @@ import { EnergySourceDto } from './dto/energy-source.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import DataService from '../data/data.service';
-import { RequestWithSessionAccounts } from '../auth/interfaces/request.interface';
+import { RequestWithSessionAccounts } from '../auth/auth.types';
 
 @ApiTags('Farm')
 @Controller('farm')
