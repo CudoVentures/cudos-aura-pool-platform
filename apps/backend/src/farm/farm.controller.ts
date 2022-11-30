@@ -15,7 +15,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
-import { Role } from '../user/roles';
 import { FarmDto } from './dto/farm.dto';
 import { UpdateFarmStatusDto } from './dto/update-status.dto';
 import { Farm } from './models/farm.model';
@@ -31,6 +30,7 @@ import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import DataService from '../data/data.service';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
+import { AccountType } from '../account/account.types';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -74,7 +74,7 @@ export class FarmController {
     //     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
     @UseInterceptors(TransactionInterceptor)
     @Put()
     async creditFarm(
@@ -111,7 +111,7 @@ export class FarmController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Patch(':id/status')
     async updateStatus(

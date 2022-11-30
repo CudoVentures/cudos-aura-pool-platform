@@ -11,12 +11,12 @@ import {
     Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IsUserGuard } from './guards/is-user.guard'
-import { Role } from './roles';
 import { User } from './user.model';
 import { UserService } from './user.service';
 
@@ -34,14 +34,14 @@ export class UserController {
     }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
+  @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
       return this.userService.createFarmAdmin(createUserDto);
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.SUPER_ADMIN, Role.FARM_ADMIN]), IsUserGuard)
+  @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), IsUserGuard)
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -51,7 +51,7 @@ export class UserController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(RoleGuard([Role.SUPER_ADMIN, Role.FARM_ADMIN]), IsUserGuard)
+  @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), IsUserGuard)
   @Patch(':id/password')
   async changePassword(
     @Param('id', ParseIntPipe) id: number,
