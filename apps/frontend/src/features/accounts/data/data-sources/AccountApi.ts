@@ -51,8 +51,8 @@ export default class AccountApi {
         return null;
     }
 
-    async sendVerificationEmail(): Promise < void > {
-        return null;
+    async sendSessionAccountVerificationEmail(): Promise < void > {
+        await axios.patch('/api/v1/accounts/sendSessionAccountVerificationEmail');
     }
 
 }

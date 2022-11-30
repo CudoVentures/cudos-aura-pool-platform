@@ -7,6 +7,7 @@ import { jwtConstants } from './constants';
 import { UserService } from '../user/user.service';
 import { AuthController } from './auth.controller';
 import { AccountModule } from '../account/account.module';
+import EmailService from '../email/email.service';
 
 @Module({
     imports: [
@@ -18,7 +19,7 @@ import { AccountModule } from '../account/account.module';
             signOptions: { expiresIn: '7d' },
         }),
     ],
-    providers: [AuthService, UserService],
+    providers: [AuthService, UserService, EmailService],
     exports: [AuthService],
     controllers: [AuthController],
 })

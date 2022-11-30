@@ -52,6 +52,15 @@ services:
       - cudosdappdbdata:/var/lib/postgresql/data
     networks:
       - shared-cudos-network
+
+  mailhog:
+    image: "mailhog/mailhog"
+    container_name: "mailhog"
+    ports:
+      - 8025:8025
+      - 1025:1025
+    networks:
+      - shared-cudos-network
   
   # cudos-aura-platform-chain-observer-dev:
   #   image: cudos-aura-platform-chain-observer-dev

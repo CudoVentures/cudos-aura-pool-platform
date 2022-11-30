@@ -1,10 +1,15 @@
-import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch } from '@nestjs/common';
+import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Query, Param, Res } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ApiTags } from '@nestjs/swagger';
+import { ExtractJwt } from 'passport-jwt';
 import RoleGuard from '../auth/guards/role.guard';
+import JwtToken from '../auth/jwtToken.entity';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
+import EmailService from '../email/email.service';
 import { Role } from '../user/roles';
 import AccountService from './account.service';
+import { AccountType } from './account.types';
 import { ReqCreditSessionAccount, ReqEditSessionAccountPass } from './dto/requests.dto';
 import { ResCreditSessionAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
@@ -14,6 +19,8 @@ import AccountEntity from './entities/account.entity';
 export class AccountController {
     constructor(
         private accountService: AccountService,
+        private emailService: EmailService,
+        private jwtService: JwtService,
     ) {}
 
     @UseGuards(RoleGuard([Role.FARM_ADMIN]))
@@ -53,5 +60,31 @@ export class AccountController {
             // TO DO: Implement forgotten pass
         }
 
+    }
+
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
+    @Patch('sendSessionAccountVerificationEmail')
+    async sendSessionAccountVerificationEmail(
+        @Req() req: AppRequest,
+    ): Promise < void > {
+        await this.emailService.sendVerificationEmail(req.sessionAccountEntity);
+    }
+
+    @Get('verifyEmail/:token')
+    async verifyEmail(
+        @Req() req: AppRequest,
+        @Res() res,
+        @Param('token') encodedToken: string,
+    ): Promise < void > {
+        try {
+            this.jwtService.verify(encodedToken);
+            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+            const accountEntity = await this.accountService.findAccountById(jwtToken.id);
+            accountEntity.markAsEmailVerified();
+            await this.accountService.creditAccount(accountEntity, req.transaction);
+        } catch (ex) {
+        }
+
+        return res.redirect('/');
     }
 }

@@ -19,7 +19,7 @@ export default class AccountEntity {
         this.accountId = NOT_EXISTS_INT;
         this.type = AccountType.USER;
         this.active = IntBoolValue.TRUE;
-        this.emailVerified = IntBoolValue.TRUE;
+        this.emailVerified = IntBoolValue.FALSE;
         this.name = '';
         this.email = '';
         this.timestampLastLogin = NOT_EXISTS_INT;
@@ -54,6 +54,10 @@ export default class AccountEntity {
 
     isEmailVerified(): boolean {
         return this.emailVerified === IntBoolValue.TRUE;
+    }
+
+    markAsEmailVerified() {
+        this.emailVerified = IntBoolValue.TRUE;
     }
 
     static toRepo(entity: AccountEntity): any {

@@ -95,10 +95,10 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async sendVerificationEmail(): Promise < void > {
+    async sendSessionAccountVerificationEmail(): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.sendVerificationEmail();
+            return this.accountApi.sendSessionAccountVerificationEmail();
         } finally {
             this.enableActions?.();
         }
