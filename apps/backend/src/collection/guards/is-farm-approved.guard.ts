@@ -23,13 +23,15 @@ export class IsFarmApprovedGuard implements CanActivate {
         if (collectionDto.farm_id === NOT_EXISTS_INT) return false;
 
         const farmId = collectionDto.farm_id
-        return this.farmService.findOne(farmId).then((farm: Farm) => {
-            if (farm === null || farm.status !== FarmStatus.APPROVED) {
-                throw new UnauthorizedException(
-                    `Farm with id ${farmId} is not verified`,
-                );
-            }
-            return true;
-        });
+
+        const farm = await this.farmService.findOne(farmId);
+
+        if (!farm || farm.status !== FarmStatus.APPROVED) {
+            throw new UnauthorizedException(
+                `Farm with id ${farmId} is not verified`,
+            );
+        }
+
+        return true;
     }
 }

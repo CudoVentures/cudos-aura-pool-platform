@@ -1,7 +1,7 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { RequestWithSessionAccounts } from '../../auth/auth.types';
-import { Farm } from '../models/farm.model';
+import { Farm, FarmStatus } from '../models/farm.model';
 import { FarmService } from '../farm.service';
 import { FarmDto } from '../dto/farm.dto';
 
@@ -11,7 +11,7 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
     constructor(private farmService: FarmService) {
     }
 
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,
@@ -28,19 +28,22 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
         // not super admin, so is it farm admin
         if (sessionAdminEntity === null) {
-            console.log('not admin')
             return false;
         }
 
         // it is farm admin, so he can always create a new collection?
         if (farmDto.isNew()) {
-            console.log('new')
-
             return true
         }
 
-        return this.farmService
-            .findOne(farmDto.id)
-            .then((farm: Farm) => farm.creator_id === sessionAdminEntity.accountId);
+        const farm = await this.farmService.findOne(farmDto.id);
+
+        if (!farm) {
+            throw new UnauthorizedException(
+                `Farm with id ${farmDto.id} is not found`,
+            );
+        }
+
+        return farm.creator_id === sessionAdminEntity.accountId;
     }
 }

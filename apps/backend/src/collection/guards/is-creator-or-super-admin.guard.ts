@@ -11,7 +11,7 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
     constructor(private collectionService: CollectionService) {
     }
 
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,
@@ -37,9 +37,9 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
         }
 
         // it's not a new collection, so is the farm admin the owner?
-        return this.collectionService
-            .findOne(collectionDto.id)
-            .then((collection: Collection) => collection.creator_id === sessionAdminEntity.accountId);
+        const collection = await this.collectionService.findOne(collectionDto.id);
+
+        return collection.creator_id === sessionAdminEntity.accountId;
     }
 
 }
