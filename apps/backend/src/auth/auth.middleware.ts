@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { BadGatewayException, HttpException, HttpStatus, Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt } from 'passport-jwt';
@@ -6,6 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 import JwtToken from './jwtToken.entity';
 import AccountService from '../account/account.service';
 import { RequestWithSessionAccounts } from '../common/commont.types';
+import { pbkdf2Sync } from 'node:crypto';
+import { WrongPasswordException } from '../common/errors/errors';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -17,17 +19,25 @@ export class AuthMiddleware implements NestMiddleware {
     ) {}
 
     async use(req: RequestWithSessionAccounts, res: Response, next: NextFunction) {
+
         const extractorFunction = ExtractJwt.fromAuthHeaderAsBearerToken();
+
         const encodedToken = extractorFunction(req);
         try {
             this.jwtService.verify(encodedToken);
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
-
             const accounts = await this.accountService.findAccounts(jwtToken.id);
+            const derivedKey = pbkdf2Sync(accounts.accountEntity.hashedPass.substring(0, 10), 'salt', 100000, 64, 'sha512');
+
+            if (derivedKey.toString('hex') !== jwtToken.derivedKey) {
+                throw new WrongPasswordException();
+            }
+
             req.sessionAccountEntity = accounts.accountEntity;
             req.sessionUserEntity = accounts.userEntity;
             req.sessionAdminEntity = accounts.adminEntity;
             req.sessionSuperAdminEntity = accounts.superAdminEntity;
+
         } catch (ex) {
             req.sessionAccountEntity = null;
             req.sessionUserEntity = null;
