@@ -4,18 +4,16 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Farm, FarmStatus } from '../../farm/models/farm.model';
 import { FarmService } from '../../farm/farm.service';
 import { CollectionDto } from '../dto/collection.dto';
 import { NOT_EXISTS_INT } from '../../common/utils';
 
 @Injectable()
-export class IsFarmApprovedGuard extends JwtAuthGuard implements CanActivate {
+export class IsFarmApprovedGuard implements CanActivate {
     constructor(
       private farmService: FarmService,
     ) {
-        super();
     }
 
     async canActivate(context: ExecutionContext) {

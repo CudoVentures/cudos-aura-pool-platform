@@ -6,7 +6,7 @@ import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
 import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 
 export default class AccountStorageRepo implements AccountRepo {
@@ -60,7 +60,7 @@ export default class AccountStorageRepo implements AccountRepo {
             this.disableActions?.();
 
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
-            await client.addressbookCreateAddress(cudosWalletAddress, 'BTC', 'aurapool', bitcoinAddress, gasPrice);
+            await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
             return true;
         } catch (ex) {
             return false;
@@ -72,7 +72,7 @@ export default class AccountStorageRepo implements AccountRepo {
     async fetchBitcoinAddress(cudosAddress: string): Promise < string > {
         try {
             const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
-            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, 'BTC', 'aurapool');
+            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
 
             return res.address.value
         } catch (e) {

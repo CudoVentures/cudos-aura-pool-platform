@@ -15,6 +15,9 @@ declare let Config;
 
 export const SIGN_NONCE = -74563;
 
+export const ADDRESSBOOK_LABEL = 'aurapool';
+export const ADDRESSBOOK_NETWORK = 'aurapool';
+
 export const CHAIN_DETAILS = {
     ADMIN_TOKEN_DENOM: 'cudosAdmin',
     NATIVE_TOKEN_DENOM: 'acudos',

@@ -1,16 +1,14 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RequestWithSessionAccounts } from '../../auth/auth.types';
 import { Collection } from '../collection.model';
 import { CollectionService } from '../collection.service';
 import { CollectionDto } from '../dto/collection.dto';
 
 @Injectable()
-export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActivate {
+export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
     constructor(private collectionService: CollectionService) {
-        super();
     }
 
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
