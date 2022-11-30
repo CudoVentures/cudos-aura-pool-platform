@@ -11,7 +11,6 @@ import {
     Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import RoleGuard from '../auth/guards/role.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -62,7 +61,6 @@ export class UserController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
   @Get('verify/resend')
   async resendToken(
     @Request() req,

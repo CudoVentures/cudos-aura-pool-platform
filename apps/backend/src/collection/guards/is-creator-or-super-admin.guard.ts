@@ -1,19 +1,14 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RequestWithSessionAccounts } from '../../common/commont.types';
-import { Collection } from '../collection.model';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CollectionService } from '../collection.service';
 import { CollectionDto } from '../dto/collection.dto';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 
 @Injectable()
-export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActivate {
+export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
-    constructor(private collectionService: CollectionService) {
-        super();
-    }
+    constructor(private collectionService: CollectionService) {}
 
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,
@@ -39,9 +34,15 @@ export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActiv
         }
 
         // it's not a new collection, so is the farm admin the owner?
-        return this.collectionService
-            .findOne(collectionDto.id)
-            .then((collection: Collection) => collection.creator_id === sessionAdminEntity.accountId);
+        const collection = await this.collectionService.findOne(collectionDto.id);
+
+        if (!collection) {
+            throw new UnauthorizedException(
+                `Collection with id ${collectionDto.id} is not found`,
+            );
+        }
+
+        return collection.creator_id === sessionAdminEntity.accountId;
     }
 
 }

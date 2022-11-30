@@ -1,9 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
 
 @Injectable()
-export class IsUserGuard extends JwtAuthGuard implements CanActivate {
+export class IsUserGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();

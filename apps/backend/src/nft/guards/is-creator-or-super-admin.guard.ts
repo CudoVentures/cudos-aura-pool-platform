@@ -1,18 +1,14 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
 import { NFTDto } from '../dto/nft.dto';
-import { NFT } from '../nft.model';
 import { NFTService } from '../nft.service';
 
 @Injectable()
-export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActivate {
-    constructor(private nftService: NFTService) {
-        super();
-    }
+export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    constructor(private nftService: NFTService) {}
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,
@@ -37,8 +33,14 @@ export class IsCreatorOrSuperAdminGuard extends JwtAuthGuard implements CanActiv
             return true
         }
 
-        return this.nftService
-            .findOne(nftDto.id)
-            .then((nft: NFT) => nft.creator_id === sessionAdminEntity.accountId);
+        const nft = await this.nftService.findOne(nftDto.id);
+
+        if (!nft) {
+            throw new UnauthorizedException(
+                `NFT with id ${nftDto.id} is not found`,
+            );
+        }
+
+        return nft.creator_id === sessionAdminEntity.accountId;
     }
 }
