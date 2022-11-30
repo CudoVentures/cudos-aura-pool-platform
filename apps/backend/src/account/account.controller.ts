@@ -2,7 +2,7 @@ import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards
 import { JwtService } from '@nestjs/jwt';
 import { ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
-import JwtToken from '../auth/jwtToken.entity';
+import JwtToken from '../auth/entities/jwt-token.entity';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import EmailService from '../email/email.service';
@@ -30,12 +30,7 @@ export class AccountController {
     ): Promise < ResCreditSessionAccount > {
         let accountEntity = AccountEntity.fromJson(reqCreditSessionAccount.accountEntity);
         accountEntity.accountId = req.sessionAccountEntity.accountId;
-
-        const dbAccount = await this.accountService.findAccountById(accountEntity.accountId);
-        accountEntity.salt = dbAccount.salt;
-        accountEntity.hashedPass = dbAccount.hashedPass;
-
-        accountEntity = await this.accountService.creditAccount(accountEntity, req.transaction);
+        accountEntity = await this.accountService.creditAccount(accountEntity, false, req.transaction);
         return new ResCreditSessionAccount(accountEntity);
     }
 
@@ -54,7 +49,7 @@ export class AccountController {
 
             accountEntity.salt = AccountService.generateSalt();
             accountEntity.hashedPass = AccountService.generateHashedPass(reqEditSessionAccountPass.newPass, accountEntity.salt);
-            await this.accountService.creditAccount(accountEntity, req.transaction);
+            await this.accountService.creditAccount(accountEntity, true, req.transaction);
             return;
         }
 
@@ -79,11 +74,11 @@ export class AccountController {
         @Param('token') encodedToken: string,
     ): Promise < void > {
         try {
-            this.jwtService.verify(encodedToken);
+            this.jwtService.verify(encodedToken, JwtToken.getConfig());
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
             const accountEntity = await this.accountService.findAccountById(jwtToken.id);
             accountEntity.markAsEmailVerified();
-            await this.accountService.creditAccount(accountEntity, req.transaction);
+            await this.accountService.creditAccount(accountEntity, false, req.transaction);
         } catch (ex) {
         }
 

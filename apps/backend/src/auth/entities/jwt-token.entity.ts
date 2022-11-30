@@ -1,6 +1,7 @@
-import AccountEntity from '../account/entities/account.entity';
-import { NOT_EXISTS_INT } from '../common/utils';
-import { pbkdf2, createSign, createVerify, pbkdf2Sync } from 'node:crypto';
+import AccountEntity from '../../account/entities/account.entity';
+import { NOT_EXISTS_INT } from '../../common/utils';
+import { pbkdf2Sync } from 'node:crypto';
+import { jwtConstants } from '../auth.types';
 
 export default class JwtToken {
 
@@ -13,9 +14,7 @@ export default class JwtToken {
     }
 
     static newInstance(accountEntity: AccountEntity) {
-
         const derivedKey = pbkdf2Sync(accountEntity.hashedPass.substring(0, 10), 'salt', 100000, 64, 'sha512');
-
         const entity = new JwtToken();
 
         entity.id = accountEntity.accountId;
@@ -42,6 +41,13 @@ export default class JwtToken {
         entity.derivedKey = json.derivedKey ?? entity.derivedKey;
 
         return entity;
+    }
+
+    static getConfig(expiresIn = '7d') {
+        return {
+            secret: jwtConstants.secret,
+            expiresIn,
+        }
     }
 
 }

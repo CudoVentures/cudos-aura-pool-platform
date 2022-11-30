@@ -60,7 +60,7 @@ export default class AccountEntity {
         this.emailVerified = IntBoolValue.TRUE;
     }
 
-    static toRepo(entity: AccountEntity): any {
+    static toRepo(entity: AccountEntity, includePassword = false): any {
         if (entity === null) {
             return null;
         }
@@ -76,8 +76,10 @@ export default class AccountEntity {
         repoJson.name = entity.name;
         repoJson.email = entity.email;
         repoJson.lastLoginAt = new Date(entity.timestampLastLogin);
-        repoJson.salt = entity.salt;
-        repoJson.hashedPass = entity.hashedPass;
+        if (includePassword === true) {
+            repoJson.salt = entity.salt;
+            repoJson.hashedPass = entity.hashedPass;
+        }
 
         return repoJson;
     }

@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 import { User } from './user.model';
 import { JwtService } from '@nestjs/jwt';
 import { EmailInterface } from './interfaces/email.interface';
-import { jwtConstants } from '../auth/constants';
+import { jwtConstants } from '../auth/auth.types';
 
 @Injectable()
 export class UserService {

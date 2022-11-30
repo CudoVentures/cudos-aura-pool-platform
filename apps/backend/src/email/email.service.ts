@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import nodemailer from 'nodemailer';
 import AccountEntity from '../account/entities/account.entity';
-import { jwtConstants } from '../auth/constants';
-import JwtToken from '../auth/jwtToken.entity';
+import JwtToken from '../auth/entities/jwt-token.entity';
 
 @Injectable()
 export default class EmailService {
@@ -20,7 +19,7 @@ export default class EmailService {
     async sendVerificationEmail(accountEntity: AccountEntity): Promise < void > {
         try {
             const jwtToken = JwtToken.newInstance(accountEntity);
-            const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), { expiresIn: '1d' });
+            const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('1d'));
 
             const verificationEmail = {
                 from: `"Aura Pool" <${process.env.App_Mailing_Service_Email}>`,
