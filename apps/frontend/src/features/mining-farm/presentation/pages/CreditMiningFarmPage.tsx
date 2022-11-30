@@ -11,16 +11,14 @@ import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import EditMiningFarmModal from '../components/EditMiningFarmModal';
 import EditMiningFarmModalStore from '../stores/EditMiningFarmModalStore';
-import CollectionFilterModel from '../../../collection/utilities/CollectionFilterModel';
 
-import { InputAdornment, MenuItem } from '@mui/material';
+import { InputAdornment } from '@mui/material';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
-import Select from '../../../../core/presentation/components/Select';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonColor } from '../../../../core/presentation/components/Button';
 import GridView from '../../../../core/presentation/components/GridView';

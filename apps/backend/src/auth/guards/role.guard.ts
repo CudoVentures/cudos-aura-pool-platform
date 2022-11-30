@@ -12,7 +12,6 @@ const RoleGuard = (accountTypes: AccountType[]): Type<CanActivate> => {
             const sessionUserEntity = request.sessionUserEntity;
             const sessionAdminEntity = request.sessionAdminEntity;
             const sessionSuperAdminEntity = request.sessionSuperAdminEntity;
-
             if (accountTypes.includes(AccountType.USER) && sessionUserEntity !== null) {
                 return true;
             }

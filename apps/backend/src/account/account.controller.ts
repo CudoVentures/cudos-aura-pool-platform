@@ -1,13 +1,11 @@
 import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Query, Param, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiTags } from '@nestjs/swagger';
-import { ExtractJwt } from 'passport-jwt';
 import RoleGuard from '../auth/guards/role.guard';
 import JwtToken from '../auth/jwtToken.entity';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import EmailService from '../email/email.service';
-import { Role } from '../user/roles';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
 import { ReqCreditSessionAccount, ReqEditSessionAccountPass } from './dto/requests.dto';
@@ -23,7 +21,7 @@ export class AccountController {
         private jwtService: JwtService,
     ) {}
 
-    @UseGuards(RoleGuard([Role.FARM_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Post('creditSessionAccount')
     async creditSessionAccount(
@@ -32,6 +30,10 @@ export class AccountController {
     ): Promise < ResCreditSessionAccount > {
         let accountEntity = AccountEntity.fromJson(reqCreditSessionAccount.accountEntity);
         accountEntity.accountId = req.sessionAccountEntity.accountId;
+
+        const dbAccount = await this.accountService.findAccountById(accountEntity.accountId);
+        accountEntity.salt = dbAccount.salt;
+        accountEntity.hashedPass = dbAccount.hashedPass;
 
         accountEntity = await this.accountService.creditAccount(accountEntity, req.transaction);
         return new ResCreditSessionAccount(accountEntity);
