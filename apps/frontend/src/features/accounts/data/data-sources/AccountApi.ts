@@ -2,8 +2,8 @@ import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
-import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
-import { ReqCreditSessionAccount, ReqLogin, ReqRegister } from '../dto/Requests';
+import axios, { setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
+import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqLogin, ReqRegister } from '../dto/Requests';
 import { ResCreditSessionAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 import { StdSignature } from 'cudosjs';
 
@@ -42,13 +42,8 @@ export default class AccountApi {
         return res.accountEntity;
     }
 
-    async changePassword(oldPassword: string, newPassword: string): Promise < void > {
-        const user = decodeStorageToken();
-
-        const data = await axios.patch(`/api/v1/user/${user.id}/password`, {
-            old_password: oldPassword,
-            password: newPassword,
-        });
+    async editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > {
+        await axios.patch('/api/v1/accounts/editSessionAccountPass', new ReqEditSessionAccountPass(oldPassword, newPassword, token));
     }
 
     async forgottenPassword(email: string): Promise < void > {

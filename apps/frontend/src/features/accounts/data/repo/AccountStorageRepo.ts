@@ -151,7 +151,7 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
-    async changePassword(accountId: string, oldPassword: string, newPassword: string): Promise < void > {
+    async editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > {
     }
 
     async forgottenPassword(email: string): Promise < void > {

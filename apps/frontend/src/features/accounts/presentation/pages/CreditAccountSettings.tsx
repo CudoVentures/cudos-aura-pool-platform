@@ -30,9 +30,13 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
 
     const validationStateEmail = useRef(new ValidationState()).current;
     const validationStateOwner = useRef(new ValidationState()).current;
+    const validationStatePass = useRef(new ValidationState()).current;
 
     const accountEmailValidation = useRef(validationStateEmail.addEmailValidation('Invalid email')).current;
     const accountNameValidation = useRef(validationStateOwner.addEmptyValidation('Name can\'t be empty.')).current;
+    const validationPass = useRef(validationStatePass.addPasswordValidation('Invalid password')).current;
+    const validationConfirmPass = useRef(validationStatePass.addPasswordValidation('Invalid password')).current;
+    const [validationFirstMatchPass, validationSecondMatchPass] = useRef(validationStatePass.addMatchStringsValidation('Passwords don\'t match.')).current;
 
     const self = useRef({
         accountEntity: accountSessionStore.accountEntity?.deepClone() || null,
@@ -222,11 +226,19 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
                                 label = { 'New Password' }
                                 value = { pass }
                                 type = {'password'}
+                                inputValidation={[
+                                    validationPass,
+                                    validationFirstMatchPass,
+                                ]}
                                 onChange = { setPass } />
                             <Input
                                 label = { 'Confirm Password' }
                                 value = { confirmPass }
                                 type = {'password'}
+                                inputValidation={[
+                                    validationConfirmPass,
+                                    validationSecondMatchPass,
+                                ]}
                                 onChange = { setConfirmPass } />
                             <Actions layout = { ActionsLayout.LAYOUT_ROW_RIGHT } >
                                 <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickCancelEditPass } >Discard Changes</Button>

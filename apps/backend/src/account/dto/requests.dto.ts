@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmptyObject, IsObject, ValidateNested } from 'class-validator';
+import { IsDefined, IsNotEmptyObject, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { AccountJsonValidator } from '../account.types';
 
 export class ReqCreditSessionAccount {
@@ -11,4 +11,26 @@ export class ReqCreditSessionAccount {
     @Type(() => AccountJsonValidator)
         accountEntity: AccountJsonValidator;
 
+}
+
+export class ReqEditSessionAccountPass {
+
+    @IsString()
+    @IsOptional()
+        oldPass: string;
+
+    @IsString()
+        newPass: string;
+
+    @IsString()
+    @IsOptional()
+        token: string;
+
+    isTokenMode(): boolean {
+        return this.oldPass === '' && this.token !== '';
+    }
+
+    isOldPassMode(): boolean {
+        return this.oldPass !== '' && this.token === '';
+    }
 }
