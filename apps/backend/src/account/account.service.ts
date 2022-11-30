@@ -125,8 +125,10 @@ export default class AccountService {
             whereAccountRepo.accountId = accountRepo.accountId;
             accountRepo = await this.accountRepo.update(accountRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereAccountRepo),
+                returning: true,
                 transaction: tx,
             });
+            accountRepo = accountRepo[1].length === 1 ? accountRepo[1][0] : null;
         }
 
         return AccountEntity.fromRepo(accountRepo);
@@ -144,8 +146,10 @@ export default class AccountService {
             whereUserRepo.userId = userRepo.userId;
             userRepo = await this.userRepo.update(userRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereUserRepo),
+                returning: true,
                 transaction: tx,
             });
+            userRepo = userRepo[1].length === 1 ? userRepo[1][0] : null;
         }
 
         return UserEntity.fromRepo(userRepo);
@@ -163,8 +167,10 @@ export default class AccountService {
             whereAdminRepo.adminId = adminRepo.adminId;
             adminRepo = await this.adminRepo.update(adminRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereAdminRepo),
+                returning: true,
                 transaction: tx,
             });
+            adminRepo = adminRepo[1].length === 1 ? adminRepo[1][0] : null;
         }
 
         return AdminEntity.fromRepo(adminRepo);

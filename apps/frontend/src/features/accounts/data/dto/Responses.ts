@@ -28,3 +28,13 @@ export class ResLogin {
     }
 
 }
+
+export class ResCreditSessionAccount {
+
+    accountEntity: AccountEntity;
+
+    constructor(axiosData: any) {
+        this.accountEntity = AccountEntity.toJson(axiosData.accountEntity);
+    }
+
+}

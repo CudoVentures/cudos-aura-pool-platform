@@ -171,8 +171,8 @@ export default class AccountSessionStore {
         await this.accountRepo.sendVerificationEmail();
     }
 
-    async creditAccount(accountEntity: AccountEntity): Promise < void > {
-        await this.accountRepo.creditAccount(accountEntity);
+    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
+        await this.accountRepo.creditSessionAccount(accountEntity);
 
         runInAction(() => {
             Object.assign(this.accountEntity, accountEntity);

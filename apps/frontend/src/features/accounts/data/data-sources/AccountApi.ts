@@ -3,8 +3,8 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { decodeStorageToken, setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
-import { ReqLogin, ReqRegister } from '../dto/Requests';
-import { ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
+import { ReqCreditSessionAccount, ReqLogin, ReqRegister } from '../dto/Requests';
+import { ResCreditSessionAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 import { StdSignature } from 'cudosjs';
 
 export default class AccountApi {
@@ -24,12 +24,22 @@ export default class AccountApi {
         setTokenInStorage(null);
     }
 
-    async creditAccount(accountEntity: AccountEntity): Promise < void > {
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+        const { data } = await axios.get('/api/v1/auth/fetchSessionAccounts');
+        const res = new ResFetchSessionAccounts(data);
 
-        const data = axios.put(`/api/v1/user/${accountEntity.accountId}`, AccountEntity.toJson(accountEntity));
+        return {
+            accountEntity: res.accountEntity,
+            userEntity: res.userEntity,
+            adminEntity: res.adminEntity,
+            superAdminEntity: res.superAdminEntity,
+        }
+    }
 
-        // TODO: uncomment when backend returns token
-        // setTokenInStorage(data.access_token);
+    async creditSessionAccount(accountEntity: AccountEntity): Promise < AccountEntity > {
+        const { data } = await axios.post('/api/v1/accounts/creditSessionAccount', new ReqCreditSessionAccount(AccountEntity.toJson(accountEntity)));
+        const res = new ResCreditSessionAccount(data);
+        return res.accountEntity;
     }
 
     async changePassword(oldPassword: string, newPassword: string): Promise < void > {
@@ -49,45 +59,4 @@ export default class AccountApi {
         return null;
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
-        const { data } = await axios.get('/api/v1/auth/fetchSessionAccounts');
-        const res = new ResFetchSessionAccounts(data);
-
-        return {
-            accountEntity: res.accountEntity,
-            userEntity: res.userEntity,
-            adminEntity: res.adminEntity,
-            superAdminEntity: res.superAdminEntity,
-        }
-
-        // console.log(user);
-        // if (user === '') {
-        //     user = null;
-        // }
-
-        // if (user) {
-        //     user.email_verified = S.INT_TRUE;
-        //     user.active = S.INT_TRUE;
-        //     user.timestamp_last_login = Date.now();
-        //     user.role = user.role === 'farm_admin' ? AccountType.ADMIN : AccountType.SUPER_ADMIN;
-
-        //     user.admin_id = user.id;
-        //     user.super_admin_id = user.id;
-        //     user.account_id = user.id;
-        // }
-
-        // return {
-        //     accountEntity: AccountEntity.fromJson(user),
-        //     userEntity: UserEntity.fromJson(null),
-        //     adminEntity: user && user.role === AccountType.ADMIN ? AdminEntity.fromJson(user) : null,
-        //     superAdminEntity: user && user.role === AccountType.SUPER_ADMIN ? SuperAdminEntity.fromJson(user) : null,
-        // }
-    }
-
-    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
-
-        // const data = ...
-        // setTokenInStorage(data.access_token);
-        return null;
-    }
 }

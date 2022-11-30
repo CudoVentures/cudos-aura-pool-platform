@@ -85,7 +85,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
             return;
         }
 
-        await accountSessionStore.creditAccount(self.accountEntity);
+        await accountSessionStore.creditSessionAccount(self.accountEntity);
         setChangedEmail(true);
     }
 
@@ -95,7 +95,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
             return;
         }
 
-        await accountSessionStore.creditAccount(self.accountEntity);
+        await accountSessionStore.creditSessionAccount(self.accountEntity);
         setEditOwner(false);
     }
 

@@ -1,4 +1,5 @@
 import { StdSignature } from '@cosmjs/amino';
+import AccountEntity from '../../entities/AccountEntity';
 
 export class ReqLogin {
 
@@ -50,6 +51,16 @@ export class ReqRegister {
         this.signature = signedTx.signature;
         this.sequence = sequence;
         this.accountNumber = accountNumber;
+    }
+
+}
+
+export class ReqCreditSessionAccount {
+
+    accountEntity: AccountEntity;
+
+    constructor(accountEntity: AccountEntity) {
+        this.accountEntity = AccountEntity.toJson(accountEntity);
     }
 
 }
