@@ -8,6 +8,7 @@ import AccountApi from '../data-sources/AccountApi';
 import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
 import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
+import { parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -32,6 +33,8 @@ export default class AccountStorageRepo implements AccountRepo {
         try {
             this.disableActions?.();
             return this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+        } catch (e) {
+            throw Error(parseBackendErrorType(e));
         } finally {
             this.enableActions?.();
         }

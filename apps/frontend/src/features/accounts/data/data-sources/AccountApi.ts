@@ -10,14 +10,11 @@ import { StdSignature } from 'cudosjs';
 export default class AccountApi {
 
     async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
-        try {
-            const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber));
-            const res = new ResLogin(data);
+        const { data } = await axios.post('/api/v1/auth/login', new ReqLogin(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber));
+        const res = new ResLogin(data);
 
-            setTokenInStorage(res.accessToken);
-        } catch (e) {
-            console.log(parseBackendErrorType(e));
-        }
+        setTokenInStorage(res.accessToken);
+
     }
 
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
