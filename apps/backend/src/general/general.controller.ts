@@ -3,20 +3,22 @@ import { ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import { UpdateLastCheckedBlockRequest } from './dto/update-last-checked-height-request.dto';
+import GeneralService from './general.service';
 
 @ApiTags('GENERAL')
 @Controller('general')
 export class GeneralController {
-    constructor() {}
+    constructor(private generalService: GeneralService) {
+    }
 
     @Get('heartbeat')
-    async getAlive(): Promise<any> {
-        return {};
+    async getAlive(): Promise<string> {
+        return 'running';
     }
 
     @Get('last-checked-block')
-    async getLastCheckedBlock(): Promise<any> {
-        return { height: 1000 };
+    async getLastCheckedBlock(): Promise<number> {
+        return this.generalService.getLastCheckedBlock();
     }
 
     @UseInterceptors(TransactionInterceptor)
@@ -25,6 +27,6 @@ export class GeneralController {
         @Req() req: AppRequest,
         @Body() updateLastCheckedBlockRequest: UpdateLastCheckedBlockRequest,
     ): Promise<any> {
-        return {};
+        return this.generalService.setLastCheckedBlock(updateLastCheckedBlockRequest.height);
     }
 }
