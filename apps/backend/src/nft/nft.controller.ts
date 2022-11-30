@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ListStatus, NFT } from './nft.model';
 import { NFTService } from './nft.service';
@@ -10,6 +10,8 @@ import { ChainMarketplaceNftDto } from './dto/chain-marketplace-nft.dto';
 import { NftStatus } from './nft.types';
 import { ChainNftNftDto } from './dto/chain-nft-nft.dto';
 import { IntBoolValue } from '../common/utils';
+import { TransactionInterceptor } from '../common/common.interceptors';
+import { AppRequest } from '../common/commont.types';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -21,7 +23,7 @@ export class NFTController {
 
     @Post()
     async findAll(
-        @Req() req,
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) nftFilterModel: NftFilterModel,
     ): Promise < { nftEntities: NFT[], total: number } > {
         const { nftEntities, total } = await this.nftService.findByFilter(req.sessionAccountEntity, nftFilterModel);
@@ -162,9 +164,11 @@ export class NFTController {
     //       return this.nftService.deleteOne(id);
     //   }
 
-@Put('trigger-updates')
+    @UseInterceptors(TransactionInterceptor)
+    @Put('trigger-updates')
     async updateNftsChainData(
-    @Body() updateNftChainDataRequestDto: UpdateNftChainDataRequestDto,
+        @Req() req: AppRequest,
+        @Body() updateNftChainDataRequestDto: UpdateNftChainDataRequestDto,
     ): Promise<void> {
         const tokenIds = updateNftChainDataRequestDto.tokenIds;
         const module = updateNftChainDataRequestDto.module;
@@ -178,7 +182,7 @@ export class NFTController {
                 nft.price = chainMarketplaceNftDto.price;
                 nft.listedStatus = chainMarketplaceNftDto.price ? ListStatus.LISTED : ListStatus.NOT_LISTED;
 
-                await this.nftService.updateOneByTokenId(chainMarketplaceNftDto.tokenId, nft);
+                await this.nftService.updateOneByTokenId(chainMarketplaceNftDto.tokenId, nft, req.transaction);
             }
         } else if (module === ModuleName.NFT) {
             const chainNftNftsDtos = await this.nftService.getChainNftNftsByTokenIds(tokenIds);
@@ -193,7 +197,7 @@ export class NFTController {
                 nft.currentOwnerAddress = chainNftNftDto.owner;
                 nft.uri = chainNftNftDto.uri;
 
-                await this.nftService.updateOneByTokenId(chainNftNftDto.tokenId, nft);
+                await this.nftService.updateOneByTokenId(chainNftNftDto.tokenId, nft, req.transaction);
             }
         }
     }

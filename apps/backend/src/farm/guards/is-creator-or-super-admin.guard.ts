@@ -1,15 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { RequestWithSessionAccounts } from '../../auth/auth.types';
-import { Farm, FarmStatus } from '../models/farm.model';
 import { FarmService } from '../farm.service';
 import { FarmDto } from '../dto/farm.dto';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
-    constructor(private farmService: FarmService) {
-    }
+    constructor(private farmService: FarmService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();

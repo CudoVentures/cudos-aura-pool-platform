@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { RequestWithSessionAccounts } from '../../auth/auth.types';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 
 @Injectable()
 export class IsUserGuard implements CanActivate {

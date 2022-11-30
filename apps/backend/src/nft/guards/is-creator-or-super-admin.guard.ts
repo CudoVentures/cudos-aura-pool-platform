@@ -1,14 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { RequestWithSessionAccounts } from '../../auth/auth.types';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 import { NFTDto } from '../dto/nft.dto';
-import { NFT } from '../nft.model';
 import { NFTService } from '../nft.service';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard implements CanActivate {
-    constructor(private nftService: NFTService) {
-    }
+
+    constructor(private nftService: NFTService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();

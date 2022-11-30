@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import { Body, Controller, Get, Put, Req, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { TransactionInterceptor } from '../common/common.interceptors';
+import { AppRequest } from '../common/commont.types';
 import { UpdateLastCheckedBlockRequest } from './dto/update-last-checked-height-request.dto';
 
 @ApiTags('GENERAL')
@@ -17,8 +19,12 @@ export class GeneralController {
         return { height: 1000 };
     }
 
+    @UseInterceptors(TransactionInterceptor)
     @Put('last-checked-block')
-    async updatelastCheckedBlock(@Body() updateLastCheckedBlockRequest: UpdateLastCheckedBlockRequest): Promise<any> {
+    async updateLastCheckedBlock(
+        @Req() req: AppRequest,
+        @Body() updateLastCheckedBlockRequest: UpdateLastCheckedBlockRequest,
+    ): Promise<any> {
         return {};
     }
 }

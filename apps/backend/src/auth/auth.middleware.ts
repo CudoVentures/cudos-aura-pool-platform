@@ -4,9 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { ExtractJwt } from 'passport-jwt';
 import { JwtService } from '@nestjs/jwt';
 import JwtToken from './jwtToken.entity';
-import { UserService } from '../user/user.service';
-import { RequestWithSessionAccounts } from './auth.types';
 import AccountService from '../account/account.service';
+import { RequestWithSessionAccounts } from '../common/commont.types';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {

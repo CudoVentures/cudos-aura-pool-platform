@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { StdSignature } from 'cudosjs';
 import { verifyNonceMsgSigner } from 'cudosjs/build/utils/nonce';
+import { Transaction } from 'sequelize';
 import AccountService from '../account/account.service';
 import AccountEntity from '../account/entities/account.entity';
 import AdminEntity from '../account/entities/admin.entity';
@@ -23,32 +24,13 @@ export class AuthService {
     private configService: ConfigService,
     ) {}
 
-    // async validateUser(email: string, password: string): Promise < AccountEntity > {
-    //     const accountEntity = await this.accountService.findAccountByEmail(email);
-    //     if (accountEntity === null) {
-    //         throw new NotFoundException('Incorrect email');
-    //     }
-
-    //     if (AccountService.isPassValid(accountEntity, password) === false) {
-    //         throw new UnauthorizedException('Incorrect password');
-    //     }
-
-    //     return accountEntity;
-    // }
-
-    // async login(accountEntity: AccountEntity) {
-    //     const jwtToken = JwtToken.newInstance(accountEntity);
-    //     const accessToken = this.jwtService.sign(JwtToken.toJson(jwtToken));
-    //     return { accessToken }
-    // }
-
-    async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number): Promise < void > {
+    async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < void > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
         if (!isSigner) {
             throw new Error('Message not signed by user address.');
         }
 
-        let accountEntity = await this.accountService.findAccountByEmail(email);
+        let accountEntity = await this.accountService.findAccountByEmail(email, tx, tx.LOCK.UPDATE);
         let adminEntity = null;
         if (accountEntity !== null) {
             throw new NotFoundException('Email is already in use');
@@ -59,20 +41,20 @@ export class AuthService {
         accountEntity.name = name;
         accountEntity.salt = AccountService.generateSalt();
         accountEntity.hashedPass = AccountService.generateHashedPass(pass, accountEntity.salt);
-        accountEntity = await this.accountService.creditAccount(accountEntity);
+        accountEntity = await this.accountService.creditAccount(accountEntity, tx);
 
         adminEntity = AdminEntity.newInstanceForAccount(accountEntity.accountId);
         adminEntity.cudosWalletAddress = cudosWalletAddress;
 
-        adminEntity = await this.accountService.creditAdmin(adminEntity);
+        adminEntity = await this.accountService.creditAdmin(adminEntity, tx);
     }
 
-    async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number): Promise < string > {
+    async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < string > {
         if (email !== '' || pass !== '') {
             return this.loginUsingCredentials(email, pass);
         }
 
-        return this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
+        return this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber, tx);
     }
 
     private async loginUsingCredentials(email: string, pass: string): Promise < string > {
@@ -89,26 +71,26 @@ export class AuthService {
         return this.jwtService.sign(JwtToken.toJson(jwtToken));
     }
 
-    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number): Promise < string > {
+    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < string > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
         if (!isSigner) {
             throw new Error('Message not signed by user address.');
         }
 
         let accountEntity = null;
-        let userEntity = await this.accountService.findUserByCudosWalletAddress(cudosWalletAddress);
+        let userEntity = await this.accountService.findUserByCudosWalletAddress(cudosWalletAddress, tx, tx.LOCK.UPDATE);
 
         if (userEntity === null) { // register new wallet
             accountEntity = new AccountEntity();
             accountEntity.name = walletName;
             accountEntity.emailVerified = IntBoolValue.TRUE;
-            accountEntity = await this.accountService.creditAccount(accountEntity);
+            accountEntity = await this.accountService.creditAccount(accountEntity, tx);
 
             userEntity = new UserEntity();
             userEntity.accountId = accountEntity.accountId;
             userEntity.cudosWalletAddress = cudosWalletAddress;
             userEntity.bitcoinPayoutWalletAddress = bitcoinPayoutWalletAddress;
-            userEntity = await this.accountService.creditUser(userEntity);
+            userEntity = await this.accountService.creditUser(userEntity, tx);
         } else {
             accountEntity = await this.accountService.findAccountById(userEntity.accountId);
         }
