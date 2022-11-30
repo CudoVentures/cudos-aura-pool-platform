@@ -11,6 +11,7 @@ import {
     Query,
     Req,
     UseGuards,
+    UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -30,7 +31,8 @@ import DataService from '../data/data.service';
 import { ModuleName, UpdateCollectionChainDataRequestDto } from './dto/update-collection-chain-data-request.dto';
 import { IntBoolValue } from '../common/utils';
 import { CollectionStatus } from './utils';
-import { RequestWithSessionAccounts } from '../common/commont.types';
+import { AppRequest } from '../common/commont.types';
+import { TransactionInterceptor } from '../common/common.interceptors';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -70,9 +72,10 @@ export class CollectionController {
 
     @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
+    @UseInterceptors(TransactionInterceptor)
     @Put()
     async createOrEdit(
-        @Req() req: RequestWithSessionAccounts,
+        @Req() req: AppRequest,
         @Body() collectionDto: CollectionDto,
     ): Promise<{collection: Collection, nfts: NFT[], deletedNfts: number}> {
         const { id, nfts: nftArray, ...collectionRest } = collectionDto
@@ -83,8 +86,8 @@ export class CollectionController {
             nftArray[i].uri = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, nftArray[i].uri);
         }
 
-        const collectionDb = await this.collectionService.findOne(id);
-        const collectionNftsDb = await this.nftService.findByCollectionId(id)
+        const collectionDb = await this.collectionService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
+        const collectionNftsDb = await this.nftService.findByCollectionId(id, req.transaction, req.transaction.LOCK.UPDATE)
 
         let oldUris = [];
         if (collectionDb !== null) {
@@ -102,12 +105,12 @@ export class CollectionController {
         let collection, nftResults, deletedNfts = [];
         try {
             if (id < 0) {
-                collection = await this.collectionService.createOne(collectionRest, req.sessionAdminEntity.accountId);
+                collection = await this.collectionService.createOne(collectionRest, req.sessionAdminEntity.accountId, req.transaction);
 
                 const nfts = nftArray.map(async (nft) => {
                     const { id: tempId, uri, ...nftRest } = nft
                     nftRest.uri = uri;
-                    const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.sessionAdminEntity.accountId)
+                    const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.sessionAdminEntity.accountId, req.transaction)
 
                     return createdNft
                 })
@@ -115,8 +118,8 @@ export class CollectionController {
                 nftResults = await Promise.all(nfts)
             } else {
 
-                collection = await this.collectionService.updateOne(id, collectionRest);
-                const collectionNfts = await this.nftService.findByCollectionId(id)
+                collection = await this.collectionService.updateOne(id, collectionRest, req.transaction);
+                const collectionNfts = await this.nftService.findByCollectionId(id, req.transaction, req.transaction.LOCK.UPDATE)
 
                 const nftsToDelete = collectionNfts.filter((nft) => nftArray.findIndex((item) => item.id === nft.id))
                 const deleteNfts = nftsToDelete.map(async (nft) => { return nft.destroy() })
@@ -124,10 +127,10 @@ export class CollectionController {
 
                 const nftsToCreateOrEdit = nftArray.map(async (nft) => {
                     if (!Number(nft.id)) {
-                        return this.nftService.updateOne(nft.id, nft)
+                        return this.nftService.updateOne(nft.id, nft, req.transaction)
                     }
 
-                    return this.nftService.createOne({ ...nft, collection_id: collection.id }, req.sessionAccountEntity.accountId)
+                    return this.nftService.createOne({ ...nft, collection_id: collection.id }, req.sessionAccountEntity.accountId, req.transaction)
                 })
 
                 nftResults = await Promise.all(nftsToCreateOrEdit)
@@ -145,7 +148,9 @@ export class CollectionController {
     }
 
     @Put('trigger-updates')
+    @UseInterceptors(TransactionInterceptor)
     async updateCollectionsChainData(
+        @Req() req: AppRequest,
         @Body() updateCollectionChainDataRequestDto: UpdateCollectionChainDataRequestDto,
     ): Promise<void> {
         const denomIds = updateCollectionChainDataRequestDto.denomIds;
@@ -165,7 +170,7 @@ export class CollectionController {
 
                 collection.status = chainMarketplaceCollectionDto.verified === IntBoolValue.TRUE ? CollectionStatus.APPROVED : CollectionStatus.QUEUED;
 
-                await this.collectionService.updateOneByDenomId(denomId, collection);
+                await this.collectionService.updateOneByDenomId(denomId, collection, req.transaction);
             }
         } else if (module === ModuleName.NFT) {
             const chainNftCollectionDtos = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);
@@ -180,21 +185,24 @@ export class CollectionController {
                 collection.description = chainNftCollectionDto.description;
                 collection.updatedAt = Date.now();
 
-                await this.collectionService.updateOneByDenomId(denomId, collection);
+                await this.collectionService.updateOneByDenomId(denomId, collection, req.transaction);
             }
         }
     }
 
     @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
+    @UseInterceptors(TransactionInterceptor)
     @Patch(':id/status')
     async updateStatus(
+        @Req() req: AppRequest,
         @Param('id', ParseIntPipe) id: number,
         @Body() updateCollectionStatusDto: UpdateCollectionStatusDto,
     ): Promise<void> {
         await this.collectionService.updateStatus(
             id,
             updateCollectionStatusDto.status,
+            req.transaction,
         );
 
         // const nftFilterModel = new NftFilterModel();
@@ -207,8 +215,12 @@ export class CollectionController {
 
     @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorOrSuperAdminGuard)
+    @UseInterceptors(TransactionInterceptor)
     @Delete(':id')
-    async delete(@Param('id', ParseIntPipe) id: number): Promise<Collection> {
-        return this.collectionService.deleteOne(id);
+    async delete(
+        @Req() req: AppRequest,
+        @Param('id', ParseIntPipe) id: number,
+    ): Promise<Collection> {
+        return this.collectionService.deleteOne(id, req.transaction);
     }
 }

@@ -11,6 +11,7 @@ import {
     Post,
     ValidationPipe,
     Req,
+    UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
@@ -28,7 +29,8 @@ import { EnergySourceDto } from './dto/energy-source.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import DataService from '../data/data.service';
-import { RequestWithSessionAccounts } from '../common/commont.types';
+import { AppRequest } from '../common/commont.types';
+import { TransactionInterceptor } from '../common/common.interceptors';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -40,7 +42,7 @@ export class FarmController {
 
     @Post()
     async findAll(
-        @Req() req,
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
     ): Promise < { miningFarmEntities: Farm[], total: number } > {
         return this.farmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
@@ -73,9 +75,10 @@ export class FarmController {
 
     @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([Role.FARM_ADMIN, Role.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
+    @UseInterceptors(TransactionInterceptor)
     @Put()
     async creditFarm(
-        @Req() req: RequestWithSessionAccounts,
+        @Req() req: AppRequest,
         @Body() farmDto: FarmDto,
     ): Promise<Farm> {
         const { id, ...farm } = farmDto
@@ -88,15 +91,15 @@ export class FarmController {
             farm.images[i] = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.images[i]);
         }
 
-        const farmModelDb = await this.farmService.findOne(id);
+        const farmModelDb = await this.farmService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
         const oldUris = farmModelDb === null ? [] : [farmModelDb.cover_img, farmModelDb.profile_img].concat(farmModelDb.images);
         const newUris = [farm.cover_img, farm.profile_img].concat(farm.images);
 
         try {
             if (id > 0) {
-                farmModel = await this.farmService.updateOne(id, farm);
+                farmModel = await this.farmService.updateOne(id, farm, req.transaction);
             } else {
-                farmModel = await this.farmService.createOne(farm, req.sessionAccountEntity.accountId)
+                farmModel = await this.farmService.createOne(farm, req.sessionAccountEntity.accountId, req.transaction)
             }
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
@@ -107,18 +110,16 @@ export class FarmController {
         return farmModel
     }
 
-    //   @ApiBearerAuth('access-token')
-    //   @UseGuards(RoleGuard([Role.FARM_ADMIN]), IsCreatorOrSuperAdminGuard)
-    //   @Delete(':id')
-    //   async delete(@Param('id', ParseIntPipe) id: number): Promise<Farm> {
-    //       return this.farmService.deleteOne(id);
-    //   }
-
     @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([Role.SUPER_ADMIN]))
+    @UseInterceptors(TransactionInterceptor)
     @Patch(':id/status')
-    async updateStatus(@Param('id', ParseIntPipe) id: number, @Body() updateFarmStatusDto: UpdateFarmStatusDto): Promise<Farm> {
-        return this.farmService.updateStatus(id, updateFarmStatusDto.status);
+    async updateStatus(
+        @Req() req: AppRequest,
+        @Param('id', ParseIntPipe) id: number,
+        @Body() updateFarmStatusDto: UpdateFarmStatusDto,
+    ): Promise<Farm> {
+        return this.farmService.updateStatus(id, updateFarmStatusDto.status, req.transaction);
     }
 
     @Get('miners')
@@ -136,33 +137,45 @@ export class FarmController {
         return this.farmService.findManufacturers();
     }
 
+    @UseInterceptors(TransactionInterceptor)
     @Put('miners')
-    async creditMiners(@Body() minerDto: MinerDto): Promise<Miner> {
+    async creditMiners(
+        @Req() req: AppRequest,
+        @Body() minerDto: MinerDto,
+    ): Promise<Miner> {
 
         if (MinerDto.isNew(minerDto)) {
-            return this.farmService.createMiner(minerDto)
+            return this.farmService.createMiner(minerDto, req.transaction)
         }
 
-        return this.farmService.updateMiner(minerDto)
+        return this.farmService.updateMiner(minerDto, req.transaction)
     }
 
+    @UseInterceptors(TransactionInterceptor)
     @Put('energy-sources')
-    async creditEnergySources(@Body() energySourceDto: EnergySourceDto): Promise<EnergySource> {
+    async creditEnergySources(
+        @Req() req: AppRequest,
+        @Body() energySourceDto: EnergySourceDto,
+    ): Promise<EnergySource> {
 
         if (EnergySourceDto.isNew(energySourceDto)) {
-            return this.farmService.createEnergySource(energySourceDto)
+            return this.farmService.createEnergySource(energySourceDto, req.transaction);
         }
 
-        return this.farmService.updateEnergySource(energySourceDto)
+        return this.farmService.updateEnergySource(energySourceDto, req.transaction);
     }
 
+    @UseInterceptors(TransactionInterceptor)
     @Put('manufacturers')
-    async creditManufacturers(@Body() manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
+    async creditManufacturers(
+        @Req() req: AppRequest,
+        @Body() manufacturerDto: ManufacturerDto,
+    ): Promise<Manufacturer> {
 
         if (ManufacturerDto.isNew(manufacturerDto)) {
-            return this.farmService.createManufacturer(manufacturerDto)
+            return this.farmService.createManufacturer(manufacturerDto, req.transaction)
         }
 
-        return this.farmService.updateManufacturer(manufacturerDto)
+        return this.farmService.updateManufacturer(manufacturerDto, req.transaction)
     }
 }

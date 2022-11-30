@@ -6,7 +6,7 @@ import { CollectionStatus } from './utils';
 import { NFT } from '../nft/nft.model';
 import { NftStatus } from '../nft/nft.types';
 import CollectionFilterModel, { CollectionOrderBy } from './dto/collection-filter.model';
-import sequelize, { Op } from 'sequelize';
+import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
 import { ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
 import { ChainNftCollectionDto } from './dto/chain-nft-collection.dto';
@@ -106,20 +106,12 @@ export class CollectionService {
         })
     }
 
-    async findOne(id: number): Promise<Collection> {
-        return this.collectionModel.findByPk(id);
-    }
-
-    async findByCreatorId(id: number): Promise<Collection[]> {
-        const collections = await this.collectionModel.findAll({
-            where: {
-                creator_id: id,
-            },
+    async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<Collection> {
+        return this.collectionModel.findByPk(id, {
+            transaction: tx,
+            lock,
         });
-
-        return collections;
     }
-
     async findByFarmId(id: number): Promise<Collection[]> {
         const collections = await this.collectionModel.findAll({
             where: {
@@ -133,6 +125,7 @@ export class CollectionService {
     async createOne(
         collectionDto: Partial<CollectionDto>,
         creator_id: number,
+        tx: Transaction = undefined,
     ): Promise<Collection> {
 
         collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '_');
@@ -141,6 +134,8 @@ export class CollectionService {
             ...collectionDto,
             status: CollectionStatus.QUEUED,
             creator_id,
+        }, {
+            transaction: tx,
         });
 
         return collection;
@@ -149,12 +144,14 @@ export class CollectionService {
     async updateOne(
         id: number,
         collectionDto: Partial<CollectionDto>,
+        tx: Transaction = undefined,
     ): Promise<Collection> {
         const [count, [collection]] = await this.collectionModel.update(
             { ...collectionDto, status: CollectionStatus.QUEUED },
             {
                 where: { id },
                 returning: true,
+                transaction: tx,
             },
         );
 
@@ -164,12 +161,14 @@ export class CollectionService {
     async updateOneByDenomId(
         denomId: string,
         collectionDto: Partial<Collection>,
+        tx: Transaction = undefined,
     ): Promise<Collection> {
         const [count, [collection]] = await this.collectionModel.update(
             { ...collectionDto, status: CollectionStatus.QUEUED },
             {
                 where: { denom_id: denomId },
                 returning: true,
+                transaction: tx,
             },
         );
 
@@ -179,6 +178,7 @@ export class CollectionService {
     async updateStatus(
         id: number,
         status: CollectionStatus,
+        tx: Transaction = undefined,
     ): Promise<Collection> {
         const [count, [collection]] = await this.collectionModel.update(
             {
@@ -187,13 +187,14 @@ export class CollectionService {
             {
                 where: { id },
                 returning: true,
+                transaction: tx,
             },
         );
 
         return collection;
     }
 
-    async deleteOne(id: number): Promise<Collection> {
+    async deleteOne(id: number, tx: Transaction = undefined): Promise<Collection> {
         const [count, [collection]] = await this.collectionModel.update(
             { deleted_at: new Date(), status: CollectionStatus.DELETED },
             {
@@ -201,6 +202,7 @@ export class CollectionService {
                     id,
                 },
                 returning: true,
+                transaction: tx,
             },
         );
 

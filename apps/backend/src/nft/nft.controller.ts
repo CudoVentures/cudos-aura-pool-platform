@@ -21,7 +21,6 @@ export class NFTController {
         private graphqlService: GraphqlService,
     ) {}
 
-    @UseInterceptors(TransactionInterceptor)
     @Post()
     async findAll(
         @Req() req: AppRequest,
@@ -165,9 +164,11 @@ export class NFTController {
     //       return this.nftService.deleteOne(id);
     //   }
 
-@Put('trigger-updates')
+    @UseInterceptors(TransactionInterceptor)
+    @Put('trigger-updates')
     async updateNftsChainData(
-    @Body() updateNftChainDataRequestDto: UpdateNftChainDataRequestDto,
+        @Req() req: AppRequest,
+        @Body() updateNftChainDataRequestDto: UpdateNftChainDataRequestDto,
     ): Promise<void> {
         const tokenIds = updateNftChainDataRequestDto.tokenIds;
         const module = updateNftChainDataRequestDto.module;
@@ -181,7 +182,7 @@ export class NFTController {
                 nft.price = chainMarketplaceNftDto.price;
                 nft.listedStatus = chainMarketplaceNftDto.price ? ListStatus.LISTED : ListStatus.NOT_LISTED;
 
-                await this.nftService.updateOneByTokenId(chainMarketplaceNftDto.tokenId, nft);
+                await this.nftService.updateOneByTokenId(chainMarketplaceNftDto.tokenId, nft, req.transaction);
             }
         } else if (module === ModuleName.NFT) {
             const chainNftNftsDtos = await this.nftService.getChainNftNftsByTokenIds(tokenIds);
@@ -196,7 +197,7 @@ export class NFTController {
                 nft.currentOwnerAddress = chainNftNftDto.owner;
                 nft.uri = chainNftNftDto.uri;
 
-                await this.nftService.updateOneByTokenId(chainNftNftDto.tokenId, nft);
+                await this.nftService.updateOneByTokenId(chainNftNftDto.tokenId, nft, req.transaction);
             }
         }
     }
