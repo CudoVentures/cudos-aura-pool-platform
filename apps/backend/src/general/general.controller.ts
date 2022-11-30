@@ -12,8 +12,8 @@ export class GeneralController {
     }
 
     @Get('heartbeat')
-    async getAlive(): Promise<any> {
-        return {};
+    async getAlive(): Promise<string> {
+        return 'running';
     }
 
     @Get('last-checked-block')

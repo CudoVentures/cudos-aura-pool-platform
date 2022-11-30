@@ -50,14 +50,27 @@ export class AuthService {
     }
 
     async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < string > {
+        let accountEntity = null;
         if (email !== '' || pass !== '') {
-            return this.loginUsingCredentials(email, pass);
+            accountEntity = await this.loginUsingCredentials(email, pass);
+        } else {
+            accountEntity = await this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber, tx);
         }
 
-        return this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber, tx);
+        if (!accountEntity) {
+            throw new UnauthorizedException('Account not found');
+        }
+
+        // update last login time
+        accountEntity.timestampLastLogin = Date.now();
+        await this.accountService.creditAccount(accountEntity);
+
+        const jwtToken = JwtToken.newInstance(accountEntity);
+
+        return this.jwtService.sign(JwtToken.toJson(jwtToken));
     }
 
-    private async loginUsingCredentials(email: string, pass: string): Promise < string > {
+    private async loginUsingCredentials(email: string, pass: string): Promise < AccountEntity > {
         const accountEntity = await this.accountService.findAccountByEmail(email);
         if (accountEntity === null) {
             throw new NotFoundException('Incorrect email');
@@ -67,11 +80,10 @@ export class AuthService {
             throw new UnauthorizedException('Incorrect password');
         }
 
-        const jwtToken = JwtToken.newInstance(accountEntity);
-        return this.jwtService.sign(JwtToken.toJson(jwtToken));
+        return accountEntity;
     }
 
-    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < string > {
+    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < AccountEntity > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
         if (!isSigner) {
             throw new Error('Message not signed by user address.');
@@ -95,8 +107,7 @@ export class AuthService {
             accountEntity = await this.accountService.findAccountById(userEntity.accountId);
         }
 
-        const jwtToken = JwtToken.newInstance(accountEntity);
-        return this.jwtService.sign(JwtToken.toJson(jwtToken));
+        return accountEntity;
     }
 
     private async verifySignature(cudosWalletAddress: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number): Promise < boolean > {
