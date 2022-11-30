@@ -16,7 +16,7 @@ export class IsFarmApprovedGuard implements CanActivate {
     ) {
     }
 
-    async canActivate(context: ExecutionContext) {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const collectionDto: CollectionDto = CollectionDto.fromJson(request.body);
 

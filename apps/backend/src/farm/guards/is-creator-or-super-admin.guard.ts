@@ -11,7 +11,7 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
     constructor(private farmService: FarmService) {
     }
 
-    async canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,

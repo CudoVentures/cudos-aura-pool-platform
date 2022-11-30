@@ -10,7 +10,7 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
     constructor(private nftService: NFTService) {
     }
 
-    async canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,
