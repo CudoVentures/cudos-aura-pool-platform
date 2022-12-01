@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
+import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
@@ -28,8 +29,21 @@ export class AccountController {
         @Body(new ValidationPipe({ transform: true })) reqCreditSessionAccount: ReqCreditSessionAccount,
     ): Promise < ResCreditSessionAccount > {
         let accountEntity = AccountEntity.fromJson(reqCreditSessionAccount.accountEntity);
+
+        const isEmailChanged = req.sessionAccountEntity && req.sessionAccountEntity.email !== accountEntity.email
+
         accountEntity.accountId = req.sessionAccountEntity.accountId;
+
+        if (isEmailChanged) {
+            accountEntity.markAsEmailNotVerified();
+        }
+
         accountEntity = await this.accountService.creditAccount(accountEntity, false, req.transaction);
+
+        if (isEmailChanged) {
+            this.emailService.sendVerificationEmail(accountEntity);
+        }
+
         return new ResCreditSessionAccount(accountEntity);
     }
 
@@ -55,6 +69,7 @@ export class AccountController {
         await this.emailService.sendVerificationEmail(req.sessionAccountEntity);
     }
 
+    @UseInterceptors(TransactionInterceptor)
     @Get('verifyEmail/:token')
     async verifyEmail(
         @Req() req: AppRequest,

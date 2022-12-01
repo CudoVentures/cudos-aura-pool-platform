@@ -56,6 +56,9 @@ export default class AccountEntity {
         return this.emailVerified === IntBoolValue.TRUE;
     }
 
+    markAsEmailNotVerified() {
+        this.emailVerified = IntBoolValue.FALSE;
+    }
     markAsEmailVerified() {
         this.emailVerified = IntBoolValue.TRUE;
     }
