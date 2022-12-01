@@ -8,21 +8,25 @@ import UserEarningsEntity from '../../entities/UserEarningsEntity';
 export default class StatisticsApi {
 
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
-        const { data } = await axios.get(`/api/v1/statistics/history/nft/${nftEventFilterModel.nftId}`, { params: { ...nftEventFilterModel } })
-
-        return data
+        const { data } = await axios.post('/api/v1/statistics/history/nft', { nftEventFilterModel })
+        const total = data.total;
+        const nftEventEntities = data.nftEventDtos.map((nftEventJson) => NftEventEntity.fromJson(nftEventJson));
+        return { nftEventEntities, total };
     }
 
     async fetchNftEarningsBySessionAccount(timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
-        const { data } = await axios.get(`/api/v1/statistics/earnings/address/${cudosAddress}`, { params: { timestampFrom, timestampTo } })
+        const { data } = await axios.get('/api/v1/statistics/earnings/session-account', { params: { timestampFrom, timestampTo } })
 
-        return data
+        const userEarningsEntity = UserEarningsEntity.fromJson(data.userEarningsDto);
+
+        return userEarningsEntity
     }
 
     async fetchNftEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {
         const { data } = await axios.get(`/api/v1/statistics/earnings/nft/${nftId}`, { params: { timestampFrom, timestampTo } })
+        const nftEarningsEntity = NftEarningsEntity.fromJson(data.nftEarningsDto);
 
-        return data
+        return nftEarningsEntity
     }
 
     fetchNftEarningsByMiningFarmId(miningFarmId: string, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
