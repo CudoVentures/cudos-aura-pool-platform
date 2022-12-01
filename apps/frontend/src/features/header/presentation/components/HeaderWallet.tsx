@@ -45,8 +45,22 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
         setAnchorEl(null);
     }
 
-    async function onClickLogin() {
-        walletSelectModalStore.showSignal();
+    async function onClickConnectWallet() {
+        await walletStore.tryConnect();
+        if (walletStore.isConnected() === true) {
+            if (accountSessionStore.doesAddressMatchAgainstSessionAccount(walletStore.getAddress()) === true) {
+                return;
+            }
+
+            await walletStore.disconnect();
+        }
+
+        if (accountSessionStore.isAdmin() === true) {
+            walletSelectModalStore.showSignalAsAdmin(null);
+            return;
+        }
+
+        walletSelectModalStore.showSignalAsUser();
     }
 
     return (
@@ -79,7 +93,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
                             <div className={'Address B2'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
                             <div className={'ButtonRow FlexRow'}>
                                 <Svg className={'Clickable'} svg={FileCopyIcon} onClick={onClickCopyAddress}/>
-                                <a href={`${CHAIN_DETAILS.EXPLORER_URL[walletStore.selectedNetwork]}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
+                                <a href={`${CHAIN_DETAILS.EXPLORER_URL}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
                             </div>
                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
                                 <Button radius={ButtonRadius.RADIUS_16} onClick={onClickDisconnect}>Logout</Button>
@@ -90,7 +104,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
             ) : (
                 <>
                     <Actions height={ActionsHeight.HEIGHT_48}>
-                        <Button onClick={onClickLogin}>Connect Wallet</Button>
+                        <Button onClick={onClickConnectWallet}>Connect Wallet</Button>
                     </Actions>
                 </>
             )

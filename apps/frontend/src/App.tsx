@@ -48,6 +48,7 @@ import ChangePasswordModalStore from './features/accounts/presentation/stores/Ch
 import WalletSelectModalStore from './features/header/presentation/stores/WalletSelectModalStore';
 import VisitorApiRepo from './features/visitor/data/repos/VisitorApiRepo';
 import VisitorStore from './features/visitor/presentation/stores/VisitorStore';
+import StatisticsApiRepo from './features/analytics/data/repo/StatisticsApiRepo';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -59,7 +60,7 @@ const miningFarmRepo = new MiningFarmApiRepo();
 const collectionRepo = new CollectionApiRepo();
 const nftRepo = new NftApiRepo();
 const visitorRepo = new VisitorApiRepo();
-const statisticsRepo = new StatisticsStorageRepo();
+const statisticsRepo = new StatisticsApiRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
@@ -94,7 +95,7 @@ const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
-const walletSelectModalStore = new WalletSelectModalStore();
+const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
 
 bitcoinRepo.setPresentationCallbacks(appStore.enableActions, appStore.disableActions);
 

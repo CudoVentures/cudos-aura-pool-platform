@@ -119,7 +119,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 createDataPreview('Items', creditCollectionPageStore.gridViewState.getItemCount()),
                                 createDataPreview('Owners', collectionDetailsEntity.owners),
                                 createDataPreview('Total Hashing Power', collectionEntity.formatHashPowerInTh()),
-                                createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]),
+                                createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME),
                                 createDataPreview(
                                     'Address',
                                     <div className={'FlexRow'}>

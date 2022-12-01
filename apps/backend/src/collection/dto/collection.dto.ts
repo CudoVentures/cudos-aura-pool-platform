@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray } from 'class-validator';
+import { NOT_EXISTS_INT } from '../../common/utils';
 import { NFTDto } from '../../nft/dto/nft.dto';
 
 export class CollectionDto {
     @IsNumber()
-    @IsOptional()
     @ApiProperty({ required: false, example: 1 })
-        id?: number;
+        id: number;
 
     @IsString()
     @IsNotEmpty()
@@ -75,4 +75,40 @@ export class CollectionDto {
         type: [NFTDto],
         description: 'NFTs to be offered for sale' })
         nfts: NFTDto[];
+
+    constructor() {
+        this.id = NOT_EXISTS_INT;
+        this.name = '';
+        this.description = '';
+        this.denom_id = '';
+        this.hashing_power = NOT_EXISTS_INT;
+        this.royalties = NOT_EXISTS_INT;
+        this.payout_address = '';
+        this.main_image = '';
+        this.banner_image = '';
+        this.farm_id = NOT_EXISTS_INT;
+        this.nfts = [];
+    }
+
+    isNew(): boolean {
+        return this.id === NOT_EXISTS_INT;
+    }
+
+    static fromJson(json): CollectionDto {
+        const collectionDto = new CollectionDto();
+
+        collectionDto.id = parseInt(json.id ?? collectionDto.id);
+        collectionDto.name = json.name ?? collectionDto.name;
+        collectionDto.description = json.description ?? collectionDto.description;
+        collectionDto.denom_id = json.denom_id ?? collectionDto.denom_id;
+        collectionDto.hashing_power = parseInt(json.hashing_power ?? collectionDto.hashing_power);
+        collectionDto.royalties = parseInt(json.royalties ?? collectionDto.royalties);
+        collectionDto.payout_address = json.payout_address ?? collectionDto.payout_address;
+        collectionDto.main_image = json.main_image ?? collectionDto.main_image;
+        collectionDto.banner_image = json.banner_image ?? collectionDto.banner_image;
+        collectionDto.farm_id = parseInt(json.farm_id ?? collectionDto.farm_id);
+        collectionDto.nfts = json.nfts ? json.nfts.map((nftJson) => NFTDto.fromJson(nftJson)) : collectionDto.nfts;
+
+        return collectionDto;
+    }
 }

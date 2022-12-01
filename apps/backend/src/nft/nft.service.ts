@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
-import sequelize, { Op } from 'sequelize';
+import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { v4 as uuid } from 'uuid';
+import AccountEntity from '../account/entities/account.entity';
 import { Collection } from '../collection/collection.model';
 import { CollectionService } from '../collection/collection.service';
 import { ChainMarketplaceNftDto } from '../collection/dto/chain-marketplace-collection.dto';
 import { GraphqlService } from '../graphql/graphql.service';
-import { User } from '../user/user.model';
 import { VisitorService } from '../visitor/visitor.service';
 import { ChainNftNftDto } from './dto/chain-nft-nft.dto';
 import NftFilterModel, { NftOrderBy } from './dto/nft-filter.model';
@@ -25,7 +25,7 @@ export class NFTService {
         private graphqlService: GraphqlService,
     ) {}
 
-    async findByFilter(user: User, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
+    async findByFilter(accountEntity: AccountEntity, nftFilterModel: NftFilterModel): Promise < { nftEntities: NFT[], total: number } > {
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
@@ -49,7 +49,7 @@ export class NFTService {
         }
 
         if (nftFilterModel.inOnlyForSessionAccount() === true) {
-            whereClause.creator_id = user.id;
+            whereClause.creator_id = accountEntity.accountId;
         }
 
         if (nftFilterModel.hasSearchString() === true) {
@@ -98,22 +98,14 @@ export class NFTService {
 
     }
 
-    async findByCollectionId(id: number): Promise<NFT[]> {
+    async findByCollectionId(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<NFT[]> {
         const nfts = await this.nftRepo.findAll({
             where: {
                 collection_id: id,
             },
             include: [{ model: Collection }],
-        });
-
-        return nfts;
-    }
-
-    async findByCreatorId(id: number): Promise<NFT[]> {
-        const nfts = await this.nftRepo.findAll({
-            where: {
-                creator_id: id,
-            },
+            transaction: tx,
+            lock,
         });
 
         return nfts;
@@ -129,35 +121,39 @@ export class NFTService {
         return nft;
     }
 
-    async createOne(nftDto: Partial<NFTDto>, creatorId: number): Promise < NFT > {
+    async createOne(nftDto: Partial<NFTDto>, creatorId: number, tx: Transaction = undefined): Promise < NFT > {
         const nft = await this.nftRepo.create({
             ...nftDto,
             id: uuid(),
             creator_id: creatorId,
             status: NftStatus.QUEUED,
+        }, {
+            transaction: tx,
         });
 
         return nft;
     }
 
-    async updateOne(id: string, updateNFTDto: Partial<NFTDto>): Promise < NFT > {
+    async updateOne(id: string, updateNFTDto: Partial<NFTDto>, tx: Transaction = undefined): Promise < NFT > {
         const [count, [nft]] = await this.nftRepo.update(
             { ...updateNFTDto, status: NftStatus.QUEUED },
             {
                 where: { id },
                 returning: true,
+                transaction: tx,
             },
         );
 
         return nft;
     }
 
-    async updateOneByTokenId(tokenId: string, updateNFTDto: Partial<NFT>): Promise < NFT > {
+    async updateOneByTokenId(tokenId: string, updateNFTDto: Partial<NFT>, tx: Transaction = undefined): Promise < NFT > {
         const [count, [nft]] = await this.nftRepo.update(
             { ...updateNFTDto },
             {
                 where: { token_id: tokenId },
                 returning: true,
+                transaction: tx,
             },
         );
 

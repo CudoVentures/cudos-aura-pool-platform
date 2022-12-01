@@ -1,9 +1,10 @@
 import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
-import { KeplrWallet, Ledger, CosmostationWallet } from 'cudosjs';
+import { KeplrWallet, Ledger, CosmostationWallet, StdSignature } from 'cudosjs';
 import S from '../../../../core/utilities/Main';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import { CHAIN_DETAILS, SIGN_NONCE } from '../../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
@@ -15,8 +16,6 @@ export enum SessionStorageWalletOptions {
 export default class WalletStore {
     alertStore: AlertStore;
 
-    selectedNetwork: string;
-
     ledger: Ledger;
     balance: BigNumber;
     address: string;
@@ -24,8 +23,6 @@ export default class WalletStore {
 
     constructor(alertStore: AlertStore) {
         this.alertStore = alertStore;
-
-        this.selectedNetwork = CHAIN_DETAILS.DEFAULT_NETWORK;
 
         this.ledger = null;
         this.balance = null;
@@ -38,11 +35,11 @@ export default class WalletStore {
     @action
     public async connectKeplr(): Promise<void> {
         this.ledger = new KeplrWallet({
-            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID[this.selectedNetwork],
-            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME[this.selectedNetwork],
-            RPC: CHAIN_DETAILS.RPC_ADDRESS[this.selectedNetwork],
-            API: CHAIN_DETAILS.API_ADDRESS[this.selectedNetwork],
-            STAKING: CHAIN_DETAILS.STAKING_URL[this.selectedNetwork],
+            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
+            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME,
+            RPC: CHAIN_DETAILS.RPC_ADDRESS,
+            API: CHAIN_DETAILS.API_ADDRESS,
+            STAKING: CHAIN_DETAILS.STAKING_URL,
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
         await this.connectLedger(SessionStorageWalletOptions.KEPLR);
@@ -51,11 +48,11 @@ export default class WalletStore {
     @action
     public async connectCosmostation(): Promise < void > {
         this.ledger = new CosmostationWallet({
-            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID[this.selectedNetwork],
-            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME[this.selectedNetwork],
-            RPC: CHAIN_DETAILS.RPC_ADDRESS[this.selectedNetwork],
-            API: CHAIN_DETAILS.API_ADDRESS[this.selectedNetwork],
-            STAKING: CHAIN_DETAILS.STAKING_URL[this.selectedNetwork],
+            CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
+            CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME,
+            RPC: CHAIN_DETAILS.RPC_ADDRESS,
+            API: CHAIN_DETAILS.API_ADDRESS,
+            STAKING: CHAIN_DETAILS.STAKING_URL,
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
         await this.connectLedger(SessionStorageWalletOptions.COSMOSTATION);
@@ -134,6 +131,15 @@ export default class WalletStore {
         } catch (ex) {
             this.balance = new BigNumber(0);
         }
+    }
+
+    async getClient(): Promise < CudosSigningStargateClient > {
+        return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, this.ledger.offlineSigner);
+    }
+
+    async signNonceMsg(): Promise < { signature: StdSignature; chainId: string; sequence: number; accountNumber: number } > {
+        const client = await this.getClient();
+        return client.signNonceMsg(this.getAddress(), SIGN_NONCE);
     }
 
     onChangeAccount = () => {

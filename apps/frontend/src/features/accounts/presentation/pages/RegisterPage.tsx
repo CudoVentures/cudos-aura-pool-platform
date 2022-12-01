@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
+import { StdSignature } from 'cudosjs';
 
 import S from '../../../../core/utilities/Main';
 import AccountSessionStore from '../stores/AccountSessionStore';
@@ -9,6 +10,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
+import WalletSelectModal from '../../../header/presentation/stores/WalletSelectModalStore';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
@@ -41,9 +43,10 @@ type Props = {
     alertStore?: AlertStore;
     walletStore?: WalletStore;
     accountSessionStore?: AccountSessionStore;
+    walletSelectModalStore?: WalletSelectModal;
 }
 
-function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }: Props) {
+function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, walletSelectModalStore }: Props) {
     const navigate = useNavigate();
 
     const validationState = useRef(new ValidationState()).current;
@@ -62,6 +65,9 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
     const [personalInfo, setPersonalInfo] = useState(S.INT_FALSE);
+    const [signedTx, setSignedTx] = useState(null);
+    const [sequence, setSequence] = useState(S.NOT_EXISTS);
+    const [accountNumber, setAccountNumber] = useState(S.NOT_EXISTS);
 
     function isAccountDetailsStep() {
         return step === RegisterStep.ACCOUNT_DETAILS;
@@ -121,11 +127,16 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
                 return;
             }
 
-            appStore.disableActions();
-            moveToWalletDetails();
-            await walletStore.connectKeplr();
-            setCudosWalletAddress(walletStore.getAddress());
-            appStore.enableActions();
+            await accountSessionStore.logout();
+
+            walletSelectModalStore.showSignalAsAdmin((signedTx_: StdSignature | null, sequence_: number, accountNumber_: number) => {
+                moveToWalletDetails();
+                setCudosWalletAddress(walletStore.getAddress());
+                setSignedTx(signedTx_);
+                setSequence(sequence_);
+                setAccountNumber(accountNumber_);
+            });
+
         }
 
         return (
@@ -235,8 +246,8 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore }
 
         async function onClickCreateAccount() {
             // prepare a signed tx for register
-            await accountSessionStore.register(email, password, name, cudosWalletAddress, '');
-            await accountSessionStore.login(email, password, cudosWalletAddress, '', '');
+            await accountSessionStore.register(email, password, name, cudosWalletAddress, signedTx, sequence, accountNumber);
+            await accountSessionStore.loginWithCredentials(email, password);
             navigate(AppRoutes.HOME);
         }
 

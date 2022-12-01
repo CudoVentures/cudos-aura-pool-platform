@@ -20,12 +20,12 @@ export default class SuperAdminEntity {
         this.globalCudosFeesPercent = S.NOT_EXISTS
         this.globalCudosRoyaltiesPercent = S.NOT_EXISTS
 
-        // TODO: REMOVE HARDCODED VALUES
-        this.cudosRoyalteesAddress = 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0';
-        this.firstSaleCudosRoyaltiesPercent = 2
-        this.resaleCudosRoyaltiesPercent = 2.5
-        this.globalCudosFeesPercent = 10
-        this.globalCudosRoyaltiesPercent = 5
+        // // TODO: REMOVE HARDCODED VALUES
+        // this.cudosRoyalteesAddress = 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0';
+        // this.firstSaleCudosRoyaltiesPercent = 2
+        // this.resaleCudosRoyaltiesPercent = 2.5
+        // this.globalCudosFeesPercent = 10
+        // this.globalCudosRoyaltiesPercent = 5
 
         makeAutoObservable(this);
     }
@@ -35,9 +35,13 @@ export default class SuperAdminEntity {
     }
 
     static toJson(model: SuperAdminEntity) {
+        if (model === null) {
+            return null;
+        }
+
         return {
-            'super_admin_id': parseInt(model.superAdminId),
-            'account_id': parseInt(model.accountId),
+            'superAdminId': model.superAdminId,
+            'accountId': model.accountId,
             'cudosRoyalteesAddress': model.cudosRoyalteesAddress,
             'firstSaleCudosRoyaltiesPercent': model.firstSaleCudosRoyaltiesPercent,
             'resaleCudosRoyaltiesPercent': model.resaleCudosRoyaltiesPercent,
@@ -53,8 +57,8 @@ export default class SuperAdminEntity {
 
         const model = new SuperAdminEntity();
 
-        model.superAdminId = (json.super_admin_id ?? model.superAdminId).toString();
-        model.accountId = (json.account_id ?? model.accountId).toString();
+        model.superAdminId = (json.superAdminId ?? model.superAdminId).toString();
+        model.accountId = (json.accountId ?? model.accountId).toString();
         model.cudosRoyalteesAddress = json.cudosRoyalteesAddress ?? model.cudosRoyalteesAddress;
         model.firstSaleCudosRoyaltiesPercent = Number(json.firstSaleCudosRoyaltiesPercent ?? model.firstSaleCudosRoyaltiesPercent);
         model.resaleCudosRoyaltiesPercent = Number(json.resaleCudosRoyaltiesPercent ?? model.resaleCudosRoyaltiesPercent);

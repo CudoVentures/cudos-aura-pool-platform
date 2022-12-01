@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import S from '../../../../core/utilities/Main';
-import { Ledger, GasPrice, SigningStargateClient } from 'cudosjs';
+import { Ledger, GasPrice, SigningStargateClient, StdSignature } from 'cudosjs';
 
 import WalletStore, { SESSION_STORAGE_WALLET_KEY } from '../../../ledger/presentation/stores/WalletStore';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
@@ -82,20 +82,68 @@ export default class AccountSessionStore {
         return this.accountEntity?.isEmailVerified() || false;
     }
 
+    doesAddressMatchAgainstSessionUserIfAny(cudosWalletAddress: string): boolean {
+        if (this.isUser() === true) {
+            return this.userEntity.cudosWalletAddress === cudosWalletAddress;
+        }
+
+        return true;
+    }
+
+    doesAddressMatchAgainstSessionAdminIfAny(cudosWalletAddress: string): boolean {
+        if (this.isAdmin() === true) {
+            return this.adminEntity.cudosWalletAddress === cudosWalletAddress;
+        }
+
+        return true;
+    }
+
+    doesAddressMatchAgainstSessionAccount(cudosWalletAddress: string): boolean {
+        if (this.isUser() === true) {
+            return this.userEntity.cudosWalletAddress === cudosWalletAddress;
+        }
+
+        if (this.isAdmin() === true) {
+            return this.adminEntity.cudosWalletAddress === cudosWalletAddress;
+        }
+
+        return false;
+    }
+
+    doesAddressMatchAgainstSessionAccountIfAny(cudosWalletAddress: string): boolean {
+        if (this.isUser() === true) {
+            return this.userEntity.cudosWalletAddress === cudosWalletAddress;
+        }
+
+        if (this.isAdmin() === true) {
+            return this.adminEntity.cudosWalletAddress === cudosWalletAddress;
+        }
+
+        return true;
+    }
+
     hasApprovedMiningFarm(): boolean {
         return this.approvedMiningFarm;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
+    async loginWithCredentials(username: string, password: string) {
+        await this.login(username, password, '', '', '', null, S.NOT_EXISTS, S.NOT_EXISTS);
+    }
+
+    async loginWithWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature, sequence: number, accountNumber: number) {
+        await this.login('', '', cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+    }
+
+    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
-            await this.accountRepo.login(username, password, cudosWalletAddress, walletName, signedTx);
+            await this.accountRepo.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
         } finally {
             await this.loadSessionAccountsAndSync();
         }
     }
 
-    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
-        await this.accountRepo.register(email, password, name, cudosWalletAddress, signedTx);
+    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
+        await this.accountRepo.register(email, password, name, cudosWalletAddress, signedTx, sequence, accountNumber);
     }
 
     async logout(): Promise < void > {
@@ -107,20 +155,12 @@ export default class AccountSessionStore {
         this.superAdminEntity = null;
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
-        try {
-            this.accountRepo.confirmBitcoinAddress(bitcoinAddress, ledger, network, this.accountEntity.accountId);
-        } finally {
-            await this.loadSessionAccountsAndSync();
-        }
-    }
-
     async editPassword(token: string, pass: string): Promise < void > {
-        this.accountRepo.changePassword(token, pass);
+        this.accountRepo.editSessionAccountPass('', pass, token);
     }
 
     async changePassword(oldPass: string, newPass: string): Promise < void > {
-        await this.accountRepo.changePassword(oldPass, newPass);
+        await this.accountRepo.editSessionAccountPass(oldPass, newPass, '');
     }
 
     async forgottenPassword(email: string): Promise < void > {
@@ -128,49 +168,37 @@ export default class AccountSessionStore {
     }
 
     async sendVerificationEmail(): Promise < void > {
-        await this.accountRepo.sendVerificationEmail();
+        await this.accountRepo.sendSessionAccountVerificationEmail();
     }
 
-    async creditAccount(accountEntity: AccountEntity): Promise < void > {
-        await this.accountRepo.creditAccount(accountEntity);
+    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
+        await this.accountRepo.creditSessionAccount(accountEntity);
 
         runInAction(() => {
-            // update session account entity
             Object.assign(this.accountEntity, accountEntity);
-            // keep the account verified in the current session
-            this.accountEntity.emailVerified = S.INT_TRUE;
         });
     }
 
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
 
-        runInAction(() => {
-            this.accountEntity = accountEntity;
-            this.userEntity = userEntity;
-            this.adminEntity = adminEntity;
-            this.superAdminEntity = superAdminEntity;
-        });
-
-        if (this.isUser() === true) {
+        if (accountEntity?.isUser() === true && userEntity !== null) {
             await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
-                if (this.userEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
-                    await this.logout();
-                    window.location.reload();
+                if (userEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
+                    await this.walletStore.disconnect();
                     return;
                 }
             }
 
             console.log('Logged as user => wallet:', this.walletStore.isConnected())
-        } else if (this.isAdmin() === true) {
+        } else if (accountEntity?.isAdmin() === true && adminEntity !== null) {
             await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
-                if (this.adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
-                    await this.logout();
-                    window.location.reload();
+                if (adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
+                    await this.walletStore.disconnect();
                     return;
                 }
             }
@@ -182,7 +210,13 @@ export default class AccountSessionStore {
             console.log('Logged as super admin => wallet:', false);
         }
 
-        this.inited = true;
+        runInAction(() => {
+            this.accountEntity = accountEntity;
+            this.userEntity = userEntity;
+            this.adminEntity = adminEntity;
+            this.superAdminEntity = superAdminEntity;
+            this.inited = true;
+        });
     }
 
     async loadAdminMiningFarmApproval(): Promise < void > {

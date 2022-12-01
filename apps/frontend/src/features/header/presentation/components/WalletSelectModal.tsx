@@ -1,16 +1,18 @@
 import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
 import S from '../../../../core/utilities/Main';
 import WalletSelectModalStore, { ProgressSteps } from '../stores/WalletSelectModalStore';
 import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import { InputAdornment } from '@mui/material';
 import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
-import NavRow, { createNavStep } from '../../../../core/presentation/components/NavRow';
+import NavRow, { createNavStep, NavStep } from '../../../../core/presentation/components/NavRow';
 import Actions from '../../../../core/presentation/components/Actions';
 import Button, { ButtonColor, ButtonType } from '../../../../core/presentation/components/Button';
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
@@ -31,6 +33,7 @@ type Props = {
 
 function WalletSelectModal({ walletSelectModalStore, walletStore, accountSessionStore }: Props) {
 
+    const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
     const validationBitcoin = useRef(validationState.addBitcoinAddressValidation('Invalid address')).current;
 
@@ -50,32 +53,51 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         walletSelectModalStore.markAsWalletConnecting(walletType);
         await walletStore.connectWallet(walletType);
         if (walletStore.isConnected() === true) {
-            walletSelectModalStore.markAsWalletConnectedSuccessfully();
+            const userMatch = walletSelectModalStore.isModeUser() && accountSessionStore.doesAddressMatchAgainstSessionUserIfAny(walletStore.getAddress());
+            const adminMatch = walletSelectModalStore.isModeAdmin() && accountSessionStore.doesAddressMatchAgainstSessionAdminIfAny(walletStore.getAddress());
+            if (userMatch || adminMatch) {
+                walletSelectModalStore.markAsWalletConnectedSuccessfully();
+            } else {
+                walletSelectModalStore.markAsWalletError();
+                walletStore.disconnect();
+            }
         } else {
             walletSelectModalStore.markAsWalletError();
         }
     }
 
     async function register() {
-        if (accountSessionStore.isAdmin() === true) {
-            await accountSessionStore.loadSessionAccountsAndSync();
-        } else {
-            await accountSessionStore.login('', '', walletStore.getAddress(), walletStore.getName(), '');
+        if (walletSelectModalStore.isModeUser() === true) {
+            const address = walletStore.getAddress()
+            await accountSessionStore.loginWithWallet(address, walletSelectModalStore.bitcoinAddress, walletStore.getName(), walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
         }
+
+        walletSelectModalStore.onFinish?.(walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
     }
 
     async function sendBitcoinAddressTx() {
         walletSelectModalStore.markBitcoinAddressTxWaiting();
-        setTimeout(() => {
+        try {
+            await walletSelectModalStore.confirmBitcoinAddress();
             walletSelectModalStore.markBitcoinAddressTxDoneSuccessfully();
-        }, 2000);
+        } catch (ex) {
+            console.log(ex);
+            walletSelectModalStore.markBitcoinAddressTxError();
+        }
     }
 
     async function sendIdentityTx() {
         walletSelectModalStore.markIdentityTxWaiting();
-        setTimeout(() => {
+        try {
+            const { signature, sequence, accountNumber } = await walletStore.signNonceMsg();
+            walletSelectModalStore.signature = signature;
+            walletSelectModalStore.sequence = sequence;
+            walletSelectModalStore.accountNumber = accountNumber;
             walletSelectModalStore.markIdentityTxDoneSuccessfully();
-        }, 2000);
+        } catch (ex) {
+            console.log(ex);
+            walletSelectModalStore.markIdentityTxError();
+        }
     }
 
     function onChangeBitcoinAddress(value) {
@@ -100,7 +122,15 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     async function onClickNext() {
         switch (walletSelectModalStore.progressStep) {
             case ProgressSteps.CONNECT_WALLET:
-                walletSelectModalStore.moveToProgressStepBtc();
+                if (walletSelectModalStore.isModeUser() === true) {
+                    walletSelectModalStore.moveToProgressStepBtc();
+                } else if (walletSelectModalStore.isModeAdmin() === true) {
+                    if (accountSessionStore.isLoggedIn() === false) {
+                        walletSelectModalStore.moveToProgressStepSign();
+                    } else {
+                        walletSelectModalStore.hide();
+                    }
+                }
                 break;
             case ProgressSteps.BTC:
                 if (walletSelectModalStore.isBitcoinAddressTxDoneSuccessfully() === false) {
@@ -117,8 +147,12 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 if (walletSelectModalStore.isIdentityTxDoneSuccessfully() === false) {
                     sendIdentityTx();
                 } else {
-                    // await register();
-                    walletSelectModalStore.moveToProgressStepKyc();
+                    await register();
+                    if (walletSelectModalStore.isModeUser() === true) {
+                        walletSelectModalStore.moveToProgressStepKyc();
+                    } else if (walletSelectModalStore.isModeAdmin() === true) {
+                        walletSelectModalStore.hide();
+                    }
                 }
                 break;
             case ProgressSteps.KYC:
@@ -130,6 +164,33 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
     function onClickSkip() {
         walletSelectModalStore.hide();
+    }
+
+    function onClickLogin() {
+        navigate(AppRoutes.LOGIN);
+    }
+
+    function renderNavSteps(): NavStep[] {
+        if (walletSelectModalStore.isModeUser() === true) {
+            return [
+                createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false),
+                createNavStep(2, 'Set BTC Address', walletSelectModalStore.isProgressStepBtc() === true, walletSelectModalStore.isProgressStepSign() || walletSelectModalStore.isProgressStepKyc()),
+                createNavStep(3, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
+                createNavStep(4, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
+            ]
+        }
+
+        if (walletSelectModalStore.isModeAdmin() === true) {
+            const steps = [createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
+            if (accountSessionStore.isAdmin() === false) {
+                steps.push(
+                    createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, false),
+                )
+            }
+            return steps;
+        }
+
+        return [];
     }
 
     function renderLoading(title, subtitle) {
@@ -188,12 +249,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
             modalStore = { walletSelectModalStore } >
             <NavRow
                 className = { 'ModalWalletNavRow' }
-                navSteps = { [
-                    createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false),
-                    createNavStep(2, 'Set BTC Address', walletSelectModalStore.isProgressStepBtc() === true, walletSelectModalStore.isProgressStepSign() || walletSelectModalStore.isProgressStepKyc()),
-                    createNavStep(3, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
-                    createNavStep(4, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
-                ] } />
+                navSteps = { renderNavSteps() } />
 
             <AnimationContainer className = { 'ProgressStep ProgressStepConnectWallet FlexColumn' } active = { walletSelectModalStore.isProgressStepConnectWallet() } >
                 <AnimationContainer active = {walletSelectModalStore.isWalletConnecting() === false } >
@@ -207,12 +263,22 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError')}` } onClick = { onClickToggleKeplr } >
                         <img className = { 'WalletIcon' } src={'/assets/img/keplr-icon.png'} />
+                        <div className = { 'FlexColumn' }>
                             Connect to Keplr
+                            { walletSelectModalStore.isKeplrError() === true && (
+                                <div className = { 'WalletErrorLabel' } >There was an error connecting to the wallet.</div>
+                            ) }
+                        </div>
                         <Svg className = { 'IconWalletConnectionStatus' } size = { SvgSize.CUSTOM } svg = { walletSelectModalStore.isWalletConnectedSuccessfully() === true ? CheckIcon : ClearIcon } />
                     </div>
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isCosmostationConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isCosmostationError(), 'ConnectButtonError')}` } onClick = { onClickToggleCosmostation } >
                         <img className = { 'WalletIcon' } src={'/assets/img/cosmostation-icon.png'} />
+                        <div className = { 'FlexColumn' } >
                             Connect to Cosmostation
+                            { walletSelectModalStore.isCosmostationError() === true && (
+                                <div className = { 'WalletErrorLabel' } >There was an error connecting to the wallet.</div>
+                            ) }
+                        </div>
                         <Svg className = { 'IconWalletConnectionStatus' } size = { SvgSize.CUSTOM } svg = { walletSelectModalStore.isWalletConnectedSuccessfully() === true ? CheckIcon : ClearIcon } />
                     </div>
                 </AnimationContainer>
@@ -311,9 +377,9 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                             </Button>
                         </Actions>
                     ) }
-                    <div className = { 'StartRight' } >
-                        { walletSelectModalStore.hasNextStep() === true && (
-                            <Actions>
+                    <Actions className = { 'StartRight' } >
+                        { walletSelectModalStore.hasNextStep() === true ? (
+                            <>
                                 { walletSelectModalStore.isProgressStepKyc() === true && (
                                     <Button type = { ButtonType.TEXT_INLINE } color = { ButtonColor.SCHEME_3 } onClick = { onClickSkip }>Skip</Button>
                                 ) }
@@ -324,9 +390,15 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                                         'Start Verification'
                                     ) }
                                 </Button>
-                            </Actions>
+                            </>
+                        ) : (
+                            <>
+                                { accountSessionStore.isLoggedIn() === true && (
+                                    <Button onClick = { onClickLogin }>Log with other account</Button>
+                                ) }
+                            </>
                         ) }
-                    </div>
+                    </Actions>
                 </div>
             ) }
         </ModalWindow>

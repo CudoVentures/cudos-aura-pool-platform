@@ -115,13 +115,14 @@ export default class UserProfilePageStore {
     fetchHistory = async () => {
         this.nftEventFilterModel.from = this.historyTableState.tableFilterState.from;
         this.nftEventFilterModel.count = this.historyTableState.tableFilterState.itemsPerPage;
+        this.nftEventFilterModel.sessionAccount = S.INT_TRUE;
         const { nftEventEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
 
         const nftIds = nftEventEntities.filter((nftEventEntity) => {
             return this.nftEntitiesMap.has(nftEventEntity.nftId) === false;
         }).map((nftEventEntity) => {
             return nftEventEntity.nftId;
-        });
+        }).filter((id, index) => nftEventEntities.findIndex((nftEvent) => nftEvent.nftId === id) === index);
 
         const nftEntitiesMap = this.nftEntitiesMap;
         if (nftIds.length > 0) {

@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js';
-
 import S from '../../../core/utilities/Main';
 
 export default class UserEntity {
@@ -7,8 +5,7 @@ export default class UserEntity {
     userId: string;
     accountId: string;
     cudosWalletAddress: string;
-    totalBtcEarned: BigNumber;
-    totalHashPower: number;
+    bitcoinPayoutWalletAddress: string;
     profileImgUrl: string;
     coverImgUrl: string;
     bitcoinWalletAddress: string;
@@ -17,8 +14,7 @@ export default class UserEntity {
         this.userId = S.Strings.NOT_EXISTS;
         this.accountId = S.Strings.NOT_EXISTS;
         this.cudosWalletAddress = '';
-        this.totalBtcEarned = new BigNumber(S.NOT_EXISTS);
-        this.totalHashPower = S.NOT_EXISTS;
+        this.bitcoinPayoutWalletAddress = '';
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
         this.bitcoinWalletAddress = '';
@@ -38,14 +34,12 @@ export default class UserEntity {
         }
 
         return {
-            'id': parseInt(entity.userId),
-            'account_id': parseInt(entity.accountId),
-            'cudos_address': entity.cudosWalletAddress,
-            'total_btc_earned': entity.totalBtcEarned.toString(),
-            'total_hashpower': entity.totalHashPower,
-            'profile_img': entity.profileImgUrl,
-            'cover_img': entity.coverImgUrl,
-            'payout_address': entity.bitcoinWalletAddress,
+            'userId': entity.userId,
+            'accountId': entity.accountId,
+            'cudosWalletAddress': entity.cudosWalletAddress,
+            'bitcoinPayoutWalletAddress': entity.bitcoinPayoutWalletAddress,
+            'profileImgUrl': entity.profileImgUrl,
+            'coverImgUrl': entity.coverImgUrl,
         }
     }
 
@@ -56,14 +50,12 @@ export default class UserEntity {
 
         const entity = new UserEntity();
 
-        entity.userId = (json.id ?? entity.userId).toString();
-        entity.accountId = (json.account_id ?? entity.accountId).toString();
-        entity.cudosWalletAddress = json.cudos_address ?? entity.cudosWalletAddress;
-        entity.totalBtcEarned = new BigNumber(json.total_btc_earned ?? entity.totalBtcEarned);
-        entity.totalHashPower = Number(json.total_hashpower ?? entity.totalHashPower);
-        entity.profileImgUrl = json.profile_img ?? entity.profileImgUrl;
-        entity.coverImgUrl = json.cover_img ?? entity.coverImgUrl;
-        entity.bitcoinWalletAddress = (json.payout_address ?? entity.bitcoinWalletAddress).toString();
+        entity.userId = (json.userId ?? entity.userId).toString();
+        entity.accountId = (json.accountId ?? entity.accountId).toString();
+        entity.cudosWalletAddress = json.cudosWalletAddress ?? entity.cudosWalletAddress;
+        entity.bitcoinPayoutWalletAddress = json.bitcoinPayoutWalletAddress ?? entity.bitcoinPayoutWalletAddress;
+        entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;
+        entity.coverImgUrl = json.coverImgUrl ?? entity.coverImgUrl;
 
         return entity;
     }

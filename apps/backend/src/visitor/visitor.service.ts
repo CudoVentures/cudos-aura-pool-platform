@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize from 'sequelize';
-import { SqlFetchCounts } from './dto/sql-fetch-counts.dto';
-import VisitorEntity from './visitor.entity';
-import VisitorRepo, { VisitorRepoColumn } from './visitor.repo'
+import sequelize, { Transaction } from 'sequelize';
+import { SqlFetchCounts } from './dto/sql.dto';
+import VisitorEntity from './entities/visitor.entity';
+import VisitorRepo, { VisitorRepoColumn } from './repo/visitor.repo'
 import { RefType } from './visitor.types';
 
 @Injectable()
@@ -14,14 +14,14 @@ export class VisitorService {
         private visitorRepo: typeof VisitorRepo,
     ) {}
 
-    async signalVisitFarm(miningFarmId: number, visitorUuid: string) {
+    async signalVisitFarm(miningFarmId: number, visitorUuid: string, tx: Transaction) {
         const visitorEntity = VisitorEntity.newInstanceForMiningFarm(miningFarmId, visitorUuid);
-        await this.credit(visitorEntity);
+        await this.credit(visitorEntity, tx);
     }
 
-    async signalVisitNft(nftId: string, visitorUuid: string) {
+    async signalVisitNft(nftId: string, visitorUuid: string, tx: Transaction) {
         const visitorEntity = VisitorEntity.newInstanceForNft(nftId, visitorUuid);
-        await this.credit(visitorEntity);
+        await this.credit(visitorEntity, tx);
     }
 
     async fetchMiningFarmVisitsCount(miningFarmIds: number[]): Promise < Map < number, number > > {
@@ -64,10 +64,11 @@ export class VisitorService {
         });
     }
 
-    private async credit(visitorEntity: VisitorEntity) {
+    private async credit(visitorEntity: VisitorEntity, tx: Transaction = undefined) {
         const visitorRepo = VisitorEntity.toRepo(visitorEntity);
         await this.visitorRepo.findOrCreate({
             where: visitorRepo.toJSON(),
+            transaction: tx,
         });
     }
 

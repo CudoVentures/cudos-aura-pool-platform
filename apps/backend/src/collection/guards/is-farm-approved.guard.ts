@@ -4,35 +4,34 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Farm, FarmStatus } from '../../farm/models/farm.model';
 import { FarmService } from '../../farm/farm.service';
+import { CollectionDto } from '../dto/collection.dto';
+import { NOT_EXISTS_INT } from '../../common/utils';
 
 @Injectable()
-export class IsFarmApprovedGuard extends JwtAuthGuard implements CanActivate {
+export class IsFarmApprovedGuard implements CanActivate {
     constructor(
       private farmService: FarmService,
     ) {
-        super();
     }
 
-    async canActivate(context: ExecutionContext) {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
-        const { farm_id } = request.body;
+        const collectionDto: CollectionDto = CollectionDto.fromJson(request.body);
 
-        const farmId = farm_id;
+        if (collectionDto.farm_id === NOT_EXISTS_INT) return false;
 
-        if (!farmId) return false;
+        const farmId = collectionDto.farm_id
 
         const farm = await this.farmService.findOne(farmId);
 
-        return this.farmService.findOne(farmId).then((farm: Farm) => {
-            if (farm === null || farm.status !== FarmStatus.APPROVED) {
-                throw new UnauthorizedException(
-                    `Farm with id ${farmId} is not verified`,
-                );
-            }
-            return true;
-        });
+        if (!farm || farm.status !== FarmStatus.APPROVED) {
+            throw new UnauthorizedException(
+                `Farm with id ${farmId} is not verified`,
+            );
+        }
+
+        return true;
     }
 }

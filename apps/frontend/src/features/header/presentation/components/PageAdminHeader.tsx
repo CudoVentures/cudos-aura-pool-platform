@@ -69,9 +69,11 @@ function PageAdminHeader({ accountSessionStore }: Props) {
                     </>
                 ) }
 
-                <Actions>
-                    <Button onClick={onClickLogout}>Logout</Button>
-                </Actions>
+                { accountSessionStore.isLoggedIn() === true && (
+                    <Actions>
+                        <Button onClick={onClickLogout}>Logout</Button>
+                    </Actions>
+                ) }
             </div>
         </header>
     )

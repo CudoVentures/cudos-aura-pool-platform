@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsNumber, IsDateString } from 'class-validator';
+import { NOT_EXISTS_INT } from '../../common/utils';
 
 export class NFTDto {
     @IsString()
@@ -45,4 +46,34 @@ export class NFTDto {
     @IsOptional()
     @ApiProperty({ required: true, example: 1 })
         collection_id: number;
+
+    constructor() {
+        this.id = '';
+        this.name = '';
+        this.uri = '';
+        this.data = '';
+        this.hashing_power = NOT_EXISTS_INT;
+        this.price = '';
+        this.expiration_date = NOT_EXISTS_INT;
+        this.collection_id = NOT_EXISTS_INT;
+    }
+
+    isNew(): boolean {
+        return this.id === '';
+    }
+
+    static fromJson(json): NFTDto {
+        const nftDto = new NFTDto();
+
+        nftDto.id = nftDto.id ?? json.id;
+        nftDto.name = nftDto.name ?? json.name;
+        nftDto.uri = nftDto.uri ?? json.uri;
+        nftDto.data = nftDto.data ?? json.data;
+        nftDto.hashing_power = parseInt(nftDto.hashing_power ?? json.hashing_power);
+        nftDto.price = nftDto.price ?? json.price;
+        nftDto.expiration_date = parseInt(nftDto.expiration_date ?? json.expiration_date);
+        nftDto.collection_id = parseInt(nftDto.collection_id ?? json.collection_id);
+
+        return nftDto;
+    }
 }

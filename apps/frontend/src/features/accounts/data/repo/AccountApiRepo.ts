@@ -5,9 +5,10 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
-import { Ledger, SigningStargateClient, GasPrice } from 'cudosjs';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
-import e from 'express';
+import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
+import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
+import { parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -28,19 +29,21 @@ export default class AccountStorageRepo implements AccountRepo {
         this.disableActions = disableActions;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.login(username, password, cudosWalletAddress, signedTx);
+            return this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+        } catch (e) {
+            throw Error(parseBackendErrorType(e));
         } finally {
             this.enableActions?.();
         }
     }
 
-    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.register(email, password, name, cudosWalletAddress, signedTx);
+            return this.accountApi.register(email, password, name, cudosWalletAddress, signedTx, sequence, accountNumber);
         } finally {
             this.enableActions?.();
         }
@@ -55,36 +58,29 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string, accountId: string): Promise < void > {
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
         try {
             this.disableActions?.();
-
-            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
-
-            await signingClient.addressbookCreateAddress(ledger.accountAddress, 'BTC', 'farm', bitcoinAddress, gasPrice);
-            const res = await this.accountApi.confirmBitcoinAddress(bitcoinAddress, accountId);
-
-            return res.data.payout_address;
+            return this.accountApi.fetchSessionAccounts();
         } finally {
             this.enableActions?.();
         }
     }
 
-    async creditAccount(accountEntity: AccountEntity): Promise < void > {
+    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
         try {
             this.disableActions?.();
-            const resultAccountEntity = await this.accountApi.creditAccount(accountEntity);
+            const resultAccountEntity = await this.accountApi.creditSessionAccount(accountEntity);
             Object.assign(accountEntity, resultAccountEntity);
         } finally {
             this.enableActions?.();
         }
     }
 
-    async changePassword(oldPassword: string, newPassword: string): Promise < void > {
+    async editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.changePassword(oldPassword, newPassword);
+            return this.accountApi.editSessionAccountPass(oldPassword, newPassword, token);
         } finally {
             this.enableActions?.();
         }
@@ -99,30 +95,37 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async sendVerificationEmail(): Promise < void > {
+    async sendSessionAccountVerificationEmail(): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.sendVerificationEmail();
+            return this.accountApi.sendSessionAccountVerificationEmail();
         } finally {
             this.enableActions?.();
         }
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+    async confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean > {
         try {
             this.disableActions?.();
-            return this.accountApi.fetchSessionAccounts();
+
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
+            await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
+            return true;
+        } catch (ex) {
+            return false;
         } finally {
             this.enableActions?.();
         }
     }
 
-    async creditAdminSettings(adminEntity: AdminEntity, accountEntity: AccountEntity): Promise < void > {
+    async fetchBitcoinAddress(cudosAddress: string): Promise < string > {
         try {
-            this.disableActions?.();
-            return this.accountApi.creditAdminSettings(adminEntity, accountEntity);
-        } finally {
-            this.enableActions?.();
+            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
+            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
+
+            return res.address.value
+        } catch (e) {
+            return '';
         }
     }
 

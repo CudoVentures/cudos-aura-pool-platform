@@ -96,7 +96,7 @@ export default class ResellNftModalStore extends ModalStore {
     onClickSubmitForSell = async () => {
         this.modalStage = ModalStage.PROCESSING;
 
-        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.price, this.walletStore.ledger, this.walletStore.selectedNetwork);
+        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.price, this.walletStore.ledger);
 
         this.modalStage = ModalStage.SUCCESS;
     }
@@ -117,8 +117,8 @@ export default class ResellNftModalStore extends ModalStore {
         return this.modalStage === ModalStage.FAIL;
     }
 
-    getTxLink(network): string {
-        return `${CHAIN_DETAILS.EXPLORER_URL[network]}/${this.txHash}`
+    getTxLink(): string {
+        return `${CHAIN_DETAILS.EXPLORER_URL}/${this.txHash}`
     }
 
 }

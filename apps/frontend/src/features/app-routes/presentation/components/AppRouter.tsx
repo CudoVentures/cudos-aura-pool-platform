@@ -19,7 +19,6 @@ import CreditMiningFarmPage from '../../../mining-farm/presentation/pages/Credit
 import LoginPage from '../../../accounts/presentation/pages/LoginPage';
 import RegisterPage from '../../../accounts/presentation/pages/RegisterPage';
 import SuperAdminApprovePage from '../../../accounts/presentation/pages/SuperAdminApprovePage';
-import BitcoinConfirmPage from '../../../accounts/presentation/pages/BitcoinConfirmPage';
 import CreditMiningFarmDetailsPage from '../../../mining-farm/presentation/pages/CreditMiningFarmDetailsPage';
 import CreditCollectionDetailsCreatePage from '../../../collection/presentation/pages/CreditCollectionDetailsCreatePage';
 import ForgottenPassRequestPage from '../../../accounts/presentation/pages/ForgottenPassRequestPage';
@@ -65,11 +64,6 @@ function AppRouter({ accountSessionStore }: Props) {
             }
 
             if (accountSessionStore.isAdmin() === true) {
-                // const adminEntity = accountSessionStore.adminEntity;
-                // if (adminEntity.isBitcointAddressConfirmed() === false) {
-                //     return <BitcoinConfirmPage />
-                // }
-
                 return <CreditMiningFarmPage />;
             }
 
@@ -108,7 +102,7 @@ function AppRouter({ accountSessionStore }: Props) {
                     <Route path = { AppRoutes.LOGIN } element = { <LoginPage /> } />
                     <Route path = { AppRoutes.REGISTER } element = { <RegisterPage /> } />
                     <Route path = { AppRoutes.FORGOTTEN_PASS_REQUEST } element = { <ForgottenPassRequestPage /> } />
-                    <Route path = { AppRoutes.FORGOTTEN_PASS_EDIT } element = { <ForgottenPassEditPage /> } />
+                    <Route path = { `${AppRoutes.FORGOTTEN_PASS_EDIT}/:token` } element = { <ForgottenPassEditPage /> } />
                     <Route path = { AppRoutes.EMAIL_VERIFICATION_REQUEST } element = { <EmailVerificationRequestPage /> } />
                     <Route path = { AppRoutes.EMAIL_VERIFICATION_CONFIRMATION } element = { <EmailVerificationConfirmationPage /> } />
 

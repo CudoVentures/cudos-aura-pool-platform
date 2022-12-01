@@ -1,5 +1,4 @@
 import S from '../../../../core/utilities/Main';
-import BigNumber from 'bignumber.js';
 import StorageHelper from '../../../../core/helpers/StorageHelper';
 import AccountEntity, { AccountType } from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
@@ -7,6 +6,7 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
+import { StdSignature } from 'cudosjs';
 
 export default class AccountStorageRepo implements AccountRepo {
 
@@ -18,7 +18,7 @@ export default class AccountStorageRepo implements AccountRepo {
 
     setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
 
-    async login(email: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: any): Promise < void > {
+    async login(email: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         const currentAccounts = this.storageHelper.accountsJson;
         const currentUsers = this.storageHelper.usersJson;
         const currentAdmins = this.storageHelper.adminsJson;
@@ -70,8 +70,6 @@ export default class AccountStorageRepo implements AccountRepo {
                 userEntity.userId = nextUserId.toString();
                 userEntity.accountId = accountEntity.accountId;
                 userEntity.cudosWalletAddress = cudosWalletAddress;
-                userEntity.totalBtcEarned = new BigNumber(0);
-                userEntity.totalHashPower = 0;
 
                 userJson = UserEntity.toJson(userEntity);
                 currentUsers.push(userJson);
@@ -87,7 +85,7 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
-    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: any): Promise < void > {
+    async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
         const currentAccounts = this.storageHelper.accountsJson;
         const currentAdmins = this.storageHelper.adminsJson;
 
@@ -136,6 +134,34 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+        return {
+            accountEntity: AccountEntity.fromJson(this.storageHelper.sessionAccount),
+            userEntity: UserEntity.fromJson(this.storageHelper.sessionUser),
+            adminEntity: AdminEntity.fromJson(this.storageHelper.sessionAdmin),
+            superAdminEntity: SuperAdminEntity.fromJson(this.storageHelper.sessionSuperAdmin),
+        }
+    }
+
+    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
+        const accountJson = this.storageHelper.accountsJson.find((account: AccountEntity) => account.accountId === accountEntity.accountId);
+        Object.assign(accountJson, AccountEntity.toJson(accountEntity));
+
+        this.storageHelper.sessionAccount = accountJson ?? null;
+        this.storageHelper.save();
+    }
+
+    async editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > {
+    }
+
+    async forgottenPassword(email: string): Promise < void > {
+
+    }
+
+    async sendSessionAccountVerificationEmail(): Promise < void > {
+
+    }
+
     async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
         const adminJson = this.storageHelper.adminsJson.find((json) => {
             return json.accountId === this.storageHelper.sessionAdmin.accountId;
@@ -144,34 +170,6 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.sessionAdmin.bitcoinWalletAddress = bitcoinAddress;
         adminJson.bitcoinWalletAddress = bitcoinAddress;
         this.storageHelper.save();
-    }
-
-    async creditAccount(accountEntity: AccountEntity): Promise < void > {
-        const accountJson = this.storageHelper.accountsJson.find((account: AccountEntity) => account.accountId === accountEntity.accountId);
-        Object.assign(accountJson, AccountEntity.toJson(accountEntity));
-
-        this.storageHelper.sessionAccount = accountJson ?? null;
-        this.storageHelper.save();
-    }
-
-    async changePassword(accountId: string, oldPassword: string, newPassword: string): Promise < void > {
-    }
-
-    async forgottenPassword(email: string): Promise < void > {
-
-    }
-
-    async sendVerificationEmail(): Promise < void > {
-
-    }
-
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
-        return {
-            accountEntity: AccountEntity.fromJson(this.storageHelper.sessionAccount),
-            userEntity: UserEntity.fromJson(this.storageHelper.sessionUser),
-            adminEntity: AdminEntity.fromJson(this.storageHelper.sessionAdmin),
-            superAdminEntity: SuperAdminEntity.fromJson(this.storageHelper.sessionSuperAdmin),
-        }
     }
 
 }

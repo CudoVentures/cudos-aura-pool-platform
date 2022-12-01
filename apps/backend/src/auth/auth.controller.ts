@@ -1,31 +1,39 @@
-import { Body, Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { User } from '../user/user.model';
-import { UserService } from '../user/user.service';
+import { TransactionInterceptor } from '../common/common.interceptors';
+import { AppRequest, RequestWithSessionAccounts } from '../common/commont.types';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { ReqLogin, ReqRegister } from './dto/requests.dto';
+import { ResFetchSessionAccounts, ResLogin } from './dto/responses.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService, private userService: UserService, private jwtService: JwtService) {}
+    constructor(
+        private authService: AuthService,
+    ) {}
 
-    @UseGuards(LocalAuthGuard)
+    @UseInterceptors(TransactionInterceptor)
     @Post('login')
-    async login(@Request() req, @Body() loginDto: LoginDto) {
-        return this.authService.login(req.user);
+    async login(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin,
+    ): Promise < ResLogin > {
+        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.bitcoinPayoutWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, reqLogin.sequence, reqLogin.accountNumber, req.transaction);
+        return new ResLogin(accessToken);
     }
 
+    @UseInterceptors(TransactionInterceptor)
     @Post('register')
-    async register(@Request() req, @Body() registerDto: RegisterDto) {
-        return this.userService.createFarmAdmin(registerDto)
+    async register(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqRegister: ReqRegister,
+    ): Promise < void > {
+        return this.authService.register(reqRegister.email, reqRegister.password, reqRegister.cudosWalletAddress, reqRegister.name, reqRegister.pubKeyType, reqRegister.pubKeyValue, reqRegister.signature, reqRegister.sequence, reqRegister.accountNumber, req.transaction);
     }
 
     @Get('fetchSessionAccounts')
-    async fetchSessionAccounts(@Request() req): Promise < User > {
-        return req.sessionUser;
+    async fetchSessionAccounts(@Req() req: RequestWithSessionAccounts): Promise < ResFetchSessionAccounts > {
+        return new ResFetchSessionAccounts(req.sessionAccountEntity, req.sessionUserEntity, req.sessionAdminEntity, req.sessionSuperAdminEntity);
     }
 }

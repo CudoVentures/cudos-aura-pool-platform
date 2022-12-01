@@ -116,7 +116,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
     function getPriceDataPreviews() {
         const priceDatapreviews = [];
 
-        priceDatapreviews.push(createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME[walletStore.selectedNetwork]));
+        priceDatapreviews.push(createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME));
         priceDatapreviews.push(createDataPreview(
             'Price',
             <div className={'DataValue NftPrice FlexRow'}>

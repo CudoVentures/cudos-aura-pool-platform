@@ -14,7 +14,7 @@ import { HttpModule } from '@nestjs/axios';
 import { GraphqlService } from '../graphql/graphql.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
-import VisitorRepo from '../visitor/visitor.repo';
+import VisitorRepo from '../visitor/repo/visitor.repo';
 import DataService from '../data/data.service';
 
 @Module({

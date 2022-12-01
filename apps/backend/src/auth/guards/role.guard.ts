@@ -1,17 +1,30 @@
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
-import { RequestWithUser } from '../interfaces/request.interface';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { Role } from '../../user/roles';
+import { AccountType } from '../../account/account.types';
+import { RequestWithSessionAccounts } from '../../common/commont.types';
 
-const RoleGuard = (roles: Role[]): Type<CanActivate> => {
-    class RoleGuardMixin extends JwtAuthGuard {
+const RoleGuard = (accountTypes: AccountType[]): Type<CanActivate> => {
+
+    class RoleGuardMixin implements CanActivate {
         async canActivate(context: ExecutionContext) {
-            await super.canActivate(context);
 
-            const request = context.switchToHttp().getRequest<RequestWithUser>();
-            const user = request.user;
+            const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
 
-            return roles.includes(user.role);
+            const sessionUserEntity = request.sessionUserEntity;
+            const sessionAdminEntity = request.sessionAdminEntity;
+            const sessionSuperAdminEntity = request.sessionSuperAdminEntity;
+            if (accountTypes.includes(AccountType.USER) && sessionUserEntity !== null) {
+                return true;
+            }
+
+            if (accountTypes.includes(AccountType.ADMIN) && sessionAdminEntity !== null) {
+                return true;
+            }
+
+            if (accountTypes.includes(AccountType.SUPER_ADMIN) && sessionSuperAdminEntity !== null) {
+                return true;
+            }
+
+            return false;
         }
     }
 

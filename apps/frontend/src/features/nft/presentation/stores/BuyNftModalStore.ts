@@ -5,6 +5,7 @@ import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import NftRepo from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 
 export enum ModalStage {
     PREVIEW,
@@ -15,6 +16,7 @@ export enum ModalStage {
 
 export default class BuyNftModalStore extends ModalStore {
     nftRepo: NftRepo;
+    accountRepo: AccountRepo
     walletStore: WalletStore;
 
     @observable nftEntity: NftEntity;
@@ -24,10 +26,12 @@ export default class BuyNftModalStore extends ModalStore {
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
-    constructor(nftRepo: NftRepo, walletStore: WalletStore) {
+    constructor(nftRepo: NftRepo, walletStore: WalletStore, accountRepo: AccountRepo) {
         super();
 
         this.nftRepo = nftRepo;
+        this.accountRepo = accountRepo;
+
         this.walletStore = walletStore;
 
         this.resetValues();
@@ -59,6 +63,10 @@ export default class BuyNftModalStore extends ModalStore {
         this.modalStage = ModalStage.PREVIEW;
         this.txHash = S.Strings.EMPTY;
 
+        this.accountRepo.fetchBitcoinAddress(this.walletStore.address).then((btcAddress) => {
+            this.recipient = btcAddress;
+        });
+
         this.show();
     }
 
@@ -74,13 +82,13 @@ export default class BuyNftModalStore extends ModalStore {
     buyNft = async () => {
         this.modalStage = ModalStage.PROCESSING;
 
-        this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger, this.walletStore.selectedNetwork);
+        this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger);
 
         this.modalStage = ModalStage.SUCCESS;
     }
 
-    getTxLink(network): string {
-        return `${CHAIN_DETAILS.EXPLORER_URL[network]}/${this.txHash}`
+    getTxLink(): string {
+        return `${CHAIN_DETAILS.EXPLORER_URL}/${this.txHash}`
     }
 
     isStagePreview(): boolean {

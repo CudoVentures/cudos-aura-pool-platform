@@ -47,7 +47,7 @@ export default class CreditMiningFarmPageStore {
         this.collectionEntities = null;
 
         if (farmId === S.Strings.NOT_EXISTS) {
-            this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
+            this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
             this.collectionFilterModel.status = CollectionStatus.ANY;
         } else {
             this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(farmId);

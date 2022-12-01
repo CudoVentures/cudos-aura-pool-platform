@@ -32,20 +32,19 @@ export class ChainMarketplaceCollectionDto {
         collectionDto.verified = queryCollection.verified ?? collectionDto.verified;
         collectionDto.denomId = queryCollection.denom_id ?? collectionDto.denomId;
 
-        // TODO: make it work
-        // collectionDto.mintRoyalties = queryCollection.mint_royalties
-        //     ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
-        //         const royaltyJson = JSON.parse(royaltyString);
-        //         return Royalty.fromJSON(royaltyJson);
-        //     })
-        //     : collectionDto.mintRoyalties;
+        collectionDto.mintRoyalties = queryCollection.mint_royalties
+            ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
+                const royaltyJson = JSON.parse(royaltyString);
+                return Royalty.fromJSON(royaltyJson);
+            })
+            : collectionDto.mintRoyalties;
 
-        // collectionDto.resaleRoyalties = queryCollection.resale_royalties
-        //     ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
-        //         const royaltyJson = JSON.parse(royaltyString);
-        //         return Royalty.fromJSON(royaltyJson);
-        //     })
-        //     : collectionDto.resaleRoyalties;
+        collectionDto.resaleRoyalties = queryCollection.resale_royalties
+            ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
+                const royaltyJson = JSON.parse(royaltyString);
+                return Royalty.fromJSON(royaltyJson);
+            })
+            : collectionDto.resaleRoyalties;
 
         return collectionDto;
 

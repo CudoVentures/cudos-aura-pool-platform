@@ -15,9 +15,9 @@ import { FarmStatus } from './utils';
 import { HttpService } from '@nestjs/axios';
 import { CollectionStatus } from '../collection/utils';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
-import sequelize, { Op } from 'sequelize';
-import { User } from '../user/user.model';
+import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { VisitorService } from '../visitor/visitor.service';
+import AccountEntity from '../account/entities/account.entity';
 
 @Injectable()
 export class FarmService {
@@ -38,7 +38,7 @@ export class FarmService {
         private visitorService: VisitorService,
     ) {}
 
-    async findByFilter(user: User, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
+    async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
         let whereClause: any = {};
 
         if (miningFarmFilterModel.hasMiningFarmIds() === true) {
@@ -50,7 +50,7 @@ export class FarmService {
         }
 
         if (miningFarmFilterModel.inOnlyForSessionAccount() === true) {
-            whereClause.creator_id = user.id;
+            whereClause.creator_id = accountEntity.accountId;
         }
 
         if (miningFarmFilterModel.hasSearchString() === true) {
@@ -86,29 +86,23 @@ export class FarmService {
         };
     }
 
-    async findOne(id: number): Promise<Farm> {
-        return this.farmModel.findByPk(id);
-    }
-
-    async findByCreatorId(id: number): Promise<Farm[]> {
-        const farms = await this.farmModel.findAll({
-            where: {
-                creator_id: id,
-            },
+    async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<Farm> {
+        return this.farmModel.findByPk(id, {
+            transaction: tx,
+            lock,
         });
-
-        return farms;
     }
 
     async createOne(
         createFarmDto: FarmDto,
         creator_id: number,
+        tx: Transaction = undefined,
     ): Promise<Farm> {
         const farm = this.farmModel.create({
             ...createFarmDto,
             creator_id,
             status: FarmStatus.QUEUED,
-        });
+        }, { transaction: tx });
 
         return farm;
     }
@@ -116,30 +110,18 @@ export class FarmService {
     async updateOne(
         id: number,
         updateFarmDto: FarmDto,
+        tx: Transaction = undefined,
     ): Promise<Farm> {
         const [count, [farm]] = await this.farmModel.update({ ...updateFarmDto }, {
             where: { id },
             returning: true,
+            transaction: tx,
         });
 
         return farm;
     }
 
-    async deleteOne(id: number): Promise<Farm> {
-        const [count, [farm]] = await this.farmModel.update(
-            { deleted_at: new Date() },
-            {
-                where: {
-                    id,
-                },
-                returning: true,
-            },
-        );
-
-        return farm;
-    }
-
-    async updateStatus(id: number, status: FarmStatus): Promise<Farm> {
+    async updateStatus(id: number, status: FarmStatus, tx: Transaction = undefined): Promise<Farm> {
         const [count, [farm]] = await this.farmModel.update(
             {
                 status,
@@ -147,6 +129,7 @@ export class FarmService {
             {
                 where: { id },
                 returning: true,
+                transaction: tx,
             },
         );
 
@@ -171,41 +154,41 @@ export class FarmService {
         return miners;
     }
 
-    async createMiner(minerDto: MinerDto): Promise<Miner> {
-        const miner = await this.minerModel.create({ ...minerDto });
+    async createMiner(minerDto: MinerDto, tx: Transaction = undefined): Promise<Miner> {
+        const miner = await this.minerModel.create({ ...minerDto }, { transaction: tx });
 
         return miner;
     }
 
-    async createEnergySource(energySourceDto: EnergySourceDto): Promise<EnergySource> {
-        const energySource = await this.energySourceModel.create({ ...energySourceDto });
+    async createEnergySource(energySourceDto: EnergySourceDto, tx: Transaction = undefined): Promise<EnergySource> {
+        const energySource = await this.energySourceModel.create({ ...energySourceDto }, { transaction: tx });
 
         return energySource;
     }
 
-    async createManufacturer(manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
-        const manufacturer = await this.manufacturerModel.create({ ...manufacturerDto });
+    async createManufacturer(manufacturerDto: ManufacturerDto, tx: Transaction = undefined): Promise<Manufacturer> {
+        const manufacturer = await this.manufacturerModel.create({ ...manufacturerDto }, { transaction: tx });
 
         return manufacturer;
     }
 
-    async updateMiner(minerDto: MinerDto): Promise<Miner> {
+    async updateMiner(minerDto: MinerDto, tx: Transaction = undefined): Promise<Miner> {
         const { id, ...rest } = minerDto
-        const [count, [miner]] = await this.minerModel.update({ ...rest }, { where: { id }, returning: true })
+        const [count, [miner]] = await this.minerModel.update({ ...rest }, { where: { id }, returning: true, transaction: tx })
 
         return miner;
     }
 
-    async updateEnergySource(energySourceDto: EnergySourceDto): Promise<EnergySource> {
+    async updateEnergySource(energySourceDto: EnergySourceDto, tx: Transaction = undefined): Promise<EnergySource> {
         const { id, ...rest } = energySourceDto
-        const [count, [energySource]] = await this.energySourceModel.update({ ...rest }, { where: { id }, returning: true })
+        const [count, [energySource]] = await this.energySourceModel.update({ ...rest }, { where: { id }, returning: true, transaction: tx })
 
         return energySource;
     }
 
-    async updateManufacturer(manufacturerDto: ManufacturerDto): Promise<Manufacturer> {
+    async updateManufacturer(manufacturerDto: ManufacturerDto, tx: Transaction = undefined): Promise<Manufacturer> {
         const { id, ...rest } = manufacturerDto
-        const [count, [manufacturer]] = await this.manufacturerModel.update({ ...rest }, { where: { id }, returning: true })
+        const [count, [manufacturer]] = await this.manufacturerModel.update({ ...rest }, { where: { id }, returning: true, transaction: tx })
 
         return manufacturer;
     }

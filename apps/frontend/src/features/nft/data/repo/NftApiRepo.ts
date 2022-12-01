@@ -35,6 +35,7 @@ export default class NftApiRepo implements NftRepo {
 
     async fetchNftByIds(nftIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
+
         nftFilterModel.nftIds = nftIds;
         nftFilterModel.collectionStatus = status;
 
@@ -71,12 +72,12 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async buyNft(nftEntity: NftEntity, ledger: Ledger, network: string): Promise < string > {
+    async buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
 
-            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
+            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE);
             let txHash = S.Strings.EMPTY;
 
             if (nftEntity.status === NftStatus.QUEUED) {
@@ -84,13 +85,7 @@ export default class NftApiRepo implements NftRepo {
                 const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(), 'acudos')
-                const tx = await signingClient.sendTokens(
-                    ledger.accountAddress,
-                    CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
-                    [sendAmountCoin],
-                    'auto',
-                    nftEntity.id,
-                );
+                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, sendAmountCoin, nftEntity.id);
                 txHash = tx.transactionHash;
             }
 
@@ -105,12 +100,12 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async listNftForSale(nftEntity: NftEntity, price: BigNumber, ledger: Ledger, network: string): Promise < string > {
+    async listNftForSale(nftEntity: NftEntity, price: BigNumber, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
 
-            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
+            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE);
 
             const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, Long.fromString(nftEntity.id), Long.fromString(nftEntity.collectionId), coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;

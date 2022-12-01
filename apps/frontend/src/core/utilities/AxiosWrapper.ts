@@ -3,6 +3,15 @@ import JwtDecode from 'jwt-decode'
 
 const LOCAL_STORAGE_ACCESS_TOKEN = 'cudos_aura_service_storage_access_token';
 
+enum BackendErrorType {
+    WRONG_PASSWORD = '1',
+    NOT_FOUND = '2',
+}
+
+export function parseBackendErrorType(axiosError): BackendErrorType {
+    return axiosError.response.data.message;
+}
+
 export function setDefaultAuthorization() {
     axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN)}`;
 }
