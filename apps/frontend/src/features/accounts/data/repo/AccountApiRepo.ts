@@ -13,13 +13,11 @@ import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilit
 export default class AccountApiRepo implements AccountRepo {
 
     accountApi: AccountApi;
-    walletStore: WalletStore;
     enableActions: () => void;
     disableActions: () => void;
     showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
-    constructor(walletStore: WalletStore) {
-        this.walletStore = walletStore;
+    constructor() {
         this.accountApi = new AccountApi();
         this.enableActions = null;
         this.disableActions = null;

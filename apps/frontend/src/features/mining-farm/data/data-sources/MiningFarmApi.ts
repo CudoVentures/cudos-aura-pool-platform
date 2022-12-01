@@ -53,16 +53,19 @@ export default class MiningFarmApi {
         return data.map((energySource) => EnergySourceEntity.fromJson(energySource))
     }
 
-    async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < void > {
-        await axios.put('/api/v1/farm/manufacturers', ManufacturerEntity.toJson(manufacturerEntity))
+    async creditManufacturer(manufacturerEntity: ManufacturerEntity): Promise < ManufacturerEntity > {
+        const { data } = await axios.put('/api/v1/farm/manufacturers', ManufacturerEntity.toJson(manufacturerEntity))
+        return ManufacturerEntity.fromJson(data);
     }
 
-    async creditMiner(minerEntity: MinerEntity): Promise < void > {
-        await axios.put('/api/v1/farm/miners', MinerEntity.toJson(minerEntity))
+    async creditMiner(minerEntity: MinerEntity): Promise < MinerEntity > {
+        const { data } = await axios.put('/api/v1/farm/miners', MinerEntity.toJson(minerEntity))
+        return MinerEntity.fromJson(data);
     }
 
-    async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < void > {
-        await axios.put('/api/v1/farm/energy-sources', EnergySourceEntity.toJson(energySourceEntity))
+    async creditEnergySource(energySourceEntity: EnergySourceEntity): Promise < EnergySourceEntity > {
+        const { data } = await axios.put('/api/v1/farm/energy-sources', EnergySourceEntity.toJson(energySourceEntity))
+        return EnergySourceEntity.fromJson(data);
     }
 
 }
