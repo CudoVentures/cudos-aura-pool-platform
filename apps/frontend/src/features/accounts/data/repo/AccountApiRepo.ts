@@ -9,6 +9,7 @@ import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
 import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
+import S from '../../../../core/utilities/Main';
 
 export default class AccountApiRepo implements AccountRepo {
 
