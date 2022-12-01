@@ -3,7 +3,8 @@ import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
 
 export default interface BitcoinRepo {
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
 
     fetchBitcoinCoinGecko(): Promise < BitcoinCoinGeckoEntity >;
     fetchBitcoinBlockchainInfo(): Promise < BitcoinBlockchainInfoEntity >;

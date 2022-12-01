@@ -11,16 +11,22 @@ export default class StatisticsApiRepo implements StatisticsRepo {
     statisticsApi: StatisticsApi;
     enableActions: () => void;
     disableActions: () => void;
+    showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
     constructor() {
         this.statisticsApi = new StatisticsApi();
         this.enableActions = null;
         this.disableActions = null;
+        this.showAlert = null;
     }
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {
         this.enableActions = enableActions;
         this.disableActions = disableActions;
+    }
+
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+        this.showAlert = showAlert;
     }
 
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {

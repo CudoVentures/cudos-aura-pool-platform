@@ -90,14 +90,30 @@ const visitorStore = new VisitorStore(visitorRepo);
 
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
-const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore);
+const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore, accountRepo);
 const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
 const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
 
-bitcoinRepo.setPresentationCallbacks(appStore.enableActions, appStore.disableActions);
+bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+miningFarmRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+collectionRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+nftRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+visitorRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+statisticsRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+accountRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+
+bitcoinRepo.setPresentationAlertCallbacks(alertStore.show);
+cudosRepo.setPresentationAlertCallbacks(alertStore.show);
+miningFarmRepo.setPresentationAlertCallbacks(alertStore.show);
+collectionRepo.setPresentationAlertCallbacks(alertStore.show);
+nftRepo.setPresentationAlertCallbacks(alertStore.show);
+visitorRepo.setPresentationAlertCallbacks(alertStore.show);
+statisticsRepo.setPresentationAlertCallbacks(alertStore.show);
+accountRepo.setPresentationAlertCallbacks(alertStore.show);
 
 const App = () => {
 

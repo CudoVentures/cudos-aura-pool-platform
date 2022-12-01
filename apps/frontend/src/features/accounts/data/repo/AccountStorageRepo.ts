@@ -16,7 +16,8 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper = storageHelper;
     }
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {}
 
     async login(email: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         const currentAccounts = this.storageHelper.accountsJson;

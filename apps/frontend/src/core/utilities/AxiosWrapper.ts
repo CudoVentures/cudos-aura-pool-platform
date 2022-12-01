@@ -3,9 +3,13 @@ import JwtDecode from 'jwt-decode'
 
 const LOCAL_STORAGE_ACCESS_TOKEN = 'cudos_aura_service_storage_access_token';
 
-enum BackendErrorType {
-    WRONG_PASSWORD = '1',
+export const enum BackendErrorType {
+    WRONG_USER_OR_PASSWORD = '1',
     NOT_FOUND = '2',
+    WRONG_OLD_PASSWORD = '3',
+    WRONG_VERIFICATION_TOKEN = '4',
+    WRONG_NONCE_SIGNATURE = '5',
+    EMAIL_ALREADY_IN_USE = '6',
 }
 
 export function parseBackendErrorType(axiosError): BackendErrorType {

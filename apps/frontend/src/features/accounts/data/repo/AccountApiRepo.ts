@@ -8,25 +8,31 @@ import AccountApi from '../data-sources/AccountApi';
 import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
 import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
-import { parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
+import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 
-export default class AccountStorageRepo implements AccountRepo {
+export default class AccountApiRepo implements AccountRepo {
 
     accountApi: AccountApi;
     walletStore: WalletStore;
     enableActions: () => void;
     disableActions: () => void;
+    showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
     constructor(walletStore: WalletStore) {
         this.walletStore = walletStore;
         this.accountApi = new AccountApi();
         this.enableActions = null;
         this.disableActions = null;
+        this.showAlert = null;
     }
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {
         this.enableActions = enableActions;
         this.disableActions = disableActions;
+    }
+
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+        this.showAlert = showAlert;
     }
 
     async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
@@ -34,6 +40,15 @@ export default class AccountStorageRepo implements AccountRepo {
             this.disableActions?.();
             return this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
         } catch (e) {
+            switch (parseBackendErrorType(e)) {
+                case BackendErrorType.WRONG_USER_OR_PASSWORD:
+                    this.showAlert?.('Wrong credentials');
+                    break;
+                case BackendErrorType.WRONG_NONCE_SIGNATURE:
+                    this.showAlert?.('Wrong nonce signature');
+                    break;
+                default:
+            }
             throw Error(parseBackendErrorType(e));
         } finally {
             this.enableActions?.();
@@ -44,6 +59,17 @@ export default class AccountStorageRepo implements AccountRepo {
         try {
             this.disableActions?.();
             return this.accountApi.register(email, password, name, cudosWalletAddress, signedTx, sequence, accountNumber);
+        } catch (e) {
+            switch (parseBackendErrorType(e)) {
+                case BackendErrorType.EMAIL_ALREADY_IN_USE:
+                    this.showAlert?.('Email already in use');
+                    break;
+                case BackendErrorType.WRONG_NONCE_SIGNATURE:
+                    this.showAlert?.('Wrong nonce signature');
+                    break;
+                default:
+            }
+            throw Error(parseBackendErrorType(e));
         } finally {
             this.enableActions?.();
         }
@@ -81,6 +107,17 @@ export default class AccountStorageRepo implements AccountRepo {
         try {
             this.disableActions?.();
             return this.accountApi.editSessionAccountPass(oldPassword, newPassword, token);
+        } catch (e) {
+            switch (parseBackendErrorType(e)) {
+                case BackendErrorType.WRONG_OLD_PASSWORD:
+                    this.showAlert?.('Wrong old password');
+                    break;
+                case BackendErrorType.WRONG_VERIFICATION_TOKEN:
+                    this.showAlert?.('Wrong verification token');
+                    break;
+                default:
+            }
+            throw Error(parseBackendErrorType(e));
         } finally {
             this.enableActions?.();
         }

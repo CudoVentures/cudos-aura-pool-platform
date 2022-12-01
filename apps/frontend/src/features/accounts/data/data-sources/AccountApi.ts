@@ -14,7 +14,6 @@ export default class AccountApi {
         const res = new ResLogin(data);
 
         setTokenInStorage(res.accessToken);
-
     }
 
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {

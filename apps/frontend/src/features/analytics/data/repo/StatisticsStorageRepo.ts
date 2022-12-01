@@ -9,7 +9,8 @@ import StatisticsRepo from '../../presentation/repos/StatisticsRepo';
 
 export default class StatisticsStorageRepo implements StatisticsRepo {
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {}
 
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
         const nftEventEntities = [];

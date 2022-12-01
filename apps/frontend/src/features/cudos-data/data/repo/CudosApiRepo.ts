@@ -9,16 +9,22 @@ export default class CudosApiRepo implements CudosRepo {
     cudosApi: CudosApi;
     enableActions: () => void;
     disableActions: () => void;
+    showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
     constructor() {
         this.cudosApi = new CudosApi();
         this.enableActions = null;
         this.disableActions = null;
+        this.showAlert = null;
     }
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {
         this.enableActions = enableActions;
         this.disableActions = disableActions;
+    }
+
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+        this.showAlert = showAlert;
     }
 
     async fetchCudosData(): Promise < CudosDataEntity > {

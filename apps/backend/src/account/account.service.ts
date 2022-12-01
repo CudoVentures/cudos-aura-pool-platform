@@ -11,6 +11,9 @@ import AdminEntity from './entities/admin.entity';
 import SuperAdminEntity from './entities/super-admin.entity';
 import UserEntity from './entities/user.entity';
 import { LOCK, Transaction } from 'sequelize';
+import { JwtService } from '@nestjs/jwt';
+import JwtToken from '../auth/entities/jwt-token.entity';
+import { WrongOldPasswordException, WrongVerificationTokenException } from '../common/errors/errors';
 
 @Injectable()
 export default class AccountService {
@@ -24,8 +27,10 @@ export default class AccountService {
         private adminRepo: typeof AdminRepo,
         @InjectModel(SuperAdminRepo)
         private superAdminRepo: typeof SuperAdminRepo,
+        private jwtService: JwtService,
     ) {}
 
+    // utility functions
     static generateSalt() {
         return crypto.randomBytes(128).toString('base64');
     }
@@ -39,6 +44,43 @@ export default class AccountService {
         return hashedPass === accountEntity.hashedPass;
     }
 
+    // controller functions
+    async editAccountPassByOldPass(accountEntity: AccountEntity, oldPass: string, newPass: string, tx: Transaction) {
+        if (AccountService.isPassValid(accountEntity, oldPass) === false) {
+            throw new WrongOldPasswordException();
+        }
+
+        accountEntity.salt = AccountService.generateSalt();
+        accountEntity.hashedPass = AccountService.generateHashedPass(newPass, accountEntity.salt);
+        await this.creditAccount(accountEntity, true, tx);
+    }
+
+    async editAccountPassByToken(encodedToken: string, newPass: string, tx: Transaction) {
+        try {
+            this.jwtService.verify(encodedToken, JwtToken.getConfig());
+            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+            const accountEntity = await this.findAccountById(jwtToken.id, tx, tx.LOCK.UPDATE);
+            accountEntity.salt = AccountService.generateSalt();
+            accountEntity.hashedPass = AccountService.generateHashedPass(newPass, accountEntity.salt);
+            await this.creditAccount(accountEntity, true, tx);
+        } catch (ex) {
+            throw new WrongVerificationTokenException();
+        }
+    }
+
+    async verifyEmailByToken(encodedToken: string, tx: Transaction) {
+        try {
+            this.jwtService.verify(encodedToken, JwtToken.getConfig());
+            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+            const accountEntity = await this.findAccountById(jwtToken.id, tx, tx.LOCK.UPDATE);
+            accountEntity.markAsEmailVerified();
+            await this.creditAccount(accountEntity, false, tx);
+        } catch (ex) {
+            throw new WrongVerificationTokenException();
+        }
+    }
+
+    // db functions
     async findAccountById(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < AccountEntity | null > {
         const whereAccountRepo = new AccountRepo();
         whereAccountRepo.accountId = accountId;

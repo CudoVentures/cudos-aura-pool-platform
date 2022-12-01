@@ -7,7 +7,8 @@ import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 
 export default interface MiningFarmRepo {
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
 
     fetchAllMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
     fetchPopularMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
