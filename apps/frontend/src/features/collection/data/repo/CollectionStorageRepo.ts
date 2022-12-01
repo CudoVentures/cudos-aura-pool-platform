@@ -16,7 +16,8 @@ export default class CollectionStorageRepo implements CollectionRepo {
         this.storageHelper = storageHelper;
     }
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {}
 
     async fetchCategories(): Promise < CategoryEntity[] > {
         return this.storageHelper.categoriesJson.map((json) => CategoryEntity.fromJson(json));

@@ -11,7 +11,8 @@ export default class BitcoinStorageRepo implements BitcoinRepo {
         this.storageHelper = storageHelper;
     }
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {}
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {}
 
     async fetchBitcoinCoinGecko(): Promise < BitcoinCoinGeckoEntity > {
         return BitcoinCoinGeckoEntity.fromJson(this.storageHelper.bitcoinDataJson);

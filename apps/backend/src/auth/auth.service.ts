@@ -1,8 +1,4 @@
-import {
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { StdSignature } from 'cudosjs';
@@ -12,6 +8,7 @@ import AccountService from '../account/account.service';
 import AccountEntity from '../account/entities/account.entity';
 import AdminEntity from '../account/entities/admin.entity';
 import UserEntity from '../account/entities/user.entity';
+import { EmailAlreadyInUseException, WrongNonceSignatureException, WrongUserOrPasswordException } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import { SIGN_NONCE } from './auth.types';
@@ -29,13 +26,13 @@ export class AuthService {
     async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < void > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
         if (!isSigner) {
-            throw new Error('Message not signed by user address.');
+            throw new WrongNonceSignatureException();
         }
 
         let accountEntity = await this.accountService.findAccountByEmail(email, tx, tx.LOCK.UPDATE);
         let adminEntity = null;
         if (accountEntity !== null) {
-            throw new NotFoundException('Email is already in use');
+            throw new EmailAlreadyInUseException();
         }
 
         accountEntity = AccountEntity.newInstanceAdmin();
@@ -61,10 +58,6 @@ export class AuthService {
             accountEntity = await this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber, tx);
         }
 
-        if (!accountEntity) {
-            throw new UnauthorizedException('Account not found');
-        }
-
         // update last login time
         accountEntity.timestampLastLogin = Date.now();
         await this.accountService.creditAccount(accountEntity);
@@ -76,11 +69,11 @@ export class AuthService {
     private async loginUsingCredentials(email: string, pass: string): Promise < AccountEntity > {
         const accountEntity = await this.accountService.findAccountByEmail(email);
         if (accountEntity === null) {
-            throw new NotFoundException('Incorrect email');
+            throw new WrongUserOrPasswordException();
         }
 
         if (AccountService.isPassValid(accountEntity, pass) === false) {
-            throw new UnauthorizedException('Incorrect password');
+            throw new WrongUserOrPasswordException();
         }
 
         return accountEntity;
@@ -89,7 +82,7 @@ export class AuthService {
     private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < AccountEntity > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
         if (!isSigner) {
-            throw new Error('Message not signed by user address.');
+            throw new WrongNonceSignatureException();
         }
 
         let accountEntity = null;

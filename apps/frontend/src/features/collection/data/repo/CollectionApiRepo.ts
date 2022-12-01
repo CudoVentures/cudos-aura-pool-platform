@@ -22,6 +22,7 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     enableActions: () => void;
     disableActions: () => void;
+    showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
     constructor() {
         this.collectionApi = new CollectionApi();
@@ -30,11 +31,16 @@ export default class CollectionApiRepo implements CollectionRepo {
 
         this.enableActions = null;
         this.disableActions = null;
+        this.showAlert = null;
     }
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void) {
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {
         this.enableActions = enableActions;
         this.disableActions = disableActions;
+    }
+
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+        this.showAlert = showAlert;
     }
 
     async fetchCategories(): Promise < CategoryEntity [] > {

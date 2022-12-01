@@ -8,7 +8,8 @@ import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 
 export default interface CollectionRepo {
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
 
     fetchCategories(): Promise < CategoryEntity[] >;
     fetchTopCollections(timestampFrom: number, timestampTo: number, status?: CollectionStatus): Promise < CollectionEntity[] >;

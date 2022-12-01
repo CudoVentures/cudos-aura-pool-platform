@@ -6,7 +6,8 @@ import NftFilterModel from '../../utilities/NftFilterModel';
 
 export default interface NftRepo {
 
-    setPresentationCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
 
     fetchNftById(nftId: string, status?: CollectionStatus): Promise < NftEntity >;
     fetchNftByIds(nftIds: string[], status?: CollectionStatus): Promise < NftEntity[] >;
