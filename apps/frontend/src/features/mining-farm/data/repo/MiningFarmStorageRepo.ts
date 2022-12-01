@@ -2,7 +2,7 @@ import S from '../../../../core/utilities/Main';
 import StorageHelper from '../../../../core/helpers/StorageHelper';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
-import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
+import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../utilities/MiningFarmFilterModel';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
@@ -33,7 +33,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.sortKey = MiningFarmFilterModel.SORT_KEY_POPULAR;
+        miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
         miningFarmFilterModel.status = status;
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);

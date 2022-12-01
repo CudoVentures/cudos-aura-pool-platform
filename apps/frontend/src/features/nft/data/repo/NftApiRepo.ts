@@ -113,7 +113,7 @@ export default class NftApiRepo implements NftRepo {
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
             const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE);
 
-            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, Long.fromString(nftEntity.id), Long.fromString(nftEntity.collectionId), coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
+            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.id, nftEntity.collectionId, coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;
 
             return txHash;

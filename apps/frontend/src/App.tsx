@@ -61,13 +61,12 @@ const collectionRepo = new CollectionApiRepo();
 const nftRepo = new NftApiRepo();
 const visitorRepo = new VisitorApiRepo();
 const statisticsRepo = new StatisticsApiRepo();
+const accountRepo = new AccountApiRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
 const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore(alertStore);
-
-const accountRepo = new AccountApiRepo(walletStore);
 
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
