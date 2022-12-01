@@ -32,4 +32,4 @@ USER node
 
 RUN npm i --omit=dev
 
-CMD ["/bin/bash", "-c", "npm run migrate && node ./apps/backend/main.js"] 
+CMD ["/bin/bash", "-c", "npm run start:prod:docker"] 

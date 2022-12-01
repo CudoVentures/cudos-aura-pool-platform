@@ -13,8 +13,8 @@ services:
     image: cudos-aura-platform-dev
     container_name: cudos-aura-platform-dev
     build:
-      dockerfile: docker/dev.dockerfile
-      context: ../
+      dockerfile: docker/dev/aura-pool-platform.dockerfile
+      context: ../../
       args:
         args:
         USER_ID: "$USER_ID"
@@ -23,7 +23,7 @@ services:
         GROUP_NAME: "$GROUP_NAME"
     restart: unless-stopped
     volumes:
-      - '../:/usr/cudos-aura-platform'
+      - '../../:/usr/cudos-aura-platform'
     ports:
       - "$HOST_PORT:$DOCKER_PORT"
     networks:
@@ -66,8 +66,8 @@ services:
   #   image: cudos-aura-platform-chain-observer-dev
   #   container_name: cudos-aura-platform-chain-observer-dev
   #   build:
-  #     dockerfile: docker/chain-observer-dev.dockerfile
-  #     context: ../
+  #     dockerfile: docker/dev/chain-observer.dockerfile
+  #     context: ../../
   #     args:
   #       args:
   #       USER_ID: "$USER_ID"
@@ -77,7 +77,7 @@ services:
   #       AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
   #   restart: unless-stopped
   #   volumes:
-  #     - '../:/usr/cudos-aura-chain-observer'
+  #     - '../../:/usr/cudos-aura-chain-observer'
   #   networks:
   #     - shared-cudos-network
   #   extra_hosts:
@@ -90,12 +90,12 @@ services:
   #   depends_on: 
   #     - cudos-aura-platform-dev
 
-  # cudos-on-demant-minting-service-dev:
-  #   image: cudos-on-demant-minting-service-dev
-  #   container_name: cudos-on-demant-minting-service-dev
+  # cudos-on-demand-minting-service-dev:
+  #   image: cudos-on-demand-minting-service-dev
+  #   container_name: cudos-on-demand-minting-service-dev
   #   build:
-  #     dockerfile: CudosAuraPoolService/docker/on-demant-mingint-service-dev.dockerfile
-  #     context: ../../
+  #     dockerfile: CudosAuraPoolService/docker/dev/on-demand-minging-service.dockerfile
+  #     context: ../../../
   #     args:
   #       args:
   #       USER_ID: "$USER_ID"

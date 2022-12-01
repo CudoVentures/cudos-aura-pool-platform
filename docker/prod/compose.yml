@@ -1,8 +1,8 @@
 version: '3.1'
 
 networks:
-  shared-cudos-network:
-    name: shared-cudos-network
+  aurapool-prod-cudos-network:
+    name: aurapool-prod-cudos-network
 
 volumes:
   cudosdappdata:
@@ -13,15 +13,15 @@ services:
     image: cudos-aura-platform-prod
     container_name: cudos-aura-platform-prod
     build:
-      dockerfile: docker/prod.dockerfile
-      context: ../
+      dockerfile: docker/prod/aura-pool-platform.dockerfile
+      context: ../../
     restart: unless-stopped
     ports:
       - "$HOST_PORT:$DOCKER_PORT"
     volumes:
       - cudosdappdata:/usr/src/cudos-aura-platform/dist/data
     networks:
-      - shared-cudos-network
+      - aurapool-prod-cudos-network
     extra_hosts:
     - "host.docker.internal:host-gateway"
     logging:
@@ -29,3 +29,12 @@ services:
       options:
         max-size: "128m"
         max-file: "1"
+
+  mailhog:
+    image: "mailhog/mailhog"
+    container_name: "mailhog"
+    ports:
+      - 8025:8025
+      - 1025:1025
+    networks:
+      - aurapool-prod-cudos-network
