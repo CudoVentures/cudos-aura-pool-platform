@@ -11,8 +11,8 @@ import {
     AutoIncrement,
     DataType,
 } from 'sequelize-typescript';
+import AccountRepo from '../../account/repos/account.repo';
 import { Collection } from '../../collection/collection.model';
-import { User } from '../../user/user.model';
 
 export const enum FarmStatus {
     QUEUED = 'queued',
@@ -115,11 +115,11 @@ export class Farm extends Model {
 
     @AllowNull(false)
     @Column
-    @ForeignKey(() => User)
+    @ForeignKey(() => AccountRepo)
         creator_id: number;
 
-    @BelongsTo(() => User)
-        creator: User;
+    @BelongsTo(() => AccountRepo)
+        creator: AccountRepo;
 
     @HasMany(() => Collection)
         collections: Collection[];

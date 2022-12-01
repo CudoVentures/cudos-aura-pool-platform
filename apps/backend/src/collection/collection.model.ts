@@ -11,10 +11,10 @@ import {
     DataType,
     AutoIncrement,
 } from 'sequelize-typescript';
-import { User } from '../user/user.model';
 import { Farm } from '../farm/models/farm.model';
 import { NFT } from '../nft/nft.model';
 import { CollectionStatus } from './utils';
+import AccountRepo from '../account/repos/account.repo';
 
 @Table({
     freezeTableName: true,
@@ -71,11 +71,11 @@ export class Collection extends Model {
 
   @AllowNull(false)
   @Column
-  @ForeignKey(() => User)
+  @ForeignKey(() => AccountRepo)
       creator_id: number;
 
-  @BelongsTo(() => User)
-      creator: User;
+  @BelongsTo(() => AccountRepo)
+      creator: AccountRepo;
 
   @HasMany(() => NFT)
       nfts: NFT[];

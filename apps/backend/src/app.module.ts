@@ -5,7 +5,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
 import { FarmModule } from './farm/farm.module';
 import { CollectionModule } from './collection/collection.module';
 import { NFTModule } from './nft/nft.module';
@@ -26,7 +25,6 @@ import { EmailModule } from './email/email.module';
     imports: [
         GeneralModule,
         AuthModule,
-        UserModule,
         AccountModule,
         FarmModule,
         CollectionModule,

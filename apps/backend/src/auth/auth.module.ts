@@ -1,17 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth.types';
-import { UserService } from '../user/user.service';
 import { AuthController } from './auth.controller';
 import { AccountModule } from '../account/account.module';
 import EmailService from '../email/email.service';
 
 @Module({
     imports: [
-        UserModule,
         PassportModule,
         AccountModule,
         JwtModule.register({
@@ -19,7 +16,7 @@ import EmailService from '../email/email.service';
             signOptions: { expiresIn: '7d' },
         }),
     ],
-    providers: [AuthService, UserService, EmailService],
+    providers: [AuthService, EmailService],
     exports: [AuthService],
     controllers: [AuthController],
 })

@@ -22,7 +22,7 @@ export default class DataService {
         }
     }
 
-    async trySaveUri(userId: number, uri: string): Promise < string > {
+    async trySaveUri(accountId: number, uri: string): Promise < string > {
         if (DataService.isBase64(uri) === false) {
             return uri;
         }
@@ -30,7 +30,7 @@ export default class DataService {
         return new Promise < string >((resolve, reject) => {
             const fileBuffer = DataService.stripBase64FromUriAsBuffer(uri);
             const sha256 = Crypto.createHash('sha256').update(fileBuffer).digest('hex');
-            const fileUri = DataService.makeUri(userId, sha256);
+            const fileUri = DataService.makeUri(accountId, sha256);
             const absoluteFilePath = DataService.getAbsoluteFilePathByUri(fileUri);
             Fs.writeFile(absoluteFilePath, fileBuffer, (err) => {
                 if (err) {
@@ -122,9 +122,9 @@ export default class DataService {
         return Buffer.from(uri.substring(i), 'base64');
     }
 
-    static makeUri(userId: number, sha256: string) {
+    static makeUri(accountId: number, sha256: string) {
         const random = Math.round(Math.random() * 1024);
-        return `${DataService.URI_PREFIX}${userId}-${random}-${Date.now()}-${sha256}`;
+        return `${DataService.URI_PREFIX}${accountId}-${random}-${Date.now()}-${sha256}`;
     }
 
 }
