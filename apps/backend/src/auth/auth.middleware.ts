@@ -1,9 +1,8 @@
-import { BadGatewayException, HttpException, HttpStatus, Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { ConfigService } from '@nestjs/config';
 import { ExtractJwt } from 'passport-jwt';
 import { JwtService } from '@nestjs/jwt';
-import JwtToken from './jwtToken.entity';
+import JwtToken from './entities/jwt-token.entity';
 import AccountService from '../account/account.service';
 import { RequestWithSessionAccounts } from '../common/commont.types';
 import { pbkdf2Sync } from 'node:crypto';
@@ -13,18 +12,16 @@ import { WrongPasswordException } from '../common/errors/errors';
 export class AuthMiddleware implements NestMiddleware {
 
     constructor(
-        private configService: ConfigService,
         private jwtService: JwtService,
         private accountService: AccountService,
     ) {}
 
     async use(req: RequestWithSessionAccounts, res: Response, next: NextFunction) {
-
         const extractorFunction = ExtractJwt.fromAuthHeaderAsBearerToken();
 
         const encodedToken = extractorFunction(req);
         try {
-            this.jwtService.verify(encodedToken);
+            this.jwtService.verify(encodedToken, JwtToken.getConfig());
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
             const accounts = await this.accountService.findAccounts(jwtToken.id);
             const derivedKey = pbkdf2Sync(accounts.accountEntity.hashedPass.substring(0, 10), 'salt', 100000, 64, 'sha512');

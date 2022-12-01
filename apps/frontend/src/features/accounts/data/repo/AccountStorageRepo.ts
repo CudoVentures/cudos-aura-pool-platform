@@ -158,7 +158,7 @@ export default class AccountStorageRepo implements AccountRepo {
 
     }
 
-    async sendVerificationEmail(): Promise < void > {
+    async sendSessionAccountVerificationEmail(): Promise < void > {
 
     }
 

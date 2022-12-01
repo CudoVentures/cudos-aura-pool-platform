@@ -105,7 +105,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
 
     async function onClickResendVerificationEmail() {
         await accountSessionStore.sendVerificationEmail();
-        alertStore.show('Email was sent');
+        alertStore.show('We have resent the email.');
     }
 
     async function onClickChangePass() {

@@ -13,7 +13,6 @@ import {
 import { Collection } from '../collection/collection.model';
 import { NFT } from '../nft/nft.model';
 import { Farm } from '../farm/models/farm.model';
-import { Role } from './roles';
 
 @Table({
     freezeTableName: true,
@@ -48,7 +47,7 @@ export class User extends Model {
 
   @AllowNull(false)
   @Column(DataType.ENUM('super_admin', 'farm_admin'))
-      role: Role;
+      role: string;
 
   @Column
       cudos_address: string;

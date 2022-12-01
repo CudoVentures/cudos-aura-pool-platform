@@ -16,7 +16,7 @@ export default interface AccountRepo {
     creditSessionAccount(accountEntity: AccountEntity): Promise < void >;
     editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > ;
     forgottenPassword(email: string): Promise < void >
-    sendVerificationEmail(): Promise < void >
+    sendSessionAccountVerificationEmail(): Promise < void >
 
     confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean >
     fetchBitcoinAddress(cudosAddress: string): Promise < string >;

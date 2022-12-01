@@ -34,3 +34,10 @@ export class ReqEditSessionAccountPass {
         return this.oldPass !== '' && this.token === '';
     }
 }
+
+export class ReqForgottenPassword {
+
+    @IsString()
+        email: string;
+
+}

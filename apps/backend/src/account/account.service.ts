@@ -113,8 +113,8 @@ export default class AccountService {
         }
     }
 
-    async creditAccount(accountEntity: AccountEntity, tx: Transaction = undefined): Promise < AccountEntity > {
-        let accountRepo = AccountEntity.toRepo(accountEntity);
+    async creditAccount(accountEntity: AccountEntity, includePassword = false, tx: Transaction = undefined): Promise < AccountEntity > {
+        let accountRepo = AccountEntity.toRepo(accountEntity, includePassword);
         if (accountEntity.isNew() === true) {
             accountRepo = await this.accountRepo.create(accountRepo.toJSON(), {
                 returning: true,

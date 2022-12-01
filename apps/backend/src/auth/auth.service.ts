@@ -13,15 +13,17 @@ import AccountEntity from '../account/entities/account.entity';
 import AdminEntity from '../account/entities/admin.entity';
 import UserEntity from '../account/entities/user.entity';
 import { IntBoolValue } from '../common/utils';
+import EmailService from '../email/email.service';
 import { SIGN_NONCE } from './auth.types';
-import JwtToken from './jwtToken.entity';
+import JwtToken from './entities/jwt-token.entity';
 
 @Injectable()
 export class AuthService {
     constructor(
-    private accountService: AccountService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+        private accountService: AccountService,
+        private jwtService: JwtService,
+        private configService: ConfigService,
+        private emailService: EmailService,
     ) {}
 
     async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < void > {
@@ -41,12 +43,14 @@ export class AuthService {
         accountEntity.name = name;
         accountEntity.salt = AccountService.generateSalt();
         accountEntity.hashedPass = AccountService.generateHashedPass(pass, accountEntity.salt);
-        accountEntity = await this.accountService.creditAccount(accountEntity, tx);
+        accountEntity = await this.accountService.creditAccount(accountEntity, true, tx);
 
         adminEntity = AdminEntity.newInstanceForAccount(accountEntity.accountId);
         adminEntity.cudosWalletAddress = cudosWalletAddress;
 
         adminEntity = await this.accountService.creditAdmin(adminEntity, tx);
+
+        await this.emailService.sendVerificationEmail(accountEntity);
     }
 
     async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < string > {
@@ -66,8 +70,7 @@ export class AuthService {
         await this.accountService.creditAccount(accountEntity);
 
         const jwtToken = JwtToken.newInstance(accountEntity);
-
-        return this.jwtService.sign(JwtToken.toJson(jwtToken));
+        return this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig());
     }
 
     private async loginUsingCredentials(email: string, pass: string): Promise < AccountEntity > {
@@ -96,7 +99,7 @@ export class AuthService {
             accountEntity = new AccountEntity();
             accountEntity.name = walletName;
             accountEntity.emailVerified = IntBoolValue.TRUE;
-            accountEntity = await this.accountService.creditAccount(accountEntity, tx);
+            accountEntity = await this.accountService.creditAccount(accountEntity, true, tx);
 
             userEntity = new UserEntity();
             userEntity.accountId = accountEntity.accountId;

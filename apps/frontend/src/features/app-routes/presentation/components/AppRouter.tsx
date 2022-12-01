@@ -102,7 +102,7 @@ function AppRouter({ accountSessionStore }: Props) {
                     <Route path = { AppRoutes.LOGIN } element = { <LoginPage /> } />
                     <Route path = { AppRoutes.REGISTER } element = { <RegisterPage /> } />
                     <Route path = { AppRoutes.FORGOTTEN_PASS_REQUEST } element = { <ForgottenPassRequestPage /> } />
-                    <Route path = { AppRoutes.FORGOTTEN_PASS_EDIT } element = { <ForgottenPassEditPage /> } />
+                    <Route path = { `${AppRoutes.FORGOTTEN_PASS_EDIT}/:token` } element = { <ForgottenPassEditPage /> } />
                     <Route path = { AppRoutes.EMAIL_VERIFICATION_REQUEST } element = { <EmailVerificationRequestPage /> } />
                     <Route path = { AppRoutes.EMAIL_VERIFICATION_CONFIRMATION } element = { <EmailVerificationConfirmationPage /> } />
 

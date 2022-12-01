@@ -15,11 +15,12 @@ import { VisitorMiddleware } from './visitor/visitor.middleware';
 import { VisitorModule } from './visitor/visitor.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './auth/constants';
+import { jwtConstants } from './auth/auth.types';
 import { DataModule } from './data/data.module';
 import DataService from './data/data.service';
 import { GeneralModule } from './general/general.module';
 import { AccountModule } from './account/account.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { AccountModule } from './account/account.module';
         GraphqlModule,
         VisitorModule,
         DataModule,
+        EmailModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },

@@ -19,7 +19,7 @@ export default class AccountEntity {
         this.accountId = NOT_EXISTS_INT;
         this.type = AccountType.USER;
         this.active = IntBoolValue.TRUE;
-        this.emailVerified = IntBoolValue.TRUE;
+        this.emailVerified = IntBoolValue.FALSE;
         this.name = '';
         this.email = '';
         this.timestampLastLogin = NOT_EXISTS_INT;
@@ -56,7 +56,11 @@ export default class AccountEntity {
         return this.emailVerified === IntBoolValue.TRUE;
     }
 
-    static toRepo(entity: AccountEntity): any {
+    markAsEmailVerified() {
+        this.emailVerified = IntBoolValue.TRUE;
+    }
+
+    static toRepo(entity: AccountEntity, includePassword = false): any {
         if (entity === null) {
             return null;
         }
@@ -72,8 +76,10 @@ export default class AccountEntity {
         repoJson.name = entity.name;
         repoJson.email = entity.email;
         repoJson.lastLoginAt = new Date(entity.timestampLastLogin);
-        repoJson.salt = entity.salt;
-        repoJson.hashedPass = entity.hashedPass;
+        if (includePassword === true) {
+            repoJson.salt = entity.salt;
+            repoJson.hashedPass = entity.hashedPass;
+        }
 
         return repoJson;
     }

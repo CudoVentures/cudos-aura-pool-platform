@@ -3,7 +3,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
-import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqLogin, ReqRegister } from '../dto/Requests';
+import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
 import { ResCreditSessionAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 import { StdSignature } from 'cudosjs';
 
@@ -48,11 +48,11 @@ export default class AccountApi {
     }
 
     async forgottenPassword(email: string): Promise < void > {
-        return null;
+        await axios.patch('/api/v1/accounts/forgottenPassword', new ReqForgottenPassword(email));
     }
 
-    async sendVerificationEmail(): Promise < void > {
-        return null;
+    async sendSessionAccountVerificationEmail(): Promise < void > {
+        await axios.patch('/api/v1/accounts/sendSessionAccountVerificationEmail');
     }
 
 }
