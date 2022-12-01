@@ -11,7 +11,7 @@ import {
     DataType,
     IsUUID,
 } from 'sequelize-typescript';
-import { User } from '../user/user.model';
+import AccountRepo from '../account/repos/account.repo';
 import { Collection } from '../collection/collection.model';
 import { NftStatus } from './nft.types';
 
@@ -78,11 +78,11 @@ export class NFT extends Model {
 
     @AllowNull(false)
     @Column
-    @ForeignKey(() => User)
+    @ForeignKey(() => AccountRepo)
         creator_id: number;
 
-    @BelongsTo(() => User)
-        creator: User;
+    @BelongsTo(() => AccountRepo)
+        creator: AccountRepo;
 
     @Column
         deleted_at: Date;

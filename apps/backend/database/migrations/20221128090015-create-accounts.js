@@ -212,8 +212,6 @@ module.exports = {
         }
 
         await queryInterface.sequelize.query(`ALTER SEQUENCE accounts_account_id_seq RESTART WITH ${maxAccountId + 1}`);
-        // await queryInterface.dropTable('users');
-
     },
 
     async down(queryInterface, Sequelize) {
@@ -221,59 +219,6 @@ module.exports = {
         await queryInterface.dropTable('accounts_admins');
         await queryInterface.dropTable('accounts_super_admins');
         await queryInterface.dropTable('accounts');
-
-        // await queryInterface.createTable('users', {
-        //     id: {
-        //         allowNull: false,
-        //         autoIncrement: true,
-        //         primaryKey: true,
-        //         type: Sequelize.INTEGER,
-        //     },
-        //     email: {
-        //         type: Sequelize.STRING,
-        //         unique: true,
-        //         allowNull: false,
-        //         validate: {
-        //             isEmail: true,
-        //         },
-        //     },
-        //     salt: {
-        //         type: Sequelize.STRING,
-        //         unique: true,
-        //         allowNull: false,
-        //     },
-        //     hashed_pass: {
-        //         type: Sequelize.STRING,
-        //         unique: true,
-        //         allowNull: false,
-        //     },
-        //     role: {
-        //         type: Sequelize.ENUM(['super_admin', 'farm_admin']),
-        //         allowNull: false,
-        //     },
-        //     cudos_address: {
-        //         type: Sequelize.STRING,
-        //     },
-        //     payout_address: {
-        //         type: Sequelize.STRING,
-        //     },
-        //     name: {
-        //         type: Sequelize.STRING,
-        //         allowNull: true,
-        //     },
-        //     is_active: {
-        //         type: Sequelize.BOOLEAN,
-        //         allowNull: false,
-        //     },
-        //     createdAt: {
-        //         allowNull: false,
-        //         type: Sequelize.DATE,
-        //     },
-        //     updatedAt: {
-        //         allowNull: false,
-        //         type: Sequelize.DATE,
-        //     },
-        // });
     },
 
 };

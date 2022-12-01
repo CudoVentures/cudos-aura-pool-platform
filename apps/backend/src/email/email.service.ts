@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import nodemailer from 'nodemailer';
 import AccountEntity from '../account/entities/account.entity';
@@ -7,9 +8,15 @@ import JwtToken from '../auth/entities/jwt-token.entity';
 @Injectable()
 export default class EmailService {
 
+    appPublicUrl: string;
     transport: any;
 
-    constructor(private jwtService: JwtService) {
+    constructor(
+        private configService: ConfigService,
+        private jwtService: JwtService,
+    ) {
+        this.appPublicUrl = this.configService.get < string >('APP_PUBLIC_URL') ?? '';
+
         this.transport = nodemailer.createTransport({
             host: 'mailhog',
             port: 1025,
@@ -25,8 +32,8 @@ export default class EmailService {
                 from: `"Aura Pool" <${process.env.App_Mailing_Service_Email}>`,
                 to: accountEntity.email,
                 subject: 'Email Verification',
-                text: `Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email by following this link http://localhost:3001/api/v1/accounts/verifyEmail/${verificationToken}`,
-                html: `<b>Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email by following this link <a href="http://localhost:3001/api/v1/accounts/verifyEmail/${verificationToken}">Verify</a></b>`,
+                text: `Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email by following this link ${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`,
+                html: `<b>Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email by following this link <a href="${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}">Verify</a></b>`,
             };
 
             await this.transport.sendMail(verificationEmail);
@@ -44,8 +51,8 @@ export default class EmailService {
                 from: `"Aura Pool" <${process.env.App_Mailing_Service_Email}>`,
                 to: accountEntity.email,
                 subject: 'Forgotten password',
-                text: `You have requested a password change. Please follow this link http://localhost:3001/forgotten-pass-edit/${verificationToken}`,
-                html: `<b>You have requested a password change. Please follow this link <a href="http://localhost:3001/forgotten-pass-edit/${verificationToken}">Change password</a></b>`,
+                text: `You have requested a password change. Please follow this link ${this.appPublicUrl}/forgotten-pass-edit/${verificationToken}`,
+                html: `<b>You have requested a password change. Please follow this link <a href="${this.appPublicUrl}/forgotten-pass-edit/${verificationToken}">Change password</a></b>`,
             };
 
             await this.transport.sendMail(verificationEmail);
