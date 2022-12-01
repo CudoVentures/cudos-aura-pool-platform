@@ -11,6 +11,8 @@ import HeaderWallet from './HeaderWallet';
 
 import SvgAuraPoolLogo from '../../../../public/assets/vectors/aura-pool-logo.svg';
 import '../styles/page-header.css'
+import Actions from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
@@ -37,6 +39,11 @@ function PageHeader({ accountSessionStore }: Props) {
     }
 
     function onClickAdminPortal() {
+        navigate(AppRoutes.HOME);
+    }
+
+    async function onClickLogout() {
+        await accountSessionStore.logout();
         navigate(AppRoutes.HOME);
     }
 
@@ -67,6 +74,12 @@ function PageHeader({ accountSessionStore }: Props) {
                 ) }
 
                 <HeaderWallet />
+
+                { accountSessionStore.isLoggedIn() === true && accountSessionStore.isAdmin() === true && (
+                    <Actions>
+                        <Button onClick={onClickLogout}>Logout</Button>
+                    </Actions>
+                ) }
             </div>
         </header>
     )

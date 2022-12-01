@@ -51,7 +51,7 @@ const accounts = [
 
 const superAdmins = [
     {
-        cudos_royaltees_address: 'cudos1',
+        cudos_royaltees_address: 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0',
         first_sale_cudos_royalties_percent: 2.5,
         resale_cudos_royalties_percent: 2,
         global_cudos_fees_percent: 2,

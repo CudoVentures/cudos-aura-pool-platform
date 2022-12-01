@@ -1,11 +1,14 @@
 import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Query, Param, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiTags } from '@nestjs/swagger';
+import { ResFetchSessionAccounts } from '../auth/dto/responses.dto';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
-import { AppRequest } from '../common/commont.types';
+import { AppRequest, RequestWithSessionAccounts } from '../common/commont.types';
+import { NotFoundException } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
+import { FarmService } from '../farm/farm.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
 import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword } from './dto/requests.dto';
@@ -17,6 +20,7 @@ import AccountEntity from './entities/account.entity';
 export class AccountController {
     constructor(
         private accountService: AccountService,
+        private farmService: FarmService,
         private emailService: EmailService,
         private jwtService: JwtService,
     ) {}
@@ -93,4 +97,14 @@ export class AccountController {
         }
         await this.emailService.sendForgottenPasswordEmail(accountEntity);
     }
+
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    @Get(':accountId')
+    async fetchFarmOwnerAccounts(
+        @Param('accountId') accountId: number
+    ): Promise < ResFetchSessionAccounts > {
+        const res = await this.accountService.findAccounts(accountId);
+        return new ResFetchSessionAccounts(res.accountEntity, res.userEntity, res.adminEntity, res.superAdminEntity);
+    }
+}
 }

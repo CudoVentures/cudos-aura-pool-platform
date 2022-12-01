@@ -116,14 +116,14 @@ export default class CollectionApiRepo implements CollectionRepo {
     async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger, network: string): Promise < string > {
 
         checkValidNftDenomId(collectionEntity.denomId)
-
-        const farmAdminEntity = await this.accountApi.getFarmAdminByFarmId(collectionEntity.farmId);
         const filter = new MiningFarmFilterModel()
         filter.miningFarmIds = [collectionEntity.farmId];
         const miningFarmEntities = (await this.miningFarmApi.fetchMiningFarmsByFilter(filter)).miningFarmEntities;
         const miningFarmEntity = miningFarmEntities[0];
 
-        const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
+        const { adminEntity } = await this.accountApi.fetchAccountsByAccountId(miningFarmEntity.accountId);
+
+        const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}`);
 
         const decimals = (new BigNumber(10)).pow(18);
@@ -136,7 +136,6 @@ export default class CollectionApiRepo implements CollectionRepo {
         const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
 
         const data = `{"farm_id":"${collectionEntity.farmId}"}`;
-
         const tx = await signingClient.marketplaceCreateCollection(
             ledger.accountAddress,
             collectionEntity.denomId,
@@ -148,12 +147,12 @@ export default class CollectionApiRepo implements CollectionRepo {
             CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
             data,
             [
-                Royalty.fromPartial({ address: farmAdminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
                 Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
             ],
             [
-                Royalty.fromPartial({ address: farmAdminEntity.cudosWalletAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
-                Royalty.fromPartial({ address: farmAdminEntity.cudosWalletAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
             ],
             true,
             gasPrice,

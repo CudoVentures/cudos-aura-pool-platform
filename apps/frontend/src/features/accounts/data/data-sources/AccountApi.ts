@@ -54,4 +54,15 @@ export default class AccountApi {
         await axios.patch('/api/v1/accounts/sendSessionAccountVerificationEmail');
     }
 
+    async fetchAccountsByAccountId(accountId: string): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } > {
+        const { data } = await axios.get(`/api/v1/accounts/${accountId}`);
+        const res = new ResFetchSessionAccounts(data);
+
+        return {
+            accountEntity: res.accountEntity,
+            userEntity: res.userEntity,
+            adminEntity: res.adminEntity,
+            superAdminEntity: res.superAdminEntity,
+        }
+    }
 }

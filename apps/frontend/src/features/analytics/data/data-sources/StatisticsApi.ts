@@ -17,6 +17,10 @@ export default class StatisticsApi {
     async fetchNftEarningsBySessionAccount(timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
         const { data } = await axios.get('/api/v1/statistics/earnings/session-account', { params: { timestampFrom, timestampTo } })
 
+        if (!data.userEarningsDto) {
+            return null;
+        }
+
         const userEarningsEntity = UserEarningsEntity.fromJson(data.userEarningsDto);
 
         return userEarningsEntity
@@ -24,6 +28,11 @@ export default class StatisticsApi {
 
     async fetchNftEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {
         const { data } = await axios.get(`/api/v1/statistics/earnings/nft/${nftId}`, { params: { timestampFrom, timestampTo } })
+
+        if (!data.nftEarningsDto) {
+            return null;
+        }
+
         const nftEarningsEntity = NftEarningsEntity.fromJson(data.nftEarningsDto);
 
         return nftEarningsEntity

@@ -1,10 +1,10 @@
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
-import NftEntity, { ListStatus, NftStatus } from '../../entities/NftEntity';
+import NftEntity, { NftStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
-import { SigningStargateClient, GasPrice, Ledger } from 'cudosjs';
+import { SigningStargateClient, GasPrice, Ledger, Uint64 } from 'cudosjs';
 import Long from 'long';
 import S from '../../../../core/utilities/Main';
 import BigNumber from 'bignumber.js';
@@ -36,6 +36,7 @@ export default class NftApiRepo implements NftRepo {
 
     async fetchNftById(nftId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity > {
         const nftEntities = await this.fetchNftByIds([nftId], status);
+
         return nftEntities.length === 1 ? nftEntities[0] : null;
     }
 
@@ -82,8 +83,8 @@ export default class NftApiRepo implements NftRepo {
         try {
             this.disableActions?.();
 
-            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
             const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE);
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
             let txHash = S.Strings.EMPTY;
 
             if (nftEntity.status === NftStatus.QUEUED) {
@@ -91,7 +92,12 @@ export default class NftApiRepo implements NftRepo {
                 const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(), 'acudos')
-                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, sendAmountCoin, nftEntity.id);
+                const fee = {
+                    amount: { amount: gasPrice.amount.multiply(Uint64.fromNumber(100000)).floor().toString(), denom: gasPrice.denom },
+                    gas: '100000',
+                }
+
+                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', nftEntity.id);
                 txHash = tx.transactionHash;
             }
 

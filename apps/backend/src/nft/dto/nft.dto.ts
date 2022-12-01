@@ -14,13 +14,11 @@ export class NFTDto {
         name: string;
 
     @IsString()
-    @IsNotEmpty()
     @IsOptional()
     @ApiProperty({ example: 'The new coolest NFT' })
         uri: string;
 
     @IsString()
-    @IsNotEmpty()
     @IsOptional()
     @ApiProperty({ example: 'The new coolest NFT' })
         data: string;

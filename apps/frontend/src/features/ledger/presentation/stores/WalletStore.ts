@@ -40,8 +40,10 @@ export default class WalletStore {
             RPC: CHAIN_DETAILS.RPC_ADDRESS,
             API: CHAIN_DETAILS.API_ADDRESS,
             STAKING: CHAIN_DETAILS.STAKING_URL,
-            GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
+            GAS_PRICE: CHAIN_DETAILS.GAS_PRICE,
         });
+
+        console.log(CHAIN_DETAILS.GAS_PRICE)
         await this.connectLedger(SessionStorageWalletOptions.KEPLR);
     }
 
