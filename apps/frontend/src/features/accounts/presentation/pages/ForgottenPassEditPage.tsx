@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
@@ -26,6 +26,8 @@ type Props = {
 }
 
 function ForgottenPassEditPage({ accountSessionStore }: Props) {
+    const { token } = useParams();
+
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
     const validationPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
@@ -41,7 +43,7 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
             validationState.setShowErrors(true);
             return;
         }
-        await accountSessionStore.editPassword('token', pass);
+        await accountSessionStore.editPassword(token, pass);
         setShowUpdatedStep(true);
     }
 
@@ -63,11 +65,7 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
                         <Input
                             label={'New Password'}
                             placeholder={'***************'}
-                            InputProps={{
-                                endAdornment: <InputAdornment position="end" >
-                                    <Svg svg={AlternateEmailIcon}/>
-                                </InputAdornment>,
-                            }}
+                            type = { 'password' }
                             inputValidation={[
                                 validationPass,
                                 validationFirstMatchPass,
@@ -77,11 +75,7 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
                         <Input
                             label={'Confirm Password'}
                             placeholder={'***************'}
-                            InputProps={{
-                                endAdornment: <InputAdornment position="end" >
-                                    <Svg svg={AlternateEmailIcon}/>
-                                </InputAdornment>,
-                            }}
+                            type = { 'password' }
                             inputValidation={[
                                 validationConfirmPass,
                                 validationSecondMatchPass,

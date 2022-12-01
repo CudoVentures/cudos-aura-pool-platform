@@ -41,7 +41,8 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
             return;
         }
         await accountSessionStore.forgottenPassword(email);
-        setShowResendStep(true);
+        alertStore.show('Please check your email');
+        // setShowResendStep(true);
     }
 
     function onClickBackToLogin() {
@@ -116,8 +117,8 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
                             value={email}/>
                     ) }
                     actions = { (
-                        <Button type = { ButtonType.TEXT_INLINE } onClick = { loading === true ? null : onClickResend } >
-                            {loading === true ? <LoadingIndicator /> : 'Resend Link'}
+                        <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickResend } >
+                            Resend Link
                         </Button>
                     ) } />
             </>

@@ -78,3 +78,13 @@ export class ReqEditSessionAccountPass {
     }
 
 }
+
+export class ReqForgottenPassword {
+
+    email: string;
+
+    constructor(email: string) {
+        this.email = email;
+    }
+
+}

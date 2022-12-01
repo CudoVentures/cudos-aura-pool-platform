@@ -35,4 +35,23 @@ export default class EmailService {
         }
     }
 
+    async sendForgottenPasswordEmail(accountEntity: AccountEntity): Promise < void > {
+        try {
+            const jwtToken = JwtToken.newInstance(accountEntity);
+            const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('1d'));
+
+            const verificationEmail = {
+                from: `"Aura Pool" <${process.env.App_Mailing_Service_Email}>`,
+                to: accountEntity.email,
+                subject: 'Forgotten password',
+                text: `You have requested a password change. Please follow this link http://localhost:3001/forgotten-pass-edit/${verificationToken}`,
+                html: `<b>You have requested a password change. Please follow this link <a href="http://localhost:3001/forgotten-pass-edit/${verificationToken}">Change password</a></b>`,
+            };
+
+            await this.transport.sendMail(verificationEmail);
+        } catch (ex) {
+            console.error(ex);
+        }
+    }
+
 }

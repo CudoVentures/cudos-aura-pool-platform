@@ -8,7 +8,7 @@ import { AppRequest } from '../common/commont.types';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
-import { ReqCreditSessionAccount, ReqEditSessionAccountPass } from './dto/requests.dto';
+import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword } from './dto/requests.dto';
 import { ResCreditSessionAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
 
@@ -54,7 +54,15 @@ export class AccountController {
         }
 
         if (reqEditSessionAccountPass.isTokenMode() === true) {
-            // TO DO: Implement forgotten pass
+            try {
+                this.jwtService.verify(reqEditSessionAccountPass.token, JwtToken.getConfig());
+                const jwtToken = JwtToken.fromJson(this.jwtService.decode(reqEditSessionAccountPass.token));
+                const accountEntity = await this.accountService.findAccountById(jwtToken.id);
+                accountEntity.salt = AccountService.generateSalt();
+                accountEntity.hashedPass = AccountService.generateHashedPass(reqEditSessionAccountPass.newPass, accountEntity.salt);
+                await this.accountService.creditAccount(accountEntity, true, req.transaction);
+            } catch (ex) {
+            }
         }
 
     }
@@ -83,5 +91,18 @@ export class AccountController {
         }
 
         return res.redirect('/');
+    }
+
+    @Patch('forgottenPassword')
+    async forgottenPassword(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqForgottenPassword: ReqForgottenPassword,
+    ): Promise < void > {
+        const accountEntity = await this.accountService.findAccountByEmail(reqForgottenPassword.email);
+        if (accountEntity === null) {
+            return;
+        }
+
+        await this.emailService.sendForgottenPasswordEmail(accountEntity);
     }
 }
