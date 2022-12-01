@@ -22,9 +22,9 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
     }
 
     async fetchLastCheckedBlock(): Promise < number > {
-        const res = await axios.get(`${this.api_url}${LAST_BLOCK_ENDPOINT}`);
+        const { data } = await axios.get(`${this.api_url}${LAST_BLOCK_ENDPOINT}`);
 
-        return res.data.height
+        return data.height
     }
 
     async updateLastCheckedheight(height: number): Promise < void > {

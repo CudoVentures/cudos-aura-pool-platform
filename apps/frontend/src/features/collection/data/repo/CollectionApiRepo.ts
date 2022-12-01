@@ -118,7 +118,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         const miningFarmEntity = miningFarmEntities[0];
 
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS[network], ledger.offlineSigner);
-        const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
+        const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}`);
 
         const decimals = (new BigNumber(10)).pow(18);
         const cudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;

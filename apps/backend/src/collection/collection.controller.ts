@@ -32,6 +32,7 @@ import { CollectionStatus } from './utils';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
+import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -173,9 +174,7 @@ export class CollectionController {
                 // updateCollectionDto.creator = chainMarketplaceCollectionDto.creator;
                 updateCollectionDto.status = chainMarketplaceCollectionDto.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
 
-                await this.collectionService.updateOneByDenomId(denomId, updateCollectionDto);
-
-                await this.collectionService.updateOneByDenomId(denomId, collection, req.transaction);
+                await this.collectionService.updateOneByDenomId(denomId, updateCollectionDto, req.transaction);
             }
         } else if (module === ModuleName.NFT) {
             const chainNftCollectionDtos = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);

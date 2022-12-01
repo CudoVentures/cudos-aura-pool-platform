@@ -104,12 +104,17 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         walletSelectModalStore.bitcoinAddress = value;
     }
 
-    function onClickBack() {
+    async function onClickBack() {
         switch (walletSelectModalStore.progressStep) {
             case ProgressSteps.BTC:
                 walletSelectModalStore.moveToProgressStepConnectWallet();
                 break;
             case ProgressSteps.SIGN:
+                if (await walletSelectModalStore.isBitcoinAddressSet()) {
+                    walletSelectModalStore.moveToProgressStepConnectWallet();
+                    break;
+                }
+
                 walletSelectModalStore.moveToProgressStepBtc();
                 break;
             case ProgressSteps.KYC:
@@ -123,6 +128,10 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         switch (walletSelectModalStore.progressStep) {
             case ProgressSteps.CONNECT_WALLET:
                 if (walletSelectModalStore.isModeUser() === true) {
+                    if (await walletSelectModalStore.isBitcoinAddressSet()) {
+                        walletSelectModalStore.moveToProgressStepSign();
+                        break;
+                    }
                     walletSelectModalStore.moveToProgressStepBtc();
                 } else if (walletSelectModalStore.isModeAdmin() === true) {
                     if (accountSessionStore.isLoggedIn() === false) {
