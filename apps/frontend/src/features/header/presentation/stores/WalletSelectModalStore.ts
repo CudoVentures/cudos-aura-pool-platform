@@ -225,7 +225,7 @@ export default class WalletSelectModal extends ModalStore {
         const client = await this.walletStore.getClient();
         const result = await this.accountRepo.confirmBitcoinAddress(client, this.walletStore.getAddress(), this.bitcoinAddress);
         if (result === false) {
-            throw Error('Unable to confirm bitcoint address');
+            throw Error('Unable to confirm bitcoin address');
         }
     }
 
