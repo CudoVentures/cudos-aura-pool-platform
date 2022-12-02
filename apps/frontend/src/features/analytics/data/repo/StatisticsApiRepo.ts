@@ -32,7 +32,7 @@ export default class StatisticsApiRepo implements StatisticsRepo {
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
         try {
             this.disableActions?.();
-            return this.statisticsApi.fetchNftEvents(nftEventFilterModel);
+            return await this.statisticsApi.fetchNftEvents(nftEventFilterModel);
         } finally {
             this.enableActions?.();
         }
@@ -41,7 +41,7 @@ export default class StatisticsApiRepo implements StatisticsRepo {
     async fetchNftEarningsBySessionAccount(timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
         try {
             this.disableActions?.();
-            return this.statisticsApi.fetchNftEarningsBySessionAccount(timestampFrom, timestampTo);
+            return await this.statisticsApi.fetchNftEarningsBySessionAccount(timestampFrom, timestampTo);
         } finally {
             this.enableActions?.();
         }
@@ -50,7 +50,7 @@ export default class StatisticsApiRepo implements StatisticsRepo {
     async fetchNftEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {
         try {
             this.disableActions?.();
-            return this.statisticsApi.fetchNftEarningsByNftId(nftId, timestampFrom, timestampTo);
+            return await this.statisticsApi.fetchNftEarningsByNftId(nftId, timestampFrom, timestampTo);
         } finally {
             this.enableActions?.();
         }
@@ -59,7 +59,7 @@ export default class StatisticsApiRepo implements StatisticsRepo {
     async fetchNftEarningsByMiningFarmId(miningFarmId: string, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
         try {
             this.disableActions?.();
-            return this.statisticsApi.fetchNftEarningsByMiningFarmId(miningFarmId, timestampFrom, timestampTo);
+            return await this.statisticsApi.fetchNftEarningsByMiningFarmId(miningFarmId, timestampFrom, timestampTo);
         } finally {
             this.enableActions?.();
         }

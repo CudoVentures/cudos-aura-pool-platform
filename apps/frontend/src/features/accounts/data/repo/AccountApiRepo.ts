@@ -18,7 +18,6 @@ export default class AccountApiRepo implements AccountRepo {
     showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
     constructor() {
-        window.AccountApiRepo = this;
         this.accountApi = new AccountApi();
         this.enableActions = null;
         this.disableActions = null;
@@ -26,7 +25,6 @@ export default class AccountApiRepo implements AccountRepo {
     }
 
     setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {
-        console.log('setPresentationActionsCallbacks');
         this.enableActions = enableActions;
         this.disableActions = disableActions;
     }
@@ -37,9 +35,8 @@ export default class AccountApiRepo implements AccountRepo {
 
     async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
-            console.log('disable actions');
             this.disableActions?.();
-            return this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+            return await this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
         } catch (e) {
             switch (parseBackendErrorType(e)) {
                 case BackendErrorType.WRONG_USER_OR_PASSWORD:
@@ -52,7 +49,6 @@ export default class AccountApiRepo implements AccountRepo {
             }
             throw Error(parseBackendErrorType(e));
         } finally {
-            console.log('enable actions');
             this.enableActions?.();
         }
     }
@@ -60,7 +56,7 @@ export default class AccountApiRepo implements AccountRepo {
     async register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.register(email, password, name, cudosWalletAddress, signedTx, sequence, accountNumber);
+            return await this.accountApi.register(email, password, name, cudosWalletAddress, signedTx, sequence, accountNumber);
         } catch (e) {
             switch (parseBackendErrorType(e)) {
                 case BackendErrorType.EMAIL_ALREADY_IN_USE:
@@ -80,7 +76,7 @@ export default class AccountApiRepo implements AccountRepo {
     async logout(): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.logout();
+            return await this.accountApi.logout();
         } finally {
             this.enableActions?.();
         }
@@ -89,7 +85,7 @@ export default class AccountApiRepo implements AccountRepo {
     async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
         try {
             this.disableActions?.();
-            return this.accountApi.fetchSessionAccounts();
+            return await this.accountApi.fetchSessionAccounts();
         } finally {
             this.enableActions?.();
         }

@@ -47,7 +47,7 @@ export default class CollectionApiRepo implements CollectionRepo {
     async fetchCategories(): Promise < CategoryEntity [] > {
         try {
             this.disableActions?.();
-            return this.collectionApi.fetchCategories();
+            return await this.collectionApi.fetchCategories();
         } finally {
             this.enableActions?.();
         }
@@ -95,7 +95,7 @@ export default class CollectionApiRepo implements CollectionRepo {
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
         try {
             this.disableActions?.();
-            return this.collectionApi.fetchCollectionsDetailsByIds(collectionIds);
+            return await this.collectionApi.fetchCollectionsDetailsByIds(collectionIds);
         } finally {
             this.enableActions?.();
         }

@@ -73,7 +73,7 @@ export default class NftApiRepo implements NftRepo {
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
         try {
             this.disableActions?.();
-            return this.nftApi.fetchNftsByFilter(nftFilterModel);
+            return await this.nftApi.fetchNftsByFilter(nftFilterModel);
         } finally {
             this.enableActions?.();
         }
