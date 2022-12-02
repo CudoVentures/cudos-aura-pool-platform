@@ -151,19 +151,19 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
             modalStore = { resellNftModalStore } >
 
             <AnimationContainer className = { 'Stage Preview FlexColumn' } active = { resellNftModalStore.isStagePreview() } >
-                { resellNftModalStore.isStagePreview() === true && <PreviewContent /> }
+                { resellNftModalStore.isStagePreview() === true && PreviewContent() }
             </AnimationContainer>
 
             <AnimationContainer className = { 'Stage Processing FlexColumn' } active = { resellNftModalStore.isStageProcessing() } >
-                {resellNftModalStore.isStageProcessing() === true && <ProcessingContent /> }
+                {resellNftModalStore.isStageProcessing() === true && ProcessingContent() }
             </AnimationContainer>
 
             <AnimationContainer className = { 'Stage Success FlexColumn' } active = { resellNftModalStore.isStageSuccess() } >
-                {resellNftModalStore.isStageSuccess() === true && <SuccessContent /> }
+                {resellNftModalStore.isStageSuccess() === true && SuccessContent() }
             </AnimationContainer>
 
             <AnimationContainer className = { 'Stage Fail FlexColumn' } active = { resellNftModalStore.isStageFail() } >
-                {resellNftModalStore.isStageFail() === true && <FailContent /> }
+                {resellNftModalStore.isStageFail() === true && FailContent() }
             </AnimationContainer>
 
         </ModalWindow>
