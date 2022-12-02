@@ -144,7 +144,6 @@ export default class SuperAdminApprovePageStore {
                     collectionEntities[i],
                     this.accountSessionStore.superAdminEntity,
                     this.walletStore.ledger,
-                    this.walletStore.selectedNetwork,
                 );
             }
 
