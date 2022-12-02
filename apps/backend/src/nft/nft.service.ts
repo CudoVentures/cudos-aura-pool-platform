@@ -6,9 +6,9 @@ import { v4 as uuid } from 'uuid';
 import AccountEntity from '../account/entities/account.entity';
 import { Collection } from '../collection/collection.model';
 import { CollectionService } from '../collection/collection.service';
-import { ChainMarketplaceNftDto } from '../collection/dto/chain-marketplace-collection.dto';
 import { GraphqlService } from '../graphql/graphql.service';
 import { VisitorService } from '../visitor/visitor.service';
+import { ChainMarketplaceNftDto } from './dto/chain-marketplace-nft.dto';
 import { ChainNftNftDto } from './dto/chain-nft-nft.dto';
 import NftFilterModel, { NftOrderBy } from './dto/nft-filter.model';
 import { NFTDto } from './dto/nft.dto';
@@ -146,8 +146,21 @@ export class NFTService {
         return nft;
     }
 
-    async updateOneByTokenId(tokenId: string, updateNFTDto: Partial<NFT>, tx: Transaction = undefined): Promise < NFT > {
+    async updateOneWithStatus(id: string, updateNFTDto: Partial<NFTDto>, tx: Transaction = undefined): Promise < NFT > {
         const [count, [nft]] = await this.nftRepo.update(
+            { ...updateNFTDto },
+            {
+                where: { id },
+                returning: true,
+                transaction: tx,
+            },
+        );
+
+        return nft;
+    }
+
+    async updateOneByTokenId(tokenId: string, updateNFTDto: Partial<NFT>, tx: Transaction = undefined): Promise < NFT > {
+        const [count, nfts] = await this.nftRepo.update(
             { ...updateNFTDto },
             {
                 where: { token_id: tokenId },
@@ -156,7 +169,8 @@ export class NFTService {
             },
         );
 
-        return nft;
+        console.log(nfts)
+        return nfts[0];
     }
 
     async updateStatus(id: string, status: NftStatus): Promise < NFT > {

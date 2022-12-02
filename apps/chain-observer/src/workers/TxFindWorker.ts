@@ -63,7 +63,7 @@ export default class TxFindWorker {
 
         if (marketplaceModuleNftEvents.length > 0) {
             const tokenIds = marketplaceModuleNftEvents.map((event) => {
-                const collectionId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
+                const collectionId = event.attributes.find((attribute) => attribute.key === 'nft_id').value;
                 return collectionId;
             }).filter((value, index, self) => self.indexOf(value) === index);
 

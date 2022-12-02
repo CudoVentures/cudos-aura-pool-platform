@@ -10,16 +10,22 @@ import { CollectionService } from '../collection/collection.service';
 import { CollectionModule } from '../collection/collection.module';
 import { Collection } from '../collection/collection.model';
 import { VisitorModule } from '../visitor/visitor.module';
+import AccountService from '../account/account.service';
+import AccountRepo from '../account/repos/account.repo';
+import UserRepo from '../account/repos/user.repo';
+import AdminRepo from '../account/repos/admin.repo';
+import SuperAdminRepo from '../account/repos/super-admin.repo';
+import { JwtService } from '@nestjs/jwt/dist/jwt.service';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([NFT, Collection]),
+        SequelizeModule.forFeature([NFT, Collection, AccountRepo, UserRepo, AdminRepo, SuperAdminRepo]),
         HttpModule,
         GraphqlModule,
         VisitorModule,
         forwardRef(() => CollectionModule),
     ],
-    providers: [NFTService, GraphqlService, CollectionService],
+    providers: [NFTService, GraphqlService, CollectionService, AccountService, JwtService],
     controllers: [NFTController],
     exports: [SequelizeModule],
 })
