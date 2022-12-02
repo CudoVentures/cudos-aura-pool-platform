@@ -38,3 +38,28 @@ services:
       - 1025:1025
     networks:
       - aurapool-prod-cudos-network
+
+  cudos-aura-platform-chain-observer-prod:
+    image: cudos-aura-platform-chain-observer-prod
+    container_name: cudos-aura-platform-chain-observer-prod
+    build:
+      dockerfile: docker/prod/chain-observer.dockerfile
+      context: ../../
+      args:
+        CHAIN_ID: "$CHAIN_ID"
+        CHAIN_RPC: "$CHAIN_RPC"
+        CHAIN_GRPC: "$CHAIN_GRPC"
+    restart: unless-stopped
+    volumes:
+      - '../:/usr/cudos-aura-chain-observer'
+    networks:
+      - aurapool-prod-cudos-network
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+        max-file: "1"
+    depends_on: 
+      - cudos-aura-platform-prod
