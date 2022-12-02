@@ -4,7 +4,7 @@ import NftEntity, { NftStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
-import { SigningStargateClient, GasPrice, Ledger, Uint64 } from 'cudosjs';
+import { SigningStargateClient, GasPrice, Ledger, Ui64 } from 'cudosjs';
 import Long from 'long';
 import S from '../../../../core/utilities/Main';
 import BigNumber from 'bignumber.js';
@@ -92,12 +92,9 @@ export default class NftApiRepo implements NftRepo {
                 const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(), 'acudos')
-                const fee = {
-                    amount: { amount: gasPrice.amount.multiply(Uint64.fromNumber(100000)).floor().toString(), denom: gasPrice.denom },
-                    gas: '100000',
-                }
+                const memo = `{"uuid":"${nftEntity.id}"}`;
 
-                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', nftEntity.id);
+                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
                 txHash = tx.transactionHash;
             }
 

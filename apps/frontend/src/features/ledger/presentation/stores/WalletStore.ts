@@ -43,7 +43,6 @@ export default class WalletStore {
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE,
         });
 
-        console.log(CHAIN_DETAILS.GAS_PRICE)
         await this.connectLedger(SessionStorageWalletOptions.KEPLR);
     }
 
