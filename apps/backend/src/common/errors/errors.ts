@@ -7,6 +7,7 @@ enum ERROR_TYPES {
     WRONG_VERIFICATION_TOKEN = '4',
     WRONG_NONCE_SIGNATURE = '5',
     EMAIL_ALREADY_IN_USE = '6',
+    COLLECTION_CREATION_ERROR = '7',
 }
 
 export class WrongUserOrPasswordException extends BadRequestException {
@@ -42,5 +43,11 @@ export class WrongNonceSignatureException extends BadRequestException {
 export class EmailAlreadyInUseException extends BadRequestException {
     constructor() {
         super(ERROR_TYPES.EMAIL_ALREADY_IN_USE);
+    }
+}
+
+export class CollectionCreationError extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.COLLECTION_CREATION_ERROR);
     }
 }

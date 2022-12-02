@@ -33,6 +33,7 @@ import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { CollectionCreationError } from '../common/errors/errors';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -137,8 +138,9 @@ export class CollectionController {
             }
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
+            console.error(ex);
             this.dataService.cleanUpNewUris(oldUris, newUris);
-            throw ex;
+            throw new CollectionCreationError();
         }
         return {
             collection,

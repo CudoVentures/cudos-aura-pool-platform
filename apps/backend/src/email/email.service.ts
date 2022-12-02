@@ -36,7 +36,6 @@ export default class EmailService {
                 html: `<b>Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email by following this link <a href="${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}">Verify</a></b>`,
             };
 
-            console.log(verificationEmail);
             await this.transport.sendMail(verificationEmail);
         } catch (ex) {
             console.error(ex);

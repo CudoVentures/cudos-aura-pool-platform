@@ -125,6 +125,7 @@ export class NFTService {
             ...nftDto,
             id: uuid(),
             creator_id: creatorId,
+            current_owner: '',
             status: NftStatus.QUEUED,
         }, {
             transaction: tx,

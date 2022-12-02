@@ -37,6 +37,7 @@ export default class AccountApiRepo implements AccountRepo {
 
     async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
+            console.log('disable actions');
             this.disableActions?.();
             return this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
         } catch (e) {
@@ -51,6 +52,7 @@ export default class AccountApiRepo implements AccountRepo {
             }
             throw Error(parseBackendErrorType(e));
         } finally {
+            console.log('enable actions');
             this.enableActions?.();
         }
     }

@@ -21,20 +21,17 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../styles/page-login.css';
-import S from '../../../../core/utilities/Main';
 
 type Props = {
-    alertStore?: AlertStore;
     accountSessionStore?: AccountSessionStore;
 }
 
-function LoginPage({ alertStore, accountSessionStore }: Props) {
+function LoginPage({ accountSessionStore }: Props) {
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
     const emailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
 
     const [email, setEmail] = useState('');
-    const [logging, setLogging] = useState(false);
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
@@ -62,14 +59,11 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
             return;
         }
 
-        setLogging(true);
         try {
             await accountSessionStore.loginWithCredentials(email, password);
             navigate(AppRoutes.HOME);
         } catch (e) {
-            alertStore.show('Wrong username/password');
         }
-        setLogging(false);
     }
 
     return (
@@ -117,8 +111,8 @@ function LoginPage({ alertStore, accountSessionStore }: Props) {
                     ) }
                     actions = { (
                         <>
-                            <Button onClick={ logging === true ? null : onClickLogin } >
-                                {logging === true ? <LoadingIndicator /> : 'Login'}
+                            <Button onClick={ onClickLogin } >
+                                Login
                             </Button>
                             <Button type = { ButtonType.TEXT_INLINE } onClick={ onClickRegister } >
                                 <span className = { 'Regular' } > You don’t have account?</span>&nbsp;Request Admin Account

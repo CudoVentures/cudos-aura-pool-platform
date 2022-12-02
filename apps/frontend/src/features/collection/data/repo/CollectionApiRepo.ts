@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { MathHelper, Decimal, GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
+import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import AccountApi from '../../../accounts/data/data-sources/AccountApi';
 import SuperAdminEntity from '../../../accounts/entities/SuperAdminEntity';
@@ -108,6 +109,14 @@ export default class CollectionApiRepo implements CollectionRepo {
             result.nftEntities.forEach((nftEntity, i) => {
                 Object.assign(nftEntities[i], nftEntity);
             });
+        } catch (e) {
+            switch (parseBackendErrorType(e)) {
+                case BackendErrorType.COLLECTION_CREATION_ERROR:
+                    this.showAlert?.('Please ensure that denom id is not already in use');
+                    break;
+                default:
+            }
+            throw Error(parseBackendErrorType(e));
         } finally {
             this.enableActions?.();
         }
