@@ -148,6 +148,7 @@ export default class AccountApiRepo implements AccountRepo {
             await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
             return true;
         } catch (ex) {
+            console.log(ex);
             return false;
         } finally {
             this.enableActions?.();
