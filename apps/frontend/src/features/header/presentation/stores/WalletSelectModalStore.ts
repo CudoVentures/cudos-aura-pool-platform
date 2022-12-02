@@ -206,6 +206,12 @@ export default class WalletSelectModal extends ModalStore {
         return this.identityTx === TransactionStatus.ERROR;
     }
 
+    async isBitcoinAddressSet(): boolean {
+        const address = await this.accountRepo.fetchBitcoinAddress(this.walletStore.address);
+
+        return address !== S.Strings.EMPTY
+    }
+
     hasNextStep(): boolean {
         switch (this.progressStep) {
             case ProgressSteps.CONNECT_WALLET:

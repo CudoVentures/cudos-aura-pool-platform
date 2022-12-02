@@ -7,6 +7,9 @@ const LAST_BLOCK_ENDPOINT = '/api/v1/general/last-checked-block';
 const TRIGGER_NFT_UPDATES = '/api/v1/nft/trigger-updates';
 const TRIGGER_COLLECTION_UPDATES = '/api/v1/collection/trigger-updates';
 
+const MARKETPLACE_MODULE = 'marketplace';
+const NFT_MODULE = 'nft';
+
 export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo {
     api_url: string;
 
@@ -19,20 +22,53 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
     }
 
     async fetchLastCheckedBlock(): Promise < number > {
-        const res = await axios.get(`${this.api_url}${LAST_BLOCK_ENDPOINT}`);
+        const { data } = await axios.get(`${this.api_url}${LAST_BLOCK_ENDPOINT}`);
 
-        return res.data.lastBlock
-    }
-
-    async triggerUpdateCollections(denomIds: string[]): Promise < void > {
-        const res = await axios.put(`${this.api_url}${TRIGGER_COLLECTION_UPDATES}`, denomIds);
-    }
-
-    async triggerUpdateNfts(tokenIds: string[]): Promise < void > {
-        const res = await axios.put(`${this.api_url}${TRIGGER_NFT_UPDATES}`, tokenIds);
+        return data.height
     }
 
     async updateLastCheckedheight(height: number): Promise < void > {
-        const res = await axios.put(`${this.api_url}${LAST_BLOCK_ENDPOINT}`, height);
+        const res = await axios.put(`${this.api_url}${LAST_BLOCK_ENDPOINT}`, { height });
     }
+
+    async triggerUpdateMarketplaceModuleCollections(denomIds: string[]): Promise < void > {
+        const res = await axios.put(
+            `${this.api_url}${TRIGGER_COLLECTION_UPDATES}`,
+            {
+                module: MARKETPLACE_MODULE,
+                denomIds,
+            },
+        );
+    }
+
+    async triggerUpdateMarketplaceModuleNfts(tokenIds: string[]): Promise < void > {
+        const res = await axios.put(
+            `${this.api_url}${TRIGGER_NFT_UPDATES}`,
+            {
+                module: MARKETPLACE_MODULE,
+                tokenIds,
+            },
+        );
+    }
+
+    async triggerUpdateNftModuleCollections(denomIds: string[]): Promise < void > {
+        const res = await axios.put(
+            `${this.api_url}${TRIGGER_COLLECTION_UPDATES}`,
+            {
+                module: NFT_MODULE,
+                denomIds,
+            },
+        );
+    }
+
+    async triggerUpdateNftModuleNfts(tokenIds: string[]): Promise < void > {
+        const res = await axios.put(
+            `${this.api_url}${TRIGGER_NFT_UPDATES}`,
+            {
+                module: NFT_MODULE,
+                tokenIds,
+            },
+        );
+    }
+
 }

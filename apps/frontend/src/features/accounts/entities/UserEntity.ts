@@ -8,6 +8,7 @@ export default class UserEntity {
     bitcoinPayoutWalletAddress: string;
     profileImgUrl: string;
     coverImgUrl: string;
+    bitcoinWalletAddress: string;
 
     constructor() {
         this.userId = S.Strings.NOT_EXISTS;
@@ -16,10 +17,15 @@ export default class UserEntity {
         this.bitcoinPayoutWalletAddress = '';
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
+        this.bitcoinWalletAddress = '';
     }
 
     isNew(): boolean {
         return this.userId === S.Strings.NOT_EXISTS;
+    }
+
+    isBitcointAddressConfirmed(): boolean {
+        return this.bitcoinWalletAddress !== '';
     }
 
     static toJson(entity: UserEntity): any {

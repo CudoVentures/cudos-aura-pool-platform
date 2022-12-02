@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import S from '../../../../core/utilities/Main';
 import { Ledger, GasPrice, SigningStargateClient, StdSignature } from 'cudosjs';
 
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import WalletStore, { SESSION_STORAGE_WALLET_KEY } from '../../../ledger/presentation/stores/WalletStore';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
@@ -47,7 +47,7 @@ export default class AccountSessionStore {
             return false;
         }
 
-        if (this.accountEntity.isUser() === true || this.accountEntity.isAdmin() === true) {
+        if (this.accountEntity.isUser() === true) {
             return this.userEntity !== null;
         }
 

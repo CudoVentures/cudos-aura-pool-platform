@@ -9,6 +9,7 @@ import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
 import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
+import S from '../../../../core/utilities/Main';
 
 export default class AccountApiRepo implements AccountRepo {
 
@@ -143,7 +144,7 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
 
-            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}acudos`);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}`);
             await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
             return true;
         } catch (ex) {
@@ -160,7 +161,16 @@ export default class AccountApiRepo implements AccountRepo {
 
             return res.address.value
         } catch (e) {
-            return '';
+            return S.Strings.EMPTY;
+        }
+    }
+
+    async fetchAccountsByAccountId(accountId: string): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } > {
+        try {
+            this.disableActions?.();
+            return this.accountApi.fetchAccountsByAccountId(accountId);
+        } finally {
+            this.enableActions?.();
         }
     }
 

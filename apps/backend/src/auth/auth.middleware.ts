@@ -25,7 +25,7 @@ export class AuthMiddleware implements NestMiddleware {
             const accounts = await this.accountService.findAccounts(jwtToken.id);
             const derivedKey = pbkdf2Sync(accounts.accountEntity.hashedPass.substring(0, 10), 'salt', 100000, 64, 'sha512');
 
-            if (derivedKey.toString('hex') === jwtToken.derivedKey) {
+            if (derivedKey.toString('hex') !== jwtToken.derivedKey) {
                 throw new Error();
             }
 

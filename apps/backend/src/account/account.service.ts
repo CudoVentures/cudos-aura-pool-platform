@@ -72,6 +72,7 @@ export default class AccountService {
         try {
             this.jwtService.verify(encodedToken, JwtToken.getConfig());
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+
             const accountEntity = await this.findAccountById(jwtToken.id, tx, tx.LOCK.UPDATE);
             accountEntity.markAsEmailVerified();
             await this.creditAccount(accountEntity, false, tx);
@@ -84,7 +85,6 @@ export default class AccountService {
     async findAccountById(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < AccountEntity | null > {
         const whereAccountRepo = new AccountRepo();
         whereAccountRepo.accountId = accountId;
-
         const accountRepo = await this.accountRepo.findOne({
             where: AppRepo.toJsonWhere(whereAccountRepo),
             transaction: tx,

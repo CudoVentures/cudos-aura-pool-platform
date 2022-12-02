@@ -40,9 +40,10 @@ export default class WalletStore {
             RPC: CHAIN_DETAILS.RPC_ADDRESS,
             API: CHAIN_DETAILS.API_ADDRESS,
             STAKING: CHAIN_DETAILS.STAKING_URL,
-            GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
+            GAS_PRICE: CHAIN_DETAILS.GAS_PRICE,
         });
-        await this.connectLedger();
+
+        await this.connectLedger(SessionStorageWalletOptions.KEPLR);
     }
 
     @action
@@ -55,10 +56,10 @@ export default class WalletStore {
             STAKING: CHAIN_DETAILS.STAKING_URL,
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
         });
-        await this.connectLedger();
+        await this.connectLedger(SessionStorageWalletOptions.COSMOSTATION);
     }
 
-    private async connectLedger(): Promise < void > {
+    private async connectLedger(ledgerType: SessionStorageWalletOptions): Promise < void > {
         makeObservable(this.ledger, {
             'connected': observable,
             'accountAddress': observable,
@@ -69,7 +70,7 @@ export default class WalletStore {
 
         try {
             await this.ledger.connect();
-            sessionStorage.setItem(SESSION_STORAGE_WALLET_KEY, SessionStorageWalletOptions.KEPLR);
+            sessionStorage.setItem(SESSION_STORAGE_WALLET_KEY, ledgerType);
 
             this.address = this.ledger.accountAddress;
             this.name = await this.ledger.getName();

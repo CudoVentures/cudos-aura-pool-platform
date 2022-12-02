@@ -122,13 +122,24 @@ export class CollectionService {
         return collections;
     }
 
+    async findOneByDenomId(denomId: string): Promise<Collection> {
+        const collection = await this.collectionModel.findOne({
+            where: {
+                denom_id: denomId,
+            },
+        });
+
+        return collection;
+    }
+
     async createOne(
         collectionDto: Partial<CollectionDto>,
         creator_id: number,
         tx: Transaction = undefined,
     ): Promise<Collection> {
 
-        collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '_');
+        collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '');
+        console.log(collectionDto.denom_id)
         checkValidNftDenomId(collectionDto.denom_id);
         const collection = this.collectionModel.create({
             ...collectionDto,
@@ -164,7 +175,7 @@ export class CollectionService {
         tx: Transaction = undefined,
     ): Promise<Collection> {
         const [count, [collection]] = await this.collectionModel.update(
-            { ...collectionDto, status: CollectionStatus.QUEUED },
+            { ...collectionDto },
             {
                 where: { denom_id: denomId },
                 returning: true,

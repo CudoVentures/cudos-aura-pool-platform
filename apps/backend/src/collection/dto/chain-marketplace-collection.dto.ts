@@ -14,37 +14,26 @@ type GraphQlCollection = {
 export class ChainMarketplaceCollectionDto {
     mintRoyalties: Royalty[];
     resaleRoyalties: Royalty[];
-    verified: IntBoolValue;
+    verified: boolean;
     creator: string;
     denomId: string;
 
     constructor() {
         this.mintRoyalties = [];
         this.resaleRoyalties = [];
-        this.verified = IntBoolValue.FALSE;
+        this.verified = false;
         this.creator = '';
         this.denomId = '';
     }
 
     static fromQuery(queryCollection: GraphQlCollection): ChainMarketplaceCollectionDto {
         const collectionDto = new ChainMarketplaceCollectionDto();
-
-        collectionDto.verified = parseIntBoolValue(queryCollection.verified ?? collectionDto.verified);
+        collectionDto.verified = queryCollection.verified ?? collectionDto.verified;
         collectionDto.denomId = queryCollection.denom_id ?? collectionDto.denomId;
 
-        collectionDto.mintRoyalties = queryCollection.mint_royalties
-            ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
-                const royaltyJson = JSON.parse(royaltyString);
-                return Royalty.fromJSON(royaltyJson);
-            })
-            : collectionDto.mintRoyalties;
+        collectionDto.mintRoyalties = JSON.parse(queryCollection.mint_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
 
-        collectionDto.resaleRoyalties = queryCollection.resale_royalties
-            ? queryCollection.mint_royalties.split(',').map((royaltyString) => {
-                const royaltyJson = JSON.parse(royaltyString);
-                return Royalty.fromJSON(royaltyJson);
-            })
-            : collectionDto.resaleRoyalties;
+        collectionDto.resaleRoyalties = JSON.parse(queryCollection.resale_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
 
         return collectionDto;
 

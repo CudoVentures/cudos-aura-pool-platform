@@ -82,10 +82,10 @@ export class StatisticsController {
     }
 
     @Get('earnings/nft/:id')
-    async getNftEarnings(@Param('id') id: string, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise<{userEarningsDto: string[]}> {
-        const userEarningsDto = await this.statisticsService.fetchNftEarnings(id, { timestampFrom, timestampTo });
+    async getNftEarnings(@Param('id') id: string, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise<{nftEarningsDto: string[]}> {
+        const nftEarningsDto = await this.statisticsService.fetchNftEarnings(id, { timestampFrom, timestampTo });
 
-        return { userEarningsDto };
+        return { nftEarningsDto };
     }
 
     @Get('earnings/session-account')

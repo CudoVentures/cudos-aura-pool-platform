@@ -20,26 +20,30 @@ export default class TxFindWorker {
     }
 
     async run() {
+        try {
         // get last checked block
-        const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedBlock();
+            const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedBlock();
+            console.log('last checked block: ', lastCheckedBlock);
+            // get last block
+            // limit to 10000 blocks per run if the service is lagging behind
+            let lastBlock = await this.chainClient.getHeight();
+            const blockCheckLimit = Config.BLOCK_CHECK_LIMIT;
 
-        // get last block
-        // limit to 10000 blocks per run if the service is lagging behind
-        let lastBlock = await this.chainClient.getHeight();
-        const blockCheckLimit = Config.BLOCK_CHECK_LIMIT;
+            lastBlock = lastBlock > lastCheckedBlock + blockCheckLimit ? lastCheckedBlock + blockCheckLimit : lastBlock;
 
-        lastBlock = lastBlock > lastCheckedBlock + blockCheckLimit ? lastCheckedBlock + blockCheckLimit : lastBlock;
+            const heightFilter = {
+                minHeight: lastCheckedBlock,
+                maxHeight: lastBlock,
+            };
 
-        const heightFilter = {
-            minHeight: lastCheckedBlock,
-            maxHeight: lastBlock,
-        };
+            // filter txs in these blocks
+            await this.checkMarketplaceTransactions(heightFilter);
+            await this.checkNftTransactions(heightFilter);
 
-        // filter txs in these blocks
-        await this.checkMarketplaceTransactions(heightFilter);
-        await this.checkNftTransactions(heightFilter);
-
-        // await this.cudosAuraPoolServiceApi.updateLastCheckedheight(lastBlock);
+            await this.cudosAuraPoolServiceApi.updateLastCheckedheight(lastBlock);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     async checkMarketplaceTransactions(heightFilter) {
@@ -53,19 +57,17 @@ export default class TxFindWorker {
             const collectionIds = marketplaceModuleCollectionEvents.map((event) => {
                 const collectionId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
                 return collectionId;
-            })
-
-            this.cudosAuraPoolServiceApi.triggerUpdateCollections(collectionIds);
+            }).filter((value, index, self) => self.indexOf(value) === index);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(collectionIds);
         }
 
         if (marketplaceModuleNftEvents.length > 0) {
-
             const tokenIds = marketplaceModuleNftEvents.map((event) => {
                 const collectionId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
                 return collectionId;
-            })
+            }).filter((value, index, self) => self.indexOf(value) === index);
 
-            this.cudosAuraPoolServiceApi.triggerUpdateNfts(tokenIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds);
         }
     }
 
@@ -81,9 +83,9 @@ export default class TxFindWorker {
             const denomIds = nftModuleCollectionEvents.map((event) => {
                 const denomId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
                 return denomId;
-            })
+            }).filter((value, index, self) => self.indexOf(value) === index);
 
-            this.cudosAuraPoolServiceApi.triggerUpdateCollections(denomIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleCollections(denomIds);
         }
 
         if (nftModuleNftEvents.length > 0) {
@@ -91,9 +93,9 @@ export default class TxFindWorker {
             const tokenIds = nftModuleNftEvents.map((event) => {
                 const tokenId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
                 return tokenId;
-            })
+            }).filter((value, index, self) => self.indexOf(value) === index);
 
-            this.cudosAuraPoolServiceApi.triggerUpdateNfts(tokenIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleNfts(tokenIds);
         }
 
     }

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { CollectionStatus } from '../utils';
 
 export class UpdateCollectionDto {
     @IsString()
@@ -19,4 +20,10 @@ export class UpdateCollectionDto {
     @IsOptional()
     @ApiProperty({ example: 'Collection Name' })
         denom_id: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @IsOptional()
+    @ApiProperty({ example: 'approved' })
+        status: CollectionStatus;
 }

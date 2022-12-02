@@ -29,7 +29,7 @@ type Props = {
 function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, walletStore }: Props) {
     const nftEntity = buyNftModalStore.nftEntity;
     const validationState = useRef(new ValidationState()).current;
-    const rewardsRecipientAddress = useRef(validationState.addCudosAddressValidation('Invalid address')).current;
+    const rewardsRecipientAddress = useRef(validationState.addBitcoinAddressValidation('Invalid address')).current;
 
     useEffect(() => {
         cudosStore.init();

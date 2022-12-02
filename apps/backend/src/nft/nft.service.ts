@@ -103,7 +103,6 @@ export class NFTService {
             where: {
                 collection_id: id,
             },
-            include: [{ model: Collection }],
             transaction: tx,
             lock,
         });

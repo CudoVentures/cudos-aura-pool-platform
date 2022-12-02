@@ -17,8 +17,9 @@ export class GeneralController {
     }
 
     @Get('last-checked-block')
-    async getLastCheckedBlock(): Promise<number> {
-        return this.generalService.getLastCheckedBlock();
+    async getLastCheckedBlock(): Promise<{height: number}> {
+        const height = await this.generalService.getLastCheckedBlock();
+        return { height: height === 0 ? parseInt(process.env.APP_CUDOS_INIT_BLOCK) : height };
     }
 
     @UseInterceptors(TransactionInterceptor)

@@ -10,7 +10,7 @@ export class UpdateCollectionChainDataRequestDto {
     @IsString()
     @IsNotEmpty()
     @ApiProperty({ required: true, example: 'marketplace' })
-        module: ModuleName;
+        module: string;
 
     @IsArray()
     @IsNotEmpty()
