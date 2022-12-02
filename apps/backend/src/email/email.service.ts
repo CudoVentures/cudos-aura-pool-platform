@@ -29,13 +29,14 @@ export default class EmailService {
             const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('1d'));
 
             const verificationEmail = {
-                from: `"Aura Pool" <${process.env.App_Mailing_Service_Email}>`,
+                from: 'noreply@aurapool.com',
                 to: accountEntity.email,
                 subject: 'Email Verification',
                 text: `Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email by following this link ${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`,
                 html: `<b>Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email by following this link <a href="${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}">Verify</a></b>`,
             };
 
+            console.log(verificationEmail);
             await this.transport.sendMail(verificationEmail);
         } catch (ex) {
             console.error(ex);
@@ -48,7 +49,7 @@ export default class EmailService {
             const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('1d'));
 
             const verificationEmail = {
-                from: `"Aura Pool" <${process.env.App_Mailing_Service_Email}>`,
+                from: 'noreply@aurapool.com',
                 to: accountEntity.email,
                 subject: 'Forgotten password',
                 text: `You have requested a password change. Please follow this link ${this.appPublicUrl}/forgotten-pass-edit/${verificationToken}`,

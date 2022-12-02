@@ -1,4 +1,3 @@
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
@@ -19,6 +18,7 @@ export default class AccountApiRepo implements AccountRepo {
     showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
     constructor() {
+        window.AccountApiRepo = this;
         this.accountApi = new AccountApi();
         this.enableActions = null;
         this.disableActions = null;
@@ -26,6 +26,7 @@ export default class AccountApiRepo implements AccountRepo {
     }
 
     setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void) {
+        console.log('setPresentationActionsCallbacks');
         this.enableActions = enableActions;
         this.disableActions = disableActions;
     }
