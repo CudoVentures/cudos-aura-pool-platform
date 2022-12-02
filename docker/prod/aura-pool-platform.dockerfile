@@ -9,7 +9,7 @@ WORKDIR ${WORKING_DIR}
 
 RUN npm i
 
-RUN npm run build:prod
+RUN npm run build:platform:prod
 
 FROM node:16-buster
 
@@ -32,4 +32,4 @@ USER node
 
 RUN npm i --omit=dev
 
-CMD ["/bin/bash", "-c", "npm run start:prod:docker"] 
+CMD ["/bin/bash", "-c", "npm run start:built:platform"] 

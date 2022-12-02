@@ -1,7 +1,7 @@
 
 FROM node:16-buster as builder
 
-ARG WORKING_DIR="/usr/src/cudos-aura-platform"
+ARG WORKING_DIR="/usr/src/cudos-aura-chain-observer"
 
 COPY ./ ${WORKING_DIR}
 
@@ -9,29 +9,27 @@ WORKDIR ${WORKING_DIR}
 
 RUN npm i
 
-RUN npm run build:prod
+RUN npm run build:chain-observer:prod
 
 FROM node:16-buster
 
-ARG WORKING_DIR="/usr/local/cudos-aura-platform"  
+ARG WORKING_DIR="/usr/local/cudos-aura-chain-observer"  
 
 WORKDIR ${WORKING_DIR}
 
-COPY --from=builder "/usr/src/cudos-aura-platform/dist" ./
+COPY --from=builder "/usr/src/cudos-aura-chain-observer/dist" ./
 
-COPY --from=builder "/usr/src/cudos-aura-platform/apps/backend/database/" ./apps/backend/database
+COPY --from=builder "/usr/src/cudos-aura-chain-observer/package.json" ./
 
-COPY --from=builder "/usr/src/cudos-aura-platform/package.json" ./
-
-COPY --from=builder "/usr/src/cudos-aura-platform/config/.env" ./config/.env
+COPY --from=builder "/usr/src/cudos-aura-chain-observer/config/.env" ./config/.env
 
 RUN mkdir -p ${WORKING_DIR} && \
     chown -R node:node ${WORKING_DIR}
 
 USER node
 
-RUN npm i --omit=dev
-
 ENV App_Host="http://cudos-aura-platform-prod"
 
-CMD ["/bin/bash", "-c", "npm i && (trap 'kill 0' SIGINT; npm run start:chain-observer:prod)"] 
+RUN npm i --omit=dev
+
+CMD ["/bin/bash", "-c", "npm run start:built:chain-observer"] 

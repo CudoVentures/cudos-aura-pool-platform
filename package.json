@@ -8,7 +8,7 @@
   "scripts": {
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "prebuild:prod": "rimraf dist",
-    "build:prod": "npm run build:backend:prod; npm run build:frontend:prod; npm run build:chain-observer:prod",
+    "build:platform:prod": "npm run build:backend:prod; npm run build:frontend:prod",
     "build:backend:prod": "nest build backend --webpack",
     "build:chain-observer:prod": "nest build chain-observer --webpack",
     "build:frontend:dev": "export NODE_ENV=development && nest build --webpack --webpackPath webpack-frontend.config.js --watch",
@@ -17,7 +17,8 @@
     "start:backend:prod": "npm run build:backend:prod && node dist/apps/backend/main",
     "start:chain-observer:dev": "nest build chain-observer --webpack --webpackPath webpack-hmr.config.js --watch",
     "start:chain-observer:prod": "npm run build:chain-observer:prod && node dist/apps/chain-observer/main",
-    "start:prod:docker": "npm run migrate && node ./apps/backend/main.js",
+    "start:built:chain-observer": "node ./apps/chain-observer/main.js",
+    "start:built:platform": "npm run migrate && node ./apps/backend/main.js",
     "seed": "npx sequelize db:seed:all --config=./apps/backend/database/config/config.js --seeders-path=./apps/backend/database/seeders",
     "migrate": "npx sequelize db:migrate --config=./apps/backend/database/config/config.js --migrations-path=./apps/backend/database/migrations",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
