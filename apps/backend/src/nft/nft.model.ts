@@ -87,15 +87,17 @@ export class NFT extends Model {
     @Column
         deleted_at: Date;
 
+    @AllowNull(false)
+    @Column
+        current_owner: string;
+
     listedStatus: ListStatus;
     creatorAddress: string;
-    currentOwnerAddress: string;
 
     constructor(...args) {
         super(...args);
         this.listedStatus = ListStatus.NOT_LISTED;
         this.creatorAddress = '';
-        this.currentOwnerAddress = '';
     }
 
     isMinted(): boolean {

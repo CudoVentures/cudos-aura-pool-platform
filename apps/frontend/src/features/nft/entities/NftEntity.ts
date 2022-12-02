@@ -159,8 +159,8 @@ export default class NftEntity {
         model.status = json.status ?? model.status;
         model.listStatus = parseInt(json.list_status ?? model.listStatus);
         model.expiryDate = new Date(json.expiration_date ?? model.expiryDate).getTime();
-        model.creatorAddress = json.creator_address ?? model.creatorAddress;
-        model.currentOwnerAddress = json.current_owner_address ?? model.currentOwnerAddress;
+        model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
+        model.currentOwnerAddress = json.current_owner ?? model.currentOwnerAddress;
 
         return model;
     }

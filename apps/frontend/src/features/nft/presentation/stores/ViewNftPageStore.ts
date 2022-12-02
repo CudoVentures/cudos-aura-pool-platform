@@ -18,6 +18,7 @@ import NftEventEntity from '../../../analytics/entities/NftEventEntity';
 import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
 import BigNumber from 'bignumber.js';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 
 enum StatsTabs {
     EARNINGS = 0,
@@ -34,6 +35,7 @@ export default class ViewNftPageStore {
     collectionRepo: CollectionRepo;
     miningFarmRepo: MiningFarmRepo;
     statisticsRepo: StatisticsRepo;
+    accountRepo: AccountRepo;
 
     cudosPrice: number;
     bitcoinPrice: number;
@@ -52,7 +54,7 @@ export default class ViewNftPageStore {
     nftEventEntities: NftEventEntity[];
     historyTableState: TableState;
 
-    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo) {
+    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
         this.bitcoinStore = bitcoinStore; CollectionStatus
         this.cudosStore = cudosStore;
 
@@ -60,6 +62,7 @@ export default class ViewNftPageStore {
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
         this.statisticsRepo = statisticsRepo;
+        this.accountRepo = accountRepo;
 
         this.cudosPrice = S.NOT_EXISTS;
         this.bitcoinPrice = S.NOT_EXISTS;
@@ -93,6 +96,8 @@ export default class ViewNftPageStore {
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
 
         this.nftEventFilterModel.nftId = this.nftEntity.id;
+
+        console.log(this.nftEntity)
 
         await this.fetchNftsInTheCollection();
         await this.fetchEarnings();
