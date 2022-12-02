@@ -36,7 +36,7 @@ export default class CollectionApi {
     }
 
     // mint transaction to the chain
-    async approveCollection(collectionEntity: CollectionEntity, ledger: Ledger, network: string): Promise < string > {
+    async approveCollection(collectionEntity: CollectionEntity, ledger: Ledger): Promise < string > {
         // const { data } = await axios.patch(`/api/v1/collection/${collectionEntity.id}/status`, { status: 'approved' });
 
     }

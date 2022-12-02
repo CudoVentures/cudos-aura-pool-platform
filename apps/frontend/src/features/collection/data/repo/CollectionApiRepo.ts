@@ -113,7 +113,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
-    async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger, network: string): Promise < string > {
+    async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger): Promise < string > {
 
         checkValidNftDenomId(collectionEntity.denomId)
         const filter = new MiningFarmFilterModel()
@@ -144,7 +144,7 @@ export default class CollectionApiRepo implements CollectionRepo {
             collectionEntity.name,
             'NotEditable',
             '',
-            CHAIN_DETAILS.MINTING_SERVICE_ADDRESS[network],
+            CHAIN_DETAILS.MINTING_SERVICE_ADDRESS,
             data,
             [
                 Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
