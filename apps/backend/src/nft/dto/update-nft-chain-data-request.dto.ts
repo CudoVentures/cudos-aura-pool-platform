@@ -6,6 +6,19 @@ export enum ModuleName {
     NFT = 'nft'
 }
 
+class UpdateNftDto {
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'denomid' })
+        denomId: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: '2' })
+        tokenId: string;
+
+}
+
 export class UpdateNftChainDataRequestDto {
     @IsString()
     @IsNotEmpty()
@@ -14,6 +27,6 @@ export class UpdateNftChainDataRequestDto {
 
     @IsArray()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: ['1', '2'] })
-        tokenIds: string[];
+    @ApiProperty({ required: true, example: [{ denomId: 'denomId', tokenId: '2' }] })
+        nftDtos: UpdateNftDto[];
 }

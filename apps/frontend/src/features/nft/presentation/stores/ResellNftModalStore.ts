@@ -6,6 +6,7 @@ import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import NftRepo from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
+import CollectionEntity from '../../../collection/entities/CollectionEntity';
 
 export enum ModalStage {
     PREVIEW,
@@ -22,7 +23,7 @@ export default class ResellNftModalStore extends ModalStore {
     @observable cudosPrice: number;
     price: BigNumber;
     @observable priceDisplay: string;
-    @observable collectionName: string;
+    @observable collectionEntity: CollectionEntity;
     @observable modalStage: ModalStage;
     @observable originalPaymentSchedule: number;
     @observable autoPay: number;
@@ -40,10 +41,11 @@ export default class ResellNftModalStore extends ModalStore {
     }
 
     resetValues() {
+        this.nftEntity = null;
+        this.collectionEntity = null;
         this.cudosPrice = S.NOT_EXISTS;
         this.price = new BigNumber(S.NOT_EXISTS);
         this.priceDisplay = S.Strings.EMPTY;
-        this.collectionName = S.Strings.EMPTY;
         this.modalStage = S.NOT_EXISTS;
         this.autoPay = S.INT_FALSE;
         this.originalPaymentSchedule = S.INT_FALSE;
@@ -51,10 +53,11 @@ export default class ResellNftModalStore extends ModalStore {
     }
 
     nullateValues() {
+        this.nftEntity = null;
+        this.collectionEntity = null;
         this.cudosPrice = null;
         this.price = null;
         this.priceDisplay = null;
-        this.collectionName = null;
         this.modalStage = null;
         this.autoPay = null;
         this.originalPaymentSchedule = null;
@@ -62,10 +65,10 @@ export default class ResellNftModalStore extends ModalStore {
     }
 
     @action
-    showSignal(nftEntity: NftEntity, cudosPrice: number, collectionName: string) {
+    showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
         this.nftEntity = nftEntity;
         this.cudosPrice = cudosPrice;
-        this.collectionName = collectionName;
+        this.collectionEntity = collectionEntity;
         this.modalStage = ModalStage.PREVIEW;
         this.price = new BigNumber(0);
         this.priceDisplay = '0';
@@ -95,8 +98,7 @@ export default class ResellNftModalStore extends ModalStore {
 
     onClickSubmitForSell = async () => {
         this.modalStage = ModalStage.PROCESSING;
-
-        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.price, this.walletStore.ledger);
+        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.price, this.walletStore.ledger);
 
         this.modalStage = ModalStage.SUCCESS;
     }

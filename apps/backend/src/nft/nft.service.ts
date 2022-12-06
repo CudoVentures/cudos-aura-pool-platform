@@ -170,7 +170,6 @@ export class NFTService {
             },
         );
 
-        console.log(nfts)
         return nfts[0];
     }
 
@@ -251,13 +250,13 @@ export class NFTService {
         }
     }
 
-    async getChainMarketplaceNftsByTokenIds(tokenIds: string[]): Promise < ChainMarketplaceNftDto[] > {
-        const queryRes = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds);
+    async getChainMarketplaceNftsByTokenIds(tokenIds: string[], denomId: string): Promise < ChainMarketplaceNftDto[] > {
+        const queryRes = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds, denomId);
         return queryRes.marketplace_nft.map((queryNft) => ChainMarketplaceNftDto.fromQuery(queryNft));
     }
 
-    async getChainNftNftsByTokenIds(tokenIds: string[]): Promise < ChainNftNftDto[] > {
-        const queryRes = await this.graphqlService.fetchNftNftsByTokenIds(tokenIds);
+    async getChainNftNftsByTokenIds(tokenIds: string[], denomId: string): Promise < ChainNftNftDto[] > {
+        const queryRes = await this.graphqlService.fetchNftNftsByTokenIds(tokenIds, denomId);
         return queryRes.nft_nft.map((queryNft) => ChainNftNftDto.fromQuery(queryNft));
     }
 }

@@ -19,7 +19,7 @@ import { CollectionDto } from './dto/collection.dto';
 import { CollectionService } from './collection.service';
 import { Collection } from './collection.model';
 import { NFTService } from '../nft/nft.service';
-import { NFT } from '../nft/nft.model';
+import { ListStatus, NFT } from '../nft/nft.model';
 import RoleGuard from '../auth/guards/role.guard';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
@@ -34,6 +34,7 @@ import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { CollectionCreationError } from '../common/errors/errors';
+import { NOT_EXISTS_INT } from '../common/utils';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -111,6 +112,7 @@ export class CollectionController {
                 const nfts = nftArray.map(async (nft) => {
                     const { id: tempId, uri, ...nftRest } = nft
                     nftRest.uri = uri;
+                    nftRest.marketplace_nft_id = NOT_EXISTS_INT;
                     const createdNft = await this.nftService.createOne({ ...nftRest, collection_id: collection.id }, req.sessionAdminEntity.accountId, req.transaction)
 
                     return createdNft

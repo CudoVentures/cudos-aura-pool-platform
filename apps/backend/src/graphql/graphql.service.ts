@@ -23,8 +23,8 @@ import {
     MarketplaceCollectionsByDenomIdsQuery,
     NftCollectionsByDenomIdsQuery,
     NftCollectionsByDenomIdsDocument,
-    MarketplaceNftsByTokenIdQuery,
-    MarketplaceNftsByTokenIdDocument,
+    MarketplaceNftsByTokenIdsQuery,
+    MarketplaceNftsByTokenIdsDocument,
     NftNftsByTokenIdsQuery,
     NftNftsByTokenIdsDocument,
 } from './types';
@@ -97,19 +97,19 @@ export class GraphqlService {
         return res.data.data;
     }
 
-    async fetchMarketplaceNftsByTokenIds(tokenIds: string[]): Promise< MarketplaceNftsByTokenIdQuery > {
+    async fetchMarketplaceNftsByTokenIds(tokenIds: string[], denomId: string): Promise< MarketplaceNftsByTokenIdsQuery > {
         const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
-            query: print(MarketplaceNftsByTokenIdDocument),
-            variables: { tokenIds },
+            query: print(MarketplaceNftsByTokenIdsDocument),
+            variables: { tokenIds, denomId },
         });
 
         return res.data.data;
     }
 
-    async fetchNftNftsByTokenIds(tokenIds: string[]): Promise< NftNftsByTokenIdsQuery > {
+    async fetchNftNftsByTokenIds(tokenIds: string[], denomId: string): Promise< NftNftsByTokenIdsQuery > {
         const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(NftNftsByTokenIdsDocument),
-            variables: { tokenIds },
+            variables: { tokenIds, denomId },
         });
 
         return res.data.data;

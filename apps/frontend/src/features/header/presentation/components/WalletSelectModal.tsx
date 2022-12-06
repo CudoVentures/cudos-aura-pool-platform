@@ -52,6 +52,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
         walletSelectModalStore.markAsWalletConnecting(walletType);
         await walletStore.connectWallet(walletType);
+
         if (walletStore.isConnected() === true) {
             const userMatch = walletSelectModalStore.isModeUser() && accountSessionStore.doesAddressMatchAgainstSessionUserIfAny(walletStore.getAddress());
             const adminMatch = walletSelectModalStore.isModeAdmin() && accountSessionStore.doesAddressMatchAgainstSessionAdminIfAny(walletStore.getAddress());

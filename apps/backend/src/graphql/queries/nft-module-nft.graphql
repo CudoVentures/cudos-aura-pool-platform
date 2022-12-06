@@ -1,6 +1,6 @@
 
-query NftNftsByTokenIds($tokenIds: [bigint!]) {
-  nft_nft(where: { id: { _in: $tokenIds } }) {
+query NftNftsByTokenIds($tokenIds: [bigint!], $denomId: String) {
+  nft_nft(where: { id: { _in: $tokenIds }, denom_id: {_eq: $denomId} }) {
       owner
       sender
       uri

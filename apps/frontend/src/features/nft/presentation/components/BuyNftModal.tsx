@@ -36,7 +36,7 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
     }, []);
 
     function onClickResellNft() {
-        resellNftModalStore.showSignal(buyNftModalStore.nftEntity, buyNftModalStore.cudosPrice, buyNftModalStore.collectionName);
+        resellNftModalStore.showSignal(buyNftModalStore.nftEntity, buyNftModalStore.cudosPrice, buyNftModalStore.collectionEntity);
         buyNftModalStore.hide();
     }
 
@@ -66,7 +66,7 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
                                 }}
                             />
                             <div className={'NftInfo FlexColumnt'}>
-                                <div className={'CollectionName B2 SemiBold Gray'}>{buyNftModalStore.collectionName}</div>
+                                <div className={'CollectionName B2 SemiBold Gray'}>{buyNftModalStore.collectionEntity.name}</div>
                                 <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                                 <div className={'Price FlexRow'}>
                                     <div className={'H3 Bold'}>{nftEntity.formatPriceInCudos()}</div>
@@ -116,7 +116,7 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
                                 style={{
                                     backgroundImage: `url("${nftEntity.imageUrl}")`,
                                 }} />
-                            <div className={'B2 SemiBold Gray'}>{buyNftModalStore.collectionName}</div>
+                            <div className={'B2 SemiBold Gray'}>{buyNftModalStore.collectionEntity.name}</div>
                             <div className={'H2 Bold'}>{nftEntity.name}</div>
                         </div>
                         <div className={'FlexRow TransactionView H3'}>

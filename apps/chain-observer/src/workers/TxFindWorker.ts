@@ -62,12 +62,14 @@ export default class TxFindWorker {
         }
 
         if (marketplaceModuleNftEvents.length > 0) {
-            const tokenIds = marketplaceModuleNftEvents.map((event) => {
-                const collectionId = event.attributes.find((attribute) => attribute.key === 'nft_id').value;
-                return collectionId;
+            const nftDtos = marketplaceModuleNftEvents.map((event) => {
+                const tokenId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
+                const denomId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
+
+                return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(nftDtos);
         }
     }
 

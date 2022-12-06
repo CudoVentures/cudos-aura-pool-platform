@@ -9,22 +9,17 @@ export enum NftStatus {
     REMOVED = 'removed',
 }
 
-export enum ListStatus {
-    NOT_LISTED = 1,
-    LISTED = 2,
-}
-
 export default class NftEntity {
 
     id: string;
     collectionId: string;
+    marketplaceNftId: number;
     name: string;
     tokenId: string;
     hashPowerInTh: number;
     priceInAcudos: BigNumber;
     imageUrl: string;
     status: NftStatus;
-    listStatus: ListStatus;
     expiryDate: number;
     creatorAddress: string;
     currentOwnerAddress: string;
@@ -33,12 +28,12 @@ export default class NftEntity {
         this.id = S.Strings.NOT_EXISTS;
         this.name = '';
         this.tokenId = '';
+        this.marketplaceNftId = S.NOT_EXISTS;
         this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
         this.imageUrl = '';
         this.status = NftStatus.QUEUED;
-        this.listStatus = ListStatus.NOT_LISTED;
         this.expiryDate = S.NOT_EXISTS;
         this.creatorAddress = ''
         this.currentOwnerAddress = ''
@@ -51,15 +46,11 @@ export default class NftEntity {
     }
 
     isStatusListed(): boolean {
-        return this.listStatus === ListStatus.LISTED;
-    }
-
-    isBuyable(): boolean {
-        return this.listStatus === ListStatus.LISTED || this.tokenId === '';
+        return this.priceInAcudos.gt(new BigNumber(0));
     }
 
     isStatusNotListed(): boolean {
-        return this.listStatus === ListStatus.NOT_LISTED;
+        return this.priceInAcudos.eq(new BigNumber(0));
     }
 
     isOwnedByAddress(cudosWalletAddress: string): boolean {
@@ -129,13 +120,13 @@ export default class NftEntity {
         return {
             'id': entity.id,
             'collection_id': parseInt(entity.collectionId),
+            'marketplace_nft_id': entity.marketplaceNftId,
             'name': entity.name,
             'token_id': entity.tokenId,
             'hashing_power': entity.hashPowerInTh,
             'price': entity.priceInAcudos.toString(),
             'uri': entity.imageUrl,
             'status': entity.status,
-            'list_status': entity.listStatus,
             'expiration_date': new Date(entity.expiryDate).toISOString(),
             'creator_address': entity.creatorAddress,
             'current_owner_address': entity.currentOwnerAddress,
@@ -151,13 +142,13 @@ export default class NftEntity {
 
         model.id = (json.id ?? model.id).toString();
         model.collectionId = (json.collection_id ?? model.collectionId).toString();
+        model.marketplaceNftId = json.marketplace_nft_id ?? model.marketplaceNftId;
         model.name = json.name ?? model.name;
         model.tokenId = json.token_id ?? model.tokenId;
         model.hashPowerInTh = parseInt(json.hashing_power ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.price ?? model.priceInAcudos);
         model.imageUrl = json.uri ?? model.imageUrl;
         model.status = json.status ?? model.status;
-        model.listStatus = parseInt(json.list_status ?? model.listStatus);
         model.expiryDate = new Date(json.expiration_date ?? model.expiryDate).getTime();
         model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
         model.currentOwnerAddress = json.current_owner ?? model.currentOwnerAddress;

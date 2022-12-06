@@ -41,12 +41,12 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
         );
     }
 
-    async triggerUpdateMarketplaceModuleNfts(tokenIds: string[]): Promise < void > {
+    async triggerUpdateMarketplaceModuleNfts(nftDtos: {tokenId: string, denomId: string}[]): Promise < void > {
         const res = await axios.put(
             `${this.api_url}${TRIGGER_NFT_UPDATES}`,
             {
                 module: MARKETPLACE_MODULE,
-                tokenIds,
+                nftDtos,
             },
         );
     }

@@ -1,5 +1,5 @@
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
-import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
+import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity, { NftStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
@@ -99,7 +99,7 @@ export default class NftApiRepo implements NftRepo {
             }
 
             if (nftEntity.status === NftStatus.MINTED) {
-                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.id), gasPrice);
+                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromNumber(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
             }
 
@@ -109,14 +109,13 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async listNftForSale(nftEntity: NftEntity, price: BigNumber, ledger: Ledger): Promise < string > {
+    async listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
 
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
             const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE);
-
-            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.id, nftEntity.collectionId, coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
+            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;
 
             return txHash;

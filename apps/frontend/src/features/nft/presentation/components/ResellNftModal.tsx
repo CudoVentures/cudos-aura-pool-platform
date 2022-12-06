@@ -50,7 +50,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                         }}
                     />
                     <div className={'NftInfo FlexColumnt'}>
-                        <div className={'CollectionName B2 SemiBold Gray'}>{resellNftModalStore.collectionName}</div>
+                        <div className={'CollectionName B2 SemiBold Gray'}>{resellNftModalStore.collectionEntity.name}</div>
                         <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                         <div className={'Address FlexColumn'}>
                             <div className={'B2 SemiBold Gray'}>Current Rewards Recipient</div>

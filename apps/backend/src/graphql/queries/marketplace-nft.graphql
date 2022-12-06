@@ -22,20 +22,8 @@ query MarketplaceNftsByDenomId($denom_ids: [String!]) {
   }
 }
 
-query MarketplaceNftsByTokenId($tokenIds: [bigint!]) {
-  marketplace_nft(where: { token_id: { _in: $tokenIds } }) {
-    token_id
-    price
-    id
-    denom_id
-    creator
-    transaction_hash
-    uid
-  }
-}
-
-query MarketplaceNftByUid($uid: String!) {
-  marketplace_nft(where: {uid: {_eq: $uid}}) {
+query MarketplaceNftsByTokenIds($tokenIds: [bigint!], $denomId: String) {
+  marketplace_nft(where: {token_id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}) {
     token_id
     price
     id

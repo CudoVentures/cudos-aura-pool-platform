@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
-import { CollectionStatus } from '../../../collection/entities/CollectionEntity';
+import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 
@@ -16,5 +16,5 @@ export default interface NftRepo {
     fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } >;
 
     buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string >;
-    listNftForSale(nftEntity: NftEntity, price: BigNumber, ledger: Ledger): Promise < string >;
+    listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string >;
 }

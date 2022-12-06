@@ -6,6 +6,7 @@ import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import NftRepo from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
+import CollectionEntity from '../../../collection/entities/CollectionEntity';
 
 export enum ModalStage {
     PREVIEW,
@@ -22,7 +23,7 @@ export default class BuyNftModalStore extends ModalStore {
     @observable nftEntity: NftEntity;
     @observable cudosPrice: number;
     @observable recipient: string;
-    @observable collectionName: string;
+    @observable collectionEntity: CollectionEntity;
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
@@ -40,26 +41,28 @@ export default class BuyNftModalStore extends ModalStore {
     }
 
     resetValues() {
+        this.nftEntity = null;
+        this.collectionEntity = null;
         this.cudosPrice = S.NOT_EXISTS;
         this.recipient = S.Strings.EMPTY;
-        this.collectionName = S.Strings.EMPTY;
         this.modalStage = S.NOT_EXISTS;
         this.txHash = S.Strings.EMPTY;
     }
 
     nullateValues() {
+        this.nftEntity = null;
         this.cudosPrice = null;
         this.recipient = null;
-        this.collectionName = null;
+        this.collectionEntity = null;
         this.modalStage = null;
         this.txHash = null;
     }
 
     @action
-    showSignal(nftEntity: NftEntity, cudosPrice: number, collectionName: string) {
+    showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
         this.nftEntity = nftEntity;
         this.cudosPrice = cudosPrice;
-        this.collectionName = collectionName;
+        this.collectionEntity = collectionEntity;
         this.modalStage = ModalStage.PREVIEW;
         this.txHash = S.Strings.EMPTY;
 

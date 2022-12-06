@@ -70,11 +70,11 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
     }
 
     function onClickBuyNft() {
-        buyNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity.name);
+        buyNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
 
     function onClickResellNft() {
-        resellNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity.name);
+        resellNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
 
     function getGeneralDataPreviews() {
@@ -198,11 +198,12 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
                             <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
                                 { walletStore.isConnected() && (
                                     <>
-                                        { nftEntity.isBuyable() === true ? (
+                                        { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                                                 <Button onClick={onClickBuyNft}>Buy now for {nftEntity.formatPriceInCudos()} </Button>
                                             </Actions>
-                                        ) : (
+                                        )}
+                                        { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (
                                             <>
                                                 { nftEntity.isOwnedByAddress(walletStore.getAddress()) && (
                                                     <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>

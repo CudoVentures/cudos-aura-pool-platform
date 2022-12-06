@@ -33,7 +33,7 @@ export class NFTController {
         for (let i = nftEntities.length; i-- > 0;) {
             const nftEntity = nftEntities[i];
 
-            const {adminEntity} = await this.accountService.findAccounts(nftEntity.creator_id);
+            const { adminEntity } = await this.accountService.findAccounts(nftEntity.creator_id);
             nftEntity.creatorAddress = adminEntity.cudosWalletAddress;
             // if (nftEntity.isMinted() === true) {
             //     const nftDetails = await this.graphqlService.fetchNft(nftEntity.id)
@@ -100,11 +100,12 @@ export class NFTController {
         const nft = await this.nftService.findOne(id);
 
         // TODO uri will crash minting service until we make it a normal uri
+        const priceCoin = { amount: nft.getDataValue('price'), denom: 'acudos' };
         const response = {
             ...nft.toJSON(),
             denom_id: nft.collection.denom_id,
             nft_data: 'CudosAuraMintService',
-            price_coin: { amount: nft.getDataValue('price'), denom: 'acudos' },
+            price_coin: priceCoin,
             data: {
                 expiration_date: Math.floor(nft.expiration_date.getTime() / 1000),
                 hash_rate_owned: nft.hashing_power,
@@ -173,38 +174,37 @@ export class NFTController {
         @Req() req: AppRequest,
         @Body() updateNftChainDataRequestDto: UpdateNftChainDataRequestDto,
     ): Promise<void> {
-        const tokenIds = updateNftChainDataRequestDto.tokenIds;
-        const module = updateNftChainDataRequestDto.module;
+        const nftDtos = updateNftChainDataRequestDto.nftDtos;
+        const denomIds = nftDtos.map((nftDto) => nftDto.denomId).filter((denomId, index, self) => self.indexOf(denomId) === index);
 
-            const chainMarketplaceNftDtos = await this.nftService.getChainMarketplaceNftsByTokenIds(tokenIds);
-            const chainNftNftsDtos = await this.nftService.getChainNftNftsByTokenIds(tokenIds);
+        let chainMarketplaceNftDtos = [];
+        for (let i = 0; i < denomIds.length; i++) {
+            const denomId = denomIds[i];
+            const tokenIds = nftDtos.filter((nftDto) => nftDto.denomId === denomId).map((nftDto) => nftDto.tokenId);
+            const marketplaceNftDtos = await this.nftService.getChainMarketplaceNftsByTokenIds(tokenIds, denomId);
+            chainMarketplaceNftDtos = chainMarketplaceNftDtos.concat(marketplaceNftDtos);
+        }
 
-            if (chainNftNftsDtos.length !== tokenIds.length) {
-                throw new Error('NFTs not yet found in BDJuno');
+        if (chainMarketplaceNftDtos.length !== nftDtos.length) {
+            throw new Error('NFTs not yet found in BDJuno');
+        }
+
+        for (let i = 0; i < chainMarketplaceNftDtos.length; i++) {
+            const chainMarketplaceNftDto: ChainMarketplaceNftDto = chainMarketplaceNftDtos[i];
+
+            // TODO: make better
+            const nftDto = {
+                data: chainMarketplaceNftDto.data,
+                name: chainMarketplaceNftDto.name,
+                current_owner: chainMarketplaceNftDto.owner,
+                uri: chainMarketplaceNftDto.uri,
+                price: chainMarketplaceNftDto.price,
+                token_id: chainMarketplaceNftDto.tokenId,
+                status: chainMarketplaceNftDto.burned === true ? NftStatus.REMOVED : NftStatus.MINTED,
+                marketplace_nft_id: chainMarketplaceNftDto.marketplaceNftId,
             }
 
-            if (chainMarketplaceNftDtos.length !== tokenIds.length) {
-                throw new Error('NFTs not yet found in BDJuno');
-            }
-
-            for (let i = 0; i < chainMarketplaceNftDtos.length; i++) {
-                const chainMarketplaceNftDto: ChainMarketplaceNftDto = chainMarketplaceNftDtos[i];
-                const chainNftNftDto: ChainNftNftDto = chainNftNftsDtos.find((nft) => nft.tokenId === chainMarketplaceNftDto.tokenId);
-
-                // TODO: make better
-                const nftDto = {
-                    data: chainNftNftDto.data,
-                    name: chainNftNftDto.name,
-                    current_owner: chainNftNftDto.owner,
-                    uri: chainNftNftDto.uri,
-                    price: chainMarketplaceNftDto.price,
-                    token_id: chainNftNftDto.tokenId,
-                    status: chainNftNftDto.burned === IntBoolValue.TRUE ? NftStatus.REMOVED : NftStatus.MINTED
-                }
-
-                await this.nftService.updateOneWithStatus(chainMarketplaceNftDto.uid, nftDto, req.transaction);
-            }
+            await this.nftService.updateOneWithStatus(chainMarketplaceNftDto.uid, nftDto, req.transaction);
         }
     }
-
 }

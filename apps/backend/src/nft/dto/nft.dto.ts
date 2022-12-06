@@ -45,6 +45,11 @@ export class NFTDto {
     @ApiProperty({ required: true, example: 1 })
         collection_id: number;
 
+    @IsNumber()
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 1 })
+        marketplace_nft_id: number;
+
     constructor() {
         this.id = '';
         this.name = '';
@@ -54,6 +59,7 @@ export class NFTDto {
         this.price = '';
         this.expiration_date = NOT_EXISTS_INT;
         this.collection_id = NOT_EXISTS_INT;
+        this.marketplace_nft_id = NOT_EXISTS_INT;
     }
 
     isNew(): boolean {
@@ -71,6 +77,7 @@ export class NFTDto {
         nftDto.price = nftDto.price ?? json.price;
         nftDto.expiration_date = parseInt(nftDto.expiration_date ?? json.expiration_date);
         nftDto.collection_id = parseInt(nftDto.collection_id ?? json.collection_id);
+        nftDto.marketplace_nft_id = parseInt(nftDto.marketplace_nft_id ?? json.marketplace_nft_id);
 
         return nftDto;
     }

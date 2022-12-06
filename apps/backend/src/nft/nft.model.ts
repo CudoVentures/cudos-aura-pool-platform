@@ -15,11 +15,6 @@ import AccountRepo from '../account/repos/account.repo';
 import { Collection } from '../collection/collection.model';
 import { NftStatus } from './nft.types';
 
-export enum ListStatus {
-    NOT_LISTED = 1,
-    LISTED = 2,
-}
-
 @Table({
     freezeTableName: true,
     tableName: 'nfts',
@@ -91,12 +86,14 @@ export class NFT extends Model {
     @Column
         current_owner: string;
 
-    listedStatus: ListStatus;
+    @AllowNull(false)
+    @Column
+        marketplace_nft_id: number;
+
     creatorAddress: string;
 
     constructor(...args) {
         super(...args);
-        this.listedStatus = ListStatus.NOT_LISTED;
         this.creatorAddress = '';
     }
 
