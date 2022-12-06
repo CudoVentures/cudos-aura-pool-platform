@@ -10,7 +10,11 @@ export const enum BackendErrorType {
     WRONG_VERIFICATION_TOKEN = '4',
     WRONG_NONCE_SIGNATURE = '5',
     EMAIL_ALREADY_IN_USE = '6',
-    COLLECTION_CREATION_ERROR = '7',
+
+    COLLECTION_CREATE_ERROR = '7',
+    COLLECTION_DENOM_EXISTS_ERROR = '8',
+    COLLECTION_WRONG_DENOM_ERROR = '9',
+    DATA_SERVICE_ERROR = '10',
 }
 
 export function parseBackendErrorType(axiosError): BackendErrorType {

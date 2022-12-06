@@ -111,8 +111,17 @@ export default class CollectionApiRepo implements CollectionRepo {
             });
         } catch (e) {
             switch (parseBackendErrorType(e)) {
-                case BackendErrorType.COLLECTION_CREATION_ERROR:
+                case BackendErrorType.COLLECTION_DENOM_EXISTS_ERROR:
                     this.showAlert?.('Please ensure that denom id is not already in use');
+                    break;
+                case BackendErrorType.COLLECTION_CREATE_ERROR:
+                    this.showAlert?.('There was error in creating the colelction. Please try again.');
+                    break;
+                case BackendErrorType.COLLECTION_WRONG_DENOM_ERROR:
+                    this.showAlert?.('Please use only letters for collection name.');
+                    break;
+                case BackendErrorType.DATA_SERVICE_ERROR:
+                    this.showAlert?.('Failed to save pictures. Please try again.');
                     break;
                 default:
             }

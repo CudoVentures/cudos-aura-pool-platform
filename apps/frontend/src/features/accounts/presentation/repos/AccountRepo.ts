@@ -21,4 +21,5 @@ export default interface AccountRepo {
     fetchAccountsByAccountId(accountId: string): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } >;
     confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean >
     fetchBitcoinAddress(cudosAddress: string): Promise < string >;
+    fetchAddressCudosBalance(cudosAddress: string): Promise < string >;
 }

@@ -5,8 +5,6 @@ import { AxiosResponse } from 'axios';
 import {
     MarketplaceNftsByDenomIdQuery,
     MarketplaceNftsByDenomIdDocument,
-    MarketplaceNftByUidQuery,
-    MarketplaceNftByUidDocument,
     MarketplaceCollectionQuery,
     MarketplaceCollectionDocument,
     GetNftByTxHashQuery,

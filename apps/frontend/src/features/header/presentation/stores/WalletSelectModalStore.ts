@@ -1,6 +1,7 @@
 import { StdSignature } from 'cudosjs';
 import { action, observable, makeObservable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
+import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import S from '../../../../core/utilities/Main';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
@@ -229,7 +230,14 @@ export default class WalletSelectModal extends ModalStore {
 
     async confirmBitcoinAddress(): Promise < void > {
         const client = await this.walletStore.getClient();
-        const result = await this.accountRepo.confirmBitcoinAddress(client, this.walletStore.getAddress(), this.bitcoinAddress);
+        const walletAddress = this.walletStore.getAddress();
+
+        const balance = await await this.accountRepo.fetchAddressCudosBalance(walletAddress);
+        if (balance === '0') {
+            throw Error('This address does not have any CUDOS on chain.');
+        }
+
+        const result = await this.accountRepo.confirmBitcoinAddress(client, walletAddress, this.bitcoinAddress);
         if (result === false) {
             throw Error('Unable to confirm bitcoin address');
         }

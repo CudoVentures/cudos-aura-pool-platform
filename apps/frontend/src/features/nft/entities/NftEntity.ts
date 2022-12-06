@@ -54,6 +54,8 @@ export default class NftEntity {
     }
 
     isOwnedByAddress(cudosWalletAddress: string): boolean {
+        console.log(this.currentOwnerAddress);
+        console.log(cudosWalletAddress);
         return this.currentOwnerAddress === cudosWalletAddress;
     }
 

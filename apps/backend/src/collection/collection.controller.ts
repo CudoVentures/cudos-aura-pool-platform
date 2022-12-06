@@ -19,7 +19,7 @@ import { CollectionDto } from './dto/collection.dto';
 import { CollectionService } from './collection.service';
 import { Collection } from './collection.model';
 import { NFTService } from '../nft/nft.service';
-import { ListStatus, NFT } from '../nft/nft.model';
+import { NFT } from '../nft/nft.model';
 import RoleGuard from '../auth/guards/role.guard';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import { UpdateCollectionStatusDto } from './dto/update-collection-status.dto';
@@ -33,7 +33,7 @@ import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { CollectionCreationError } from '../common/errors/errors';
+import { CollectionCreationError, DataServiceError, ERROR_TYPES } from '../common/errors/errors';
 import { NOT_EXISTS_INT } from '../common/utils';
 
 @ApiTags('Collection')
@@ -82,10 +82,14 @@ export class CollectionController {
     ): Promise<{collection: Collection, nfts: NFT[], deletedNfts: number}> {
         const { id, nfts: nftArray, ...collectionRest } = collectionDto
 
-        collectionRest.banner_image = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionRest.banner_image);
-        collectionRest.main_image = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionRest.main_image);
-        for (let i = nftArray.length; i-- > 0;) {
-            nftArray[i].uri = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, nftArray[i].uri);
+        try {
+            collectionRest.banner_image = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionRest.banner_image);
+            collectionRest.main_image = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionRest.main_image);
+            for (let i = nftArray.length; i-- > 0;) {
+                nftArray[i].uri = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, nftArray[i].uri);
+            }
+        } catch (e) {
+            throw new DataServiceError();
         }
 
         const collectionDb = await this.collectionService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
@@ -138,12 +142,22 @@ export class CollectionController {
 
                 nftResults = await Promise.all(nftsToCreateOrEdit)
             }
+
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
-            console.error(ex);
             this.dataService.cleanUpNewUris(oldUris, newUris);
-            throw new CollectionCreationError();
+
+            const errMessage = ex.response?.message;
+            switch (errMessage) {
+                case ERROR_TYPES.COLLECTION_DENOM_EXISTS_ERROR:
+                case ERROR_TYPES.COLLECTION_WRONG_DENOM_ERROR:
+                case ERROR_TYPES.DATA_SERVICE_ERROR:
+                    throw ex;
+                default:
+                    throw new CollectionCreationError();
+            }
         }
+
         return {
             collection,
             nfts: nftResults,

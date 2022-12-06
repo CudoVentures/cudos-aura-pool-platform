@@ -1,10 +1,9 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { CollectionService } from '../collection/collection.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { NFTService } from '../nft/nft.service';
-import { NftStatus } from '../nft/nft.types';
 import { NftEventFilterDto } from './dto/event-history-filter.dto';
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
@@ -27,7 +26,7 @@ export class StatisticsService {
         // fetch by session account
         // fetch by nft id
         // fetch by event type
-        const { token_id, collection } = await this.nftService.findOne(uid)
+        const { token_id, collection } = await this.nftService.findOne(nftEventFilterDto.nftId)
         const { denom_id } = collection
 
         const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(token_id, denom_id);

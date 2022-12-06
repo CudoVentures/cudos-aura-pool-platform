@@ -1,15 +1,12 @@
 import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ListStatus, NFT } from './nft.model';
+import { NFT } from './nft.model';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterModel from './dto/nft-filter.model';
 import { UpdateNftChainDataRequestDto } from './dto/update-nft-chain-data-request.dto';
-import { ModuleName } from '../collection/dto/update-collection-chain-data-request.dto';
 import { ChainMarketplaceNftDto } from './dto/chain-marketplace-nft.dto';
 import { NftStatus } from './nft.types';
-import { ChainNftNftDto } from './dto/chain-nft-nft.dto';
-import { IntBoolValue } from '../common/utils';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import AccountService from '../account/account.service';

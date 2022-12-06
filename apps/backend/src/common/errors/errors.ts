@@ -1,13 +1,18 @@
 import { BadRequestException } from '@nestjs/common';
 
-enum ERROR_TYPES {
+export enum ERROR_TYPES {
     WRONG_USER_OR_PASSWORD = '1',
     NOT_FOUND = '2',
     WRONG_OLD_PASSWORD = '3',
     WRONG_VERIFICATION_TOKEN = '4',
     WRONG_NONCE_SIGNATURE = '5',
     EMAIL_ALREADY_IN_USE = '6',
+
     COLLECTION_CREATION_ERROR = '7',
+    COLLECTION_DENOM_EXISTS_ERROR = '8',
+    COLLECTION_WRONG_DENOM_ERROR = '9',
+
+    DATA_SERVICE_ERROR = '10',
 }
 
 export class WrongUserOrPasswordException extends BadRequestException {
@@ -49,5 +54,23 @@ export class EmailAlreadyInUseException extends BadRequestException {
 export class CollectionCreationError extends BadRequestException {
     constructor() {
         super(ERROR_TYPES.COLLECTION_CREATION_ERROR);
+    }
+}
+
+export class CollectionDenomExistsError extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.COLLECTION_DENOM_EXISTS_ERROR);
+    }
+}
+
+export class CollectionWrongDenomError extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.COLLECTION_WRONG_DENOM_ERROR);
+    }
+}
+
+export class DataServiceError extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.DATA_SERVICE_ERROR);
     }
 }

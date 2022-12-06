@@ -24,14 +24,17 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import BigNumber from 'bignumber.js';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
-    walletStore?: WalletStore
-    accountSessionStore?: AccountSessionStore
+    walletStore?: WalletStore;
+    accountSessionStore?: AccountSessionStore;
+    alertStore?: AlertStore;
 }
 
-function WalletSelectModal({ walletSelectModalStore, walletStore, accountSessionStore }: Props) {
+function WalletSelectModal({ walletSelectModalStore, walletStore, accountSessionStore, alertStore }: Props) {
 
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
@@ -51,7 +54,11 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         }
 
         walletSelectModalStore.markAsWalletConnecting(walletType);
-        await walletStore.connectWallet(walletType);
+        try {
+            await walletStore.connectWallet(walletType);
+        } catch (e) {
+            console.log(e);
+        }
 
         if (walletStore.isConnected() === true) {
             const userMatch = walletSelectModalStore.isModeUser() && accountSessionStore.doesAddressMatchAgainstSessionUserIfAny(walletStore.getAddress());
@@ -82,13 +89,14 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
             await walletSelectModalStore.confirmBitcoinAddress();
             walletSelectModalStore.markBitcoinAddressTxDoneSuccessfully();
         } catch (ex) {
-            console.log(ex);
+            alertStore.show(ex.message);
             walletSelectModalStore.markBitcoinAddressTxError();
         }
     }
 
     async function sendIdentityTx() {
         walletSelectModalStore.markIdentityTxWaiting();
+
         try {
             const { signature, sequence, accountNumber } = await walletStore.signNonceMsg();
             walletSelectModalStore.signature = signature;
@@ -96,7 +104,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
             walletSelectModalStore.accountNumber = accountNumber;
             walletSelectModalStore.markIdentityTxDoneSuccessfully();
         } catch (ex) {
-            console.log(ex);
+            alertStore.show(ex.message);
             walletSelectModalStore.markIdentityTxError();
         }
     }

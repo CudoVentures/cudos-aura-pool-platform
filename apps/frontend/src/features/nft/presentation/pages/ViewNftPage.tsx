@@ -32,6 +32,7 @@ import { ContainerBackground } from '../../../../core/presentation/components/St
 import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
 import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
     walletStore?: WalletStore;
@@ -40,9 +41,10 @@ type Props = {
     buyNftModalStore?: BuyNftModalStore;
     resellNftModalStore?: ResellNftModalStore;
     visitorStore?: VisitorStore;
+    alertStore?: AlertStore;
 }
 
-function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore }: Props) {
+function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -70,6 +72,12 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
     }
 
     function onClickBuyNft() {
+        const balance = walletStore.getBalanceSafe();
+        if (balance.lt(nftEntity.priceInAcudos)) {
+            alertStore.show('Your balance is not enough to buy this.');
+            return;
+        }
+
         buyNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
 

@@ -5,9 +5,7 @@ module.exports = {
             'nfts',
             'marketplace_nft_id',
             {
-                allowNull: false,
                 type: Sequelize.INTEGER,
-                default: -1,
             },
         );
     },

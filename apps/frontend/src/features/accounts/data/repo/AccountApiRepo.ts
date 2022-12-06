@@ -147,10 +147,20 @@ export default class AccountApiRepo implements AccountRepo {
             await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
             return true;
         } catch (ex) {
-            console.log(ex);
             return false;
         } finally {
             this.enableActions?.();
+        }
+    }
+
+    async fetchAddressCudosBalance(cudosAddress: string): Promise < string > {
+        try {
+            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
+            const res = await cudosClient.getBalance(cudosAddress, CHAIN_DETAILS.NATIVE_TOKEN_DENOM);
+
+            return res.amount;
+        } catch (e) {
+            return S.Strings.NOT_EXISTS;
         }
     }
 

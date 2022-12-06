@@ -11,6 +11,7 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
 import { ChainNftCollectionDto } from './dto/chain-nft-collection.dto';
 import { checkValidNftDenomId } from 'cudosjs';
+import { CollectionDenomExistsError, CollectionWrongDenomError } from '../common/errors/errors';
 
 @Injectable()
 export class CollectionService {
@@ -139,8 +140,17 @@ export class CollectionService {
     ): Promise<Collection> {
 
         collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '');
-        console.log(collectionDto.denom_id)
-        checkValidNftDenomId(collectionDto.denom_id);
+        try {
+            checkValidNftDenomId(collectionDto.denom_id);
+        } catch (e) {
+            throw new CollectionWrongDenomError();
+        }
+
+        const chainCollections = await this.graphqlService.fetchNftCollectionsByDenomIds([collectionDto.denom_id]);
+        if (chainCollections.nft_denom.length > 0) {
+            throw new CollectionDenomExistsError();
+        }
+
         const collection = this.collectionModel.create({
             ...collectionDto,
             status: CollectionStatus.QUEUED,
@@ -157,6 +167,7 @@ export class CollectionService {
         collectionDto: Partial<CollectionDto>,
         tx: Transaction = undefined,
     ): Promise<Collection> {
+
         const [count, [collection]] = await this.collectionModel.update(
             { ...collectionDto, status: CollectionStatus.QUEUED },
             {
