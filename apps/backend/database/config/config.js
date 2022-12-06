@@ -6,7 +6,7 @@ module.exports = {
         password: process.env.App_Database_Pass,
         database: process.env.App_Database_Db_Name,
         host: process.env.App_Database_Host,
-        port: 5432,
+        port: process.env.App_Database_Port,
         dialect: 'postgres',
     },
     //   private_testnet: {
