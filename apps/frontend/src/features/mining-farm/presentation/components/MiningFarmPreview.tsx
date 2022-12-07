@@ -8,12 +8,14 @@ import { ContainerPadding } from '../../../../core/presentation/components/Style
 
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../../core/presentation/components/DataPreviewLayout';
 import '../styles/mining-farm-preview.css';
+import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 
 type Props = {
     miningFarmEntity: MiningFarmEntity,
+    miningFarmDetailsEntity: MiningFarmDetailsEntity,
 }
 
-export default function MiningFarmPeview({ miningFarmEntity }: Props) {
+export default function MiningFarmPeview({ miningFarmEntity, miningFarmDetailsEntity }: Props) {
     const navigate = useNavigate();
 
     const onClickMiningFarm = () => {
@@ -34,8 +36,8 @@ export default function MiningFarmPeview({ miningFarmEntity }: Props) {
                 } }
                 dataPreviews = { [
                     createDataPreview('Total hashrate', `${miningFarmEntity.formatHashPowerInTh()}`),
-                    createDataPreview('NFTs Owned', 1400),
-                    createDataPreview('Total NFTs Sold', 735),
+                    createDataPreview('NFTs Owned', miningFarmDetailsEntity.nftsOwned),
+                    createDataPreview('Total NFTs Sold', miningFarmDetailsEntity.totalNftsSold),
                 ] }>
             </DataPreviewLayout>
         </div>

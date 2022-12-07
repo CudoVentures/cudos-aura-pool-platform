@@ -3,6 +3,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
+import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 
 export default class ExploreMiningFarmsPageStore {
 
@@ -12,6 +13,7 @@ export default class ExploreMiningFarmsPageStore {
     miningFarmFilterModel: MiningFarmFilterModel;
 
     miningFarmEntities: MiningFarmEntity[];
+    miningFarmDetailsEntities: MiningFarmDetailsEntity[];
 
     constructor(miningFarmRepo: MiningFarmRepo) {
         this.miningFarmRepo = miningFarmRepo;
@@ -20,6 +22,7 @@ export default class ExploreMiningFarmsPageStore {
         this.miningFarmFilterModel = new MiningFarmFilterModel();
 
         this.miningFarmEntities = [];
+        this.miningFarmDetailsEntities = [];
 
         makeAutoObservable(this);
     }
@@ -35,9 +38,11 @@ export default class ExploreMiningFarmsPageStore {
         this.miningFarmFilterModel.count = this.gridViewState.getItemsPerPage();
 
         const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(this.miningFarmFilterModel)
+        const miningFarmDetailsEntities = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id));
 
         runInAction(() => {
             this.miningFarmEntities = miningFarmEntities;
+            this.miningFarmDetailsEntities = miningFarmDetailsEntities;
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
         });

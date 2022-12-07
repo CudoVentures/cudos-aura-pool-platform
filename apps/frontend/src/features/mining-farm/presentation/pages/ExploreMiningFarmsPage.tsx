@@ -50,6 +50,7 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
         navigate(AppRoutes.EXPLORE_COLLECTIONS)
     }
 
+    const miningFarmEntities = exploreMiningFarmsPageStore.miningFarmEntities;
     return (
         <PageLayoutComponent className = { 'PageExploreMiningFarms' } >
 
@@ -86,19 +87,21 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
                             </>
                         ) } >
 
-                        { exploreMiningFarmsPageStore.miningFarmEntities === null && (
+                        { miningFarmEntities === null && (
                             <LoadingIndicator />
                         ) }
 
-                        { exploreMiningFarmsPageStore.miningFarmEntities !== null && (
+                        { miningFarmEntities !== null && (
                             <GridView
                                 gridViewState={exploreMiningFarmsPageStore.gridViewState}
-                                defaultContent={exploreMiningFarmsPageStore.miningFarmEntities.length === 0 ? <div className={'NoContentFound'}>No Farms found</div> : null} >
-                                { exploreMiningFarmsPageStore.miningFarmEntities.map((miningFarmEntity: MiningFarmEntity) => {
+                                defaultContent={miningFarmEntities.length === 0 ? <div className={'NoContentFound'}>No Farms found</div> : null} >
+                                { miningFarmEntities.map((miningFarmEntity: MiningFarmEntity) => {
+                                    const miningFarmDetailsEntity = exploreMiningFarmsPageStore.miningFarmDetailsEntities.find((detailsEntity) => detailsEntity.miningFarmId === miningFarmEntity.id);
                                     return (
                                         <MiningFarmPeview
                                             key={miningFarmEntity.id}
-                                            miningFarmEntity={miningFarmEntity} />
+                                            miningFarmEntity={miningFarmEntity}
+                                            miningFarmDetailsEntity={miningFarmDetailsEntity} />
                                     )
                                 }) }
                             </GridView>
