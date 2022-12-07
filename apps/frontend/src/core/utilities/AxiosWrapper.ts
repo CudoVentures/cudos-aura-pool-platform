@@ -15,6 +15,8 @@ export const enum BackendErrorType {
     COLLECTION_DENOM_EXISTS_ERROR = '8',
     COLLECTION_WRONG_DENOM_ERROR = '9',
     DATA_SERVICE_ERROR = '10',
+
+    FARM_CREATION_ERROR = '11',
 }
 
 export function parseBackendErrorType(axiosError): BackendErrorType {

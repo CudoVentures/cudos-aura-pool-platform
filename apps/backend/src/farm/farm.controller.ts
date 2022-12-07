@@ -31,6 +31,7 @@ import DataService from '../data/data.service';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
+import { DataServiceError, FarmCreationError } from '../common/errors/errors';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -83,12 +84,17 @@ export class FarmController {
     ): Promise<Farm> {
         const { id, ...farm } = farmDto
 
+        // save images
         let farmModel;
+        try {
+            farm.cover_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.cover_img);
+            farm.profile_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.profile_img);
+            for (let i = farm.images.length; i-- > 0;) {
+                farm.images[i] = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.images[i]);
+            }
 
-        farm.cover_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.cover_img);
-        farm.profile_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.profile_img);
-        for (let i = farm.images.length; i-- > 0;) {
-            farm.images[i] = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.images[i]);
+        } catch (e) {
+            throw new DataServiceError();
         }
 
         const farmModelDb = await this.farmService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
@@ -104,7 +110,11 @@ export class FarmController {
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
             this.dataService.cleanUpNewUris(oldUris, newUris);
-            throw ex;
+            const errMessage = ex.response?.message;
+            switch (errMessage) {
+                default:
+                    throw new FarmCreationError();
+            }
         }
 
         return farmModel

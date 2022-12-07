@@ -13,6 +13,8 @@ export enum ERROR_TYPES {
     COLLECTION_WRONG_DENOM_ERROR = '9',
 
     DATA_SERVICE_ERROR = '10',
+
+    FARM_CREATION_ERROR = '11',
 }
 
 export class WrongUserOrPasswordException extends BadRequestException {
@@ -72,5 +74,11 @@ export class CollectionWrongDenomError extends BadRequestException {
 export class DataServiceError extends BadRequestException {
     constructor() {
         super(ERROR_TYPES.DATA_SERVICE_ERROR);
+    }
+}
+
+export class FarmCreationError extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.FARM_CREATION_ERROR);
     }
 }

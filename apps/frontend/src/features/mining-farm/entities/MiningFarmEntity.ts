@@ -72,6 +72,14 @@ export default class MiningFarmEntity {
         return entity;
     }
 
+    isCudosMintNftRoyaltiesPercentSet(): boolean {
+        return this.cudosMintNftRoyaltiesPercent !== S.NOT_EXISTS;
+    }
+
+    isCudosResaleNftRoyaltiesPercentSet(): boolean {
+        return this.cudosResaleNftRoyaltiesPercent !== S.NOT_EXISTS;
+    }
+
     isNew(): boolean {
         return this.id === S.Strings.NOT_EXISTS;
     }

@@ -7,6 +7,7 @@ import MiningFarmRepo from '../../presentation/repos/MiningFarmRepo';
 import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../utilities/MiningFarmFilterModel';
 import MiningFarmApi from '../data-sources/MiningFarmApi';
 import S from '../../../../core/utilities/Main';
+import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -107,6 +108,14 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
             this.disableActions?.();
             const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity);
             Object.assign(miningFarmEntity, resultMiningFarmEntity);
+        } catch (e) {
+            switch (parseBackendErrorType(e)) {
+                case BackendErrorType.FARM_CREATION_ERROR:
+                    this.showAlert?.('There was an error in farm creation. Please try again later.');
+                    break;
+                default:
+                    throw Error(parseBackendErrorType(e));
+            }
         } finally {
             this.enableActions?.();
         }

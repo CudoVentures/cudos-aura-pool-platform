@@ -6,6 +6,7 @@ import MinerEntity from '../../entities/MinerEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import S from '../../../../core/utilities/Main';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 export default class CreditMiningFarmDetailsPageStore {
 
@@ -13,6 +14,7 @@ export default class CreditMiningFarmDetailsPageStore {
     static STEP_REVIEW = 2;
     static STEP_SUCCESS = 3;
 
+    alertStore: AlertStore;
     accountSessionStore: AccountSessionStore;
     miningFarmRepo: MiningFarmRepo;
 
@@ -31,7 +33,7 @@ export default class CreditMiningFarmDetailsPageStore {
     miningFarmEntity: MiningFarmEntity;
     // imageEntities: ImageEntity[];
 
-    constructor(accountSessionStore: AccountSessionStore, miningFarmRepo: MiningFarmRepo) {
+    constructor(alertStore: AlertStore, accountSessionStore: AccountSessionStore, miningFarmRepo: MiningFarmRepo) {
         this.accountSessionStore = accountSessionStore;
         this.miningFarmRepo = miningFarmRepo;
 
@@ -112,19 +114,12 @@ export default class CreditMiningFarmDetailsPageStore {
     }
 
     finishCreation = async () => {
-        this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity?.accountId;
-        const superAdminEntity = this.accountSessionStore.superAdminEntity;
-
-        // add fees from super admin by default
-        // TODO USE SUPER ADMIN ENTITY WHEN IT IS ALWAYS RETURNED
-        // this.miningFarmEntity.cudosMintNftRoyaltiesPercent = superAdminEntity.firstSaleCudosRoyaltiesPercent;
-        // this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = superAdminEntity.resaleCudosRoyaltiesPercent;
-
-        this.miningFarmEntity.cudosMintNftRoyaltiesPercent = 10;
-        this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = 2.5;
-
-        await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
-
+        try {
+            this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity?.accountId;
+            await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
+        } catch (e) {
+            this.alertStore.show()
+        }
         runInAction(() => {
             this.setStepSuccess();
         });

@@ -124,8 +124,8 @@ export default class CollectionApiRepo implements CollectionRepo {
                     this.showAlert?.('Failed to save pictures. Please try again.');
                     break;
                 default:
+                    throw Error(parseBackendErrorType(e));
             }
-            throw Error(parseBackendErrorType(e));
         } finally {
             this.enableActions?.();
         }

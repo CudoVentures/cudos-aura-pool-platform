@@ -36,8 +36,8 @@ export default function MiningFarmPeview({ miningFarmEntity, miningFarmDetailsEn
                 } }
                 dataPreviews = { [
                     createDataPreview('Total hashrate', `${miningFarmEntity.formatHashPowerInTh()}`),
-                    createDataPreview('NFTs Owned', miningFarmDetailsEntity.nftsOwned),
-                    createDataPreview('Total NFTs Sold', miningFarmDetailsEntity.totalNftsSold),
+                    createDataPreview('NFTs Owned', miningFarmDetailsEntity?.nftsOwned ?? 0),
+                    createDataPreview('Total NFTs Sold', miningFarmDetailsEntity?.totalNftsSold ?? 0),
                 ] }>
             </DataPreviewLayout>
         </div>

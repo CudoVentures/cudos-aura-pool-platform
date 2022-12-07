@@ -116,6 +116,16 @@ export default class SuperAdminApprovePageStore {
 
         this.selectedMiningFarmEntities.forEach((miningFarmEntity) => {
             miningFarmEntity.markApproved();
+
+            // if royalties not custom set for this farm, set the super admin standard onss
+            if (miningFarmEntity.isCudosMintNftRoyaltiesPercentSet() === false) {
+                miningFarmEntity.cudosMintNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.firstSaleCudosRoyaltiesPercent;
+            }
+
+            if (miningFarmEntity.isCudosResaleNftRoyaltiesPercentSet() === false) {
+                miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.resaleCudosRoyaltiesPercent;
+            }
+
             miningFarmEntities.push(miningFarmEntity)
         });
 
