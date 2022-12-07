@@ -19,7 +19,7 @@ services:
     ports:
       - "$HOST_PORT:$DOCKER_PORT"
     volumes:
-      - cudosdappdata:/usr/src/cudos-aura-platform/dist/data
+      - ../../../cudosdappdata/aura-pool-platform:/usr/src/cudos-aura-platform/dist/data
     networks:
       - aurapool-prod-cudos-network
     extra_hosts:
