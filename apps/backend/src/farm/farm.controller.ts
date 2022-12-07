@@ -129,7 +129,18 @@ export class FarmController {
         @Param('id', ParseIntPipe) id: number,
         @Body() updateFarmStatusDto: UpdateFarmStatusDto,
     ): Promise<Farm> {
-        return this.farmService.updateStatus(id, updateFarmStatusDto.status, req.transaction);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+        console.log(updateFarmStatusDto);
+
+        return this.farmService.updateStatus(id, updateFarmStatusDto, req.transaction);
     }
 
     @Get('miners')

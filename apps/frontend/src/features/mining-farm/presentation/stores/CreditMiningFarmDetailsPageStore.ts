@@ -14,7 +14,6 @@ export default class CreditMiningFarmDetailsPageStore {
     static STEP_REVIEW = 2;
     static STEP_SUCCESS = 3;
 
-    alertStore: AlertStore;
     accountSessionStore: AccountSessionStore;
     miningFarmRepo: MiningFarmRepo;
 
@@ -33,7 +32,7 @@ export default class CreditMiningFarmDetailsPageStore {
     miningFarmEntity: MiningFarmEntity;
     // imageEntities: ImageEntity[];
 
-    constructor(alertStore: AlertStore, accountSessionStore: AccountSessionStore, miningFarmRepo: MiningFarmRepo) {
+    constructor(accountSessionStore: AccountSessionStore, miningFarmRepo: MiningFarmRepo) {
         this.accountSessionStore = accountSessionStore;
         this.miningFarmRepo = miningFarmRepo;
 

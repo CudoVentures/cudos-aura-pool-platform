@@ -31,8 +31,8 @@ export default class MiningFarmApi {
         return MiningFarmEntity.fromJson(farm);
     }
 
-    async approveMiningFarm(miningFarmId: string): Promise < void > {
-        const { data } = await axios.patch(`/api/v1/farm/${miningFarmId}/status`, { status: MiningFarmStatus.APPROVED });
+    async approveMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void > {
+        const { data } = await axios.patch(`/api/v1/farm/${miningFarmEntity.id}/status`, MiningFarmEntity.toJson(miningFarmEntity));
     }
 
     async fetchManufacturers(): Promise < ManufacturerEntity[] > {

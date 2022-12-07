@@ -18,6 +18,7 @@ import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { VisitorService } from '../visitor/visitor.service';
 import AccountEntity from '../account/entities/account.entity';
+import { UpdateFarmStatusDto } from './dto/update-status.dto';
 
 @Injectable()
 export class FarmService {
@@ -121,11 +122,14 @@ export class FarmService {
         return farm;
     }
 
-    async updateStatus(id: number, status: FarmStatus, tx: Transaction = undefined): Promise<Farm> {
+    async updateStatus(id: number, updateFarmStatusDto: UpdateFarmStatusDto, tx: Transaction = undefined): Promise<Farm> {
+
+        console.log('-------------------------------------------')
+        console.log(updateFarmStatusDto)
+        console.log('-------------------------------------------')
+
         const [count, [farm]] = await this.farmModel.update(
-            {
-                status,
-            },
+            updateFarmStatusDto,
             {
                 where: { id },
                 returning: true,
