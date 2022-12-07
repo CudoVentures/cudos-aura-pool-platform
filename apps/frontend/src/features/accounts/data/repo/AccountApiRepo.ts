@@ -143,7 +143,7 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
 
-            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}`);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
             await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
             return true;
         } catch (ex) {

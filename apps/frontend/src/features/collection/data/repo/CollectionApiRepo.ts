@@ -142,7 +142,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         const { adminEntity } = await this.accountApi.fetchAccountsByAccountId(miningFarmEntity.accountId);
 
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
-        const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}`);
+        const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
 
         const decimals = (new BigNumber(10)).pow(18);
         const cudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;

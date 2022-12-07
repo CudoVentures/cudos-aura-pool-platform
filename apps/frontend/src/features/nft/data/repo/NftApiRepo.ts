@@ -83,7 +83,7 @@ export default class NftApiRepo implements NftRepo {
         try {
             this.disableActions?.();
 
-            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
             let txHash = S.Strings.EMPTY;
 
@@ -114,7 +114,7 @@ export default class NftApiRepo implements NftRepo {
             this.disableActions?.();
 
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
-            const gasPrice = GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
             const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;
 
