@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
-import { FarmStatus, FarmStatusWithAny, MiningFarmJsonValidator } from '../farm.types';
+import { FarmStatus, MiningFarmJsonValidator } from '../farm.types';
 import { MiningFarmRepo } from '../repos/mining-farm.repo';
 
 export default class MiningFarmEntity {

@@ -28,7 +28,7 @@ export default class MinerEntity {
         }
 
         return {
-            'id': parseInt(entity.minerId),
+            'minerId': entity.minerId,
             'name': entity.name,
         }
     }
@@ -40,7 +40,7 @@ export default class MinerEntity {
 
         const model = new MinerEntity();
 
-        model.minerId = (json.id ?? model.minerId).toString();
+        model.minerId = (json.minerId ?? model.minerId).toString();
         model.name = json.name ?? model.name;
 
         return model;

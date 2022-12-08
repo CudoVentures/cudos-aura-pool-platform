@@ -30,10 +30,13 @@ import DataService from '../data/data.service';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
-import { ReqCreditMiningFarm } from './dto/requests.dto';
+import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm } from './dto/requests.dto';
 import MiningFarmEntity from './entities/mining-farm.entity';
-import { ResCreditMiningFarm } from './dto/responses.dto';
+import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners } from './dto/responses.dto';
 import { FarmStatus } from './farm.types';
+import EnergySourceEntity from './entities/energy-source.entity';
+import MinerEntity from './entities/miner.entity';
+import ManufacturerEntity from './entities/manufacturer.entity';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -84,59 +87,53 @@ export class FarmController {
     }
 
     @Get('miners')
-    async findMiners(): Promise<Miner[]> {
-        return this.farmService.findMiners();
+    async findMiners(): Promise < ResFetchMiners > {
+        const minerEntities = await this.farmService.findMiners();
+        return new ResFetchMiners(minerEntities);
     }
 
     @Get('energy-sources')
-    async findEnergySources(): Promise<EnergySource[]> {
-        return this.farmService.findEnergySources();
+    async findEnergySources(): Promise < ResFetchEnergySources > {
+        const energySourceEntities = await this.farmService.findEnergySources();
+        return new ResFetchEnergySources(energySourceEntities);
     }
 
     @Get('manufacturers')
-    async findManufacturers(): Promise<Manufacturer[]> {
-        return this.farmService.findManufacturers();
+    async findManufacturers(): Promise < ResFetchManufacturers > {
+        const manufacturerEntities = await this.farmService.findManufacturers();
+        return new ResFetchManufacturers(manufacturerEntities);
     }
 
     @UseInterceptors(TransactionInterceptor)
     @Put('miners')
     async creditMiners(
         @Req() req: AppRequest,
-        @Body() minerDto: MinerDto,
-    ): Promise<Miner> {
-
-        if (MinerDto.isNew(minerDto)) {
-            return this.farmService.createMiner(minerDto, req.transaction)
-        }
-
-        return this.farmService.updateMiner(minerDto, req.transaction)
+        @Body(new ValidationPipe({ transform: true })) reqCreditMiner: ReqCreditMiner,
+    ): Promise < ResCreditMiner > {
+        let minerEntity = MinerEntity.fromJson(reqCreditMiner.minerEntity);
+        minerEntity = await this.farmService.creditMiner(minerEntity, req.transaction);
+        return new ResCreditMiner(minerEntity);
     }
 
     @UseInterceptors(TransactionInterceptor)
     @Put('energy-sources')
     async creditEnergySources(
         @Req() req: AppRequest,
-        @Body() energySourceDto: EnergySourceDto,
-    ): Promise<EnergySource> {
-
-        if (EnergySourceDto.isNew(energySourceDto)) {
-            return this.farmService.createEnergySource(energySourceDto, req.transaction);
-        }
-
-        return this.farmService.updateEnergySource(energySourceDto, req.transaction);
+        @Body(new ValidationPipe({ transform: true })) reqCreditEnergySource: ReqCreditEnergySource,
+    ): Promise < ResCreditEnergySource > {
+        let energySourceEntity = EnergySourceEntity.fromJson(reqCreditEnergySource.energySourceEntity);
+        energySourceEntity = await this.farmService.creditEnergySource(energySourceEntity, req.transaction);
+        return new ResCreditEnergySource(energySourceEntity);
     }
 
     @UseInterceptors(TransactionInterceptor)
     @Put('manufacturers')
     async creditManufacturers(
         @Req() req: AppRequest,
-        @Body() manufacturerDto: ManufacturerDto,
-    ): Promise<Manufacturer> {
-
-        if (ManufacturerDto.isNew(manufacturerDto)) {
-            return this.farmService.createManufacturer(manufacturerDto, req.transaction)
-        }
-
-        return this.farmService.updateManufacturer(manufacturerDto, req.transaction)
+        @Body(new ValidationPipe({ transform: true })) reqCreditManufacturer: ReqCreditManufacturer,
+    ): Promise < ResCreditManufacturer > {
+        let manufacturerEntity = ManufacturerEntity.fromJson(reqCreditManufacturer.manufacturerEntity);
+        manufacturerEntity = await this.farmService.creditManufacturer(manufacturerEntity, req.transaction);
+        return new ResCreditManufacturer(manufacturerEntity);
     }
 }

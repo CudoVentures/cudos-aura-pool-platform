@@ -13,22 +13,33 @@ import { Miner } from './models/miner.model';
 import { HttpService } from '@nestjs/axios';
 import { CollectionStatus } from '../collection/utils';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
-import sequelize, { LOCK, Op, Transaction } from 'sequelize';
+import sequelize, { LOCK, Op, Transaction, where } from 'sequelize';
 import { VisitorService } from '../visitor/visitor.service';
 import AccountEntity from '../account/entities/account.entity';
 import { UpdateFarmStatusDto } from './dto/update-status.dto';
-import { FarmStatus } from './farm.types';
 import MiningFarmEntity from './entities/mining-farm.entity';
 import { MiningFarmRepo, MiningFarmRepoColumn } from './repos/mining-farm.repo';
 import AppRepo from '../common/repo/app.repo';
 import DataService from '../data/data.service';
 import { DataServiceError } from '../common/errors/errors';
+import EnergySourceEntity from './entities/energy-source.entity';
+import { EnergySourceRepo } from './repos/energy-source.repo';
+import { MinerRepo } from './repos/miner.repo';
+import { ManufacturerRepo } from './repos/manufacturer.repo';
+import MinerEntity from './entities/miner.entity';
+import ManufacturerEntity from './entities/manufacturer.entity';
 
 @Injectable()
 export class FarmService {
     constructor(
         @InjectModel(MiningFarmRepo)
         private miningFarmRepo: typeof MiningFarmRepo,
+        @InjectModel(EnergySourceRepo)
+        private energySourceRepo: typeof EnergySourceRepo,
+        @InjectModel(MinerRepo)
+        private minerRepo: typeof MinerRepo,
+        @InjectModel(ManufacturerRepo)
+        private manufacturerRepo: typeof ManufacturerRepo,
         @InjectModel(Farm)
         private farmModel: typeof Farm,
         @InjectModel(Collection)
@@ -152,86 +163,91 @@ export class FarmService {
         return MiningFarmEntity.fromRepo(miningFarmRepo);
     }
 
-    async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<Farm> {
-        return this.farmModel.findByPk(id, {
-            transaction: tx,
-            lock,
+    async findMiners(): Promise < MinerEntity[] > {
+        const minerRepos = await this.minerRepo.findAll();
+        return minerRepos.map((minerEntity) => {
+            return MinerEntity.fromRepo(minerEntity);
         });
     }
 
-    async updateStatus(id: number, updateFarmStatusDto: UpdateFarmStatusDto, tx: Transaction = undefined): Promise<Farm> {
+    async findEnergySources(): Promise < EnergySourceEntity[] > {
+        const energySourceRepos = await this.energySourceRepo.findAll();
+        return energySourceRepos.map((energySourceRepo) => {
+            return EnergySourceEntity.fromRepo(energySourceRepo);
+        });
+    }
 
-        console.log('-------------------------------------------')
-        console.log(updateFarmStatusDto)
-        console.log('-------------------------------------------')
+    async findManufacturers(): Promise < ManufacturerEntity[] > {
+        const manufacturerRepos = await this.manufacturerRepo.findAll();
+        return manufacturerRepos.map((manufacturerRepo) => {
+            return ManufacturerEntity.fromRepo(manufacturerRepo);
+        })
+    }
 
-        const [count, [farm]] = await this.farmModel.update(
-            updateFarmStatusDto,
-            {
-                where: { id },
+    async creditEnergySource(energySourceEntity: EnergySourceEntity, tx: Transaction = undefined): Promise < EnergySourceEntity > {
+        let energySourceRepo = EnergySourceEntity.toRepo(energySourceEntity);
+        if (energySourceEntity.isNew() === true) {
+            energySourceRepo = await this.energySourceRepo.create(energySourceRepo.toJSON(), {
                 returning: true,
                 transaction: tx,
-            },
-        );
+            })
+        } else {
+            const whereClause = new EnergySourceRepo();
+            whereClause.id = energySourceRepo.id;
+            const sqlResult = await this.energySourceRepo.update(energySourceRepo.toJSON(), {
+                where: AppRepo.toJsonWhere(whereClause),
+                returning: true,
+                transaction: tx,
+            })
+            energySourceRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
+        }
 
-        return farm;
+        return EnergySourceEntity.fromRepo(energySourceRepo);
     }
 
-    async findMiners(): Promise<Miner[]> {
-        const miners = await this.minerModel.findAll();
+    async creditMiner(minerEntity: MinerEntity, tx: Transaction = undefined): Promise < MinerEntity > {
+        let minerRepo = MinerEntity.toRepo(minerEntity);
+        console.log(1, minerRepo);
+        if (minerEntity.isNew() === true) {
+            console.log(2, minerRepo.toJSON());
+            minerRepo = await this.minerRepo.create(minerRepo.toJSON(), {
+                returning: true,
+                transaction: tx,
+            })
+        } else {
+            const whereClause = new MinerRepo();
+            whereClause.id = minerRepo.id;
+            const sqlResult = await this.minerRepo.update(minerRepo.toJSON(), {
+                where: AppRepo.toJsonWhere(whereClause),
+                returning: true,
+                transaction: tx,
+            })
+            minerRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
+        }
 
-        return miners;
+        console.log('back', minerRepo);
+        return MinerEntity.fromRepo(minerRepo);
     }
 
-    async findEnergySources(): Promise<EnergySource[]> {
-        const miners = await this.energySourceModel.findAll();
+    async creditManufacturer(manufacturerEntity: ManufacturerEntity, tx: Transaction = undefined): Promise < ManufacturerEntity > {
+        let manufacturerRepo = ManufacturerEntity.toRepo(manufacturerEntity);
+        if (manufacturerEntity.isNew() === true) {
+            manufacturerRepo = await this.manufacturerRepo.create(manufacturerRepo.toJSON(), {
+                returning: true,
+                transaction: tx,
+            })
+        } else {
+            const whereClause = new MinerRepo();
+            whereClause.id = manufacturerRepo.id;
+            const sqlResult = await this.manufacturerRepo.update(manufacturerRepo.toJSON(), {
+                where: AppRepo.toJsonWhere(whereClause),
+                returning: true,
+                transaction: tx,
+            })
+            manufacturerRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
+        }
 
-        return miners;
-    }
-
-    async findManufacturers(): Promise<Manufacturer[]> {
-        const miners = await this.manufacturerModel.findAll();
-
-        return miners;
-    }
-
-    async createMiner(minerDto: MinerDto, tx: Transaction = undefined): Promise<Miner> {
-        const miner = await this.minerModel.create({ ...minerDto }, { transaction: tx });
-
-        return miner;
-    }
-
-    async createEnergySource(energySourceDto: EnergySourceDto, tx: Transaction = undefined): Promise<EnergySource> {
-        const energySource = await this.energySourceModel.create({ ...energySourceDto }, { transaction: tx });
-
-        return energySource;
-    }
-
-    async createManufacturer(manufacturerDto: ManufacturerDto, tx: Transaction = undefined): Promise<Manufacturer> {
-        const manufacturer = await this.manufacturerModel.create({ ...manufacturerDto }, { transaction: tx });
-
-        return manufacturer;
-    }
-
-    async updateMiner(minerDto: MinerDto, tx: Transaction = undefined): Promise<Miner> {
-        const { id, ...rest } = minerDto
-        const [count, [miner]] = await this.minerModel.update({ ...rest }, { where: { id }, returning: true, transaction: tx })
-
-        return miner;
-    }
-
-    async updateEnergySource(energySourceDto: EnergySourceDto, tx: Transaction = undefined): Promise<EnergySource> {
-        const { id, ...rest } = energySourceDto
-        const [count, [energySource]] = await this.energySourceModel.update({ ...rest }, { where: { id }, returning: true, transaction: tx })
-
-        return energySource;
-    }
-
-    async updateManufacturer(manufacturerDto: ManufacturerDto, tx: Transaction = undefined): Promise<Manufacturer> {
-        const { id, ...rest } = manufacturerDto
-        const [count, [manufacturer]] = await this.manufacturerModel.update({ ...rest }, { where: { id }, returning: true, transaction: tx })
-
-        return manufacturer;
+        return ManufacturerEntity.fromRepo(manufacturerRepo);
     }
 
     async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number, remainingHashPowerInTH: number }> {

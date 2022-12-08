@@ -24,7 +24,7 @@ export class IsFarmApprovedGuard implements CanActivate {
 
         const farmId = collectionDto.farm_id
 
-        const farm = await this.farmService.findOne(farmId);
+        const farm = await this.farmService.findMiningFarmById(farmId);
 
         if (!farm || farm.status !== FarmStatus.APPROVED) {
             throw new UnauthorizedException(

@@ -17,9 +17,12 @@ import { VisitorModule } from '../visitor/visitor.module';
 import VisitorRepo from '../visitor/repo/visitor.repo';
 import DataService from '../data/data.service';
 import { MiningFarmRepo } from './repos/mining-farm.repo';
+import { EnergySourceRepo } from './repos/energy-source.repo';
+import { ManufacturerRepo } from './repos/manufacturer.repo';
+import { MinerRepo } from './repos/miner.repo';
 
 @Module({
-    imports: [SequelizeModule.forFeature([Farm, MiningFarmRepo, Miner, Manufacturer, EnergySource, VisitorRepo]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
+    imports: [SequelizeModule.forFeature([Farm, MiningFarmRepo, EnergySourceRepo, Miner, MinerRepo, Manufacturer, ManufacturerRepo, EnergySource, VisitorRepo]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
     controllers: [FarmController],
     providers: [FarmService, CollectionService, NFTService, VisitorService, GraphqlService, DataService],
     exports: [VisitorService],

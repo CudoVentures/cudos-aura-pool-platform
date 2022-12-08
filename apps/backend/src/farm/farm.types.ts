@@ -92,3 +92,33 @@ export class MiningFarmJsonValidator {
         maintenanceFeePayoutBtcAddress: string;
 
 }
+
+export class EnergySourceJsonValidator {
+
+    @IsString()
+        energySourceId: string;
+
+    @IsString()
+        name: string;
+
+}
+
+export class MinerJsonValidator {
+
+    @IsString()
+        minerId: string;
+
+    @IsString()
+        name: string;
+
+}
+
+export class ManufacturerJsonValidator {
+
+    @IsString()
+        manufacturerId: string;
+
+    @IsString()
+        name: string;
+
+}

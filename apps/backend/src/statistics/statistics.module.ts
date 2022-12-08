@@ -20,6 +20,9 @@ import { VisitorModule } from '../visitor/visitor.module';
 import VisitorRepo from '../visitor/repo/visitor.repo';
 import DataService from '../data/data.service';
 import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
+import { EnergySourceRepo } from '../farm/repos/energy-source.repo';
+import { MinerRepo } from '../farm/repos/miner.repo';
+import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
 
 @Module({
     imports: [
@@ -30,8 +33,11 @@ import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
             Farm,
             MiningFarmRepo,
             Miner,
+            MinerRepo,
             Manufacturer,
+            ManufacturerRepo,
             EnergySource,
+            EnergySourceRepo,
             VisitorRepo,
         ]),
         NFTModule,

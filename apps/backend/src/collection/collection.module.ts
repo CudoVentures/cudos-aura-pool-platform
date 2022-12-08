@@ -17,10 +17,13 @@ import { Miner } from '../farm/models/miner.model';
 import { VisitorModule } from '../visitor/visitor.module';
 import DataService from '../data/data.service';
 import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
+import { EnergySourceRepo } from '../farm/repos/energy-source.repo';
+import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
+import { MinerRepo } from '../farm/repos/miner.repo';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([Collection, NFT, Farm, MiningFarmRepo, Miner, Manufacturer, EnergySource]),
+        SequelizeModule.forFeature([Collection, NFT, Farm, MiningFarmRepo, Miner, MinerRepo, Manufacturer, ManufacturerRepo, EnergySource, EnergySourceRepo]),
         forwardRef(() => NFTModule),
         forwardRef(() => FarmModule),
         HttpModule,
