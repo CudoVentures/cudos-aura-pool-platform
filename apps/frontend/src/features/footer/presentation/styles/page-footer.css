@@ -1,8 +1,18 @@
-.PageFooter {
-    padding: 30px var(--page-spacing-h);
+.FooterContainer {
+    display: flex;
+    flex-direction: column;
+}
 
+.FooterContainer a {
+    color: var(--color-secondary);
+}
+
+.PageFooter {
+    padding: 54px 64px;
+    margin: 0 72px;
     margin-top: auto;
-    background-color: #000;
+    background-color: var(--color-neutral-100);
+    border-radius: 40px;
     color: #fff;
     fill: #fff;
 }
@@ -14,14 +24,10 @@
 }
 
 .PageFooter .FooterNav {
-    color: var(--color-secondary);
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.PageFooter .FooterNav > a {
-    height: 12px; line-height: 12px;
-    padding: 0 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 140px;
 }
 
 .PageFooter .FooterNav > a:not(:last-child) {
@@ -31,4 +37,15 @@
 .PageFooter .IconSocial {
     fill: var(--color-dark);
     margin-left: 24px;
+}
+
+.LinksColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.TermsContainer {
+    margin: auto;
+    gap: 18px;
+    padding: 24px;
 }

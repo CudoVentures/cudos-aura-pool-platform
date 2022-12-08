@@ -15,7 +15,7 @@ import Button, { ButtonType } from '../../../../../core/presentation/components/
 import UploaderComponent from '../../../../../core/presentation/components/UploaderComponent';
 import Input, { InputType } from '../../../../../core/presentation/components/Input';
 import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
-import InfoGrayBox from '../../../../../core/presentation/components/InfoGrayBox';
+import InfoBlueBox from '../../../../../core/presentation/components/InfoBlueBox';
 import SingleDatepicker from '../../../../../core/presentation/components/SingleDatepicker';
 import FieldColumnWrapper from '../../../../../core/presentation/components/FieldColumnWrapper';
 
@@ -125,7 +125,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
                 helperText = { `Available TH: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
-                <InfoGrayBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
+                <InfoBlueBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
             </FieldColumnWrapper>
             <FieldColumnWrapper
                 field = {

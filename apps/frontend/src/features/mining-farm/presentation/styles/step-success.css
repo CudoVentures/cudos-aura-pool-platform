@@ -6,6 +6,10 @@
     gap: 10px;
 }
 
+.SuccessCheck {
+    color: var(--color-success-050);
+}
+
 /* .EmailBox {
     margin-top: 50px;
     width: 100%;

@@ -44,9 +44,8 @@
 }
 
 .NavBar .NavItem .NavNumber.Done {
-    color: #000;
-    border-color: #000;
-    background: #fff;
+    color: #fff;
+    background: var(--color-success-050);
 }
 
 .NavBar .NavItem .NavName {
@@ -61,7 +60,7 @@
 
 .NavBar .NavItem.Active .NavNumber {
     color: #fff;
-    background-color: #000;
+    background: var(--color-primary-060);
 }
 
 

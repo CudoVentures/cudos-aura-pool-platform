@@ -43,7 +43,7 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                             <Svg svg={BorderColorIcon} />
                             Edit
                         </Button>
-                        <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE}>
+                        <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE} color={3} className={ 'DeleteActionButton' }>
                             <Svg svg={DeleteForeverIcon} />
                             Delete
                         </Button>

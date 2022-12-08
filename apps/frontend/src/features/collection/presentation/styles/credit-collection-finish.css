@@ -4,6 +4,7 @@
 
 .CreditCollectionFinish .InstructionsBox{
     padding: 16px;
-    background: var(--color-gray-095);
+    background: var(--color-primary-010);
+    color: var(--color-primary-060);
     border-radius: 10px;
 }

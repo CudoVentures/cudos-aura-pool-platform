@@ -53,3 +53,11 @@
 .CollectionHorizontalPreview .CollectionPriceUsd .CurrentPriceChange {
     margin-left: 8px;
 }
+
+.CollectionHorizontalPreview .CollectionPriceUsd .PriceChangeUp {
+    color: var(--color-success-060);
+}
+
+.CollectionHorizontalPreview .CollectionPriceUsd .PriceChangeDown {
+    color: var(--color-error-060);
+}

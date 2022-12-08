@@ -45,7 +45,7 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
                 <div className={'ProfileHeaderDataRow'}>
                     <div className={'AccountName H2 Bold'}>{accountEntity.name}</div>
                     <div className={'FlexRow'}>
-                        <div className={'CudosWalletAddrees'}>{userEntity.cudosWalletAddress}</div>
+                        <div className={'CudosWalletAddrees ColorPrimaryBlue'}>{userEntity.cudosWalletAddress}</div>
                         <div className={'JoinDate B3'}>joined {accountEntity.formatDateJoined()}</div>
                     </div>
                 </div>

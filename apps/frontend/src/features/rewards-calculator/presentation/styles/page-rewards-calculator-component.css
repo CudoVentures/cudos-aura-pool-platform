@@ -59,8 +59,17 @@
     padding: 4px 10px;
     gap: 10px;
     font-weight: 600; font-size: 14px;
-    border: 1px solid #000000;
     border-radius: 6px;
+}
+
+.RewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .PriceChangeUp {
+    border: 1px solid var(--color-success-050);
+    color: var(--color-success-050);
+}
+
+.RewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .PriceChangeDown {
+    border: 1px solid var(--color-error-050);
+    color: var(--color-error-050);
 }
 
 .RewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .SubHeading {

@@ -185,14 +185,14 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
                                     <div className={'OwnerPicture'}></div>
                                     <div className={'OwnerInfo FlexColumn'}>
                                         <div className={'AddressName B1 SemiBold'}>Creator</div>
-                                        <div className={'Address'}>{ProjectUtils.shortenAddressString(nftEntity.creatorAddress, 25)}</div>
+                                        <div className={'Address ColorPrimaryBlue'}>{ProjectUtils.shortenAddressString(nftEntity.creatorAddress, 25)}</div>
                                     </div>
                                 </div>
                                 <div className={'FlexRow OwnerBox'}>
                                     <div className={'OwnerPicture'}></div>
                                     <div className={'OwnerInfo FlexColumn'}>
                                         <div className={'AddressName B1 SemiBold'}>Current Owner</div>
-                                        <div className={'Address'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwnerAddress, 25)}</div>
+                                        <div className={'Address ColorPrimaryBlue'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwnerAddress, 25)}</div>
                                     </div>
                                 </div>
                             </div>

@@ -1,0 +1,8 @@
+.InfoBlueBox {
+    padding: 15px;
+    gap: 20px;
+    border-radius: 10px;
+    align-items: flex-start;
+    background-color: var(--color-primary-010);
+    color: var(--color-primary-060);
+}
