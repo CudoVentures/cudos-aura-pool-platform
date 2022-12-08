@@ -211,6 +211,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                     placeholder={'e.g 102.001 TH'}
                     value={hashPowerInTh}
                     onChange={ onChangeHashPowerInTh }
+                    inputType = { InputType.INTEGER }
                     inputValidation={farmHashrateValidation}
                     InputProps={{
                         endAdornment: (

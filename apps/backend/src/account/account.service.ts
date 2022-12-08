@@ -121,7 +121,10 @@ export default class AccountService {
     }
 
     async findAccounts(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } > {
-        const accountRepo = await this.accountRepo.findByPk(accountId);
+        const accountRepo = await this.accountRepo.findByPk(accountId, {
+            transaction: tx,
+            lock,
+        });
 
         const whereUserRepo = new UserRepo();
         whereUserRepo.accountId = accountId;

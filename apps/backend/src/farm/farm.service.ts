@@ -4,14 +4,12 @@ import { Collection } from '../collection/collection.model';
 import { NFT } from '../nft/nft.model';
 import { NftStatus } from '../nft/nft.types';
 import { EnergySourceDto } from './dto/energy-source.dto';
-import { FarmDto } from './dto/farm.dto';
 import { ManufacturerDto } from './dto/manufacturer.dto';
 import { MinerDto } from './dto/miner.dto';
 import { EnergySource } from './models/energy-source.model';
 import { Farm } from './models/farm.model';
 import { Manufacturer } from './models/manufacturer.model';
 import { Miner } from './models/miner.model';
-import { FarmStatus } from './utils';
 import { HttpService } from '@nestjs/axios';
 import { CollectionStatus } from '../collection/utils';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
@@ -19,10 +17,18 @@ import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { VisitorService } from '../visitor/visitor.service';
 import AccountEntity from '../account/entities/account.entity';
 import { UpdateFarmStatusDto } from './dto/update-status.dto';
+import { FarmStatus } from './farm.types';
+import MiningFarmEntity from './entities/mining-farm.entity';
+import { MiningFarmRepo, MiningFarmRepoColumn } from './repos/mining-farm.repo';
+import AppRepo from '../common/repo/app.repo';
+import DataService from '../data/data.service';
+import { DataServiceError } from '../common/errors/errors';
 
 @Injectable()
 export class FarmService {
     constructor(
+        @InjectModel(MiningFarmRepo)
+        private miningFarmRepo: typeof MiningFarmRepo,
         @InjectModel(Farm)
         private farmModel: typeof Farm,
         @InjectModel(Collection)
@@ -37,41 +43,45 @@ export class FarmService {
         private energySourceModel: typeof EnergySource,
         private httpService: HttpService,
         private visitorService: VisitorService,
+        private dataService: DataService,
     ) {}
 
-    async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: Farm[], total: number } > {
+    async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
         let whereClause: any = {};
 
         if (miningFarmFilterModel.hasMiningFarmIds() === true) {
-            whereClause.id = miningFarmFilterModel.miningFarmIds;
+            whereClause[MiningFarmRepoColumn.ID] = miningFarmFilterModel.miningFarmIds;
         }
 
         if (miningFarmFilterModel.hasMiningFarmStatus() === true) {
-            whereClause.status = miningFarmFilterModel.getMiningFarmStatus();
+            whereClause[MiningFarmRepoColumn.STATUS] = miningFarmFilterModel.getMiningFarmStatus();
         }
 
         if (miningFarmFilterModel.inOnlyForSessionAccount() === true) {
-            whereClause.creator_id = accountEntity.accountId;
+            whereClause[MiningFarmRepoColumn.CREATOR_ID] = accountEntity.accountId;
         }
 
         if (miningFarmFilterModel.hasSearchString() === true) {
             whereClause = [
                 whereClause,
-                sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${miningFarmFilterModel.searchString.toLowerCase()}%` }),
+                sequelize.where(sequelize.fn('LOWER', sequelize.col(MiningFarmRepoColumn.NAME)), { [Op.like]: `%${miningFarmFilterModel.searchString.toLowerCase()}%` }),
             ]
         }
 
-        let miningFarmEntities = await this.farmModel.findAll({
+        const miningFarmRepos = await this.miningFarmRepo.findAll({
             where: whereClause,
+        });
+        let miningFarmEntities = miningFarmRepos.map((miningFarmRepo) => {
+            return MiningFarmEntity.fromRepo(miningFarmRepo);
         });
 
         if (miningFarmFilterModel.isSortByPopular() === true) {
-            const miningFarmIds = miningFarmEntities.map((miningFarm) => {
-                return miningFarm.id;
+            const miningFarmIds = miningFarmEntities.map((miningFarmEntity) => {
+                return miningFarmEntity.id;
             });
             const sortDirection = Math.floor(Math.abs(miningFarmFilterModel.orderBy) / miningFarmFilterModel.orderBy);
             const visitorMap = await this.visitorService.fetchMiningFarmVisitsCount(miningFarmIds);
-            miningFarmEntities.sort((a: Farm, b: Farm) => {
+            miningFarmEntities.sort((a: MiningFarmEntity, b: MiningFarmEntity) => {
                 const visitsA = visitorMap.get(a.id) ?? 0;
                 const visitsB = visitorMap.get(b.id) ?? 0;
                 return sortDirection * (visitsA - visitsB);
@@ -87,39 +97,66 @@ export class FarmService {
         };
     }
 
+    async findMiningFarmById(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < MiningFarmEntity > {
+        const miningFarmRepo = await this.miningFarmRepo.findByPk(id, {
+            transaction: tx,
+            lock,
+        });
+        return MiningFarmEntity.fromRepo(miningFarmRepo);
+    }
+
+    async creditMiningFarm(miningFarmEntity: MiningFarmEntity, creditImages = true, tx: Transaction = undefined): Promise < MiningFarmEntity > {
+        let newUris = [], oldUris = [];
+
+        if (creditImages === true) {
+            try {
+                miningFarmEntity.coverImgUrl = await this.dataService.trySaveUri(miningFarmEntity.accountId, miningFarmEntity.coverImgUrl);
+                miningFarmEntity.profileImgUrl = await this.dataService.trySaveUri(miningFarmEntity.accountId, miningFarmEntity.profileImgUrl);
+                for (let i = miningFarmEntity.farmPhotoUrls.length; i-- > 0;) {
+                    miningFarmEntity.farmPhotoUrls[i] = await this.dataService.trySaveUri(miningFarmEntity.accountId, miningFarmEntity.farmPhotoUrls[i]);
+                }
+            } catch (e) {
+                throw new DataServiceError();
+            }
+            newUris = [miningFarmEntity.coverImgUrl, miningFarmEntity.profileImgUrl].concat(miningFarmEntity.farmPhotoUrls);
+        }
+
+        let miningFarmRepo = MiningFarmEntity.toRepo(miningFarmEntity);
+        try {
+            if (miningFarmEntity.isNew() === true) {
+                miningFarmRepo = await this.miningFarmRepo.create(miningFarmRepo.toJSON(), {
+                    returning: true,
+                    transaction: tx,
+                })
+            } else {
+                if (creditImages === true) {
+                    const miningFarmRepoDb = await this.findMiningFarmById(miningFarmRepo.id, tx, tx.LOCK.UPDATE);
+                    oldUris = [miningFarmRepoDb.coverImgUrl, miningFarmRepoDb.profileImgUrl].concat(miningFarmRepoDb.farmPhotoUrls);
+                }
+
+                const whereClause = new MiningFarmRepo();
+                whereClause.id = miningFarmRepo.id;
+                const sqlResult = await this.miningFarmRepo.update(miningFarmRepo.toJSON(), {
+                    where: AppRepo.toJsonWhere(whereClause),
+                    returning: true,
+                    transaction: tx,
+                })
+                miningFarmRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
+            }
+            this.dataService.cleanUpOldUris(oldUris, newUris);
+        } catch (ex) {
+            this.dataService.cleanUpNewUris(oldUris, newUris);
+            throw ex;
+        }
+
+        return MiningFarmEntity.fromRepo(miningFarmRepo);
+    }
+
     async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<Farm> {
         return this.farmModel.findByPk(id, {
             transaction: tx,
             lock,
         });
-    }
-
-    async createOne(
-        createFarmDto: FarmDto,
-        creator_id: number,
-        tx: Transaction = undefined,
-    ): Promise<Farm> {
-        const farm = this.farmModel.create({
-            ...createFarmDto,
-            creator_id,
-            status: FarmStatus.QUEUED,
-        }, { transaction: tx });
-
-        return farm;
-    }
-
-    async updateOne(
-        id: number,
-        updateFarmDto: FarmDto,
-        tx: Transaction = undefined,
-    ): Promise<Farm> {
-        const [count, [farm]] = await this.farmModel.update({ ...updateFarmDto }, {
-            where: { id },
-            returning: true,
-            transaction: tx,
-        });
-
-        return farm;
     }
 
     async updateStatus(id: number, updateFarmStatusDto: UpdateFarmStatusDto, tx: Transaction = undefined): Promise<Farm> {

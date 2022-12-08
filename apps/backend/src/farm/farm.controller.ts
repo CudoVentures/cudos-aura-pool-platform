@@ -15,7 +15,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
-import { FarmDto } from './dto/farm.dto';
 import { UpdateFarmStatusDto } from './dto/update-status.dto';
 import { Farm } from './models/farm.model';
 import { FarmService } from './farm.service';
@@ -31,7 +30,10 @@ import DataService from '../data/data.service';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
-import { DataServiceError, FarmCreationError } from '../common/errors/errors';
+import { ReqCreditMiningFarm } from './dto/requests.dto';
+import MiningFarmEntity from './entities/mining-farm.entity';
+import { ResCreditMiningFarm } from './dto/responses.dto';
+import { FarmStatus } from './farm.types';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -45,7 +47,7 @@ export class FarmController {
     async findAll(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
-    ): Promise < { miningFarmEntities: Farm[], total: number } > {
+    ): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
         return this.farmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
     }
 
@@ -62,85 +64,23 @@ export class FarmController {
         }));
     }
 
-    // @Get(':id')
-    // async findOne(@Param('id', ParseIntPipe) id: number): Promise<Farm> {
-    //     return this.farmService.findOne(id);
-    // }
-
-    //   @Get(':id/collections')
-    //     async findCollections(
-    //     @Param('id', ParseIntPipe) id: number,
-    //     ): Promise<Collection[]> {
-    //         return this.collectionService.findByFarmId(id);
-    //     }
-
     @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
     @UseInterceptors(TransactionInterceptor)
     @Put()
     async creditFarm(
         @Req() req: AppRequest,
-        @Body() farmDto: FarmDto,
-    ): Promise<Farm> {
-        const { id, ...farm } = farmDto
-
-        // save images
-        let farmModel;
-        try {
-            farm.cover_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.cover_img);
-            farm.profile_img = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.profile_img);
-            for (let i = farm.images.length; i-- > 0;) {
-                farm.images[i] = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, farm.images[i]);
-            }
-
-        } catch (e) {
-            throw new DataServiceError();
+        @Body(new ValidationPipe({ transform: true })) reqCreditMiningFarm: ReqCreditMiningFarm,
+    ): Promise < ResCreditMiningFarm > {
+        let miningFarmEntity = MiningFarmEntity.fromJson(reqCreditMiningFarm.miningFarmEntity);
+        if (req.sessionAccountEntity.isAdmin() === true) {
+            miningFarmEntity.accountId = req.sessionAccountEntity.accountId;
+            miningFarmEntity.status = FarmStatus.QUEUED;
         }
 
-        const farmModelDb = await this.farmService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
-        const oldUris = farmModelDb === null ? [] : [farmModelDb.cover_img, farmModelDb.profile_img].concat(farmModelDb.images);
-        const newUris = [farm.cover_img, farm.profile_img].concat(farm.images);
+        miningFarmEntity = await this.farmService.creditMiningFarm(miningFarmEntity, req.sessionAccountEntity !== null, req.transaction);
 
-        try {
-            if (id > 0) {
-                farmModel = await this.farmService.updateOne(id, farm, req.transaction);
-            } else {
-                farmModel = await this.farmService.createOne(farm, req.sessionAccountEntity.accountId, req.transaction)
-            }
-            this.dataService.cleanUpOldUris(oldUris, newUris);
-        } catch (ex) {
-            this.dataService.cleanUpNewUris(oldUris, newUris);
-            const errMessage = ex.response?.message;
-            switch (errMessage) {
-                default:
-                    throw new FarmCreationError();
-            }
-        }
-
-        return farmModel
-    }
-
-    @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
-    @UseInterceptors(TransactionInterceptor)
-    @Patch(':id/status')
-    async updateStatus(
-        @Req() req: AppRequest,
-        @Param('id', ParseIntPipe) id: number,
-        @Body() updateFarmStatusDto: UpdateFarmStatusDto,
-    ): Promise<Farm> {
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-        console.log(updateFarmStatusDto);
-
-        return this.farmService.updateStatus(id, updateFarmStatusDto, req.transaction);
+        return new ResCreditMiningFarm(miningFarmEntity);
     }
 
     @Get('miners')

@@ -1,6 +1,6 @@
 import { IsArray, IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { IntBoolValue } from '../../common/utils';
-import { FarmStatus, FarmStatusWithAny } from '../utils';
+import { FarmStatus, FarmStatusWithAny } from '../farm.types';
 
 export enum MiningFarmOrderBy {
     POPULAR_ASC = 1,

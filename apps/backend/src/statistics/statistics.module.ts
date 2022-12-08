@@ -19,6 +19,7 @@ import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
 import VisitorRepo from '../visitor/repo/visitor.repo';
 import DataService from '../data/data.service';
+import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import DataService from '../data/data.service';
             NftOwnersPayoutHistory,
             NftPayoutHistory,
             Farm,
+            MiningFarmRepo,
             Miner,
             Manufacturer,
             EnergySource,

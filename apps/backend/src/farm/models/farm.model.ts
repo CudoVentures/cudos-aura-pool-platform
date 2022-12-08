@@ -13,15 +13,12 @@ import {
 } from 'sequelize-typescript';
 import AccountRepo from '../../account/repos/account.repo';
 import { Collection } from '../../collection/collection.model';
+import { FarmStatus } from '../farm.types';
 
-export const enum FarmStatus {
-    QUEUED = 'queued',
-    APPROVED = 'approved',
-    REJECTED = 'rejected'
-}
 @Table({
     freezeTableName: true,
     tableName: 'farms',
+    underscored: true,
 })
 export class Farm extends Model {
     @Unique

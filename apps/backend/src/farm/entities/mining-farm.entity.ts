@@ -1,17 +1,12 @@
 import BigNumber from 'bignumber.js';
-import { makeAutoObservable } from 'mobx';
-import S from '../../../core/utilities/Main';
-
-export enum MiningFarmStatus {
-    APPROVED = 'approved',
-    QUEUED = 'queued',
-    DELETED = 'deleted',
-    ANY = 'any',
-}
+import { NOT_EXISTS_INT } from '../../common/utils';
+import { FarmStatus, FarmStatusWithAny, MiningFarmJsonValidator } from '../farm.types';
+import { MiningFarmRepo } from '../repos/mining-farm.repo';
 
 export default class MiningFarmEntity {
-    id: string;
-    accountId: string;
+
+    id: number;
+    accountId: number;
     name: string;
     legalName: string;
     primaryAccountOwnerName: string;
@@ -25,7 +20,7 @@ export default class MiningFarmEntity {
     profileImgUrl: string;
     coverImgUrl: string;
     farmPhotoUrls: string[];
-    status: MiningFarmStatus;
+    status: FarmStatus;
     maintenanceFeeInBtc: BigNumber;
 
     // royalties paid to cudos percents
@@ -39,8 +34,8 @@ export default class MiningFarmEntity {
     maintenanceFeePayoutBtcAddress: string;
 
     constructor() {
-        this.id = S.Strings.NOT_EXISTS;
-        this.accountId = S.Strings.NOT_EXISTS;
+        this.id = NOT_EXISTS_INT;
+        this.accountId = NOT_EXISTS_INT;
         this.name = '';
         this.legalName = '';
         this.primaryAccountOwnerName = '';
@@ -49,73 +44,103 @@ export default class MiningFarmEntity {
         this.manufacturerIds = [];
         this.minerIds = [];
         this.energySourceIds = [];
-        this.hashPowerInTh = S.NOT_EXISTS;
+        this.hashPowerInTh = NOT_EXISTS_INT;
         this.machinesLocation = '';
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
         this.farmPhotoUrls = [];
-        this.status = MiningFarmStatus.QUEUED;
+        this.status = FarmStatus.QUEUED;
         this.maintenanceFeeInBtc = null;
-        this.cudosMintNftRoyaltiesPercent = S.NOT_EXISTS;
-        this.cudosResaleNftRoyaltiesPercent = S.NOT_EXISTS;
+        this.cudosMintNftRoyaltiesPercent = NOT_EXISTS_INT;
+        this.cudosResaleNftRoyaltiesPercent = NOT_EXISTS_INT;
         this.resaleFarmRoyaltiesCudosAddress = '';
         this.rewardsFromPoolBtcAddress = '';
         this.leftoverRewardsBtcAddress = '';
         this.maintenanceFeePayoutBtcAddress = '';
-
-        makeAutoObservable(this);
-    }
-
-    static newInstanceWithEmail(primaryAccountOwnerEmail: string) {
-        const entity = new MiningFarmEntity();
-        entity.primaryAccountOwnerEmail = primaryAccountOwnerEmail;
-        return entity;
-    }
-
-    isCudosMintNftRoyaltiesPercentSet(): boolean {
-        return this.cudosMintNftRoyaltiesPercent !== S.NOT_EXISTS;
-    }
-
-    isCudosResaleNftRoyaltiesPercentSet(): boolean {
-        return this.cudosResaleNftRoyaltiesPercent !== S.NOT_EXISTS;
     }
 
     isNew(): boolean {
-        return this.id === S.Strings.NOT_EXISTS;
+        return this.id === NOT_EXISTS_INT;
     }
 
-    isApproved(): boolean {
-        return this.status === MiningFarmStatus.APPROVED;
+    static toRepo(entity: MiningFarmEntity): MiningFarmRepo {
+        if (entity === null) {
+            return null;
+        }
+
+        const repoJson = new MiningFarmRepo();
+
+        if (entity.isNew() === false) {
+            repoJson.id = entity.id;
+        }
+        repoJson.name = entity.name;
+        repoJson.description = entity.description;
+        repoJson.subAccountName = entity.legalName;
+        repoJson.location = entity.machinesLocation;
+        repoJson.primaryAccountOwnerName = entity.primaryAccountOwnerName;
+        repoJson.primaryAccountOwnerEmail = entity.primaryAccountOwnerEmail;
+        repoJson.cudosMintNftRoyaltiesPercent = entity.cudosMintNftRoyaltiesPercent;
+        repoJson.cudosResaleNftRoyaltiesPercent = entity.cudosResaleNftRoyaltiesPercent;
+        repoJson.resaleFarmRoyaltiesCudosAddress = entity.resaleFarmRoyaltiesCudosAddress;
+        repoJson.addressForReceivingRewardsFromPool = entity.rewardsFromPoolBtcAddress;
+        repoJson.leftoverRewardPayoutAddress = entity.leftoverRewardsBtcAddress;
+        repoJson.maintenanceFeePayoutAddress = entity.maintenanceFeePayoutBtcAddress;
+        repoJson.maintenanceFeeInBtc = entity.maintenanceFeeInBtc?.toString() ?? '';
+        repoJson.totalFarmHashrate = entity.hashPowerInTh;
+        repoJson.manufacturers = entity.manufacturerIds;
+        repoJson.minerTypes = entity.minerIds;
+        repoJson.energySource = entity.energySourceIds;
+        repoJson.images = entity.farmPhotoUrls;
+        repoJson.coverImg = entity.coverImgUrl;
+        repoJson.profileImg = entity.profileImgUrl;
+        repoJson.status = entity.status;
+        repoJson.creatorId = entity.accountId;
+
+        return repoJson;
     }
 
-    isQueued(): boolean {
-        return this.status === MiningFarmStatus.QUEUED;
+    static fromRepo(repoJson: MiningFarmRepo): MiningFarmEntity {
+        if (repoJson === null) {
+            return null;
+        }
+
+        const entity = new MiningFarmEntity();
+
+        entity.id = repoJson.id ?? entity.id;
+        entity.description = repoJson.description ?? entity.description;
+        entity.legalName = repoJson.subAccountName ?? entity.legalName;
+        entity.machinesLocation = repoJson.location ?? entity.machinesLocation;
+        entity.name = repoJson.name ?? entity.name;
+        entity.primaryAccountOwnerName = repoJson.primaryAccountOwnerName ?? entity.primaryAccountOwnerName;
+        entity.primaryAccountOwnerEmail = repoJson.primaryAccountOwnerEmail ?? entity.primaryAccountOwnerEmail;
+        entity.cudosMintNftRoyaltiesPercent = repoJson.cudosMintNftRoyaltiesPercent ?? entity.cudosMintNftRoyaltiesPercent;
+        entity.cudosResaleNftRoyaltiesPercent = repoJson.cudosResaleNftRoyaltiesPercent ?? entity.cudosResaleNftRoyaltiesPercent;
+        entity.resaleFarmRoyaltiesCudosAddress = repoJson.resaleFarmRoyaltiesCudosAddress ?? entity.resaleFarmRoyaltiesCudosAddress;
+        entity.rewardsFromPoolBtcAddress = repoJson.addressForReceivingRewardsFromPool ?? entity.rewardsFromPoolBtcAddress;
+        entity.leftoverRewardsBtcAddress = repoJson.leftoverRewardPayoutAddress ?? entity.leftoverRewardsBtcAddress;
+        entity.maintenanceFeePayoutBtcAddress = repoJson.maintenanceFeePayoutAddress ?? entity.maintenanceFeePayoutBtcAddress;
+        entity.maintenanceFeeInBtc = repoJson.maintenanceFeeInBtc === '' ? null : new BigNumber(repoJson.maintenanceFeeInBtc);
+        entity.hashPowerInTh = repoJson.totalFarmHashrate ?? entity.hashPowerInTh;
+        entity.manufacturerIds = repoJson.manufacturers ?? entity.manufacturerIds;
+        entity.minerIds = repoJson.minerTypes ?? entity.minerIds;
+        entity.energySourceIds = repoJson.energySource ?? entity.energySourceIds;
+        entity.farmPhotoUrls = repoJson.images ?? entity.farmPhotoUrls;
+        entity.coverImgUrl = repoJson.coverImg ?? entity.coverImgUrl;
+        entity.profileImgUrl = repoJson.profileImg ?? entity.profileImgUrl;
+        entity.status = repoJson.status ?? entity.status;
+        entity.accountId = repoJson.creatorId ?? entity.accountId;
+
+        return entity;
     }
 
-    hasPhotos(): boolean {
-        return this.farmPhotoUrls.length > 0;
-    }
-
-    markApproved() {
-        this.status = MiningFarmStatus.APPROVED;
-    }
-
-    formatHashPowerInTh(): string {
-        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`
-    }
-
-    formatMaintenanceFeesInBtc(): string {
-        return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
-    }
-
-    static toJson(entity: MiningFarmEntity): any {
+    static toJson(entity: MiningFarmEntity): MiningFarmJsonValidator {
         if (entity === null) {
             return null;
         }
 
         return {
-            'id': entity.id,
-            'accountId': entity.accountId,
+            'id': entity.id.toString(),
+            'accountId': entity.accountId.toString(),
             'name': entity.name,
             'legalName': entity.legalName,
             'primaryAccountOwnerName': entity.primaryAccountOwnerName,
@@ -140,14 +165,15 @@ export default class MiningFarmEntity {
         }
     }
 
-    static fromJson(json): MiningFarmEntity {
+    static fromJson(json: MiningFarmJsonValidator): MiningFarmEntity {
         if (json === null) {
             return null;
         }
+
         const entity = new MiningFarmEntity();
 
-        entity.id = (json.id ?? entity.id).toString();
-        entity.accountId = (json.accountId ?? entity.accountId).toString();
+        entity.id = parseInt(json.id ?? entity.id.toString());
+        entity.accountId = parseInt(json.accountId ?? entity.accountId.toString());
         entity.name = json.name ?? entity.name;
         entity.legalName = json.legalName ?? entity.legalName;
         entity.primaryAccountOwnerName = json.primaryAccountOwnerName ?? entity.primaryAccountOwnerName;

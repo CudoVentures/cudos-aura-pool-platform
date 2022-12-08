@@ -1,10 +1,12 @@
-import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
+import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import axios from '../../../../core/utilities/AxiosWrapper';
+import { ReqCreditMiningFarm } from '../dto/Requests';
+import { ResCreditMiningFarm } from '../dto/Responses';
 
 export default class MiningFarmApi {
 
@@ -26,13 +28,9 @@ export default class MiningFarmApi {
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
-        const { data: farm } = await axios.put('/api/v1/farm', MiningFarmEntity.toJson(miningFarmEntity))
-
-        return MiningFarmEntity.fromJson(farm);
-    }
-
-    async approveMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void > {
-        const { data } = await axios.patch(`/api/v1/farm/${miningFarmEntity.id}/status`, MiningFarmEntity.toJson(miningFarmEntity));
+        const { data } = await axios.put('/api/v1/farm', new ReqCreditMiningFarm(miningFarmEntity));
+        const res = new ResCreditMiningFarm(data);
+        return res.miningFarmEntity;
     }
 
     async fetchManufacturers(): Promise < ManufacturerEntity[] > {

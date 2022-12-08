@@ -16,10 +16,11 @@ import { Manufacturer } from '../farm/models/manufacturer.model';
 import { Miner } from '../farm/models/miner.model';
 import { VisitorModule } from '../visitor/visitor.module';
 import DataService from '../data/data.service';
+import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([Collection, NFT, Farm, Miner, Manufacturer, EnergySource]),
+        SequelizeModule.forFeature([Collection, NFT, Farm, MiningFarmRepo, Miner, Manufacturer, EnergySource]),
         forwardRef(() => NFTModule),
         forwardRef(() => FarmModule),
         HttpModule,

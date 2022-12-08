@@ -29,7 +29,7 @@ services:
     networks:
       - shared-cudos-network
     extra_hosts:
-    - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
     logging:
       driver: "json-file"
       options:
@@ -84,7 +84,7 @@ services:
     networks:
       - shared-cudos-network
     extra_hosts:
-    - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
     logging:
       driver: "json-file"
       options:
@@ -120,7 +120,9 @@ services:
     networks:
       - shared-cudos-network
     extra_hosts:
-    - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
+    depends_on: 
+      - cudos-aura-platform-dev
     logging:
       driver: "json-file"
       options:

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
-import { FarmStatus } from '../utils';
+import { FarmStatus } from '../farm.types';
 
 export class UpdateFarmStatusDto {
     @IsString()
