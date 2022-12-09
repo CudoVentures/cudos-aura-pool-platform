@@ -9,6 +9,7 @@ import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presen
 enum WalletSelectMode {
     USER = 1,
     ADMIN = 2,
+    SUPER_ADMIN = 3,
 }
 
 export enum ProgressSteps {
@@ -131,6 +132,10 @@ export default class WalletSelectModal extends ModalStore {
         return this.walletSelectMode === WalletSelectMode.ADMIN;
     }
 
+    isModeSuperAdmin(): boolean {
+        return this.walletSelectMode === WalletSelectMode.SUPER_ADMIN;
+    }
+
     isProgressStepConnectWallet(): boolean {
         return this.progressStep === ProgressSteps.CONNECT_WALLET;
     }
@@ -207,10 +212,10 @@ export default class WalletSelectModal extends ModalStore {
         return this.identityTx === TransactionStatus.ERROR;
     }
 
-    async isBitcoinAddressSet(): boolean {
+    async isBitcoinAddressSet(): Promise < boolean > {
         const address = await this.accountRepo.fetchBitcoinAddress(this.walletStore.address);
 
-        return address !== S.Strings.EMPTY
+        return address !== S.Strings.EMPTY;
     }
 
     hasNextStep(): boolean {
@@ -251,6 +256,11 @@ export default class WalletSelectModal extends ModalStore {
     @action
     showSignalAsAdmin(onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void) {
         this.showSignal(WalletSelectMode.ADMIN, onFinish);
+    }
+
+    @action
+    showSignalAsSuperAdmin() {
+        this.showSignal(WalletSelectMode.SUPER_ADMIN, null);
     }
 
     @action

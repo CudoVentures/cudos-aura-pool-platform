@@ -1,4 +1,5 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
+import { MinerJsonValidator } from '../farm.types';
 import { MinerRepo } from '../repos/miner.repo';
 
 export default class MinerEntity {
@@ -43,7 +44,7 @@ export default class MinerEntity {
         return entity;
     }
 
-    static toJson(entity: MinerEntity): any {
+    static toJson(entity: MinerEntity): MinerJsonValidator {
         if (entity === null) {
             return null;
         }
@@ -54,7 +55,7 @@ export default class MinerEntity {
         }
     }
 
-    static fromJson(json): MinerEntity {
+    static fromJson(json: MinerJsonValidator): MinerEntity {
         if (json === null) {
             return null;
         }

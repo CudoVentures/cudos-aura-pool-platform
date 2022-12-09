@@ -137,11 +137,12 @@ export default class SuperAdminApprovePageStore {
     }
 
     approveCollections = async () => {
-        try {
-            if (!this.walletStore.isConnected()) {
-                this.walletStore.connectKeplr();
-            }
+        if (this.walletStore.isConnected() === false) {
+            this.alertStore.show('You must connect your wallet first');
+            return;
+        }
 
+        try {
             const collectionEntities = [];
 
             this.selectedCollectionEntities.forEach((collectionEntity) => {

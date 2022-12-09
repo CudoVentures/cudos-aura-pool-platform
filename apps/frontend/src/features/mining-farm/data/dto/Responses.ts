@@ -1,6 +1,7 @@
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
+import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 
 export class ResCreditMiningFarm {
@@ -9,6 +10,16 @@ export class ResCreditMiningFarm {
 
     constructor(axiosData: any) {
         this.miningFarmEntity = MiningFarmEntity.fromJson(axiosData.miningFarmEntity);
+    }
+
+}
+
+export class ResFetchMiningFarmDetails {
+
+    miningFarmDetailsEntities: MiningFarmDetailsEntity[];
+
+    constructor(axiosData: any) {
+        this.miningFarmDetailsEntities = axiosData.miningFarmDetailsEntities.map((j) => MiningFarmDetailsEntity.fromJson(j));
     }
 
 }

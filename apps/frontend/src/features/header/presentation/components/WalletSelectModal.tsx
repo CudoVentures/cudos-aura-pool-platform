@@ -8,6 +8,7 @@ import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presen
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 import { InputAdornment } from '@mui/material';
 import ModalWindow from '../../../../core/presentation/components/ModalWindow';
@@ -24,8 +25,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
-import AlertStore from '../../../../core/presentation/stores/AlertStore';
-import BigNumber from 'bignumber.js';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
@@ -49,10 +48,6 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     }
 
     async function tryConnect(walletType: SessionStorageWalletOptions) {
-        if (accountSessionStore.isSuperAdmin() === true) {
-            throw Error('Super admins should not have wallets for now');
-        }
-
         walletSelectModalStore.markAsWalletConnecting(walletType);
         try {
             await walletStore.connectWallet(walletType);
@@ -63,7 +58,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         if (walletStore.isConnected() === true) {
             const userMatch = walletSelectModalStore.isModeUser() && accountSessionStore.doesAddressMatchAgainstSessionUserIfAny(walletStore.getAddress());
             const adminMatch = walletSelectModalStore.isModeAdmin() && accountSessionStore.doesAddressMatchAgainstSessionAdminIfAny(walletStore.getAddress());
-            if (userMatch || adminMatch) {
+            const superAdminMatch = walletSelectModalStore.isModeSuperAdmin() && accountSessionStore.isSuperAdmin();
+            if (userMatch || adminMatch || superAdminMatch) {
                 walletSelectModalStore.markAsWalletConnectedSuccessfully();
             } else {
                 walletSelectModalStore.markAsWalletError();
@@ -148,6 +144,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     } else {
                         walletSelectModalStore.hide();
                     }
+                } else if (walletSelectModalStore.isModeSuperAdmin() === true) {
+                    walletSelectModalStore.hide();
                 }
                 break;
             case ProgressSteps.BTC:
@@ -206,6 +204,12 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 )
             }
             return steps;
+        }
+
+        if (walletSelectModalStore.isModeSuperAdmin() === true) {
+            return [
+                createNavStep(1, 'Connect Wallet', true, false),
+            ]
         }
 
         return [];

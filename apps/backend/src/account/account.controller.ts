@@ -1,39 +1,34 @@
-import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Query, Param, Res } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Param, Res, HttpCode } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ResFetchSessionAccounts } from '../auth/dto/responses.dto';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
-import { AppRequest, RequestWithSessionAccounts } from '../common/commont.types';
-import { NotFoundException } from '../common/errors/errors';
-import { IntBoolValue } from '../common/utils';
+import { AppRequest } from '../common/commont.types';
 import EmailService from '../email/email.service';
-import { FarmService } from '../farm/farm.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
-import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword } from './dto/requests.dto';
-import { ResCreditSessionAccount } from './dto/responses.dto';
+import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword } from './dto/requests.dto';
+import { ResEditSessionAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
+import { IsSessionAccountGuard } from './guards/is-session-account.guard';
 
 @ApiTags('Accounts')
 @Controller('accounts')
 export class AccountController {
     constructor(
         private accountService: AccountService,
-        private farmService: FarmService,
         private emailService: EmailService,
-        private jwtService: JwtService,
     ) {}
 
-    @UseGuards(RoleGuard([AccountType.ADMIN]))
+    @UseGuards(RoleGuard([AccountType.ADMIN]), IsSessionAccountGuard)
     @UseInterceptors(TransactionInterceptor)
-    @Post('creditSessionAccount')
-    async creditSessionAccount(
+    @Post('editSessionAccount')
+    @HttpCode(200)
+    async editSessionAccount(
         @Req() req: AppRequest,
-        @Body(new ValidationPipe({ transform: true })) reqCreditSessionAccount: ReqCreditSessionAccount,
-    ): Promise < ResCreditSessionAccount > {
-        let accountEntity = AccountEntity.fromJson(reqCreditSessionAccount.accountEntity);
-        accountEntity.accountId = req.sessionAccountEntity.accountId;
+        @Body(new ValidationPipe({ transform: true })) reqEditSessionAccount: ReqEditSessionAccount,
+    ): Promise < ResEditSessionAccount > {
+        let accountEntity = AccountEntity.fromJson(reqEditSessionAccount.accountEntity);
 
         const isEmailChanged = req.sessionAccountEntity && req.sessionAccountEntity.email !== accountEntity.email
         if (isEmailChanged) {
@@ -46,11 +41,12 @@ export class AccountController {
             this.emailService.sendVerificationEmail(accountEntity);
         }
 
-        return new ResCreditSessionAccount(accountEntity);
+        return new ResEditSessionAccount(accountEntity);
     }
 
     @UseInterceptors(TransactionInterceptor)
     @Patch('editSessionAccountPass')
+    @HttpCode(200)
     async editSessionAccountPass(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqEditSessionAccountPass: ReqEditSessionAccountPass,
@@ -65,6 +61,7 @@ export class AccountController {
 
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @Patch('sendSessionAccountVerificationEmail')
+    @HttpCode(200)
     async sendSessionAccountVerificationEmail(
         @Req() req: AppRequest,
     ): Promise < void > {
@@ -73,6 +70,7 @@ export class AccountController {
 
     @UseInterceptors(TransactionInterceptor)
     @Get('verifyEmail/:token')
+    @HttpCode(200)
     async verifyEmail(
         @Req() req: AppRequest,
         @Res() res,
@@ -86,6 +84,7 @@ export class AccountController {
     }
 
     @Patch('forgottenPassword')
+    @HttpCode(200)
     async forgottenPassword(
         @Body(new ValidationPipe({ transform: true })) reqForgottenPassword: ReqForgottenPassword,
     ): Promise < void > {
@@ -98,6 +97,7 @@ export class AccountController {
 
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @Get(':accountId')
+    @HttpCode(200)
     async fetchFarmOwnerAccounts(
         @Param('accountId') accountId: number,
     ): Promise < ResFetchSessionAccounts > {

@@ -42,6 +42,10 @@ export default class AccountSessionStore {
         return this.accountEntity !== null;
     }
 
+    isLoggedInAndWalletConnected() {
+        return this.isLoggedIn() === true && this.walletStore.isConnected() === true;
+    }
+
     isUser(): boolean {
         if (!this.accountEntity) {
             return false;
@@ -171,8 +175,8 @@ export default class AccountSessionStore {
         await this.accountRepo.sendSessionAccountVerificationEmail();
     }
 
-    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
-        await this.accountRepo.creditSessionAccount(accountEntity);
+    async editSessionAccount(accountEntity: AccountEntity): Promise < void > {
+        await this.accountRepo.editSessionAccount(accountEntity);
 
         runInAction(() => {
             Object.assign(this.accountEntity, accountEntity);

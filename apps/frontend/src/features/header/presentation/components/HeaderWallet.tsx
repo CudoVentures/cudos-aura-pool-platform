@@ -55,6 +55,11 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
             await walletStore.disconnect();
         }
 
+        if (accountSessionStore.isSuperAdmin() === true) {
+            walletSelectModalStore.showSignalAsSuperAdmin();
+            return;
+        }
+
         if (accountSessionStore.isAdmin() === true) {
             walletSelectModalStore.showSignalAsAdmin(null);
             return;
@@ -65,7 +70,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
 
     return (
         <div className = { 'HeaderWallet FlexRow' } >
-            {walletStore.isConnected() === true ? (
+            {accountSessionStore.isLoggedInAndWalletConnected() === true ? (
                 <>
                     <div className={'FlexRow BalanceRow B2'}>
                         <Svg svg={AccountBalanceWalletIcon} />

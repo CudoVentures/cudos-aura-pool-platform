@@ -1,4 +1,4 @@
-import { Body, Controller, Put, Req, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpCode, Put, Req, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
@@ -16,6 +16,7 @@ export class VisitorController {
 
     @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitMiningFarm')
+    @HttpCode(200)
     async signalVisitMiningFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqSignalVisitMiningFarm: ReqSignalVisitMiningFarm,
@@ -31,6 +32,8 @@ export class VisitorController {
 
     @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitNft')
+    @HttpCode(200)
+
     async signalVisitNft(@Req() req: AppRequest, @Body() nftDto: NftJsonValidator): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {

@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsDefined, IsNotEmptyObject, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { AccountJsonValidator } from '../account.types';
 
-export class ReqCreditSessionAccount {
+export class ReqEditSessionAccount {
 
     @IsDefined()
     @IsNotEmptyObject()
