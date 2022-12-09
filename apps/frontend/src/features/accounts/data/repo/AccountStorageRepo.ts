@@ -144,7 +144,7 @@ export default class AccountStorageRepo implements AccountRepo {
         }
     }
 
-    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
+    async editSessionAccount(accountEntity: AccountEntity): Promise < void > {
         const accountJson = this.storageHelper.accountsJson.find((account: AccountEntity) => account.accountId === accountEntity.accountId);
         Object.assign(accountJson, AccountEntity.toJson(accountEntity));
 

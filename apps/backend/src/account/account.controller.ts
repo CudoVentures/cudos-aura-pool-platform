@@ -7,9 +7,10 @@ import { AppRequest } from '../common/commont.types';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
-import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword } from './dto/requests.dto';
-import { ResCreditSessionAccount } from './dto/responses.dto';
+import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword } from './dto/requests.dto';
+import { ResEditSessionAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
+import { IsSessionAccountGuard } from './guards/is-session-account.guard';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -19,16 +20,15 @@ export class AccountController {
         private emailService: EmailService,
     ) {}
 
-    @UseGuards(RoleGuard([AccountType.ADMIN]))
+    @UseGuards(RoleGuard([AccountType.ADMIN]), IsSessionAccountGuard)
     @UseInterceptors(TransactionInterceptor)
-    @Post('creditSessionAccount')
+    @Post('editSessionAccount')
     @HttpCode(200)
-    async creditSessionAccount(
+    async editSessionAccount(
         @Req() req: AppRequest,
-        @Body(new ValidationPipe({ transform: true })) reqCreditSessionAccount: ReqCreditSessionAccount,
-    ): Promise < ResCreditSessionAccount > {
-        let accountEntity = AccountEntity.fromJson(reqCreditSessionAccount.accountEntity);
-        accountEntity.accountId = req.sessionAccountEntity.accountId;
+        @Body(new ValidationPipe({ transform: true })) reqEditSessionAccount: ReqEditSessionAccount,
+    ): Promise < ResEditSessionAccount > {
+        let accountEntity = AccountEntity.fromJson(reqEditSessionAccount.accountEntity);
 
         const isEmailChanged = req.sessionAccountEntity && req.sessionAccountEntity.email !== accountEntity.email
         if (isEmailChanged) {
@@ -41,7 +41,7 @@ export class AccountController {
             this.emailService.sendVerificationEmail(accountEntity);
         }
 
-        return new ResCreditSessionAccount(accountEntity);
+        return new ResEditSessionAccount(accountEntity);
     }
 
     @UseInterceptors(TransactionInterceptor)

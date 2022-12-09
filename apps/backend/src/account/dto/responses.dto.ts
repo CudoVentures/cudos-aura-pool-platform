@@ -1,7 +1,7 @@
 import { AccountJsonValidator } from '../account.types';
 import AccountEntity from '../entities/account.entity';
 
-export class ResCreditSessionAccount {
+export class ResEditSessionAccount {
 
     accountEntity: AccountJsonValidator;
 

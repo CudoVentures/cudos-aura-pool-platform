@@ -29,7 +29,7 @@ export class ResLogin {
 
 }
 
-export class ResCreditSessionAccount {
+export class ResEditSessionAccount {
 
     accountEntity: AccountEntity;
 

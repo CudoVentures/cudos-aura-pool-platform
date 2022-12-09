@@ -91,10 +91,10 @@ export default class AccountApiRepo implements AccountRepo {
         }
     }
 
-    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
+    async editSessionAccount(accountEntity: AccountEntity): Promise < void > {
         try {
             this.disableActions?.();
-            const resultAccountEntity = await this.accountApi.creditSessionAccount(accountEntity);
+            const resultAccountEntity = await this.accountApi.editSessionAccount(accountEntity);
             Object.assign(accountEntity, resultAccountEntity);
         } finally {
             this.enableActions?.();
