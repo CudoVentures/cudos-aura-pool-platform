@@ -8,6 +8,7 @@ import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presen
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 import { InputAdornment } from '@mui/material';
 import ModalWindow from '../../../../core/presentation/components/ModalWindow';
@@ -24,8 +25,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
-import AlertStore from '../../../../core/presentation/stores/AlertStore';
-import BigNumber from 'bignumber.js';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;

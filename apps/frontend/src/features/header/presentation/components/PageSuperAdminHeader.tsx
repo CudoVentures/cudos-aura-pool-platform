@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import ChangePasswordModalStore from '../../../accounts/presentation/stores/ChangePasswordModalStore';
+import HeaderWallet from './HeaderWallet';
 
 import Svg from '../../../../core/presentation/components/Svg';
 import Actions from '../../../../core/presentation/components/Actions';
@@ -35,15 +36,19 @@ function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore }:
     }
 
     return (
-        <header className={'PageAdminHeader FlexRow FlexSplit'}>
+        <header className={'PageAdminHeader FlexRow'}>
             <div className={'LogoHeader FlexRow'}>
                 <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
                 <div className={'AdminPortalNav B2 SemiBold'}>Super Admin</div>
             </div>
-            <Actions className = { 'StartRight' }>
-                <Button onClick={onClickChangePassword}>Change Password</Button>
-                <Button onClick={onClickLogout}>Logout</Button>
-            </Actions>
+            <div className = { 'NavCnt FlexRow' } >
+                <HeaderWallet />
+
+                <Actions>
+                    <Button onClick={onClickChangePassword}>Change Password</Button>
+                    <Button onClick={onClickLogout}>Logout</Button>
+                </Actions>
+            </div>
         </header>
     )
 }

@@ -16,3 +16,7 @@
     background-color: var(--color-gray-090);
 }
 
+.PageSuperAdminHeader .NavCnt {
+    gap: 40px;
+}
+
