@@ -59,7 +59,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
         miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
     }
 
-    function onChangeManufacturerInput(e, value, reason) {
+    function onChangeManufacturerInput(e, value) {
         creditMiningFarmDetailsPageStore.manufacturerInputValue = value;
     }
 
@@ -67,7 +67,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
         miningFarmEntity.minerIds = values.map((autocompleteOption) => autocompleteOption.value);
     }
 
-    function onChangeMinerInput(e, value, reason) {
+    function onChangeMinerInput(e, value) {
         creditMiningFarmDetailsPageStore.minerInputValue = value;
     }
 
@@ -75,7 +75,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
         miningFarmEntity.energySourceIds = values.map((autocompleteOption) => autocompleteOption.value);
     }
 
-    function onChangeEnergySourceInput(e, value, reason) {
+    function onChangeEnergySourceInput(e, value) {
         creditMiningFarmDetailsPageStore.energySourceInputValue = value;
     }
 
