@@ -11,10 +11,10 @@ import {
     DataType,
     AutoIncrement,
 } from 'sequelize-typescript';
-import { Farm } from '../farm/models/farm.model';
 import { NFT } from '../nft/nft.model';
 import { CollectionStatus } from './utils';
 import AccountRepo from '../account/repos/account.repo';
+import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
 
 @Table({
     freezeTableName: true,
@@ -63,11 +63,11 @@ export class Collection extends Model {
       status: CollectionStatus;
 
   @Column
-  @ForeignKey(() => Farm)
+  @ForeignKey(() => MiningFarmRepo)
       farm_id: number;
 
-  @BelongsTo(() => Farm)
-      farm: Farm;
+  @BelongsTo(() => MiningFarmRepo)
+      farm: MiningFarmRepo;
 
   @AllowNull(false)
   @Column

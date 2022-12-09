@@ -10,10 +10,6 @@ import { StatisticsController } from './statistics.controller';
 import { StatisticsService } from './statistics.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
-import { Farm } from '../farm/models/farm.model';
-import { EnergySource } from '../farm/models/energy-source.model';
-import { Manufacturer } from '../farm/models/manufacturer.model';
-import { Miner } from '../farm/models/miner.model';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
@@ -30,13 +26,9 @@ import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
             DestinationAddressesWithAmount,
             NftOwnersPayoutHistory,
             NftPayoutHistory,
-            Farm,
             MiningFarmRepo,
-            Miner,
             MinerRepo,
-            Manufacturer,
             ManufacturerRepo,
-            EnergySource,
             EnergySourceRepo,
             VisitorRepo,
         ]),

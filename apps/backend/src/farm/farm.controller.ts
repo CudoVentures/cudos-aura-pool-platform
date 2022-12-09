@@ -2,11 +2,8 @@ import {
     Body,
     Controller,
     Get,
-    Param,
-    ParseIntPipe,
     Put,
     UseGuards,
-    Patch,
     Query,
     Post,
     ValidationPipe,
@@ -15,16 +12,8 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
-import { UpdateFarmStatusDto } from './dto/update-status.dto';
-import { Farm } from './models/farm.model';
 import { FarmService } from './farm.service';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
-import { EnergySource } from './models/energy-source.model';
-import { Manufacturer } from './models/manufacturer.model';
-import { Miner } from './models/miner.model';
-import { MinerDto } from './dto/miner.dto';
-import { EnergySourceDto } from './dto/energy-source.dto';
-import { ManufacturerDto } from './dto/manufacturer.dto';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import DataService from '../data/data.service';
 import { AppRequest } from '../common/commont.types';

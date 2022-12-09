@@ -3,20 +3,12 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Collection } from '../collection/collection.model';
 import { NFT } from '../nft/nft.model';
 import { NftStatus } from '../nft/nft.types';
-import { EnergySourceDto } from './dto/energy-source.dto';
-import { ManufacturerDto } from './dto/manufacturer.dto';
-import { MinerDto } from './dto/miner.dto';
-import { EnergySource } from './models/energy-source.model';
-import { Farm } from './models/farm.model';
-import { Manufacturer } from './models/manufacturer.model';
-import { Miner } from './models/miner.model';
 import { HttpService } from '@nestjs/axios';
 import { CollectionStatus } from '../collection/utils';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
-import sequelize, { LOCK, Op, Transaction, where } from 'sequelize';
+import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { VisitorService } from '../visitor/visitor.service';
 import AccountEntity from '../account/entities/account.entity';
-import { UpdateFarmStatusDto } from './dto/update-status.dto';
 import MiningFarmEntity from './entities/mining-farm.entity';
 import { MiningFarmRepo, MiningFarmRepoColumn } from './repos/mining-farm.repo';
 import AppRepo from '../common/repo/app.repo';
@@ -40,18 +32,10 @@ export class FarmService {
         private minerRepo: typeof MinerRepo,
         @InjectModel(ManufacturerRepo)
         private manufacturerRepo: typeof ManufacturerRepo,
-        @InjectModel(Farm)
-        private farmModel: typeof Farm,
         @InjectModel(Collection)
         private collectionModel: typeof Collection,
         @InjectModel(NFT)
         private nftModel: typeof NFT,
-        @InjectModel(Manufacturer)
-        private manufacturerModel: typeof Manufacturer,
-        @InjectModel(Miner)
-        private minerModel: typeof Miner,
-        @InjectModel(EnergySource)
-        private energySourceModel: typeof EnergySource,
         private httpService: HttpService,
         private visitorService: VisitorService,
         private dataService: DataService,
@@ -251,7 +235,7 @@ export class FarmService {
     }
 
     async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number, remainingHashPowerInTH: number }> {
-        const farm = await this.farmModel.findByPk(farmId)
+        const farm = await this.miningFarmRepo.findByPk(farmId)
         if (!farm) {
             throw new NotFoundException(`Farm with id '${farmId}' doesn't exist`)
         }
