@@ -1,48 +1,21 @@
-import { IsString, IsArray, IsEnum, IsOptional, IsNumber, IsPositive } from 'class-validator';
 import { CollectionStatus } from '../../collection/utils';
 import { IntBoolValue } from '../../common/utils';
+import { NftFilterJsonValidation, NftOrderBy } from '../nft.types';
 
-export enum NftOrderBy {
-    TRENDING_ASC = 1,
-    TRENDING_DESC = -NftOrderBy.TRENDING_ASC,
-    TIMESTAMP_ASC = 2,
-    TIMESTAMP_DESC = -NftOrderBy.TIMESTAMP_ASC,
-}
-
-export default class NftFilterModel {
-
-    @IsArray()
-    @IsString({ each: true })
-    @IsOptional()
-        nftIds: string[];
-
-    @IsEnum(CollectionStatus)
-        collectionStatus: CollectionStatus;
-
-    @IsArray()
-    @IsString({ each: true })
-    @IsOptional()
-        collectionIds: string[];
-
-    @IsString()
-    @IsOptional()
-        searchString: string;
-
-    @IsEnum(IntBoolValue)
-        sessionAccount: number;
-
-    @IsEnum(NftOrderBy)
-        orderBy: NftOrderBy;
-
-    @IsNumber()
-        from: number;
-
-    @IsNumber()
-    @IsPositive()
-        count: number;
+export default class NftFilterEntity {
+    nftIds: string[];
+    tokenIds: string[];
+    collectionStatus: CollectionStatus;
+    collectionIds: string[];
+    searchString: string;
+    sessionAccount: number;
+    orderBy: NftOrderBy;
+    from: number;
+    count: number;
 
     constructor() {
         this.nftIds = null;
+        this.tokenIds = null;
         this.collectionStatus = CollectionStatus.APPROVED;
         this.collectionIds = null;
         this.searchString = '';
@@ -53,6 +26,10 @@ export default class NftFilterModel {
     }
 
     hasNftIds(): boolean {
+        return this.nftIds !== null;
+    }
+
+    hasTokenIds(): boolean {
         return this.nftIds !== null;
     }
 
@@ -80,4 +57,19 @@ export default class NftFilterModel {
         return this.collectionStatus as unknown as CollectionStatus;
     }
 
+    static fromJson(json: NftFilterJsonValidation): NftFilterEntity {
+        const entity = new NftFilterEntity();
+
+        entity.nftIds = json.nftIds ?? entity.nftIds;
+        entity.tokenIds = json.tokenIds ?? entity.tokenIds;
+        entity.collectionStatus = json.collectionStatus ?? entity.collectionStatus;
+        entity.collectionIds = json.collectionIds ?? entity.collectionIds;
+        entity.searchString = json.searchString ?? entity.searchString;
+        entity.sessionAccount = json.sessionAccount ?? entity.sessionAccount;
+        entity.orderBy = json.orderBy ?? entity.orderBy;
+        entity.from = json.from ?? entity.from;
+        entity.count = json.count ?? entity.count;
+
+        return entity;
+    }
 }

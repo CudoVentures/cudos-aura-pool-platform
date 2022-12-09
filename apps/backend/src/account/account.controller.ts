@@ -101,10 +101,9 @@ export class AccountController {
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @Get(':accountId')
     async fetchFarmOwnerAccounts(
-        @Param('accountId') accountId: number
+        @Param('accountId') accountId: number,
     ): Promise < ResFetchSessionAccounts > {
         const res = await this.accountService.findAccounts(accountId);
         return new ResFetchSessionAccounts(res.accountEntity, res.userEntity, res.adminEntity, res.superAdminEntity);
     }
-}
 }

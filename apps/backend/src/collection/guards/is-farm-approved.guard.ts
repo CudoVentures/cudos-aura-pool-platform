@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Farm, FarmStatus } from '../../farm/models/farm.model';
 import { FarmService } from '../../farm/farm.service';
-import { CollectionDto } from '../dto/collection.dto';
+import { CollectionDto } from '../dto/requests.dto';
 import { NOT_EXISTS_INT } from '../../common/utils';
 
 @Injectable()

@@ -1,11 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
-import { NFTDto } from '../dto/nft.dto';
+import NftEntity from '../entities/nft.entity';
 import { NFTService } from '../nft.service';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
+    // eslint-disable-next-line no-empty-function
     constructor(private nftService: NFTService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -16,7 +17,7 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
             body,
         } = request;
 
-        const nftDto = NFTDto.fromJson(body);
+        const nftEntity = NftEntity.fromJson(body);
 
         // super admin can do anything
         if (sessionSuperAdminEntity !== null) {
@@ -29,18 +30,18 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
         }
 
         // it is farm admin, so he can always create a new nft
-        if (nftDto.isNew()) {
+        if (nftEntity.isNew()) {
             return true
         }
 
-        const nft = await this.nftService.findOne(nftDto.id);
+        const nft = await this.nftService.findOne(nftEntity.id.toString());
 
         if (!nft) {
             throw new UnauthorizedException(
-                `NFT with id ${nftDto.id} is not found`,
+                `NFT with id ${nftEntity.id} is not found`,
             );
         }
 
-        return nft.creator_id === sessionAdminEntity.accountId;
+        return nft.creatorId === sessionAdminEntity.accountId;
     }
 }

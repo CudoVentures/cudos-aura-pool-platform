@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Collection } from '../collection/collection.model';
-import { NFT } from '../nft/nft.model';
+import { CollectionRepo } from '../collection/repos/collection.repo';
+import { NftRepo } from '../nft/repos/nft.repo';
 import { NftStatus } from '../nft/nft.types';
 import { EnergySourceDto } from './dto/energy-source.dto';
 import { FarmDto } from './dto/farm.dto';
@@ -25,10 +25,10 @@ export class FarmService {
     constructor(
         @InjectModel(Farm)
         private farmModel: typeof Farm,
-        @InjectModel(Collection)
-        private collectionModel: typeof Collection,
-        @InjectModel(NFT)
-        private nftModel: typeof NFT,
+        @InjectModel(CollectionRepo)
+        private collectionModel: typeof CollectionRepo,
+        @InjectModel(NftRepo)
+        private nftRepo: typeof NftRepo,
         @InjectModel(Manufacturer)
         private manufacturerModel: typeof Manufacturer,
         @InjectModel(Miner)
@@ -60,7 +60,7 @@ export class FarmService {
                 sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${miningFarmFilterModel.searchString.toLowerCase()}%` }),
             ]
         }
-
+        console.log(whereClause)
         let miningFarmEntities = await this.farmModel.findAll({
             where: whereClause,
         });
@@ -206,8 +206,8 @@ export class FarmService {
         const collections = await this.collectionModel.findAll({ where: { farm_id: farmId, status: { [Op.notIn]: [CollectionStatus.DELETED] } } })
 
         // Get number of total and sold NFTs
-        const nfts = await this.nftModel.findAll({ include: [{ model: Collection, where: { farm_id: farmId } }], where: { status: { [Op.notIn]: [NftStatus.REMOVED] } } })
-        const soldNfts = nfts.filter((nft) => nft.token_id !== '')
+        const nfts = await this.nftRepo.findAll({ include: [{ model: CollectionRepo, where: { farm_id: farmId } }], where: { status: { [Op.notIn]: [NftStatus.REMOVED] } } })
+        const soldNfts = nfts.filter((nft) => nft.tokenId !== '')
 
         // Calculate remaining hash power of the farm
         const collectionsHashPowerSum = collections.reduce((prevVal, currVal) => prevVal + Number(currVal.hashing_power), 0)

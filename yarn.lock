@@ -10598,10 +10598,10 @@
     "tslib" "^2.0.3"
     "upper-case-first" "^2.0.2"
 
-"sequelize-cli@^6.5.1":
-  "integrity" "sha512-36hfZKNeZkIshp6L0jPVQ27xNLzgDPpiZokQsvo0M882AtAm+KhGOIViR0BecWb0Xz8+uSq03xxcl7RfMgyIRA=="
-  "resolved" "https://registry.npmjs.org/sequelize-cli/-/sequelize-cli-6.5.1.tgz"
-  "version" "6.5.1"
+"sequelize-cli@^6.5.2":
+  "integrity" "sha512-ltXvQOxFFb9pVuDqPJYOS3/X32OVni9zK1S0d0JfloSjmCKZmMDFBWndZbcbJH0QBfyxTt7FLt/kSmKwTRlbsQ=="
+  "resolved" "https://registry.npmjs.org/sequelize-cli/-/sequelize-cli-6.5.2.tgz"
+  "version" "6.5.2"
   dependencies:
     "cli-color" "^2.0.3"
     "fs-extra" "^9.1.0"
@@ -10616,17 +10616,17 @@
   "resolved" "https://registry.npmjs.org/sequelize-pool/-/sequelize-pool-7.1.0.tgz"
   "version" "7.1.0"
 
-"sequelize-typescript@^2.0.0", "sequelize-typescript@^2.1.3":
-  "integrity" "sha512-0mejGAaLywuCoOOLSXCQs2sMBNudU/QtWZkGY5VT2dfTHToXZi5bOxCa3/CukNNk7wJwXnLuIdeHdlqjvVoj1g=="
-  "resolved" "https://registry.npmjs.org/sequelize-typescript/-/sequelize-typescript-2.1.3.tgz"
-  "version" "2.1.3"
+"sequelize-typescript@^2.0.0", "sequelize-typescript@^2.1.5":
+  "integrity" "sha512-x1CNODct8gJyfZPwEZBU5uVGNwgJI2Fda913ZxD5ZtCSRyTDPBTS/0uXciF+MlCpyqjpmoCAPtudQWzw579bzA=="
+  "resolved" "https://registry.npmjs.org/sequelize-typescript/-/sequelize-typescript-2.1.5.tgz"
+  "version" "2.1.5"
   dependencies:
     "glob" "7.2.0"
 
-"sequelize@^6.21.6", "sequelize@^6.3.5", "sequelize@>=6.8.0":
-  "integrity" "sha512-dM3VqyhdCznAv2HY0zIdeFLTEt+Jnv54o6UaBm0pFGB+Ke9ax5AxBeF4BD9vwiON0gBk+ZJ8WZHQSnIq/POuvA=="
-  "resolved" "https://registry.npmjs.org/sequelize/-/sequelize-6.21.6.tgz"
-  "version" "6.21.6"
+"sequelize@^6.26.0", "sequelize@^6.3.5", "sequelize@>=6.20.1":
+  "integrity" "sha512-Xv82z1FdSn/qwB1IObSxIHV519cFk/vSD28vWs8Y0VucQLn7pK2x2jYjf2Qg/rBUQbCVprDdU7RPf+55rrkc0A=="
+  "resolved" "https://registry.npmjs.org/sequelize/-/sequelize-6.26.0.tgz"
+  "version" "6.26.0"
   dependencies:
     "@types/debug" "^4.1.7"
     "@types/validator" "^13.7.1"

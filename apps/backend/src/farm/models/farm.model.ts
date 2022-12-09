@@ -12,7 +12,7 @@ import {
     DataType,
 } from 'sequelize-typescript';
 import AccountRepo from '../../account/repos/account.repo';
-import { Collection } from '../../collection/collection.model';
+import { CollectionRepo } from '../../collection/repos/collection.repo';
 
 export const enum FarmStatus {
     QUEUED = 'queued',
@@ -121,8 +121,8 @@ export class Farm extends Model {
     @BelongsTo(() => AccountRepo)
         creator: AccountRepo;
 
-    @HasMany(() => Collection)
-        collections: Collection[];
+    @HasMany(() => CollectionRepo)
+        collections: CollectionRepo[];
 
     @Column
         deleted_at: Date;

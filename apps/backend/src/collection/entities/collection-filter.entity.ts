@@ -1,48 +1,23 @@
-import { IsArray, IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../../common/utils';
+import { CollectionFilterJsonValidator, CollectionOrderBy } from '../collection.types';
 import { CollectionStatus } from '../utils';
 
-export enum CollectionOrderBy {
-    TOP_ASC = 1,
-    TOP_DESC = -CollectionOrderBy.TOP_ASC,
-    TIMESTAMP_ASC = 2,
-    TIMESTAMP_DESC = -CollectionOrderBy.TIMESTAMP_ASC,
-}
+export default class CollectionFilterEntity {
 
-export default class CollectionFilterModel {
-
-    @IsArray()
-    @IsString({ each: true })
-    @IsOptional()
-        collectionIds: string[];
-
-    @IsEnum(CollectionStatus)
-        status: CollectionStatus;
-
-    @IsString()
-    @IsOptional()
-        searchString: string;
-
-    @IsString()
-        farmId: string;
-
-    @IsNumber()
-        timestampFrom: number;
-    @IsNumber()
-        timestampTo: number;
-
-    @IsEnum(CollectionOrderBy)
-        orderBy: CollectionOrderBy;
-
-    @IsNumber()
-        from: number;
-
-    @IsNumber()
-    @IsPositive()
-        count: number;
+    collectionIds: string[];
+    denomIds: string[];
+    status: CollectionStatus;
+    searchString: string;
+    farmId: string;
+    timestampFrom: number;
+    timestampTo: number;
+    orderBy: CollectionOrderBy;
+    from: number;
+    count: number;
 
     constructor() {
         this.collectionIds = null;
+        this.denomIds = null;
         this.status = CollectionStatus.APPROVED;
         this.searchString = '';
         this.farmId = NOT_EXISTS_STRING;
@@ -55,6 +30,10 @@ export default class CollectionFilterModel {
 
     hasCollectionIds(): boolean {
         return this.collectionIds !== null;
+    }
+
+    hasCDenomIds(): boolean {
+        return this.denomIds !== null;
     }
 
     hasCollectionStatus(): boolean {
@@ -83,6 +62,23 @@ export default class CollectionFilterModel {
 
     isSortByTop() {
         return this.orderBy === CollectionOrderBy.TOP_ASC || this.orderBy === CollectionOrderBy.TOP_DESC;
+    }
+
+    static fromJson(json: CollectionFilterJsonValidator): CollectionFilterEntity {
+        const entity = new CollectionFilterEntity();
+
+        entity.collectionIds = json.collectionIds ?? entity.collectionIds
+        entity.denomIds = json.denomIds ?? entity.denomIds
+        entity.status = json.status ?? entity.status
+        entity.searchString = json.searchString ?? entity.searchString
+        entity.farmId = json.farmId ?? entity.farmId
+        entity.timestampFrom = json.timestampFrom ?? entity.timestampFrom
+        entity.timestampTo = json.timestampTo ?? entity.timestampTo
+        entity.orderBy = json.orderBy ?? entity.orderBy
+        entity.from = json.from ?? entity.from
+        entity.count = json.count ?? entity.count;
+
+        return entity;
     }
 
 }

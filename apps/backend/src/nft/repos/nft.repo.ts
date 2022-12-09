@@ -2,7 +2,6 @@ import {
     Column,
     Model,
     Table,
-    BelongsTo,
     ForeignKey,
     PrimaryKey,
     Unique,
@@ -11,15 +10,16 @@ import {
     DataType,
     IsUUID,
 } from 'sequelize-typescript';
-import AccountRepo from '../account/repos/account.repo';
-import { Collection } from '../collection/collection.model';
-import { NftStatus } from './nft.types';
+import AccountRepo from '../../account/repos/account.repo';
+import { CollectionRepo } from '../../collection/repos/collection.repo';
+import { NftStatus } from '../nft.types';
 
 @Table({
     freezeTableName: true,
     tableName: 'nfts',
+    underscored: true,
 })
-export class NFT extends Model {
+export class NftRepo extends Model {
     @PrimaryKey
     @Unique
     @IsUUID(4)
@@ -41,7 +41,7 @@ export class NFT extends Model {
 
     @AllowNull(false)
     @Column
-        hashing_power: number;
+        hashingPower: number;
 
     @AllowNull(false)
     @Column
@@ -50,7 +50,7 @@ export class NFT extends Model {
     @AllowNull(false)
     @IsDate
     @Column
-        expiration_date: Date;
+        expirationDate: Date;
 
     @AllowNull(false)
     @Column(DataType.ENUM(
@@ -62,43 +62,25 @@ export class NFT extends Model {
 
     @AllowNull(true)
     @Column
-        token_id: string
+        tokenId: string
 
     @Column
-    @ForeignKey(() => Collection)
-        collection_id: number;
-
-    @BelongsTo(() => Collection)
-        collection: Collection;
+    @ForeignKey(() => CollectionRepo)
+        collectionId: number;
 
     @AllowNull(false)
     @Column
     @ForeignKey(() => AccountRepo)
-        creator_id: number;
-
-    @BelongsTo(() => AccountRepo)
-        creator: AccountRepo;
+        creatorId: number;
 
     @Column
-        deleted_at: Date;
+        deletedAt: Date;
 
     @AllowNull(false)
     @Column
-        current_owner: string;
+        currentOwner: string;
 
     @AllowNull(false)
     @Column
-        marketplace_nft_id: number;
-
-    creatorAddress: string;
-
-    constructor(...args) {
-        super(...args);
-        this.creatorAddress = '';
-    }
-
-    isMinted(): boolean {
-        return this.token_id !== ''
-    }
-
+        marketplaceNftId: number;
 }

@@ -62,18 +62,6 @@ export class FarmController {
         }));
     }
 
-    // @Get(':id')
-    // async findOne(@Param('id', ParseIntPipe) id: number): Promise<Farm> {
-    //     return this.farmService.findOne(id);
-    // }
-
-    //   @Get(':id/collections')
-    //     async findCollections(
-    //     @Param('id', ParseIntPipe) id: number,
-    //     ): Promise<Collection[]> {
-    //         return this.collectionService.findByFarmId(id);
-    //     }
-
     @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
     @UseInterceptors(TransactionInterceptor)

@@ -1,4 +1,3 @@
-import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import { IntBoolValue, parseIntBoolValue } from '../../common/utils';
 
 export type GraphQlNftNft = {

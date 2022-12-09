@@ -3,24 +3,22 @@ import {
     Model,
     Table,
     AllowNull,
-    BelongsTo,
     ForeignKey,
-    HasMany,
     PrimaryKey,
     Unique,
     DataType,
     AutoIncrement,
 } from 'sequelize-typescript';
-import { Farm } from '../farm/models/farm.model';
-import { NFT } from '../nft/nft.model';
-import { CollectionStatus } from './utils';
-import AccountRepo from '../account/repos/account.repo';
+import { CollectionStatus } from '../utils';
+import AccountRepo from '../../account/repos/account.repo';
+import { Farm } from '../../farm/models/farm.model';
 
 @Table({
     freezeTableName: true,
     tableName: 'collections',
+    underscored: true,
 })
-export class Collection extends Model {
+export class CollectionRepo extends Model {
   @Unique
   @PrimaryKey
   @AutoIncrement
@@ -36,11 +34,11 @@ export class Collection extends Model {
 
   @AllowNull(false)
   @Column
-      denom_id: string;
+      denomId: string;
 
   @AllowNull(false)
   @Column
-      hashing_power: number;
+      hashingPower: number;
 
   @AllowNull(false)
   @Column
@@ -48,11 +46,11 @@ export class Collection extends Model {
 
   @AllowNull(false)
   @Column
-      main_image: string;
+      mainImage: string;
 
   @AllowNull(false)
   @Column
-      banner_image: string;
+      bannerImage: string;
 
   @AllowNull(false)
   @Column(DataType.ENUM(
@@ -64,22 +62,13 @@ export class Collection extends Model {
 
   @Column
   @ForeignKey(() => Farm)
-      farm_id: number;
-
-  @BelongsTo(() => Farm)
-      farm: Farm;
+      farmId: number;
 
   @AllowNull(false)
   @Column
   @ForeignKey(() => AccountRepo)
-      creator_id: number;
-
-  @BelongsTo(() => AccountRepo)
-      creator: AccountRepo;
-
-  @HasMany(() => NFT)
-      nfts: NFT[];
+      creatorId: number;
 
   @Column
-      deleted_at: Date;
+      deletedAt: Date;
 }

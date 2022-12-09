@@ -3,11 +3,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { HttpModule } from '@nestjs/axios';
 import { CollectionService } from './collection.service';
 import { CollectionController } from './collection.controller';
-import { Collection } from './collection.model';
+import { CollectionRepo } from './repos/collection.repo';
 import { NFTModule } from '../nft/nft.module';
 import { NFTService } from '../nft/nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
-import { NFT } from '../nft/nft.model';
+import { NftRepo } from '../nft/repos/nft.repo';
 import { FarmService } from '../farm/farm.service';
 import { Farm } from '../farm/models/farm.model';
 import { FarmModule } from '../farm/farm.module';
@@ -19,7 +19,7 @@ import DataService from '../data/data.service';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([Collection, NFT, Farm, Miner, Manufacturer, EnergySource]),
+        SequelizeModule.forFeature([CollectionRepo, NftRepo, Farm, Miner, Manufacturer, EnergySource]),
         forwardRef(() => NFTModule),
         forwardRef(() => FarmModule),
         HttpModule,

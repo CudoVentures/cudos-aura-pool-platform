@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import { FarmDto } from '../farm/dto/farm.dto';
-import { NFTDto } from '../nft/dto/nft.dto';
+import { NftJsonValidator } from '../nft/nft.types';
 import { VisitorService } from './visitor.service';
 import { UUID_COOKIE_KEY } from './visitor.types';
 
@@ -26,7 +26,7 @@ export class VisitorController {
 
     @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitNft')
-    async signalVisitNft(@Req() req: AppRequest, @Body() nftDto: NFTDto): Promise < void > {
+    async signalVisitNft(@Req() req: AppRequest, @Body() nftDto: NftJsonValidator): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {
             return;

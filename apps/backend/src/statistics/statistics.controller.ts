@@ -24,6 +24,7 @@ export class StatisticsController {
         private graphqlService: GraphqlService,
         private statisticsService: StatisticsService,
         private nftService: NFTService,
+    // eslint-disable-next-line no-empty-function
     ) {}
 
     @Post('history/nft')

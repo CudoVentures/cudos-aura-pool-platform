@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CollectionService } from '../collection.service';
-import { CollectionDto } from '../dto/collection.dto';
+import { CollectionDto } from '../dto/requests.dto';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
 
 @Injectable()
