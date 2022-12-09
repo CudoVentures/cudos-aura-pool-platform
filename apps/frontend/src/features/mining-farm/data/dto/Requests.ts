@@ -13,6 +13,16 @@ export class ReqCreditMiningFarm {
 
 }
 
+export class ReqFetchMiningFarmDetails {
+
+    miningFarmIds: string[];
+
+    constructor(miningFarmIds: string[]) {
+        this.miningFarmIds = miningFarmIds;
+    }
+
+}
+
 export class ReqCreditManufacturer {
 
     manufacturerEntity: ManufacturerEntity;

@@ -1,4 +1,5 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
+import { EnergySourceJsonValidator } from '../farm.types';
 import { EnergySourceRepo } from '../repos/energy-source.repo';
 
 export default class EnergySourceEntity {
@@ -43,7 +44,7 @@ export default class EnergySourceEntity {
         return entity;
     }
 
-    static toJson(entity: EnergySourceEntity): any {
+    static toJson(entity: EnergySourceEntity): EnergySourceJsonValidator {
         if (entity === null) {
             return null;
         }
@@ -54,7 +55,7 @@ export default class EnergySourceEntity {
         }
     }
 
-    static fromJson(json): EnergySourceEntity {
+    static fromJson(json: EnergySourceJsonValidator): EnergySourceEntity {
         if (json === null) {
             return null;
         }

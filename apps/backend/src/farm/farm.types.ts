@@ -93,6 +93,28 @@ export class MiningFarmJsonValidator {
 
 }
 
+export class MiningFarmDetailsJsonValidator {
+
+    @IsString()
+        miningFarmId: string;
+
+    @IsNumber()
+        averageHashPowerInTh: number;
+
+    @IsNumber()
+        activeWorkers: number;
+
+    @IsNumber()
+        nftsOwned: number;
+
+    @IsNumber()
+        totalNftsSold: number;
+
+    @IsNumber()
+        remainingHashPowerInTH: number;
+
+}
+
 export class EnergySourceJsonValidator {
 
     @IsString()

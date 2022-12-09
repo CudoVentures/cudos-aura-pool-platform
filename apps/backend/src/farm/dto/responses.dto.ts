@@ -1,8 +1,9 @@
 import EnergySourceEntity from '../entities/energy-source.entity';
 import ManufacturerEntity from '../entities/manufacturer.entity';
 import MinerEntity from '../entities/miner.entity';
+import MiningFarmDetailsEntity from '../entities/mining-farm-details.entity';
 import MiningFarmEntity from '../entities/mining-farm.entity';
-import { MiningFarmJsonValidator } from '../farm.types';
+import { EnergySourceJsonValidator, ManufacturerJsonValidator, MinerJsonValidator, MiningFarmDetailsJsonValidator, MiningFarmJsonValidator } from '../farm.types';
 
 export class ResCreditMiningFarm {
 
@@ -14,9 +15,19 @@ export class ResCreditMiningFarm {
 
 }
 
+export class ResFetchMiningFarmDetails {
+
+    miningFarmDetailsEntities: MiningFarmDetailsJsonValidator[];
+
+    constructor(miningFarmDetailsEntities: MiningFarmDetailsEntity[]) {
+        this.miningFarmDetailsEntities = miningFarmDetailsEntities.map((e) => MiningFarmDetailsEntity.toJson(e));
+    }
+
+}
+
 export class ResFetchEnergySources {
 
-    energySourceEntities: EnergySourceEntity[];
+    energySourceEntities: EnergySourceJsonValidator[];
 
     constructor(energySourceEntities: EnergySourceEntity[]) {
         this.energySourceEntities = energySourceEntities.map((e) => EnergySourceEntity.toJson(e));
@@ -26,7 +37,7 @@ export class ResFetchEnergySources {
 
 export class ResFetchMiners {
 
-    minerEntities: MinerEntity[];
+    minerEntities: MinerJsonValidator[];
 
     constructor(minerEntities: MinerEntity[]) {
         this.minerEntities = minerEntities.map((e) => MinerEntity.toJson(e));
@@ -36,7 +47,7 @@ export class ResFetchMiners {
 
 export class ResFetchManufacturers {
 
-    manufacturerEntities: ManufacturerEntity[];
+    manufacturerEntities: ManufacturerJsonValidator[];
 
     constructor(manufacturerEntities: ManufacturerEntity[]) {
         this.manufacturerEntities = manufacturerEntities.map((e) => ManufacturerEntity.toJson(e));
@@ -46,7 +57,7 @@ export class ResFetchManufacturers {
 
 export class ResCreditManufacturer {
 
-    manufacturerEntity: ManufacturerEntity;
+    manufacturerEntity: ManufacturerJsonValidator;
 
     constructor(manufacturerEntity: ManufacturerEntity) {
         this.manufacturerEntity = ManufacturerEntity.toJson(manufacturerEntity);
@@ -56,7 +67,7 @@ export class ResCreditManufacturer {
 
 export class ResCreditMiner {
 
-    minerEntity: MinerEntity;
+    minerEntity: MinerJsonValidator;
 
     constructor(minerEntity: MinerEntity) {
         this.minerEntity = MinerEntity.toJson(minerEntity);
@@ -66,7 +77,7 @@ export class ResCreditMiner {
 
 export class ResCreditEnergySource {
 
-    energySourceEntity: EnergySourceEntity;
+    energySourceEntity: EnergySourceJsonValidator;
 
     constructor(energySourceEntity: EnergySourceEntity) {
         this.energySourceEntity = EnergySourceEntity.toJson(energySourceEntity);

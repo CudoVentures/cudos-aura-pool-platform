@@ -5,8 +5,8 @@ import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import axios from '../../../../core/utilities/AxiosWrapper';
-import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm } from '../dto/Requests';
-import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners } from '../dto/Responses';
+import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm, ReqFetchMiningFarmDetails } from '../dto/Requests';
+import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners, ResFetchMiningFarmDetails } from '../dto/Responses';
 
 export default class MiningFarmApi {
 
@@ -20,11 +20,9 @@ export default class MiningFarmApi {
     }
 
     async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
-        const { data } = await axios.get('/api/v1/farm/details', { params: {
-            ids: miningFarmIds.join(','),
-        } })
-
-        return data.map((farmDetails) => MiningFarmDetailsEntity.fromJson(farmDetails))
+        const { data } = await axios.post('/api/v1/farm/fetchMiningFarmsDetailsByIds', new ReqFetchMiningFarmDetails(miningFarmIds));
+        const res = new ResFetchMiningFarmDetails(data);
+        return res.miningFarmDetailsEntities;
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {

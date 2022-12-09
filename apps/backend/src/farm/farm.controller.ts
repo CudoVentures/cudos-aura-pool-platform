@@ -4,7 +4,6 @@ import {
     Get,
     Put,
     UseGuards,
-    Query,
     Post,
     ValidationPipe,
     Req,
@@ -15,13 +14,12 @@ import RoleGuard from '../auth/guards/role.guard';
 import { FarmService } from './farm.service';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
-import DataService from '../data/data.service';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
-import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm } from './dto/requests.dto';
+import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm, ReqFetchMiningFarmDetails } from './dto/requests.dto';
 import MiningFarmEntity from './entities/mining-farm.entity';
-import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners } from './dto/responses.dto';
+import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners, ResFetchMiningFarmDetails } from './dto/responses.dto';
 import { FarmStatus } from './farm.types';
 import EnergySourceEntity from './entities/energy-source.entity';
 import MinerEntity from './entities/miner.entity';
@@ -31,8 +29,7 @@ import ManufacturerEntity from './entities/manufacturer.entity';
 @Controller('farm')
 export class FarmController {
     constructor(
-        private farmService: FarmService,
-        private dataService: DataService,
+        private miningFarmService: FarmService,
     ) { }
 
     @Post()
@@ -40,20 +37,17 @@ export class FarmController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
     ): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
-        return this.farmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
+        return this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
     }
 
-    @Get('details')
-    async getDetails(@Query('ids') ids: string): Promise<any> {
-        const farmIds = ids.split(',').map((id) => Number(id))
-
-        const getFarmsDetails = farmIds.map(async (farmId) => this.farmService.getDetails(farmId))
-        const farmsDetails = await Promise.all(getFarmsDetails)
-
-        return Promise.all(farmsDetails.map(async (details) => {
-            const { activeWorkersCount, averageHashRateH1 } = await this.farmService.getFoundryFarmWorkersDetails(details.subAccountName);
-            return { ...details, activeWorkersCount, averageHashRateH1 };
-        }));
+    @Post('fetchMiningFarmsDetailsByIds')
+    async fetchMiningFarmsDetailsByIds(
+        @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmDetails: ReqFetchMiningFarmDetails,
+    ): Promise < ResFetchMiningFarmDetails > {
+        const miningFarmIds = reqFetchMiningFarmDetails.getParsedIds();
+        const getMiningFarmDetailEntities = miningFarmIds.map((miningFarmId) => this.miningFarmService.getDetails(miningFarmId))
+        const miningFarmDetailEntities = await Promise.all(getMiningFarmDetailEntities);
+        return new ResFetchMiningFarmDetails(miningFarmDetailEntities);
     }
 
     @ApiBearerAuth('access-token')
@@ -70,26 +64,26 @@ export class FarmController {
             miningFarmEntity.status = FarmStatus.QUEUED;
         }
 
-        miningFarmEntity = await this.farmService.creditMiningFarm(miningFarmEntity, req.sessionAccountEntity !== null, req.transaction);
+        miningFarmEntity = await this.miningFarmService.creditMiningFarm(miningFarmEntity, req.sessionAccountEntity !== null, req.transaction);
 
         return new ResCreditMiningFarm(miningFarmEntity);
     }
 
     @Get('miners')
     async findMiners(): Promise < ResFetchMiners > {
-        const minerEntities = await this.farmService.findMiners();
+        const minerEntities = await this.miningFarmService.findMiners();
         return new ResFetchMiners(minerEntities);
     }
 
     @Get('energy-sources')
     async findEnergySources(): Promise < ResFetchEnergySources > {
-        const energySourceEntities = await this.farmService.findEnergySources();
+        const energySourceEntities = await this.miningFarmService.findEnergySources();
         return new ResFetchEnergySources(energySourceEntities);
     }
 
     @Get('manufacturers')
     async findManufacturers(): Promise < ResFetchManufacturers > {
-        const manufacturerEntities = await this.farmService.findManufacturers();
+        const manufacturerEntities = await this.miningFarmService.findManufacturers();
         return new ResFetchManufacturers(manufacturerEntities);
     }
 
@@ -100,7 +94,7 @@ export class FarmController {
         @Body(new ValidationPipe({ transform: true })) reqCreditMiner: ReqCreditMiner,
     ): Promise < ResCreditMiner > {
         let minerEntity = MinerEntity.fromJson(reqCreditMiner.minerEntity);
-        minerEntity = await this.farmService.creditMiner(minerEntity, req.transaction);
+        minerEntity = await this.miningFarmService.creditMiner(minerEntity, req.transaction);
         return new ResCreditMiner(minerEntity);
     }
 
@@ -111,7 +105,7 @@ export class FarmController {
         @Body(new ValidationPipe({ transform: true })) reqCreditEnergySource: ReqCreditEnergySource,
     ): Promise < ResCreditEnergySource > {
         let energySourceEntity = EnergySourceEntity.fromJson(reqCreditEnergySource.energySourceEntity);
-        energySourceEntity = await this.farmService.creditEnergySource(energySourceEntity, req.transaction);
+        energySourceEntity = await this.miningFarmService.creditEnergySource(energySourceEntity, req.transaction);
         return new ResCreditEnergySource(energySourceEntity);
     }
 
@@ -122,7 +116,7 @@ export class FarmController {
         @Body(new ValidationPipe({ transform: true })) reqCreditManufacturer: ReqCreditManufacturer,
     ): Promise < ResCreditManufacturer > {
         let manufacturerEntity = ManufacturerEntity.fromJson(reqCreditManufacturer.manufacturerEntity);
-        manufacturerEntity = await this.farmService.creditManufacturer(manufacturerEntity, req.transaction);
+        manufacturerEntity = await this.miningFarmService.creditManufacturer(manufacturerEntity, req.transaction);
         return new ResCreditManufacturer(manufacturerEntity);
     }
 }

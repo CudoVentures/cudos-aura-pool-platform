@@ -1,4 +1,5 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
+import { ManufacturerJsonValidator } from '../farm.types';
 import { ManufacturerRepo } from '../repos/manufacturer.repo';
 
 export default class ManufacturerEntity {
@@ -43,7 +44,7 @@ export default class ManufacturerEntity {
         return entity;
     }
 
-    static toJson(entity: ManufacturerEntity): any {
+    static toJson(entity: ManufacturerEntity): ManufacturerJsonValidator {
         if (entity === null) {
             return null;
         }
@@ -54,7 +55,7 @@ export default class ManufacturerEntity {
         }
     }
 
-    static fromJson(json): ManufacturerEntity {
+    static fromJson(json: ManufacturerJsonValidator): ManufacturerEntity {
         if (json === null) {
             return null;
         }

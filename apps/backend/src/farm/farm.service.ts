@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Collection } from '../collection/collection.model';
 import { NFT } from '../nft/nft.model';
@@ -20,6 +20,7 @@ import { MinerRepo } from './repos/miner.repo';
 import { ManufacturerRepo } from './repos/manufacturer.repo';
 import MinerEntity from './entities/miner.entity';
 import ManufacturerEntity from './entities/manufacturer.entity';
+import MiningFarmDetailsEntity from './entities/mining-farm-details.entity';
 
 @Injectable()
 export class FarmService {
@@ -234,10 +235,10 @@ export class FarmService {
         return ManufacturerEntity.fromRepo(manufacturerRepo);
     }
 
-    async getDetails(farmId: number): Promise <{ id: number, subAccountName: string, totalHashRate: number, nftsOwned: number, nftsSold: number, remainingHashPowerInTH: number }> {
-        const farm = await this.miningFarmRepo.findByPk(farmId)
-        if (!farm) {
-            throw new NotFoundException(`Farm with id '${farmId}' doesn't exist`)
+    async getDetails(farmId: number): Promise < MiningFarmDetailsEntity > {
+        const miningFarmEntity = await this.findMiningFarmById(farmId)
+        if (miningFarmEntity === null) {
+            return null;
         }
 
         const collections = await this.collectionModel.findAll({ where: { farm_id: farmId, status: { [Op.notIn]: [CollectionStatus.DELETED] } } })
@@ -248,20 +249,26 @@ export class FarmService {
 
         // Calculate remaining hash power of the farm
         const collectionsHashPowerSum = collections.reduce((prevVal, currVal) => prevVal + Number(currVal.hashing_power), 0)
-        const remainingHashPowerInTH = farm.total_farm_hashrate - collectionsHashPowerSum
+        const remainingHashPowerInTH = miningFarmEntity.hashPowerInTh - collectionsHashPowerSum;
 
-        return {
-            id: farmId,
-            subAccountName: farm.sub_account_name,
-            totalHashRate: farm.total_farm_hashrate,
-            nftsOwned: nfts.length,
-            nftsSold: soldNfts.length,
-            remainingHashPowerInTH,
-        }
+        const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.legalName);
+
+        const miningFarmDetailsEntity = new MiningFarmDetailsEntity();
+        miningFarmDetailsEntity.miningFarmId = miningFarmEntity.id;
+        miningFarmDetailsEntity.averageHashPowerInTh = averageHashRateH1;
+        miningFarmDetailsEntity.activeWorkers = activeWorkersCount;
+        miningFarmDetailsEntity.nftsOwned = nfts.length;
+        miningFarmDetailsEntity.totalNftsSold = soldNfts.length;
+        miningFarmDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
+
+        return miningFarmDetailsEntity;
     }
 
-    async getFoundryFarmWorkersDetails(subAccountName: string): Promise<{ activeWorkersCount: number, averageHashRateH1: number }> {
-        // TODO: Iterate if there are more than 100 workers
+    async getFoundryFarmWorkersDetails(subAccountName: string): Promise < { activeWorkersCount: number, averageHashRateH1: number } > {
+        const workersDetails = {
+            activeWorkersCount: 0,
+            averageHashRateH1: 0,
+        }
         try {
             const res = await this.httpService.axiosRef.get(`${process.env.App_Foundry_API}/subaccount_stats/${subAccountName}`, {
                 headers: {
@@ -269,21 +276,12 @@ export class FarmService {
                 },
             });
 
-            const workersDetails = {
-                activeWorkersCount: res.data.activeWorkers,
-                averageHashRateH1: res.data.hashrate1hrAvg,
-            };
-
-            return workersDetails;
+            workersDetails.activeWorkersCount = res.data.activeWorkers;
+            workersDetails.averageHashRateH1 = res.data.hashrate1hrAvg;
         } catch (err) {
-            const workersDetails = {
-                activeWorkersCount: 0,
-                averageHashRateH1: 0,
-            };
-
-            return workersDetails
         }
+
+        return workersDetails;
     }
 
-    private readonly foundryWorkersDetailsURI = 'coin=BTC&sort=highestHashrate&status=all&tag=all&pageNumber=0&pageSize=100&workerNameSearchStr=';
 }
