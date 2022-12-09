@@ -55,6 +55,11 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
             await walletStore.disconnect();
         }
 
+        if (accountSessionStore.isSuperAdmin() === true) {
+            walletSelectModalStore.showSignalAsSuperAdmin();
+            return;
+        }
+
         if (accountSessionStore.isAdmin() === true) {
             walletSelectModalStore.showSignalAsAdmin(null);
             return;

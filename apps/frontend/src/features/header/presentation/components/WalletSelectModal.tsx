@@ -48,10 +48,6 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     }
 
     async function tryConnect(walletType: SessionStorageWalletOptions) {
-        if (accountSessionStore.isSuperAdmin() === true) {
-            throw Error('Super admins should not have wallets for now');
-        }
-
         walletSelectModalStore.markAsWalletConnecting(walletType);
         try {
             await walletStore.connectWallet(walletType);
@@ -62,7 +58,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         if (walletStore.isConnected() === true) {
             const userMatch = walletSelectModalStore.isModeUser() && accountSessionStore.doesAddressMatchAgainstSessionUserIfAny(walletStore.getAddress());
             const adminMatch = walletSelectModalStore.isModeAdmin() && accountSessionStore.doesAddressMatchAgainstSessionAdminIfAny(walletStore.getAddress());
-            if (userMatch || adminMatch) {
+            const superAdminMatch = walletSelectModalStore.isModeSuperAdmin() && accountSessionStore.isSuperAdmin();
+            if (userMatch || adminMatch || superAdminMatch) {
                 walletSelectModalStore.markAsWalletConnectedSuccessfully();
             } else {
                 walletSelectModalStore.markAsWalletError();
@@ -147,6 +144,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     } else {
                         walletSelectModalStore.hide();
                     }
+                } else if (walletSelectModalStore.isModeSuperAdmin() === true) {
+                    walletSelectModalStore.hide();
                 }
                 break;
             case ProgressSteps.BTC:
@@ -205,6 +204,12 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 )
             }
             return steps;
+        }
+
+        if (walletSelectModalStore.isModeSuperAdmin() === true) {
+            return [
+                createNavStep(1, 'Connect Wallet', true, false),
+            ]
         }
 
         return [];
