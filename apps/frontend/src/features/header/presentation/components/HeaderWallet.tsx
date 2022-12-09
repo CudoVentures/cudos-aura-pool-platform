@@ -65,7 +65,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
 
     return (
         <div className = { 'HeaderWallet FlexRow' } >
-            {walletStore.isConnected() === true ? (
+            {accountSessionStore.isLoggedInAndWalletConnected() === true ? (
                 <>
                     <div className={'FlexRow BalanceRow B2'}>
                         <Svg svg={AccountBalanceWalletIcon} />

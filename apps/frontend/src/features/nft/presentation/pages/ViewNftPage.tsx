@@ -33,8 +33,10 @@ import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
 import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 type Props = {
+    accountSessionStore: AccountSessionStore;
     walletStore?: WalletStore;
     bitcoinStore?: BitcoinStore;
     viewNftPageStore?: ViewNftPageStore;
@@ -44,7 +46,7 @@ type Props = {
     alertStore?: AlertStore;
 }
 
-function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
+function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -204,7 +206,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
                                 </Actions>
                             </div>
                             <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
-                                { walletStore.isConnected() && (
+                                { accountSessionStore.isLoggedInAndWalletConnected() && (
                                     <>
                                         { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>

@@ -42,6 +42,10 @@ export default class AccountSessionStore {
         return this.accountEntity !== null;
     }
 
+    isLoggedInAndWalletConnected() {
+        return this.isLoggedIn() === true && this.walletStore.isConnected() === true;
+    }
+
     isUser(): boolean {
         if (!this.accountEntity) {
             return false;
