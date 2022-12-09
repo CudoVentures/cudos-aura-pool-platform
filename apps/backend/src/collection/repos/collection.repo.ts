@@ -11,7 +11,6 @@ import {
 } from 'sequelize-typescript';
 import { CollectionStatus } from '../utils';
 import AccountRepo from '../../account/repos/account.repo';
-import { Farm } from '../../farm/models/farm.model';
 
 @Table({
     freezeTableName: true,

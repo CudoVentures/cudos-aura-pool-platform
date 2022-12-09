@@ -8,7 +8,7 @@ import {
     Unique,
     AllowNull,
 } from 'sequelize-typescript';
-import { Farm } from '../../farm/models/farm.model';
+import { MiningFarmRepo } from '../../farm/repos/mining-farm.repo';
 
 @Table({
     freezeTableName: true,
@@ -34,11 +34,11 @@ export class DestinationAddressesWithAmount extends Model {
 
   @AllowNull(false)
   @Column
-  @ForeignKey(() => Farm)
+  @ForeignKey(() => MiningFarmRepo)
       farm_id: number;
 
-  @BelongsTo(() => Farm)
-      farm: Farm;
+  @BelongsTo(() => MiningFarmRepo)
+      farm: MiningFarmRepo;
 
   @AllowNull(false)
   @Column

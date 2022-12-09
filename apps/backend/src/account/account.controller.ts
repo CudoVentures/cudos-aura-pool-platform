@@ -33,11 +33,9 @@ export class AccountController {
         @Body(new ValidationPipe({ transform: true })) reqCreditSessionAccount: ReqCreditSessionAccount,
     ): Promise < ResCreditSessionAccount > {
         let accountEntity = AccountEntity.fromJson(reqCreditSessionAccount.accountEntity);
-
-        const isEmailChanged = req.sessionAccountEntity && req.sessionAccountEntity.email !== accountEntity.email
-
         accountEntity.accountId = req.sessionAccountEntity.accountId;
 
+        const isEmailChanged = req.sessionAccountEntity && req.sessionAccountEntity.email !== accountEntity.email
         if (isEmailChanged) {
             accountEntity.markAsEmailNotVerified();
         }

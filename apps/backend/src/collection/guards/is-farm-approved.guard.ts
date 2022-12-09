@@ -4,10 +4,10 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
-import { Farm, FarmStatus } from '../../farm/models/farm.model';
 import { FarmService } from '../../farm/farm.service';
 import { CollectionDto } from '../dto/requests.dto';
 import { NOT_EXISTS_INT } from '../../common/utils';
+import { FarmStatus } from '../../farm/farm.types';
 
 @Injectable()
 export class IsFarmApprovedGuard implements CanActivate {
@@ -24,7 +24,7 @@ export class IsFarmApprovedGuard implements CanActivate {
 
         const farmId = collectionDto.farm_id
 
-        const farm = await this.farmService.findOne(farmId);
+        const farm = await this.farmService.findMiningFarmById(farmId);
 
         if (!farm || farm.status !== FarmStatus.APPROVED) {
             throw new UnauthorizedException(
