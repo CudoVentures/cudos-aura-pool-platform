@@ -33,6 +33,7 @@ import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
 import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import BigNumber from 'bignumber.js';
 
 type Props = {
     walletStore?: WalletStore;
@@ -72,7 +73,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
     }
 
     function onClickBuyNft() {
-        const balance = walletStore.getBalanceSafe();
+        const balance = walletStore.getBalanceSafe().multipliedBy((new BigNumber(10).pow(18)));
         if (balance.lt(nftEntity.priceInAcudos)) {
             alertStore.show('Your balance is not enough to buy this.');
             return;
@@ -192,7 +193,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
                                     <div className={'OwnerPicture'}></div>
                                     <div className={'OwnerInfo FlexColumn'}>
                                         <div className={'AddressName B1 SemiBold'}>Current Owner</div>
-                                        <div className={'Address'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwnerAddress, 25)}</div>
+                                        <div className={'Address'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwner, 25)}</div>
                                     </div>
                                 </div>
                             </div>

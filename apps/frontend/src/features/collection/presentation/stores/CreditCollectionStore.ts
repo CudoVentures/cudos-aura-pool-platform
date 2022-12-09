@@ -250,8 +250,8 @@ export default class CreditCollectionStore {
     //     this.selectedNftEntity.maintenanceFeeInBtc = inputValue !== '' ? new BigNumber(inputValue) : null;
     // }
 
-    onChangeSelectedNftExpirationDate = (expirationDate: Date) => {
-        this.selectedNftEntity.expiryDate = expirationDate !== null ? expirationDate.getTime() : S.NOT_EXISTS;
+    onChangeSelectedNftExpirationDate = (expirationDateTimestamp: Date) => {
+        this.selectedNftEntity.expirationDateTimestamp = expirationDateTimestamp !== null ? expirationDateTimestamp.getTime() : S.NOT_EXISTS;
     }
 
     // nft get input value
@@ -268,11 +268,11 @@ export default class CreditCollectionStore {
     // }
 
     getSelectedNftExpirationDateInputValue(): Date {
-        if (this.selectedNftEntity === null || this.selectedNftEntity.expiryDate === S.NOT_EXISTS) {
+        if (this.selectedNftEntity === null || this.selectedNftEntity.expirationDateTimestamp === S.NOT_EXISTS) {
             return new Date();
         }
 
-        return new Date(this.selectedNftEntity.expiryDate)
+        return new Date(this.selectedNftEntity.expirationDateTimestamp)
     }
 
     // nft controls

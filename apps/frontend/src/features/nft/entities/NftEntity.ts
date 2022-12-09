@@ -13,30 +13,34 @@ export default class NftEntity {
 
     id: string;
     collectionId: string;
-    marketplaceNftId: number;
+    marketplaceNftId: string;
+    creatorId: string;
     name: string;
     tokenId: string;
     hashPowerInTh: number;
     priceInAcudos: BigNumber;
     imageUrl: string;
     status: NftStatus;
-    expiryDate: number;
+    expirationDateTimestamp: number;
     creatorAddress: string;
-    currentOwnerAddress: string;
+    currentOwner: string;
+    data: string;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
         this.name = '';
         this.tokenId = '';
-        this.marketplaceNftId = S.NOT_EXISTS;
+        this.creatorId = '';
+        this.marketplaceNftId = '';
         this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
         this.imageUrl = '';
         this.status = NftStatus.QUEUED;
-        this.expiryDate = S.NOT_EXISTS;
+        this.expirationDateTimestamp = S.NOT_EXISTS;
         this.creatorAddress = ''
-        this.currentOwnerAddress = ''
+        this.currentOwner = ''
+        this.data = ''
 
         makeAutoObservable(this);
     }
@@ -54,9 +58,7 @@ export default class NftEntity {
     }
 
     isOwnedByAddress(cudosWalletAddress: string): boolean {
-        console.log(this.currentOwnerAddress);
-        console.log(cudosWalletAddress);
-        return this.currentOwnerAddress === cudosWalletAddress;
+        return this.currentOwner === cudosWalletAddress;
     }
 
     hasImage(): boolean {
@@ -64,7 +66,7 @@ export default class NftEntity {
     }
 
     formatExpiryDate(): string {
-        const periodMilis = this.expiryDate - Date.now();
+        const periodMilis = this.expirationDateTimestamp - Date.now();
 
         if (periodMilis < 0) {
             return 'Expired';
@@ -121,17 +123,19 @@ export default class NftEntity {
 
         return {
             'id': entity.id,
-            'collection_id': parseInt(entity.collectionId),
-            'marketplace_nft_id': entity.marketplaceNftId,
+            'collectionId': entity.collectionId,
+            'marketplaceNftId': entity.marketplaceNftId,
+            'creatorId': entity.creatorId,
             'name': entity.name,
-            'token_id': entity.tokenId,
-            'hashing_power': entity.hashPowerInTh,
+            'tokenId': entity.tokenId,
+            'hashingPower': entity.hashPowerInTh,
             'price': entity.priceInAcudos.toString(),
             'uri': entity.imageUrl,
             'status': entity.status,
-            'expiration_date': new Date(entity.expiryDate).toISOString(),
-            'creator_address': entity.creatorAddress,
-            'current_owner_address': entity.currentOwnerAddress,
+            'expirationDateTimestamp': entity.expirationDateTimestamp,
+            'creatorAddress': entity.creatorAddress,
+            'currentOwner': entity.currentOwner,
+            'data': entity.data,
         }
     }
 
@@ -142,18 +146,19 @@ export default class NftEntity {
 
         const model = new NftEntity();
 
-        model.id = (json.id ?? model.id).toString();
-        model.collectionId = (json.collection_id ?? model.collectionId).toString();
-        model.marketplaceNftId = json.marketplace_nft_id ?? model.marketplaceNftId;
+        model.id = json.id ?? model.id;
+        model.collectionId = json.collectionId ?? model.collectionId;
+        model.marketplaceNftId = json.marketplaceNftId ?? model.marketplaceNftId;
         model.name = json.name ?? model.name;
-        model.tokenId = json.token_id ?? model.tokenId;
-        model.hashPowerInTh = parseInt(json.hashing_power ?? model.hashPowerInTh);
+        model.tokenId = json.tokenId ?? model.tokenId;
+        model.hashPowerInTh = parseInt(json.hashingPower ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.price ?? model.priceInAcudos);
         model.imageUrl = json.uri ?? model.imageUrl;
         model.status = json.status ?? model.status;
-        model.expiryDate = new Date(json.expiration_date ?? model.expiryDate).getTime();
+        model.expirationDateTimestamp = new Date(json.expirationDateTimestamp ?? model.expirationDateTimestamp).getTime();
         model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
-        model.currentOwnerAddress = json.current_owner ?? model.currentOwnerAddress;
+        model.currentOwner = json.currentOwner ?? model.currentOwner;
+        model.data = json.data ?? model.data;
 
         return model;
     }

@@ -43,13 +43,10 @@ export class CollectionService {
         }
 
         if (collectionFitlerEntity.hasTimestampFrom() === true) {
-            console.log('wefwefwefwef')
-
             whereClause.createdAt = { [Op.gte]: new Date(collectionFitlerEntity.timestampFrom).toISOString() }
         }
 
         if (collectionFitlerEntity.hasTimestampTo() === true) {
-            console.log('wefwefwefwef')
             if (whereClause.createdAt === undefined) {
                 whereClause.createdAt = {};
             }
@@ -154,20 +151,20 @@ export class CollectionService {
         } catch (e) {
             throw new CollectionWrongDenomError();
         }
-
         const chainCollections = await this.graphqlService.fetchNftCollectionsByDenomIds([collectionEntity.denomId]);
         if (chainCollections.nft_denom.length > 0) {
             throw new CollectionDenomExistsError();
         }
 
+        const collectionRepo = CollectionEntity.toRepo(collectionEntity);
         const collection = await this.collectionModel.create({
-            ...CollectionEntity.toRepo(collectionEntity),
+            ...collectionRepo.toJSON(),
             status: CollectionStatus.QUEUED,
         }, {
             transaction: tx,
         });
-
         return CollectionEntity.fromRepo(collection);
+
     }
 
     async updateOne(
@@ -197,7 +194,7 @@ export class CollectionService {
         tx: Transaction = undefined,
     ): Promise<CollectionEntity> {
         const [count, [collectionRepo]] = await this.collectionModel.update(
-            { ...CollectionEntity.toRepo(collectionEntity) },
+            { ...CollectionEntity.toRepo(collectionEntity).toJSON() },
             {
                 where: { denom_id: denomId },
                 returning: true,
@@ -227,8 +224,7 @@ export class CollectionService {
 
         const allNfts = await this.nftRepo.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.REMOVED] } }, order: [['price', 'ASC']] })
         const approvedNfts = allNfts.filter((nft) => nft.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-        const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denom_id] }) // Sold NFTs
-
+        const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denomId] }) // Sold NFTs
         const uniqueOwnersArray = [...new Set(soldNfts.marketplace_nft.map((nft) => nft.nft_nft.owner))] // Unique owners of all the NFTs in the collection
 
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
@@ -247,7 +243,7 @@ export class CollectionService {
 
         collectionDetailsEntity.id = collectionId;
         collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos;
-        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos || '0';
+        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString() || '0';
         collectionDetailsEntity.owners = uniqueOwnersArray.length;
         collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
 

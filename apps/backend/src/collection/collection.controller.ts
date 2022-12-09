@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    HttpCode,
     Post,
     Put,
     Query,
@@ -40,6 +41,7 @@ export class CollectionController {
     ) {}
 
     @Post()
+    @HttpCode(200)
     async findAll(
         @Body(new ValidationPipe({ transform: true })) reqFetchCollectionsByFilter: ReqFetchCollectionsByFilter,
     ): Promise < ResFetchCollectionsByFilter > {
@@ -51,7 +53,8 @@ export class CollectionController {
     }
 
     @Post('details')
-    async getDetails(@Query('ids') req: ReqFetchCollectionDetails): Promise<ResFetchCollectionDetails> {
+    @HttpCode(200)
+    async getDetails(@Body(new ValidationPipe({ transform: true })) req: ReqFetchCollectionDetails): Promise<ResFetchCollectionDetails> {
         const collectionIds = req.collectionIds;
 
         const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(parseInt(collectionId)))
@@ -64,6 +67,7 @@ export class CollectionController {
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
     @UseInterceptors(TransactionInterceptor)
     @Put()
+    @HttpCode(200)
     async createOrEdit(
         @Req() req: AppRequest,
         @Body() reqCreditCollection: ReqCreditCollection,
@@ -104,7 +108,7 @@ export class CollectionController {
 
         let collectionEntityResult: CollectionEntity, nftEntityResults: NftEntity[] = [], nftsToDelete: NftEntity[] = [];
         try {
-            if (collectionId < 0) {
+            if (collectionEntity.isNew()) {
                 collectionEntity.creatorId = req.sessionAdminEntity.accountId;
                 collectionEntityResult = await this.collectionService.createOne(collectionEntity, req.transaction);
 
@@ -161,6 +165,7 @@ export class CollectionController {
 
     @Put('trigger-updates')
     @UseInterceptors(TransactionInterceptor)
+    @HttpCode(200)
     async updateCollectionsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,

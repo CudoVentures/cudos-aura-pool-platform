@@ -3,7 +3,7 @@ import { NftJsonValidator, NftStatus } from '../nft.types';
 import { NftRepo } from '../repos/nft.repo';
 
 export default class NftEntity {
-    id: number;
+    id: string;
     name: string;
     uri: string;
     data: string;
@@ -12,13 +12,13 @@ export default class NftEntity {
     price: string;
     expirationDateTimestamp: number;
     collectionId: number;
-    marketplaceNftId: number;
+    marketplaceNftId: string;
     status: NftStatus;
     currentOwner: string;
     creatorId: number;
 
     constructor() {
-        this.id = NOT_EXISTS_INT;
+        this.id = '';
         this.name = '';
         this.uri = '';
         this.data = '';
@@ -27,14 +27,14 @@ export default class NftEntity {
         this.price = '';
         this.expirationDateTimestamp = NOT_EXISTS_INT;
         this.collectionId = NOT_EXISTS_INT;
-        this.marketplaceNftId = NOT_EXISTS_INT;
+        this.marketplaceNftId = '';
         this.status = NftStatus.QUEUED;
         this.currentOwner = '';
         this.creatorId = NOT_EXISTS_INT;
     }
 
     isNew(): boolean {
-        return this.id === NOT_EXISTS_INT;
+        return this.id === '';
     }
 
     isMinted(): boolean {
@@ -44,15 +44,16 @@ export default class NftEntity {
     static fromJson(json: NftJsonValidator): NftEntity {
         const entity = new NftEntity();
 
-        entity.id = parseInt(json.id ?? json.id.toString());
+        entity.id = json.id ?? json.id;
         entity.name = json.name ?? entity.name;
         entity.uri = json.uri ?? entity.uri;
         entity.data = json.data ?? entity.data;
+        entity.tokenId = json.tokenId ?? entity.tokenId;
         entity.hashingPower = json.hashingPower ?? entity.hashingPower;
         entity.price = json.price ?? entity.price;
         entity.expirationDateTimestamp = json.expirationDateTimestamp ?? entity.expirationDateTimestamp;
         entity.collectionId = parseInt(json.collectionId ?? entity.collectionId.toString());
-        entity.marketplaceNftId = parseInt(json.marketplaceNftId ?? entity.marketplaceNftId.toString());
+        entity.marketplaceNftId = json.marketplaceNftId ?? entity.marketplaceNftId;
         entity.status = json.status ?? entity.status;
         entity.currentOwner = json.currentOwner ?? entity.currentOwner;
         entity.creatorId = parseInt(json.creatorId ?? entity.creatorId.toString());
@@ -62,7 +63,7 @@ export default class NftEntity {
 
     static toJson(entity: NftEntity): NftJsonValidator {
         return {
-            'id': entity.id.toString(),
+            'id': entity.id,
             'name': entity.name,
             'uri': entity.uri,
             'data': entity.data,
@@ -71,7 +72,7 @@ export default class NftEntity {
             'price': entity.price,
             'expirationDateTimestamp': entity.expirationDateTimestamp,
             'collectionId': entity.collectionId.toString(),
-            'marketplaceNftId': entity.marketplaceNftId.toString(),
+            'marketplaceNftId': entity.marketplaceNftId,
             'status': entity.status,
             'currentOwner': entity.currentOwner,
             'creatorId': entity.creatorId.toString(),
@@ -86,15 +87,16 @@ export default class NftEntity {
 
         const entity = new NftEntity();
 
-        entity.id = parseInt(repoJson.id ?? repoJson.id.toString());
+        entity.id = repoJson.id ?? repoJson.id;
         entity.name = repoJson.name ?? entity.name;
         entity.uri = repoJson.uri ?? entity.uri;
+        entity.tokenId = repoJson.tokenId ?? entity.tokenId;
         entity.data = repoJson.data ?? entity.data;
         entity.hashingPower = repoJson.hashingPower ?? entity.hashingPower;
         entity.price = repoJson.price ?? entity.price;
         entity.expirationDateTimestamp = repoJson.expirationDate?.getTime() ?? entity.expirationDateTimestamp;
         entity.collectionId = repoJson.collectionId ?? entity.collectionId;
-        entity.marketplaceNftId = repoJson.marketplaceNftId ?? entity.marketplaceNftId;
+        entity.marketplaceNftId = repoJson.marketplaceNftId?.toString() ?? entity.marketplaceNftId;
         entity.status = repoJson.status ?? entity.status;
         entity.currentOwner = repoJson.currentOwner ?? entity.currentOwner;
         entity.creatorId = repoJson.creatorId ?? entity.creatorId;
@@ -110,17 +112,18 @@ export default class NftEntity {
         const repoJson = new NftRepo();
 
         if (entity.isNew() === false) {
-            repoJson.id = entity.id.toString();
+            repoJson.id = entity.id;
         }
 
         repoJson.name = entity.name;
         repoJson.uri = entity.uri;
         repoJson.data = entity.data;
+        repoJson.tokenId = entity.tokenId;
         repoJson.hashingPower = entity.hashingPower;
         repoJson.price = entity.price;
         repoJson.expirationDate = new Date(entity.expirationDateTimestamp);
         repoJson.collectionId = entity.collectionId;
-        repoJson.marketplaceNftId = entity.marketplaceNftId;
+        repoJson.marketplaceNftId = entity.marketplaceNftId === '' ? NOT_EXISTS_INT : parseInt(entity.marketplaceNftId);
         repoJson.status = entity.status;
         repoJson.currentOwner = entity.currentOwner;
         repoJson.creatorId = entity.creatorId;

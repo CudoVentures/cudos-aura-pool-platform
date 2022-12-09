@@ -169,7 +169,7 @@ export default class CollectionApiRepo implements CollectionRepo {
                 Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
             ],
             [
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: miningFarmEntity.resaleFarmRoyaltiesCudosAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
                 Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
             ],
             true,

@@ -88,12 +88,12 @@ export class StatisticsService {
             return days.map((day) => null)
         }
         const payoutHistory = await this.nftPayoutHistoryModel.findAll({ where: {
-            tokenId,
-            denomId,
+            token_id: tokenId,
+            denom_id: denomId,
             payout_period_start: {
                 [Op.or]: {
                     [Op.gt]: Number(filters.timestampFrom) / 1000,
-                    [Op.eq]: Number(filterhashing_powers.timestampFrom) / 1000,
+                    [Op.eq]: Number(filters.timestampFrom) / 1000,
                 },
             },
             payout_period_end: {

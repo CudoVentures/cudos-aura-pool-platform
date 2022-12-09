@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CollectionRepo } from '../collection/repos/collection.repo';
-import { NftRepo } from '../nft/repos/nft.repo';
-import { NftStatus } from '../nft/nft.types';
 import { HttpService } from '@nestjs/axios';
-import { CollectionStatus } from '../collection/utils';
 import MiningFarmFilterModel from './dto/farm-filter.mdel';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { VisitorService } from '../visitor/visitor.service';
@@ -20,6 +16,10 @@ import { MinerRepo } from './repos/miner.repo';
 import { ManufacturerRepo } from './repos/manufacturer.repo';
 import MinerEntity from './entities/miner.entity';
 import ManufacturerEntity from './entities/manufacturer.entity';
+import { CollectionService } from '../collection/collection.service';
+import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
+import NftFilterEntity from '../nft/entities/nft-filter.entity';
+import { NFTService } from '../nft/nft.service';
 
 @Injectable()
 export class FarmService {
@@ -32,10 +32,8 @@ export class FarmService {
         private minerRepo: typeof MinerRepo,
         @InjectModel(ManufacturerRepo)
         private manufacturerRepo: typeof ManufacturerRepo,
-        @InjectModel(CollectionRepo)
-        private collectionModel: typeof CollectionRepo,
-        @InjectModel(NftRepo)
-        private nftRepo: typeof NftRepo,
+        private nftService: NFTService,
+        private collectionService: CollectionService,
         private httpService: HttpService,
         private visitorService: VisitorService,
         private dataService: DataService,
@@ -209,7 +207,6 @@ export class FarmService {
             minerRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
         }
 
-        console.log('back', minerRepo);
         return MinerEntity.fromRepo(minerRepo);
     }
 
@@ -240,21 +237,24 @@ export class FarmService {
             throw new NotFoundException(`Farm with id '${farmId}' doesn't exist`)
         }
 
-        const collections = await this.collectionModel.findAll({ where: { farm_id: farmId, status: { [Op.notIn]: [CollectionStatus.DELETED] } } })
-
+        const collectionFilterEntity = new CollectionFilterEntity();
+        collectionFilterEntity.farmId = farmId.toString();
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity);
         // Get number of total and sold NFTs
-        const nfts = await this.nftRepo.findAll({ include: [{ model: CollectionRepo, where: { farm_id: farmId } }], where: { status: { [Op.notIn]: [NftStatus.REMOVED] } } })
-        const soldNfts = nfts.filter((nft) => nft.tokenId !== '')
+        const nftFilterEntity = new NftFilterEntity();
+        nftFilterEntity.collectionIds = collectionEntities.map((entity) => entity.id.toString());
+        const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
+        const soldNfts = nftEntities.filter((nft) => nft.tokenId !== '')
 
         // Calculate remaining hash power of the farm
-        const collectionsHashPowerSum = collections.reduce((prevVal, currVal) => prevVal + Number(currVal.hashing_power), 0)
-        const remainingHashPowerInTH = farm.total_farm_hashrate - collectionsHashPowerSum
+        const collectionsHashPowerSum = collectionEntities.reduce((prevVal, currVal) => prevVal + Number(currVal.hashingPower), 0)
+        const remainingHashPowerInTH = farm.totalFarmHashrate - collectionsHashPowerSum
 
         return {
             id: farmId,
-            subAccountName: farm.sub_account_name,
-            totalHashRate: farm.total_farm_hashrate,
-            nftsOwned: nfts.length,
+            subAccountName: farm.subAccountName,
+            totalHashRate: farm.totalFarmHashrate,
+            nftsOwned: nftEntities.length,
             nftsSold: soldNfts.length,
             remainingHashPowerInTH,
         }

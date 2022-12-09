@@ -89,7 +89,7 @@ export default class NftApiRepo implements NftRepo {
 
             if (nftEntity.status === NftStatus.QUEUED) {
                 // TODO:get real tx estimation
-                const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+                const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(), 'acudos')
                 const memo = `{"uuid":"${nftEntity.id}"}`;
@@ -99,7 +99,7 @@ export default class NftApiRepo implements NftRepo {
             }
 
             if (nftEntity.status === NftStatus.MINTED) {
-                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromNumber(nftEntity.marketplaceNftId), gasPrice);
+                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
             }
 

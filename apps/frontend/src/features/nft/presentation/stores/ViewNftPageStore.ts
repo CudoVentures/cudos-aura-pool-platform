@@ -55,7 +55,7 @@ export default class ViewNftPageStore {
     historyTableState: TableState;
 
     constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
-        this.bitcoinStore = bitcoinStore; CollectionStatus
+        this.bitcoinStore = bitcoinStore;
         this.cudosStore = cudosStore;
 
         this.nftRepo = nftRepo;
@@ -92,12 +92,11 @@ export default class ViewNftPageStore {
         this.bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
 
         this.nftEntity = await this.nftRepo.fetchNftById(nftId, CollectionStatus.ANY);
+
         this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId, CollectionStatus.ANY);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
 
         this.nftEventFilterModel.nftId = this.nftEntity.id;
-
-        console.log(this.nftEntity)
 
         await this.fetchNftsInTheCollection();
         await this.fetchEarnings();

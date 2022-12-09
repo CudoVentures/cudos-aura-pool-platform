@@ -2,14 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { v4 as uuid } from 'uuid';
-import AccountEntity from '../account/entities/account.entity';
-import { CollectionRepo } from '../collection/repos/collection.repo';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { NftRepo } from './repos/nft.repo';
 import { NftOrderBy, NftStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
+import UserEntity from '../account/entities/user.entity';
 
 @Injectable()
 export class NFTService {
@@ -21,7 +20,7 @@ export class NFTService {
     // eslint-disable-next-line no-empty-function
     ) {}
 
-    async findByFilter(accountEntity: AccountEntity, nftFilterEntity: NftFilterEntity): Promise < { nftEntities: NftEntity[], total: number } > {
+    async findByFilter(userEntity: UserEntity, nftFilterEntity: NftFilterEntity): Promise < { nftEntities: NftEntity[], total: number } > {
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
@@ -45,7 +44,7 @@ export class NFTService {
         }
 
         if (nftFilterEntity.inOnlyForSessionAccount() === true) {
-            whereClause.creator_id = accountEntity.accountId;
+            whereClause.current_owner = userEntity.cudosWalletAddress;
         }
 
         if (nftFilterEntity.hasSearchString() === true) {
@@ -72,7 +71,6 @@ export class NFTService {
         });
 
         let nftEntities = nftRepos.map((nftRepo) => NftEntity.fromRepo(nftRepo));
-
         if (nftFilterEntity.isSortByTrending() === true) {
             const nftIds = nftEntities.map((nftEntity) => {
                 return nftEntity.id.toString();
@@ -97,7 +95,7 @@ export class NFTService {
     }
 
     async findOne(id: string): Promise < NftEntity > {
-        const nftRepo = await this.nftRepo.findByPk(id, { include: [{ model: CollectionRepo }] });
+        const nftRepo = await this.nftRepo.findByPk(id);
 
         if (!nftRepo) {
             throw new NotFoundException();
@@ -108,7 +106,7 @@ export class NFTService {
 
     async createOne(nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
         const nftRepo = await this.nftRepo.create({
-            ...NftEntity.toRepo(nftEntity),
+            ...NftEntity.toRepo(nftEntity).toJSON(),
             id: uuid(),
             current_owner: '',
             status: NftStatus.QUEUED,
@@ -122,7 +120,7 @@ export class NFTService {
     async updateOne(id: number, nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
         const [count, [nftRepo]] = await this.nftRepo.update(
             {
-                ...NftEntity.toRepo(nftEntity),
+                ...NftEntity.toRepo(nftEntity).toJSON(),
                 status: NftStatus.QUEUED,
             },
             {
@@ -144,7 +142,7 @@ export class NFTService {
 
     async updateOneWithStatus(id: string, nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
         const [count, [nftRepo]] = await this.nftRepo.update(
-            { ...NftEntity.toRepo(nftEntity) },
+            NftEntity.toRepo(nftEntity).toJSON(),
             {
                 where: { id },
                 returning: true,

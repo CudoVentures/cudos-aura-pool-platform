@@ -25,7 +25,6 @@ export class NftJsonValidator {
         uri: string;
 
     @IsString()
-    @IsNotEmpty()
         data: string;
 
     @IsString()
@@ -49,7 +48,6 @@ export class NftJsonValidator {
         collectionId: string;
 
     @IsString()
-    @IsNotEmpty()
         marketplaceNftId: string;
 
     @IsEnum(NftStatus)
@@ -57,11 +55,9 @@ export class NftJsonValidator {
         status: NftStatus;
 
     @IsString()
-    @IsNotEmpty()
         currentOwner: string;
 
     @IsString()
-    @IsNotEmpty()
         creatorId: string;
 }
 

@@ -26,6 +26,11 @@ export class ResFetchCollectionDetails {
     detailEntities: CollectionDetailsEntity[]
 
     constructor(data) {
-        data.collectionDetailsEntities.map((details) => CollectionDetailsEntity.fromJson(details))
+        if (!data.collectionDetailsEntities) {
+            this.detailEntities = [];
+            return;
+        }
+
+        this.detailEntities = data.collectionDetailsEntities.map((details) => CollectionDetailsEntity.fromJson(details))
     }
 }

@@ -43,7 +43,7 @@ export default class CollectionApi {
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
         const req = new ReqFetchCollectionDetails(collectionIds);
 
-        const { data } = await axios.get(`${COLLECTION_URL}/details`, req);
+        const { data } = await axios.post(`${COLLECTION_URL}/details`, req);
 
         const res = new ResFetchCollectionDetails(data);
 

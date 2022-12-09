@@ -46,7 +46,7 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                                         createDataPreview('Price', nftEntity.formatPriceInCudos()),
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
                                         createDataPreview('Creator address', nftEntity.creatorAddress),
-                                        createDataPreview('Current owner', nftEntity.currentOwnerAddress),
+                                        createDataPreview('Current owner', nftEntity.currentOwner),
                                     ] } />
                             </div>
                         )

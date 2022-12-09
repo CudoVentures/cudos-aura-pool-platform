@@ -57,7 +57,7 @@ export default class UserProfilePageStore {
         this.nftFilterModel.sessionAccount = S.INT_TRUE;
 
         this.nftEntities = null;
-        this.collectionEntitiesMap = null;
+        this.collectionEntitiesMap = new Map();
 
         this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchEarnings);
         this.userEarningsEntity = null;

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -10,7 +10,6 @@ import { ReqNftsByFilter, ReqUpdateNftChainData } from './dto/requests.dto';
 import NftFilterEntity from './entities/nft-filter.entity';
 import { ResFetchNftsByFilter } from './dto/responses.dto';
 import NftEntity from './entities/nft.entity';
-import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
 import { CollectionService } from '../collection/collection.service';
 
 @ApiTags('NFT')
@@ -24,13 +23,13 @@ export class NFTController {
     ) {}
 
     @Post()
+    @HttpCode(200)
     async fetchByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqNftsByFilter: ReqNftsByFilter,
     ): Promise < ResFetchNftsByFilter > {
         const nftFilterEntity = NftFilterEntity.fromJson(reqNftsByFilter.nftFilterJson);
-
-        const { nftEntities, total } = await this.nftService.findByFilter(req.sessionAccountEntity, nftFilterEntity);
+        const { nftEntities, total } = await this.nftService.findByFilter(req.sessionUserEntity, nftFilterEntity);
 
         return new ResFetchNftsByFilter(nftEntities, total);
     }
@@ -65,22 +64,25 @@ export class NFTController {
     //-----------------------------------------------------------------------------------
 
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<NftJsonValidator> {
+    @HttpCode(200)
+    async findOne(@Param('id') id: string): Promise<any> {
         const nftFilterEntity = new NftFilterEntity();
         nftFilterEntity.nftIds = [id];
 
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
-
-        return NftEntity.toJson(nftEntities[0]);
+        const nftEntity = nftEntities[0];
+        const collectionEntity = await this.collectionService.findOne(nftEntities[0].collectionId);
+        return { ...NftEntity.toJson(nftEntity), denomId: collectionEntity.denomId };
     }
 
     @UseInterceptors(TransactionInterceptor)
     @Put('trigger-updates')
+    @HttpCode(200)
     async updateNftsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
     ): Promise<void> {
-        const nftDataJsons = reqUpdateNftChainData.nftDataJsons;
+        const nftDataJsons = reqUpdateNftChainData.nftDtos;
         const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId)
             .filter((denomId, index, self) => self.indexOf(denomId) === index);
 
@@ -98,21 +100,15 @@ export class NFTController {
             throw new Error('NFTs not yet found in BDJuno');
         }
 
-        // fetch collections by denom ids so we can get their collection ids
-        const collectionFitlerEntity = new CollectionFilterEntity();
-        collectionFitlerEntity.denomIds = denomIds;
-        const { collectionEntities } = await this.collectionService.findByFilter(collectionFitlerEntity)
-
         // fetch nfts
         const nftFilterEntity = new NftFilterEntity();
-        nftFilterEntity.collectionIds = collectionEntities.map((entity) => entity.id.toString());
-        nftFilterEntity.tokenIds = nftDataJsons.map((nftDataJson) => nftDataJson.tokenId);
+        nftFilterEntity.nftIds = chainMarketplaceNftDtos.map((entity) => entity.uid);
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
 
         for (let i = 0; i < chainMarketplaceNftDtos.length; i++) {
             const chainMarketplaceNftDto: ChainMarketplaceNftDto = chainMarketplaceNftDtos[i];
-            const collectionEntity = collectionEntities.find((entity) => entity.denomId === chainMarketplaceNftDto.denomId)
-            const nftEntity = nftEntities.find((entity) => entity.collectionId === collectionEntity.id && entity.tokenId === chainMarketplaceNftDto.tokenId)
+
+            const nftEntity = nftEntities.find((entity) => entity.id === chainMarketplaceNftDto.uid)
 
             nftEntity.data = chainMarketplaceNftDto.data;
             nftEntity.name = chainMarketplaceNftDto.name;
@@ -121,9 +117,9 @@ export class NFTController {
             nftEntity.price = chainMarketplaceNftDto.price;
             nftEntity.tokenId = chainMarketplaceNftDto.tokenId;
             nftEntity.status = chainMarketplaceNftDto.burned === true ? NftStatus.REMOVED : NftStatus.MINTED;
-            nftEntity.marketplaceNftId = chainMarketplaceNftDto.marketplaceNftId;
+            nftEntity.marketplaceNftId = chainMarketplaceNftDto.marketplaceNftId.toString();
 
-            await this.nftService.updateOneWithStatus(chainMarketplaceNftDto.uid, nftEntity, req.transaction);
+            await this.nftService.updateOneWithStatus(nftEntity.id, nftEntity, req.transaction);
         }
     }
 }

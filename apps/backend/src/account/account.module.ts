@@ -19,10 +19,13 @@ import AdminRepo from './repos/admin.repo';
 import SuperAdminRepo from './repos/super-admin.repo';
 import UserRepo from './repos/user.repo';
 import DataService from '../data/data.service';
+import { CollectionService } from '../collection/collection.service';
+import { GraphqlService } from '../graphql/graphql.service';
+import { NFTService } from '../nft/nft.service';
 
 @Module({
     imports: [SequelizeModule.forFeature([VisitorRepo, AccountRepo, UserRepo, AdminRepo, SuperAdminRepo, MiningFarmRepo, CollectionRepo, NftRepo, ManufacturerRepo, EnergySourceRepo, MinerRepo]), HttpModule],
-    providers: [AccountService, EmailService, JwtService, FarmService, VisitorService, DataService],
+    providers: [AccountService, EmailService, JwtService, FarmService, VisitorService, DataService, CollectionService, GraphqlService, NFTService],
     exports: [AccountModule, AccountService],
     controllers: [AccountController],
 })

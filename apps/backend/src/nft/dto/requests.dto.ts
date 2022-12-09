@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDefined, IsEnum, IsNotEmpty, IsNotEmptyObject, IsObject, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsDefined, IsEnum, IsNotEmpty, IsNotEmptyObject, IsObject, IsString, ValidateNested } from 'class-validator';
 import { NftFilterJsonValidation, UpdateNftJsonValidations } from '../nft.types';
 
 export class ReqNftsByFilter {
@@ -23,10 +23,8 @@ export class ReqUpdateNftChainData {
     @IsEnum(ModuleName)
         module: ModuleName;
 
-    @IsDefined()
-    @IsNotEmptyObject()
-    @IsObject()
+    @IsArray()
     @ValidateNested()
-    @Type(() => NftFilterJsonValidation)
-        nftDataJsons: UpdateNftJsonValidations[];
+    @Type(() => UpdateNftJsonValidations)
+        nftDtos: UpdateNftJsonValidations[];
 }

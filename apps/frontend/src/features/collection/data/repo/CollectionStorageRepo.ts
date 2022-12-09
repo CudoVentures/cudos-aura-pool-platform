@@ -148,7 +148,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
                     nftJson = NftEntity.toJson(nftEntity);
                     nftJson.id = nextNftId.toString();
                     nftJson.collectionId = collectionJson.id;
-                    nftJson.currentOwnerAddress = cudosWalletAddress;
+                    nftJson.currentOwner = cudosWalletAddress;
                     nftJson.creatorAddress = cudosWalletAddress;
 
                     nftsJson.push(nftJson);

@@ -47,7 +47,6 @@ export class CollectionEntity {
             repoJson.id = entity.id;
         }
 
-        repoJson.id = entity.id;
         repoJson.name = entity.name;
         repoJson.description = entity.description;
         repoJson.denomId = entity.denomId;

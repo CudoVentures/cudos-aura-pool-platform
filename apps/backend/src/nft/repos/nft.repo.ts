@@ -25,7 +25,6 @@ export class NftRepo extends Model {
     @IsUUID(4)
     @Column({
         type: DataType.UUID,
-        defaultValue: DataType.UUIDV4,
     })
         id: string;
 
@@ -80,7 +79,6 @@ export class NftRepo extends Model {
     @Column
         currentOwner: string;
 
-    @AllowNull(false)
     @Column
         marketplaceNftId: number;
 }

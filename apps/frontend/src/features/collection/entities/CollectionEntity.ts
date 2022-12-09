@@ -23,6 +23,7 @@ export default class CollectionEntity {
     royalties: number;
     defaultPricePerNftInCudos: BigNumber;
     defaultHashPowerPerNftInTh: number;
+    timestampDeletedAt: number;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -37,6 +38,7 @@ export default class CollectionEntity {
         this.royalties = S.NOT_EXISTS;
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
+        this.timestampDeletedAt = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -119,18 +121,19 @@ export default class CollectionEntity {
         }
 
         return {
-            'id': parseInt(entity.id),
-            'farm_id': parseInt(entity.farmId),
+            'id': entity.id,
+            'farmId': entity.farmId,
             'name': entity.name,
-            'denom_id': entity.denomId,
+            'denomId': entity.denomId,
             'description': entity.description,
-            'hashing_power': entity.hashPowerInTh,
-            'main_image': entity.profileImgUrl,
-            'banner_image': entity.coverImgUrl,
+            'hashingPower': entity.hashPowerInTh,
+            'mainImage': entity.profileImgUrl,
+            'bannerImage': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
+            'timestampDeletedAt': entity.timestampDeletedAt,
         }
     }
 
@@ -141,18 +144,19 @@ export default class CollectionEntity {
 
         const model = new CollectionEntity();
 
-        model.id = (json.id ?? model.id).toString();
-        model.farmId = (json.farm_id ?? model.farmId).toString();
+        model.id = json.id ?? model.id;
+        model.farmId = json.farmId ?? model.farmId;
         model.name = json.name ?? model.name;
-        model.denomId = json.denom_id ?? model.denomId;
+        model.denomId = json.denomId ?? model.denomId;
         model.description = json.description ?? model.description;
         model.hashPowerInTh = Number(json.hashing_power ?? model.hashPowerInTh);
-        model.profileImgUrl = json.main_image ?? model.profileImgUrl;
-        model.coverImgUrl = json.banner_image ?? model.coverImgUrl;
+        model.profileImgUrl = json.mainImage ?? model.profileImgUrl;
+        model.coverImgUrl = json.bannerImage ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
         model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
+        model.timestampDeletedAt = Number(json.timestampDeletedAt ?? model.timestampDeletedAt);
 
         return model;
     }

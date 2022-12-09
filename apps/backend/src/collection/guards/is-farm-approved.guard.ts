@@ -5,24 +5,25 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { FarmService } from '../../farm/farm.service';
-import { CollectionDto } from '../dto/requests.dto';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { FarmStatus } from '../../farm/farm.types';
+import { CollectionEntity } from '../entities/collection.entity';
 
 @Injectable()
 export class IsFarmApprovedGuard implements CanActivate {
     constructor(
       private farmService: FarmService,
+    // eslint-disable-next-line no-empty-function
     ) {
     }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
-        const collectionDto: CollectionDto = CollectionDto.fromJson(request.body);
+        const collectionEntity: CollectionEntity = CollectionEntity.fromJson(request.body.collectionDto);
 
-        if (collectionDto.farm_id === NOT_EXISTS_INT) return false;
+        if (collectionEntity.farmId === NOT_EXISTS_INT) return false;
 
-        const farmId = collectionDto.farm_id
+        const farmId = collectionEntity.farmId
 
         const farm = await this.farmService.findMiningFarmById(farmId);
 

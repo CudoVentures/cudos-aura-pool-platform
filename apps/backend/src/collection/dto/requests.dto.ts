@@ -13,8 +13,6 @@ export class ReqCreditCollection {
         collectionDto: CollectionJsonValidator
 
     @IsArray()
-    @IsNotEmptyObject()
-    @IsObject()
     @ValidateNested()
     @Type(() => NftJsonValidator)
         nftDtos: NftJsonValidator[];

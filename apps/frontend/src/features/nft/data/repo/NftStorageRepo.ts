@@ -113,7 +113,7 @@ export default class NftStorageRepo implements NftRepo {
     async buyNft(nftEntity: NftEntity, ledger: Ledger, network: string): Promise < string > {
         this.storageHelper.nftsJson.forEach((nftJson: NftEntity) => {
             if (nftJson.id === nftEntity.id) {
-                nftJson.currentOwnerAddress = ledger.accountAddress
+                nftJson.currentOwner = ledger.accountAddress
                 nftJson.listStatus = ListStatus.NOT_LISTED
             }
         })

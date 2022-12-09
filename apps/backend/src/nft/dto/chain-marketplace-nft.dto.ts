@@ -53,6 +53,7 @@ export class ChainMarketplaceNftDto {
 
     static fromQuery(queryNft: GraphQlMarketplaceNft): ChainMarketplaceNftDto {
         const nftDto = new ChainMarketplaceNftDto();
+
         nftDto.tokenId = queryNft.token_id ?? nftDto.tokenId;
         nftDto.denomId = queryNft.denom_id ?? nftDto.denomId;
         nftDto.price = queryNft.price ?? nftDto.price;
@@ -67,6 +68,5 @@ export class ChainMarketplaceNftDto {
         nftDto.data = queryNft.nft_nft.data_text ?? nftDto.data;
 
         return nftDto;
-
     }
 }
