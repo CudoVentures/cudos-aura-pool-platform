@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
@@ -23,6 +23,14 @@ type Props = {
 function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore }: Props) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        if (accountSessionStore.shouldUpdatePassword() === false) {
+            return;
+        }
+
+        changePasswordModalStore.showSignal(true);
+    }, [accountSessionStore.shouldUpdatePassword()]);
 
     function onClickLogo() {
         navigate(AppRoutes.HOME);
@@ -50,7 +58,7 @@ function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore }:
     }
 
     function onClickChangePassword() {
-        changePasswordModalStore.showSignal();
+        changePasswordModalStore.showSignal(false);
     }
 
     return (

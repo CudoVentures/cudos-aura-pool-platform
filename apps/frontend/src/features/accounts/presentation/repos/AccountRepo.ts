@@ -13,7 +13,7 @@ export default interface AccountRepo {
     login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void >;
     register(email: string, password: string, name: string, cudosWalletAddress: string, signedTx: StdSignature, sequence: number, accountNumber: number): Promise < void >;
     logout(): Promise < void >;
-    fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } >;
+    fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: number } >;
     editSessionAccount(accountEntity: AccountEntity): Promise < void >;
     editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > ;
     forgottenPassword(email: string): Promise < void >

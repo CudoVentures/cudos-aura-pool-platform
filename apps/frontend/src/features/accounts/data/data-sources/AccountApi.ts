@@ -24,7 +24,7 @@ export default class AccountApi {
         setTokenInStorage(null);
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: number } > {
         const { data } = await axios.get('/api/v1/auth/fetchSessionAccounts');
         const res = new ResFetchSessionAccounts(data);
 
@@ -33,6 +33,7 @@ export default class AccountApi {
             userEntity: res.userEntity,
             adminEntity: res.adminEntity,
             superAdminEntity: res.superAdminEntity,
+            shouldChangePassword: res.shouldChangePassword,
         }
     }
 
