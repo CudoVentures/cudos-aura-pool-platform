@@ -8,10 +8,10 @@ import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import AccountSessionStore from './AccountSessionStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
-export default class SuperAdminApprovePageStore {
+export default class SuperAdminDashboardPageStore {
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
     walletStore: WalletStore;

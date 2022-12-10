@@ -8,11 +8,11 @@ import AccountSessionStore from '../../../accounts/presentation/stores/AccountSe
 
 import Svg from '../../../../core/presentation/components/Svg';
 import HeaderWallet from './HeaderWallet';
+import Actions from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
 
 import SvgAuraPoolLogo from '../../../../public/assets/vectors/aura-pool-logo.svg';
 import '../styles/page-admin-header.css'
-import Actions from '../../../../core/presentation/components/Actions';
-import Button from '../../../../core/presentation/components/Button';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;

@@ -18,5 +18,10 @@
 
 .PageSuperAdminHeader .NavCnt {
     gap: 40px;
+    color: var(--color-gray-030);
+    align-items: center;
 }
 
+.PageSuperAdminHeader .NavCnt .NavButton.Active {
+    color: #000;
+}

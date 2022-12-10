@@ -32,4 +32,10 @@ export default class AppRoutes {
     static CREDIT_COLLECTION_DETAILS_ADD_NFTS = '/credit-collection-details-add-nfts';
     static CREDIT_COLLECTION_DETAILS_EDIT = '/credit-collection-details-edit';
     static FARM_ANALYTICS = '/farm-analytics';
+
+    // super admin
+    static SUPER_ADMIN_ANALYTICS = '/super-admin-analystics';
+    static SUPER_ADMIN_MEGA_WALLET = '/super-admin-mega-wallet';
+    static SUPER_ADMIN_COLLECTIONS = '/super-admin-collections';
+    static SUPER_ADMIN_MINING_FARMS = '/super-admin-mining-farms';
 }

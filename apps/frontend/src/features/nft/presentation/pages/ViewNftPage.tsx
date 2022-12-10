@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import BigNumber from 'bignumber.js';
 
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import ViewNftPageStore from '../stores/ViewNftPageStore';
@@ -11,6 +12,9 @@ import ResellNftModalStore from '../stores/ResellNftModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import NftStats from '../components/NftStats';
@@ -31,13 +35,9 @@ import { ContainerBackground } from '../../../../core/presentation/components/St
 
 import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
-import AlertStore from '../../../../core/presentation/stores/AlertStore';
-import BigNumber from 'bignumber.js';
-import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 type Props = {
-    accountSessionStore: AccountSessionStore;
+    accountSessionStore?: AccountSessionStore;
     walletStore?: WalletStore;
     bitcoinStore?: BitcoinStore;
     viewNftPageStore?: ViewNftPageStore;
