@@ -20,6 +20,7 @@ import PageSuperAdminHeader from '../../../header/presentation/components/PageSu
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
 import '../styles/page-super-admin-dashboard.css';
+import QueuedCollections from '../../../collection/presentation/components/QueuedCollections';
 
 type Props = {
     appStore?: AppStore;
@@ -35,7 +36,6 @@ const TABLE_ALINGS = [ALIGN_LEFT, ALIGN_RIGHT];
 function SuperAdminDashboardPage({ appStore, superAdminDashboardPageStore, viewMiningFarmModalStore, viewCollectionModalStore }: Props) {
 
     const miningFarmEntities = superAdminDashboardPageStore.miningFarmEntities;
-    const collectionEntities = superAdminDashboardPageStore.collectionEntities;
 
     useEffect(() => {
         appStore.useLoading(() => {
@@ -52,15 +52,6 @@ function SuperAdminDashboardPage({ appStore, superAdminDashboardPageStore, viewM
         superAdminDashboardPageStore.toggleMiningFarmSelection(miningFarmEntity.id);
     }
 
-    function onClickCollectionRow(i: number) {
-        viewCollectionModalStore.showSignal(collectionEntities[i]);
-    }
-
-    function onClickSelectCollection(collectionEntity, value, e) {
-        e.stopPropagation();
-        superAdminDashboardPageStore.toggleCollectionSelection(collectionEntity.id)
-    }
-
     function renderFarmsRows() {
         return miningFarmEntities.map((miningFarmEntity) => {
             return createTableRow([
@@ -70,20 +61,6 @@ function SuperAdminDashboardPage({ appStore, superAdminDashboardPageStore, viewM
                         label={''}
                         value={superAdminDashboardPageStore.isMiningFarmEntitySelected(miningFarmEntity.id)}
                         onChange={onClickSelectMiningFarm.bind(null, miningFarmEntity)} />
-                )),
-            ])
-        });
-    }
-
-    function renderCollectionsRows() {
-        return collectionEntities.map((collectionEntity) => {
-            return createTableRow([
-                createTableCellString(collectionEntity.name),
-                createTableCell((
-                    <Checkbox
-                        label={''}
-                        value={superAdminDashboardPageStore.isCollectionEntitySelected(collectionEntity.id)}
-                        onChange={onClickSelectCollection.bind(null, collectionEntity)} />
                 )),
             ])
         });
@@ -123,26 +100,7 @@ function SuperAdminDashboardPage({ appStore, superAdminDashboardPageStore, viewM
                         onClickRow = { onClickMiningFarmRow }
                         rows={renderFarmsRows()} />
                 </div>
-                <div>
-                    <div className={'FlexRow TableHeader'}>
-                        <div className={'H1 Bold'}>Collections of Approval</div>
-                        <Actions>
-                            <Button
-                                disabled = { superAdminDashboardPageStore.selectedCollectionEntities.size === 0 }
-                                onClick={superAdminDashboardPageStore.approveCollections}>
-                            Approve Selected Collections
-                            </Button>
-                        </Actions>
-                    </div>
-                    <Table
-                        className={'New Collections'}
-                        legend={TABLE_LEGEND}
-                        widths={TABLE_WIDTHS}
-                        aligns={TABLE_ALINGS}
-                        tableState={superAdminDashboardPageStore.collectionsTableState}
-                        onClickRow = { onClickCollectionRow }
-                        rows={renderCollectionsRows()} />
-                </div>
+                <QueuedCollections dashboardMode = { true } />
             </ColumnLayout>
             <PageFooter />
         </PageLayoutComponent>

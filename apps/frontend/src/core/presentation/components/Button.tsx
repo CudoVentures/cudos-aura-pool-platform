@@ -25,6 +25,19 @@ const theme02 = createTheme({
     },
 });
 
+const theme03 = createTheme({
+    palette: {
+        primary: {
+            main: '#0DA048',
+            contrastText: '#fff',
+        },
+        secondary: {
+            main: '#EA4E4E',
+            contrastText: '#fff',
+        },
+    },
+});
+
 export enum ButtonType {
     ROUNDED = 'contained',
     TEXT_INLINE = 'text',
@@ -34,6 +47,8 @@ export enum ButtonColor {
     SCHEME_1,
     SCHEME_2,
     SCHEME_3,
+    SCHEME_GREEN,
+    SCHEME_RED,
 }
 
 /* each member of the enum corresponds to a CSS class */
@@ -67,9 +82,11 @@ export default function Button({ className, type, color, padding, radius, href, 
     function cssMuiClassColor() {
         switch (color) {
             case ButtonColor.SCHEME_2:
+            case ButtonColor.SCHEME_RED:
                 return 'secondary';
             case ButtonColor.SCHEME_1:
             case ButtonColor.SCHEME_3:
+            case ButtonColor.SCHEME_GREEN:
             default:
                 return 'primary';
         }
@@ -77,27 +94,33 @@ export default function Button({ className, type, color, padding, radius, href, 
 
     function muiTheme() {
         switch (color) {
+            case ButtonColor.SCHEME_3:
+                return theme02;
+            case ButtonColor.SCHEME_GREEN:
+            case ButtonColor.SCHEME_RED:
+                return theme03;
             case ButtonColor.SCHEME_1:
             case ButtonColor.SCHEME_2:
-                return theme01;
             default:
-                return theme02;
+                return theme01;
         }
     }
 
     return (
         <ThemeProvider theme={theme01} >
-            <ThemeProvider theme={muiTheme()} >
-                <MuiButton
-                    disabled={disabled}
-                    className={`Button Transition ${padding} ${radius} ${className}`}
-                    onClick={onClick}
-                    variant={type}
-                    color={cssMuiClassColor()}
-                    href={href}
-                    target={target} >
-                    <div className={'ButtonContent FlexRow'} > {children} </div>
-                </MuiButton>
+            <ThemeProvider theme={theme02} >
+                <ThemeProvider theme={muiTheme()} >
+                    <MuiButton
+                        disabled={disabled}
+                        className={`Button Transition ${padding} ${radius} ${className}`}
+                        onClick={onClick}
+                        variant={type}
+                        color={cssMuiClassColor()}
+                        href={href}
+                        target={target} >
+                        <div className={'ButtonContent FlexRow'} > {children} </div>
+                    </MuiButton>
+                </ThemeProvider>
             </ThemeProvider>
         </ThemeProvider>
 

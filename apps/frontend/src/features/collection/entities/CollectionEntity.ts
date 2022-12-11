@@ -81,6 +81,10 @@ export default class CollectionEntity {
         this.status = CollectionStatus.APPROVED;
     }
 
+    markDeleted() {
+        this.status = CollectionStatus.DELETED;
+    }
+
     formatHashPowerInTh(): string {
         return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`;
     }
