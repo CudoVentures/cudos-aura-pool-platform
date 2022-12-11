@@ -117,6 +117,7 @@ export default class CreditMiningFarmDetailsPageStore {
             this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity?.accountId;
             await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
         } catch (e) {
+            // TODO what do to in case of error
             this.alertStore.show()
         }
         runInAction(() => {

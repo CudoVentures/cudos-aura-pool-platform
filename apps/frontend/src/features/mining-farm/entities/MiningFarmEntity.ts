@@ -100,6 +100,10 @@ export default class MiningFarmEntity {
         this.status = MiningFarmStatus.APPROVED;
     }
 
+    markDeleted() {
+        this.status = MiningFarmStatus.DELETED;
+    }
+
     formatHashPowerInTh(): string {
         return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`
     }

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
@@ -26,7 +26,7 @@ export default class QueuedCollectionsStore {
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
 
-        this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 8);
+        this.collectionsTableState = new TableState(0, [], this.fetchCollections, 8);
 
         this.collectionEntities = null;
         this.collectionDetailsMap = null;
@@ -37,10 +37,10 @@ export default class QueuedCollectionsStore {
     init(itemsPerPage: number) {
         this.collectionsTableState.tableFilterState.from = 0;
         this.collectionsTableState.tableFilterState.itemsPerPage = itemsPerPage;
-        this.fetchCollectionEntities();
+        this.fetchCollections();
     }
 
-    async fetchCollectionEntities() {
+    async fetchCollections() {
         const collectionFilter = new CollectionFilterModel();
         collectionFilter.from = this.collectionsTableState.tableFilterState.from;
         collectionFilter.count = this.collectionsTableState.tableFilterState.itemsPerPage;
@@ -49,7 +49,7 @@ export default class QueuedCollectionsStore {
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilter);
         if (collectionEntities.length === 0 && collectionFilter.from > 0) {
             this.collectionsTableState.tableFilterState.pageBack();
-            this.fetchCollectionEntities();
+            this.fetchCollections();
             return;
         }
 
@@ -62,37 +62,34 @@ export default class QueuedCollectionsStore {
             collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
         });
 
-        this.collectionEntities = collectionEntities;
-        this.collectionDetailsMap = collectionDetailsMap;
-        this.collectionsTableState.tableFilterState.total = total;
+        runInAction(() => {
+            this.collectionEntities = collectionEntities;
+            this.collectionDetailsMap = collectionDetailsMap;
+            this.collectionsTableState.tableFilterState.total = total;
+        });
     }
 
     getCollectionDetails(collectionId: string): CollectionDetailsEntity | null {
         return this.collectionDetailsMap.get(collectionId) ?? null;
     }
 
-    approveCollection(collectionEntity: CollectionEntity) {
-        collectionEntity.markApproved();
-        this.editCollectionStatus(collectionEntity);
-    }
-
-    rejectCollection(collectionEntity: CollectionEntity) {
-        collectionEntity.markDeleted();
-        this.editCollectionStatus(collectionEntity);
-    }
-
-    private async editCollectionStatus(collectionEntity: CollectionEntity) {
+    async approveCollection(collectionEntity: CollectionEntity) {
         if (this.walletStore.isConnected() === false) {
             this.alertStore.show('You must connect your wallet first');
             return;
         }
 
         try {
+            collectionEntity.markApproved();
             await this.collectionRepo.approveCollection(collectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
-            await this.fetchCollectionEntities();
+            await this.fetchCollections();
         } catch (e) {
             this.alertStore.show(e.message);
         }
     }
 
+    async rejectCollection(collectionEntity: CollectionEntity) {
+        collectionEntity.markDeleted();
+        await this.collectionRepo.editCollection(collectionEntity);
+    }
 }

@@ -131,6 +131,33 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
+    async editCollection(collectionEntity: CollectionEntity) {
+        try {
+            this.disableActions?.();
+            const resultCollectionEntity = await this.collectionApi.editCollection(collectionEntity);
+            Object.assign(collectionEntity, resultCollectionEntity);
+        } catch (e) {
+            switch (parseBackendErrorType(e)) {
+                case BackendErrorType.COLLECTION_DENOM_EXISTS_ERROR:
+                    this.showAlert?.('Please ensure that denom id is not already in use');
+                    break;
+                case BackendErrorType.COLLECTION_CREATE_ERROR:
+                    this.showAlert?.('There was error in creating the colelction. Please try again.');
+                    break;
+                case BackendErrorType.COLLECTION_WRONG_DENOM_ERROR:
+                    this.showAlert?.('Please use only letters for collection name.');
+                    break;
+                case BackendErrorType.DATA_SERVICE_ERROR:
+                    this.showAlert?.('Failed to save pictures. Please try again.');
+                    break;
+                default:
+                    throw Error(parseBackendErrorType(e));
+            }
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
     async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger): Promise < string > {
 
         checkValidNftDenomId(collectionEntity.denomId)

@@ -12,7 +12,7 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ModuleName, ReqCreditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter, ReqUpdateCollectionChainData } from './dto/requests.dto';
+import { ModuleName, ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter, ReqUpdateCollectionChainData } from './dto/requests.dto';
 import { CollectionService } from './collection.service';
 import { NFTService } from '../nft/nft.service';
 import RoleGuard from '../auth/guards/role.guard';
@@ -26,7 +26,7 @@ import { AccountType } from '../account/account.types';
 import { CollectionCreationError, DataServiceError, ERROR_TYPES } from '../common/errors/errors';
 import { CollectionEntity } from './entities/collection.entity';
 import NftEntity from '../nft/entities/nft.entity';
-import { ResFetchCollectionsByFilter, ResCreditCollection, ResFetchCollectionDetails } from './dto/responses.dto';
+import { ResFetchCollectionsByFilter, ResCreditCollection, ResFetchCollectionDetails, ResEditCollection } from './dto/responses.dto';
 import CollectionFilterEntity from './entities/collection-filter.entity';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 
@@ -68,7 +68,7 @@ export class CollectionController {
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
-    async createOrEdit(
+    async creditCollection(
         @Req() req: AppRequest,
         @Body() reqCreditCollection: ReqCreditCollection,
     ): Promise<ResCreditCollection> {
@@ -161,6 +161,61 @@ export class CollectionController {
         }
 
         return new ResCreditCollection(collectionEntityResult, nftEntityResults, nftsToDelete.length);
+    }
+
+    @ApiBearerAuth('access-token')
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
+    @UseInterceptors(TransactionInterceptor)
+    @Put('editCollection')
+    @HttpCode(200)
+    async edit(
+        @Req() req: AppRequest,
+        @Body() reqEditCollection: ReqEditCollection,
+    ): Promise<ResEditCollection> {
+        const { collectionDto } = reqEditCollection
+        const collectionEntity = CollectionEntity.fromJson(collectionDto);
+
+        if (collectionEntity.isNew() === true) {
+            throw new CollectionCreationError();
+        }
+
+        const collectionId = collectionEntity.id;
+
+        try {
+            collectionEntity.bannerImage = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionEntity.bannerImage);
+            collectionEntity.mainImage = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionEntity.mainImage);
+        } catch (e) {
+            throw new DataServiceError();
+        }
+
+        const collectionDbEntity = await this.collectionService.findOne(collectionId, req.transaction, req.transaction.LOCK.UPDATE);
+
+        let oldUris = [];
+        if (collectionDbEntity !== null) {
+            oldUris = [collectionDbEntity.mainImage, collectionDbEntity.bannerImage];
+        }
+
+        const newUris = [collectionEntity.mainImage, collectionEntity.bannerImage];
+
+        let collectionEntityResult: CollectionEntity;
+        try {
+            collectionEntityResult = await this.collectionService.updateOne(collectionId, collectionEntity, req.transaction);
+            this.dataService.cleanUpOldUris(oldUris, newUris);
+        } catch (ex) {
+            this.dataService.cleanUpNewUris(oldUris, newUris);
+
+            const errMessage = ex.response?.message;
+            switch (errMessage) {
+                case ERROR_TYPES.COLLECTION_DENOM_EXISTS_ERROR:
+                case ERROR_TYPES.COLLECTION_WRONG_DENOM_ERROR:
+                case ERROR_TYPES.DATA_SERVICE_ERROR:
+                    throw ex;
+                default:
+                    throw new CollectionCreationError();
+            }
+        }
+
+        return new ResEditCollection(collectionEntityResult);
     }
 
     @Put('trigger-updates')

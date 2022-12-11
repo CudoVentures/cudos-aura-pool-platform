@@ -20,6 +20,14 @@ export class ReqCreditCollection {
     }
 }
 
+export class ReqEditCollection {
+    collectionDto: CollectionEntity;
+
+    constructor(collectionEntity: CollectionEntity) {
+        this.collectionDto = CollectionEntity.toJson(collectionEntity);
+    }
+}
+
 export class ReqFetchCollectionDetails {
     collectionIds: string[];
 

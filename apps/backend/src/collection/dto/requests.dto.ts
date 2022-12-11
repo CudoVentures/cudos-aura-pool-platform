@@ -18,6 +18,15 @@ export class ReqCreditCollection {
         nftDtos: NftJsonValidator[];
 }
 
+export class ReqEditCollection {
+    @IsDefined()
+    @IsNotEmptyObject()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => CollectionJsonValidator)
+        collectionDto: CollectionJsonValidator
+}
+
 export enum ModuleName {
     MARKETPLACE = 'marketplace',
     NFT = 'nft'

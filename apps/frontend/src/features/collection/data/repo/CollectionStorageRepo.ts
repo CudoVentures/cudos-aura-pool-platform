@@ -161,4 +161,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         this.storageHelper.save();
     }
 
+    async editCollection(collectionEntity: CollectionEntity) {
+    }
+
 }

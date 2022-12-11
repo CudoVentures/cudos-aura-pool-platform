@@ -1,9 +1,12 @@
-import { inject, observer } from 'mobx-react';
 import React, { useEffect } from 'react';
+import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import CollectionEntity from '../../entities/CollectionEntity';
 import QueuedCollectionsStore from '../stores/QueuedCollectionsStore';
 import ViewCollectionModalStore from '../stores/ViewCollectionModalStore';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import Actions, { ActionsHeight } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonColor, ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
@@ -11,14 +14,11 @@ import LoadingIndicator from '../../../../core/presentation/components/LoadingIn
 import StyledLayout from '../../../../core/presentation/components/StyledLayout';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import { ALIGN_LEFT, ALIGN_RIGHT } from '../../../../core/presentation/components/TableDesktop';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import Svg from '../../../../core/presentation/components/Svg';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import '../styles/queued-collections.css';
-import Svg from '../../../../core/presentation/components/Svg';
-import { useNavigate } from 'react-router-dom';
-import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 type Props = {
     queuedCollectionsStore?: QueuedCollectionsStore;
@@ -42,6 +42,10 @@ function QueuedCollections({ queuedCollectionsStore, viewCollectionModalStore, d
     function onClickReject(collectionEntity: CollectionEntity, e) {
         e.stopPropagation();
         queuedCollectionsStore.rejectCollection(collectionEntity);
+    }
+
+    function onClickCollectionRow(i: number) {
+        viewCollectionModalStore.showSignal(collectionEntities[i]);
     }
 
     function onClickSeeAllCollections() {
@@ -76,10 +80,6 @@ function QueuedCollections({ queuedCollectionsStore, viewCollectionModalStore, d
         });
     }
 
-    function onClickCollectionRow(i: number) {
-        viewCollectionModalStore.showSignal(collectionEntities[i]);
-    }
-
     return (
         <StyledLayout
             className = { 'QueuedCollections' }
@@ -93,7 +93,6 @@ function QueuedCollections({ queuedCollectionsStore, viewCollectionModalStore, d
                 <LoadingIndicator />
             ) : (
                 <Table
-                    className={'New Collections'}
                     legend={['Collection', 'Description', 'Floor Price', 'Action']}
                     widths={['25%', '25%', '10%', '40%']}
                     aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_RIGHT]}

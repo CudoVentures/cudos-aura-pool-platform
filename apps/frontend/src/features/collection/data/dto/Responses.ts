@@ -22,6 +22,14 @@ export class ResCreditCollection {
     }
 }
 
+export class ResEditCollection {
+    collectionEntity: CollectionEntity;
+
+    constructor(data) {
+        this.collectionEntity = CollectionEntity.fromJson(data.collection);
+    }
+}
+
 export class ResFetchCollectionDetails {
     detailEntities: CollectionDetailsEntity[]
 

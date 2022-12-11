@@ -9,14 +9,18 @@ export class ResCreditCollection {
     nfts: NftJsonValidator[];
     deletedNfts: number;
 
-    constructor(
-        collection: CollectionEntity,
-        nfts: NftEntity[],
-        deletedNfts: number,
-    ) {
+    constructor(collection: CollectionEntity, nfts: NftEntity[], deletedNfts: number) {
         this.collection = CollectionEntity.toJson(collection);
         this.nfts = nfts.map((nftEntity) => NftEntity.toJson(nftEntity));
         this.deletedNfts = deletedNfts;
+    }
+}
+
+export class ResEditCollection {
+    collection: CollectionJsonValidator;
+
+    constructor(collection: CollectionEntity) {
+        this.collection = CollectionEntity.toJson(collection);
     }
 }
 
@@ -24,10 +28,7 @@ export class ResFetchCollectionsByFilter {
     collectionEntities: CollectionJsonValidator[];
     total: number;
 
-    constructor(
-        collectionEntities: CollectionEntity[],
-        total: number,
-    ) {
+    constructor(collectionEntities: CollectionEntity[], total: number) {
         this.collectionEntities = collectionEntities.map((collectionEntity) => CollectionEntity.toJson(collectionEntity));
         this.total = total;
     }
