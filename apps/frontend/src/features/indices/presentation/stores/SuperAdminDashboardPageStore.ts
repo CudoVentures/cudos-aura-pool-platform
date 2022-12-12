@@ -21,17 +21,10 @@ export default class SuperAdminDashboardPageStore {
     alertStore: AlertStore;
 
     topFarmsTableState: TableState;
-    miningFarmsTableState: TableState;
-    collectionsTableState: TableState;
     defaultIntervalPickerState: DefaultIntervalPickerState;
 
     topPerformingFarms: MiningFarmEntity[];
     topPerformingFarmsDetailsMap: Map<string, MiningFarmDetailsEntity>;
-    miningFarmEntities: MiningFarmEntity[];
-    collectionEntities: CollectionEntity[];
-
-    selectedMiningFarmEntities: Map < string, MiningFarmEntity >;
-    selectedCollectionEntities: Map < string, CollectionEntity >;
 
     constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.miningFarmRepo = miningFarmRepo;
@@ -40,38 +33,25 @@ export default class SuperAdminDashboardPageStore {
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
 
-        this.defaultIntervalPickerState = new DefaultIntervalPickerState(() => this.fetchTopPerformingFarmEntities);
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
         this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, 5);
-        this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarmEntities, 50);
-        this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 50);
 
         this.topPerformingFarms = null;
-        this.miningFarmEntities = [];
-        this.collectionEntities = [];
 
         this.topPerformingFarmsDetailsMap = new Map<string, MiningFarmDetailsEntity>();
-        this.selectedMiningFarmEntities = new Map < string, MiningFarmEntity >();
-        this.selectedCollectionEntities = new Map < string, CollectionEntity >();
 
         makeAutoObservable(this);
     }
 
     init(): void {
         this.topPerformingFarms = null;
-        this.miningFarmEntities = [];
-        this.collectionEntities = [];
-
         this.topPerformingFarmsDetailsMap = new Map<string, MiningFarmDetailsEntity>();
-        this.selectedMiningFarmEntities = new Map < string, MiningFarmEntity >();
-        this.selectedCollectionEntities = new Map < string, CollectionEntity >();
 
         this.fetch();
     }
 
     fetch(): void {
         this.fetchTopPerformingFarmEntities();
-        this.fetchMiningFarmEntities();
-        this.fetchCollectionEntities();
     }
 
     fetchTopPerformingFarmEntities = async (): Promise<void> => {
@@ -84,6 +64,8 @@ export default class SuperAdminDashboardPageStore {
         const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter);
         const miningFarmDetails = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((entity) => entity.id));
 
+        console.log(miningFarmEntities);
+
         runInAction(() => {
             this.topPerformingFarms = miningFarmEntities;
             this.topFarmsTableState.tableFilterState.total = total;
@@ -91,111 +73,6 @@ export default class SuperAdminDashboardPageStore {
                 this.topPerformingFarmsDetailsMap.set(entity.miningFarmId, entity);
             })
         })
-    }
-
-    fetchMiningFarmEntities = (): void => {
-        const miningFarmFilter = new MiningFarmFilterModel();
-        miningFarmFilter.from = this.miningFarmsTableState.tableFilterState.from;
-        miningFarmFilter.count = this.miningFarmsTableState.tableFilterState.itemsPerPage;
-        miningFarmFilter.status = [MiningFarmStatus.QUEUED];
-
-        this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter).then(({ miningFarmEntities, total }) => {
-            this.miningFarmEntities = miningFarmEntities;
-            this.miningFarmsTableState.tableFilterState.total = total;
-        });
-    }
-
-    fetchCollectionEntities = (): void => {
-        const collectionFilter = new CollectionFilterModel();
-        collectionFilter.from = this.collectionsTableState.tableFilterState.from;
-        collectionFilter.count = this.collectionsTableState.tableFilterState.itemsPerPage;
-        collectionFilter.status = [CollectionStatus.QUEUED];
-
-        this.collectionRepo.fetchCollectionsByFilter(collectionFilter).then(({ collectionEntities, total }) => {
-            this.collectionEntities = collectionEntities;
-            this.collectionsTableState.tableFilterState.total = total;
-        });
-    }
-
-    isMiningFarmEntitySelected(miningFarmId: string): number {
-        return this.selectedMiningFarmEntities.has(miningFarmId) ? S.INT_TRUE : S.INT_FALSE;
-    }
-
-    isCollectionEntitySelected(collectionId: string): number {
-        return this.selectedCollectionEntities.has(collectionId) ? S.INT_TRUE : S.INT_FALSE;
-    }
-
-    toggleMiningFarmSelection(miningFarmId: string) {
-        if (this.selectedMiningFarmEntities.has(miningFarmId)) {
-            this.selectedMiningFarmEntities.delete(miningFarmId);
-        } else {
-            const miningFarmEntity = this.miningFarmEntities.find((entity: MiningFarmEntity) => { return entity.id === miningFarmId });
-            this.selectedMiningFarmEntities.set(miningFarmId, miningFarmEntity);
-        }
-    }
-
-    toggleCollectionSelection(collectionId: string) {
-        if (this.selectedCollectionEntities.has(collectionId)) {
-            this.selectedCollectionEntities.delete(collectionId);
-        } else {
-            const collectionEntity = this.collectionEntities.find((entity: CollectionEntity) => { return entity.id === collectionId });
-            this.selectedCollectionEntities.set(collectionId, collectionEntity);
-        }
-    }
-
-    approveMiningFarms = async () => {
-        const miningFarmEntities = [];
-
-        this.selectedMiningFarmEntities.forEach((miningFarmEntity) => {
-            miningFarmEntity.markApproved();
-
-            // if royalties not custom set for this farm, set the super admin standard onss
-            if (miningFarmEntity.isCudosMintNftRoyaltiesPercentSet() === false) {
-                miningFarmEntity.cudosMintNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.firstSaleCudosRoyaltiesPercent;
-            }
-
-            if (miningFarmEntity.isCudosResaleNftRoyaltiesPercentSet() === false) {
-                miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.resaleCudosRoyaltiesPercent;
-            }
-
-            miningFarmEntities.push(miningFarmEntity)
-        });
-
-        await this.miningFarmRepo.creditMiningFarms(miningFarmEntities);
-
-        this.selectedMiningFarmEntities = new Map();
-
-        this.fetch();
-    }
-
-    approveCollections = async () => {
-        if (this.walletStore.isConnected() === false) {
-            this.alertStore.show('You must connect your wallet first');
-            return;
-        }
-
-        try {
-            const collectionEntities = [];
-
-            this.selectedCollectionEntities.forEach((collectionEntity) => {
-                collectionEntity.markApproved();
-                collectionEntities.push(collectionEntity);
-            });
-
-            for (let i = collectionEntities.length; i-- > 0;) {
-                await this.collectionRepo.approveCollection(
-                    collectionEntities[i],
-                    this.accountSessionStore.superAdminEntity,
-                    this.walletStore.ledger,
-                );
-            }
-
-            this.selectedCollectionEntities.clear();
-
-            this.fetch();
-        } catch (e) {
-            this.alertStore.show(e.message);
-        }
     }
 
     getMiningFarmDetails(id: string): MiningFarmDetailsEntity {

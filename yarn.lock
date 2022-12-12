@@ -5466,10 +5466,10 @@
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.1.1.tgz"
   "version" "3.1.1"
 
-"cudosjs@1.2.2":
-  "integrity" "sha512-Tq5q/7gawdyi1LtWStBC8ILa9dIkjRvjJep8VgSTgLinrhH2R9VNBR902DNbmHSmpo496Obklcmeptmg+wpS0A=="
-  "resolved" "https://registry.npmjs.org/cudosjs/-/cudosjs-1.2.2.tgz"
-  "version" "1.2.2"
+"cudosjs@1.2.5":
+  "integrity" "sha512-LignXN62Ni355FlU+5A8liwoktKkXffV2rHpCKmrRKPljIPEyrRrtjs0YOHFDbbioouqmZXlQb+z2mgfErPknw=="
+  "resolved" "https://registry.npmjs.org/cudosjs/-/cudosjs-1.2.5.tgz"
+  "version" "1.2.5"
   dependencies:
     "@cosmjs/cosmwasm-stargate" "^0.28.4"
     "@cosmjs/crypto" "^0.28.4"
@@ -5479,6 +5479,7 @@
     "@cosmostation/cosmos-client" "^0.0.4"
     "@cosmostation/extension-client" "^0.1.9"
     "bignumber.js" "^9.0.2"
+    "detect-browser" "^5.3.0"
     "yarn" "^1.22.19"
 
 "curve25519-js@0.0.4":
@@ -5640,6 +5641,11 @@
   "integrity" "sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg=="
   "resolved" "https://registry.npmjs.org/destroy/-/destroy-1.2.0.tgz"
   "version" "1.2.0"
+
+"detect-browser@^5.3.0":
+  "integrity" "sha512-53rsFbGdwMwlF7qvCt0ypLM5V5/Mbl0szB7GPN8y9NCcbknYOeVVXdrXEq+90IwAfrrzt6Hd+u2E2ntakICU8w=="
+  "resolved" "https://registry.npmjs.org/detect-browser/-/detect-browser-5.3.0.tgz"
+  "version" "5.3.0"
 
 "detect-browser@5.2.0":
   "integrity" "sha512-tr7XntDAu50BVENgQfajMLzacmSe34D+qZc4zjnniz0ZVuw/TZcLcyxHQjYpJTM36sGEkZZlYLnIM1hH7alTMA=="

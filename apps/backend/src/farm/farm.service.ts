@@ -84,6 +84,19 @@ export class FarmService {
             });
         }
 
+        if (miningFarmFilterModel.isSortByPerformance() === true) {
+            const miningFarmIds = miningFarmEntities.map((miningFarmEntity) => {
+                return miningFarmEntity.id;
+            });
+            const sortDirection = Math.floor(Math.abs(miningFarmFilterModel.orderBy) / miningFarmFilterModel.orderBy);
+            const visitorMap = await this.visitorService.fetchMiningFarmVisitsCount(miningFarmIds);
+            miningFarmEntities.sort((a: MiningFarmEntity, b: MiningFarmEntity) => {
+                const visitsA = visitorMap.get(a.id) ?? 0;
+                const visitsB = visitorMap.get(b.id) ?? 0;
+                return sortDirection * (visitsA - visitsB);
+            });
+        }
+
         const total = miningFarmEntities.length;
         miningFarmEntities = miningFarmEntities.slice(miningFarmFilterModel.from, miningFarmFilterModel.from + miningFarmFilterModel.count);
 
