@@ -21,7 +21,7 @@ export class AuthController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin,
     ): Promise < ResLogin > {
-        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.bitcoinPayoutWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, reqLogin.sequence, reqLogin.accountNumber, req.transaction);
+        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.bitcoinPayoutWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, req.transaction);
         return new ResLogin(accessToken);
     }
 
@@ -32,7 +32,7 @@ export class AuthController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqRegister: ReqRegister,
     ): Promise < void > {
-        return this.authService.register(reqRegister.email, reqRegister.password, reqRegister.cudosWalletAddress, reqRegister.name, reqRegister.pubKeyType, reqRegister.pubKeyValue, reqRegister.signature, reqRegister.sequence, reqRegister.accountNumber, req.transaction);
+        return this.authService.register(reqRegister.email, reqRegister.password, reqRegister.cudosWalletAddress, reqRegister.name, reqRegister.pubKeyType, reqRegister.pubKeyValue, reqRegister.signature, req.transaction);
     }
 
     @Get('fetchSessionAccounts')

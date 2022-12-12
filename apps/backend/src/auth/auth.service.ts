@@ -1,8 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { StdSignature } from 'cudosjs';
-import { verifyNonceMsgSigner } from 'cudosjs/build/utils/nonce';
+import { decodeSignature, StdSignature } from 'cudosjs';
 import { Transaction } from 'sequelize';
 import AccountService from '../account/account.service';
 import AccountEntity from '../account/entities/account.entity';
@@ -11,8 +10,9 @@ import UserEntity from '../account/entities/user.entity';
 import { EmailAlreadyInUseException, WrongNonceSignatureException, WrongUserOrPasswordException } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
-import { SIGN_NONCE } from './auth.types';
 import JwtToken from './entities/jwt-token.entity';
+import { SIGN_NONCE } from './auth.types';
+import { verifyADR36Amino } from '@keplr-wallet/cosmos'
 
 @Injectable()
 export class AuthService {
@@ -23,8 +23,8 @@ export class AuthService {
         private emailService: EmailService,
     ) {}
 
-    async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < void > {
-        const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
+    async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, tx: Transaction = undefined): Promise < void > {
+        const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature);
         if (!isSigner) {
             throw new WrongNonceSignatureException();
         }
@@ -50,12 +50,12 @@ export class AuthService {
         await this.emailService.sendVerificationEmail(accountEntity);
     }
 
-    async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < string > {
+    async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, tx: Transaction = undefined): Promise < string > {
         let accountEntity = null;
         if (email !== '' || pass !== '') {
             accountEntity = await this.loginUsingCredentials(email, pass);
         } else {
-            accountEntity = await this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, sequence, accountNumber, tx);
+            accountEntity = await this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, tx);
         }
 
         // update last login time
@@ -79,8 +79,8 @@ export class AuthService {
         return accountEntity;
     }
 
-    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number, tx: Transaction = undefined): Promise < AccountEntity > {
-        const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature, sequence, accountNumber);
+    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, tx: Transaction = undefined): Promise < AccountEntity > {
+        const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature);
         if (!isSigner) {
             throw new WrongNonceSignatureException();
         }
@@ -106,7 +106,7 @@ export class AuthService {
         return accountEntity;
     }
 
-    private async verifySignature(cudosWalletAddress: string, pubKeyType: any, pubKeyValue: any, signature: string, sequence: number, accountNumber: number): Promise < boolean > {
+    private async verifySignature(cudosWalletAddress: string, pubKeyType: any, pubKeyValue: any, signature: string): Promise < boolean > {
         const signedTx: StdSignature = {
             pub_key: {
                 type: pubKeyType,
@@ -115,8 +115,21 @@ export class AuthService {
             signature,
         }
 
-        const chainId = this.configService.get('APP_CUDOS_CHAIN_ID');
-        return verifyNonceMsgSigner(signedTx, cudosWalletAddress, SIGN_NONCE, sequence, accountNumber, chainId);
+        const data = JSON.stringify({
+            nonce: SIGN_NONCE,
+        })
+
+        const { pubkey: decodedPubKey, signature: decodedSignature } = decodeSignature(signedTx)
+
+        const verified = verifyADR36Amino(
+            'cudos',
+            cudosWalletAddress,
+            data,
+            decodedPubKey,
+            decodedSignature,
+        )
+
+        return verified;
     }
 
 }

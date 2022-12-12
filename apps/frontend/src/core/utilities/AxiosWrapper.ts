@@ -20,7 +20,7 @@ export const enum BackendErrorType {
 }
 
 export function parseBackendErrorType(axiosError): BackendErrorType {
-    return axiosError.response.data.message;
+    return axiosError.response?.data?.message;
 }
 
 export function setDefaultAuthorization() {

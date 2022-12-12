@@ -5,6 +5,8 @@ import { MiningFarmStatus } from '../entities/MiningFarmEntity';
 export enum MiningFarmOrderBy {
     POPULAR_ASC = 1,
     POPULAR_DESC = -MiningFarmOrderBy.POPULAR_ASC,
+    PERFORMANCE_ASC = 2,
+    ERFORMANCE_DESC = -MiningFarmOrderBy.PERFORMANCE_ASC,
 }
 
 export default class MiningFarmFilterModel {

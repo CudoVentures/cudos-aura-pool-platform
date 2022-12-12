@@ -4,6 +4,7 @@ import { ResFetchSessionAccounts } from '../auth/dto/responses.dto';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
+import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
@@ -18,6 +19,7 @@ export class AccountController {
     constructor(
         private accountService: AccountService,
         private emailService: EmailService,
+    // eslint-disable-next-line no-empty-function
     ) {}
 
     @UseGuards(RoleGuard([AccountType.ADMIN]), IsSessionAccountGuard)
@@ -102,6 +104,6 @@ export class AccountController {
         @Param('accountId') accountId: number,
     ): Promise < ResFetchSessionAccounts > {
         const res = await this.accountService.findAccounts(accountId);
-        return new ResFetchSessionAccounts(res.accountEntity, res.userEntity, res.adminEntity, res.superAdminEntity);
+        return new ResFetchSessionAccounts(res.accountEntity, res.userEntity, res.adminEntity, res.superAdminEntity, IntBoolValue.FALSE);
     }
 }

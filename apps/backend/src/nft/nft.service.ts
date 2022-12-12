@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize, { LOCK, Op, Transaction } from 'sequelize';
+import sequelize, { Op, Transaction } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
@@ -117,7 +117,7 @@ export class NFTService {
         return NftEntity.fromRepo(nftRepo);
     }
 
-    async updateOne(id: number, nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
+    async updateOne(id: string, nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
         const [count, [nftRepo]] = await this.nftRepo.update(
             {
                 ...NftEntity.toRepo(nftEntity).toJSON(),

@@ -43,15 +43,6 @@ export class GraphqlService {
         return res.data.data;
     }
 
-    async fetchNft(uid: string): Promise<MarketplaceNftByUidQuery> {
-        const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
-            query: print(MarketplaceNftByUidDocument),
-            variables: { uid },
-        })
-
-        return res.data.data.marketplace_nft
-    }
-
     async getMintedNftUuid(tx_hash: string): Promise<{ uuid: string }> {
         const res: AxiosResponse<{ data: GetNftByTxHashQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(GetNftByTxHashDocument),

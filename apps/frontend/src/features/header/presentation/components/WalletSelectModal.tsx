@@ -94,10 +94,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         walletSelectModalStore.markIdentityTxWaiting();
 
         try {
-            const { signature, sequence, accountNumber } = await walletStore.signNonceMsg();
+            const signature = await walletStore.signNonceMsg();
             walletSelectModalStore.signature = signature;
-            walletSelectModalStore.sequence = sequence;
-            walletSelectModalStore.accountNumber = accountNumber;
             walletSelectModalStore.markIdentityTxDoneSuccessfully();
         } catch (ex) {
             alertStore.show(ex.message);
