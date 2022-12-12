@@ -115,7 +115,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                     aria-label="Default"
                                     disabled = { rewardsCalculatorStore.hasSelectedMiningFarm() === false }
                                     sx={{
-                                        color: '#000',
+                                        color: 'var(--color-primary-060)',
                                         '& .MuiSlider-thumb': {
                                             color: '#fff',
                                         },
@@ -159,7 +159,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                             <div className={'BtcPriceContainer FlexColumn BorderContainer'}>
                                 <div className={'FlexRow'}>
                                     <div className={'H2 BtcPrice'}>{bitcoinStore.formatBtcInUsd(new BigNumber(1))}</div>
-                                    <div className={'PriceChange FlexRow'}>
+                                    <div className={`${bitcoinPriceChange >= 0 ? 'PriceChangeUp' : 'PriceChangeDown'} PriceChange FlexRow`}>
                                         <div className={'PriceText'}>{bitcoinStore.formatBitcoinPriceChangeInPercentage()}</div>
                                         {bitcoinPriceChange >= 0
                                             ? <Svg svg={ArrowOutwardIcon}/>

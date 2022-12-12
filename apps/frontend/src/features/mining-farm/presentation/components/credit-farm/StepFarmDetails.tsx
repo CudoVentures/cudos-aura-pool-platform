@@ -26,6 +26,7 @@ import '../../styles/step-farm-details.css';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
 import BigNumber from 'bignumber.js';
+import InfoBlueBox from '../../../../../core/presentation/components/InfoBlueBox';
 
 type Props = {
     alertStore?: AlertStore;
@@ -218,9 +219,8 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
                             <InputAdornment position="end" > TH </InputAdornment>
                         ),
                     }} />
-                <div className={'FlexRow HashPowerInfo B2 SemiBold FullLine'}>
-                    <Svg svg={ErrorOutlineIcon}/>
-                    Insert the Hashrate planned to be offered as NFTs
+                <div className={'FlexRow HashPowerInfo B2 FullLine'}>
+                    <InfoBlueBox text="Insert the Hashrate planned to be offered as NFTs" />
                 </div>
             </div>
             <div className={'FlexColumn FeeInputHolder'}>

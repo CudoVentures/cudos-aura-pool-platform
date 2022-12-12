@@ -44,6 +44,7 @@
 
 .BuyNftPopup .Stage.Success .SuccessSvg {
     width: 70px; height: 70px;
+    color: var(--color-success-060);
 }
 
 .BuyNftPopup .Stage.Success .BorderContainer {
@@ -57,4 +58,5 @@
 
 .BuyNftPopup .Stage.Success .TransactionView {
     gap: 10px;
+    color: var(--color-primary-060);
 }

@@ -15,6 +15,7 @@
 .NftPreview .CollectionName {
     text-transform: uppercase;
     margin-bottom: 8px;
+    color: var(--color-primary-060);
 }
 
 .NftPreview .NftName {

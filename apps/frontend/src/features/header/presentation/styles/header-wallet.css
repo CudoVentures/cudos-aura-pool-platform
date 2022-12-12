@@ -2,8 +2,8 @@
     gap: 10px;
 }
 
-.HeaderWallet .BalanceRow .Gray {
-    color: var(--color-gray-030);
+.HeaderWallet .BalanceRow .Secondary {
+    color: var(--color-secondary-070);
 }
 
 .HeaderWallet .AddressRow {

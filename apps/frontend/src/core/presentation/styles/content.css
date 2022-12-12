@@ -20,6 +20,75 @@
     --page-spacing-h: 70px;
     --border-radius: 20px;
 
+    /* color scheme */
+    --color-neutral: #F4F4F5;
+    --color-neutral-010: #EDEFF3;
+    --color-neutral-020: #E6E9F1;
+    --color-neutral-030: #C7CBD8;
+    --color-neutral-040: #A9AFBE;
+    --color-neutral-050: #8E93A5;
+    --color-neutral-060: #73798B;
+    --color-neutral-070: #5B6072;
+    --color-neutral-080: #434959;
+    --color-neutral-090: #2E323F;
+    --color-neutral-100: #08090C;
+    --color-neutral-navy: #262A48;
+
+    --color-primary-010: #E8F7FF;
+    --color-primary-020: #BEE9FF;
+    --color-primary-030: #94DBFF;
+    --color-primary-040: #6BCDFF;
+    --color-primary-050: #41BFFF;
+    --color-primary-060: #15A2E9;
+    --color-primary-070: #0080C0;
+    --color-primary-080: #006597;
+    --color-primary-090: #004A6E;
+    --color-primary-100: #002E46;
+
+    --color-secondary-010: #E8FBFF;
+    --color-secondary-020: #C0F6FF;
+    --color-secondary-030: #98F0FF;
+    --color-secondary-040: #6FEAFF;
+    --color-secondary-050: #47E4FF;
+    --color-secondary-060: #1EDEFF;
+    --color-secondary-070: #08BDDC;
+    --color-secondary-080: #0099B3;
+    --color-secondary-090: #00768A;
+    --color-secondary-100: #005362;
+
+    --color-success-010: #E3FFEB;
+    --color-success-020: #A6F3BB;
+    --color-success-030: #7CE69D;
+    --color-success-040: #53D47F;
+    --color-success-050: #29BC63;
+    --color-success-060: #0DA048;
+    --color-success-070: #048B3A;
+    --color-success-080: #00722D;
+    --color-success-090: #005720;
+    --color-success-100: #003A14;
+
+    --color-warning-010: #FFEEE0;
+    --color-warning-020: #FFCDA6;
+    --color-warning-030: #FFB77C;
+    --color-warning-040: #FFA053;
+    --color-warning-050: #FF8A29;
+    --color-warning-060: #F17400;
+    --color-warning-070: #D25F00;
+    --color-warning-080: #A64B00;
+    --color-warning-090: #793600;
+    --color-warning-100: #4D2200;
+
+    --color-error-010: #FFEFEF;
+    --color-error-020: #FFCBCB;
+    --color-error-030: #FFA8A8;
+    --color-error-040: #FF8484;
+    --color-error-050: #FF6161;
+    --color-error-060: #EA4E4E;
+    --color-error-070: #C83939;
+    --color-error-080: #A62828;
+    --color-error-090: #841A1A;
+    --color-error-100: #620E0E;
+
     /* theme */
     --color-input-text: #000;
     --color-input-border: #000;
@@ -50,9 +119,9 @@
     --color-tooltip-background: #fff;
 
     --color-checkbox-fill: #fff;
-    --color-checkbox-background: var(--color-primary);
+    --color-checkbox-background: var(--color-primary-060);
     --color-checkbox-border: #7D87AA;
-    --color-checkbox-border-active:  var(--color-primary);  
+    --color-checkbox-border-active:  var(--color-primary-060);  
 
     --color-modal-background: #fff;
 
@@ -165,6 +234,10 @@ html.OverflowHidden {
 
 .ColorPrimary {
     color: var(--color-primary-light);
+}
+
+.ColorPrimaryBlue {
+    color: var(--color-primary-060)
 }
 
 /* PageContent */

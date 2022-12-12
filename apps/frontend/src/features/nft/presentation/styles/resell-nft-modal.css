@@ -44,4 +44,5 @@
 
 .ResellNftPopup .TransactionView {
     gap: 10px;
+    color: var(--color-primary-060);
 }
