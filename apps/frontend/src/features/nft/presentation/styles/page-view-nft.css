@@ -68,7 +68,7 @@
 }
 
 .PageViewNft .PageContent .RightLayout .DataValue .SubPrice {
-    color: var(--color-gray-025);
+    color: var(--color-neutral-060);
     font-size: 12px;
 }
 
@@ -96,7 +96,7 @@
 .PageViewNft .SectionDivider {
     height: 1px;
     margin: 110px 0 24px 0;
-    background: var(--color-gray-060);
+    background: var(--color-neutral-060);
 }
 
 .PageViewNft .NftsCnt {

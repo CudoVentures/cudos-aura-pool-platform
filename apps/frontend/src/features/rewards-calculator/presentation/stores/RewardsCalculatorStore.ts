@@ -107,12 +107,20 @@ export default class RewardsCalculatorStore {
         this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
     }
 
+    getMaintenanceFeePerThInBtc(): BigNumber {
+        if (this.selectedMiningFarmEntity === null) {
+            return new BigNumber(0);
+        }
+
+        return this.selectedMiningFarmEntity.getMaintenanceFeePerThInBtc();
+    }
+
     formatCost(): string {
         if (this.selectedMiningFarmEntity === null) {
             return '-';
         }
 
-        return `${ProjectUtils.CUDOS_FEE_IN_PERCENT} % + ${this.selectedMiningFarmEntity.formatMaintenanceFeesInBtc()}`;
+        return `${this.selectedMiningFarmEntity.formatMaintenanceFeesInBtc()}`;
     }
 
     calculateGrossRewardPerMonth(): BigNumber {

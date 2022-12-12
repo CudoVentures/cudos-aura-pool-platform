@@ -1,7 +1,7 @@
 .TablePaging {
     display: flex;
     align-items: center; justify-content: center;
-    color: var(--color-secondary);
+    color: var(--color-neutral-050);
     font-size: 14px;
     padding: 12px;
 }
@@ -26,6 +26,6 @@
 }
 
 .TablePaging > div.Active {
-    color: var(--color-primary);
+    color: var(--color-primary-060);
     font-weight:700;
 }

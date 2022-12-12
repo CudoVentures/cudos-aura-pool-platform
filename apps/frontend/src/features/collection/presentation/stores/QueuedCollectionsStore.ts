@@ -44,7 +44,7 @@ export default class QueuedCollectionsStore {
         const collectionFilter = new CollectionFilterModel();
         collectionFilter.from = this.collectionsTableState.tableFilterState.from;
         collectionFilter.count = this.collectionsTableState.tableFilterState.itemsPerPage;
-        collectionFilter.status = CollectionStatus.QUEUED;
+        collectionFilter.status = [CollectionStatus.QUEUED];
 
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilter);
         if (collectionEntities.length === 0 && collectionFilter.from > 0) {

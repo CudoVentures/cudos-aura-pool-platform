@@ -1,6 +1,6 @@
 .ViewCollectionModal .NftEntity {
     display: flex;
-    border:1px solid var(--color-gray-090);
+    border:1px solid var(--color-neutral-020);
     border-radius: var(--border-radius);
     padding: 16px; 
     margin-top: 24px;

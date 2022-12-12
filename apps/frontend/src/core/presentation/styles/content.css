@@ -1,22 +1,11 @@
 :root {
-    --color-primary: #000;
-    --color-primary-light: #52A6F8;
-    --color-secondary: #888;
-    --color-gray-000: #000;
-    --color-gray-010: #3c3c3c;
-    --color-gray-025: #707070;
-    --color-gray-030: #808080;
-    --color-gray-060: #E0E2E9;
-    --color-gray-090: #E0E2E9;
-    --color-gray-095: #F6F9FE;
-    --color-gray-100: #fff;
     --color-red: #da3c3c;
     --color-green: #29BC63;
 
     --color-body-background: #fff;
 
     --transition-duration: 0.4s;
-    --item-spacing: 24px;
+    --item-spacing: 40px;
     --page-spacing-h: 70px;
     --border-radius: 20px;
 
@@ -93,7 +82,7 @@
     --color-input-text: #000;
     --color-input-border: #000;
     --color-input-border-focused: #aaa;
-    --color-input-gray-out: var(--color-gray-060);
+    --color-input-gray-out: var(--color-neutral-010);
     --color-input-label: #000;
     --color-input-label-focused: #aaa;
 
@@ -105,17 +94,17 @@
     --color-select-multi-delete-icon: #fff;
     --color-select-multi-delete-icon-hover: #aaa;
 
-    --color-datepicker-foreground: var(--color-primary);
+    --color-datepicker-foreground: var(--color-primary-060);
     --color-datepicker-background: #fff;
     --color-datepicker-content-background: #fff;
-    --color-datepicker-selected: var(--color-primary);
+    --color-datepicker-selected: var(--color-primary-060);
 
     --color-popover-text: #000;
     --color-popover-border: transparent;
     --color-popover-background: #fff;
 
     --color-tooltip-text: #000;
-    --color-tooltip-border: var(--color-gray-030);
+    --color-tooltip-border: var(--color-neutral-060);
     --color-tooltip-background: #fff;
 
     --color-checkbox-fill: #fff;
@@ -125,12 +114,12 @@
 
     --color-modal-background: #fff;
 
-    --box-shadow: box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.05);
+    --box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.05);
     /* theme */
 }
 
 html {
-	color:var(--color-gray-000);
+	color: #000;
     font-family:Poppins, OpenSans, sans-serif; font-weight:400; font-size:14px;
     scroll-behavior: smooth;
 }
@@ -184,6 +173,7 @@ html.OverflowHidden {
 .ExtraBold {
     font-weight: 800;
 }
+
 .Bold {
     font-weight: 700;
 }
@@ -201,15 +191,11 @@ html.OverflowHidden {
 }
 
 .H1 {
-    font-size: 32px;
+    font-size: 64px;
 }
 
 .H2 {
     font-size: 32px;
-}
-
-.H2_1 {
-    font-size: 24px;
 }
 
 .H3 {
@@ -217,7 +203,7 @@ html.OverflowHidden {
 }
 
 .B1 {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .B2 {
@@ -232,11 +218,11 @@ html.OverflowHidden {
     font-size: 10px;
 }
 
-.ColorPrimary {
-    color: var(--color-primary-light);
+.ColorNatural100 {
+    color: var(--color-neutral-100);
 }
 
-.ColorPrimaryBlue {
+.ColorPrimary060 {
     color: var(--color-primary-060)
 }
 
@@ -245,6 +231,10 @@ html.OverflowHidden {
     flex: 1 1 auto;
     display: flex; flex-direction: column;
     position: relative;
+}
+
+.PageContent.PageContentDefaultPadding {
+    padding: var(--item-spacing) var(--page-spacing-h);
 }
 
 .PageMarginTop {
@@ -264,13 +254,13 @@ html.OverflowHidden {
 }
 
 .PrimaryColor {
-    color: var(--color-primary);
-    fill: var(--color-primary);
+    color: var(--color-primary-060);
+    fill: var(--color-primary-060);
 }
 
 /* Scrolls */
 .Scrolls {
-    scrollbar-color:var(--color-primary) transparent;
+    scrollbar-color:var(--color-primary-060) transparent;
     scrollbar-width:thin;
 }
 
@@ -284,7 +274,7 @@ html.OverflowHidden {
 
 .Scrolls::-webkit-scrollbar-thumb {
     border-radius:3px;
-    background:var(--color-primary);
+    background:var(--color-primary-060);
 }
 
 /* Mui font fix */

@@ -199,7 +199,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, 
                     <>
                         <Button onClick={onClickRegister} > Continue </Button>
                         <Button type = { ButtonType.TEXT_INLINE } onClick={onClickLogin} >
-                            <span className = { 'Regular' } > Already have an account? </span>&nbsp;<span className={ 'ColorPrimary' }>Login</span>
+                            <span className = { 'Regular' } > Already have an account? </span>&nbsp;<span className={ 'ColorPrimary060' }>Login</span>
                         </Button>
                     </>
                 ) } />

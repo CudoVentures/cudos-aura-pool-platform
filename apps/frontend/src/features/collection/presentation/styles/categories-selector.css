@@ -5,7 +5,7 @@
 .CategoriesSelector .CategoryName {
     padding: 4px 10px;
     border-radius: 6px;
-    background-color: var(--color-gray-095);
+    background-color: var(--color-neutral);
     font-weight: 600; font-size: 14px;
 
     transition-property: background-color, color;

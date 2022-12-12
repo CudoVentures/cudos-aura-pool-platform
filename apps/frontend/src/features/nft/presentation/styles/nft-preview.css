@@ -1,6 +1,6 @@
 .NftPreview {
     width: 100%;
-    color: var(--color-gray-025);
+    color: var(--color-neutral-060);
 }
 
 .NftPreview .NftPreviewImage {
@@ -45,7 +45,7 @@
 }
 
 .NftPreview .NftPreviewImage.Empty {
-    background: var(--color-gray-060);
+    background: var(--color-neutral-060);
 }
 
 .NftPreview .NftPreviewImage.Empty .EmptyNftImageIcon {

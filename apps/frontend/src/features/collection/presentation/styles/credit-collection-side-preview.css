@@ -19,7 +19,7 @@
 }
 
 .CreditCollectionSidePreview .PreviewBorderContainer .ImgCoverNode.Empty {
-    background-color: var(--color-gray-090);
+    background-color: var(--color-neutral-020);
 }
 
 .CreditCollectionSidePreview .PreviewBorderContainer .CoverPicture {

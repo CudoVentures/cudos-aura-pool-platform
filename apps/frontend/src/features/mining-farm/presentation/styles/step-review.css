@@ -3,7 +3,7 @@
 }
 
 .StepMiningFarmPreview .ReviewDataContainer {
-    border: 1px solid var(--color-gray-060);
+    border: 1px solid var(--color-neutral-060);
     border-radius: 20px;
     padding: 24px;
     gap: 16px;
@@ -17,7 +17,7 @@
 }
 
 .StepMiningFarmPreview .ReviewDataContainer .DataRow .DataLabel {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
 }
 
 .StepMiningFarmPreview .TermsAgreeRow {

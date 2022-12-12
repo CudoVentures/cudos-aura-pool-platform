@@ -1,5 +1,7 @@
 import React from 'react';
 
+import '../styles/column-layout.css';
+
 type Props = {
     className?: string;
     gap?: number;

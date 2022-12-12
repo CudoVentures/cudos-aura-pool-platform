@@ -115,7 +115,7 @@ function LoginPage({ accountSessionStore }: Props) {
                                 Login
                             </Button>
                             <Button type = { ButtonType.TEXT_INLINE } onClick={ onClickRegister } >
-                                <span className = { 'Regular' } > You don’t have account?</span>&nbsp;<span className={ 'ColorPrimary' }>Request Admin Account</span>
+                                <span className = { 'Regular' } > You don’t have account?</span>&nbsp;<span className={ 'ColorPrimary060' }>Request Admin Account</span>
                             </Button>
                         </>
                     ) } />

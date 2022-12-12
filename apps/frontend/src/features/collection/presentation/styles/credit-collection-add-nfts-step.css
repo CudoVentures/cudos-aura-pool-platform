@@ -14,7 +14,7 @@
 
 .CreditCollectionAddNftsStep .FormAndPreviewContainer .PreviewAndFinishContainer .PreviewContainer {
     padding: 16px;
-    border: 2px solid var(--color-gray-060);
+    border: 2px solid var(--color-neutral-060);
     border-radius: 20px;
 }
 
@@ -22,5 +22,5 @@
     gap: 10px;
     padding: 16px;
     border-radius: 10px;
-    background: var(--color-gray-095);
+    background: var(--color-neutral);
 }

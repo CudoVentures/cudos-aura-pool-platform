@@ -1,7 +1,7 @@
 .StyledContainer {
     box-sizing: border-box;
     margin: 0 auto;
-    border:1px solid var(--color-gray-090);
+    border:1px solid var(--color-neutral-020);
     border-radius: var(--border-radius);
 }
 
@@ -22,12 +22,17 @@
     background: #fff;
 }
 
-.StyledContainer.BgGray {
-    background: var(--color-gray-090);
+.StyledContainer.BgNeutral100 {
+    color: #fff;
+    background: var(--color-neutral-100);
 }
 
-.StyledContainer.Padding48 {
-    padding: 48px;
+.StyledContainer.BgGray {
+    background: var(--color-neutral-020);
+}
+
+.StyledContainer.Padding40 {
+    padding: 40px;
 }
 
 .StyledContainer.Padding24 {

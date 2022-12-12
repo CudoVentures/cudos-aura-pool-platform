@@ -20,8 +20,8 @@
 }
 
 .GridView .GridHeader .GridLayoutButtons .MuiSvgIcon-root {
-    background-color: var(--color-gray-090);
-    fill: var(--color-gray-030);
+    background-color: var(--color-neutral-020);
+    fill: var(--color-neutral-060);
     border-radius: 8px;
     padding: 5px;
 }

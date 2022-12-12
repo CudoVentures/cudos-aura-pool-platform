@@ -1,0 +1,84 @@
+.PageRewardsCalculator .RewardsCalculatorSubHeading {
+    color: var(--color-neutral-060);
+    margin: 16px 0;
+}
+
+.PageRewardsCalculator .LayoutContainer .MiningFarmForm .NetworkDifficulty {
+    align-items: flex-end;
+    position: relative;
+}
+
+.PageRewardsCalculator .LayoutContainer .MiningFarmForm .NetworkDifficulty .EnableEditButton {
+    height: 40px; width: 40px;
+    box-sizing: border-box;
+    background: var(--color-neutral-090);
+    border-radius: 13px;
+    color: #fff;
+    padding: 13px;
+    cursor: pointer;
+    margin-right: -10px;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .BtcPrice {
+    margin-right: 16px;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .PriceChange {
+    padding: 4px 10px;
+    gap: 10px;
+    font-weight: 600; font-size: 14px;
+    border-radius: 6px;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .PriceChangeUp {
+    border: 1px solid var(--color-success-050);
+    color: var(--color-success-050);
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .PriceChangeDown {
+    border: 1px solid var(--color-error-050);
+    color: var(--color-error-050);
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .BtcPriceContainer .SubHeading {
+    color: var(--color-neutral-060);
+    margin-top: 8px;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .FarmDataContainer {
+    flex: 1 1 auto;
+    justify-content: center;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .FarmDataContainer .DataRow {
+    padding: 8px 0;
+    flex-grow: 1;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .FarmDataContainer .DataRow .DataRowHeading {
+    color: var(--color-neutral-060);
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .RewardsEstimateContainer .RewardsEstimateHeading {
+    margin-bottom: 16px;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .RewardsEstimateContainer .RewardsInBtc {
+    margin-right: 16px;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .RewardsEstimateContainer .RewardsInBtc span {
+    color: var(--color-neutral-040);
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .RewardsEstimateContainer .MonthlyRewardUsd {
+    margin-bottom: 4px;
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .RewardsEstimateContainer .Discretion {
+    color: var(--color-neutral-040);
+}
+
+.PageRewardsCalculator .LayoutContainer .DataContainer .Disclaimer {
+    color: var(--color-neutral-060);
+}

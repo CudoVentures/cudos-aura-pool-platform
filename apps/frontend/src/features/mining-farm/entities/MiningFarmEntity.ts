@@ -108,6 +108,14 @@ export default class MiningFarmEntity {
         this.status = MiningFarmStatus.REJECTED;
     }
 
+    getMaintenanceFeePerThInBtc(): BigNumber {
+        if (this.hashPowerInTh === S.NOT_EXISTS || this.maintenanceFeeInBtc === null) {
+            return new BigNumber(0);
+        }
+
+        return this.maintenanceFeeInBtc.dividedBy(new BigNumber(this.hashPowerInTh));
+    }
+
     formatHashPowerInTh(): string {
         return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`
     }

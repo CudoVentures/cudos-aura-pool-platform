@@ -14,7 +14,7 @@
 
 .LoadingIndicator .SVG.Size {
     width:64px; height:64px;
-    color: var(--color-primary);
+    color: var(--color-primary-060);
 }
 
 .LoadingIndicator svg {
