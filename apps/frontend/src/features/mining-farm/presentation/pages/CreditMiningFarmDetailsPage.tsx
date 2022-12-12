@@ -13,7 +13,6 @@ import NavRow, { createNavStep, NavStep } from '../../../../core/presentation/co
 import StepFarmDetails from '../components/credit-farm/StepFarmDetails';
 import StepReview from '../components/credit-farm/StepReview';
 import StepSuccess from '../components/credit-farm/StepSuccess';
-import StyledContainer, { ContainerWidth } from '../../../../core/presentation/components/StyledContainer';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
@@ -46,12 +45,12 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStor
     function renderCreditHeading() {
         const content = creditMiningFarmDetailsPageStore.miningFarmEntity.isNew() === true ? (
             <>
-                <div className={'H3 Bold'}>Welcome to AuraPool</div>
+                <div className={'H2 ExtraBold'}>Welcome to AuraPool</div>
                 <div className={'B1'}>Follow the steps to create your Farm Profile</div>
             </>
         ) : (
             <>
-                <div className={'H3 Bold'}>Edit Farm Profile</div>
+                <div className={'H2 ExtraBold'}>Edit Farm Profile</div>
                 <div className={'B1'}>Review and update your Farm Profile details and submit for review.</div>
             </>
         );
@@ -66,7 +65,7 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStor
 
             <PageAdminHeader />
 
-            <div className = { 'PageContent AppContent' } >
+            <div className = { 'PageContent PageContentDefaultPadding AppContent' } >
 
                 { creditMiningFarmDetailsPageStore.miningFarmEntity === null && (
                     <LoadingIndicator />
@@ -79,26 +78,41 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStor
                             createBreadcrumb('Farm Details'),
                         ] } />
 
-                        <StyledContainer className={'FormContainer FlexColumn'} containerWidth = { ContainerWidth.MEDIUM } >
+                        {/* <StyledContainer className={'FormContainer FlexColumn'} containerWidth = { ContainerWidth.MEDIUM } > */}
+                        <div className = { 'FormContainer' } >
 
-                            { creditMiningFarmDetailsPageStore.isStepSuccess() === false && (
+                            {/* { creditMiningFarmDetailsPageStore.isStepSuccess() === false && (
                                 <NavRow className = { 'StepsCnt' } navSteps={navSteps}/>
-                            ) }
+                            ) } */}
 
                             <AnimationContainer className = { 'Step StepDetails' } active = { creditMiningFarmDetailsPageStore.isStepFarmDetails() }>
-                                { renderCreditHeading() }
-                                <StepFarmDetails />
+                                <StepFarmDetails header = {
+                                    <>
+                                        <NavRow className = { 'StepsCnt' } navSteps={navSteps}/>
+                                        { renderCreditHeading() }
+                                    </>
+                                } />
                             </AnimationContainer>
 
                             <AnimationContainer className = { 'Step StepReview' } active = { creditMiningFarmDetailsPageStore.isStepReview() }>
-                                <StepReview />
+                                <StepReview
+                                    header = {
+                                        <>
+                                            <NavRow className = { 'StepsCnt' } navSteps={navSteps}/>
+                                            <div className = { 'CreditHeading' }>
+                                                <div className={'H2 ExtraBold'}>Finish Registration</div>
+                                                <div className={'B1'}>Review the filled information and submit for review.</div>
+                                            </div>
+                                        </>
+                                    } />
                             </AnimationContainer>
 
                             <AnimationContainer className = { 'Step StepSuccess' } active = { creditMiningFarmDetailsPageStore.isStepSuccess() } >
                                 <StepSuccess />
                             </AnimationContainer>
 
-                        </StyledContainer>
+                            {/* </StyledContainer> */}
+                        </div>
                     </>
                 ) }
 

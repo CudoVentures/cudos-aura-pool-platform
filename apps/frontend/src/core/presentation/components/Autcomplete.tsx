@@ -66,6 +66,9 @@ function Autocomplete({ className, readOnly, error, label, inputValidation, ...p
                 {...props}
                 clearIcon = { <AutocompleteClearIcon /> }
                 popupIcon = { <AutocompletePopupIcon /> }
+                ChipProps = { {
+                    deleteIcon: <AutocompleteClearIcon />,
+                } }
                 onChange = { props.onChange !== null && readOnly !== true ? onChange : null }
                 getOptionLabel = { getOptionLabel }
                 isOptionEqualToValue = { isOptionEqualToValue }
