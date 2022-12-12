@@ -11,7 +11,8 @@
     margin-top: 24px;
 }
 
-.PageCreditMiningFarm .MiningFarmNameCnt .ReviewBadge {
+.PageCreditMiningFarm .MiningFarmNameCnt .ReviewBadge,
+.PageCreditMiningFarm .MiningFarmNameCnt .RejectedBadge {
     color: #fff;
     font-weight: 600;
     padding: 4px 10px;

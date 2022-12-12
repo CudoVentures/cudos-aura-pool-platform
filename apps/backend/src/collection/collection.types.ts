@@ -78,6 +78,7 @@ export class CollectionFilterJsonValidator {
 
     @IsArray()
     @IsEnum(CollectionStatus, { each: true })
+    @IsOptional()
         status: CollectionStatus[];
 
     @IsString()

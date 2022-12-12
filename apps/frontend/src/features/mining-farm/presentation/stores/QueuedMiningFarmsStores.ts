@@ -136,7 +136,7 @@ export default class QueuedMiningFarmsStores {
     }
 
     async rejectMiningfarm(miningFarmEntity: MiningFarmEntity) {
-        miningFarmEntity.markDeleted();
+        miningFarmEntity.marKRejected();
         await this.miningFarmRepo.creditMiningFarm(miningFarmEntity);
     }
 

@@ -89,7 +89,7 @@ export default class QueuedCollectionsStore {
     }
 
     async rejectCollection(collectionEntity: CollectionEntity) {
-        collectionEntity.markDeleted();
+        collectionEntity.markRejected();
         await this.collectionRepo.editCollection(collectionEntity);
     }
 }

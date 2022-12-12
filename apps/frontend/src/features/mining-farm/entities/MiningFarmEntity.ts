@@ -84,11 +84,16 @@ export default class MiningFarmEntity {
     }
 
     isApproved(): boolean {
+        console.log(this.status);
         return this.status === MiningFarmStatus.APPROVED;
     }
 
     isQueued(): boolean {
         return this.status === MiningFarmStatus.QUEUED;
+    }
+
+    isRejected(): boolean {
+        return this.status === MiningFarmStatus.REJECTED;
     }
 
     hasPhotos(): boolean {
@@ -99,8 +104,8 @@ export default class MiningFarmEntity {
         this.status = MiningFarmStatus.APPROVED;
     }
 
-    markDeleted() {
-        this.status = MiningFarmStatus.DELETED;
+    marKRejected() {
+        this.status = MiningFarmStatus.REJECTED;
     }
 
     formatHashPowerInTh(): string {

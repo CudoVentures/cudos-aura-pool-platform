@@ -73,8 +73,16 @@ export default class CollectionEntity {
         return this.defaultPricePerNftInCudos.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }
 
+    isStatusQueued(): boolean {
+        return this.status === CollectionStatus.QUEUED;
+    }
+
+    isStatusRejected(): boolean {
+        return this.status === CollectionStatus.REJECTED;
+    }
+
     markQueued() {
-        this.status = CollectionStatus.QUEUED
+        this.status = CollectionStatus.QUEUED;
     }
 
     markApproved() {

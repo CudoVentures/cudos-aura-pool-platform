@@ -64,16 +64,17 @@ export default class CollectionApiRepo implements CollectionRepo {
         return collectionEntities;
     }
 
-    async fetchCollectionsByIds(collectionIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+    async fetchCollectionsByIds(collectionIds: string[], status?: CollectionStatus): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         collectionFilterModel.collectionIds = collectionIds;
-        collectionFilterModel.status = [status];
-
+        if (status) {
+            collectionFilterModel.status = [status];
+        }
         const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
-    async fetchCollectionById(collectionId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity > {
+    async fetchCollectionById(collectionId: string, status?: CollectionStatus): Promise < CollectionEntity > {
         const collectionEntities = await this.fetchCollectionsByIds([collectionId], status);
         return collectionEntities.length === 1 ? collectionEntities[0] : null;
     }
