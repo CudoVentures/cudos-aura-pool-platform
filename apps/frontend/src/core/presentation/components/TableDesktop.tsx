@@ -160,7 +160,7 @@ const TableDesktop = ({ className, widths, legend, aligns, tableState, rows, col
     function renderRows() {
         if (rows.length === 0) {
             return (
-                <div className = { 'Empty FlexSingleCenter' } > {noRowsContent ?? 'Няма намерени резултати'} </div>
+                <div className = { 'Empty FlexSingleCenter' } > {noRowsContent ?? 'No data'} </div>
             );
         }
 

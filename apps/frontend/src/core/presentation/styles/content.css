@@ -79,37 +79,37 @@
     --color-error-100: #620E0E;
 
     /* theme */
-    --color-input-text: #000;
-    --color-input-border: #000;
-    --color-input-border-focused: #aaa;
+    --color-input-text: var(--color-neutral-100);
+    --color-input-border: var(--color-neutral-040);
+    --color-input-border-focused: var(--color-primary-060);
     --color-input-gray-out: var(--color-neutral-010);
-    --color-input-label: #000;
-    --color-input-label-focused: #aaa;
+    --color-input-label: var(--color-neutral-100);
+    --color-input-label-focused: var(--color-primary-060);
 
-    --color-select-icon: #000;
+    --color-select-icon: var(--color-neutral-100);
     --color-select-highlight: rgba(0, 0, 0, 0.1);
 
     --color-select-multi-item-color: #fff;
-    --color-select-multi-item-background: #000;
+    --color-select-multi-item-background: var(--color-neutral-100);
     --color-select-multi-delete-icon: #fff;
-    --color-select-multi-delete-icon-hover: #aaa;
+    --color-select-multi-delete-icon-hover: var(--color-warning-100);
 
-    --color-datepicker-foreground: var(--color-primary-060);
+    --color-datepicker-foreground: var(--color-primary-080);
     --color-datepicker-background: #fff;
     --color-datepicker-content-background: #fff;
     --color-datepicker-selected: var(--color-primary-060);
 
-    --color-popover-text: #000;
+    --color-popover-text: var(--color-neutral-100);
     --color-popover-border: transparent;
     --color-popover-background: #fff;
 
-    --color-tooltip-text: #000;
+    --color-tooltip-text: var(--color-neutral-100);
     --color-tooltip-border: var(--color-neutral-060);
     --color-tooltip-background: #fff;
 
     --color-checkbox-fill: #fff;
     --color-checkbox-background: var(--color-primary-060);
-    --color-checkbox-border: #7D87AA;
+    --color-checkbox-border: var(--color-neutral-060);
     --color-checkbox-border-active:  var(--color-primary-060);  
 
     --color-modal-background: #fff;
