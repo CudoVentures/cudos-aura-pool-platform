@@ -54,7 +54,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                         <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                         <div className={'Address FlexColumn'}>
                             <div className={'B2 SemiBold Gray'}>Current Rewards Recipient</div>
-                            <div className={'H3 Bold Dots'}>{nftEntity.currentOwnerAddress}</div>
+                            <div className={'H3 Bold Dots'}>{nftEntity.currentOwner}</div>
                         </div>
                     </div>
                 </div>

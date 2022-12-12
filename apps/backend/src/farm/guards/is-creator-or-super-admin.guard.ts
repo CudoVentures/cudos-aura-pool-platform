@@ -1,14 +1,15 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, ValidationPipe } from '@nestjs/common';
 import { FarmService } from '../farm.service';
-import { FarmDto } from '../dto/farm.dto';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
+import { ReqCreditMiningFarm } from '../dto/requests.dto';
+import MiningFarmEntity from '../entities/mining-farm.entity';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
     constructor(private farmService: FarmService) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
+    async canActivate(context: ExecutionContext): Promise < boolean > {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
         const {
             sessionAdminEntity,
@@ -16,11 +17,14 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
             body,
         } = request;
 
-        const farmDto = FarmDto.fromJson(body);
+        const req = await (new ValidationPipe().transform(body, {
+            type: 'body',
+        })) as unknown as ReqCreditMiningFarm;
+        const miningFarmEntity = MiningFarmEntity.fromJson(req.miningFarmEntity);
 
         // super admin can do anything
         if (sessionSuperAdminEntity !== null) {
-            return true;
+            return miningFarmEntity.isNew() === false;
         }
 
         // not super admin, so is it farm admin
@@ -28,19 +32,18 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
             return false;
         }
 
-        // it is farm admin, so he can always create a new collection?
-        if (farmDto.isNew()) {
+        if (miningFarmEntity.isNew() === true) {
             return true
         }
 
-        const farm = await this.farmService.findOne(farmDto.id);
+        const miningFarmDb = await this.farmService.findMiningFarmById(miningFarmEntity.id);
 
-        if (!farm) {
+        if (miningFarmDb === null) {
             throw new UnauthorizedException(
-                `Farm with id ${farmDto.id} is not found`,
+                `Farm with id ${miningFarmDb.id} is not found`,
             );
         }
 
-        return farm.creator_id === sessionAdminEntity.accountId;
+        return miningFarmDb.accountId === sessionAdminEntity.accountId;
     }
 }

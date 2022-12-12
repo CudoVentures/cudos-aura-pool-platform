@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import BigNumber from 'bignumber.js';
 
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import ViewNftPageStore from '../stores/ViewNftPageStore';
@@ -11,6 +12,9 @@ import ResellNftModalStore from '../stores/ResellNftModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import NftStats from '../components/NftStats';
@@ -31,10 +35,9 @@ import { ContainerBackground } from '../../../../core/presentation/components/St
 
 import SvgCudos from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
-import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
+    accountSessionStore?: AccountSessionStore;
     walletStore?: WalletStore;
     bitcoinStore?: BitcoinStore;
     viewNftPageStore?: ViewNftPageStore;
@@ -44,7 +47,7 @@ type Props = {
     alertStore?: AlertStore;
 }
 
-function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
+function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -72,7 +75,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
     }
 
     function onClickBuyNft() {
-        const balance = walletStore.getBalanceSafe();
+        const balance = walletStore.getBalanceSafe().multipliedBy((new BigNumber(10).pow(18)));
         if (balance.lt(nftEntity.priceInAcudos)) {
             alertStore.show('Your balance is not enough to buy this.');
             return;
@@ -192,7 +195,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
                                     <div className={'OwnerPicture'}></div>
                                     <div className={'OwnerInfo FlexColumn'}>
                                         <div className={'AddressName B1 SemiBold'}>Current Owner</div>
-                                        <div className={'Address ColorPrimaryBlue'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwnerAddress, 25)}</div>
+                                        <div className={'Address ColorPrimaryBlue'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwner, 25)}</div>
                                     </div>
                                 </div>
                             </div>
@@ -204,7 +207,7 @@ function ViewNftPage({ walletStore, bitcoinStore, viewNftPageStore, buyNftModalS
                                 </Actions>
                             </div>
                             <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
-                                { walletStore.isConnected() && (
+                                { accountSessionStore.isLoggedInAndWalletConnected() && (
                                     <>
                                         { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>

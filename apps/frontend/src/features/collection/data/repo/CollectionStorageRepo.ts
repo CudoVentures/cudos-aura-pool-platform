@@ -26,23 +26,26 @@ export default class CollectionStorageRepo implements CollectionRepo {
     async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         // TO DO: add top collection sort
-        collectionFilterModel.status = status;
-
+        if (status) {
+            collectionFilterModel.status = [status];
+        }
         const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
-    async fetchCollectionsByIds(collectionIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+    async fetchCollectionsByIds(collectionIds: string[], status?: CollectionStatus): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         // TO DO: add top collection sort
         collectionFilterModel.collectionIds = collectionIds;
-        collectionFilterModel.status = status;
 
+        if (status) {
+            collectionFilterModel.status = [status];
+        }
         const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
-    async fetchCollectionById(collectionId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity > {
+    async fetchCollectionById(collectionId: string, status?: CollectionStatus): Promise < CollectionEntity > {
         const collectionEntities = await this.fetchCollectionsByIds([collectionId], status);
         return collectionEntities.length === 1 ? collectionEntities[0] : null;
     }
@@ -57,9 +60,9 @@ export default class CollectionStorageRepo implements CollectionRepo {
             });
         }
 
-        if (collectionFilterModel.status !== CollectionStatus.ANY) {
+        if (collectionFilterModel.status !== null && collectionFilterModel.status.length !== 0) {
             collectionSlice = collectionSlice.filter((json) => {
-                return json.status === collectionFilterModel.status;
+                return collectionFilterModel.status.includes(json.status);
             });
         }
 
@@ -148,7 +151,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
                     nftJson = NftEntity.toJson(nftEntity);
                     nftJson.id = nextNftId.toString();
                     nftJson.collectionId = collectionJson.id;
-                    nftJson.currentOwnerAddress = cudosWalletAddress;
+                    nftJson.currentOwner = cudosWalletAddress;
                     nftJson.creatorAddress = cudosWalletAddress;
 
                     nftsJson.push(nftJson);
@@ -159,6 +162,9 @@ export default class CollectionStorageRepo implements CollectionRepo {
         }
 
         this.storageHelper.save();
+    }
+
+    async editCollection(collectionEntity: CollectionEntity) {
     }
 
 }

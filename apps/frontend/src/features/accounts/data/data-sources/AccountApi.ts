@@ -3,8 +3,8 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
-import { ReqCreditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
-import { ResCreditSessionAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
+import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
+import { ResEditSessionAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 import { StdSignature } from 'cudosjs';
 
 export default class AccountApi {
@@ -24,7 +24,7 @@ export default class AccountApi {
         setTokenInStorage(null);
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: number } > {
         const { data } = await axios.get('/api/v1/auth/fetchSessionAccounts');
         const res = new ResFetchSessionAccounts(data);
 
@@ -33,12 +33,13 @@ export default class AccountApi {
             userEntity: res.userEntity,
             adminEntity: res.adminEntity,
             superAdminEntity: res.superAdminEntity,
+            shouldChangePassword: res.shouldChangePassword,
         }
     }
 
-    async creditSessionAccount(accountEntity: AccountEntity): Promise < AccountEntity > {
-        const { data } = await axios.post('/api/v1/accounts/creditSessionAccount', new ReqCreditSessionAccount(AccountEntity.toJson(accountEntity)));
-        const res = new ResCreditSessionAccount(data);
+    async editSessionAccount(accountEntity: AccountEntity): Promise < AccountEntity > {
+        const { data } = await axios.post('/api/v1/accounts/editSessionAccount', new ReqEditSessionAccount(AccountEntity.toJson(accountEntity)));
+        const res = new ResEditSessionAccount(data);
         return res.accountEntity;
     }
 

@@ -1,9 +1,10 @@
-import { Body, Controller, Put, Req, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, HttpCode, Put, Req, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { FarmDto } from '../farm/dto/farm.dto';
-import { NFTDto } from '../nft/dto/nft.dto';
+import MiningFarmEntity from '../farm/entities/mining-farm.entity';
+import { NftJsonValidator } from '../nft/nft.types';
+import { ReqSignalVisitMiningFarm } from './dto/requests.dto';
 import { VisitorService } from './visitor.service';
 import { UUID_COOKIE_KEY } from './visitor.types';
 
@@ -15,18 +16,24 @@ export class VisitorController {
 
     @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitMiningFarm')
-    async signalVisitMiningFarm(@Req() req: AppRequest, @Body() farmDto: FarmDto): Promise < void > {
+    @HttpCode(200)
+    async signalVisitMiningFarm(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqSignalVisitMiningFarm: ReqSignalVisitMiningFarm,
+    ): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {
             return;
         }
 
-        this.visitorService.signalVisitFarm(farmDto.id, uuid, req.transaction);
+        const miningFarmEntity = MiningFarmEntity.fromJson(reqSignalVisitMiningFarm.miningFarmEntity);
+        this.visitorService.signalVisitFarm(miningFarmEntity.id, uuid, req.transaction);
     }
 
     @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitNft')
-    async signalVisitNft(@Req() req: AppRequest, @Body() nftDto: NFTDto): Promise < void > {
+    @HttpCode(200)
+    async signalVisitNft(@Req() req: AppRequest, @Body() nftDto: NftJsonValidator): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {
             return;

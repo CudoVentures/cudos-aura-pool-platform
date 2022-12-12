@@ -10,15 +10,15 @@ import { StatisticsController } from './statistics.controller';
 import { StatisticsService } from './statistics.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
-import { Farm } from '../farm/models/farm.model';
-import { EnergySource } from '../farm/models/energy-source.model';
-import { Manufacturer } from '../farm/models/manufacturer.model';
-import { Miner } from '../farm/models/miner.model';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { VisitorModule } from '../visitor/visitor.module';
 import VisitorRepo from '../visitor/repo/visitor.repo';
 import DataService from '../data/data.service';
+import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
+import { EnergySourceRepo } from '../farm/repos/energy-source.repo';
+import { MinerRepo } from '../farm/repos/miner.repo';
+import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
 
 @Module({
     imports: [
@@ -26,10 +26,10 @@ import DataService from '../data/data.service';
             DestinationAddressesWithAmount,
             NftOwnersPayoutHistory,
             NftPayoutHistory,
-            Farm,
-            Miner,
-            Manufacturer,
-            EnergySource,
+            MiningFarmRepo,
+            MinerRepo,
+            ManufacturerRepo,
+            EnergySourceRepo,
             VisitorRepo,
         ]),
         NFTModule,

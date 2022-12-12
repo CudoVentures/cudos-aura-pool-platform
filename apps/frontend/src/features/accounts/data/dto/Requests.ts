@@ -55,7 +55,7 @@ export class ReqRegister {
 
 }
 
-export class ReqCreditSessionAccount {
+export class ReqEditSessionAccount {
 
     accountEntity: AccountEntity;
 

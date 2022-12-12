@@ -12,7 +12,6 @@ import PageAdminHeader from '../../../header/presentation/components/PageAdminHe
 import StyledContainer from '../../../../core/presentation/components/StyledContainer';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import CreditCollectionSuccessModal from '../components/credit-collection/CreditCollectionSuccessModal';
-import CreditCollectionDetailsStep from '../components/credit-collection/CreditCollectionDetailsStep';
 import CreditCollectionAddNftsStep from '../components/credit-collection/CreditCollectionAddNftsStep';
 import CreditCollectionFinishStep from '../components/credit-collection/CreditCollectionFinishStep';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';

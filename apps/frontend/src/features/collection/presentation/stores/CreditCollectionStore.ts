@@ -113,7 +113,7 @@ export default class CreditCollectionStore {
     }
 
     async fetchCollectionData(collectionId: string) {
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
         nftFilter.count = Number.MAX_SAFE_INTEGER;
@@ -250,8 +250,8 @@ export default class CreditCollectionStore {
     //     this.selectedNftEntity.maintenanceFeeInBtc = inputValue !== '' ? new BigNumber(inputValue) : null;
     // }
 
-    onChangeSelectedNftExpirationDate = (expirationDate: Date) => {
-        this.selectedNftEntity.expiryDate = expirationDate !== null ? expirationDate.getTime() : S.NOT_EXISTS;
+    onChangeSelectedNftExpirationDate = (expirationDateTimestamp: Date) => {
+        this.selectedNftEntity.expirationDateTimestamp = expirationDateTimestamp !== null ? expirationDateTimestamp.getTime() : S.NOT_EXISTS;
     }
 
     // nft get input value
@@ -268,11 +268,11 @@ export default class CreditCollectionStore {
     // }
 
     getSelectedNftExpirationDateInputValue(): Date {
-        if (this.selectedNftEntity === null || this.selectedNftEntity.expiryDate === S.NOT_EXISTS) {
+        if (this.selectedNftEntity === null || this.selectedNftEntity.expirationDateTimestamp === S.NOT_EXISTS) {
             return new Date();
         }
 
-        return new Date(this.selectedNftEntity.expiryDate)
+        return new Date(this.selectedNftEntity.expirationDateTimestamp)
     }
 
     // nft controls
@@ -285,8 +285,8 @@ export default class CreditCollectionStore {
     }
 
     onClickSendForApproval = async () => {
-        this.collectionEntity.markQueued();
         await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
+        this.collectionEntity.markQueued();
     }
 
     onClickSave = async () => {
@@ -295,7 +295,6 @@ export default class CreditCollectionStore {
 
     onClickDeleteNft = (nftEntityId: string) => {
         this.nftEntities = this.nftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
-        this.addedOrEdittedNftEntities = this.addedOrEdittedNftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
     }
 
     onClickAddToCollection = () => {

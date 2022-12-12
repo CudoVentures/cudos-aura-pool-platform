@@ -135,16 +135,17 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: number } > {
         return {
             accountEntity: AccountEntity.fromJson(this.storageHelper.sessionAccount),
             userEntity: UserEntity.fromJson(this.storageHelper.sessionUser),
             adminEntity: AdminEntity.fromJson(this.storageHelper.sessionAdmin),
             superAdminEntity: SuperAdminEntity.fromJson(this.storageHelper.sessionSuperAdmin),
+            shouldChangePassword: S.INT_FALSE,
         }
     }
 
-    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
+    async editSessionAccount(accountEntity: AccountEntity): Promise < void > {
         const accountJson = this.storageHelper.accountsJson.find((account: AccountEntity) => account.accountId === accountEntity.accountId);
         Object.assign(accountJson, AccountEntity.toJson(accountEntity));
 

@@ -1,63 +1,68 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CollectionDto } from './dto/collection.dto';
-import { Collection } from './collection.model';
+import { CollectionRepo } from './repos/collection.repo';
 import { CollectionStatus } from './utils';
-import { NFT } from '../nft/nft.model';
+import { NftRepo } from '../nft/repos/nft.repo';
 import { NftStatus } from '../nft/nft.types';
-import CollectionFilterModel, { CollectionOrderBy } from './dto/collection-filter.model';
+import CollectionFilterModel from './entities/collection-filter.entity';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
 import { ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
 import { ChainNftCollectionDto } from './dto/chain-nft-collection.dto';
 import { checkValidNftDenomId } from 'cudosjs';
 import { CollectionDenomExistsError, CollectionWrongDenomError } from '../common/errors/errors';
+import { CollectionEntity } from './entities/collection.entity';
+import { CollectionDetailsEntity } from './entities/collection-details.entity';
+import { CollectionOrderBy } from './collection.types';
 
 @Injectable()
 export class CollectionService {
     constructor(
-    @InjectModel(Collection)
-    private collectionModel: typeof Collection,
-    @InjectModel(NFT)
-    private nftModel: typeof NFT,
+    @InjectModel(CollectionRepo)
+    private collectionModel: typeof CollectionRepo,
+    @InjectModel(NftRepo)
+    private nftRepo: typeof NftRepo,
     private graphqlService: GraphqlService,
+    // eslint-disable-next-line no-empty-function
     ) {}
 
-    async findByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: Collection[], total: number } > {
+    async findByFilter(collectionFitlerEntity: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
-        if (collectionFilterModel.hasCollectionIds() === true) {
-            whereClause.id = collectionFilterModel.collectionIds;
+        if (collectionFitlerEntity.hasCollectionIds() === true) {
+            whereClause.id = collectionFitlerEntity.collectionIds;
         }
 
-        if (collectionFilterModel.hasCollectionStatus() === true) {
-            whereClause.status = collectionFilterModel.getCollectionStatus();
+        if (collectionFitlerEntity.hasCollectionStatus() === true) {
+            whereClause.status = {
+                [Op.in]: collectionFitlerEntity.getCollectionStatus(),
+            };
         }
 
-        if (collectionFilterModel.hasFarmId() === true) {
-            whereClause.farm_id = collectionFilterModel.farmId;
+        if (collectionFitlerEntity.hasFarmId() === true) {
+            whereClause.farm_id = collectionFitlerEntity.farmId;
         }
 
-        if (collectionFilterModel.hasTimestampFrom() === true) {
-            whereClause.createdAt = { [Op.gte]: new Date(collectionFilterModel.timestampFrom).toISOString() }
+        if (collectionFitlerEntity.hasTimestampFrom() === true) {
+            whereClause.createdAt = { [Op.gte]: new Date(collectionFitlerEntity.timestampFrom).toISOString() }
         }
 
-        if (collectionFilterModel.hasTimestampTo() === true) {
+        if (collectionFitlerEntity.hasTimestampTo() === true) {
             if (whereClause.createdAt === undefined) {
                 whereClause.createdAt = {};
             }
-            whereClause.createdAt[Op.lte] = new Date(collectionFilterModel.timestampTo).toISOString();
+            whereClause.createdAt[Op.lte] = new Date(collectionFitlerEntity.timestampTo).toISOString();
         }
 
-        if (collectionFilterModel.hasSearchString() === true) {
+        if (collectionFitlerEntity.hasSearchString() === true) {
             whereClause = [
                 whereClause,
-                sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${collectionFilterModel.searchString.toLowerCase()}%` }),
+                sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), { [Op.like]: `%${collectionFitlerEntity.searchString.toLowerCase()}%` }),
             ]
         }
 
-        switch (collectionFilterModel.orderBy) {
+        switch (collectionFitlerEntity.orderBy) {
             case CollectionOrderBy.TIMESTAMP_ASC:
             case CollectionOrderBy.TIMESTAMP_DESC:
             default:
@@ -65,19 +70,20 @@ export class CollectionService {
                 break;
         }
         if (orderByClause !== null) {
-            orderByClause[0].push(collectionFilterModel.orderBy > 0 ? 'ASC' : 'DESC');
+            orderByClause[0].push(collectionFitlerEntity.orderBy > 0 ? 'ASC' : 'DESC');
         }
 
-        let collectionEntities = await this.collectionModel.findAll({
+        const collectionRepos = await this.collectionModel.findAll({
             where: whereClause,
             order: orderByClause,
         });
 
-        // if (collectionFilterModel.isSortByTrending() === true) {
+        let collectionEntities = collectionRepos.map((collectionRepo) => CollectionEntity.fromRepo(collectionRepo));
+        // if (collectionFitlerEntity.isSortByTrending() === true) {
         //     const nftIds = collectionEntities.map((nftEntity) => {
         //         return nftEntity.id;
         //     });
-        //     const sortDirection = Math.floor(Math.abs(collectionFilterModel.orderBy) / collectionFilterModel.orderBy);
+        //     const sortDirection = Math.floor(Math.abs(collectionFitlerEntity.orderBy) / collectionFitlerEntity.orderBy);
         //     const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
         //     collectionEntities.sort((a: NFT, b: NFT) => {
         //         const visitsA = visitorMap.get(a.id) ?? 0;
@@ -87,7 +93,7 @@ export class CollectionService {
         // }
 
         const total = collectionEntities.length;
-        collectionEntities = collectionEntities.slice(collectionFilterModel.from, collectionFilterModel.from + collectionFilterModel.count);
+        collectionEntities = collectionEntities.slice(collectionFitlerEntity.from, collectionFitlerEntity.from + collectionFitlerEntity.count);
 
         return {
             collectionEntities,
@@ -95,10 +101,12 @@ export class CollectionService {
         };
     }
 
-    async findIdsByStatus(status: CollectionStatus): Promise < number[] > {
+    async findIdsByStatus(status: CollectionStatus[]): Promise < number[] > {
         const collections = await this.collectionModel.findAll({
             where: {
-                status,
+                status: {
+                    [Op.in]: status,
+                },
             },
         })
 
@@ -107,69 +115,73 @@ export class CollectionService {
         })
     }
 
-    async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<Collection> {
-        return this.collectionModel.findByPk(id, {
+    async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<CollectionEntity> {
+        const collectionRepo = await this.collectionModel.findByPk(id, {
             transaction: tx,
             lock,
         });
-    }
-    async findByFarmId(id: number): Promise<Collection[]> {
-        const collections = await this.collectionModel.findAll({
-            where: {
-                farm_id: id,
-            },
-        });
 
-        return collections;
+        return CollectionEntity.fromRepo(collectionRepo);
     }
 
-    async findOneByDenomId(denomId: string): Promise<Collection> {
-        const collection = await this.collectionModel.findOne({
+    async findOneByDenomId(denomId: string): Promise<CollectionEntity> {
+        const collectionRepo = await this.collectionModel.findOne({
             where: {
                 denom_id: denomId,
             },
         });
 
-        return collection;
+        return CollectionEntity.fromRepo(collectionRepo);
+    }
+
+    async findByFarmId(id: number): Promise<CollectionEntity[]> {
+        const collectionRepos = await this.collectionModel.findAll({
+            where: {
+                farm_id: id,
+            },
+        });
+
+        return collectionRepos.map((collectionRepo) => CollectionEntity.fromRepo(collectionRepo));
     }
 
     async createOne(
-        collectionDto: Partial<CollectionDto>,
-        creator_id: number,
+        collectionEntity: CollectionEntity,
         tx: Transaction = undefined,
-    ): Promise<Collection> {
+    ): Promise<CollectionEntity> {
 
-        collectionDto.denom_id = collectionDto.name.toLowerCase().replace(' ', '');
+        collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(' ', '');
         try {
-            checkValidNftDenomId(collectionDto.denom_id);
+            checkValidNftDenomId(collectionEntity.denomId);
         } catch (e) {
             throw new CollectionWrongDenomError();
         }
-
-        const chainCollections = await this.graphqlService.fetchNftCollectionsByDenomIds([collectionDto.denom_id]);
+        const chainCollections = await this.graphqlService.fetchNftCollectionsByDenomIds([collectionEntity.denomId]);
         if (chainCollections.nft_denom.length > 0) {
             throw new CollectionDenomExistsError();
         }
 
-        const collection = this.collectionModel.create({
-            ...collectionDto,
+        const collectionRepo = CollectionEntity.toRepo(collectionEntity);
+        const collection = await this.collectionModel.create({
+            ...collectionRepo.toJSON(),
             status: CollectionStatus.QUEUED,
-            creator_id,
         }, {
             transaction: tx,
         });
+        return CollectionEntity.fromRepo(collection);
 
-        return collection;
     }
 
     async updateOne(
         id: number,
-        collectionDto: Partial<CollectionDto>,
+        collectionEntity: CollectionEntity,
         tx: Transaction = undefined,
-    ): Promise<Collection> {
+    ): Promise<CollectionEntity> {
 
         const [count, [collection]] = await this.collectionModel.update(
-            { ...collectionDto, status: CollectionStatus.QUEUED },
+            {
+                ...CollectionEntity.toRepo(collectionEntity),
+                status: CollectionStatus.QUEUED,
+            },
             {
                 where: { id },
                 returning: true,
@@ -177,16 +189,16 @@ export class CollectionService {
             },
         );
 
-        return collection;
+        return CollectionEntity.fromRepo(collection);
     }
 
     async updateOneByDenomId(
         denomId: string,
-        collectionDto: Partial<Collection>,
+        collectionEntity: CollectionEntity,
         tx: Transaction = undefined,
-    ): Promise<Collection> {
-        const [count, [collection]] = await this.collectionModel.update(
-            { ...collectionDto },
+    ): Promise<CollectionEntity> {
+        const [count, [collectionRepo]] = await this.collectionModel.update(
+            { ...CollectionEntity.toRepo(collectionEntity).toJSON() },
             {
                 where: { denom_id: denomId },
                 returning: true,
@@ -194,41 +206,7 @@ export class CollectionService {
             },
         );
 
-        return collection;
-    }
-
-    async updateStatus(
-        id: number,
-        status: CollectionStatus,
-        tx: Transaction = undefined,
-    ): Promise<Collection> {
-        const [count, [collection]] = await this.collectionModel.update(
-            {
-                status,
-            },
-            {
-                where: { id },
-                returning: true,
-                transaction: tx,
-            },
-        );
-
-        return collection;
-    }
-
-    async deleteOne(id: number, tx: Transaction = undefined): Promise<Collection> {
-        const [count, [collection]] = await this.collectionModel.update(
-            { deleted_at: new Date(), status: CollectionStatus.DELETED },
-            {
-                where: {
-                    id,
-                },
-                returning: true,
-                transaction: tx,
-            },
-        );
-
-        return collection;
+        return CollectionEntity.fromRepo(collectionRepo);
     }
 
     async getChainMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise < ChainMarketplaceCollectionDto[] > {
@@ -241,16 +219,16 @@ export class CollectionService {
         return queryRes.nft_denom.map((queryCollection) => ChainNftCollectionDto.fromQuery(queryCollection));
     }
 
-    async getDetails(collectionId: number): Promise <{ id: number, floorPriceInAcudos: number, volumeInAcudos: number, owners: number, remainingHashPowerInTH: number }> {
+    // TODO: redo with big numbers
+    async getDetails(collectionId: number): Promise <CollectionDetailsEntity> {
         const collection = await this.collectionModel.findOne({ where: { id: collectionId } })
         if (!collection) {
             throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
         }
 
-        const allNfts = await this.nftModel.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.REMOVED] } }, order: [['price', 'ASC']] })
+        const allNfts = await this.nftRepo.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.REMOVED] } }, order: [['price', 'ASC']] })
         const approvedNfts = allNfts.filter((nft) => nft.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-        const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denom_id] }) // Sold NFTs
-
+        const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denomId] }) // Sold NFTs
         const uniqueOwnersArray = [...new Set(soldNfts.marketplace_nft.map((nft) => nft.nft_nft.owner))] // Unique owners of all the NFTs in the collection
 
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
@@ -259,18 +237,20 @@ export class CollectionService {
         const floorPriceInAcudos = cheapestNfts[0] || 0 // Price of the cheapest NFT
 
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
-        const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denom_id])
+        const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])
 
         // Get remaining hash power
-        const nftsHashPowerSum = allNfts.reduce((pervVal, currVal) => pervVal + Number(currVal.hashing_power), 0)
-        const remainingHashPowerInTH = Number(collection.hashing_power) - nftsHashPowerSum
+        const nftsHashPowerSum = allNfts.reduce((pervVal, currVal) => pervVal + Number(currVal.hashingPower), 0)
+        const remainingHashPowerInTH = Number(collection.hashingPower) - nftsHashPowerSum
 
-        return {
-            id: collectionId,
-            floorPriceInAcudos,
-            volumeInAcudos: collectionTotalSales.salesInAcudos || 0,
-            owners: uniqueOwnersArray.length,
-            remainingHashPowerInTH,
-        }
+        const collectionDetailsEntity = new CollectionDetailsEntity();
+
+        collectionDetailsEntity.id = collectionId;
+        collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos;
+        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString() || '0';
+        collectionDetailsEntity.owners = uniqueOwnersArray.length;
+        collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
+
+        return collectionDetailsEntity;
     }
 }

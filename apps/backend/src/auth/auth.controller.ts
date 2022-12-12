@@ -1,7 +1,8 @@
-import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors, HttpCode } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest, RequestWithSessionAccounts } from '../common/commont.types';
+import { parseIntBoolValue } from '../common/utils';
 import { AuthService } from './auth.service';
 import { ReqLogin, ReqRegister } from './dto/requests.dto';
 import { ResFetchSessionAccounts, ResLogin } from './dto/responses.dto';
@@ -15,6 +16,7 @@ export class AuthController {
 
     @UseInterceptors(TransactionInterceptor)
     @Post('login')
+    @HttpCode(200)
     async login(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin,
@@ -25,6 +27,7 @@ export class AuthController {
 
     @UseInterceptors(TransactionInterceptor)
     @Post('register')
+    @HttpCode(200)
     async register(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqRegister: ReqRegister,
@@ -33,7 +36,10 @@ export class AuthController {
     }
 
     @Get('fetchSessionAccounts')
+    @HttpCode(200)
     async fetchSessionAccounts(@Req() req: RequestWithSessionAccounts): Promise < ResFetchSessionAccounts > {
-        return new ResFetchSessionAccounts(req.sessionAccountEntity, req.sessionUserEntity, req.sessionAdminEntity, req.sessionSuperAdminEntity);
+        const shouldChangePassword = req.sessionAccountEntity?.isDefaultSuperAdminPassword() ?? false;
+        return new ResFetchSessionAccounts(req.sessionAccountEntity, req.sessionUserEntity, req.sessionAdminEntity, req.sessionSuperAdminEntity, parseIntBoolValue(shouldChangePassword));
     }
+
 }

@@ -56,9 +56,18 @@ export default class AccountEntity {
         return this.emailVerified === IntBoolValue.TRUE;
     }
 
+    isDefaultSuperAdminPassword(): boolean {
+        if (this.hashedPass === '' || this.salt === '') {
+            return false;
+        }
+
+        return this.hashedPass === '90b7ade57ab677c332c86772a3066b53a1bba43ffa04c334cd0ae0244dc838075d5379ccbd0e37584865023cf719002c0e491092599ebad8a5948a7c204b2c6c' && this.salt === '41vWHvhcqEeaY03TPVliL+EcpM4w+jbWd4OavgxmvBMQpXpch/CkYxUzaIJjm58rw0qKD42dFCn0RQdZcvJpyc/vObYOGaR5jXyQc4rfahWaKHM2BklsDUMxtMfWOwaToKed1jV4vQpbBFLnZ8bDC80m6iQlY+OaxDdwt2jp4ag=';
+    }
+
     markAsEmailNotVerified() {
         this.emailVerified = IntBoolValue.FALSE;
     }
+
     markAsEmailVerified() {
         this.emailVerified = IntBoolValue.TRUE;
     }

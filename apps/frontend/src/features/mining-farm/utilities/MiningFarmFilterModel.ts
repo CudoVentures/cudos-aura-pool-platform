@@ -10,7 +10,7 @@ export enum MiningFarmOrderBy {
 export default class MiningFarmFilterModel {
 
     miningFarmIds: string[];
-    status: MiningFarmStatus;
+    status: MiningFarmStatus[];
     searchString: string;
     sessionAccount: number;
     orderBy: MiningFarmOrderBy;
@@ -19,7 +19,7 @@ export default class MiningFarmFilterModel {
 
     constructor() {
         this.miningFarmIds = null;
-        this.status = MiningFarmStatus.APPROVED;
+        this.status = null;
         this.searchString = '';
         this.sessionAccount = S.INT_FALSE;
         this.orderBy = MiningFarmOrderBy.POPULAR_ASC;

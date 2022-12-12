@@ -1,15 +1,15 @@
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Collection } from '../collection/collection.model';
+import { CollectionRepo } from '../collection/repos/collection.repo';
 import EmailService from '../email/email.service';
 import { FarmService } from '../farm/farm.service';
-import { EnergySource } from '../farm/models/energy-source.model';
-import { Farm } from '../farm/models/farm.model';
-import { Manufacturer } from '../farm/models/manufacturer.model';
-import { Miner } from '../farm/models/miner.model';
-import { NFT } from '../nft/nft.model';
+import { NftRepo } from '../nft/repos/nft.repo';
+import { EnergySourceRepo } from '../farm/repos/energy-source.repo';
+import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
+import { MinerRepo } from '../farm/repos/miner.repo';
+import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
 import VisitorRepo from '../visitor/repo/visitor.repo';
 import { VisitorService } from '../visitor/visitor.service';
 import { AccountController } from './account.controller';
@@ -18,10 +18,14 @@ import AccountRepo from './repos/account.repo';
 import AdminRepo from './repos/admin.repo';
 import SuperAdminRepo from './repos/super-admin.repo';
 import UserRepo from './repos/user.repo';
+import DataService from '../data/data.service';
+import { CollectionService } from '../collection/collection.service';
+import { GraphqlService } from '../graphql/graphql.service';
+import { NFTService } from '../nft/nft.service';
 
 @Module({
-    imports: [SequelizeModule.forFeature([VisitorRepo, AccountRepo, UserRepo, AdminRepo, SuperAdminRepo, Farm, Collection, NFT, Manufacturer, EnergySource, Miner]), HttpModule],
-    providers: [AccountService, EmailService, JwtService, FarmService, VisitorService],
+    imports: [SequelizeModule.forFeature([VisitorRepo, AccountRepo, UserRepo, AdminRepo, SuperAdminRepo, MiningFarmRepo, CollectionRepo, NftRepo, ManufacturerRepo, EnergySourceRepo, MinerRepo]), HttpModule],
+    providers: [AccountService, EmailService, JwtService, FarmService, VisitorService, DataService, CollectionService, GraphqlService, NFTService],
     exports: [AccountModule, AccountService],
     controllers: [AccountController],
 })

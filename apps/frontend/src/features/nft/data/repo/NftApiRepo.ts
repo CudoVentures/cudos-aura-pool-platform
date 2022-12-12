@@ -34,17 +34,19 @@ export default class NftApiRepo implements NftRepo {
         this.showAlert = showAlert;
     }
 
-    async fetchNftById(nftId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity > {
+    async fetchNftById(nftId: string, status: CollectionStatus): Promise < NftEntity > {
         const nftEntities = await this.fetchNftByIds([nftId], status);
 
         return nftEntities.length === 1 ? nftEntities[0] : null;
     }
 
-    async fetchNftByIds(nftIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
+    async fetchNftByIds(nftIds: string[], status: CollectionStatus): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
 
         nftFilterModel.nftIds = nftIds;
-        nftFilterModel.collectionStatus = status;
+        if (status) {
+            nftFilterModel.collectionStatus = [status];
+        }
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
@@ -53,7 +55,7 @@ export default class NftApiRepo implements NftRepo {
     async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
 
-        nftFilterModel.collectionStatus = status;
+        nftFilterModel.collectionStatus = [status];
         nftFilterModel.orderBy = NftOrderBy.TIMESTAMP_DESC;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
@@ -63,7 +65,7 @@ export default class NftApiRepo implements NftRepo {
     async fetchTrendingNfts(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
 
-        nftFilterModel.collectionStatus = status;
+        nftFilterModel.collectionStatus = [status];
         nftFilterModel.orderBy = NftOrderBy.TRENDING_DESC;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
@@ -89,7 +91,7 @@ export default class NftApiRepo implements NftRepo {
 
             if (nftEntity.status === NftStatus.QUEUED) {
                 // TODO:get real tx estimation
-                const mintFee = (new BigNumber(200000)).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+                const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(), 'acudos')
                 const memo = `{"uuid":"${nftEntity.id}"}`;
@@ -99,7 +101,7 @@ export default class NftApiRepo implements NftRepo {
             }
 
             if (nftEntity.status === NftStatus.MINTED) {
-                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromNumber(nftEntity.marketplaceNftId), gasPrice);
+                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
             }
 

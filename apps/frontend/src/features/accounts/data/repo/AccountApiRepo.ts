@@ -82,7 +82,7 @@ export default class AccountApiRepo implements AccountRepo {
         }
     }
 
-    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity; userEntity: UserEntity; adminEntity: AdminEntity; superAdminEntity: SuperAdminEntity; } > {
+    async fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: number } > {
         try {
             this.disableActions?.();
             return await this.accountApi.fetchSessionAccounts();
@@ -91,10 +91,10 @@ export default class AccountApiRepo implements AccountRepo {
         }
     }
 
-    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
+    async editSessionAccount(accountEntity: AccountEntity): Promise < void > {
         try {
             this.disableActions?.();
-            const resultAccountEntity = await this.accountApi.creditSessionAccount(accountEntity);
+            const resultAccountEntity = await this.accountApi.editSessionAccount(accountEntity);
             Object.assign(accountEntity, resultAccountEntity);
         } finally {
             this.enableActions?.();

@@ -3,8 +3,11 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { CollectionService } from '../collection/collection.service';
 import { GraphqlService } from '../graphql/graphql.service';
+import NftFilterEntity from '../nft/entities/nft-filter.entity';
+import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
 import { NftEventFilterDto } from './dto/event-history-filter.dto';
+import { TransferHistoryEntry } from './dto/transfer-history.dto';
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { dayInMs, getDays } from './utils';
@@ -21,67 +24,72 @@ export class StatisticsService {
         private nftOwnersPayoutHistoryModel: typeof NftOwnersPayoutHistory,
     ) {}
 
-    async fetchNftEventsByFilter(nftEventFilterDto: NftEventFilterDto): Promise<{ nftEventEntities: TransferHistoryEntry[], total: number }> {
+    // async fetchNftEventsByFilter(nftEventFilterDto: NftEventFilterDto): Promise<{ nftEventEntities: TransferHistoryEntry[], total: number }> {
 
-        // fetch by session account
-        // fetch by nft id
-        // fetch by event type
-        const { token_id, collection } = await this.nftService.findOne(nftEventFilterDto.nftId)
-        const { denom_id } = collection
+    //     // fetch by session account
+    //     // fetch by nft id
+    //     // fetch by event type
+    //     const nftEntity = await this.nftService.findOne(nftEventFilterDto.nftId)
+    //     const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
+    //     const tokenId = nftEntity.tokenId;
+    //     const denomId = collectionEntity.denomId;
 
-        const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(token_id, denom_id);
-        const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(token_id, denom_id);
+    //     const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(tokenId, denomId);
+    //     const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(tokenId, denomId);
 
-        const history: TransferHistoryEntry[] = [];
+    //     const history: TransferHistoryEntry[] = [];
 
-        nftTransferHistory.forEach((transfer) => {
-            let eventType = 'transfer';
-            if (transfer.old_owner == '0x0') {
-                eventType = 'mint';
-            }
+    //     nftTransferHistory.forEach((transfer) => {
+    //         let eventType = 'transfer';
+    //         if (transfer.old_owner == '0x0') {
+    //             eventType = 'mint';
+    //         }
 
-            history.push({
-                nftId: uid,
-                from: transfer.old_owner,
-                to: transfer.new_owner,
-                timestamp: transfer.timestamp,
-                eventType,
-            });
-        });
+    //         history.push({
+    //             nftId: uid,
+    //             from: transfer.old_owner,
+    //             to: transfer.new_owner,
+    //             hashing_power,
+    //             timestamp: transfer.timestamp,
+    //             eventType,
+    //         });
+    //     });
 
-        nftTradeHistory.forEach((trade) => {
-            let eventType = 'sale';
-            if (trade.seller = '0x0') {
-                eventType = 'mint';
-            }
+    //     nftTradeHistory.forEach((trade) => {
+    //         let eventType = 'sale';
+    //         if (trade.seller = '0x0') {
+    //             eventType = 'mint';
+    //         }
 
-            history.push({
-                nftId: uid,
-                from: trade.seller,
-                to: trade.buyer,
-                timestamp: trade.timestamp,
-                btcPrice: trade.btc_price,
-                usdPrice: trade.usd_price,
-                acudosPrice: trade.price,
-                eventType,
-            });
-        });
+    //         history.push({
+    //             nftId: uid,
+    //             from: trade.seller,
+    //             to: trade.buyer,
+    //             timestamp: trade.timestamp,
+    //             btcPrice: trade.btc_price,
+    //             usdPrice: trade.usd_price,
+    //             acudosPrice: trade.price,
+    //             eventType,
+    //         });
+    //     });
 
-        history.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
-    }
+    //     history.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+    // }
 
     async fetchNftEarnings(nftId: string, filters: { timestampFrom: string, timestampTo: string }): Promise<string[]> {
-        const { token_id, collection } = await this.nftService.findOne(nftId)
-        const { denom_id } = collection
+        const nftEntity = await this.nftService.findOne(nftId)
+        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
+        const tokenId = nftEntity.tokenId;
+        const denomId = collectionEntity.denomId;
 
         const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
 
-        if (!token_id) {
+        if (!tokenId) {
             return days.map((day) => null)
         }
         const payoutHistory = await this.nftPayoutHistoryModel.findAll({ where: {
-            token_id,
-            denom_id,
+            token_id: tokenId,
+            denom_id: denomId,
             payout_period_start: {
                 [Op.or]: {
                     [Op.gt]: Number(filters.timestampFrom) / 1000,
@@ -148,15 +156,18 @@ export class StatisticsService {
         const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
 
         const collections = await this.collectionService.findByFarmId(farmId)
-        const fetchNfts = collections.map((collection) => this.nftService.findByCollectionId(collection.id))
-        const nfts = (await Promise.all(fetchNfts)).flat().filter((nft) => nft.token_id !== '')
+        const tempNftFilterEntity = new NftFilterEntity();
+        tempNftFilterEntity.collectionIds = collections.map((collection) => collection.id.toString())
+        const { nftEntities } = await this.nftService.findByFilter(null, tempNftFilterEntity);
 
-        const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map((collection) => collection.denom_id))
+        const nfts = (await Promise.all(nftEntities)).flat().filter((nft) => nft.tokenId !== '')
+
+        const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map((collection) => collection.denomId))
 
         const nftsWithPayoutHistoryForPeriod = await Promise.all(nfts.map(async (nft) => {
             const payoutHistoryForPeriod = await this.nftPayoutHistoryModel.findAll({ where: {
-                token_id: nft.token_id,
-                denom_id: nft.collection.denom_id,
+                tokenId: nft.tokenId,
+                denomId: collections.find((collection) => collection.id === nft.collectionId).denomId,
                 payout_period_start: {
                     [Op.or]: {
                         [Op.gt]: Number(filters.timestampFrom) / 1000,
@@ -173,7 +184,7 @@ export class StatisticsService {
 
             const nftMaintenanceFeeForPeriod = payoutHistoryForPeriod.reduce((prevValue, currValue) => prevValue + currValue.maintenance_fee, 0)
             return {
-                ...nft.toJSON(),
+                ...NftEntity.toJson(nft),
                 nftMaintenanceFeeForPeriod,
                 payoutHistoryForPeriod,
             }

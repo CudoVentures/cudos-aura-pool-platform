@@ -44,11 +44,11 @@ export default class MiningFarmDetailsEntity {
 
         const entity = new MiningFarmDetailsEntity();
 
-        entity.miningFarmId = (json.id ?? entity.miningFarmId).toString();
-        entity.averageHashPowerInTh = parseInt(json.averageHashRateH1 ?? entity.averageHashPowerInTh);
-        entity.activeWorkers = parseInt(json.activeWorkersCount ?? entity.activeWorkers);
+        entity.miningFarmId = (json.miningFarmId ?? entity.miningFarmId).toString();
+        entity.averageHashPowerInTh = parseInt(json.averageHashPowerInTh ?? entity.averageHashPowerInTh);
+        entity.activeWorkers = parseInt(json.activeWorkers ?? entity.activeWorkers);
         entity.nftsOwned = parseInt(json.nftsOwned ?? entity.nftsOwned);
-        entity.totalNftsSold = parseInt(json.nftsSold ?? entity.totalNftsSold);
+        entity.totalNftsSold = parseInt(json.totalNftsSold ?? entity.totalNftsSold);
         entity.remainingHashPowerInTH = parseInt(json.remainingHashPowerInTH ?? entity.remainingHashPowerInTH);
 
         return entity;

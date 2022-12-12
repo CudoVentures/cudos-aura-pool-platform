@@ -7,6 +7,7 @@ import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import S from '../../../../core/utilities/Main';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 
 export default class CreditMiningFarmDetailsPageStore {
 
@@ -16,6 +17,7 @@ export default class CreditMiningFarmDetailsPageStore {
 
     accountSessionStore: AccountSessionStore;
     miningFarmRepo: MiningFarmRepo;
+    alertStore: AlertStore
 
     step: number;
     manufacturerInputValue: string;
@@ -32,9 +34,10 @@ export default class CreditMiningFarmDetailsPageStore {
     miningFarmEntity: MiningFarmEntity;
     // imageEntities: ImageEntity[];
 
-    constructor(accountSessionStore: AccountSessionStore, miningFarmRepo: MiningFarmRepo) {
+    constructor(accountSessionStore: AccountSessionStore, miningFarmRepo: MiningFarmRepo, alertStore: AlertStore) {
         this.accountSessionStore = accountSessionStore;
         this.miningFarmRepo = miningFarmRepo;
+        this.alertStore = alertStore;
 
         this.setStepFarmDetails();
         this.manufacturerInputValue = '';
@@ -75,7 +78,7 @@ export default class CreditMiningFarmDetailsPageStore {
             energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
         });
 
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.ANY);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
 
         runInAction(() => {
             this.manufacturerEntities = manufacturerEntities;
@@ -116,12 +119,12 @@ export default class CreditMiningFarmDetailsPageStore {
         try {
             this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity?.accountId;
             await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
+            runInAction(() => {
+                this.setStepSuccess();
+            });
         } catch (e) {
-            this.alertStore.show()
+            console.log(e);
         }
-        runInAction(() => {
-            this.setStepSuccess();
-        });
     }
 
     getSelectedManufacturers(): ManufacturerEntity[] {

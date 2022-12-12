@@ -7,6 +7,7 @@ import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
+import { json } from 'sequelize';
 
 export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
@@ -23,8 +24,9 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.status = status;
-
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities
     }
@@ -34,8 +36,9 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
         miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
-        miningFarmFilterModel.status = status;
-
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities;
     }
@@ -45,8 +48,9 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
         miningFarmFilterModel.miningFarmIds = miningFarmIds;
-        miningFarmFilterModel.status = status;
-
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities;
     }
@@ -61,8 +65,9 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
         miningFarmFilterModel.sessionAccount = S.INT_TRUE;
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.status = status;
-
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
     }
@@ -79,7 +84,7 @@ export default class MiningFarmStorageRepo implements MiningFarmRepo {
 
         if (miningFarmFilterModel.status !== null) {
             miningFarmsSlice = miningFarmsSlice.filter((json) => {
-                return json.status === miningFarmFilterModel.status;
+                return miningFarmFilterModel.status.includes(json.status);
             });
         }
 

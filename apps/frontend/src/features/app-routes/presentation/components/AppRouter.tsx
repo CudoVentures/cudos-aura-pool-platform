@@ -18,7 +18,6 @@ import CreditCollectionPage from '../../../collection/presentation/pages/CreditC
 import CreditMiningFarmPage from '../../../mining-farm/presentation/pages/CreditMiningFarmPage';
 import LoginPage from '../../../accounts/presentation/pages/LoginPage';
 import RegisterPage from '../../../accounts/presentation/pages/RegisterPage';
-import SuperAdminApprovePage from '../../../accounts/presentation/pages/SuperAdminApprovePage';
 import CreditMiningFarmDetailsPage from '../../../mining-farm/presentation/pages/CreditMiningFarmDetailsPage';
 import CreditCollectionDetailsCreatePage from '../../../collection/presentation/pages/CreditCollectionDetailsCreatePage';
 import ForgottenPassRequestPage from '../../../accounts/presentation/pages/ForgottenPassRequestPage';
@@ -29,6 +28,11 @@ import CreditAccountSettings from '../../../accounts/presentation/pages/CreditAc
 import AnalyticsPage from '../../../analytics/presentation/pages/AnalyticsPage';
 import CreditCollectionDetailsAddNftsPage from '../../../collection/presentation/pages/CreditCollectionDetailsAddNftsPage';
 import CreditCollectionDetailsEditPage from '../../../collection/presentation/pages/CreditCollectionDetailsEditPage';
+import SuperAdminCollectionsPage from '../../../collection/presentation/pages/SuperAdminCollectionsPage';
+import SuperAdminMiningFarmsPage from '../../../mining-farm/presentation/pages/SuperAdminMiningFarmsPage';
+import SuperAdminAnalyticsPage from '../../../analytics/presentation/pages/SuperAdminAnalyticsPage';
+import SuperAdminMegaWalletPage from '../../../accounts/presentation/pages/SuperAdminMegaWalletPage';
+import SuperAdminDashboardPage from '../../../indices/presentation/pages/SuperAdminDashboardPage';
 
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 
@@ -68,7 +72,7 @@ function AppRouter({ accountSessionStore }: Props) {
             }
 
             if (accountSessionStore.isSuperAdmin() === true) {
-                return <SuperAdminApprovePage />;
+                return <SuperAdminDashboardPage />;
             }
         }
 
@@ -116,18 +120,27 @@ function AppRouter({ accountSessionStore }: Props) {
                         <>
                             <Route path = { AppRoutes.CREDIT_MINING_FARM_DETAILS } element = { <CreditMiningFarmDetailsPage /> } />
                             <Route path = { AppRoutes.CREDIT_ACCOUNT_SETTINGS } element = { <CreditAccountSettings /> } />
+                            { accountSessionStore.hasApprovedMiningFarm() === true && (
+                                <>
+                                    <Route path = { AppRoutes.CREDIT_MINING_FARM } element = { <CreditMiningFarmPage /> } />
+                                    <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS_ADD_NFTS}/:collectionId` } element = { <CreditCollectionDetailsAddNftsPage /> } />
+                                    <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/:collectionId` } element = { <CreditCollectionDetailsEditPage /> } />
+                                    <Route path = { AppRoutes.CREDIT_COLLECTION_DETAILS_CREATE } element = { <CreditCollectionDetailsCreatePage /> } />
+                                    <Route path = { AppRoutes.FARM_ANALYTICS } element = { <AnalyticsPage /> } />
+                                </>
+                            ) }
                         </>
                     )}
 
-                    { accountSessionStore.isAdmin() === true && accountSessionStore.hasApprovedMiningFarm() === true && (
+                    { accountSessionStore.isSuperAdmin() === true && (
                         <>
-                            <Route path = { AppRoutes.CREDIT_MINING_FARM } element = { <CreditMiningFarmPage /> } />
-                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS_ADD_NFTS}/:collectionId` } element = { <CreditCollectionDetailsAddNftsPage /> } />
-                            <Route path = { `${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/:collectionId` } element = { <CreditCollectionDetailsEditPage /> } />
-                            <Route path = { AppRoutes.CREDIT_COLLECTION_DETAILS_CREATE } element = { <CreditCollectionDetailsCreatePage /> } />
-                            <Route path = { AppRoutes.FARM_ANALYTICS } element = { <AnalyticsPage /> } />
+                            <Route path = { AppRoutes.SUPER_ADMIN_ANALYTICS } element = { <SuperAdminAnalyticsPage /> } />
+                            <Route path = { AppRoutes.SUPER_ADMIN_MEGA_WALLET } element = { <SuperAdminMegaWalletPage /> } />
+                            <Route path = { AppRoutes.SUPER_ADMIN_COLLECTIONS } element = { <SuperAdminCollectionsPage /> } />
+                            <Route path = { AppRoutes.SUPER_ADMIN_MINING_FARMS } element = { <SuperAdminMiningFarmsPage /> } />
                         </>
                     ) }
+
                 </Routes>
             ) }
         </div>

@@ -1,0 +1,9 @@
+.PageSuperAdminDashboard .PageContent {
+    padding: 36px var(--page-spacing-h);
+}
+
+.PageSuperAdminDashboard .TableHeader {
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}

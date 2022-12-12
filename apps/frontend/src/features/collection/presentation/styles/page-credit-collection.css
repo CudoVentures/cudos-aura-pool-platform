@@ -7,9 +7,22 @@
     margin-top: 24px;
 }
 
-.PageCreditCollection .CollectionHeadingName {
+.PageCreditCollection .NameStatusRow {
     margin-top: 24px;
+    align-items: center;
+    gap: 20px;
 }
+
+.PageCreditCollection .NameStatusRow .ReviewBadge,
+.PageCreditCollection .NameStatusRow .RejectedBadge {
+    color: #fff;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-left: 26px;
+    background: var(--color-gray-025);
+}
+
 
 .PageCreditCollection .ProfileInfo {
     align-items: flex-start;

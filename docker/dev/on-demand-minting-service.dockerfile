@@ -40,4 +40,17 @@ WORKDIR ${WORKING_DIR}/CudosOnDemandMintingService
 
 RUN go build -mod=readonly ./cmd/cudos-ondemand-minting-service
 
+RUN echo "WALLET_MNEMONIC=\"${MINTER_WALLET_MNEMONIC}\"" > .env && \
+    echo "CHAIN_ID=${CHAIN_ID}" >> .env && \
+    echo "CHAIN_RPC=${CHAIN_RPC}" >> .env && \
+    echo "CHAIN_GRPC=${CHAIN_GRPC}" >> .env && \
+    echo "AURA_POOL_BACKEND=${AURA_POOL_BACKEND}" >> .env && \
+    echo "STATE_FILE=${MINTER_STATE_FILE}" >> .env && \
+    echo "MAX_RETRIES=${MINTER_MAX_RETRIES}" >> .env && \
+    echo "RETRY_INTERVAL=${MINTER_RETRY_INTERVAL}" >> .env && \
+    echo "RELAY_INTERVAL=${MINTER_RELAY_INTERVAL}" >> .env && \
+    echo "PAYMENT_DENOM=${MINTER_PAYMENT_DENOM}" >> .env && \
+    echo "PORT=${MINTER_PORT} " >> .env
+
+# CMD ["sleep", "infinity"]
 CMD ["/bin/bash", "-c", "./cudos-ondemand-minting-service"]

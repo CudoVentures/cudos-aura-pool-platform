@@ -36,7 +36,10 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.status = status;
+
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities
@@ -47,8 +50,9 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
         miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
-        miningFarmFilterModel.status = status;
-
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities;
     }
@@ -58,8 +62,9 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
         miningFarmFilterModel.miningFarmIds = miningFarmIds;
-        miningFarmFilterModel.status = status;
-
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities;
     }
@@ -74,8 +79,9 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         miningFarmFilterModel.sessionAccount = S.INT_TRUE;
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-        miningFarmFilterModel.status = status
-
+        if (status) {
+            miningFarmFilterModel.status = [status];
+        }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
     }
@@ -109,12 +115,16 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
             const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity);
             Object.assign(miningFarmEntity, resultMiningFarmEntity);
         } catch (e) {
-            switch (parseBackendErrorType(e)) {
+            const error = parseBackendErrorType(e);
+            switch (error) {
+                case BackendErrorType.NOT_FOUND:
+                    this.showAlert?.('Farm not found.');
+                    throw Error(error);
                 case BackendErrorType.FARM_CREATION_ERROR:
                     this.showAlert?.('There was an error in farm creation. Please try again later.');
-                    break;
+                    throw Error(error);
                 default:
-                    throw Error(parseBackendErrorType(e));
+                    throw Error(error);
             }
         } finally {
             this.enableActions?.();
@@ -124,12 +134,6 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     async creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
         for (let i = miningFarmEntities.length; i-- > 0;) {
             await this.creditMiningFarm(miningFarmEntities[i]);
-        }
-    }
-
-    async approveMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
-        for (let i = miningFarmEntities.length; i-- > 0;) {
-            await this.miningFarmApi.approveMiningFarm(miningFarmEntities[i]);
         }
     }
 

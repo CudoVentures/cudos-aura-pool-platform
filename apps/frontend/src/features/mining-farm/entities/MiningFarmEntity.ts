@@ -5,8 +5,7 @@ import S from '../../../core/utilities/Main';
 export enum MiningFarmStatus {
     APPROVED = 'approved',
     QUEUED = 'queued',
-    DELETED = 'deleted',
-    ANY = 'any',
+    REJECTED = 'rejected',
 }
 
 export default class MiningFarmEntity {
@@ -85,11 +84,16 @@ export default class MiningFarmEntity {
     }
 
     isApproved(): boolean {
+        console.log(this.status);
         return this.status === MiningFarmStatus.APPROVED;
     }
 
     isQueued(): boolean {
         return this.status === MiningFarmStatus.QUEUED;
+    }
+
+    isRejected(): boolean {
+        return this.status === MiningFarmStatus.REJECTED;
     }
 
     hasPhotos(): boolean {
@@ -98,6 +102,10 @@ export default class MiningFarmEntity {
 
     markApproved() {
         this.status = MiningFarmStatus.APPROVED;
+    }
+
+    marKRejected() {
+        this.status = MiningFarmStatus.REJECTED;
     }
 
     formatHashPowerInTh(): string {
@@ -114,29 +122,29 @@ export default class MiningFarmEntity {
         }
 
         return {
-            'id': parseInt(entity.id),
-            'creator_id': parseInt(entity.accountId),
+            'id': entity.id,
+            'accountId': entity.accountId,
             'name': entity.name,
-            'sub_account_name': entity.legalName,
-            'primary_account_owner_name': entity.primaryAccountOwnerName,
-            'primary_account_owner_email': entity.primaryAccountOwnerEmail,
+            'legalName': entity.legalName,
+            'primaryAccountOwnerName': entity.primaryAccountOwnerName,
+            'primaryAccountOwnerEmail': entity.primaryAccountOwnerEmail,
             'description': entity.description,
-            'manufacturers': entity.manufacturerIds,
-            'miner_types': entity.minerIds,
-            'energy_source': entity.energySourceIds,
-            'total_farm_hashrate': entity.hashPowerInTh,
-            'location': entity.machinesLocation,
-            'profile_img': entity.profileImgUrl,
-            'cover_img': entity.coverImgUrl,
-            'images': entity.farmPhotoUrls,
+            'manufacturerIds': entity.manufacturerIds,
+            'minerIds': entity.minerIds,
+            'energySourceIds': entity.energySourceIds,
+            'hashPowerInTh': entity.hashPowerInTh,
+            'machinesLocation': entity.machinesLocation,
+            'profileImgUrl': entity.profileImgUrl,
+            'coverImgUrl': entity.coverImgUrl,
+            'farmPhotoUrls': entity.farmPhotoUrls,
             'status': entity.status,
-            'maintenance_fee_in_btc': entity.maintenanceFeeInBtc.toString(),
-            'cudos_mint_nft_royalties_percent': entity.cudosMintNftRoyaltiesPercent,
-            'cudos_resale_nft_royalties_percent': entity.cudosResaleNftRoyaltiesPercent,
-            'resale_farm_royalties_cudos_address': entity.resaleFarmRoyaltiesCudosAddress,
-            'address_for_receiving_rewards_from_pool': entity.rewardsFromPoolBtcAddress,
-            'leftover_reward_payout_address': entity.leftoverRewardsBtcAddress,
-            'maintenance_fee_payout_address': entity.maintenanceFeePayoutBtcAddress,
+            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
+            'cudosMintNftRoyaltiesPercent': entity.cudosMintNftRoyaltiesPercent,
+            'cudosResaleNftRoyaltiesPercent': entity.cudosResaleNftRoyaltiesPercent,
+            'resaleFarmRoyaltiesCudosAddress': entity.resaleFarmRoyaltiesCudosAddress,
+            'rewardsFromPoolBtcAddress': entity.rewardsFromPoolBtcAddress,
+            'leftoverRewardsBtcAddress': entity.leftoverRewardsBtcAddress,
+            'maintenanceFeePayoutBtcAddress': entity.maintenanceFeePayoutBtcAddress,
         }
     }
 
@@ -144,33 +152,33 @@ export default class MiningFarmEntity {
         if (json === null) {
             return null;
         }
-        const model = new MiningFarmEntity();
+        const entity = new MiningFarmEntity();
 
-        model.id = (json.id ?? model.id).toString();
-        model.accountId = (json.creator_id ?? model.accountId).toString();
-        model.name = json.name ?? model.name;
-        model.legalName = json.sub_account_name ?? model.legalName;
-        model.primaryAccountOwnerName = json.primary_account_owner_name ?? model.primaryAccountOwnerName;
-        model.primaryAccountOwnerEmail = json.primary_account_owner_email ?? model.primaryAccountOwnerEmail;
-        model.description = json.description ?? model.description;
-        model.manufacturerIds = json.manufacturers ?? model.manufacturerIds;
-        model.minerIds = json.miner_types ?? model.minerIds;
-        model.energySourceIds = json.energy_source ?? model.energySourceIds;
-        model.hashPowerInTh = Number(json.total_farm_hashrate ?? model.hashPowerInTh);
-        model.machinesLocation = json.location ?? model.machinesLocation;
-        model.profileImgUrl = json.profile_img ?? model.profileImgUrl;
-        model.coverImgUrl = json.cover_img ?? model.coverImgUrl;
-        model.farmPhotoUrls = json.images ?? model.farmPhotoUrls;
-        model.status = json.status ?? model.status;
-        model.maintenanceFeeInBtc = new BigNumber(json.maintenance_fee_in_btc ?? model.maintenanceFeeInBtc);
-        model.cudosMintNftRoyaltiesPercent = Number(json.cudos_mint_nft_royalties_percent ?? model.cudosMintNftRoyaltiesPercent);
-        model.cudosResaleNftRoyaltiesPercent = Number(json.cudos_resale_nft_royalties_percent ?? model.cudosResaleNftRoyaltiesPercent);
-        model.resaleFarmRoyaltiesCudosAddress = json.resale_farm_royalties_cudos_address ?? model.resaleFarmRoyaltiesCudosAddress;
-        model.rewardsFromPoolBtcAddress = json.address_for_receiving_rewards_from_pool ?? model.rewardsFromPoolBtcAddress;
-        model.leftoverRewardsBtcAddress = json.leftover_reward_payout_address ?? model.leftoverRewardsBtcAddress;
-        model.maintenanceFeePayoutBtcAddress = json.maintenance_fee_payout_address ?? model.maintenanceFeePayoutBtcAddress;
+        entity.id = (json.id ?? entity.id).toString();
+        entity.accountId = (json.accountId ?? entity.accountId).toString();
+        entity.name = json.name ?? entity.name;
+        entity.legalName = json.legalName ?? entity.legalName;
+        entity.primaryAccountOwnerName = json.primaryAccountOwnerName ?? entity.primaryAccountOwnerName;
+        entity.primaryAccountOwnerEmail = json.primaryAccountOwnerEmail ?? entity.primaryAccountOwnerEmail;
+        entity.description = json.description ?? entity.description;
+        entity.manufacturerIds = json.manufacturerIds ?? entity.manufacturerIds;
+        entity.minerIds = json.minerIds ?? entity.minerIds;
+        entity.energySourceIds = json.energySourceIds ?? entity.energySourceIds;
+        entity.hashPowerInTh = Number(json.hashPowerInTh ?? entity.hashPowerInTh);
+        entity.machinesLocation = json.machinesLocation ?? entity.machinesLocation;
+        entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;
+        entity.coverImgUrl = json.coverImgUrl ?? entity.coverImgUrl;
+        entity.farmPhotoUrls = json.farmPhotoUrls ?? entity.farmPhotoUrls;
+        entity.status = (json.status ?? entity.status);
+        entity.maintenanceFeeInBtc = json.maintenanceFeeInBtc === null ? null : new BigNumber(json.maintenanceFeeInBtc);
+        entity.cudosMintNftRoyaltiesPercent = Number(json.cudosMintNftRoyaltiesPercent ?? entity.cudosMintNftRoyaltiesPercent);
+        entity.cudosResaleNftRoyaltiesPercent = Number(json.cudosResaleNftRoyaltiesPercent ?? entity.cudosResaleNftRoyaltiesPercent);
+        entity.resaleFarmRoyaltiesCudosAddress = json.resaleFarmRoyaltiesCudosAddress ?? entity.resaleFarmRoyaltiesCudosAddress;
+        entity.rewardsFromPoolBtcAddress = json.rewardsFromPoolBtcAddress ?? entity.rewardsFromPoolBtcAddress;
+        entity.leftoverRewardsBtcAddress = json.leftoverRewardsBtcAddress ?? entity.leftoverRewardsBtcAddress;
+        entity.maintenanceFeePayoutBtcAddress = json.maintenanceFeePayoutBtcAddress ?? entity.maintenanceFeePayoutBtcAddress;
 
-        return model;
+        return entity;
     }
 
 }

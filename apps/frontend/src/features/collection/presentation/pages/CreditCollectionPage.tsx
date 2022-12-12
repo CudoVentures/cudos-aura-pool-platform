@@ -105,8 +105,15 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                         </Actions>
                     ) }
 
-                    <div className={'H2 CollectionHeadingName'}>{collectionEntity.name}</div>
-
+                    <div className={'FlexRow NameStatusRow'}>
+                        <div className={'H2 CollectionHeadingName'}>{collectionEntity.name}</div>
+                        {collectionEntity.isStatusQueued() === true && (
+                            <div className={'ReviewBadge'}>Under Review</div>
+                        )}
+                        {collectionEntity.isStatusRejected() === true && (
+                            <div className={'RejectedBadge'}>Rejected</div>
+                        )}
+                    </div>
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
                             <div className={'Clickable'} onClick={onClickFarmLink}>Farm Owner:  <b className={ 'ColorPrimaryBlue' }>{miningFarmEntity.name}</b></div>

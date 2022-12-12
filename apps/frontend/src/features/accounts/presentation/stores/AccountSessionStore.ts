@@ -1,8 +1,8 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import S from '../../../../core/utilities/Main';
-import { Ledger, GasPrice, SigningStargateClient, StdSignature } from 'cudosjs';
+import { StdSignature } from 'cudosjs';
 
-import WalletStore, { SESSION_STORAGE_WALLET_KEY } from '../../../ledger/presentation/stores/WalletStore';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import AccountEntity from '../../entities/AccountEntity';
 import AdminEntity from '../../entities/AdminEntity';
@@ -22,6 +22,7 @@ export default class AccountSessionStore {
     userEntity: UserEntity;
     adminEntity: AdminEntity;
     superAdminEntity: SuperAdminEntity;
+    shouldChangePassword: number;
 
     constructor(walletStore: WalletStore, accountRepo: AccountRepo, miningFarmRepo: MiningFarmRepo) {
         this.walletStore = walletStore;
@@ -34,12 +35,17 @@ export default class AccountSessionStore {
         this.userEntity = null;
         this.adminEntity = null;
         this.superAdminEntity = null;
+        this.shouldChangePassword = S.INT_FALSE;
 
         makeAutoObservable(this);
     }
 
     isLoggedIn(): boolean {
         return this.accountEntity !== null;
+    }
+
+    isLoggedInAndWalletConnected() {
+        return this.isLoggedIn() === true && this.walletStore.isConnected() === true;
     }
 
     isUser(): boolean {
@@ -126,6 +132,10 @@ export default class AccountSessionStore {
         return this.approvedMiningFarm;
     }
 
+    shouldUpdatePassword(): boolean {
+        return this.shouldChangePassword === S.INT_TRUE;
+    }
+
     async loginWithCredentials(username: string, password: string) {
         await this.login(username, password, '', '', '', null, S.NOT_EXISTS, S.NOT_EXISTS);
     }
@@ -171,8 +181,8 @@ export default class AccountSessionStore {
         await this.accountRepo.sendSessionAccountVerificationEmail();
     }
 
-    async creditSessionAccount(accountEntity: AccountEntity): Promise < void > {
-        await this.accountRepo.creditSessionAccount(accountEntity);
+    async editSessionAccount(accountEntity: AccountEntity): Promise < void > {
+        await this.accountRepo.editSessionAccount(accountEntity);
 
         runInAction(() => {
             Object.assign(this.accountEntity, accountEntity);
@@ -180,7 +190,7 @@ export default class AccountSessionStore {
     }
 
     async loadSessionAccountsAndSync() {
-        const { accountEntity, userEntity, adminEntity, superAdminEntity } = await this.accountRepo.fetchSessionAccounts();
+        const { accountEntity, userEntity, adminEntity, superAdminEntity, shouldChangePassword } = await this.accountRepo.fetchSessionAccounts();
 
         if (accountEntity?.isUser() === true && userEntity !== null) {
             await this.walletStore.tryConnect();
@@ -215,6 +225,7 @@ export default class AccountSessionStore {
             this.userEntity = userEntity;
             this.adminEntity = adminEntity;
             this.superAdminEntity = superAdminEntity;
+            this.shouldChangePassword = shouldChangePassword;
             this.inited = true;
         });
     }

@@ -79,10 +79,10 @@ export default class NftStorageRepo implements NftRepo {
             });
         }
 
-        if (nftFilterModel.collectionStatus !== CollectionStatus.ANY) {
+        if (nftFilterModel.collectionStatus !== null && nftFilterModel.collectionStatus.length !== 0) {
             const collectionIdsSet = new Set();
             this.storageHelper.collectionsJson.forEach((collectionJson) => {
-                if (collectionJson.status === nftFilterModel.collectionStatus) {
+                if (nftFilterModel.collectionStatus.includes(collectionJson.status)) {
                     collectionIdsSet.add(collectionJson.id);
                 }
             });
@@ -113,7 +113,7 @@ export default class NftStorageRepo implements NftRepo {
     async buyNft(nftEntity: NftEntity, ledger: Ledger, network: string): Promise < string > {
         this.storageHelper.nftsJson.forEach((nftJson: NftEntity) => {
             if (nftJson.id === nftEntity.id) {
-                nftJson.currentOwnerAddress = ledger.accountAddress
+                nftJson.currentOwner = ledger.accountAddress
                 nftJson.listStatus = ListStatus.NOT_LISTED
             }
         })

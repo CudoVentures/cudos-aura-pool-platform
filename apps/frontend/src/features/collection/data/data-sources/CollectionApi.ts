@@ -4,7 +4,10 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../../core/utilities/AxiosWrapper';
-import Ledger from 'cudosjs/build/ledgers/Ledger';
+import { ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter } from '../dto/Requests';
+import { ResCreditCollection, ResEditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter } from '../dto/Responses';
+
+const COLLECTION_URL = '/api/v1/collection';
 
 export default class CollectionApi {
     async fetchCategories(): Promise < CategoryEntity [] > {
@@ -12,32 +15,45 @@ export default class CollectionApi {
     }
 
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
-        const { data } = await axios.post('/api/v1/collection', CollectionFilterModel.toJson(collectionFilterModel))
+        const req = new ReqFetchCollectionsByFilter(collectionFilterModel);
+
+        const { data } = await axios.post(COLLECTION_URL, req)
+
+        const res = new ResFetchCollectionsByFilter(data);
 
         return {
-            collectionEntities: data.collectionEntities.map((collectionJson) => CollectionEntity.fromJson(collectionJson)),
-            total: data.total,
+            collectionEntities: res.collectionEntities,
+            total: res.total,
         }
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
-        const { data } = await axios.put(
-            '/api/v1/collection',
-            {
-                ...CollectionEntity.toJson(collectionEntity),
-                nfts: nftEntities.map((nft) => NftEntity.toJson(nft)),
-            },
-        )
+        const req = new ReqCreditCollection(collectionEntity, nftEntities);
+
+        const { data } = await axios.put(COLLECTION_URL, req)
+
+        const res = new ResCreditCollection(data);
 
         return {
-            collectionEntity: CollectionEntity.fromJson(data.collection),
-            nftEntities: data.nfts.map((nftJson) => NftEntity.fromJson(nftJson)),
+            collectionEntity: res.collectionEntity,
+            nftEntities: res.nftEntities,
         }
     }
 
-    async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
-        const { data } = await axios.get('/api/v1/collection/details', { params: { ids: collectionIds.join(',') } });
+    async editCollection(collectionEntity: CollectionEntity): Promise < CollectionEntity > {
+        const req = new ReqEditCollection(collectionEntity);
+        const { data } = await axios.put(`${COLLECTION_URL}/editCollection`, req)
+        const res = new ResEditCollection(data);
+        return res.collectionEntity;
+    }
 
-        return data.map((details) => CollectionDetailsEntity.fromJson(details))
+    async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
+        const req = new ReqFetchCollectionDetails(collectionIds);
+
+        const { data } = await axios.post(`${COLLECTION_URL}/details`, req);
+
+        const res = new ResFetchCollectionDetails(data);
+
+        return res.detailEntities;
     }
 }

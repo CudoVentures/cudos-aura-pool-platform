@@ -1,0 +1,11 @@
+.StyledLayout .StyledLayoutHeader {
+    margin-bottom: 32px;
+}
+
+.StyledLayout .StyledLayoutHeader .StyleLayoutTitle {
+    font-size: 18px;
+}
+
+.StyledLayout .StyledLayoutBottom {
+    margin-top: 48px;
+}

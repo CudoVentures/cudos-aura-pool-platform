@@ -9,12 +9,14 @@ export class ResFetchSessionAccounts {
     userEntity: UserEntity;
     adminEntity: AdminEntity;
     superAdminEntity: SuperAdminEntity;
+    shouldChangePassword: number;
 
     constructor(axiosData: any) {
         this.accountEntity = AccountEntity.fromJson(axiosData.accountEntity);
         this.userEntity = UserEntity.fromJson(axiosData.userEntity);
         this.adminEntity = AdminEntity.fromJson(axiosData.adminEntity);
         this.superAdminEntity = SuperAdminEntity.fromJson(axiosData.superAdminEntity);
+        this.shouldChangePassword = parseInt(axiosData.shouldChangePassword);
     }
 
 }
@@ -29,7 +31,7 @@ export class ResLogin {
 
 }
 
-export class ResCreditSessionAccount {
+export class ResEditSessionAccount {
 
     accountEntity: AccountEntity;
 

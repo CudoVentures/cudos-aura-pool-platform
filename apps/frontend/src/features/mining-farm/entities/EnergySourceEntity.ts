@@ -29,7 +29,7 @@ export default class EnergySourceEntity {
         }
 
         return {
-            'id': parseInt(entity.energySourceId),
+            'energySourceId': entity.energySourceId,
             'name': entity.name,
         }
     }
@@ -41,7 +41,7 @@ export default class EnergySourceEntity {
 
         const model = new EnergySourceEntity();
 
-        model.energySourceId = (json.id ?? model.energySourceId).toString();
+        model.energySourceId = (json.energySourceId ?? model.energySourceId).toString();
         model.name = json.name ?? model.name;
 
         return model;

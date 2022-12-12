@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CollectionService } from '../collection.service';
-import { CollectionDto } from '../dto/collection.dto';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
+import { CollectionEntity } from '../entities/collection.entity';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
             body,
         } = request;
 
-        const collectionDto: CollectionDto = CollectionDto.fromJson(body);
+        const collectionEntity: CollectionEntity = CollectionEntity.fromJson(body.collectionDto);
 
         // super admin can do anything
         if (sessionSuperAdminEntity !== null) {
@@ -29,20 +29,20 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
         }
 
         // it is farm admin, so he can always create a new collection
-        if (collectionDto.isNew()) {
+        if (collectionEntity.isNew()) {
             return true
         }
 
         // it's not a new collection, so is the farm admin the owner?
-        const collection = await this.collectionService.findOne(collectionDto.id);
+        const collection = await this.collectionService.findOne(collectionEntity.id);
 
         if (!collection) {
             throw new UnauthorizedException(
-                `Collection with id ${collectionDto.id} is not found`,
+                `Collection with id ${collectionEntity.id} is not found`,
             );
         }
 
-        return collection.creator_id === sessionAdminEntity.accountId;
+        return collection.creatorId === sessionAdminEntity.accountId;
     }
 
 }

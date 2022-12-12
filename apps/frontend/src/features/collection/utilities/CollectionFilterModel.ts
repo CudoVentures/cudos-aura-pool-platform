@@ -12,7 +12,8 @@ export enum CollectionOrderBy {
 export default class CollectionFilterModel {
 
     collectionIds: string[];
-    status: CollectionStatus;
+    denomIds: string[];
+    status: CollectionStatus[];
     searchString: string;
     farmId: string;
     timestampFrom: number;
@@ -23,7 +24,8 @@ export default class CollectionFilterModel {
 
     constructor() {
         this.collectionIds = null;
-        this.status = CollectionStatus.APPROVED;
+        this.denomIds = null;
+        this.status = null;
         this.searchString = '';
         this.farmId = S.Strings.NOT_EXISTS;
         this.timestampFrom = S.NOT_EXISTS;
@@ -36,7 +38,7 @@ export default class CollectionFilterModel {
     }
 
     markAnyCollectins() {
-        this.status = CollectionStatus.ANY;
+        this.status = null;
     }
 
     static toJson(model) {
@@ -46,6 +48,7 @@ export default class CollectionFilterModel {
 
         return {
             'collectionIds': model.collectionIds,
+            'denomIds': model.denomIds,
             'status': model.status,
             'searchString': model.searchString,
             'farmId': model.farmId,

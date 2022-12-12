@@ -40,7 +40,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         this.disableActions = disableActions;
     }
 
-    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void) {
         this.showAlert = showAlert;
     }
 
@@ -55,7 +55,7 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
-        collectionFilterModel.status = status;
+        collectionFilterModel.status = [status];
         collectionFilterModel.timestampFrom = timestampFrom;
         collectionFilterModel.timestampTo = timestampTo;
         collectionFilterModel.orderBy = CollectionOrderBy.TOP_DESC;
@@ -64,16 +64,17 @@ export default class CollectionApiRepo implements CollectionRepo {
         return collectionEntities;
     }
 
-    async fetchCollectionsByIds(collectionIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
+    async fetchCollectionsByIds(collectionIds: string[], status?: CollectionStatus): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         collectionFilterModel.collectionIds = collectionIds;
-        collectionFilterModel.status = status;
-
+        if (status) {
+            collectionFilterModel.status = [status];
+        }
         const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
-    async fetchCollectionById(collectionId: string, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity > {
+    async fetchCollectionById(collectionId: string, status?: CollectionStatus): Promise < CollectionEntity > {
         const collectionEntities = await this.fetchCollectionsByIds([collectionId], status);
         return collectionEntities.length === 1 ? collectionEntities[0] : null;
     }
@@ -131,6 +132,34 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
+    async editCollection(collectionEntity: CollectionEntity) {
+        try {
+            this.disableActions?.();
+            const resultCollectionEntity = await this.collectionApi.editCollection(collectionEntity);
+            Object.assign(collectionEntity, resultCollectionEntity);
+        } catch (e) {
+            const error = parseBackendErrorType(e);
+            switch (error) {
+                case BackendErrorType.COLLECTION_DENOM_EXISTS_ERROR:
+                    this.showAlert?.('Please ensure that denom id is not already in use');
+                    throw Error(error);
+                case BackendErrorType.COLLECTION_CREATE_ERROR:
+                    this.showAlert?.('There was error in creating the colelction. Please try again.');
+                    throw Error(error);
+                case BackendErrorType.COLLECTION_WRONG_DENOM_ERROR:
+                    this.showAlert?.('Please use only letters for collection name.');
+                    throw Error(error);
+                case BackendErrorType.DATA_SERVICE_ERROR:
+                    this.showAlert?.('Failed to save pictures. Please try again.');
+                    throw Error(error);
+                default:
+                    throw Error(error);
+            }
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
     async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger): Promise < string > {
 
         checkValidNftDenomId(collectionEntity.denomId)
@@ -169,7 +198,7 @@ export default class CollectionApiRepo implements CollectionRepo {
                 Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
             ],
             [
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: miningFarmEntity.resaleFarmRoyaltiesCudosAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
                 Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
             ],
             true,

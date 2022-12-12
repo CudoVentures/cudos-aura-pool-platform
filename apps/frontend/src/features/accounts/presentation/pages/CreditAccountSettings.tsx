@@ -89,7 +89,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
             return;
         }
 
-        await accountSessionStore.creditSessionAccount(self.accountEntity);
+        await accountSessionStore.editSessionAccount(self.accountEntity);
         setChangedEmail(true);
     }
 
@@ -99,7 +99,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
             return;
         }
 
-        await accountSessionStore.creditSessionAccount(self.accountEntity);
+        await accountSessionStore.editSessionAccount(self.accountEntity);
         setEditOwner(false);
     }
 

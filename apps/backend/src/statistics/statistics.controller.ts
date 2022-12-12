@@ -7,6 +7,7 @@ import {
     Req,
     Post,
     Body,
+    HttpCode,
 } from '@nestjs/common';
 import { GraphqlService } from '../graphql/graphql.service';
 import { TransferHistoryEntry } from './dto/transfer-history.dto';
@@ -24,9 +25,11 @@ export class StatisticsController {
         private graphqlService: GraphqlService,
         private statisticsService: StatisticsService,
         private nftService: NFTService,
+    // eslint-disable-next-line no-empty-function
     ) {}
 
     @Post('history/nft')
+    @HttpCode(200)
     async getTransferHistory(@Body() nftEventFilterDto: NftEventFilterDto): Promise<{ nftEventDtos: TransferHistoryEntry[], total: number }> {
         // const { nftEventEntities, total } = await this.statisticsService.fetchNftEventsByFilter(nftEventFilterDto);
 
@@ -82,6 +85,7 @@ export class StatisticsController {
     }
 
     @Get('earnings/nft/:id')
+    @HttpCode(200)
     async getNftEarnings(@Param('id') id: string, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise<{nftEarningsDto: string[]}> {
         const nftEarningsDto = await this.statisticsService.fetchNftEarnings(id, { timestampFrom, timestampTo });
 
@@ -89,6 +93,7 @@ export class StatisticsController {
     }
 
     @Get('earnings/session-account')
+    @HttpCode(200)
     async getAddressEarnings(@Req() req: AppRequest, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise <{userEarningsDto}> {
         const cudosAddress = req.sessionUserEntity.cudosWalletAddress
         const userEarningsDto = await this.statisticsService.fetchAddressEarnings(cudosAddress, { timestampFrom, timestampTo })
@@ -97,6 +102,7 @@ export class StatisticsController {
     }
 
     @Get('earnings/farm/:farmId')
+    @HttpCode(200)
     async getFarmEarnings(@Param('farmId', ParseIntPipe) farmId: number, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise <any> {
         const farmEarnings = await this.statisticsService.fetchFarmEarnings(farmId, { timestampFrom, timestampTo })
 

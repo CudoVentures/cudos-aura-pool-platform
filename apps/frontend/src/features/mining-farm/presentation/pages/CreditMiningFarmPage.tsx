@@ -155,8 +155,11 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                             ) }
                             <div className={'MiningFarmNameCnt FlexRow'}>
                                 <span className = { 'H2 Bold' }>{miningFarmEntity.name}</span>
-                                { miningFarmEntity.isApproved() === false && (
+                                { miningFarmEntity.isQueued() === true && (
                                     <div className = { 'ReviewBadge' } >Under review</div>
+                                ) }
+                                { miningFarmEntity.isRejected() === true && (
+                                    <div className = { 'RejectedBadge' } >Rejected</div>
                                 ) }
                             </div>
                             <div className={'MiningFarmDataCnt Grid GridColumns2'}>

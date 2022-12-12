@@ -8,11 +8,11 @@ import AccountSessionStore from '../../../accounts/presentation/stores/AccountSe
 
 import Svg from '../../../../core/presentation/components/Svg';
 import HeaderWallet from './HeaderWallet';
+import Actions from '../../../../core/presentation/components/Actions';
+import Button from '../../../../core/presentation/components/Button';
 
 import SvgAuraPoolLogo from '../../../../public/assets/vectors/aura-pool-logo.svg';
 import '../styles/page-header.css'
-import Actions from '../../../../core/presentation/components/Actions';
-import Button from '../../../../core/presentation/components/Button';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
@@ -48,7 +48,7 @@ function PageHeader({ accountSessionStore }: Props) {
     }
 
     return (
-        <header className={'PageHeader FlexRow FlexSplit'}>
+        <header className={'PageHeader FlexRow'}>
             <div className={'LogoHeader FlexRow'}>
                 <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
             </div>
@@ -75,7 +75,7 @@ function PageHeader({ accountSessionStore }: Props) {
 
                 <HeaderWallet />
 
-                { accountSessionStore.isLoggedIn() === true && accountSessionStore.isAdmin() === true && (
+                { accountSessionStore.isLoggedIn() === true && (
                     <Actions>
                         <Button onClick={onClickLogout}>Logout</Button>
                     </Actions>
