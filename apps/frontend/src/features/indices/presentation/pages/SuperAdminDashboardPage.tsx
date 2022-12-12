@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ViewCollectionModal from '../../../collection/presentation/components/ViewCollectionModal';
@@ -32,6 +32,10 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore }: Props) {
     const defaultIntervalPickerState = superAdminDashboardPageStore.defaultIntervalPickerState;
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        superAdminDashboardPageStore.init();
+    }, []);
 
     function onClickAllFarms() {
         // TODO: implement
@@ -83,7 +87,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore }: Props) {
                 </>
             ) }>
 
-            <PageSuperAdminHeader />
+            <PageSuperAdminHeader />Days
             <ColumnLayout className = { 'PageContent AppContent' } >
                 <div className={'H1 ExtraBold'}>Dashboard</div>
                 <div className={'Grid GridColumns2'}>

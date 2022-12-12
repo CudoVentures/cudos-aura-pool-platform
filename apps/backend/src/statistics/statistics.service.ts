@@ -157,16 +157,10 @@ export class StatisticsService {
                 tokenId: nft.tokenId,
                 denomId: collections.find((collection) => collection.id === nft.collectionId).denomId,
                 payout_period_start: {
-                    [Op.or]: {
-                        [Op.gt]: Number(filters.timestampFrom) / 1000,
-                        [Op.eq]: Number(filters.timestampFrom) / 1000,
-                    },
+                    [Op.gte]: Number(filters.timestampFrom) / 1000,
                 },
                 payout_period_end: {
-                    [Op.or]: {
-                        [Op.lt]: Number(filters.timestampTo) / 1000,
-                        [Op.eq]: Number(filters.timestampTo) / 1000,
-                    },
+                    [Op.lte]: Number(filters.timestampTo) / 1000,
                 },
             } })
 
