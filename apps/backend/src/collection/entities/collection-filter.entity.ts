@@ -6,7 +6,7 @@ export default class CollectionFilterEntity {
 
     collectionIds: string[];
     denomIds: string[];
-    status: CollectionStatus;
+    status: CollectionStatus[];
     searchString: string;
     farmId: string;
     timestampFrom: number;
@@ -18,7 +18,7 @@ export default class CollectionFilterEntity {
     constructor() {
         this.collectionIds = null;
         this.denomIds = null;
-        this.status = CollectionStatus.APPROVED;
+        this.status = null;
         this.searchString = '';
         this.farmId = NOT_EXISTS_STRING;
         this.timestampFrom = NOT_EXISTS_INT;
@@ -37,7 +37,7 @@ export default class CollectionFilterEntity {
     }
 
     hasCollectionStatus(): boolean {
-        return this.status !== CollectionStatus.ANY;
+        return this.status !== null && this.status.length !== 0;
     }
 
     hasSearchString(): boolean {
@@ -48,8 +48,8 @@ export default class CollectionFilterEntity {
         return this.farmId !== NOT_EXISTS_STRING;
     }
 
-    getCollectionStatus(): CollectionStatus {
-        return this.status as unknown as CollectionStatus;
+    getCollectionStatus(): CollectionStatus[] {
+        return this.status as unknown as CollectionStatus[];
     }
 
     hasTimestampFrom(): boolean {

@@ -65,7 +65,7 @@ export default class SuperAdminDashboardPageStore {
         const miningFarmFilter = new MiningFarmFilterModel();
         miningFarmFilter.from = this.miningFarmsTableState.tableFilterState.from;
         miningFarmFilter.count = this.miningFarmsTableState.tableFilterState.itemsPerPage;
-        miningFarmFilter.status = MiningFarmStatus.QUEUED;
+        miningFarmFilter.status = [MiningFarmStatus.QUEUED];
 
         this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter).then(({ miningFarmEntities, total }) => {
             this.miningFarmEntities = miningFarmEntities;

@@ -35,7 +35,9 @@ export class CollectionService {
         }
 
         if (collectionFitlerEntity.hasCollectionStatus() === true) {
-            whereClause.status = collectionFitlerEntity.getCollectionStatus();
+            whereClause.status = {
+                [Op.in]: collectionFitlerEntity.getCollectionStatus(),
+            };
         }
 
         if (collectionFitlerEntity.hasFarmId() === true) {
@@ -99,10 +101,12 @@ export class CollectionService {
         };
     }
 
-    async findIdsByStatus(status: CollectionStatus): Promise < number[] > {
+    async findIdsByStatus(status: CollectionStatus[]): Promise < number[] > {
         const collections = await this.collectionModel.findAll({
             where: {
-                status,
+                status: {
+                    [Op.in]: status,
+                },
             },
         })
 

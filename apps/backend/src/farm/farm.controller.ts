@@ -14,7 +14,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
 import { FarmService } from './farm.service';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
-import MiningFarmFilterModel from './dto/farm-filter.mdel';
+import MiningFarmFilterModel from './dto/farm-filter.model';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
@@ -31,6 +31,7 @@ import ManufacturerEntity from './entities/manufacturer.entity';
 export class FarmController {
     constructor(
         private miningFarmService: FarmService,
+    // eslint-disable-next-line no-empty-function
     ) { }
 
     @Post()

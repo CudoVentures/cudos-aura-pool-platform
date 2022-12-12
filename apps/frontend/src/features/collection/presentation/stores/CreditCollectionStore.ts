@@ -113,7 +113,7 @@ export default class CreditCollectionStore {
     }
 
     async fetchCollectionData(collectionId: string) {
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId, CollectionStatus.ANY);
+        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
         nftFilter.count = Number.MAX_SAFE_INTEGER;
@@ -285,8 +285,8 @@ export default class CreditCollectionStore {
     }
 
     onClickSendForApproval = async () => {
-        this.collectionEntity.markQueued();
         await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
+        this.collectionEntity.markQueued();
     }
 
     onClickSave = async () => {
@@ -295,7 +295,6 @@ export default class CreditCollectionStore {
 
     onClickDeleteNft = (nftEntityId: string) => {
         this.nftEntities = this.nftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
-        this.addedOrEdittedNftEntities = this.addedOrEdittedNftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
     }
 
     onClickAddToCollection = () => {

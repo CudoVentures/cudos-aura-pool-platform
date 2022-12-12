@@ -79,8 +79,9 @@ export class NftFilterJsonValidation {
     @IsOptional()
         tokenIds: string[];
 
-    @IsEnum(CollectionStatus)
-        collectionStatus: CollectionStatus;
+    @IsArray()
+    @IsEnum(CollectionStatus, { each: true })
+        collectionStatus: CollectionStatus[];
 
     @IsArray()
     @IsString({ each: true })

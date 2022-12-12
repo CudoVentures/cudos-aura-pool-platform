@@ -5,10 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import ExploreMiningFarmsPageStore from '../stores/ExploreMiningFarmsPageStore';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
-import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import { MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageHeader from '../../../header/presentation/components/PageHeader';
@@ -19,7 +17,6 @@ import Svg from '../../../../core/presentation/components/Svg';
 import GridView from '../../../../core/presentation/components/GridView';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import MiningFarmPeview from '../components/MiningFarmPreview';
-import Select from '../../../../core/presentation/components/Select';
 import ExplorePageLayout from '../../../../core/presentation/components/ExplorePageLayout';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';

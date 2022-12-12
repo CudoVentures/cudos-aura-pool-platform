@@ -40,7 +40,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         this.disableActions = disableActions;
     }
 
-    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void) {
         this.showAlert = showAlert;
     }
 
@@ -55,7 +55,7 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
-        collectionFilterModel.status = status;
+        collectionFilterModel.status = [status];
         collectionFilterModel.timestampFrom = timestampFrom;
         collectionFilterModel.timestampTo = timestampTo;
         collectionFilterModel.orderBy = CollectionOrderBy.TOP_DESC;
@@ -67,7 +67,7 @@ export default class CollectionApiRepo implements CollectionRepo {
     async fetchCollectionsByIds(collectionIds: string[], status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
         const collectionFilterModel = new CollectionFilterModel();
         collectionFilterModel.collectionIds = collectionIds;
-        collectionFilterModel.status = status;
+        collectionFilterModel.status = [status];
 
         const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
@@ -137,21 +137,22 @@ export default class CollectionApiRepo implements CollectionRepo {
             const resultCollectionEntity = await this.collectionApi.editCollection(collectionEntity);
             Object.assign(collectionEntity, resultCollectionEntity);
         } catch (e) {
-            switch (parseBackendErrorType(e)) {
+            const error = parseBackendErrorType(e);
+            switch (error) {
                 case BackendErrorType.COLLECTION_DENOM_EXISTS_ERROR:
                     this.showAlert?.('Please ensure that denom id is not already in use');
-                    break;
+                    throw Error(error);
                 case BackendErrorType.COLLECTION_CREATE_ERROR:
                     this.showAlert?.('There was error in creating the colelction. Please try again.');
-                    break;
+                    throw Error(error);
                 case BackendErrorType.COLLECTION_WRONG_DENOM_ERROR:
                     this.showAlert?.('Please use only letters for collection name.');
-                    break;
+                    throw Error(error);
                 case BackendErrorType.DATA_SERVICE_ERROR:
                     this.showAlert?.('Failed to save pictures. Please try again.');
-                    break;
+                    throw Error(error);
                 default:
-                    throw Error(parseBackendErrorType(e));
+                    throw Error(error);
             }
         } finally {
             this.enableActions?.();

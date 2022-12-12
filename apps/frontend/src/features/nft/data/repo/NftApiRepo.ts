@@ -44,7 +44,7 @@ export default class NftApiRepo implements NftRepo {
         const nftFilterModel = new NftFilterModel();
 
         nftFilterModel.nftIds = nftIds;
-        nftFilterModel.collectionStatus = status;
+        nftFilterModel.collectionStatus = [status];
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
@@ -53,7 +53,7 @@ export default class NftApiRepo implements NftRepo {
     async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
 
-        nftFilterModel.collectionStatus = status;
+        nftFilterModel.collectionStatus = [status];
         nftFilterModel.orderBy = NftOrderBy.TIMESTAMP_DESC;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
@@ -63,7 +63,7 @@ export default class NftApiRepo implements NftRepo {
     async fetchTrendingNfts(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
 
-        nftFilterModel.collectionStatus = status;
+        nftFilterModel.collectionStatus = [status];
         nftFilterModel.orderBy = NftOrderBy.TRENDING_DESC;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);

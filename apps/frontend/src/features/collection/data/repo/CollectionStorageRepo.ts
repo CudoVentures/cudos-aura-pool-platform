@@ -57,9 +57,9 @@ export default class CollectionStorageRepo implements CollectionRepo {
             });
         }
 
-        if (collectionFilterModel.status !== CollectionStatus.ANY) {
+        if (collectionFilterModel.status !== null && collectionFilterModel.status.length !== 0) {
             collectionSlice = collectionSlice.filter((json) => {
-                return json.status === collectionFilterModel.status;
+                return collectionFilterModel.status.includes(json.status);
             });
         }
 

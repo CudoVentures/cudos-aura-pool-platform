@@ -33,7 +33,6 @@ export class VisitorController {
     @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitNft')
     @HttpCode(200)
-
     async signalVisitNft(@Req() req: AppRequest, @Body() nftDto: NftJsonValidator): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {

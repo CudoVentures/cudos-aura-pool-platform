@@ -12,7 +12,7 @@ export enum NftOrderBy {
 export default class NftFilterModel {
 
     nftIds: string[];
-    collectionStatus: CollectionStatus;
+    collectionStatus: CollectionStatus[];
     collectionIds: string[];
     searchString: string;
     sessionAccount: number;
@@ -22,7 +22,7 @@ export default class NftFilterModel {
 
     constructor() {
         this.nftIds = null;
-        this.collectionStatus = CollectionStatus.APPROVED;
+        this.collectionStatus = null;
         this.collectionIds = null;
         this.searchString = '';
         this.sessionAccount = S.INT_FALSE;

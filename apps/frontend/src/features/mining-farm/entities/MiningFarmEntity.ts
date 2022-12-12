@@ -5,8 +5,7 @@ import S from '../../../core/utilities/Main';
 export enum MiningFarmStatus {
     APPROVED = 'approved',
     QUEUED = 'queued',
-    DELETED = 'deleted',
-    ANY = 'any',
+    REJECTED = 'rejected',
 }
 
 export default class MiningFarmEntity {

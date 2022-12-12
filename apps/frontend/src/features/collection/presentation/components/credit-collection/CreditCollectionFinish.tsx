@@ -23,8 +23,12 @@ function CreditCollectionFinish({ creditCollectionStore, creditCollectionSuccess
     ];
 
     async function onClickSendForApproval() {
-        await creditCollectionStore.onClickSendForApproval();
-        creditCollectionSuccessModalStore.showSignal();
+        try {
+            await creditCollectionStore.onClickSendForApproval();
+            creditCollectionSuccessModalStore.showSignal();
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     return (

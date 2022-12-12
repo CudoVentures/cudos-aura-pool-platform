@@ -6,8 +6,8 @@ import ProjectUtils from '../../../core/utilities/ProjectUtils';
 export enum CollectionStatus {
     QUEUED = 'queued',
     APPROVED = 'approved',
+    REJECTED = 'rejected',
     DELETED = 'deleted',
-    ANY = 'any'
 }
 
 export default class CollectionEntity {
@@ -81,6 +81,10 @@ export default class CollectionEntity {
         this.status = CollectionStatus.APPROVED;
     }
 
+    markRejected() {
+        this.status = CollectionStatus.REJECTED;
+    }
+
     markDeleted() {
         this.status = CollectionStatus.DELETED;
     }
@@ -113,7 +117,6 @@ export default class CollectionEntity {
                 return 'Approved';
             case CollectionStatus.DELETED:
                 return 'Deleted';
-            case CollectionStatus.ANY:
             default:
                 return 'Any';
         }

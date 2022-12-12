@@ -79,10 +79,10 @@ export default class NftStorageRepo implements NftRepo {
             });
         }
 
-        if (nftFilterModel.collectionStatus !== CollectionStatus.ANY) {
+        if (nftFilterModel.collectionStatus !== null && nftFilterModel.collectionStatus.length !== 0) {
             const collectionIdsSet = new Set();
             this.storageHelper.collectionsJson.forEach((collectionJson) => {
-                if (collectionJson.status === nftFilterModel.collectionStatus) {
+                if (nftFilterModel.collectionStatus.includes(collectionJson.status)) {
                     collectionIdsSet.add(collectionJson.id);
                 }
             });

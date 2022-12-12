@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { HttpService } from '@nestjs/axios';
-import MiningFarmFilterModel from './dto/farm-filter.mdel';
+import MiningFarmFilterModel from './dto/farm-filter.model';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { VisitorService } from '../visitor/visitor.service';
 import AccountEntity from '../account/entities/account.entity';
@@ -9,7 +9,7 @@ import MiningFarmEntity from './entities/mining-farm.entity';
 import { MiningFarmRepo, MiningFarmRepoColumn } from './repos/mining-farm.repo';
 import AppRepo from '../common/repo/app.repo';
 import DataService from '../data/data.service';
-import { DataServiceError } from '../common/errors/errors';
+import { DataServiceError, ERROR_TYPES, FarmCreationError, NotFoundException } from '../common/errors/errors';
 import EnergySourceEntity from './entities/energy-source.entity';
 import { EnergySourceRepo } from './repos/energy-source.repo';
 import { MinerRepo } from './repos/miner.repo';
@@ -48,7 +48,9 @@ export class FarmService {
         }
 
         if (miningFarmFilterModel.hasMiningFarmStatus() === true) {
-            whereClause[MiningFarmRepoColumn.STATUS] = miningFarmFilterModel.getMiningFarmStatus();
+            whereClause[MiningFarmRepoColumn.STATUS] = {
+                [Op.in]: miningFarmFilterModel.getMiningFarmStatuses(),
+            }
         }
 
         if (miningFarmFilterModel.inOnlyForSessionAccount() === true) {
@@ -117,6 +119,7 @@ export class FarmService {
 
         let miningFarmRepo = MiningFarmEntity.toRepo(miningFarmEntity);
         try {
+            throw new NotFoundException();
             if (miningFarmEntity.isNew() === true) {
                 miningFarmRepo = await this.miningFarmRepo.create(miningFarmRepo.toJSON(), {
                     returning: true,
@@ -125,6 +128,9 @@ export class FarmService {
             } else {
                 if (creditImages === true) {
                     const miningFarmRepoDb = await this.findMiningFarmById(miningFarmRepo.id, tx, tx.LOCK.UPDATE);
+                    if (!miningFarmRepoDb) {
+                        throw new NotFoundException();
+                    }
                     oldUris = [miningFarmRepoDb.coverImgUrl, miningFarmRepoDb.profileImgUrl].concat(miningFarmRepoDb.farmPhotoUrls);
                 }
 
@@ -140,7 +146,13 @@ export class FarmService {
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
             this.dataService.cleanUpNewUris(oldUris, newUris);
-            throw ex;
+            const errMessage = ex.response?.message;
+            switch (errMessage) {
+                case ERROR_TYPES.NOT_FOUND:
+                    throw ex;
+                default:
+                    throw new FarmCreationError();
+            }
         }
 
         return MiningFarmEntity.fromRepo(miningFarmRepo);

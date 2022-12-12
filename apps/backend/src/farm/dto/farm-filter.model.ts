@@ -14,8 +14,10 @@ export default class MiningFarmFilterModel {
     @IsOptional()
         miningFarmIds: string[];
 
-    @IsEnum(FarmStatusWithAny)
-        status: FarmStatusWithAny;
+    @IsArray()
+    @IsOptional()
+    @IsEnum(FarmStatus, { each: true })
+        status: FarmStatus[];
 
     @IsString()
     @IsOptional()
@@ -36,7 +38,7 @@ export default class MiningFarmFilterModel {
 
     constructor() {
         this.miningFarmIds = null;
-        this.status = FarmStatusWithAny.APPROVED;
+        this.status = null;
         this.searchString = '';
         this.sessionAccount = IntBoolValue.FALSE;
         this.orderBy = MiningFarmOrderBy.POPULAR_ASC;
@@ -49,7 +51,7 @@ export default class MiningFarmFilterModel {
     }
 
     hasMiningFarmStatus(): boolean {
-        return this.status !== FarmStatusWithAny.ANY;
+        return this.status !== null
     }
 
     hasSearchString(): boolean {
@@ -64,8 +66,8 @@ export default class MiningFarmFilterModel {
         return this.orderBy === MiningFarmOrderBy.POPULAR_ASC || this.orderBy === MiningFarmOrderBy.POPULAR_DESC;
     }
 
-    getMiningFarmStatus(): FarmStatus {
-        return this.status as unknown as FarmStatus;
+    getMiningFarmStatuses(): FarmStatus[] {
+        return this.status as unknown as FarmStatus[];
     }
 
 }

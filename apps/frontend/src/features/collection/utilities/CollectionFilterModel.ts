@@ -13,7 +13,7 @@ export default class CollectionFilterModel {
 
     collectionIds: string[];
     denomIds: string[];
-    status: CollectionStatus;
+    status: CollectionStatus[];
     searchString: string;
     farmId: string;
     timestampFrom: number;
@@ -25,7 +25,7 @@ export default class CollectionFilterModel {
     constructor() {
         this.collectionIds = null;
         this.denomIds = null;
-        this.status = CollectionStatus.APPROVED;
+        this.status = null;
         this.searchString = '';
         this.farmId = S.Strings.NOT_EXISTS;
         this.timestampFrom = S.NOT_EXISTS;
@@ -38,7 +38,7 @@ export default class CollectionFilterModel {
     }
 
     markAnyCollectins() {
-        this.status = CollectionStatus.ANY;
+        this.status = null;
     }
 
     static toJson(model) {

@@ -5,7 +5,7 @@ import { NftFilterJsonValidation, NftOrderBy } from '../nft.types';
 export default class NftFilterEntity {
     nftIds: string[];
     tokenIds: string[];
-    collectionStatus: CollectionStatus;
+    collectionStatus: CollectionStatus[];
     collectionIds: string[];
     searchString: string;
     sessionAccount: number;
@@ -16,7 +16,7 @@ export default class NftFilterEntity {
     constructor() {
         this.nftIds = null;
         this.tokenIds = null;
-        this.collectionStatus = CollectionStatus.APPROVED;
+        this.collectionStatus = null;
         this.collectionIds = null;
         this.searchString = '';
         this.sessionAccount = IntBoolValue.FALSE;
@@ -34,7 +34,7 @@ export default class NftFilterEntity {
     }
 
     hasCollectionStatus(): boolean {
-        return this.collectionStatus !== CollectionStatus.ANY;
+        return this.collectionStatus !== null && this.collectionStatus.length !== 0;
     }
 
     hasCollectionIds(): boolean {
@@ -53,8 +53,8 @@ export default class NftFilterEntity {
         return this.orderBy === NftOrderBy.TRENDING_ASC || this.orderBy === NftOrderBy.TRENDING_DESC;
     }
 
-    getCollectionStatus(): CollectionStatus {
-        return this.collectionStatus as unknown as CollectionStatus;
+    getCollectionStatus(): CollectionStatus[] {
+        return this.collectionStatus as unknown as CollectionStatus[];
     }
 
     static fromJson(json: NftFilterJsonValidation): NftFilterEntity {
