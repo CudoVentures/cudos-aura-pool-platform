@@ -119,7 +119,6 @@ export class FarmService {
 
         let miningFarmRepo = MiningFarmEntity.toRepo(miningFarmEntity);
         try {
-            throw new NotFoundException();
             if (miningFarmEntity.isNew() === true) {
                 miningFarmRepo = await this.miningFarmRepo.create(miningFarmRepo.toJSON(), {
                     returning: true,
@@ -202,7 +201,6 @@ export class FarmService {
 
     async creditMiner(minerEntity: MinerEntity, tx: Transaction = undefined): Promise < MinerEntity > {
         let minerRepo = MinerEntity.toRepo(minerEntity);
-        console.log(1, minerRepo);
         if (minerEntity.isNew() === true) {
             console.log(2, minerRepo.toJSON());
             minerRepo = await this.minerRepo.create(minerRepo.toJSON(), {
@@ -260,7 +258,7 @@ export class FarmService {
         const soldNfts = nftEntities.filter((nft) => nft.tokenId !== '')
 
         // Calculate remaining hash power of the farm
-        const collectionsHashPowerSum = collectionEntities.reduce((prevVal, currVal) => prevVal + Number(currVal.hashing_power), 0)
+        const collectionsHashPowerSum = collectionEntities.reduce((prevVal, currVal) => prevVal + Number(currVal.hashingPower), 0)
         const remainingHashPowerInTH = miningFarmEntity.hashPowerInTh - collectionsHashPowerSum;
 
         const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.legalName);

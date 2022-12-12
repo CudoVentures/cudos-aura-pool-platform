@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { ChainMarketplaceNftDto } from './dto/chain-marketplace-nft.dto';
-import { NftJsonValidator, NftStatus } from './nft.types';
+import { NftStatus } from './nft.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import { ReqNftsByFilter, ReqUpdateNftChainData } from './dto/requests.dto';
@@ -33,35 +33,6 @@ export class NFTController {
 
         return new ResFetchNftsByFilter(nftEntities, total);
     }
-
-    //-------------------------------------------------------------
-    // GET DETAILS PREVIOUSLY IN GET BY FILTER FUNCTION
-    //-------------------------------------------------------------
-    // if (nftEntity.isMinted() === true) {
-    //     const nftDetails = await this.graphqlService.fetchNft(nftEntity.id)
-    //     if (nftDetails?.marketplace_nft?.length === 1) {
-    //         const details = nftDetails.marketplace_nft[0];
-    //         nftEntity.price = details.price;
-    //         nftEntity.creatorAddress = details.creator;
-    //     }
-    // }
-    // const nftDetails = nftEntities.map(async (nftEntity) => {
-    // if (nft.status !== NftStatus.MINTED || !nft.token_id) {
-    //     return {
-    //         ...nft.toJSON(),
-    //         listed_status: NftStatus.APPROVED ? 2 : 1,
-    //     }
-    // }
-    // const [nftDetails] = await this.graphqlService.fetchNft(nft.id)
-    // return {
-    //     ...nft.toJSON(),
-    //     listed_status: nftDetails.price ? 2 : 1,
-    //     price: nftDetails.price,
-    //     creator_address: nftDetails.creator,
-    //     current_owner_address: nftDetails.nft_nft.owner,
-    // }
-    // })
-    //-----------------------------------------------------------------------------------
 
     @Get(':id')
     @HttpCode(200)

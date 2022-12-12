@@ -6,8 +6,6 @@ import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
-import { NftEventFilterDto } from './dto/event-history-filter.dto';
-import { TransferHistoryEntry } from './dto/transfer-history.dto';
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { dayInMs, getDays } from './utils';
@@ -22,6 +20,7 @@ export class StatisticsService {
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
         @InjectModel(NftOwnersPayoutHistory)
         private nftOwnersPayoutHistoryModel: typeof NftOwnersPayoutHistory,
+    // eslint-disable-next-line no-empty-function
     ) {}
 
     // async fetchNftEventsByFilter(nftEventFilterDto: NftEventFilterDto): Promise<{ nftEventEntities: TransferHistoryEntry[], total: number }> {
@@ -91,16 +90,11 @@ export class StatisticsService {
             token_id: tokenId,
             denom_id: denomId,
             payout_period_start: {
-                [Op.or]: {
-                    [Op.gt]: Number(filters.timestampFrom) / 1000,
-                    [Op.eq]: Number(filters.timestampFrom) / 1000,
-                },
+                [Op.gte]: Number(filters.timestampFrom) / 1000,
+
             },
             payout_period_end: {
-                [Op.or]: {
-                    [Op.lt]: Number(filters.timestampTo) / 1000,
-                    [Op.eq]: Number(filters.timestampTo) / 1000,
-                },
+                [Op.lte]: Number(filters.timestampTo) / 1000,
             },
         } })
 
@@ -119,16 +113,10 @@ export class StatisticsService {
             include: [{ model: NftPayoutHistory,
                 where: {
                     payout_period_start: {
-                        [Op.or]: {
-                            [Op.gt]: Number(filters.timestampFrom) / 1000,
-                            [Op.eq]: Number(filters.timestampFrom) / 1000,
-                        },
+                        [Op.gte]: Number(filters.timestampFrom) / 1000,
                     },
                     payout_period_end: {
-                        [Op.or]: {
-                            [Op.lt]: Number(filters.timestampTo) / 1000,
-                            [Op.eq]: Number(filters.timestampTo) / 1000,
-                        },
+                        [Op.lte]: Number(filters.timestampTo) / 1000,
                     },
                 },
             }],

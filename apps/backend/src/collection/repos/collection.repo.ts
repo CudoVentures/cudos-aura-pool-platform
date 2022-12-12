@@ -11,6 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { CollectionStatus } from '../utils';
 import AccountRepo from '../../account/repos/account.repo';
+import { MiningFarmRepo } from '../../farm/repos/mining-farm.repo';
 
 @Table({
     freezeTableName: true,
@@ -60,7 +61,7 @@ export class CollectionRepo extends Model {
       status: CollectionStatus;
 
   @Column
-  @ForeignKey(() => Farm)
+  @ForeignKey(() => MiningFarmRepo)
       farmId: number;
 
   @AllowNull(false)

@@ -28,13 +28,6 @@ export class ReqLogin {
     @IsString()
     @IsOptional()
         signature: string;
-
-    @IsNumber()
-        sequence: number;
-
-    @IsNumber()
-        accountNumber: number;
-
 }
 
 export class ReqRegister {

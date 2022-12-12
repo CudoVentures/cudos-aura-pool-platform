@@ -1,15 +1,17 @@
 import TableState from '../../../../core/presentation/stores/TableState';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import CollectionFilterModel from '../../../collection/utilities/CollectionFilterModel';
 import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
-import MiningFarmFilterModel from '../../../mining-farm/utilities/MiningFarmFilterModel';
+import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../../mining-farm/utilities/MiningFarmFilterModel';
 import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
+import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 
 export default class SuperAdminDashboardPageStore {
     miningFarmRepo: MiningFarmRepo;
@@ -18,9 +20,13 @@ export default class SuperAdminDashboardPageStore {
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
 
+    topFarmsTableState: TableState;
     miningFarmsTableState: TableState;
     collectionsTableState: TableState;
+    defaultIntervalPickerState: DefaultIntervalPickerState;
 
+    topPerformingFarms: MiningFarmEntity[];
+    topPerformingFarmsDetailsMap: Map<string, MiningFarmDetailsEntity>;
     miningFarmEntities: MiningFarmEntity[];
     collectionEntities: CollectionEntity[];
 
@@ -34,12 +40,16 @@ export default class SuperAdminDashboardPageStore {
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
 
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(() => this.fetchTopPerformingFarmEntities);
+        this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, 5);
         this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarmEntities, 50);
         this.collectionsTableState = new TableState(0, [], this.fetchCollectionEntities, 50);
 
+        this.topPerformingFarms = null;
         this.miningFarmEntities = [];
         this.collectionEntities = [];
 
+        this.topPerformingFarmsDetailsMap = new Map<string, MiningFarmDetailsEntity>();
         this.selectedMiningFarmEntities = new Map < string, MiningFarmEntity >();
         this.selectedCollectionEntities = new Map < string, CollectionEntity >();
 
@@ -47,9 +57,11 @@ export default class SuperAdminDashboardPageStore {
     }
 
     init(): void {
+        this.topPerformingFarms = null;
         this.miningFarmEntities = [];
         this.collectionEntities = [];
 
+        this.topPerformingFarmsDetailsMap = new Map<string, MiningFarmDetailsEntity>();
         this.selectedMiningFarmEntities = new Map < string, MiningFarmEntity >();
         this.selectedCollectionEntities = new Map < string, CollectionEntity >();
 
@@ -57,8 +69,28 @@ export default class SuperAdminDashboardPageStore {
     }
 
     fetch(): void {
+        this.fetchTopPerformingFarmEntities();
         this.fetchMiningFarmEntities();
         this.fetchCollectionEntities();
+    }
+
+    fetchTopPerformingFarmEntities = async (): Promise<void> => {
+        const miningFarmFilter = new MiningFarmFilterModel();
+        miningFarmFilter.from = this.topFarmsTableState.tableFilterState.from;
+        miningFarmFilter.count = this.topFarmsTableState.tableFilterState.itemsPerPage;
+        miningFarmFilter.status = [MiningFarmStatus.APPROVED];
+        miningFarmFilter.orderBy = MiningFarmOrderBy.ERFORMANCE_DESC;
+
+        const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter);
+        const miningFarmDetails = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((entity) => entity.id));
+
+        runInAction(() => {
+            this.topPerformingFarms = miningFarmEntities;
+            this.topFarmsTableState.tableFilterState.total = total;
+            miningFarmDetails.forEach((entity) => {
+                this.topPerformingFarmsDetailsMap.set(entity.miningFarmId, entity);
+            })
+        })
     }
 
     fetchMiningFarmEntities = (): void => {
@@ -77,7 +109,7 @@ export default class SuperAdminDashboardPageStore {
         const collectionFilter = new CollectionFilterModel();
         collectionFilter.from = this.collectionsTableState.tableFilterState.from;
         collectionFilter.count = this.collectionsTableState.tableFilterState.itemsPerPage;
-        collectionFilter.status = CollectionStatus.QUEUED;
+        collectionFilter.status = [CollectionStatus.QUEUED];
 
         this.collectionRepo.fetchCollectionsByFilter(collectionFilter).then(({ collectionEntities, total }) => {
             this.collectionEntities = collectionEntities;
@@ -166,4 +198,7 @@ export default class SuperAdminDashboardPageStore {
         }
     }
 
+    getMiningFarmDetails(id: string): MiningFarmDetailsEntity {
+        return this.topPerformingFarmsDetailsMap.get(id) ?? null;
+    }
 }
