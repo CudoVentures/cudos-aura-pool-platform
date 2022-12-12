@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
 import MuiAutocomplete, { AutocompleteProps } from '@mui/material/Autocomplete';
 
 import S from '../../utilities/Main';
+import { InputValidation } from '../stores/ValidationState';
+
 import AutocompleteOption from '../../entities/AutocompleteOption';
 import Input from './Input';
 import Svg from './Svg';
 
 import SvgClear from '@mui/icons-material/Clear';
-import SvgArrowDown from '@mui/icons-material/ArrowDownward';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import '../styles/autcomplete.css';
-import { observer } from 'mobx-react';
-import { InputValidation } from '../stores/ValidationState';
 
 type Props = AutocompleteProps < AutocompleteOption, true, true, false > & {
     label?: string | React.ReactNode;
@@ -52,7 +53,7 @@ function Autocomplete({ className, readOnly, error, label, inputValidation, ...p
             }
 
             if (Array.isArray(inputValidation)) {
-                inputValidation.forEach((validation) => onChange(null));
+                inputValidation.forEach((validation) => onChange(null, null, ''));
             } else {
                 inputValidation.onChange(null);
             }
@@ -111,7 +112,7 @@ function AutocompleteClearIcon(props) {
 function AutocompletePopupIcon(props) {
 
     return (
-        <Svg {...props} svg = { SvgArrowDown } />
+        <Svg {...props} svg = { KeyboardArrowDownIcon } />
     )
 
 }

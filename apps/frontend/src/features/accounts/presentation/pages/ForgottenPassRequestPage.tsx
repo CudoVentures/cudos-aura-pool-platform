@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
@@ -13,13 +14,12 @@ import Button, { ButtonType } from '../../../../core/presentation/components/But
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
-import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import '../styles/page-forgotten-pass-request.css';
-import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 type Props = {
     alertStore?: AlertStore;
@@ -30,7 +30,7 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
     const requestEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
-    const resendEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
+    // const resendEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
 
     const [email, setEmail] = useState('');
     const [showResendStep, setShowResendStep] = useState(false);
@@ -41,23 +41,22 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
             return;
         }
         await accountSessionStore.forgottenPassword(email);
-        alertStore.show('Please check your email');
-        // setShowResendStep(true);
+        setShowResendStep(true);
     }
 
     function onClickBackToLogin() {
         navigate(AppRoutes.LOGIN);
     }
 
-    async function onClickResend() {
-        if (validationState.getIsErrorPresent() === true) {
-            validationState.setShowErrors(true);
-            return;
-        }
+    // async function onClickResend() {
+    //     if (validationState.getIsErrorPresent() === true) {
+    //         validationState.setShowErrors(true);
+    //         return;
+    //     }
 
-        await accountSessionStore.forgottenPassword(email);
-        alertStore.show('We have resent the email.');
-    }
+    //     await accountSessionStore.forgottenPassword(email);
+    //     alertStore.show('We have resent the email.');
+    // }
 
     function renderRequestStep() {
         if (showResendStep === true) {
@@ -66,8 +65,8 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
 
         return (
             <AuthBlockLayout
-                title = { 'Forgotten Password' }
-                subtitle = { 'Check your email and update your password.' }
+                title = { 'Restore Password' }
+                subtitle = { 'Enter your email, then check your inbox for email from AuraPool. We’ll send you a link to restore your password.' }
                 content = { (
                     <Input
                         label={'Email'}
@@ -85,6 +84,7 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
                     <>
                         <Button onClick = { onClickSendNewPassword } >Send new password</Button>
                         <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickBackToLogin } >
+                            <Svg svg = { KeyboardBackspaceIcon } />
                             Go back to Login
                         </Button>
                     </>
@@ -112,14 +112,8 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
                                     <Svg svg={AlternateEmailIcon}/>
                                 </InputAdornment>,
                             }}
-                            inputValidation={resendEmailValidation}
                             gray = { true }
                             value={email}/>
-                    ) }
-                    actions = { (
-                        <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickResend } >
-                            Resend Link
-                        </Button>
                     ) } />
             </>
         )
