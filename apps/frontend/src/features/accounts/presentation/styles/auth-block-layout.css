@@ -7,9 +7,14 @@
 }
 
 .AuthBlockLayout .Title .IconConfirmationTitle {
-    width: 28px; height: 28px;
+    width: 20px; height: 20px;
+    box-sizing: border-box;
+    color: #fff;
     flex: 0 0 auto;
+    padding: 4px;
+    border-radius: 50%;
     margin-right: 10px;
+    background-color: var(--color-success-050);
 }
 
 .AuthBlockLayout .Subtitle {

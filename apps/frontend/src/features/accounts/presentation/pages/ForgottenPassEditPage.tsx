@@ -7,17 +7,14 @@ import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
-import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
-import Svg from '../../../../core/presentation/components/Svg';
 import Button from '../../../../core/presentation/components/Button';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/Check';
 import '../styles/page-forgotten-pass-edit.css';
 
 type Props = {
@@ -99,7 +96,7 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
             <>
                 <AuthBlockLayout
                     confirmationTitle = { 'Password was updated' }
-                    confirmationTitleSvg = { CheckCircleIcon }
+                    confirmationTitleSvg = { CheckIcon }
                     subtitle = { 'You successfully updated your password. Login to your account now.' }
                     actions = { (
                         <Button onClick = { onClickBackToLogin } > To Login </Button>

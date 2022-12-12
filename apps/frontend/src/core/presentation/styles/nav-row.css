@@ -1,73 +1,72 @@
-.NavBar {
+.NavRow {
     justify-content: space-around;
     width: 100%;
     position: relative;
 }
 
-.NavBar .NavItem {
+.NavRow .NavItem {
     gap: 20px;
     color: var(--color-neutral-060);
     align-items: center;
     z-index: 2;
 }
 
-.NavBar .NavItem .NavNumber {
-    background-color: var(--color-neutral-060);
+.NavRow .NavItem .NavNumber {
+    height: 24px; width: 24px;
+    align-items: center; justify-content: center;
     box-sizing: border-box;
-    height: 40px; width: 40px;
     position: relative;
+    color: var(--color-neutral-070);
     border-radius: 50%;
-    justify-content: center;
     border: 1px solid transparent;
-    align-items: center;
+    background-color: var(--color-neutral-020);
     
 }
 
-.NavBar .NavItem .NavNumber:before, .NavBar .NavItem .NavNumber:after {
+.NavRow .NavItem .NavNumber:before, .NavRow .NavItem .NavNumber:after {
     content: '';
-    width: 10px; height: 100%;
+    width: 8px; height: 100%;
     position: absolute;
     top:0;
     background: #fff;
 }
 
-.NavBar .NavItem .NavNumber:before {
-    left: -11px;
+.NavRow .NavItem .NavNumber:before {
+    left: -9px;
 }
 
-.NavBar .NavItem .NavNumber:after {
-    right: -11px;
+.NavRow .NavItem .NavNumber:after {
+    right: -9px;
 }
 
-.NavBar .NavItem .NavNumber .SvgIcon {
-    width: 16px; height: 16px;
+.NavRow .NavItem .NavNumber .SvgIcon {
+    width: 14px; height: 14px;
 }
 
-.NavBar .NavItem .NavNumber.Done {
+.NavRow .NavItem .NavNumber.Done {
     color: #fff;
     background: var(--color-success-050);
 }
 
-.NavBar .NavItem .NavName {
+.NavRow .NavItem .NavName {
     width: 0;
     display: flex; justify-content: center;
     white-space: nowrap;
 }
 
-.NavBar .NavItem.Active {
-    color: #000;
+.NavRow .NavItem.Active {
+    color: var(--color-neutral-100);
 }
 
-.NavBar .NavItem.Active .NavNumber {
+.NavRow .NavItem.Active .NavNumber {
     color: #fff;
     background: var(--color-primary-060);
 }
 
-
-.NavBar .HorizontalSeparator {
+.NavRow .NavRowDecoration {
     position: absolute;
-    top: 19px;
+    top: 11px;
     width: 100%; height: 1px;
-    background: var(--color-neutral-060);
+    background: var(--color-neutral-040);
     z-index: 1;
 }
