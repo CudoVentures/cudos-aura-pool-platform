@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../../core/presentation/components/TableDesktop';
 import Table, { createTableCell, createTableRow } from '../../../../../core/presentation/components/Table';
 import Actions, { ActionsLayout } from '../../../../../core/presentation/components/Actions';
-import Button, { ButtonType } from '../../../../../core/presentation/components/Button';
+import Button, { ButtonColor, ButtonType } from '../../../../../core/presentation/components/Button';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Svg from '../../../../../core/presentation/components/Svg';
@@ -43,7 +43,7 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                             <Svg svg={BorderColorIcon} />
                             Edit
                         </Button>
-                        <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE} color={3} className={ 'DeleteActionButton' }>
+                        <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE} color={ButtonColor.SCHEME_3} className={ 'DeleteActionButton' }>
                             <Svg svg={DeleteForeverIcon} />
                             Delete
                         </Button>

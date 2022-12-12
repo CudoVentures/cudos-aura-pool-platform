@@ -5,9 +5,10 @@
 
 .FooterContainer a {
     color: var(--color-secondary);
+    font-weight: 600;
 }
 
-.PageFooter {
+.FooterContainer .PageFooter {
     padding: 54px 64px;
     margin: 0 72px;
     margin-top: auto;
@@ -17,34 +18,35 @@
     fill: #fff;
 }
 
-.PageFooter .IconLogoWithText {
+.FooterContainer .PageFooter .IconLogoWithText {
     margin-right: 12px;
     height: 28px;
     width: 117px;
 }
 
-.PageFooter .FooterNav {
+.FooterContainer .PageFooter .FooterNav {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 140px;
 }
 
-.PageFooter .FooterNav > a:not(:last-child) {
+/* .FooterContainer .PageFooter .FooterNav > a:not(:last-child) {
     border-right: 1px solid var(--color-secondary);
-}
+} */
 
-.PageFooter .IconSocial {
+/* .FooterContainer .PageFooter .IconSocial {
     fill: var(--color-dark);
     margin-left: 24px;
-}
+} */
 
-.LinksColumn {
+.FooterContainer .LinksColumn {
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
-.TermsContainer {
+.FooterContainer .TermsContainer {
     margin: auto;
     gap: 18px;
     padding: 24px;
