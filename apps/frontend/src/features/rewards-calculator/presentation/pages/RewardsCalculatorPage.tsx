@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 
 import S from '../../../../core/utilities/Main';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
+import Button from '../../../../core/presentation/components/Button';
 import PageFooter from '../../../../features/footer/presentation/components/PageFooter';
 import PageHeader from '../../../header/presentation/components/PageHeader';
-import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 import Input, { InputType } from '../../../../core/presentation/components/Input';
@@ -20,10 +19,13 @@ import SouthEastIcon from '@mui/icons-material/SouthEast';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import Select from '../../../../core/presentation/components/Select';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
+import RowLayout from '../../../../core/presentation/components/RowLayout';
+import StyledContainer, { ContainerBackground, ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
+import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import '../styles/page-rewards-calculator-component.css';
+import '../styles/page-rewards-calculator.css';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -32,7 +34,6 @@ type Props = {
 
 function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) {
 
-    const navigate = useNavigate();
     const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChangeInUsd();
 
     const [networkDifficultyEditEnabled, setNetworkDifficultyEditEnabled] = useState(false);
@@ -44,10 +45,6 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
         }
         run();
     }, []);
-
-    function onClickExploreNftAndBuy() {
-        navigate(AppRoutes.EXPLORE_NFTS);
-    }
 
     function onClickResetValues() {
         rewardsCalculatorStore.resetDefaults();
@@ -63,59 +60,41 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
 
             <PageHeader />
 
-            <div className={'PageContent AppContent'} >
-                <div className={'RewardsCalculator'}>
-                    <div className={'FlexRow RewardsCalculatorHeading'}>
-                        <div className={'H2'}>Calculate Your Potential Rewards</div>
-                        <Actions height = { ActionsHeight.HEIGHT_48 }>
-                            <Button
-                                onClick={onClickExploreNftAndBuy}
-                                padding={ButtonPadding.PADDING_24}
-                                type={ButtonType.ROUNDED}>
-                                Explore NFTs & Buy
-                            </Button>
-                        </Actions>
-                    </div>
-                    <div className={'H3 RewardsCalculatorSubHeading'}>Here we have some description text that leads the user to properly calculate the rewards</div>
-                    <div className={'Grid GridColumns2 LayoutContainer'}>
-                        <div className={'FlexSingleCenter MiningFarmForm BorderContainer'}>
-                            <div className = { 'FlexColumn MiningFarmFormWidth' } >
-                                <Select
-                                    label = {
-                                        <TextWithTooltip
-                                            text={'Select Mining Farm'}
-                                            tooltipText={'info'}
-                                        />
-                                    }
-                                    onChange={rewardsCalculatorStore.onChangeMiningFarm}
-                                    value={rewardsCalculatorStore.selectedMiningFarmEntity !== null ? rewardsCalculatorStore.selectedMiningFarmEntity.id : S.Strings.NOT_EXISTS}>
-                                    { rewardsCalculatorStore.miningFarmsEntities.map((miningFarmEntity) => {
-                                        return (
-                                            <MenuItem key = { miningFarmEntity.id } value = { miningFarmEntity.id } > { miningFarmEntity.name } </MenuItem>
-                                        )
-                                    }) }
-                                </Select>
-                                <Input
-                                    label = {
-                                        <TextWithTooltip
-                                            text={'Hash Rate'}
-                                            tooltipText={'info'}
-                                        />
-                                    }
-                                    disabled = { rewardsCalculatorStore.hasSelectedMiningFarm() === false }
-                                    inputType={InputType.POSITIVE_INTEGER}
-                                    value = { rewardsCalculatorStore.hashPowerInThInputValue }
-                                    onChange = { rewardsCalculatorStore.onChangeHashPowerInInput }
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end" >TH</InputAdornment>
-                                        ),
-                                    }} />
-                                <Slider defaultValue={50}
+            <div className={'PageContent PageContentDefaultPadding AppContent'} >
+                <RowLayout numColumns = { 2 } className={'LayoutContainer'}>
+                    <StyledContainer className={'MiningFarmForm'}>
+                        <ColumnLayout>
+                            <div>
+                                <div className={'H2 ColorNatural100 ExtraBold'}>Calculate Your Potential Rewards</div>
+                                <div className={'B1 RewardsCalculatorSubHeading'}>Here we have some description text that leads the user to properly calculate the rewards</div>
+                            </div>
+                            <Select
+                                label = { 'Select Mining Farm '}
+                                onChange={rewardsCalculatorStore.onChangeMiningFarm}
+                                value={rewardsCalculatorStore.selectedMiningFarmEntity !== null ? rewardsCalculatorStore.selectedMiningFarmEntity.id : S.Strings.NOT_EXISTS}>
+                                { rewardsCalculatorStore.miningFarmsEntities.map((miningFarmEntity) => {
+                                    return (
+                                        <MenuItem key = { miningFarmEntity.id } value = { miningFarmEntity.id } > { miningFarmEntity.name } </MenuItem>
+                                    )
+                                }) }
+                            </Select>
+                            <Input
+                                label = { 'Hash Rate' }
+                                disabled = { rewardsCalculatorStore.hasSelectedMiningFarm() === false }
+                                inputType={InputType.POSITIVE_INTEGER}
+                                value = { rewardsCalculatorStore.hashPowerInThInputValue }
+                                onChange = { rewardsCalculatorStore.onChangeHashPowerInInput }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end" >TH</InputAdornment>
+                                    ),
+                                }} />
+                            <div>
+                                <Slider
                                     aria-label="Default"
                                     disabled = { rewardsCalculatorStore.hasSelectedMiningFarm() === false }
                                     sx={{
-                                        color: '#000',
+                                        color: 'var(--color-primary-060)',
                                         '& .MuiSlider-thumb': {
                                             color: '#fff',
                                         },
@@ -125,80 +104,89 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                     onChange={rewardsCalculatorStore.onChangeHashPowerInThSlider}
                                     min={0}
                                     max={rewardsCalculatorStore.selectedMiningFarmEntity?.hashPowerInTh ?? 1}/>
-                                <div className={'FlexRow NetworkDifficulty'}>
-                                    <Input
-                                        label = {
-                                            <TextWithTooltip
-                                                text={'Network Difficulty'}
-                                                tooltipText={'info'} />
-                                        }
-                                        inputType={InputType.POSITIVE_INTEGER}
-                                        readOnly={networkDifficultyEditEnabled === false}
-                                        value={rewardsCalculatorStore.getNetworkDifficultyInputValue()}
-                                        onChange = { rewardsCalculatorStore.onChangeNetworkDifficulty }
-                                        gray = { networkDifficultyEditEnabled === false }
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <Svg className = { 'EnableEditButton' } size = { SvgSize.CUSTOM } svg={SvgDriveFileRenameOutlineIcon} onClick={toggleDifficultyEdit} />
-                                                </InputAdornment>
-                                            ),
-                                        }} />
-                                </div>
-                                <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                                    <Button
-                                        disabled = { rewardsCalculatorStore.isDefault() }
-                                        onClick={onClickResetValues}>
-                                        <Svg size = { SvgSize.CUSTOM } svg={SvgReplayIcon} />
+                                { rewardsCalculatorStore.selectedMiningFarmEntity !== null && (
+                                    <div className = { 'B3 Bold FlexSplit' } >
+                                        <div>0 TH/s</div>
+                                        <div className = { 'StartRight' }>{rewardsCalculatorStore.selectedMiningFarmEntity?.hashPowerInTh ?? 1} TH/s</div>
+                                    </div>
+                                ) }
+                            </div>
+                            <div className={'FlexRow NetworkDifficulty'}>
+                                <Input
+                                    label = { 'Network Difficulty' }
+                                    inputType={InputType.POSITIVE_INTEGER}
+                                    readOnly={networkDifficultyEditEnabled === false}
+                                    value={rewardsCalculatorStore.getNetworkDifficultyInputValue()}
+                                    onChange = { rewardsCalculatorStore.onChangeNetworkDifficulty }
+                                    gray = { networkDifficultyEditEnabled === false }
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <Svg className = { 'EnableEditButton' } size = { SvgSize.CUSTOM } svg={SvgDriveFileRenameOutlineIcon} onClick={toggleDifficultyEdit} />
+                                            </InputAdornment>
+                                        ),
+                                    }} />
+                            </div>
+                            <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
+                                <Button
+                                    disabled = { rewardsCalculatorStore.isDefault() }
+                                    onClick={onClickResetValues}>
+                                    <Svg size = { SvgSize.CUSTOM } svg={SvgReplayIcon} />
                                         Reset values
-                                    </Button>
-                                </Actions>
+                                </Button>
+                            </Actions>
+                        </ColumnLayout>
+                    </StyledContainer>
+                    <ColumnLayout className={'DataContainer'}>
+                        <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } className={'BtcPriceContainer'}>
+                            <div className={'SubHeading Bold B1'}>Current Bitcoin Price</div>
+                            <div className={'FlexRow'}>
+                                <div className={'H2 Bold BtcPrice'}>{bitcoinStore.formatBtcInUsd(new BigNumber(1))}</div>
+                                <div className={`${bitcoinPriceChange >= 0 ? 'PriceChangeUp' : 'PriceChangeDown'} PriceChange FlexRow`}>
+                                    <div className={'PriceText'}>{bitcoinStore.formatBitcoinPriceChangeInPercentage()}</div>
+                                    { bitcoinPriceChange >= 0 ? (
+                                        <Svg svg={ArrowOutwardIcon}/>
+                                    ) : (
+                                        <Svg svg={SouthEastIcon}/>
+                                    )
+                                    }
+                                </div>
                             </div>
+                        </StyledContainer>
+                        <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } className={'FarmDataContainer FlexColumn B1 SemiBold'}>
+                            <div className={'DataRow FlexRow FlexSplit'}>
+                                <TextWithTooltip
+                                    className={'DataRowHeading'}
+                                    text={'Maintenance Fee'}
+                                    tooltipText={'The dollar amount per TH which will be subtracted from your BTC earnings for maintenance of farming machines.'} />
+                                <div className={'DataRowValue StartRight'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.getMaintenanceFeePerThInBtc())}/TH</div>
+                            </div>
+                            <div className={'DataRow FlexRow FlexSplit'}>
+                                <TextWithTooltip
+                                    className={'DataRowHeading'}
+                                    text={'Pool Fee'}
+                                    tooltipText={'The percentage from BTC payouts kept by Aura pool as Protocol fees.'} />
+                                <div className={'DataRowValue StartRight'}>{(ProjectUtils.CUDOS_FEE_IN_PERCENT * 100).toFixed(0)} %</div>
+                            </div>
+                            <div className={'DataRow FlexRow FlexSplit'}>
+                                <TextWithTooltip
+                                    className={'DataRowHeading'}
+                                    text={'Block Reward'}
+                                    tooltipText={'The total BTC amount received by miners for each block mined on the network.'} />
+                                <div className={'DataRowValue StartRight'}>{bitcoinStore.getBlockReward()}</div>
+                            </div>
+                        </StyledContainer>
+                        <div className = { 'RewardsEstimateContainer' } >
+                            <div className={'RewardsEstimateHeading H3 Bold'}>Your Monthly Rewards</div>
+                            <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } containerBackground = { ContainerBackground.NEUTRAL_100 }>
+                                <div className={'H2 Bold RewardsInBtc'}>{rewardsCalculatorStore.calculateNetRewardPetMonth().toFixed(5)} <span className = { 'B1' }>BTC</span></div>
+                                <div className={'H3 SemiBold MonthlyRewardUsd'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.calculateNetRewardPetMonth())} USD</div>
+                                <div className={'B3 SemiBold Discretion'}>Based on Today’s BTC Price</div>
+                            </StyledContainer>
                         </div>
-                        <div className={'DataContainer FlexColumn'}>
-                            <div className={'BtcPriceContainer FlexColumn BorderContainer'}>
-                                <div className={'FlexRow'}>
-                                    <div className={'H2 BtcPrice'}>{bitcoinStore.formatBtcInUsd(new BigNumber(1))}</div>
-                                    <div className={'PriceChange FlexRow'}>
-                                        <div className={'PriceText'}>{bitcoinStore.formatBitcoinPriceChangeInPercentage()}</div>
-                                        {bitcoinPriceChange >= 0
-                                            ? <Svg svg={ArrowOutwardIcon}/>
-                                            : <Svg svg={SouthEastIcon}/>
-                                        }
-                                    </div>
-                                </div>
-                                <div className={'SubHeading'}>Current Bitcoin Price</div>
-                            </div>
-                            <div className={'FarmDataContainer FlexColumn BorderContainer'}>
-                                <div className={'DataRow FlexRow'}>
-                                    <TextWithTooltip
-                                        className={'DataRowHeading'}
-                                        text={'Cost'}
-                                        tooltipText={'Cudo’s pool commission + Farm’s maintenance fee'} />
-                                    <div className={'DataRowValue'}>{rewardsCalculatorStore.formatCost()}</div>
-                                </div>
-                                <div className={'DataRow FlexRow'}>
-                                    <TextWithTooltip
-                                        className={'DataRowHeading'}
-                                        text={'Block Reward'}
-                                        tooltipText={'info'} />
-                                    <div className={'DataRowValue'}>{bitcoinStore.getBlockReward()}</div>
-                                </div>
-                            </div>
-                            <div className={'RewardsEstimateContainer FlexColumn'}>
-                                <div className={'RewardsEstimateHeading'}>Your Monthly Rewards</div>
-                                <div className={'FlexRow'}>
-                                    <div className={'H2 RewardsInBtc'}>{rewardsCalculatorStore.formatNetRewardPerMonth()}</div>
-                                    <div className={'FlexColumn'}>
-                                        <div className={'MonthlyRewardUsd'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.calculateNetRewardPetMonth())}</div>
-                                        <div className={'Discretion'}>Based on Today’s BTC Price</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className = { 'Disclaimer' } > *This forecast is indicative </div>
-                        </div>
-                    </div>
-                </div>
+                        <div className = { 'B2 SemiBold Disclaimer' } > *This forecast is indicative </div>
+                    </ColumnLayout>
+                </RowLayout>
             </div>
 
             <PageFooter />

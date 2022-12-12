@@ -89,7 +89,7 @@
 
 .ModalWindowWrapper > .ModalWindow > .Close {
     width: 20px; height: 20px;
-    fill: var(--color-secondary);
+    fill: var(--color---color-neutral-050);
     right: 10px; top: 10px;
     padding: 0px;
 }
@@ -104,7 +104,7 @@
 }
 
 .ModalWindowWrapper .ModalTitleRow .ModalTitle {
-    color: var(--color-primary);
+    color: #000;
     font-size: 24px; font-weight: 700;
 }
 

@@ -1,7 +1,7 @@
 .TableMobile {
-    /* border: 1px solid var(--color-gray-060-minus-02); */
+    /* border: 1px solid var(--color-neutral-060-minus-02); */
     /* border-radius: 4px; */
-    color: var(--color-gray-060);
+    color: var(--color-neutral-060);
 }
 
 .TableMobile .Empty {
@@ -22,7 +22,7 @@
 
 .TableMobile .TableRow:not(:last-child) {
     /* margin-bottom: 1px; */
-    /* border-bottom: 1px solid var(--color-gray-060-minus-02); */
+    /* border-bottom: 1px solid var(--color-neutral-060-minus-02); */
     /* border-bottom: 1px solid #0d0d0d !important; */
 }
 
@@ -52,7 +52,7 @@
     color: #515D79;
     text-transform: uppercase;
     font-size: 12px; font-weight: 700;
-    /* background: var(--color-gray-060-minus-02); */
+    /* background: var(--color-neutral-060-minus-02); */
 }
 
 /* .TableMobile .TableRow:not(.Legend):hover {

@@ -15,14 +15,14 @@
 }
 
 .PageUserProfile .PageContent .ProfileHeaderDataRow .JoinDate {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
     margin-left: 16px;
 }
 
 .PageUserProfile .SectionDivider {
     height: 1px;
     margin: 110px 0 24px 0;
-    background: var(--color-gray-060);
+    background: var(--color-neutral-060);
 }
 
 /* .PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide {
@@ -39,7 +39,7 @@
 }
 
 .PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide .Gray {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
 }
 
 .PageUserProfile .PageContent .ProfileNavHolder{

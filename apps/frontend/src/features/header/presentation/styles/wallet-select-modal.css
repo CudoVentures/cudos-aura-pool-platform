@@ -8,7 +8,7 @@
 }
 
 .SelectWalletPopup .ModalWalletSubtitle {
-    color: var(--color-gray-025);
+    color: var(--color-neutral-060);
     font-size: 16px;
     margin: 8px 0 32px 0;
 }
@@ -26,7 +26,7 @@
 }
 
 .SelectWalletPopup .LoadingSection .LoadingSubtitle {
-    color: var(--color-gray-025);
+    color: var(--color-neutral-060);
     font-size: 16px;
     margin-top: 8px;
 }
@@ -64,7 +64,7 @@
     cursor: pointer;
 
     padding: 27px;
-    border: 2px solid var(--color-gray-060);
+    border: 2px solid var(--color-neutral-060);
     border-radius: 20px;
 
     transition-property: border-color, background;
@@ -75,8 +75,8 @@
 }
 
 .SelectWalletPopup .ProgressStepConnectWallet .ConnectButton:hover {
-    border-color: var(--color-gray-010);
-    background: var(--color-gray-090);
+    border-color: var(--color-neutral-090);
+    background: var(--color-neutral-020);
 }
 
 .SelectWalletPopup .ProgressStepConnectWallet .ConnectButton.ConnectButtonSuccess {

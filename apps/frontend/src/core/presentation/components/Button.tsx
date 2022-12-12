@@ -6,11 +6,11 @@ import '../styles/button.css';
 const theme01 = createTheme({
     palette: {
         primary: {
-            main: '#000',
+            main: '#08090C',
             contrastText: '#fff',
         },
         secondary: {
-            main: '#555',
+            main: '#15a2e9',
             contrastText: '#fff',
         },
     },

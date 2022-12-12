@@ -24,7 +24,7 @@
 }
 
 .CollectionHorizontalPreview .PreviewData .PreviewDataRow:last-child {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
 }
 
 .CollectionHorizontalPreview .CollectionName {
@@ -52,4 +52,12 @@
 
 .CollectionHorizontalPreview .CollectionPriceUsd .CurrentPriceChange {
     margin-left: 8px;
+}
+
+.CollectionHorizontalPreview .CollectionPriceUsd .PriceChangeUp {
+    color: var(--color-success-060);
+}
+
+.CollectionHorizontalPreview .CollectionPriceUsd .PriceChangeDown {
+    color: var(--color-error-060);
 }

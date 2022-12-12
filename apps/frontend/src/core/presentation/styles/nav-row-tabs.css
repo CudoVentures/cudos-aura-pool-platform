@@ -2,7 +2,7 @@
 .NavRowTabs {
     padding: 4px;
     border-radius: 10px;
-    background: var(--color-gray-095);
+    background: var(--color-neutral);
 }
 
 .NavRowTabs .NavButton {

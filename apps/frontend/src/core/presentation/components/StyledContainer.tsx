@@ -11,10 +11,11 @@ export enum ContainerWidth {
 export enum ContainerBackground {
     WHITE = 'BgWhite',
     GRAY = 'BgGray',
+    NEUTRAL_100 = 'BgNeutral100',
 }
 
 export enum ContainerPadding {
-    PADDING_48 = 'Padding48',
+    PADDING_40 = 'Padding40',
     PADDING_24 = 'Padding24',
     PADDING_16 = 'Padding16',
 }
@@ -44,6 +45,6 @@ StyledContainer.defaultProps = {
     className: '',
     containerWidth: ContainerWidth.LARGE,
     containerBackground: ContainerBackground.WHITE,
-    containerPadding: ContainerPadding.PADDING_48,
-    containerShadow: false,
+    containerPadding: ContainerPadding.PADDING_40,
+    containerShadow: true,
 }

@@ -6,4 +6,5 @@
 
 .CreditCollectionSuccessModal  .SuccessSvg {
     width: 70px; height: 70px;
+    color: var(--color-success-060);
 }

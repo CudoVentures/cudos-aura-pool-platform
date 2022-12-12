@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Select as MuiSelect, SelectProps, InputLabel, FormControl, SelectChangeEvent, FormHelperText } from '@mui/material';
-import SvgArrowDown from '@mui/icons-material/ArrowDownward';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import '../styles/select.css';
 import { InputValidation } from '../stores/ValidationState';
 import { observer } from 'mobx-react';
+import S from '../../utilities/Main';
 
 type Props = SelectProps & {
     className?: string;
@@ -138,7 +139,7 @@ function Select({ className, margin, onChange, innerLabel, label, readOnly, erro
             <FormControl variant = 'standard' margin = { 'dense' }>
                 { label !== undefined && (
                     <InputLabel
-                        error = { props.error || (shouldShowError() && isErrorPresent()) }
+                        error = { error || (shouldShowError() && isErrorPresent()) }
                         variant = { 'standard' }
                         margin = { 'dense' } >
                         { label }
@@ -150,7 +151,7 @@ function Select({ className, margin, onChange, innerLabel, label, readOnly, erro
                     onOpen = { onOpen }
                     onClose = { onClose }
                     open = { open }
-                    IconComponent = { SvgArrowDown }
+                    IconComponent = { KeyboardArrowDownIcon }
                     margin = { 'dense' }
                     MenuProps = {{
                         disableScrollLock: true,

@@ -4,7 +4,7 @@
 
 .BuyNftPopup .BorderContainer {
     gap: 24px;
-    background: var(--color-gray-090);
+    background: var(--color-neutral-020);
     align-items: flex-start;
 }
 .BuyNftPopup .BorderContainer .NftPicture {
@@ -25,7 +25,7 @@
 }
 
 .BuyNftPopup .BorderContainer .NftInfo .Gray {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
 }
 
 .BuyNftPopup .Stage.Processing {
@@ -33,7 +33,7 @@
 }
 
 .BuyNftPopup .Stage.Processing .Info {
-    color: var(--color-gray-025);
+    color: var(--color-neutral-060);
     text-align: center;
 }
 
@@ -44,6 +44,7 @@
 
 .BuyNftPopup .Stage.Success .SuccessSvg {
     width: 70px; height: 70px;
+    color: var(--color-success-060);
 }
 
 .BuyNftPopup .Stage.Success .BorderContainer {
@@ -57,4 +58,5 @@
 
 .BuyNftPopup .Stage.Success .TransactionView {
     gap: 10px;
+    color: var(--color-primary-060);
 }

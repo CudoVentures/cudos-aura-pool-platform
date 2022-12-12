@@ -27,7 +27,7 @@ export default function DailyChart({ className, timestampFrom, timestampTo, data
             className = { `DailyChart ${className}` }
             labels = { calculatedLabels() }
             datasets = { [
-                createBarChartDataSet('', data, '#30425A'),
+                createBarChartDataSet('', data, '#BEE9FF'),
             ] }
             type = { ChartType.BAR } />
     )

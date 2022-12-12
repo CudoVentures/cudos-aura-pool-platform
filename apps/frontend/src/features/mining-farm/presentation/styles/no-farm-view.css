@@ -15,7 +15,7 @@
 }
 
 .NoFarmView .NoFarmLayout .Subtitle {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
     font-size: 16px;
     margin-bottom: 48px;
 }

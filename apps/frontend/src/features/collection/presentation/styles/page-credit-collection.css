@@ -20,7 +20,7 @@
     padding: 4px 10px;
     border-radius: 6px;
     margin-left: 26px;
-    background: var(--color-gray-025);
+    background: var(--color-neutral-060);
 }
 
 
@@ -38,7 +38,7 @@
 .PageCreditCollection .SectionDivider {
     height: 1px;
     margin: 110px 0 24px 0;
-    background: var(--color-gray-060);
+    background: var(--color-neutral-060);
 }
 
 .PageCreditCollection .NftsCnt {

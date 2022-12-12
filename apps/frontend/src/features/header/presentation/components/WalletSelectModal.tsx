@@ -18,7 +18,7 @@ import Actions from '../../../../core/presentation/components/Actions';
 import Button, { ButtonColor, ButtonType } from '../../../../core/presentation/components/Button';
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
 import Input from '../../../../core/presentation/components/Input';
-import InfoGrayBox from '../../../../core/presentation/components/InfoGrayBox';
+import InfoBlueBox from '../../../../core/presentation/components/InfoBlueBox';
 
 import SvgWavesLoading from '../../../../public/assets/vectors/waves-loading.svg';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -376,7 +376,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
             <AnimationContainer className = { 'ProgressStep ProgressStepKyc FlexColumn' } active = { walletSelectModalStore.isProgressStepKyc() } >
                 <div className = { 'H3 Bold' } >
                     Verify your account
-                    <InfoGrayBox
+                    <InfoBlueBox
                         className = { 'KycInfo' }
                         text = { 'This is needed in order for you to buy NFTs. You can skip this step for later, but you won’t be able to complete purchase on one NFT.' } />
                 </div>
@@ -387,7 +387,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     { walletSelectModalStore.isProgressStepConnectWallet() === true ? (
                         <div className = { 'WalletInfo FlexColumn' }>
                             <div>Can’t see your wallet here?</div>
-                            <a className={'ColorPrimary'} href = { '' }>Learn more about wallets</a>
+                            <a className={'ColorPrimary060'} href = { '' }>Learn more about wallets</a>
                         </div>
                     ) : (
                         <Actions>

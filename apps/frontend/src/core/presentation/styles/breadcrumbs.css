@@ -8,7 +8,7 @@
 
 .BreadCrumbs .Crumbs {
     padding: 12px;
-    background: var(--color-gray-095);
+    background: var(--color-neutral);
     border-radius: 10px;
     gap: 12px;
     color: var(--color-gray-dark);

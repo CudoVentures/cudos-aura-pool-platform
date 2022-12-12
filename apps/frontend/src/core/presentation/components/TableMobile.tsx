@@ -137,7 +137,7 @@ function TableMobile({ className, legend, tableState, rows, onClickRow, onClickL
     function renderRows() {
         if (rows.length === 0) {
             return (
-                <div className = { 'Empty FlexSingleCenter' } > Няма намерени резултати </div>
+                <div className = { 'Empty FlexSingleCenter' } > No data </div>
             );
         }
 

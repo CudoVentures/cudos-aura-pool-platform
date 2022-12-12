@@ -4,12 +4,12 @@
 }
 
 .FieldColumnWrapper .HelperText {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
 }
 
 .FieldColumnWrapper .FormulaBox {
     padding: 15px;
-    color: var(--color-gray-030);
-    background-color: var(--color-gray-090);
+    color: var(--color-neutral-060);
+    background-color: var(--color-neutral-020);
     border-radius: 10px;
 }

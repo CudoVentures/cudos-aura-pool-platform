@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import '../styles/info-gray-box.css';
+import '../styles/info-blue-box.css';
 import Svg from './Svg';
 
 type Props = {
@@ -8,15 +8,15 @@ type Props = {
     text: string
 }
 
-export default function InfoGrayBox({ className, text }: Props) {
+export default function InfoBlueBox({ className, text }: Props) {
     return (
-        <div className={`InfoGrayBox FlexRow ${className}`}>
+        <div className={`InfoBlueBox FlexRow ${className}`}>
             <Svg svg={ErrorOutlineIcon} />
             <div className={'B2'}>{text}</div>
         </div>
     )
 }
 
-InfoGrayBox.defaultProps = {
+InfoBlueBox.defaultProps = {
     className: '',
 }

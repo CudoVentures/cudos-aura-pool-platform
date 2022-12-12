@@ -73,9 +73,9 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
             {accountSessionStore.isLoggedInAndWalletConnected() === true ? (
                 <>
                     <div className={'FlexRow BalanceRow B2'}>
-                        <Svg svg={AccountBalanceWalletIcon} />
-                        <div className={'SemiBold Gray'}>Balance:</div>
-                        <div className={'Bold'}>{walletStore.formatBalance()}</div>
+                        <Svg svg={AccountBalanceWalletIcon} className={ 'Secondary' }/>
+                        <div className={'SemiBold'}>Balance:</div>
+                        <div className={'Bold PrimaryColor'}>{walletStore.formatBalance()}</div>
                     </div>
                     <div className={'FlexRow AddressRow'}>
                         <div className={'Bold'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>

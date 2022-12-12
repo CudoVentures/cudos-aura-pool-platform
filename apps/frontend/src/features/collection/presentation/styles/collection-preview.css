@@ -1,6 +1,6 @@
 .CollectionPreview {
     width: 100%;
-    color: var(--color-gray-025);
+    color: var(--color-neutral-060);
 }
 
 .CollectionPreview .CollectionPreviewImage {
@@ -22,6 +22,7 @@
 .CollectionPreview .MiningFarmName {
     text-transform: uppercase;
     margin-bottom: 8px;
+    color: var(--color-primary-060);
 }
 
 .CollectionPreview .CollectionName {

@@ -18,7 +18,7 @@
     box-sizing: border-box;
     color: var(--color-input-text);
     padding: 0 14px !important;
-    border-radius: 8px;
+    border-radius: 16px;
     border: 1px solid var(--color-input-border);
     transition: border-color var(--transition-duration);
 }
@@ -85,5 +85,5 @@
 }
 
 .MenuItemWithInnerLabel .MenuItemLabel{
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
 }

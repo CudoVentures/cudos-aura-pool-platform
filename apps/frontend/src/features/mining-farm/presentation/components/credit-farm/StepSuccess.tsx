@@ -27,7 +27,7 @@ function StepReview({ accountSessionStore }: Props) {
     return (
         <div className = { 'StepMiningFarmSuccess FlexColumn' }>
             <div className={'HeadingRow FlexRow'}>
-                <Svg svg={CheckCircleIcon}/>
+                <Svg svg={CheckCircleIcon} className={ 'SuccessCheck' }/>
                 <div className={'H3 Bold'}>Great! Your Farm Profile is sent for review.</div>
             </div>
             <div className={'B1'}>Your farm will be reviewed by Aura Pool and you will receive an email with the results.</div>

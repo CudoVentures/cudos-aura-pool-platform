@@ -4,7 +4,7 @@
 
 .ResellNftPopup .Stage.Preview .BorderContainer {
     gap: 24px;
-    background: var(--color-gray-090);
+    background: var(--color-neutral-020);
     align-items: flex-start;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .ResellNftPopup .Stage.Preview .BorderContainer .Gray {
-    color: var(--color-gray-030);
+    color: var(--color-neutral-060);
 }
 
 .ResellNftPopup .Stage.Preview .CheckBoxRow {
@@ -34,7 +34,7 @@
 }
 
 .ResellNftPopup .Info {
-    color: var(--color-gray-025);
+    color: var(--color-neutral-060);
     text-align: center;
 }
 
@@ -44,4 +44,5 @@
 
 .ResellNftPopup .TransactionView {
     gap: 10px;
+    color: var(--color-primary-060);
 }

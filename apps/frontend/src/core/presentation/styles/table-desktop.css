@@ -1,7 +1,7 @@
 .TableDesktop {
-    /* border: 1px solid var(--color-gray-060-minus-02); */
+    /* border: 1px solid var(--color-neutral-060-minus-02); */
     /* border-radius: 4px; */
-    color: var(--color-gray-060);
+    color: var(--color-neutral-100);
 }
 
 .TableDesktop.ContentScrollable {
@@ -11,14 +11,14 @@
 
 .TableDesktop .Empty {
     height: 128px;
-    background: #262b310f;
+    /* background: var(--color-neutral-010); */
 }
 
 .TableDesktop .TableRow {
     display: flex;
-    padding:8px 14px;
+    padding:14px 16px;
     transition-property:'background';
-    color: #000;
+    /* color: #000; */
     /* font-weight: 700; */
     /* line-height: 16px; */
 }
@@ -29,7 +29,7 @@
 
 .TableDesktop .TableRow:not(:last-child) {
     /* margin-bottom: 1px; */
-    /* border-bottom: 1px solid var(--color-gray-060-minus-02); */
+    /* border-bottom: 1px solid var(--color-neutral-060-minus-02); */
     /* border-bottom: 1px solid #0d0d0d !important; */
 }
 
@@ -44,7 +44,7 @@
 } */
 
 .TableDesktop .TableRow:not(.Legend) {
-    border-bottom: 1px solid var(--color-primary-with-opacity);
+    /* border-bottom: 1px solid var(--color-primary-with-opacity); */
     cursor: pointer;
 }
 
@@ -53,11 +53,13 @@
 } */
 
 .TableDesktop .TableRow.Legend {
-    background-color: var(--color-primary);
-    color: var(--color-gray-060);
-    text-transform: uppercase;
-    font-size: 12px; font-weight: 700;
-    /* background: var(--color-gray-060-minus-02); */
+    background-color: var(--color-neutral);
+    color: var(--color-neutral-060);
+    /* text-transform: uppercase; */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 14px; font-weight: 600;
+    /* background: var(--color-neutral-060-minus-02); */
 }
 
 /* .TableDesktop .TableRow:not(.Legend):hover {
@@ -101,12 +103,12 @@
 
 .TableDesktop .TableCell.DropTarget:before {
     bottom: -8px;
-    border-bottom-color: var(--color-gray-060);
+    border-bottom-color: var(--color-neutral-060);
 }
 
 .TableDesktop .TableCell.DropTarget:after {
     top: -8px;
-    border-top-color: var(--color-gray-060);
+    border-top-color: var(--color-neutral-060);
 }
 
 .TableDesktop .TableCell.DropTarget.DropTargetLeft:before, .TableDesktop .TableCell.DropTarget.DropTargetLeft:after {

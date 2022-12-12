@@ -116,7 +116,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                     </div>
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
-                            <div className={'Clickable'} onClick={onClickFarmLink}>Farm Owner:  <b>{miningFarmEntity.name}</b></div>
+                            <div className={'Clickable'} onClick={onClickFarmLink}>Farm Owner:  <b className={ 'ColorPrimary060' }>{miningFarmEntity.name}</b></div>
                             <div className={'CollectionDescription'}>{collectionEntity.description}</div>
                         </div>
                         { collectionDetailsEntity !== null && (
@@ -130,7 +130,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 createDataPreview(
                                     'Address',
                                     <div className={'FlexRow'}>
-                                        <div className={'Dots'}>{collectionDetailsEntity.cudosAddress}</div>
+                                        <div className={'Dots ColorPrimary060'}>{collectionDetailsEntity.cudosAddress}</div>
                                         <Svg svg={LaunchIcon}
                                             className={'SVG Icon Clickable '}
                                             onClick={() => ProjectUtils.copyText(collectionDetailsEntity.cudosAddress)} />
