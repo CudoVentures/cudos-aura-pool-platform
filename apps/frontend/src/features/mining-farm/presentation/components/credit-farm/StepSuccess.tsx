@@ -1,16 +1,19 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
 import AccountSessionStore from '../../../../accounts/presentation/stores/AccountSessionStore';
+import AppRoutes from '../../../../app-routes/entities/AppRoutes';
 
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button from '../../../../../core/presentation/components/Button';
 import Svg from '../../../../../core/presentation/components/Svg';
+import StyledContainer, { ContainerWidth } from '../../../../../core/presentation/components/StyledContainer';
+import ColumnLayout from '../../../../../core/presentation/components/ColumnLayout';
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/Check';
+import SvgNoFarms from '../../../../../public/assets/vectors/no-farm.svg';
 import '../../styles/step-success.css';
-import { useNavigate } from 'react-router-dom';
-import AppRoutes from '../../../../app-routes/entities/AppRoutes';
 
 type Props = {
     accountSessionStore?: AccountSessionStore
@@ -25,21 +28,23 @@ function StepReview({ accountSessionStore }: Props) {
     }
 
     return (
-        <div className = { 'StepMiningFarmSuccess FlexColumn' }>
-            <div className={'HeadingRow FlexRow'}>
-                <Svg svg={CheckCircleIcon} className={ 'SuccessCheck' }/>
-                <div className={'H3 Bold'}>Great! Your Farm Profile is sent for review.</div>
-            </div>
-            <div className={'B1'}>Your farm will be reviewed by Aura Pool and you will receive an email with the results.</div>
+        <StyledContainer className = { 'StepMiningFarmSuccess' } containerWidth = { ContainerWidth.SMALL } >
+            <ColumnLayout gap = { 40 } >
+                <Svg className = { 'SvgNoFarm' } svg = { SvgNoFarms } />
 
-            {/* <div className={'EmailBox FlexRow'}>
-                {accountSessionStore.accountEntity.email}
-                <Svg svg={AlternateEmailIcon} />
-            </div> */}
-            <Actions className={'ButtonRow'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} height={ActionsHeight.HEIGHT_48}>
-                <Button onClick={onClickGoHome}>Go to Home</Button>
-            </Actions>
-        </div>
+                <div>
+                    <div className={'HeadingRow FlexRow'}>
+                        <Svg svg={CheckIcon} className={ 'SuccessCheck' }/>
+                        <div className={'H3 Bold'}>Great! Your Farm Profile is sent for review.</div>
+                    </div>
+                    <div className={'B1 SubTitle'}>Your farm will be reviewed by Aura Pool and you will receive an email with the results.<br />You can explore the Marketplace while waiting.</div>
+                </div>
+
+                <Actions className={'ButtonRow'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} height={ActionsHeight.HEIGHT_48}>
+                    <Button onClick={onClickGoHome}>Go to Home</Button>
+                </Actions>
+            </ColumnLayout>
+        </StyledContainer>
     )
 }
 

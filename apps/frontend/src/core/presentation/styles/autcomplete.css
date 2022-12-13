@@ -7,7 +7,8 @@
 }
 
 .Autocomplete .MuiChip-root {
-    height: 19px !important;
+    height: 28px !important;
+    border-radius: 8px !important;
     margin: 6px;
     color: var(--color-select-multi-item-color);
     background: var(--color-select-multi-item-background);
@@ -38,14 +39,15 @@
 }
 
 .Autocomplete .MuiChip-label {
-    font-size: 10px;
-    padding-left: 6px; padding-right: 6px;
+    font-size: 14px;
+    padding-left: 10px; padding-right: 10px;
 }
 
 .Autocomplete .MuiChip-deleteIcon {
-    height: 16px !important; width: 16px !important;
+    height: 12px !important; width: 12px !important;
     color: var(--color-select-multi-delete-icon) !important;
     margin-left: -2px !important;
+    margin-right: 8px !important;
 }
 
 .Autocomplete .MuiChip-deleteIcon:hover {

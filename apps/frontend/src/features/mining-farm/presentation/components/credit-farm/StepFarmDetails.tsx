@@ -1,7 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
+import BigNumber from 'bignumber.js';
 
 import S from '../../../../../core/utilities/Main';
+import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 import AutocompleteOption from '../../../../../core/entities/AutocompleteOption';
 import ManufacturerEntity from '../../../entities/ManufacturerEntity';
 import MinerEntity from '../../../entities/MinerEntity';
@@ -12,30 +14,29 @@ import ValidationState from '../../../../../core/presentation/stores/ValidationS
 
 import Input, { InputType } from '../../../../../core/presentation/components/Input';
 import { InputAdornment } from '@mui/material';
-import Svg from '../../../../../core/presentation/components/Svg';
+import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button from '../../../../../core/presentation/components/Button';
 import Autocomplete from '../../../../../core/presentation/components/Autcomplete';
 import UploaderComponent from '../../../../../core/presentation/components/UploaderComponent';
+import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
+import InfoBlueBox from '../../../../../core/presentation/components/InfoBlueBox';
+import StyledContainer, { ContainerWidth } from '../../../../../core/presentation/components/StyledContainer';
+import ColumnLayout from '../../../../../core/presentation/components/ColumnLayout';
 
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import NearMeIcon from '@mui/icons-material/NearMe';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/step-farm-details.css';
-import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
-import TextWithTooltip from '../../../../../core/presentation/components/TextWithTooltip';
-import BigNumber from 'bignumber.js';
-import InfoBlueBox from '../../../../../core/presentation/components/InfoBlueBox';
 
 type Props = {
     alertStore?: AlertStore;
     creditMiningFarmDetailsPageStore?: CreditMiningFarmDetailsPageStore;
+    header: React.ReactNode;
 }
 
-function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props) {
+function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header }: Props) {
     const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
-    // const imageEntities = creditMiningFarmDetailsPageStore.imageEntities;
 
     const validationState = useRef(new ValidationState()).current;
     const farmNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
@@ -109,212 +110,234 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore }: Props
     }
 
     return (
-        <div className = { 'StepMiningFarmDetails FlexColumn' }>
-            <div className={'B2 Bold'}>1. Fill in the general farm details</div>
-            <Input
-                label={'Farm Name'}
-                placeholder={'e.g Cool Farm'}
-                value={miningFarmEntity.name}
-                inputValidation={farmNameValidation}
-                onChange={(string) => { miningFarmEntity.name = string }} />
-            <Input
-                label={'Description (Optional)'}
-                multiline = { true }
-                value={miningFarmEntity.description}
-                onChange={(string) => { miningFarmEntity.description = string }} />
-            <Input
-                label={'Legal Entity Name'}
-                placeholder={'e.g Cool Farm Inc.'}
-                value={miningFarmEntity.legalName}
-                inputValidation={farmLegalNameValidation}
-                onChange={(string) => { miningFarmEntity.legalName = string }} />
-            <Input
-                label={'Primary Account Owner Full Name'}
-                placeholder={'e.g Steve Jones'}
-                value={miningFarmEntity.primaryAccountOwnerName}
-                inputValidation={farmOwnerNameValidation}
-                onChange={(string) => { miningFarmEntity.primaryAccountOwnerName = string }} />
-            <Input
-                label={'Primary Account Owner Email'}
-                placeholder={'examplemail@mail.com'}
-                value={miningFarmEntity.primaryAccountOwnerEmail}
-                inputValidation={farmOwnerEmailValidation}
-                onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }} />
-            <Autocomplete
-                label={'Manufacturers'}
-                value = { creditMiningFarmDetailsPageStore.getSelectedManufacturers().map((manufacturerEntity) => {
-                    return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
-                }) }
-                multiple
-                onChange = { onChangeManufacturers }
-                onInputChange = { onChangeManufacturerInput }
-                placeholder={'Select manufacturers...'}
-                inputValidation={farmManufacturersValidation}
-                options = { creditMiningFarmDetailsPageStore.manufacturerEntities.map((manufacturerEntity: ManufacturerEntity) => {
-                    return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
-                }) }
-                noOptionsText = { (
-                    <NoOptions
-                        storePropertyName = { 'manufacturerInputValue' }
-                        onClick = { creditMiningFarmDetailsPageStore.onClickAddManufacturer } />
-                ) } />
-            <Autocomplete
-                label={'Miners'}
-                value = { creditMiningFarmDetailsPageStore.getSelectedMiners().map((minerEntity) => {
-                    return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
-                }) }
-                multiple
-                onChange = { onChangeMiners }
-                onInputChange = { onChangeMinerInput }
-                placeholder={'Select miners...'}
-                inputValidation={farmMinersValidation}
-                options = { creditMiningFarmDetailsPageStore.minerEntities.map((minerEntity: MinerEntity) => {
-                    return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
-                })}
-                noOptionsText = { (
-                    <NoOptions
-                        storePropertyName = { 'minerInputValue' }
-                        onClick = { creditMiningFarmDetailsPageStore.onClickAddMiner } />
-                ) } />
-            <Autocomplete
-                label={'Energy Source'}
-                value = { creditMiningFarmDetailsPageStore.getSelectedEnergySources().map((energySourceEntity) => {
-                    return new AutocompleteOption(energySourceEntity.energySourceId, energySourceEntity.name);
-                }) }
-                multiple
-                onChange = { onChangeEnergySources}
-                onInputChange = { onChangeEnergySourceInput }
-                inputValidation={farmEnergySourceseValidation}
-                placeholder={'Select energy source...'}
-                options = { creditMiningFarmDetailsPageStore.energySourceEntities.map((energySourceEntity: EnergySourceEntity) => {
-                    return new AutocompleteOption(energySourceEntity.energySourceId, energySourceEntity.name);
-                })}
-                noOptionsText = { (
-                    <NoOptions
-                        storePropertyName = { 'energySourceInputValue' }
-                        onClick = { creditMiningFarmDetailsPageStore.onClickAddEnergySource } />
-                ) } />
-            <div className={'B2 Bold FullLine'}>2. Add farm activity details</div>
-            <Input
-                label={'Machines Location'}
-                placeholder={'e.g Las Brisas, United States'}
-                value={miningFarmEntity.machinesLocation}
-                onChange={(string) => { miningFarmEntity.machinesLocation = string }}
-                inputValidation={farmLocationValidation}
-                InputProps={{
-                    endAdornment: <InputAdornment position="end" >
-                        <Svg svg={NearMeIcon}/>
-                    </InputAdornment>,
-                }} />
-            <div>
-                <Input
-                    label={'Hashrate'}
-                    placeholder={'e.g 102.001 TH'}
-                    value={hashPowerInTh}
-                    onChange={ onChangeHashPowerInTh }
-                    inputType = { InputType.INTEGER }
-                    inputValidation={farmHashrateValidation}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end" > TH </InputAdornment>
-                        ),
-                    }} />
-                <div className={'FlexRow HashPowerInfo B2 FullLine'}>
-                    <InfoBlueBox text="Insert the Hashrate planned to be offered as NFTs" />
-                </div>
-            </div>
-            <div className={'FlexColumn FeeInputHolder'}>
-                <Input
-                    label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
-                    placeholder={'Maintenance fees...'}
-                    value={maintenanceFeeInBtc}
-                    inputType={InputType.REAL}
-                    inputValidation={farmMainteannceFeesValidation}
-                    onChange={onChangeMaintenanceFees}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end" >BTC</InputAdornment>
-                        ),
-                    }} />
-                <div className={'B3 SemiBold FullLine'}> Maintenance fee calculation formula:</div>
-                <div className={'FormulaBox FlexColumn'}>
-                    <div>- Maintenance fee amount/current hashing power = Fee per Th/s</div>
-                    <div>- Fee per Th/s / Payout period = Daily fee</div>
-                    <div>- Daily fee / 24 = Hourly fee</div>
-                    <div>- Total user payout hours * Hourly fee = Maintenance fee amount</div>
-                </div>
-            </div>
-            <Input
-                label={'Cudos address to receive NFT resale royalties'}
-                placeholder={'cudos1...'}
-                value={miningFarmEntity.resaleFarmRoyaltiesCudosAddress}
-                inputValidation={resaleFarmRoyaltiesCudosAddressValidation}
-                onChange={(string) => { miningFarmEntity.resaleFarmRoyaltiesCudosAddress = string }} />
-            <Input
-                label={'BTC Address to receive awards'}
-                placeholder={'bc1qxy...'}
-                value={miningFarmEntity.rewardsFromPoolBtcAddress}
-                inputValidation={farmPayoutAddressValidation}
-                onChange={(string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string }} />
-            <Input
-                label={'BTC Address to receive awards leftovers'}
-                placeholder={'bc1qxy...'}
-                value={miningFarmEntity.leftoverRewardsBtcAddress}
-                inputValidation={farmLeftoversAddressValidation}
-                onChange={(string) => { miningFarmEntity.leftoverRewardsBtcAddress = string }} />
-            <Input
-                label={'BTC Address to receive maintenance fees'}
-                placeholder={'bc1qxy...'}
-                value={miningFarmEntity.maintenanceFeePayoutBtcAddress}
-                inputValidation={farmMainteannceFeesAddressValidation}
-                onChange={(string) => { miningFarmEntity.maintenanceFeePayoutBtcAddress = string }} />
-            <div className={'B2 Bold FullLine'}> 3. Upload photos from the farm</div>
-            <div className={'Uploader FlexColumn'}>
-                <div className={'B3 SemiBold'}>Upload files here</div>
-                <div className={'B3 SemiBold'}>File Format: <span className={'Gray'}>.svg, .png, .jpeg</span></div>
-                <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
-                    <Button>
-                        <Svg svg={FileUploadIcon}/>
+        <ColumnLayout className = { 'StepMiningFarmDetails FlexColumn' }>
+
+            <StyledContainer containerWidth = { ContainerWidth.SMALL } >
+                <ColumnLayout>
+                    { header }
+                    <div className={'H3 Bold'}>1. Fill in the general farm details</div>
+                    <Input
+                        label={'Farm Name'}
+                        placeholder={'e.g Cool Farm'}
+                        value={miningFarmEntity.name}
+                        inputValidation={farmNameValidation}
+                        onChange={(string) => { miningFarmEntity.name = string }} />
+                    <Input
+                        label={'Description (Optional)'}
+                        multiline = { true }
+                        value={miningFarmEntity.description}
+                        onChange={(string) => { miningFarmEntity.description = string }} />
+                    <Input
+                        label={'Legal Entity Name'}
+                        placeholder={'e.g Cool Farm Inc.'}
+                        value={miningFarmEntity.legalName}
+                        inputValidation={farmLegalNameValidation}
+                        onChange={(string) => { miningFarmEntity.legalName = string }} />
+                    <Autocomplete
+                        label={'Manufacturers'}
+                        value = { creditMiningFarmDetailsPageStore.getSelectedManufacturers().map((manufacturerEntity) => {
+                            return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
+                        }) }
+                        multiple
+                        onChange = { onChangeManufacturers }
+                        onInputChange = { onChangeManufacturerInput }
+                        placeholder={'Select manufacturers...'}
+                        inputValidation={farmManufacturersValidation}
+                        options = { creditMiningFarmDetailsPageStore.manufacturerEntities.map((manufacturerEntity: ManufacturerEntity) => {
+                            return new AutocompleteOption(manufacturerEntity.manufacturerId, manufacturerEntity.name);
+                        }) }
+                        noOptionsText = { (
+                            <NoOptions
+                                storePropertyName = { 'manufacturerInputValue' }
+                                onClick = { creditMiningFarmDetailsPageStore.onClickAddManufacturer } />
+                        ) } />
+                    <Autocomplete
+                        label={'Miners'}
+                        value = { creditMiningFarmDetailsPageStore.getSelectedMiners().map((minerEntity) => {
+                            return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
+                        }) }
+                        multiple
+                        onChange = { onChangeMiners }
+                        onInputChange = { onChangeMinerInput }
+                        placeholder={'Select miners...'}
+                        inputValidation={farmMinersValidation}
+                        options = { creditMiningFarmDetailsPageStore.minerEntities.map((minerEntity: MinerEntity) => {
+                            return new AutocompleteOption(minerEntity.minerId, minerEntity.name);
+                        })}
+                        noOptionsText = { (
+                            <NoOptions
+                                storePropertyName = { 'minerInputValue' }
+                                onClick = { creditMiningFarmDetailsPageStore.onClickAddMiner } />
+                        ) } />
+                    <Autocomplete
+                        label={'Energy Source'}
+                        value = { creditMiningFarmDetailsPageStore.getSelectedEnergySources().map((energySourceEntity) => {
+                            return new AutocompleteOption(energySourceEntity.energySourceId, energySourceEntity.name);
+                        }) }
+                        multiple
+                        onChange = { onChangeEnergySources}
+                        onInputChange = { onChangeEnergySourceInput }
+                        inputValidation={farmEnergySourceseValidation}
+                        placeholder={'Select energy source...'}
+                        options = { creditMiningFarmDetailsPageStore.energySourceEntities.map((energySourceEntity: EnergySourceEntity) => {
+                            return new AutocompleteOption(energySourceEntity.energySourceId, energySourceEntity.name);
+                        })}
+                        noOptionsText = { (
+                            <NoOptions
+                                storePropertyName = { 'energySourceInputValue' }
+                                onClick = { creditMiningFarmDetailsPageStore.onClickAddEnergySource } />
+                        ) } />
+                    <Input
+                        label={'Primary Account Owner Full Name'}
+                        placeholder={'e.g Steve Jones'}
+                        value={miningFarmEntity.primaryAccountOwnerName}
+                        inputValidation={farmOwnerNameValidation}
+                        onChange={(string) => { miningFarmEntity.primaryAccountOwnerName = string }} />
+                    <Input
+                        label={'Primary Account Owner Email'}
+                        placeholder={'examplemail@mail.com'}
+                        value={miningFarmEntity.primaryAccountOwnerEmail}
+                        inputValidation={farmOwnerEmailValidation}
+                        onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }} />
+                </ColumnLayout>
+            </StyledContainer>
+
+            <StyledContainer containerWidth = { ContainerWidth.SMALL } >
+                <ColumnLayout>
+                    <div className={'H3 Bold FullLine'}>2. Add farm activity details</div>
+                    <Input
+                        label={'Machines Location'}
+                        placeholder={'e.g Las Brisas, United States'}
+                        value={miningFarmEntity.machinesLocation}
+                        onChange={(string) => { miningFarmEntity.machinesLocation = string }}
+                        inputValidation={farmLocationValidation}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end" >
+                                <Svg svg={NearMeIcon}/>
+                            </InputAdornment>,
+                        }} />
+                    <div>
+                        <Input
+                            label={'Hashrate'}
+                            placeholder={'e.g 102.001 TH'}
+                            value={hashPowerInTh}
+                            onChange={ onChangeHashPowerInTh }
+                            inputType = { InputType.INTEGER }
+                            inputValidation={farmHashrateValidation}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end" > TH </InputAdornment>
+                                ),
+                            }} />
+                        <div className={'FlexRow HashPowerInfo B2 FullLine'}>
+                            <InfoBlueBox text="Insert the Hashrate planned to be offered as NFTs" />
+                        </div>
+                    </div>
+                    <div className={'FlexColumn FeeInputHolder'}>
+                        <Input
+                            label={ 'Maintenance Fees (per month)' }
+                            placeholder={'Maintenance fees...'}
+                            value={maintenanceFeeInBtc}
+                            inputType={InputType.REAL}
+                            inputValidation={farmMainteannceFeesValidation}
+                            onChange={onChangeMaintenanceFees}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end" >BTC</InputAdornment>
+                                ),
+                            }} />
+                        <div className={'B3 SemiBold FullLine'}> Maintenance fee calculation formula:</div>
+                        <div className={'FormulaBox B3 Bold'}>
+                            •&nbsp;&nbsp;Maintenance fee amount/current hashing power = fee per Th/s<br />
+                            •&nbsp;&nbsp;Fee per Th/s / Payout period = Daily fee<br />
+                            •&nbsp;&nbsp;Daily fee / 24 = Hourly fee<br />
+                            •&nbsp;&nbsp;Total user payout hours * hourly fee = Maintenance fee amount
+                        </div>
+                    </div>
+                    <Input
+                        label = {
+                            <TextWithTooltip text={'Cudos address to receive NFT resale royalties'} tooltipText={'Farm BTC address which will collect all maintenance fees.'} />
+                        }
+                        placeholder={'cudos1...'}
+                        value={miningFarmEntity.resaleFarmRoyaltiesCudosAddress}
+                        inputValidation={resaleFarmRoyaltiesCudosAddressValidation}
+                        onChange={(string) => { miningFarmEntity.resaleFarmRoyaltiesCudosAddress = string }} />
+                    <Input
+                        label = {
+                            <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The CUDOS address which will collect all sale proceeds from sold NFTs.'} />
+                        }
+                        placeholder={'bc1qxy...'}
+                        value={miningFarmEntity.rewardsFromPoolBtcAddress}
+                        inputValidation={farmPayoutAddressValidation}
+                        onChange={(string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string }} />
+                    <Input
+                        label = {
+                            <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on Aura Pool.'} />
+                        }
+                        placeholder={'bc1qxy...'}
+                        value={miningFarmEntity.leftoverRewardsBtcAddress}
+                        inputValidation={farmLeftoversAddressValidation}
+                        onChange={(string) => { miningFarmEntity.leftoverRewardsBtcAddress = string }} />
+                    <Input
+                        label = {
+                            <TextWithTooltip text={'BTC Address to receive maintenance fees'} tooltipText={'The CUDOS address, which will collect royalties upon resale of an NFT from your farm. This royalty amount can be adjusted in the "Update Farm Details" screen.'} />
+                        }
+                        placeholder={'bc1qxy...'}
+                        value={miningFarmEntity.maintenanceFeePayoutBtcAddress}
+                        inputValidation={farmMainteannceFeesAddressValidation}
+                        onChange={(string) => { miningFarmEntity.maintenanceFeePayoutBtcAddress = string }} />
+                </ColumnLayout>
+            </StyledContainer>
+
+            <StyledContainer containerWidth = { ContainerWidth.SMALL } >
+                <ColumnLayout>
+                    <div className={'H3 Bold FullLine'}> 3. Upload photos from the farm</div>
+                    <div className={'Uploader FlexColumn'}>
+                        <div className={'B3 SemiBold'}>Upload files here</div>
+                        <div className={'B3 SemiBold'}>File Format: <span className={'Gray'}>.svg, .png, .jpeg</span></div>
+                        <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
+                            <Button>
+                                <Svg svg={FileUploadIcon}/>
                         Upload file
-                    </Button>
-                </Actions>
-                <UploaderComponent
-                    id = { this }
-                    params = { {
-                        'maxSize': 73400320, // 70MB
-                        'onExceedLimit': () => {
-                            this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
-                        },
-                        'multi': true,
-                        onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                            // onAddFarmPhoto(base64File);
-                            miningFarmEntity.farmPhotoUrls.push(base64File);
-                        },
-                    } } />
-            </div>
-            <div className={'UploadedImagesRow FlexRow'}>
-                {miningFarmEntity.farmPhotoUrls.length === 0 && (
-                    <div className={'NoUploads B3 SemiBold'}>No files uploaded yet.</div>
-                )}
-                {miningFarmEntity.farmPhotoUrls.length > 0 && (
-                    miningFarmEntity.farmPhotoUrls.map((url, i) => {
-                        return (
-                            <div key={i}
-                                style={ ProjectUtils.makeBgImgStyle(url) }
-                                className={'PictureBox'} >
-                                <Svg svg={CloseIcon} className={'RemovePictureButton Clickable'} onClick={onClickRemoveImage.bind(null, i)}/>
-                            </div>
-                        )
-                    })
-                )}
-            </div>
-            <Actions layout={ActionsLayout.LAYOUT_COLUMN_RIGHT} height={ActionsHeight.HEIGHT_48}>
-                <Button
-                    onClick={onClickNextStep}>
-                    Next Step
-                </Button>
-            </Actions>
-        </div>
+                            </Button>
+                        </Actions>
+                        <UploaderComponent
+                            id = { this }
+                            params = { {
+                                'maxSize': 73400320, // 70MB
+                                'onExceedLimit': () => {
+                                    this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
+                                },
+                                'multi': true,
+                                onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
+                                    // onAddFarmPhoto(base64File);
+                                    miningFarmEntity.farmPhotoUrls.push(base64File);
+                                },
+                            } } />
+                    </div>
+                    <div className={'UploadedImagesRow FlexRow'}>
+                        {miningFarmEntity.farmPhotoUrls.length === 0 && (
+                            <div className={'NoUploads B3 SemiBold'}>No files uploaded yet.</div>
+                        )}
+                        {miningFarmEntity.farmPhotoUrls.length > 0 && (
+                            miningFarmEntity.farmPhotoUrls.map((url, i) => {
+                                return (
+                                    <div key={i}
+                                        style={ ProjectUtils.makeBgImgStyle(url) }
+                                        className={'PictureBox'} >
+                                        <Svg svg={CloseIcon} className={'RemovePictureButton Clickable'} onClick={onClickRemoveImage.bind(null, i)} size = { SvgSize.CUSTOM }/>
+                                    </div>
+                                )
+                            })
+                        )}
+                    </div>
+                    <Actions className = { 'NextStepActions' } layout={ActionsLayout.LAYOUT_COLUMN_RIGHT} height={ActionsHeight.HEIGHT_48}>
+                        <Button onClick={onClickNextStep}> Next Step </Button>
+                    </Actions>
+                </ColumnLayout>
+            </StyledContainer>
+
+        </ColumnLayout>
     )
 }
 

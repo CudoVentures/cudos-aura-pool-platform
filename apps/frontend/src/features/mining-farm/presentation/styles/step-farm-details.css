@@ -1,7 +1,3 @@
-.StepMiningFarmDetails {
-    gap: 32px;
-}
-
 .StepMiningFarmDetails .HashPowerInfo {
     gap: 10px;
     margin-top: 8px;
@@ -12,20 +8,19 @@
 }
 
 .StepMiningFarmDetails .FeeInputHolder .FormulaBox {
-    gap: 5px;
     padding: 10px;
+    color: var(--color-neutral-070);
     border-radius: 10px;
-    background: var(--color-neutral-020);
+    background: var(--color-neutral);
 }
 
 .StepMiningFarmDetails .Uploader {
     width: 100%; height: 152px;
-    background: var(--color-neutral-020);
-    border: 2px dashed var(--color-neutral-060);
-    border-radius: 20px;
     gap: 10px;
-    align-items: center;
-    justify-content: center;
+    align-items: center; justify-content: center;
+    border-radius: 20px;
+    border: 2px dashed #A9AFBF;
+    background: var(--color-neutral);
 }
 
 .StepMiningFarmDetails .Uploader .Gray {
@@ -33,8 +28,14 @@
 }
 
 .StepMiningFarmDetails .UploadedImagesRow {
+    width: 100%;
     gap: 10px;
-    height: 80px;
+    /* height: 80px; */
+}
+
+.StepMiningFarmDetails .UploadedImagesRow .NoUploads {
+    width: 100%;
+    text-align: center;
 }
 
 .StepMiningFarmDetails .UploadedImagesRow .PictureBox {
@@ -46,12 +47,20 @@
     position: relative;
 }
 
-.StepMiningFarmDetails .UploadedImagesRow .PictureBox .RemovePictureButton{
-    width: 24px; height: 24px;
-    background: #FFFFFF;
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+.StepMiningFarmDetails .UploadedImagesRow .PictureBox .RemovePictureButton {
+    width: 20px; height: 20px;
+    box-sizing: border-box;
+    color: var(--color-neutral-100);
+    border-radius: 50%;
+    padding: 1px;
     position: absolute;
-    top: -12px;
-    right: -12px;
+    top: -10px; right: -10px;
+    background-color: var(--color-neutral);
+    box-shadow: 0px 2px 10px rgba(8, 9, 12, 0.15);
+}
+
+.StepMiningFarmDetails .NextStepActions {
+    padding-top: 24px;
+    border-top: 1px solid var(--color-neutral);
+    margin-top: 24px;
 }

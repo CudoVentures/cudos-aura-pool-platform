@@ -9,7 +9,7 @@
 .HeaderWallet .AddressRow {
     padding: 14px 24px;
     gap: 24px;
-    background-color: var(--color-neutral-060);
+    background-color: var(--color-neutral);
     border-radius: 16px;
     margin-left: 40px;
 }

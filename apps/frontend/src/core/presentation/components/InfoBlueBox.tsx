@@ -1,7 +1,9 @@
 import React from 'react';
+
+import Svg from './Svg';
+
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import '../styles/info-blue-box.css';
-import Svg from './Svg';
 
 type Props = {
     className?: string,
