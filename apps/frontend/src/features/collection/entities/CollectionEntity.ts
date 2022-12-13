@@ -13,6 +13,7 @@ export enum CollectionStatus {
 export default class CollectionEntity {
     id: string;
     farmId: string;
+    creatorId: string;
     name: string;
     denomId: string;
     description: string;
@@ -28,6 +29,7 @@ export default class CollectionEntity {
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
         this.farmId = S.Strings.NOT_EXISTS;
+        this.creatorId = S.Strings.NOT_EXISTS;
         this.name = '';
         this.denomId = '';
         this.description = '';
@@ -39,8 +41,13 @@ export default class CollectionEntity {
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
         this.timestampDeletedAt = S.NOT_EXISTS;
-
         makeAutoObservable(this);
+    }
+
+    clone(): CollectionEntity {
+        const entity = new CollectionEntity();
+        Object.assign(entity, this);
+        return entity;
     }
 
     isNew(): boolean {
@@ -138,6 +145,7 @@ export default class CollectionEntity {
         return {
             'id': entity.id,
             'farmId': entity.farmId,
+            'creatorId': entity.creatorId,
             'name': entity.name,
             'denomId': entity.denomId,
             'description': entity.description,
@@ -161,6 +169,7 @@ export default class CollectionEntity {
 
         model.id = json.id ?? model.id;
         model.farmId = json.farmId ?? model.farmId;
+        model.creatorId = json.creatorId ?? model.creatorId;
         model.name = json.name ?? model.name;
         model.denomId = json.denomId ?? model.denomId;
         model.description = json.description ?? model.description;

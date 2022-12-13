@@ -19,6 +19,7 @@ import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel
 import BigNumber from 'bignumber.js';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
+import AdminEntity from '../../../accounts/entities/AdminEntity';
 
 enum StatsTabs {
     EARNINGS = 0,
@@ -44,6 +45,7 @@ export default class ViewNftPageStore {
     nftEntity: NftEntity;
     collectionEntity: CollectionEntity;
     miningFarmEntity: MiningFarmEntity;
+    adminEntity: AdminEntity;
     nftEntities: NftEntity[];
     gridViewState: GridViewState;
 
@@ -71,6 +73,7 @@ export default class ViewNftPageStore {
         this.nftEntity = null;
         this.collectionEntity = null;
         this.miningFarmEntity = null;
+        this.adminEntity = null;
         this.nftEntities = null;
         this.gridViewState = new GridViewState(this.fetchNftsInTheCollection, 3, 4, 2);
 
@@ -92,7 +95,8 @@ export default class ViewNftPageStore {
         this.bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
 
         this.nftEntity = await this.nftRepo.fetchNftById(nftId);
-
+        const { adminEntity } = await this.accountRepo.fetchAccountsByAccountId(this.nftEntity.creatorId);
+        this.adminEntity = adminEntity;
         this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
 

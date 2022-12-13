@@ -4,8 +4,8 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../../core/utilities/AxiosWrapper';
-import { ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter } from '../dto/Requests';
-import { ResCreditCollection, ResEditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter } from '../dto/Responses';
+import { ReqCreditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter } from '../dto/Requests';
+import { ResCreditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter } from '../dto/Responses';
 
 const COLLECTION_URL = '/api/v1/collection';
 
@@ -38,13 +38,6 @@ export default class CollectionApi {
             collectionEntity: res.collectionEntity,
             nftEntities: res.nftEntities,
         }
-    }
-
-    async editCollection(collectionEntity: CollectionEntity): Promise < CollectionEntity > {
-        const req = new ReqEditCollection(collectionEntity);
-        const { data } = await axios.put(`${COLLECTION_URL}/editCollection`, req)
-        const res = new ResEditCollection(data);
-        return res.collectionEntity;
     }
 
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {

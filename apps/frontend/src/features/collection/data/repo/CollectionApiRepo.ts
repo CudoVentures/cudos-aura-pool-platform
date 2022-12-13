@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { MathHelper, Decimal, GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
+import { GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
@@ -60,7 +60,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         collectionFilterModel.timestampTo = timestampTo;
         collectionFilterModel.orderBy = CollectionOrderBy.TOP_DESC;
 
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
@@ -70,7 +70,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         if (status) {
             collectionFilterModel.status = [status];
         }
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
@@ -111,40 +111,13 @@ export default class CollectionApiRepo implements CollectionRepo {
                 Object.assign(nftEntities[i], nftEntity);
             });
         } catch (e) {
-            switch (parseBackendErrorType(e)) {
-                case BackendErrorType.COLLECTION_DENOM_EXISTS_ERROR:
-                    this.showAlert?.('Please ensure that denom id is not already in use');
-                    break;
-                case BackendErrorType.COLLECTION_CREATE_ERROR:
-                    this.showAlert?.('There was error in creating the colelction. Please try again.');
-                    break;
-                case BackendErrorType.COLLECTION_WRONG_DENOM_ERROR:
-                    this.showAlert?.('Please use only letters for collection name.');
-                    break;
-                case BackendErrorType.DATA_SERVICE_ERROR:
-                    this.showAlert?.('Failed to save pictures. Please try again.');
-                    break;
-                default:
-                    throw Error(parseBackendErrorType(e));
-            }
-        } finally {
-            this.enableActions?.();
-        }
-    }
-
-    async editCollection(collectionEntity: CollectionEntity) {
-        try {
-            this.disableActions?.();
-            const resultCollectionEntity = await this.collectionApi.editCollection(collectionEntity);
-            Object.assign(collectionEntity, resultCollectionEntity);
-        } catch (e) {
             const error = parseBackendErrorType(e);
             switch (error) {
                 case BackendErrorType.COLLECTION_DENOM_EXISTS_ERROR:
                     this.showAlert?.('Please ensure that denom id is not already in use');
                     throw Error(error);
                 case BackendErrorType.COLLECTION_CREATE_ERROR:
-                    this.showAlert?.('There was error in creating the colelction. Please try again.');
+                    this.showAlert?.('There was error saving the colelction. Please try again.');
                     throw Error(error);
                 case BackendErrorType.COLLECTION_WRONG_DENOM_ERROR:
                     this.showAlert?.('Please use only letters for collection name.');

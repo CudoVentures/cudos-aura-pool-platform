@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
+import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
@@ -8,12 +8,18 @@ import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 export default class CreditCollectionPageStore {
 
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
     miningFarmRepo: MiningFarmRepo;
+    walletStore: WalletStore;
+    alertStore: AlertStore;
+    accountSessionStore: AccountSessionStore;
 
     gridViewState: GridViewState;
     nftFilterModel: NftFilterModel;
@@ -23,10 +29,13 @@ export default class CreditCollectionPageStore {
     miningFarmEntity: MiningFarmEntity;
     nftEntities: NftEntity[];
 
-    constructor(nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
+    constructor(nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, walletStore: WalletStore, alertStore: AlertStore, accountSessionStore: AccountSessionStore) {
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
+        this.walletStore = walletStore;
+        this.alertStore = alertStore;
+        this.accountSessionStore = accountSessionStore;
 
         this.gridViewState = new GridViewState(this.fetchNfts, 3, 4, 6);
         this.nftFilterModel = new NftFilterModel();
@@ -65,4 +74,30 @@ export default class CreditCollectionPageStore {
         });
     }
 
+    approveCollection = async () => {
+        if (this.walletStore.isConnected() === false) {
+            this.alertStore.show('You must connect your wallet first');
+            return;
+        }
+
+        try {
+            const collectionClone = this.collectionEntity.clone();
+            collectionClone.markApproved();
+            await this.collectionRepo.approveCollection(collectionClone, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
+            this.collectionEntity.markApproved();
+        } catch (e) {
+            this.alertStore.show(e.message);
+        }
+    }
+
+    rejectCollection = async () => {
+        try {
+            const collectionClone = this.collectionEntity.clone();
+            collectionClone.markRejected();
+            await this.collectionRepo.creditCollection(collectionClone, this.nftEntities);
+            this.collectionEntity.markRejected();
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }

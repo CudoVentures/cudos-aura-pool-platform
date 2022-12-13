@@ -54,6 +54,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
 
     const nftEntity = viewNftPageStore.nftEntity;
     const collectionEntity = viewNftPageStore.collectionEntity;
+    const creatorAdminEntity = viewNftPageStore.adminEntity;
 
     useEffect(() => {
         async function run() {
@@ -188,7 +189,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                     <div className={'OwnerPicture'}></div>
                                     <div className={'OwnerInfo FlexColumn'}>
                                         <div className={'AddressName B1 SemiBold'}>Creator</div>
-                                        <div className={'Address ColorPrimary060'}>{ProjectUtils.shortenAddressString(nftEntity.creatorAddress, 25)}</div>
+                                        <div className={'Address ColorPrimary060'}>{ProjectUtils.shortenAddressString(creatorAdminEntity.cudosWalletAddress, 25)}</div>
                                     </div>
                                 </div>
                                 <div className={'FlexRow OwnerBox'}>

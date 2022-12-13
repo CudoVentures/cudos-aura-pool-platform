@@ -15,7 +15,7 @@ type Props = {
 
 function ViewCollectionModal({ viewCollectionModalStore }: Props) {
 
-    const { collectionEntity, nftEntities } = viewCollectionModalStore;
+    const { collectionEntity, nftEntities, creatorAdminEntity } = viewCollectionModalStore;
 
     return (
         <ModalWindow
@@ -45,7 +45,7 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                                         createDataPreview('Hash power', nftEntity.formatHashPowerInTh()),
                                         createDataPreview('Price', nftEntity.formatPriceInCudos()),
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
-                                        createDataPreview('Creator address', nftEntity.creatorAddress),
+                                        createDataPreview('Creator address', creatorAdminEntity.cudosWalletAddress),
                                         createDataPreview('Current owner', nftEntity.currentOwner),
                                     ] } />
                             </div>

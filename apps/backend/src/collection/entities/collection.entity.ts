@@ -32,6 +32,10 @@ export class CollectionEntity {
         this.timestampDeletedAt = NOT_EXISTS_INT;
     }
 
+    markQueued(): void {
+        this.status = CollectionStatus.QUEUED;
+    }
+
     isNew(): boolean {
         return this.id === NOT_EXISTS_INT;
     }
@@ -72,6 +76,7 @@ export class CollectionEntity {
         entity.id = repoJson.id ?? entity.id;
         entity.name = repoJson.name ?? entity.name;
         entity.description = repoJson.description ?? entity.description;
+        entity.status = repoJson.status ?? entity.status;
         entity.denomId = repoJson.denomId ?? entity.denomId;
         entity.hashingPower = repoJson.hashingPower ?? entity.hashingPower;
         entity.royalties = repoJson.royalties ?? entity.royalties;
@@ -94,6 +99,7 @@ export class CollectionEntity {
             'name': entity.name,
             'description': entity.description,
             'denomId': entity.denomId,
+            'status': entity.status,
             'hashingPower': entity.hashingPower,
             'royalties': entity.royalties,
             'mainImage': entity.mainImage,
@@ -114,6 +120,7 @@ export class CollectionEntity {
         entity.id = parseInt(json.id ?? entity.id.toString());
         entity.name = json.name ?? entity.name;
         entity.description = json.description ?? entity.description;
+        entity.status = json.status ?? entity.status;
         entity.denomId = json.denomId ?? entity.denomId;
         entity.hashingPower = json.hashingPower ?? entity.hashingPower;
         entity.royalties = json.royalties ?? entity.royalties;

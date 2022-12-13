@@ -29,7 +29,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         if (status) {
             collectionFilterModel.status = [status];
         }
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
@@ -41,7 +41,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         if (status) {
             collectionFilterModel.status = [status];
         }
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
@@ -152,7 +152,6 @@ export default class CollectionStorageRepo implements CollectionRepo {
                     nftJson.id = nextNftId.toString();
                     nftJson.collectionId = collectionJson.id;
                     nftJson.currentOwner = cudosWalletAddress;
-                    nftJson.creatorAddress = cudosWalletAddress;
 
                     nftsJson.push(nftJson);
                 }
@@ -163,8 +162,4 @@ export default class CollectionStorageRepo implements CollectionRepo {
 
         this.storageHelper.save();
     }
-
-    async editCollection(collectionEntity: CollectionEntity) {
-    }
-
 }

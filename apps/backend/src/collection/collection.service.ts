@@ -178,10 +178,7 @@ export class CollectionService {
     ): Promise<CollectionEntity> {
 
         const [count, [collection]] = await this.collectionModel.update(
-            {
-                ...CollectionEntity.toRepo(collectionEntity),
-                status: CollectionStatus.QUEUED,
-            },
+            CollectionEntity.toRepo(collectionEntity).toJSON(),
             {
                 where: { id },
                 returning: true,

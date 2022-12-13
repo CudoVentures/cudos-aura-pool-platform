@@ -121,6 +121,9 @@ export class CollectionController {
 
                 nftEntityResults = await Promise.all(nfts)
             } else {
+                if (req.sessionAccountEntity.isAdmin()) {
+                    collectionEntity.markQueued();
+                }
                 collectionEntityResult = await this.collectionService.updateOne(collectionId, collectionEntity, req.transaction);
                 const tempNftFilterEntity = new NftFilterEntity();
                 tempNftFilterEntity.collectionIds = [collectionId.toString()];
@@ -131,7 +134,7 @@ export class CollectionController {
                 await this.nftService.deleteMany(nftsToDelete);
 
                 // CREATE OR UPDATE rest
-                const nftsToCreateOrEdit = nftEntities.map(async (nftEntity) => {
+                const nftsToCreateOrEdit = nftEntities.map(async (nftEntity: NftEntity) => {
                     // not a new nftEntity
                     if (!nftEntity.isNew()) {
                         return this.nftService.updateOne(nftEntity.id, nftEntity, req.transaction)
@@ -148,7 +151,6 @@ export class CollectionController {
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
             this.dataService.cleanUpNewUris(oldUris, newUris);
-
             const errMessage = ex.response?.message;
             switch (errMessage) {
                 case ERROR_TYPES.COLLECTION_DENOM_EXISTS_ERROR:
@@ -199,6 +201,9 @@ export class CollectionController {
 
         let collectionEntityResult: CollectionEntity;
         try {
+            if (req.sessionAccountEntity.isAdmin()) {
+                collectionEntity.markQueued();
+            }
             collectionEntityResult = await this.collectionService.updateOne(collectionId, collectionEntity, req.transaction);
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
