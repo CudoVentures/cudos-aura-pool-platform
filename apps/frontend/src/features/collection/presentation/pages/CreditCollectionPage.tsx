@@ -19,12 +19,14 @@ import PageHeader from '../../../header/presentation/components/PageHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button from '../../../../core/presentation/components/Button';
+import Button, { ButtonColor, ButtonPadding, ButtonRadius } from '../../../../core/presentation/components/Button';
 import GridView from '../../../../core/presentation/components/GridView';
 import NftPreview from '../../../nft/presentation/components/NftPreview';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 import AddIcon from '@mui/icons-material/Add';
 import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import '../styles/page-credit-collection.css';
@@ -136,7 +138,29 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                             onClick={() => ProjectUtils.copyText(collectionDetailsEntity.cudosAddress)} />
                                     </div>,
                                 ),
-                            ]} />
+                            ]} >
+                                {collectionEntity?.isStatusQueued() && accountSessionStore.isSuperAdmin()
+                                        && (<Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} >
+                                            <Button
+                                                radius={ButtonRadius.RADIUS_16}
+                                                padding={ButtonPadding.PADDING_48}
+                                                color={ButtonColor.SCHEME_2}
+                                                onClick={creditCollectionPageStore.rejectCollection}
+                                            >
+                                                <Svg svg={HighlightOffIcon}/>
+                                                Reject Collection
+                                            </Button>
+                                            <Button
+                                                radius={ButtonRadius.RADIUS_16}
+                                                padding={ButtonPadding.PADDING_48}
+                                                onClick={creditCollectionPageStore.approveCollection}
+                                            >
+                                                <Svg svg={CheckCircleOutlineIcon}/>
+                                                Approve Collection
+                                            </Button>
+                                        </Actions>)
+                                }
+                            </DataPreviewLayout>
                         )}
                     </div>
                     <div className = { 'SectionDivider' } />

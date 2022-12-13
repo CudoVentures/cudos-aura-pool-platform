@@ -12,6 +12,11 @@ export class CollectionJsonValidator {
     @ApiProperty({ required: true, example: 'Collection Name' })
         name: string;
 
+    @IsEnum(CollectionStatus)
+    @IsNotEmpty()
+    @ApiProperty({ required: true, example: 'approved' })
+        status: CollectionStatus;
+
     @IsString()
     @IsOptional()
     @ApiProperty({ required: false, example: 'My collection' })

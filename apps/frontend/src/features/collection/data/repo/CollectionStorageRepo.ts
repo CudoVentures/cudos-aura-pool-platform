@@ -152,7 +152,6 @@ export default class CollectionStorageRepo implements CollectionRepo {
                     nftJson.id = nextNftId.toString();
                     nftJson.collectionId = collectionJson.id;
                     nftJson.currentOwner = cudosWalletAddress;
-                    nftJson.creatorAddress = cudosWalletAddress;
 
                     nftsJson.push(nftJson);
                 }
@@ -163,8 +162,4 @@ export default class CollectionStorageRepo implements CollectionRepo {
 
         this.storageHelper.save();
     }
-
-    async editCollection(collectionEntity: CollectionEntity) {
-    }
-
 }

@@ -22,7 +22,6 @@ export default class NftEntity {
     imageUrl: string;
     status: NftStatus;
     expirationDateTimestamp: number;
-    creatorAddress: string;
     currentOwner: string;
     data: string;
 
@@ -38,7 +37,6 @@ export default class NftEntity {
         this.imageUrl = '';
         this.status = NftStatus.QUEUED;
         this.expirationDateTimestamp = S.NOT_EXISTS;
-        this.creatorAddress = ''
         this.currentOwner = ''
         this.data = ''
 
@@ -133,7 +131,6 @@ export default class NftEntity {
             'uri': entity.imageUrl,
             'status': entity.status,
             'expirationDateTimestamp': entity.expirationDateTimestamp,
-            'creatorAddress': entity.creatorAddress,
             'currentOwner': entity.currentOwner,
             'data': entity.data,
         }
@@ -156,7 +153,7 @@ export default class NftEntity {
         model.imageUrl = json.uri ?? model.imageUrl;
         model.status = json.status ?? model.status;
         model.expirationDateTimestamp = new Date(json.expirationDateTimestamp ?? model.expirationDateTimestamp).getTime();
-        model.creatorAddress = json.creatorAddress ?? model.creatorAddress;
+        model.creatorId = json.creatorId ?? model.creatorId;
         model.currentOwner = json.currentOwner ?? model.currentOwner;
         model.data = json.data ?? model.data;
 

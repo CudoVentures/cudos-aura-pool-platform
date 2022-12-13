@@ -1,8 +1,10 @@
 import { makeAutoObservable, runInAction } from 'mobx';
+import NftFilterEntity from '../../../../../../backend/src/nft/entities/nft-filter.entity';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
@@ -14,17 +16,19 @@ export default class QueuedCollectionsStore {
     walletStore: WalletStore;
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
+    nftRepo: NftRepo;
 
     collectionsTableState: TableState;
 
     collectionEntities: CollectionEntity[];
     collectionDetailsMap: Map < string, CollectionDetailsEntity >;
 
-    constructor(collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
+    constructor(collectionRepo: CollectionRepo, nftRepo: NftRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.collectionRepo = collectionRepo;
         this.walletStore = walletStore;
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
+        this.nftRepo = nftRepo;
 
         this.collectionsTableState = new TableState(0, [], this.fetchCollections, 8);
 
@@ -89,7 +93,18 @@ export default class QueuedCollectionsStore {
     }
 
     async rejectCollection(collectionEntity: CollectionEntity) {
-        collectionEntity.markRejected();
-        await this.collectionRepo.editCollection(collectionEntity);
+        try {
+            const collectionClone = collectionEntity.clone();
+
+            collectionClone.markRejected();
+            const nftFilter = new NftFilterEntity();
+            nftFilter.collectionIds = [collectionClone.id];
+
+            const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+            await this.collectionRepo.creditCollection(collectionClone, nftEntities);
+            collectionEntity.markRejected();
+        } catch (e) {
+            console.log(e);
+        }
     }
 }

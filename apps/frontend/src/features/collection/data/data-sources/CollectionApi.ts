@@ -40,13 +40,6 @@ export default class CollectionApi {
         }
     }
 
-    async editCollection(collectionEntity: CollectionEntity): Promise < CollectionEntity > {
-        const req = new ReqEditCollection(collectionEntity);
-        const { data } = await axios.put(`${COLLECTION_URL}/editCollection`, req)
-        const res = new ResEditCollection(data);
-        return res.collectionEntity;
-    }
-
     async fetchCollectionsDetailsByIds(collectionIds: string[]): Promise < CollectionDetailsEntity[] > {
         const req = new ReqFetchCollectionDetails(collectionIds);
 
