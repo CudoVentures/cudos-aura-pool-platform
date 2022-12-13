@@ -87,4 +87,26 @@ export default class CreditMiningFarmPageStore {
         this.collectionFilterModel.searchString = searchString;
         this.fetchCollections();
     }
+
+    rejectMiningFarm = async () => {
+        try {
+            const clonedFarm = this.miningFarmEntity.clone();
+            clonedFarm.status = MiningFarmStatus.REJECTED;
+            await this.miningFarmRepo.creditMiningFarm(clonedFarm);
+            this.miningFarmEntity.status = clonedFarm.status
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    approveMiningFarm = async () => {
+        try {
+            const clonedFarm = this.miningFarmEntity.clone();
+            clonedFarm.status = MiningFarmStatus.APPROVED;
+            await this.miningFarmRepo.creditMiningFarm(clonedFarm);
+            this.miningFarmEntity.status = clonedFarm.status
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }

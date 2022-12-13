@@ -57,7 +57,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         return miningFarmEntities;
     }
 
-    async fetchMiningFarmsByIds(miningFarmIds: string[], status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
+    async fetchMiningFarmsByIds(miningFarmIds: string[], status: MiningFarmStatus): Promise < MiningFarmEntity[] > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
@@ -69,7 +69,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         return miningFarmEntities;
     }
 
-    async fetchMiningFarmById(miningFarmId: string, status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity > {
+    async fetchMiningFarmById(miningFarmId: string, status: MiningFarmStatus): Promise < MiningFarmEntity > {
         const miningFarmEntities = await this.fetchMiningFarmsByIds([miningFarmId], status);
         return miningFarmEntities.length === 1 ? miningFarmEntities[0] : null;
     }

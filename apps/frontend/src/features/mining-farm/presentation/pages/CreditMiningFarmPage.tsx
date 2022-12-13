@@ -20,7 +20,7 @@ import PageAdminHeader from '../../../header/presentation/components/PageAdminHe
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button, { ButtonColor } from '../../../../core/presentation/components/Button';
+import Button, { ButtonColor, ButtonPadding, ButtonRadius, ButtonType } from '../../../../core/presentation/components/Button';
 import GridView from '../../../../core/presentation/components/GridView';
 import CollectionPreview from '../../../collection/presentation/components/CollectionPreview';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
@@ -30,7 +30,8 @@ import DataPreviewLayout, { createDataPreview } from '../../../../core/presentat
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import NoFarmView from '../components/NoFarmView';
 import NoCollectionView from '../../../collection/presentation/components/NoCollectionView';
-
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -173,7 +174,29 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                             createDataPreview('Collections Owned', creditMiningFarmPageStore.gridViewState.getItemCount()),
                                             createDataPreview('NFTs Owned', miningFarmDetailsEntity.nftsOwned),
                                             createDataPreview('Total NFTs Sold', miningFarmDetailsEntity.totalNftsSold),
-                                        ] } />
+                                        ] } >
+                                        {miningFarmEntity?.isQueued() && accountSessionStore.isSuperAdmin()
+                                        && (<Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} >
+                                            <Button
+                                                radius={ButtonRadius.RADIUS_16}
+                                                padding={ButtonPadding.PADDING_48}
+                                                color={ButtonColor.SCHEME_2}
+                                                onClick={creditMiningFarmPageStore.rejectMiningFarm}
+                                            >
+                                                <Svg svg={HighlightOffIcon}/>
+                                                Reject Farm
+                                            </Button>
+                                            <Button
+                                                radius={ButtonRadius.RADIUS_16}
+                                                padding={ButtonPadding.PADDING_48}
+                                                onClick={creditMiningFarmPageStore.approveMiningFarm}
+                                            >
+                                                <Svg svg={CheckCircleOutlineIcon}/>
+                                                Approve Farm
+                                            </Button>
+                                        </Actions>)
+                                        }
+                                    </DataPreviewLayout>
                                 ) }
                             </div>
                             { miningFarmEntity.isApproved() === true && (

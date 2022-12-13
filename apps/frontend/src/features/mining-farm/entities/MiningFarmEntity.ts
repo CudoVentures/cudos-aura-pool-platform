@@ -71,6 +71,12 @@ export default class MiningFarmEntity {
         return entity;
     }
 
+    clone(): MiningFarmEntity {
+        const entity = new MiningFarmEntity();
+        Object.assign(entity, this);
+        return entity;
+    }
+
     isCudosMintNftRoyaltiesPercentSet(): boolean {
         return this.cudosMintNftRoyaltiesPercent !== S.NOT_EXISTS;
     }
@@ -84,7 +90,6 @@ export default class MiningFarmEntity {
     }
 
     isApproved(): boolean {
-        console.log(this.status);
         return this.status === MiningFarmStatus.APPROVED;
     }
 
@@ -177,7 +182,7 @@ export default class MiningFarmEntity {
         entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;
         entity.coverImgUrl = json.coverImgUrl ?? entity.coverImgUrl;
         entity.farmPhotoUrls = json.farmPhotoUrls ?? entity.farmPhotoUrls;
-        entity.status = (json.status ?? entity.status);
+        entity.status = json.status ?? entity.status;
         entity.maintenanceFeeInBtc = json.maintenanceFeeInBtc === null ? null : new BigNumber(json.maintenanceFeeInBtc);
         entity.cudosMintNftRoyaltiesPercent = Number(json.cudosMintNftRoyaltiesPercent ?? entity.cudosMintNftRoyaltiesPercent);
         entity.cudosResaleNftRoyaltiesPercent = Number(json.cudosResaleNftRoyaltiesPercent ?? entity.cudosResaleNftRoyaltiesPercent);
