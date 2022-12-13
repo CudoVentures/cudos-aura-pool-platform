@@ -3,10 +3,10 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 
 export class ReqFetchCollectionsByFilter {
-    collectionFilter: CollectionFilterModel;
+    collectionFilter: any;
 
     constructor(collectionFilterModel: CollectionFilterModel) {
-        this.collectionFilter = collectionFilterModel;
+        this.collectionFilter = CollectionFilterModel.toJson(collectionFilterModel);
     }
 }
 

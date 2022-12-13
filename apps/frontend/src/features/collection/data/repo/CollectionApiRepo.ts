@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { MathHelper, Decimal, GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
+import { GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
@@ -60,7 +60,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         collectionFilterModel.timestampTo = timestampTo;
         collectionFilterModel.orderBy = CollectionOrderBy.TOP_DESC;
 
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
@@ -70,7 +70,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         if (status) {
             collectionFilterModel.status = [status];
         }
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 

@@ -4,8 +4,8 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../../core/utilities/AxiosWrapper';
-import { ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter } from '../dto/Requests';
-import { ResCreditCollection, ResEditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter } from '../dto/Responses';
+import { ReqCreditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter } from '../dto/Requests';
+import { ResCreditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter } from '../dto/Responses';
 
 const COLLECTION_URL = '/api/v1/collection';
 

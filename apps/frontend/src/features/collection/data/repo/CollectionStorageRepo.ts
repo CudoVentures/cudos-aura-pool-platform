@@ -29,7 +29,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         if (status) {
             collectionFilterModel.status = [status];
         }
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
@@ -41,7 +41,7 @@ export default class CollectionStorageRepo implements CollectionRepo {
         if (status) {
             collectionFilterModel.status = [status];
         }
-        const { collectionEntities, total } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
         return collectionEntities;
     }
 
