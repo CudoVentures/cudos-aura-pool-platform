@@ -11,8 +11,8 @@
     "build:platform:prod": "npm run build:backend:prod; npm run build:frontend:prod",
     "build:backend:prod": "nest build backend --webpack",
     "build:chain-observer:prod": "nest build chain-observer --webpack",
-    "build:frontend:dev": "export NODE_ENV=development && nest build --webpack --webpackPath webpack-frontend.config.js --watch",
-    "build:frontend:prod": "export NODE_ENV=production && nest build --webpack --webpackPath webpack-frontend.config.js",
+    "build:frontend:dev": "export NODE_ENV=development && npx webpack --config webpack-frontend.config.js --watch",
+    "build:frontend:prod": "export NODE_ENV=production && npx webpack --config webpack-frontend.config.js",
     "start:backend:dev": "nest build backend --webpack --webpackPath webpack-hmr.config.js --watch",
     "start:backend:prod": "npm run build:backend:prod && node dist/apps/backend/main",
     "start:chain-observer:dev": "nest build chain-observer --webpack --webpackPath webpack-hmr.config.js --watch",
@@ -157,7 +157,10 @@
     "tsconfig-paths": "4.0.0",
     "typescript": "^4.7.4",
     "webpack-node-externals": "^3.0.0",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "buffer": "^6.0.3",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "jest": {
     "moduleFileExtensions": [
