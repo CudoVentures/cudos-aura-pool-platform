@@ -50,6 +50,7 @@ import QueuedMiningFarmsStores from './features/mining-farm/presentation/stores/
 import SuperAdminMegaWalletPageStore from './features/accounts/presentation/stores/SuperAdminMegaWalletPageStore';
 import ValueChangeModalStore from './core/presentation/stores/ValueChangeModalStore';
 import WalletApiRepo from './features/ledger/data/repo/CollectionApiRepo';
+import SnackStore from './core/presentation/stores/SnackStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -67,6 +68,7 @@ const walletRepo = new WalletApiRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
+const snackStore = new SnackStore();
 const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore(alertStore, walletRepo);
 
@@ -138,6 +140,7 @@ const App = () => {
             <Provider
                 appStore = { appStore }
                 alertStore = { alertStore }
+                snackStore = { snackStore }
                 walletStore = { walletStore }
                 bitcoinStore = { bitcoinStore }
                 cudosStore = { cudosStore }

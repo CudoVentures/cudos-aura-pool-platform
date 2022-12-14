@@ -11,14 +11,28 @@
     margin-top: 24px;
 }
 
-.PageCreditMiningFarm .MiningFarmNameCnt .ReviewBadge,
-.PageCreditMiningFarm .MiningFarmNameCnt .RejectedBadge {
-    color: #fff;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 6px;
-    margin-left: 26px;
-    background: var(--color-neutral-060);
+.PageCreditMiningFarm .MiningFarmNameCnt .StatusBadge {
+    text-transform: uppercase;
+    padding: 5px 8px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 20px rgba(8, 9, 12, 0.1);
+    margin-left: 24px;
+}
+
+.PageCreditMiningFarm .MiningFarmNameCnt .StatusBadge .SVG {
+    margin-right: 8px;
+}
+
+.PageCreditMiningFarm .MiningFarmNameCnt .ReviewBadge .SVG {
+    color: var(--color-warning-060);
+}
+
+.PageCreditMiningFarm .MiningFarmNameCnt .RejectedBadge .SVG {
+    color: var(--color-error-060);
+}
+
+.PageCreditMiningFarm .MiningFarmNameCnt .ApprovedBadge {
+    color: var(--color-primary-060);
 }
 
 .PageCreditMiningFarm .MiningFarmDataCnt {
