@@ -47,6 +47,9 @@ import StatisticsApiRepo from './features/analytics/data/repo/StatisticsApiRepo'
 import SuperAdminDashboardPageStore from './features/indices/presentation/stores/SuperAdminDashboardPageStore';
 import QueuedCollectionsStore from './features/collection/presentation/stores/QueuedCollectionsStore';
 import QueuedMiningFarmsStores from './features/mining-farm/presentation/stores/QueuedMiningFarmsStores';
+import SuperAdminMegaWalletPageStore from './features/accounts/presentation/stores/SuperAdminMegaWalletPageStore';
+import ValueChangeModalStore from './core/presentation/stores/ValueChangeModalStore';
+import WalletApiRepo from './features/ledger/data/repo/CollectionApiRepo';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -60,11 +63,12 @@ const nftRepo = new NftApiRepo();
 const visitorRepo = new VisitorApiRepo();
 const statisticsRepo = new StatisticsApiRepo();
 const accountRepo = new AccountApiRepo();
+const walletRepo = new WalletApiRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
 const exampleModalStore = new ExampleModalStore();
-const walletStore = new WalletStore(alertStore);
+const walletStore = new WalletStore(alertStore, walletRepo);
 
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
@@ -86,6 +90,7 @@ const creditCollectionStore = new CreditCollectionStore(accountSessionStore, col
 const visitorStore = new VisitorStore(visitorRepo);
 const queuedMiningFarmsStore = new QueuedMiningFarmsStores(miningFarmRepo, accountSessionStore);
 const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
+const superAdminMegaWalletPageStore = new SuperAdminMegaWalletPageStore(walletStore);
 
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
@@ -95,6 +100,7 @@ const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectio
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
 const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
+const valueChangeModalStore = new ValueChangeModalStore();
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -161,7 +167,10 @@ const App = () => {
                 viewCollectionModalStore = { viewCollectionModalStore }
                 viewMiningFarmModalStore = { viewMiningFarmModalStore }
                 changePasswordModalStore = { changePasswordModalStore }
-                walletSelectModalStore = { walletSelectModalStore }>
+                walletSelectModalStore = { walletSelectModalStore }
+                superAdminMegaWalletPageStore = { superAdminMegaWalletPageStore }
+                valueChangeModalStore = { valueChangeModalStore }
+            >
                 <BrowserRouter>
                     <AppRouter />
                 </BrowserRouter>

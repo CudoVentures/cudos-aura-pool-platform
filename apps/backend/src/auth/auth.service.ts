@@ -12,7 +12,6 @@ import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import JwtToken from './entities/jwt-token.entity';
 import { SIGN_NONCE } from './auth.types';
-import { verifyADR36Amino } from '@keplr-wallet/cosmos'
 
 @Injectable()
 export class AuthService {

@@ -8,9 +8,10 @@ import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
-import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword } from './dto/requests.dto';
-import { ResEditSessionAccount } from './dto/responses.dto';
+import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSuperAdminAccount, ReqForgottenPassword } from './dto/requests.dto';
+import { ResEditSessionAccount, ResEditSuperAdminAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
+import SuperAdminEntity from './entities/super-admin.entity';
 import { IsSessionAccountGuard } from './guards/is-session-account.guard';
 
 @ApiTags('Accounts')
@@ -44,6 +45,21 @@ export class AccountController {
         }
 
         return new ResEditSessionAccount(accountEntity);
+    }
+
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]), IsSessionAccountGuard)
+    @UseInterceptors(TransactionInterceptor)
+    @Post('editSuperAdminAccount')
+    @HttpCode(200)
+    async editSuperAdminAccount(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqEditSuperAdminAccount: ReqEditSuperAdminAccount,
+    ): Promise < ResEditSuperAdminAccount > {
+        let superAdminEntity = SuperAdminEntity.fromJson(reqEditSuperAdminAccount.superAdminEntity);
+
+        superAdminEntity = await this.accountService.creditSuperAdmin(superAdminEntity, req.transaction);
+
+        return new ResEditSuperAdminAccount(superAdminEntity);
     }
 
     @UseInterceptors(TransactionInterceptor)

@@ -34,3 +34,27 @@ export class AccountJsonValidator {
         timestampRegister: number;
 
 }
+
+export class SuperAdminJsonValidator {
+    @IsString()
+        superAdminId: string;
+
+    @IsString()
+        accountId: string;
+
+    @IsString()
+        cudosRoyalteesAddress: string;
+
+    @IsNumber()
+        firstSaleCudosRoyaltiesPercent: number;
+
+    @IsNumber()
+        resaleCudosRoyaltiesPercent: number;
+
+    @IsNumber()
+        globalCudosFeesPercent: number;
+
+    @IsNumber()
+        globalCudosRoyaltiesPercent: number;
+
+}

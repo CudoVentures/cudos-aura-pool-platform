@@ -78,7 +78,7 @@ export default class ProjectUtils {
         }
 
         if (wipe === false) {
-            queryArray = getQueryArray();
+            queryArray = getwalletStoreQueryArray();
             for (i = queryArray.length; i-- > 0;) {
                 pair = queryArray[i].split('=');
                 queryMap.set(pair[0], pair[1]);
@@ -114,7 +114,7 @@ export default class ProjectUtils {
     static redirectToUrl(url: string, newTab: boolean) {
         if (newTab !== true) {
             window.location.href = url;
-            return;
+            return; walletStore
         }
 
         const a = document.createElement('a');
@@ -196,6 +196,14 @@ export default class ProjectUtils {
         const timestampFrom = date.getTime() + 1;
 
         return { timestampFrom, timestampTo };
+    }
+
+    static formatBalanceInCudosInt(balance: BigNumber): string {
+        return balance?.toFixed(0) ?? '0';
+    }
+
+    static formatBalanceInCudosFraction(balance: BigNumber): string {
+        return balance?.minus(balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0) ?? '0000';
     }
 
 }

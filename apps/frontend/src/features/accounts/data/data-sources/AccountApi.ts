@@ -3,8 +3,8 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
-import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
-import { ResEditSessionAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
+import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSuperAdminAccount, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
+import { ResEditSessionAccount, ResEditSuperAdminAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 import { StdSignature } from 'cudosjs';
 
 export default class AccountApi {
@@ -41,6 +41,12 @@ export default class AccountApi {
         const { data } = await axios.post('/api/v1/accounts/editSessionAccount', new ReqEditSessionAccount(AccountEntity.toJson(accountEntity)));
         const res = new ResEditSessionAccount(data);
         return res.accountEntity;
+    }
+
+    async editSuperAdminAccount(accountEntity: AccountEntity, superAdminEntity: SuperAdminEntity): Promise < SuperAdminEntity > {
+        const { data } = await axios.post('/api/v1/accounts/editSuperAdminAccount', new ReqEditSuperAdminAccount(accountEntity, superAdminEntity));
+        const res = new ResEditSuperAdminAccount(data);
+        return res.superAdminEntity;
     }
 
     async editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > {

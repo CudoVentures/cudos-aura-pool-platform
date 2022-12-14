@@ -248,7 +248,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                                 color={ButtonColor.SCHEME_2}
                                                 onClick={creditMiningFarmPageStore.rejectMiningFarm}
                                             >
-                       onClickQueuedCollectionRow                         <Svg svg={HighlightOffIcon}/>
+                                                <Svg svg={HighlightOffIcon}/>
                                                 Reject Farm
                                             </Button>
                                             <Button
@@ -266,7 +266,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                             </div>
                             { miningFarmEntity.isApproved() === true && (
                                 <>
-                       onClickQueuedCollectionRow             {accountSessionStore.isSuperAdmin() === true && (
+                                    {accountSessionStore.isSuperAdmin() === true && (
                                         <>
                                             <div className = { 'SectionDivider' } />
                                             <div className={'CollectionsOwnedHeader FlexRow'}>

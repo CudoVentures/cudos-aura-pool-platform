@@ -179,6 +179,27 @@ export default class AccountService {
         return AccountEntity.fromRepo(accountRepo);
     }
 
+    async creditSuperAdmin(superAdminEntity: SuperAdminEntity, tx: Transaction = undefined): Promise < SuperAdminEntity > {
+        let superAdminRepo = SuperAdminEntity.toRepo(superAdminEntity);
+        if (superAdminEntity.isNew() === true) {
+            superAdminRepo = await this.superAdminRepo.create(superAdminRepo.toJSON(), {
+                returning: true,
+                transaction: tx,
+            })
+        } else {
+            const whereSuperAdminRepo = new SuperAdminRepo();
+            whereSuperAdminRepo.superAdminId = superAdminRepo.superAdminId;
+            superAdminRepo = await this.superAdminRepo.update(superAdminRepo.toJSON(), {
+                where: AppRepo.toJsonWhere(whereSuperAdminRepo),
+                returning: true,
+                transaction: tx,
+            });
+            superAdminRepo = superAdminRepo[1].length === 1 ? superAdminRepo[1][0] : null;
+        }
+
+        return SuperAdminEntity.fromRepo(superAdminRepo);
+    }
+
     async creditUser(userEntity: UserEntity, tx: Transaction = undefined): Promise < UserEntity > {
         let userRepo = UserEntity.toRepo(userEntity);
         if (userEntity.isNew() === true) {

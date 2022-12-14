@@ -69,8 +69,8 @@ export default class SuperAdminEntity {
         }
 
         return {
-            'superAdminId': model.superAdminId,
-            'accountId': model.accountId,
+            'superAdminId': model.superAdminId.toString(),
+            'accountId': model.accountId.toString(),
             'cudosRoyalteesAddress': model.cudosRoyalteesAddress,
             'firstSaleCudosRoyaltiesPercent': model.firstSaleCudosRoyaltiesPercent,
             'resaleCudosRoyaltiesPercent': model.resaleCudosRoyaltiesPercent,

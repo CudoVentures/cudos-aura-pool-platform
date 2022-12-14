@@ -5,6 +5,7 @@ import { CHAIN_DETAILS, SIGN_NONCE } from '../../../../core/utilities/Constants'
 import BigNumber from 'bignumber.js';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
+import WalletRepo from '../repos/WalletRepo';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
@@ -15,14 +16,16 @@ export enum SessionStorageWalletOptions {
 
 export default class WalletStore {
     alertStore: AlertStore;
+    walletRepo: WalletRepo;
 
     ledger: Ledger;
     balance: BigNumber;
     address: string;
     name: string;
 
-    constructor(alertStore: AlertStore) {
+    constructor(alertStore: AlertStore, walletRepo: WalletRepo) {
         this.alertStore = alertStore;
+        this.walletRepo = walletRepo;
 
         this.ledger = null;
         this.balance = null;
@@ -178,5 +181,9 @@ export default class WalletStore {
 
     formatBalanceInCudosFraction(): string {
         return this.balance?.minus(this.balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0) ?? '0000';
+    }
+
+    sendCudos(destiantionAddress: string, amount: BigNumber): Promise<string> {
+        return this.walletRepo.sendCudos(destiantionAddress, amount, this.ledger);
     }
 }

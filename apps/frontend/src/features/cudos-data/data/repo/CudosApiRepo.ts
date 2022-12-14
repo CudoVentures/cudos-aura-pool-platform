@@ -1,3 +1,6 @@
+import BigNumber from 'bignumber.js';
+import { StargateClient } from 'cudosjs';
+import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../../presentation/repos/CudosRepo';
 import CudosApi from '../data-sources/CudosApi';
@@ -52,6 +55,13 @@ export default class CudosApiRepo implements CudosRepo {
         }
 
         return cudosDataEntity;
+    }
+
+    async fetchCudosBalance(address: string): Promise <BigNumber> {
+        const client = await StargateClient.connect(CHAIN_DETAILS.API_ADDRESS);
+        const coin = await client.getBalance(address, CHAIN_DETAILS.ADMIN_TOKEN_DENOM);
+
+        return new BigNumber(coin.amount);
     }
 
 }

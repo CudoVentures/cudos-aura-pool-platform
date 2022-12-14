@@ -2,3 +2,94 @@
     padding: 36px var(--page-spacing-h);
 }
 
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer {
+    gap: 16px;
+}
+
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview .AddressLine {
+    justify-content: space-between;
+    width: 100%;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview .AddressLine .IconAddressHolder {
+    gap: 10px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview .AddressLine .IconAddressHolder .ProfilePicture {
+    height: 80px; width: 80px; border-radius: 50px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview .AddressLine .EditAddressButton {
+    padding: 10px;
+    border-radius: 12px;
+    background-color: var(--color-neutral-100);
+    color: #fff;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview .PriceColumn .AmountInCudos {
+    gap: 10px;
+    align-items: baseline;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview .PriceColumn .AmountDollars {
+    color: var(--color-primary-060);
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .WalletPreview .ActionsRow {
+    width: 100%;
+    height: 40px;
+    gap: 20px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .RoyaltyBoxesLayout {
+    gap: 16px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .RoyaltyBoxesLayout .RoyaltyBox {
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.PageSuperAdminMegaWallet .PageContent .MainBoxContainer .RoyaltyBoxesLayout .RoyaltyBox .InnerColumn .RoyaltyAmountRow {
+    gap: 10px;
+    align-items: baseline;
+}
+
+.PageSuperAdminMegaWallet .PageContent .TableHeader {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.PageSuperAdminMegaWallet .PageContent .TableHeader .TableSort {
+    width: 100px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .WalletEventTable .EventItemPreviewCell {
+    align-items: center;
+    justify-content: start;
+    gap: 16px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .WalletEventTable .EventItemPreviewCell .EventItemPicture {
+    border-radius: 8px;
+    height: 80px; width: 80px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .WalletEventTable .EventPtice {
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.PageSuperAdminMegaWallet .PageContent .WalletEventTable .EventPtice .EventPriceDollars {
+    color: var(--color-primary-060);
+}
+
+.PageSuperAdminMegaWallet .PageContent .WalletEventTable .EventFromAddress {
+    color: var(--color-primary-060);
+}

@@ -189,6 +189,14 @@ export default class AccountSessionStore {
         });
     }
 
+    async editSuperAdminAccount(superAdminEntity: SuperAdminEntity) {
+        await this.accountRepo.editSuperAdminAccount(this.accountEntity, superAdminEntity)
+
+        runInAction(() => {
+            Object.assign(this.superAdminEntity, superAdminEntity);
+        });
+    }
+
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity, shouldChangePassword } = await this.accountRepo.fetchSessionAccounts();
 

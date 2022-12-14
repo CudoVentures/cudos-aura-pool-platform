@@ -15,6 +15,7 @@ export default interface AccountRepo {
     logout(): Promise < void >;
     fetchSessionAccounts(): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: number } >;
     editSessionAccount(accountEntity: AccountEntity): Promise < void >;
+    editSuperAdminAccount(accountEntity: AccountEntity, superAdminEntity: SuperAdminEntity): Promise < void >;
     editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > ;
     forgottenPassword(email: string): Promise < void >
     sendSessionAccountVerificationEmail(): Promise < void >

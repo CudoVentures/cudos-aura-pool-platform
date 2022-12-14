@@ -1,5 +1,6 @@
-import { AccountJsonValidator } from '../account.types';
+import { AccountJsonValidator, SuperAdminJsonValidator } from '../account.types';
 import AccountEntity from '../entities/account.entity';
+import SuperAdminEntity from '../entities/super-admin.entity';
 
 export class ResEditSessionAccount {
 
@@ -9,4 +10,13 @@ export class ResEditSessionAccount {
         this.accountEntity = AccountEntity.toJson(accountEntity);
     }
 
+}
+
+export class ResEditSuperAdminAccount {
+
+    superAdminEntity: SuperAdminJsonValidator;
+
+    constructor(superAdminEntity: SuperAdminEntity) {
+        this.superAdminEntity = SuperAdminEntity.toJson(superAdminEntity);
+    }
 }
