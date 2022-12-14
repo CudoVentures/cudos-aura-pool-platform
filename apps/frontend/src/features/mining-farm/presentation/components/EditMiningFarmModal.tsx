@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import S from '../../../../core/utilities/Main';
 import EditMiningFarmModalStore from '../stores/EditMiningFarmModalStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import SnackStore from '../../../../core/presentation/stores/SnackStore';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 import ModalWindow from '../../../../core/presentation/components/ModalWindow';
@@ -18,17 +19,19 @@ import '../styles/edit-mining-farm-modal.css';
 
 type Props = {
     alertStore?: AlertStore;
+    snackStore?: SnackStore;
     editMiningFarmModalStore?: EditMiningFarmModalStore;
 }
 
-function EditMiningFarmModal({ alertStore, editMiningFarmModalStore }: Props) {
+function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore }: Props) {
     function onClickRemoveCoverImage() {
         editMiningFarmModalStore.changeCoverImage(S.Strings.EMPTY);
     }
 
-    function onClickSaveChanges() {
-        editMiningFarmModalStore.executeMiningFarmEditEdit();
+    async function onClickSaveChanges() {
+        await editMiningFarmModalStore.executeMiningFarmEditEdit();
         editMiningFarmModalStore.hide();
+        snackStore.showSuccess('Profile was updated');
     }
 
     return (

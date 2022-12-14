@@ -53,7 +53,7 @@ export default class EditMiningFarmModalStore extends ModalStore {
         this.profileImage = ImageEntity.new(base64File, PictureType.FARM_PROFILE);
     }
 
-    executeMiningFarmEditEdit() {
+    async executeMiningFarmEditEdit() {
         // save images if new ones are selected
         if (this.profileImage.base64 !== this.miningFarmEntity.profileImgUrl) {
             // TODO: save iamge
@@ -67,6 +67,6 @@ export default class EditMiningFarmModalStore extends ModalStore {
         this.miningFarmEntity.coverImgUrl = this.coverImage.base64;
         this.miningFarmEntity.profileImgUrl = this.profileImage.base64;
 
-        this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
+        await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
     }
 }

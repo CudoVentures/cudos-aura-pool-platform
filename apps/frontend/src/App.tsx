@@ -47,6 +47,7 @@ import StatisticsApiRepo from './features/analytics/data/repo/StatisticsApiRepo'
 import SuperAdminDashboardPageStore from './features/indices/presentation/stores/SuperAdminDashboardPageStore';
 import QueuedCollectionsStore from './features/collection/presentation/stores/QueuedCollectionsStore';
 import QueuedMiningFarmsStores from './features/mining-farm/presentation/stores/QueuedMiningFarmsStores';
+import SnackStore from './core/presentation/stores/SnackStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -63,6 +64,7 @@ const accountRepo = new AccountApiRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
+const snackStore = new SnackStore();
 const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore(alertStore);
 
@@ -132,6 +134,7 @@ const App = () => {
             <Provider
                 appStore = { appStore }
                 alertStore = { alertStore }
+                snackStore = { snackStore }
                 walletStore = { walletStore }
                 bitcoinStore = { bitcoinStore }
                 cudosStore = { cudosStore }
