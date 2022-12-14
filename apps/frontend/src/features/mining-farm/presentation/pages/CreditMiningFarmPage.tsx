@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
-import SearchIcon from '@mui/icons-material/Search';
 import CreditMiningFarmPageStore from '../stores/CreditMiningFarmPageStore';
 import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
@@ -11,8 +10,10 @@ import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import EditMiningFarmModal from '../components/EditMiningFarmModal';
 import EditMiningFarmModalStore from '../stores/EditMiningFarmModalStore';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 import { InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
@@ -30,16 +31,18 @@ import DataPreviewLayout, { createDataPreview } from '../../../../core/presentat
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import NoFarmView from '../components/NoFarmView';
 import NoCollectionView from '../../../collection/presentation/components/NoCollectionView';
+import StyledContainer from '../../../../core/presentation/components/StyledContainer';
+import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
+import { ALIGN_CENTER, ALIGN_LEFT, ALIGN_RIGHT } from '../../../../core/presentation/components/TableDesktop';
+
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SvgMiningFarmStatusReview from '../../../../public/assets/vectors/mining-farm-status-review.svg';
+import SvgMiningFarmStatusApproved from '../../../../public/assets/vectors/mining-farm-status-approved.svg';
 import '../styles/page-credit-mining-farm.css';
-import StyledContainer from '../../../../core/presentation/components/StyledContainer';
-import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
-import { ALIGN_CENTER, ALIGN_LEFT, ALIGN_RIGHT } from '../../../../core/presentation/components/TableDesktop';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 type Props = {
     appStore?: AppStore
@@ -222,10 +225,22 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                             <div className={'MiningFarmNameCnt FlexRow'}>
                                 <span className = { 'H2 Bold' }>{miningFarmEntity.name}</span>
                                 { miningFarmEntity.isQueued() === true && (
-                                    <div className = { 'ReviewBadge' } >Under review</div>
+                                    <div className = { 'StatusBadge FlexRow Bold ReviewBadge' } >
+                                        <Svg svg = { SvgMiningFarmStatusReview } />
+                                        Under review
+                                    </div>
                                 ) }
                                 { miningFarmEntity.isRejected() === true && (
-                                    <div className = { 'RejectedBadge' } >Rejected</div>
+                                    <div className = { 'StatusBadge FlexRow Bold RejectedBadge' } >
+                                        <Svg svg = { HighlightOffIcon } />
+                                        Rejected
+                                    </div>
+                                ) }
+                                { miningFarmEntity.isApproved() === true && (
+                                    <div className = { 'StatusBadge FlexRow Bold ApprovedBadge' } >
+                                        <Svg svg = { SvgMiningFarmStatusApproved } />
+                                        Verified
+                                    </div>
                                 ) }
                             </div>
                             <div className={'MiningFarmDataCnt Grid GridColumns2'}>

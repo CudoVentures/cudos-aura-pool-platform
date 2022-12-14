@@ -12,7 +12,7 @@ import StyledContainer, { ContainerWidth } from '../../../../../core/presentatio
 import ColumnLayout from '../../../../../core/presentation/components/ColumnLayout';
 
 import CheckIcon from '@mui/icons-material/Check';
-import SvgNoFarms from '../../../../../public/assets/vectors/no-farm.svg';
+import SvgNoDataLarge from '../../../../../public/assets/vectors/no-data-large.svg';
 import '../../styles/step-success.css';
 
 type Props = {
@@ -30,7 +30,7 @@ function StepReview({ accountSessionStore }: Props) {
     return (
         <StyledContainer className = { 'StepMiningFarmSuccess' } containerWidth = { ContainerWidth.SMALL } >
             <ColumnLayout gap = { 40 } >
-                <Svg className = { 'SvgNoFarm' } svg = { SvgNoFarms } />
+                <Svg className = { 'SvgNoFarm' } svg = { SvgNoDataLarge } />
 
                 <div>
                     <div className={'HeadingRow FlexRow'}>

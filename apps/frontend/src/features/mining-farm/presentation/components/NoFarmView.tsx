@@ -9,7 +9,7 @@ import Actions from '../../../../core/presentation/components/Actions';
 import Button from '../../../../core/presentation/components/Button';
 import Svg from '../../../../core/presentation/components/Svg';
 
-import SvgNoFarms from '../../../../public/assets/vectors/no-farm.svg';
+import SvgNoDataSmall from '../../../../public/assets/vectors/no-data-small.svg';
 import AddIcon from '@mui/icons-material/Add';
 import '../styles/no-farm-view.css';
 
@@ -28,7 +28,7 @@ function NoFarmView({ accountSessionStore }: Props) {
     return (
         <div className = { 'NoFarmView FlexSingleCenter' } >
             <div className = { 'NoFarmLayout FlexColumn' } >
-                <Svg className = { 'SvgNoFarm' } svg = { SvgNoFarms } />
+                <Svg className = { 'SvgNoFarm' } svg = { SvgNoDataSmall } />
                 <div className = { 'Title H3 Bold' } >No Farm Profile</div>
                 { accountSessionStore.isAdmin() === true && (
                     <>
