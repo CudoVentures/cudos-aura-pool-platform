@@ -22,6 +22,10 @@ const theme02 = createTheme({
             main: '#999',
             contrastText: '#fff',
         },
+        secondary: {
+            main: '#fff',
+            contrastText: '#000',
+        },
     },
 });
 
@@ -47,6 +51,7 @@ export enum ButtonColor {
     SCHEME_1,
     SCHEME_2,
     SCHEME_3,
+    SCHEME_4,
     SCHEME_GREEN,
     SCHEME_RED,
 }
@@ -82,6 +87,7 @@ export default function Button({ className, type, color, padding, radius, href, 
     function cssMuiClassColor() {
         switch (color) {
             case ButtonColor.SCHEME_2:
+            case ButtonColor.SCHEME_4:
             case ButtonColor.SCHEME_RED:
                 return 'secondary';
             case ButtonColor.SCHEME_1:
@@ -95,6 +101,7 @@ export default function Button({ className, type, color, padding, radius, href, 
     function muiTheme() {
         switch (color) {
             case ButtonColor.SCHEME_3:
+            case ButtonColor.SCHEME_4:
                 return theme02;
             case ButtonColor.SCHEME_GREEN:
             case ButtonColor.SCHEME_RED:
@@ -117,7 +124,8 @@ export default function Button({ className, type, color, padding, radius, href, 
                         variant={type}
                         color={cssMuiClassColor()}
                         href={href}
-                        target={target} >
+                        target={target}
+                        style = { color !== ButtonColor.SCHEME_4 || type !== ButtonType.ROUNDED ? null : { 'border': `1px solid ${theme02.palette.secondary.contrastText}` } } >
                         <div className={'ButtonContent FlexRow'} > {children} </div>
                     </MuiButton>
                 </ThemeProvider>

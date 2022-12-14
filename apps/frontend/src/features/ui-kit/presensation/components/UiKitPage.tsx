@@ -340,6 +340,23 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
                             padding = { ButtonPadding.PADDING_48 } >
                             Button rounded color 3 48 padding
                         </Button>
+                        <Button
+                            color = { ButtonColor.SCHEME_4 }
+                            padding = { ButtonPadding.PADDING_48 } >
+                            Button rounded color 4 48 padding
+                        </Button>
+                        <Button
+                            color = { ButtonColor.SCHEME_GREEN }
+                            padding = { ButtonPadding.PADDING_24 }
+                            radius = { ButtonRadius.MAX }>
+                            <Svg size = { SvgSize.CUSTOM } svg = { AcUnitIcon } />
+                            Button rounded color green 24 padding max radius
+                        </Button>
+                        <Button
+                            color = { ButtonColor.SCHEME_RED }
+                            padding = { ButtonPadding.PADDING_48 } >
+                            Button rounded color red 48 padding
+                        </Button>
                     </Actions>
                     <Actions height = { ActionsHeight.HEIGHT_42 } layout = { ActionsLayout.LAYOUT_COLUMN_FULL } >
                         <Button
@@ -355,6 +372,21 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
                             type = { ButtonType.TEXT_INLINE }
                             color = { ButtonColor.SCHEME_3 } >
                             Button inline color 3 default padding default radius
+                        </Button>
+                        <Button
+                            type = { ButtonType.TEXT_INLINE }
+                            color = { ButtonColor.SCHEME_4 } >
+                            Button inline color 4 default padding default radius
+                        </Button>
+                        <Button
+                            type = { ButtonType.TEXT_INLINE }
+                            color = { ButtonColor.SCHEME_GREEN } >
+                            Button inline color green default padding default radius
+                        </Button>
+                        <Button
+                            type = { ButtonType.TEXT_INLINE }
+                            color = { ButtonColor.SCHEME_RED } >
+                            Button inline color red default padding default radius
                         </Button>
                     </Actions>
                 </div>

@@ -204,19 +204,19 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
                                     <Button
                                         onClick={onClickProfileImages}
-                                        color={ButtonColor.SCHEME_3} >
+                                        color={ButtonColor.SCHEME_4} >
                                         <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
                                     Profile images
                                     </Button>
                                     <Button
                                         onClick={onClickEditProfile}
-                                        color={ButtonColor.SCHEME_3} >
+                                        color={ButtonColor.SCHEME_4} >
                                         <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
                                     Edit Farm Details
                                     </Button>
                                     <Button
                                         onClick={onClickAccountSettings}
-                                        color={ButtonColor.SCHEME_3} >
+                                        color={ButtonColor.SCHEME_4} >
                                         <Svg size = { SvgSize.CUSTOM } svg={SettingsIcon} />
                                     Account settings
                                     </Button>
