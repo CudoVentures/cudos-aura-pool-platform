@@ -4,13 +4,11 @@ import { inject, observer } from 'mobx-react'
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
 import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
-import ChangePasswordModal from '../components/ChangePasswordModal';
 
 import '../styles/page-super-admin-mega-wallet.css'
 import Svg from '../../../../core/presentation/components/Svg';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Button, { ButtonColor, ButtonPadding } from '../../../../core/presentation/components/Button';
-import AccountSessionStore from '../stores/AccountSessionStore';
 import SuperAdminMegaWalletPageStore from '../stores/SuperAdminMegaWalletPageStore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
@@ -22,17 +20,19 @@ import MenuItem from '@mui/material/MenuItem/MenuItem';
 import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
-import ValueChangeModal from '../../../../core/presentation/components/ValueChangeModal';
-import ValueChangeModalStore from '../../../../core/presentation/stores/ValueChangeModalStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import { InputType } from '../../../../core/presentation/components/Input';
 import BigNumber from 'bignumber.js';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import MegaWalletSettingsModal from '../components/MegaWalletSettingsModal';
+import MegaWalletSettingsModalStore, { MegaWalletSettings } from '../stores/MegaWalletSettingsModalStore';
+import MegaWalletTransferModalStore, { MegaWalletTransferType } from '../stores/MegaWalletTransferModalStore';
+import MegaWalletTransferModal from '../components/MegaWalletTransferModal';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
-    valueChangeModalStore?: ValueChangeModalStore;
+    megaWalletSettingsModalStore?: MegaWalletSettingsModalStore;
+    megaWalletTransferModalStore?: MegaWalletTransferModalStore;
     cudosStore?: CudosStore;
     alertStore?: AlertStore;
     walletStore?: WalletStore;
@@ -45,7 +45,7 @@ type RoyaltyBoxProps = {
     onClickChange: () => void;
 }
 
-function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeModalStore, cudosStore, walletStore, alertStore }: Props) {
+function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTransferModalStore, megaWalletSettingsModalStore, cudosStore, walletStore, alertStore }: Props) {
     const { walletEventsEntities, accountSessionStore } = superAdminMegaWalletPageStore;
     const { superAdminEntity } = accountSessionStore;
 
@@ -59,16 +59,8 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
             alertStore.show('Please connect your wallet.');
             return;
         }
-        valueChangeModalStore.showSignal(
-            'Send CUDOS to Mega Wallet Address',
-            ['Amount'],
-            ['0'],
-            [],
-            [InputType.REAL],
-            async (inputs: string[]) => {
-                await walletStore.sendCudos(superAdminEntity.cudosRoyalteesAddress, new BigNumber(inputs[0]));
-            },
-        )
+        megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.DEPOSIT);
+
     }
 
     function onClickTransfer() {
@@ -82,72 +74,29 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
             return;
         }
 
-        valueChangeModalStore.showSignal(
-            'Send CUDOS from Mega Wallet Address',
-            ['Receiver address', 'Amount'],
-            ['', '0'],
-            [[], []],
-            [InputType.TEXT, InputType.REAL],
-            async (inputs: string[]) => {
-                await walletStore.sendCudos(inputs[0], new BigNumber(inputs[1]));
-            },
-        )
+        megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.TRANSFER);
+    }
+
+    const onClickChangeAddress = () => {
+        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.ADRESS);
     }
 
     const onClickChangeGlobalRoyalties = () => {
-        valueChangeModalStore.showSignal(
-            'Change Global Royalties',
-            ['Global Royalties'],
-            [superAdminEntity.globalCudosRoyaltiesPercent.toString()],
-            [[]],
-            [InputType.REAL],
-            async (inputs: string[]) => {
-                superAdminEntity.globalCudosRoyaltiesPercent = parseFloat(inputs[0]);
-                await accountSessionStore.editSuperAdminAccount(superAdminEntity);
-            },
-        )
+        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.GLOBAL_ROYALTIES);
     }
 
     function onClickChangeGlobalFees() {
-        valueChangeModalStore.showSignal(
-            'Change Global Fees',
-            ['Global Fees'],
-            [superAdminEntity.globalCudosFeesPercent.toString()],
-            [[]],
-            [InputType.REAL],
-            async (inputs: string[]) => {
-                superAdminEntity.globalCudosFeesPercent = parseFloat(inputs[0]);
-                await accountSessionStore.editSuperAdminAccount(superAdminEntity);
-            },
-        )
+        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.GLOBAL_FEES);
     }
 
     function onClickChangeResaleFees() {
-        valueChangeModalStore.showSignal(
-            'Change Resale Fees',
-            ['Resale Fees'],
-            [superAdminEntity.resaleCudosRoyaltiesPercent.toString()],
-            [[]],
-            [InputType.REAL],
-            async (inputs: string[]) => {
-                superAdminEntity.resaleCudosRoyaltiesPercent = parseFloat(inputs[0]);
-                await accountSessionStore.editSuperAdminAccount(superAdminEntity)
-            },
-        )
+        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.RESALE_FEES);
+
     }
 
     function onClickChangeFirstSaleFees() {
-        valueChangeModalStore.showSignal(
-            'Change First Sale Fees',
-            ['First Sale Fees'],
-            [superAdminEntity.firstSaleCudosRoyaltiesPercent.toString()],
-            [[]],
-            [InputType.REAL],
-            async (inputs: string[]) => {
-                superAdminEntity.firstSaleCudosRoyaltiesPercent = parseFloat(inputs[0]);
-                await accountSessionStore.editSuperAdminAccount(superAdminEntity)
-            },
-        )
+        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.FIRST_SALE_FEE);
+
     }
 
     function RoyaltyBoxContainer({ heading, amount, buttonText, onClickChange }: RoyaltyBoxProps) {
@@ -165,7 +114,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
                     >
                         <Button
                             onClick={onClickChange}
-                            color={ButtonColor.SCHEME_2}
+                            color={ButtonColor.SCHEME_4}
                         >{buttonText}</Button>
                     </Actions>
                 </div>
@@ -203,7 +152,8 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
             className = { 'PageSuperAdminMegaWallet' }
             modals = { (
                 <>
-                    <ValueChangeModal />
+                    <MegaWalletSettingsModal />
+                    <MegaWalletTransferModal />
                 </>
             ) } >
 
@@ -216,9 +166,9 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
                             <div className={'FlexRow IconAddressHolder'}>
                                 <div className={'ProfilePicture '} style={ProjectUtils.makeBgImgStyle('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png')}/>
                                 <div className={'Address B2 Bold'}>{accountSessionStore.superAdminEntity.cudosRoyalteesAddress}</div>
-                                <Svg svg={ContentCopyIcon} className={'Clickable'}/>
+                                <Svg svg={ContentCopyIcon} className={'Clickable'} onClick={() => ProjectUtils.copyText(accountSessionStore.superAdminEntity.cudosRoyalteesAddress)}/>
                             </div>
-                            <Svg svg={BorderColorIcon} className={'Clickable EditAddressButton'}/>
+                            <Svg svg={BorderColorIcon} className={'Clickable EditAddressButton'} onClick={onClickChangeAddress}/>
                         </div>
                         <div className={'FlexColumn PriceColumn'}>
                             <div className={'FlexRow AmountInCudos'}>
@@ -229,13 +179,13 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
                         </div>
                         <div className={'Grid GridColumns2 ActionsRow'}>
                             <Button
-                                color={ButtonColor.SCHEME_2}
+                                color={ButtonColor.SCHEME_4}
                                 padding={ButtonPadding.PADDING_48}
                                 onClick={onClickDeposit}
                             >Deposit</Button>
 
                             <Button
-                                color={ButtonColor.SCHEME_2}
+                                color={ButtonColor.SCHEME_1}
                                 padding={ButtonPadding.PADDING_48}
                                 onClick={onClickTransfer}
                             >Transfer</Button>

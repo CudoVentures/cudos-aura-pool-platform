@@ -13,7 +13,7 @@ export default class ValidationState {
         makeAutoObservable(this);
     }
 
-    addValidation(errorMessage, checkValidInput): InputValidation {
+    addValidation(errorMessage, checkValidInput: (value) => boolean): InputValidation {
         const inputValidation = new InputValidation();
         inputValidation.errorMessage = errorMessage;
         inputValidation.checkValidInput = checkValidInput;

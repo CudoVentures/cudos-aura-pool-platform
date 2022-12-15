@@ -51,6 +51,10 @@ import SuperAdminMegaWalletPageStore from './features/accounts/presentation/stor
 import ValueChangeModalStore from './core/presentation/stores/ValueChangeModalStore';
 import WalletApiRepo from './features/ledger/data/repo/WalletApiRepo';
 import SnackStore from './core/presentation/stores/SnackStore';
+import MegaWalletSettingsModal from './features/accounts/presentation/components/MegaWalletSettingsModal';
+import MegaWalletSettingsModalStore from './features/accounts/presentation/stores/MegaWalletSettingsModalStore';
+import MegaWalletTransferModal from './features/accounts/presentation/components/MegaWalletTransferModal';
+import MegaWalletTransferModalStore from './features/accounts/presentation/stores/MegaWalletTransferModalStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -103,6 +107,8 @@ const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
 const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
 const valueChangeModalStore = new ValueChangeModalStore();
+const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSessionStore);
+const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSessionStore, walletStore);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -173,6 +179,8 @@ const App = () => {
                 walletSelectModalStore = { walletSelectModalStore }
                 superAdminMegaWalletPageStore = { superAdminMegaWalletPageStore }
                 valueChangeModalStore = { valueChangeModalStore }
+                megaWalletSettingsModalStore = { megaWalletSettingsModalStore }
+                megaWalletTransferModalStore = { megaWalletTransferModalStore }
             >
                 <BrowserRouter>
                     <AppRouter />

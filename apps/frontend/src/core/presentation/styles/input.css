@@ -39,6 +39,23 @@
     transition: border-color var(--transition-duration);
 }
 
+.Input.Underline {
+    position: relative;
+}
+
+.Input.Underline .MuiInputBase-root {
+    padding: 13px 14px 42px 14px !important
+}
+
+.Input.Underline .UnderlineHolder {
+    position: absolute;
+    width: 100%;
+    top: 68px;
+    left: 14px;
+    padding-right: 34px;
+    box-sizing: border-box;
+}
+
 .Input .MuiInputBase-root.MuiInputBase-multiline {
     padding: 7px 14px !important;
 }

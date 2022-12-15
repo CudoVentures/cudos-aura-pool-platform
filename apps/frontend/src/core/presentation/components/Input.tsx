@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { ChangeEvent, PropsWithChildren, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import S from '../../utilities/Main';
@@ -15,11 +15,12 @@ export enum InputType {
     PHONE,
 }
 
-type Props = TextFieldProps & {
+type Props = TextFieldProps & PropsWithChildren & {
     className?: string;
     inputType?: InputType;
     decimalLength?: number;
     readOnly?: boolean;
+    underline?: boolean;
     onChange?: null | ((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | string) => boolean | void);
     stretch?: boolean;
     gray?: boolean;
@@ -27,7 +28,7 @@ type Props = TextFieldProps & {
     inputValidation?: InputValidation | InputValidation[],
 }
 
-const Input = React.forwardRef(({ className, inputType, decimalLength, readOnly, onChange, stretch, gray, defaultOnChangeParameter, inputValidation, ...props }: Props, ref) => {
+const Input = React.forwardRef(({ children, className, inputType, decimalLength, readOnly, underline, onChange, stretch, gray, defaultOnChangeParameter, inputValidation, ...props }: Props, ref) => {
 
     const changed = useRef(false);
 
@@ -131,7 +132,7 @@ const Input = React.forwardRef(({ className, inputType, decimalLength, readOnly,
     const cssClassGray = S.CSS.getClassName(gray, 'InputGray');
     const error = shouldShowError() && isErrorPresent();
     return (
-        <div ref = { ref } className={`Input ${className} ${cssClassStretch} ${cssClassGray} ${S.CSS.getClassName(readOnly, 'ReadOnly')}`}>
+        <div ref = { ref } className={`Input ${className} ${cssClassStretch} ${cssClassGray} ${S.CSS.getClassName(readOnly, 'ReadOnly')} ${S.CSS.getClassName(underline, 'Underline')}`}>
             <TextField
                 {...props}
                 error={error}
@@ -140,6 +141,7 @@ const Input = React.forwardRef(({ className, inputType, decimalLength, readOnly,
                 onChange={onChange !== null && readOnly !== true ? onChangeHandler : undefined}
                 margin='dense'
                 variant='standard' />
+            <div className={'UnderlineHolder'}>{children}</div>
         </div>
     )
 });
