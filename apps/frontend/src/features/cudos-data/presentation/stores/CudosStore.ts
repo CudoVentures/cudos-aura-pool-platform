@@ -58,7 +58,7 @@ export default class CudosStore {
     }
 
     convertAcudosInUsdAsString(acudosPrice: BigNumber): string {
-        return this.convertAcudosInUsd(acudosPrice).toString();
+        return this.convertAcudosInUsd(acudosPrice).toFixed(4);
     }
 
     formatCudosPriceChangeInPercentage(): string {

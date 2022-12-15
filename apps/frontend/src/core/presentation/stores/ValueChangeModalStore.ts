@@ -8,22 +8,22 @@ const DEFAULT_BUTTON_TEXT = 'Submit';
 export default class ValueChangeModalStore extends ModalStore {
 
     @observable modalHeader: string;
-    @observable inputLabel: string;
-    @observable inputValidations: InputValidation[];
-    @observable value: string;
+    @observable inputLabels: string[];
+    @observable inputValidations: InputValidation[][];
+    @observable values: string[];
     @observable submitButtonText: string;
-    @observable inputType: InputType;
-    @observable onSubmitCallback: (input: string) => Promise<void>;
+    @observable inputTypes: InputType[];
+    @observable onSubmitCallback: (inputs: string[]) => Promise<void>;
 
     constructor() {
         super();
 
         this.modalHeader = '';
-        this.inputLabel = '';
-        this.value = '';
+        this.inputLabels = [];
+        this.values = [];
         this.inputValidations = [];
         this.submitButtonText = '';
-        this.inputType = InputType.TEXT;
+        this.inputTypes = [];
         this.onSubmitCallback = null;
 
         makeObservable(this);
@@ -32,19 +32,19 @@ export default class ValueChangeModalStore extends ModalStore {
     @action
     showSignal(
         modalHeader: string,
-        inputLabel: string,
-        value: string,
-        inputValidations: InputValidation[],
-        inputType: InputType,
-        onSubmitCallback: (input: string) => Promise<void>,
+        inputLabels: string[],
+        values: string[],
+        inputValidations: InputValidation[][],
+        inputTypes: InputType[],
+        onSubmitCallback: (inputs: string[]) => Promise<void>,
         submitButtonText?: string,
     ) {
         this.modalHeader = modalHeader;
-        this.inputLabel = inputLabel;
-        this.value = value;
+        this.inputLabels = inputLabels;
+        this.values = values;
         this.inputValidations = inputValidations;
         this.submitButtonText = submitButtonText ?? DEFAULT_BUTTON_TEXT;
-        this.inputType = inputType;
+        this.inputTypes = inputTypes;
         this.onSubmitCallback = onSubmitCallback;
 
         this.show();
@@ -52,23 +52,23 @@ export default class ValueChangeModalStore extends ModalStore {
 
     hide = () => {
         this.modalHeader = '';
-        this.inputLabel = '';
-        this.value = '';
+        this.inputLabels = [];
+        this.values = [];
         this.inputValidations = [];
         this.submitButtonText = '';
-        this.inputType = null;
+        this.inputTypes = [];
         this.onSubmitCallback = null;
 
         super.hide();
     }
 
-    onInputChange = (input) => {
-        this.value = input;
+    onInputChange = (index, input) => {
+        this.values[index] = input;
     }
 
     onSubmit = async () => {
         try {
-            await this.onSubmitCallback(this.value);
+            await this.onSubmitCallback(this.values);
 
             this.hide();
         } catch (e) {

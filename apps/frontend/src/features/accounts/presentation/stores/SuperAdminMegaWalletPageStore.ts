@@ -57,4 +57,8 @@ export default class SuperAdminMegaWalletPageStore {
     onChangeTableFilter = async () => {
         // TODO:
     }
+
+    getSuperAdminBalance() {
+        return this.superAdminWalletAddessCudosBalance ?? new BigNumber(0);
+    }
 }

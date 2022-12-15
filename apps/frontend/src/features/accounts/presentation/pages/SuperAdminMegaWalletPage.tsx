@@ -28,11 +28,13 @@ import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { InputType } from '../../../../core/presentation/components/Input';
 import BigNumber from 'bignumber.js';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
     valueChangeModalStore?: ValueChangeModalStore;
     cudosStore?: CudosStore;
+    alertStore?: AlertStore;
     walletStore?: WalletStore;
 }
 
@@ -43,40 +45,64 @@ type RoyaltyBoxProps = {
     onClickChange: () => void;
 }
 
-function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeModalStore, cudosStore, walletStore }: Props) {
+function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeModalStore, cudosStore, walletStore, alertStore }: Props) {
     const { walletEventsEntities, accountSessionStore } = superAdminMegaWalletPageStore;
     const { superAdminEntity } = accountSessionStore;
 
     useEffect(() => {
         superAdminMegaWalletPageStore.init();
+        cudosStore.init();
     }, []);
 
     function onClickDeposit() {
+        if (!walletStore.isConnected()) {
+            alertStore.show('Please connect your wallet.');
+            return;
+        }
         valueChangeModalStore.showSignal(
             'Send CUDOS to Mega Wallet Address',
-            'Amount',
-            '0',
+            ['Amount'],
+            ['0'],
             [],
-            InputType.REAL,
-            async (input: string) => {
-                await walletStore.sendCudos(superAdminEntity.cudosRoyalteesAddress, new BigNumber(input));
+            [InputType.REAL],
+            async (inputs: string[]) => {
+                await walletStore.sendCudos(superAdminEntity.cudosRoyalteesAddress, new BigNumber(inputs[0]));
             },
         )
     }
 
     function onClickTransfer() {
-        // TODO:
+        if (!walletStore.isConnected()) {
+            alertStore.show('Please connect your wallet.');
+            return;
+        }
+
+        if (walletStore.address !== superAdminEntity.cudosRoyalteesAddress) {
+            alertStore.show('The wallet you have connected is different than the super admin one.');
+            return;
+        }
+
+        valueChangeModalStore.showSignal(
+            'Send CUDOS from Mega Wallet Address',
+            ['Receiver address', 'Amount'],
+            ['', '0'],
+            [[], []],
+            [InputType.TEXT, InputType.REAL],
+            async (inputs: string[]) => {
+                await walletStore.sendCudos(inputs[0], new BigNumber(inputs[1]));
+            },
+        )
     }
 
     const onClickChangeGlobalRoyalties = () => {
         valueChangeModalStore.showSignal(
             'Change Global Royalties',
-            'Global Royalties',
-            superAdminEntity.globalCudosRoyaltiesPercent.toString(),
-            [],
-            InputType.REAL,
-            async (input: string) => {
-                superAdminEntity.globalCudosRoyaltiesPercent = parseFloat(input);
+            ['Global Royalties'],
+            [superAdminEntity.globalCudosRoyaltiesPercent.toString()],
+            [[]],
+            [InputType.REAL],
+            async (inputs: string[]) => {
+                superAdminEntity.globalCudosRoyaltiesPercent = parseFloat(inputs[0]);
                 await accountSessionStore.editSuperAdminAccount(superAdminEntity);
             },
         )
@@ -85,12 +111,12 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
     function onClickChangeGlobalFees() {
         valueChangeModalStore.showSignal(
             'Change Global Fees',
-            'Global Fees',
-            superAdminEntity.globalCudosFeesPercent.toString(),
-            [],
-            InputType.REAL,
-            async (input: string) => {
-                superAdminEntity.globalCudosFeesPercent = parseFloat(input);
+            ['Global Fees'],
+            [superAdminEntity.globalCudosFeesPercent.toString()],
+            [[]],
+            [InputType.REAL],
+            async (inputs: string[]) => {
+                superAdminEntity.globalCudosFeesPercent = parseFloat(inputs[0]);
                 await accountSessionStore.editSuperAdminAccount(superAdminEntity);
             },
         )
@@ -99,12 +125,12 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
     function onClickChangeResaleFees() {
         valueChangeModalStore.showSignal(
             'Change Resale Fees',
-            'Resale Fees',
-            superAdminEntity.resaleCudosRoyaltiesPercent.toString(),
-            [],
-            InputType.REAL,
-            async (input: string) => {
-                superAdminEntity.resaleCudosRoyaltiesPercent = parseFloat(input);
+            ['Resale Fees'],
+            [superAdminEntity.resaleCudosRoyaltiesPercent.toString()],
+            [[]],
+            [InputType.REAL],
+            async (inputs: string[]) => {
+                superAdminEntity.resaleCudosRoyaltiesPercent = parseFloat(inputs[0]);
                 await accountSessionStore.editSuperAdminAccount(superAdminEntity)
             },
         )
@@ -113,12 +139,12 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
     function onClickChangeFirstSaleFees() {
         valueChangeModalStore.showSignal(
             'Change First Sale Fees',
-            'First Sale Fees',
-            superAdminEntity.firstSaleCudosRoyaltiesPercent.toString(),
-            [],
-            InputType.REAL,
-            async (input: string) => {
-                superAdminEntity.firstSaleCudosRoyaltiesPercent = parseFloat(input);
+            ['First Sale Fees'],
+            [superAdminEntity.firstSaleCudosRoyaltiesPercent.toString()],
+            [[]],
+            [InputType.REAL],
+            async (inputs: string[]) => {
+                superAdminEntity.firstSaleCudosRoyaltiesPercent = parseFloat(inputs[0]);
                 await accountSessionStore.editSuperAdminAccount(superAdminEntity)
             },
         )
@@ -196,10 +222,10 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, valueChangeMo
                         </div>
                         <div className={'FlexColumn PriceColumn'}>
                             <div className={'FlexRow AmountInCudos'}>
-                                <div className={'H2 ExtraBold'}>{`${ProjectUtils.formatBalanceInCudosInt(walletBalance)}.${ProjectUtils.formatBalanceInCudosFraction(walletBalance)}`}</div>
+                                <div className={'H2 ExtraBold'}>{`${ProjectUtils.formatBalanceInCudosInt(superAdminMegaWalletPageStore.getSuperAdminBalance())}.${ProjectUtils.formatBalanceInCudosFraction(superAdminMegaWalletPageStore.getSuperAdminBalance())}`}</div>
                                 <div className={'H3 SemiBold AmountDenom'}>CUDOS</div>
                             </div>
-                            <div className={'H3 SemiBold AmountDollars'}>${cudosStore.convertAcudosInUsdAsString(walletBalance)}</div>
+                            <div className={'H3 SemiBold AmountDollars'}>${cudosStore.convertAcudosInUsdAsString(superAdminMegaWalletPageStore.getSuperAdminBalance().multipliedBy((new BigNumber(10)).pow(18)))}</div>
                         </div>
                         <div className={'Grid GridColumns2 ActionsRow'}>
                             <Button

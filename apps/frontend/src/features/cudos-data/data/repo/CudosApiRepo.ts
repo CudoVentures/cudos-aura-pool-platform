@@ -58,10 +58,11 @@ export default class CudosApiRepo implements CudosRepo {
     }
 
     async fetchCudosBalance(address: string): Promise <BigNumber> {
-        const client = await StargateClient.connect(CHAIN_DETAILS.API_ADDRESS);
-        const coin = await client.getBalance(address, CHAIN_DETAILS.ADMIN_TOKEN_DENOM);
+        const client = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
+        const coin = await client.getBalance(address, CHAIN_DETAILS.NATIVE_TOKEN_DENOM);
 
-        return new BigNumber(coin.amount);
+        const amountAcudos = new BigNumber(coin.amount);
+        return amountAcudos.dividedBy((new BigNumber(10).pow(18)));
     }
 
 }

@@ -16,11 +16,11 @@ type Props = {
 function ValueChangeModal({ valueChangeModalStore }: Props) {
     const {
         modalHeader,
-        inputLabel,
-        value,
+        inputLabels,
+        values,
         inputValidations,
         submitButtonText,
-        inputType,
+        inputTypes,
         onInputChange,
         onSubmit,
     } = valueChangeModalStore;
@@ -33,12 +33,13 @@ function ValueChangeModal({ valueChangeModalStore }: Props) {
                 <div className = { 'Title H2 Bold' } >{modalHeader}</div>
             </div>
             <ColumnLayout>
-                <Input
-                    label={inputLabel}
-                    inputType={inputType}
-                    value={value}
-                    inputValidation={ inputValidations}
-                    onChange={onInputChange}/>
+                {inputLabels.map((label, i) => <Input
+                    key={i}
+                    label={label}
+                    inputType={inputTypes[i]}
+                    value={values[i]}
+                    inputValidation={ inputValidations[i] }
+                    onChange={(value) => onInputChange(i, value)}/>)}
                 <Actions className = { 'SubmitButton' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL }>
                     <Button onClick={onSubmit} > {submitButtonText} </Button>
                 </Actions>

@@ -49,7 +49,7 @@ import QueuedCollectionsStore from './features/collection/presentation/stores/Qu
 import QueuedMiningFarmsStores from './features/mining-farm/presentation/stores/QueuedMiningFarmsStores';
 import SuperAdminMegaWalletPageStore from './features/accounts/presentation/stores/SuperAdminMegaWalletPageStore';
 import ValueChangeModalStore from './core/presentation/stores/ValueChangeModalStore';
-import WalletApiRepo from './features/ledger/data/repo/CollectionApiRepo';
+import WalletApiRepo from './features/ledger/data/repo/WalletApiRepo';
 import SnackStore from './core/presentation/stores/SnackStore';
 
 const storageHelper = new StorageHelper();
@@ -92,7 +92,7 @@ const creditCollectionStore = new CreditCollectionStore(accountSessionStore, col
 const visitorStore = new VisitorStore(visitorRepo);
 const queuedMiningFarmsStore = new QueuedMiningFarmsStores(miningFarmRepo, accountSessionStore);
 const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
-const superAdminMegaWalletPageStore = new SuperAdminMegaWalletPageStore(walletStore);
+const superAdminMegaWalletPageStore = new SuperAdminMegaWalletPageStore(cudosRepo, accountSessionStore);
 
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
