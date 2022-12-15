@@ -249,3 +249,7 @@ select::-ms-value {
 .Primary60 {
     color: var(--color-primary-060);
 }
+
+.Error60 {
+    color: var(--color-error-060);
+}

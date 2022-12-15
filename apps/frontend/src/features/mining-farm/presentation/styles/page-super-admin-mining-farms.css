@@ -1,3 +1,25 @@
 .PageSuperAdminMiningFarms .PageContent {
     padding: 36px var(--page-spacing-h);
 }
+
+.PageSuperAdminMiningFarms .PageContent .TableHeaderRow .SearchInput {
+    width: 20%;
+} 
+
+.PageSuperAdminMiningFarms .PageContent .FarmNameImageCell {
+    gap: 16px;
+    align-items: center;
+}
+
+.PageSuperAdminMiningFarms .PageContent .FarmNameImageCell .FarmImage {
+    width: 80px; height: 80px;
+    border-radius: 8px;
+    background-position: center;
+    background-size: cover;
+}
+
+.PageSuperAdminMiningFarms .PageContent .FarmVolumeCell,
+.PageSuperAdminMiningFarms .PageContent .FloorPrice {
+    gap: 5px;
+    align-items: flex-start;
+}

@@ -51,10 +51,9 @@ import SuperAdminMegaWalletPageStore from './features/accounts/presentation/stor
 import ValueChangeModalStore from './core/presentation/stores/ValueChangeModalStore';
 import WalletApiRepo from './features/ledger/data/repo/WalletApiRepo';
 import SnackStore from './core/presentation/stores/SnackStore';
-import MegaWalletSettingsModal from './features/accounts/presentation/components/MegaWalletSettingsModal';
 import MegaWalletSettingsModalStore from './features/accounts/presentation/stores/MegaWalletSettingsModalStore';
-import MegaWalletTransferModal from './features/accounts/presentation/components/MegaWalletTransferModal';
 import MegaWalletTransferModalStore from './features/accounts/presentation/stores/MegaWalletTransferModalStore';
+import SuperAdminMningFarmsPageStore from './features/mining-farm/presentation/stores/SuperAdminMningFarmsPageStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -97,7 +96,7 @@ const visitorStore = new VisitorStore(visitorRepo);
 const queuedMiningFarmsStore = new QueuedMiningFarmsStores(miningFarmRepo, accountSessionStore);
 const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
 const superAdminMegaWalletPageStore = new SuperAdminMegaWalletPageStore(cudosRepo, accountSessionStore);
-
+const superAdminMiningFarmsPageStore = new SuperAdminMningFarmsPageStore(miningFarmRepo);
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
 const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore, accountRepo);
@@ -181,6 +180,7 @@ const App = () => {
                 valueChangeModalStore = { valueChangeModalStore }
                 megaWalletSettingsModalStore = { megaWalletSettingsModalStore }
                 megaWalletTransferModalStore = { megaWalletTransferModalStore }
+                superAdminMiningFarmsPageStore = { superAdminMiningFarmsPageStore }
             >
                 <BrowserRouter>
                     <AppRouter />
