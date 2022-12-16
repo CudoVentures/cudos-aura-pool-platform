@@ -1,3 +1,4 @@
 .ChartInfo .ChartInfoName {
+    color: var(--color-neutral-070);
     margin-bottom: 4px;
 }

@@ -1,4 +1,6 @@
+import BigNumber from 'bignumber.js';
 import axios from '../../../../core/utilities/AxiosWrapper';
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
@@ -38,8 +40,15 @@ export default class StatisticsApi {
         return nftEarningsEntity
     }
 
-    fetchNftEarningsByMiningFarmId(miningFarmId: string, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
-        return null;
+    async fetchNftEarningsByMiningFarmId(miningFarmId: string, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
+        const miningFarmEarningsEntity = new MiningFarmEarningsEntity();
+
+        miningFarmEarningsEntity.totalMiningFarmSalesInAcudos = new BigNumber(41253113).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+        miningFarmEarningsEntity.totalNftSold = 41;
+        miningFarmEarningsEntity.maintenanceFeeDepositedInBtc = new BigNumber(4.2);
+        miningFarmEarningsEntity.earningsPerDayInUsd = [100, 32, 231, 511, 531, 81];
+
+        return miningFarmEarningsEntity;
     }
 
 }

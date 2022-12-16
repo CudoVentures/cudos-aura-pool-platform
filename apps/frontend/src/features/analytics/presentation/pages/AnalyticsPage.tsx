@@ -5,6 +5,8 @@ import S from '../../../../core/utilities/Main';
 import AnalyticsPageStore from '../stores/AnalyticsPageStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import { NftEventType } from '../../entities/NftEventEntity';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 import MenuItem from '@mui/material/MenuItem/MenuItem';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
@@ -20,8 +22,6 @@ import NftEventTable from '../components/NftEventTable';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/analytics-page.css';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 type Props = {
     analyticsPageStore?: AnalyticsPageStore,
@@ -73,20 +73,20 @@ function MarkedplacePage({ analyticsPageStore, cudosStore, bitcoinStore, walletS
                                 <div className={'B1 SemiBold'}>Wallet Balance</div>
                                 <div className={'FlexColumn ValueColumn'}>
                                     <div>
-                                        <span className={'H2 Bold'}>{walletStore.formatBalanceInCudosInt()}<span className={'SecondaryColor'}>.{walletStore.formatBalanceInCudosFraction()}</span></span>
-                                        <span className={'H3 SecondaryColor'}> CUDOS</span>
+                                        <span className={'H2 Bold'}>{walletStore.formatBalanceInCudosInt()}<span className={'ColorNeutral060'}>.{walletStore.formatBalanceInCudosFraction()}</span></span>
+                                        <span className={'H3 ColorNeutral060'}> CUDOS</span>
                                     </div>
-                                    <div className={'SecondaryColor H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.getBalanceSafe())}</div>
+                                    <div className={'ColorPrimary060 H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.getBalanceSafe())}</div>
                                 </div>
                             </StyledContainer>
                             <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
                                 <div className={'B1 SemiBold'}>Maintenance Fee Deposited</div>
                                 <div className={'FlexColumn ValueColumn'}>
                                     <div>
-                                        <span className={'H2 Bold'}>{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcInt()}<span className={'SecondaryColor'}>.{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcFraction()}</span></span>
-                                        <span className={'H3 SecondaryColor'}> BTC</span>
+                                        <span className={'H2 Bold'}>{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcInt()}<span className={'ColorNeutral060'}>.{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcFraction()}</span></span>
+                                        <span className={'H3 ColorNeutral060'}> BTC</span>
                                     </div>
-                                    <div className={'SecondaryColor H3 Bold'}>{bitcoinStore.formatBtcInUsd(miningFarmEarningsEntity.maintenanceFeeDepositedInBtc)}</div>
+                                    <div className={'ColorPrimary060 H3 Bold'}>{bitcoinStore.formatBtcInUsd(miningFarmEarningsEntity.maintenanceFeeDepositedInBtc)}</div>
                                 </div>
                             </StyledContainer>
                         </div>
