@@ -185,10 +185,10 @@ export default class AccountApiRepo implements AccountRepo {
         }
     }
 
-    async fetchAccountsByAccountId(accountId: string): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } > {
+    async fetchFarmOwnerAccount(accountId: string): Promise < AdminEntity > {
         try {
             this.disableActions?.();
-            return this.accountApi.fetchAccountsByAccountId(accountId);
+            return this.accountApi.fetchFarmOwnerAccount(accountId);
         } finally {
             this.enableActions?.();
         }

@@ -169,7 +169,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         const miningFarmEntities = (await this.miningFarmApi.fetchMiningFarmsByFilter(filter)).miningFarmEntities;
         const miningFarmEntity = miningFarmEntities[0];
 
-        const { adminEntity } = await this.accountApi.fetchAccountsByAccountId(miningFarmEntity.accountId);
+        const adminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
 
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);

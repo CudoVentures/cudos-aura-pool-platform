@@ -96,12 +96,7 @@ export default class ViewNftPageStore {
 
         this.nftEntity = await this.nftRepo.fetchNftById(nftId);
 
-        try {
-            const { adminEntity } = await this.accountRepo.fetchAccountsByAccountId(this.nftEntity.creatorId);
-            this.adminEntity = adminEntity;
-        } catch (e) {
-            this.adminEntity = null;
-        }
+        this.adminEntity = await this.accountRepo.fetchFarmOwnerAccount(this.nftEntity.creatorId);
 
         this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId);
         this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
