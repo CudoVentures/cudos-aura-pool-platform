@@ -54,6 +54,7 @@ import SnackStore from './core/presentation/stores/SnackStore';
 import MegaWalletSettingsModalStore from './features/accounts/presentation/stores/MegaWalletSettingsModalStore';
 import MegaWalletTransferModalStore from './features/accounts/presentation/stores/MegaWalletTransferModalStore';
 import SuperAdminMningFarmsPageStore from './features/mining-farm/presentation/stores/SuperAdminMningFarmsPageStore';
+import SuperAdminCollectionsPageStore from './features/collection/presentation/stores/SuperAdminCollectionsPageStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -108,6 +109,7 @@ const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRe
 const valueChangeModalStore = new ValueChangeModalStore();
 const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSessionStore);
 const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSessionStore, walletStore);
+const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore(collectionRepo);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -181,6 +183,7 @@ const App = () => {
                 megaWalletSettingsModalStore = { megaWalletSettingsModalStore }
                 megaWalletTransferModalStore = { megaWalletTransferModalStore }
                 superAdminMiningFarmsPageStore = { superAdminMiningFarmsPageStore }
+                superAdminCollectionsPageStore = { superAdminCollectionsPageStore }
             >
                 <BrowserRouter>
                     <AppRouter />
