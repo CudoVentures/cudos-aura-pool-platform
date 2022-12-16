@@ -57,7 +57,7 @@ export class NFTController {
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
 
-        if (height !== bdJunoParsedHeight.block_aggregate.aggregate.max.height) {
+        if (height > parseInt(bdJunoParsedHeight.block_aggregate.aggregate.max.height)) {
             throw new Error(`BDJuno not yet on block:  ${height}`);
         }
         const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId)
