@@ -49,3 +49,13 @@ export class ResEditSuperAdminAccount {
     }
 
 }
+
+export class ResFetchFarmOwnerAccount {
+
+    adminEntity: AdminEntity;
+
+    constructor(axiosData: any) {
+        this.adminEntity = AdminEntity.fromJson(axiosData.adminEntity);
+    }
+
+}

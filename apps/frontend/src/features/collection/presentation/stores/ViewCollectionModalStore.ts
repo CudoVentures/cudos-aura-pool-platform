@@ -48,7 +48,7 @@ export default class ViewCollectionModalStore extends ModalStore {
         const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
         const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilterModel);
 
-        const { adminEntity } = await this.accountRepo.fetchAccountsByAccountId(miningFarmEntity.accountId)
+        const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(miningFarmEntity.accountId)
 
         runInAction(() => {
             this.collectionEntity = collectionEntity;

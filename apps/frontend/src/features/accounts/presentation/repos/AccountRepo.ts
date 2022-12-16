@@ -19,7 +19,7 @@ export default interface AccountRepo {
     editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > ;
     forgottenPassword(email: string): Promise < void >
     sendSessionAccountVerificationEmail(): Promise < void >
-    fetchAccountsByAccountId(accountId: string): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } >;
+    fetchFarmOwnerAccount(accountId: string): Promise < AdminEntity >;
     confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean >
     fetchBitcoinAddress(cudosAddress: string): Promise < string >;
     fetchAddressCudosBalance(cudosAddress: string): Promise < string >;

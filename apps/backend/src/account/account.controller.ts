@@ -9,7 +9,7 @@ import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
 import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSuperAdminAccount, ReqForgottenPassword } from './dto/requests.dto';
-import { ResEditSessionAccount, ResEditSuperAdminAccount } from './dto/responses.dto';
+import { ResEditSessionAccount, ResEditSuperAdminAccount, ResFetchFarmOwnerAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
 import SuperAdminEntity from './entities/super-admin.entity';
 import { IsSessionAccountGuard } from './guards/is-session-account.guard';
@@ -113,13 +113,12 @@ export class AccountController {
         await this.emailService.sendForgottenPasswordEmail(accountEntity);
     }
 
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @Get(':accountId')
     @HttpCode(200)
     async fetchFarmOwnerAccounts(
         @Param('accountId') accountId: number,
-    ): Promise < ResFetchSessionAccounts > {
+    ): Promise < ResFetchFarmOwnerAccount > {
         const res = await this.accountService.findAccounts(accountId);
-        return new ResFetchSessionAccounts(res.accountEntity, res.userEntity, res.adminEntity, res.superAdminEntity, IntBoolValue.FALSE);
+        return new ResFetchFarmOwnerAccount(res.adminEntity);
     }
 }

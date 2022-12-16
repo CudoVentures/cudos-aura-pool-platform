@@ -4,7 +4,7 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { setTokenInStorage } from '../../../../core/utilities/AxiosWrapper';
 import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSuperAdminAccount, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
-import { ResEditSessionAccount, ResEditSuperAdminAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
+import { ResEditSessionAccount, ResEditSuperAdminAccount, ResFetchFarmOwnerAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 import { StdSignature } from 'cudosjs';
 
 export default class AccountApi {
@@ -61,15 +61,9 @@ export default class AccountApi {
         await axios.patch('/api/v1/accounts/sendSessionAccountVerificationEmail');
     }
 
-    async fetchAccountsByAccountId(accountId: string): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } > {
+    async fetchFarmOwnerAccount(accountId: string): Promise < AdminEntity > {
         const { data } = await axios.get(`/api/v1/accounts/${accountId}`);
-        const res = new ResFetchSessionAccounts(data);
-
-        return {
-            accountEntity: res.accountEntity,
-            userEntity: res.userEntity,
-            adminEntity: res.adminEntity,
-            superAdminEntity: res.superAdminEntity,
-        }
+        const res = new ResFetchFarmOwnerAccount(data);
+        return res.adminEntity
     }
 }
