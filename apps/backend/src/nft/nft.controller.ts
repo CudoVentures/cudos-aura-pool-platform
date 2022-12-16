@@ -68,7 +68,7 @@ export class NFTController {
         }
 
         if (chainMarketplaceNftDtos.length !== nftDataJsons.length) {
-            throw new Error('NFTs not yet found in BDJuno');
+            throw new Error('NFTs not yet found in BDJuno marketplace');
         }
 
         // fetch nfts
@@ -77,9 +77,8 @@ export class NFTController {
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
 
         for (let i = 0; i < chainMarketplaceNftDtos.length; i++) {
-            const chainMarketplaceNftDto: ChainMarketplaceNftDto = chainMarketplaceNftDtos[i];
-
-            const nftEntity = nftEntities.find((entity) => entity.id === chainMarketplaceNftDto.uid)
+            const nftEntity = nftEntities[i];
+            const chainMarketplaceNftDto = chainMarketplaceNftDtos.find((dto) => dto.uid === nftEntity.id);
 
             nftEntity.data = chainMarketplaceNftDto.data;
             nftEntity.name = chainMarketplaceNftDto.name;

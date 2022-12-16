@@ -94,10 +94,12 @@ export default class TxFindWorker {
 
             const tokenIds = nftModuleNftEvents.map((event) => {
                 const tokenId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
-                return tokenId;
+                const denomId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
+
+                return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleNfts(tokenIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds);
         }
 
     }
