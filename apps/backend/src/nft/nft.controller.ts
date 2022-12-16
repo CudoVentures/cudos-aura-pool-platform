@@ -53,7 +53,13 @@ export class NFTController {
         @Req() req: AppRequest,
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
     ): Promise<void> {
-        const nftDataJsons = reqUpdateNftChainData.nftDtos;
+        const { nftDtos: nftDataJsons, height } = reqUpdateNftChainData;
+
+        const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
+
+        if (height !== bdJunoParsedHeight.block_aggregate.aggregate.max.height) {
+            throw new Error(`BDJuno not yet on block:  ${height}`);
+        }
         const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId)
             .filter((denomId, index, self) => self.indexOf(denomId) === index);
 
@@ -65,10 +71,6 @@ export class NFTController {
             const queryRes = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds, denomId);
             const marketplaceNftDtos = queryRes.marketplace_nft.map((queryNft) => ChainMarketplaceNftDto.fromQuery(queryNft));
             chainMarketplaceNftDtos = chainMarketplaceNftDtos.concat(marketplaceNftDtos);
-        }
-
-        if (chainMarketplaceNftDtos.length !== nftDataJsons.length) {
-            throw new Error('NFTs not yet found in BDJuno marketplace');
         }
 
         // fetch nfts

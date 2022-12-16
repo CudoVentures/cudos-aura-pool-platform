@@ -1,0 +1,9 @@
+query LastParsedHeight {
+  block_aggregate {
+    aggregate {
+      max {
+        height
+      }
+    }
+  }
+}

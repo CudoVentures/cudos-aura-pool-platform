@@ -31,42 +31,46 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
         const res = await axios.put(`${this.api_url}${LAST_BLOCK_ENDPOINT}`, { height });
     }
 
-    async triggerUpdateMarketplaceModuleCollections(denomIds: string[]): Promise < void > {
+    async triggerUpdateMarketplaceModuleCollections(denomIds: string[], height: number): Promise < void > {
         const res = await axios.put(
             `${this.api_url}${TRIGGER_COLLECTION_UPDATES}`,
             {
                 module: MARKETPLACE_MODULE,
                 denomIds,
+                height,
             },
         );
     }
 
-    async triggerUpdateMarketplaceModuleNfts(nftDtos: {tokenId: string, denomId: string}[]): Promise < void > {
+    async triggerUpdateMarketplaceModuleNfts(nftDtos: {tokenId: string, denomId: string}[], height: number): Promise < void > {
         const res = await axios.put(
             `${this.api_url}${TRIGGER_NFT_UPDATES}`,
             {
                 module: MARKETPLACE_MODULE,
                 nftDtos,
+                height,
             },
         );
     }
 
-    async triggerUpdateNftModuleCollections(denomIds: string[]): Promise < void > {
+    async triggerUpdateNftModuleCollections(denomIds: string[], height: number): Promise < void > {
         const res = await axios.put(
             `${this.api_url}${TRIGGER_COLLECTION_UPDATES}`,
             {
                 module: NFT_MODULE,
                 denomIds,
+                height,
             },
         );
     }
 
-    async triggerUpdateNftModuleNfts(tokenIds: string[]): Promise < void > {
+    async triggerUpdateNftModuleNfts(tokenIds: string[], height: number): Promise < void > {
         const res = await axios.put(
             `${this.api_url}${TRIGGER_NFT_UPDATES}`,
             {
                 module: NFT_MODULE,
                 tokenIds,
+                height,
             },
         );
     }

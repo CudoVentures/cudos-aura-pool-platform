@@ -58,7 +58,7 @@ export default class TxFindWorker {
                 const collectionId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
                 return collectionId;
             }).filter((value, index, self) => self.indexOf(value) === index);
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(collectionIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(collectionIds, heightFilter.maxHeight);
         }
 
         if (marketplaceModuleNftEvents.length > 0) {
@@ -69,7 +69,7 @@ export default class TxFindWorker {
                 return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(nftDtos);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(nftDtos, heightFilter.maxHeight);
         }
     }
 
@@ -87,7 +87,7 @@ export default class TxFindWorker {
                 return denomId;
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleCollections(denomIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleCollections(denomIds, heightFilter.maxHeight);
         }
 
         if (nftModuleNftEvents.length > 0) {
@@ -99,7 +99,7 @@ export default class TxFindWorker {
                 return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds);
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds, heightFilter.maxHeight);
         }
 
     }

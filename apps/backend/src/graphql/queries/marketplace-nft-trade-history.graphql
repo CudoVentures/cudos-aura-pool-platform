@@ -8,3 +8,15 @@ query MarketplaceNftTradeHistory($tokenId: bigint!, $denomId: String!) {
     buyer
   }
 }
+
+query MarketplaceNftPlatformTradeHistory {
+  marketplace_nft_buy_history {
+    btc_price
+    price
+    usd_price
+    timestamp
+    seller
+    buyer
+  }
+}
+

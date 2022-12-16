@@ -25,12 +25,26 @@ import {
     MarketplaceNftsByTokenIdsDocument,
     NftNftsByTokenIdsQuery,
     NftNftsByTokenIdsDocument,
+    MarketplaceNftPriceSumTotalQuery,
+    MarketplaceNftPriceSumTotalDocument,
+    MarketplaceNftPlatformTradeHistoryQuery,
+    MarketplaceNftPlatformTradeHistoryDocument,
+    LastParsedHeightDocument,
+    LastParsedHeightQuery,
 } from './types';
 import { MarketplaceNftFilters } from '../nft/nft.types';
 
 @Injectable()
 export class GraphqlService {
     constructor(private readonly httpService: HttpService) {}
+
+    async fetchLastParsedHeight(): Promise<LastParsedHeightQuery> {
+        const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(LastParsedHeightDocument),
+        });
+
+        return res.data.data;
+    }
 
     async fetchNftsByDenomId(
         filters: Partial<MarketplaceNftFilters>,
@@ -122,6 +136,14 @@ export class GraphqlService {
         return res.data.data?.marketplace_nft_buy_history || [];
     }
 
+    async fetchMarketplacePlatformNftTradeHistory(): Promise<MarketplaceNftPlatformTradeHistoryQuery> {
+        const res: AxiosResponse<{ data: MarketplaceNftPlatformTradeHistoryQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftPlatformTradeHistoryDocument),
+        });
+
+        return res.data.data;
+    }
+
     async fetchCollectionTotalSales(denomIds: string[]): Promise<{ salesInAcudos: number, salesInBtc: number, salesInUsd: number }> {
         const res: AxiosResponse<{ data: MarketplaceNftPriceSumByDenomIdQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceNftPriceSumByDenomIdDocument),
@@ -133,6 +155,14 @@ export class GraphqlService {
             salesInBtc: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.btc_price,
             salesInUsd: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.usd_price,
         };
+    }
+
+    async fetchTotalPlatformSales(): Promise<MarketplaceNftPriceSumTotalQuery> {
+        const res: AxiosResponse<{ data: MarketplaceNftPriceSumTotalQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftPriceSumTotalDocument),
+        });
+
+        return res.data.data;
     }
 
     async fetchTotalNftsByAddress(address: string): Promise<number> {

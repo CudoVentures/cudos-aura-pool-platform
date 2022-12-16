@@ -16915,6 +16915,11 @@ export type Vote_Option_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['vote_option']>>;
 };
 
+export type LastParsedHeightQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LastParsedHeightQuery = { __typename?: 'query_root', block_aggregate: { __typename?: 'block_aggregate', aggregate?: { __typename?: 'block_aggregate_fields', max?: { __typename?: 'block_max_fields', height?: any | null } | null } | null } };
+
 export type MarketplaceCollectionQueryVariables = Exact<{
   denom_id?: InputMaybe<Scalars['String']>;
   creator?: InputMaybe<Scalars['String']>;
@@ -16937,6 +16942,11 @@ export type MarketplaceNftPriceSumByDenomIdQueryVariables = Exact<{
 
 export type MarketplaceNftPriceSumByDenomIdQuery = { __typename?: 'query_root', marketplace_nft_buy_history_aggregate: { __typename?: 'marketplace_nft_buy_history_aggregate', aggregate?: { __typename?: 'marketplace_nft_buy_history_aggregate_fields', sum?: { __typename?: 'marketplace_nft_buy_history_sum_fields', price?: any | null, usd_price?: any | null, btc_price?: any | null } | null } | null } };
 
+export type MarketplaceNftPriceSumTotalQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MarketplaceNftPriceSumTotalQuery = { __typename?: 'query_root', marketplace_nft_buy_history_aggregate: { __typename?: 'marketplace_nft_buy_history_aggregate', aggregate?: { __typename?: 'marketplace_nft_buy_history_aggregate_fields', sum?: { __typename?: 'marketplace_nft_buy_history_sum_fields', price?: any | null, usd_price?: any | null, btc_price?: any | null } | null } | null } };
+
 export type MarketplaceNftTradeHistoryQueryVariables = Exact<{
   tokenId: Scalars['bigint'];
   denomId: Scalars['String'];
@@ -16944,6 +16954,11 @@ export type MarketplaceNftTradeHistoryQueryVariables = Exact<{
 
 
 export type MarketplaceNftTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', btc_price: any, price: any, usd_price: any, timestamp: any, seller: string, buyer: string }> };
+
+export type MarketplaceNftPlatformTradeHistoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MarketplaceNftPlatformTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', btc_price: any, price: any, usd_price: any, timestamp: any, seller: string, buyer: string }> };
 
 export type MarketplaceNftsByDenomIdQueryVariables = Exact<{
   denom_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -16998,6 +17013,17 @@ export type NftTransferHistoryQueryVariables = Exact<{
 export type NftTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', timestamp: any, old_owner: string, new_owner: string }> };
 
 
+export const LastParsedHeightDocument = gql`
+    query LastParsedHeight {
+  block_aggregate {
+    aggregate {
+      max {
+        height
+      }
+    }
+  }
+}
+    `;
 export const MarketplaceCollectionDocument = gql`
     query MarketplaceCollection($denom_id: String, $creator: String) {
   marketplace_collection(
@@ -17039,11 +17065,36 @@ export const MarketplaceNftPriceSumByDenomIdDocument = gql`
   }
 }
     `;
+export const MarketplaceNftPriceSumTotalDocument = gql`
+    query MarketplaceNftPriceSumTotal {
+  marketplace_nft_buy_history_aggregate {
+    aggregate {
+      sum {
+        price
+        usd_price
+        btc_price
+      }
+    }
+  }
+}
+    `;
 export const MarketplaceNftTradeHistoryDocument = gql`
     query MarketplaceNftTradeHistory($tokenId: bigint!, $denomId: String!) {
   marketplace_nft_buy_history(
     where: {token_id: {_eq: $tokenId}, denom_id: {_eq: $denomId}}
   ) {
+    btc_price
+    price
+    usd_price
+    timestamp
+    seller
+    buyer
+  }
+}
+    `;
+export const MarketplaceNftPlatformTradeHistoryDocument = gql`
+    query MarketplaceNftPlatformTradeHistory {
+  marketplace_nft_buy_history {
     btc_price
     price
     usd_price
@@ -17171,6 +17222,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    LastParsedHeight(variables?: LastParsedHeightQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LastParsedHeightQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<LastParsedHeightQuery>(LastParsedHeightDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'LastParsedHeight', 'query');
+    },
     MarketplaceCollection(variables?: MarketplaceCollectionQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceCollectionQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceCollectionQuery>(MarketplaceCollectionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceCollection', 'query');
     },
@@ -17180,8 +17234,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     MarketplaceNftPriceSumByDenomId(variables?: MarketplaceNftPriceSumByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPriceSumByDenomIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumByDenomIdQuery>(MarketplaceNftPriceSumByDenomIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPriceSumByDenomId', 'query');
     },
+    MarketplaceNftPriceSumTotal(variables?: MarketplaceNftPriceSumTotalQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPriceSumTotalQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumTotalQuery>(MarketplaceNftPriceSumTotalDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPriceSumTotal', 'query');
+    },
     MarketplaceNftTradeHistory(variables: MarketplaceNftTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryQuery>(MarketplaceNftTradeHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistory', 'query');
+    },
+    MarketplaceNftPlatformTradeHistory(variables?: MarketplaceNftPlatformTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPlatformTradeHistoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPlatformTradeHistoryQuery>(MarketplaceNftPlatformTradeHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPlatformTradeHistory', 'query');
     },
     MarketplaceNftsByDenomId(variables?: MarketplaceNftsByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftsByDenomIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByDenomIdQuery>(MarketplaceNftsByDenomIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftsByDenomId', 'query');
