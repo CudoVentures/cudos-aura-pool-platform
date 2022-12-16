@@ -9,7 +9,7 @@ import Actions, { ActionsLayout } from '../../../../core/presentation/components
 import Button from '../../../../core/presentation/components/Button';
 import Svg from '../../../../core/presentation/components/Svg';
 
-import SvgGridNoContent from '../../../../public/assets/vectors/grid-no-content.svg';
+import SvgGridNoContent from '../../../../public/assets/vectors/no-data-small.svg';
 import AddIcon from '@mui/icons-material/Add';
 
 import '../styles/no-collection-view.css';
@@ -29,16 +29,16 @@ function NoCollectionView({ accountSessionStore }: Props) {
     return (
         <div className={'NoCollectionView FlexColumn'}>
             <Svg svg={SvgGridNoContent} />
-            <div className={'H3 Bold'}>No collections in here</div>
+            <div className={'H3 Bold'}>No Collections Yet</div>
             { accountSessionStore.isAdmin() === true && (
                 <>
-                    <div className={'B1'}>Looks like you haven’t created collections yet.</div>
-                    <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} >
+                    <div className={'B1 ColorNautral060'}>Looks like you still don’t have collections</div>
+                    {/* <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} >
                         <Button onClick={onClickCreateCollection}>
                             <Svg svg={AddIcon} />
                             Create First Collection
                         </Button>
-                    </Actions>
+                    </Actions> */}
                 </>
             ) }
         </div>

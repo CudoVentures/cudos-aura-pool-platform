@@ -26,6 +26,7 @@ export default class CreditMiningFarmPageStore {
 
     gridViewState: GridViewState;
     queuedCollectionsTableState: TableState
+    approvedCollectionsTableState: TableState
     collectionFilterModel: CollectionFilterModel;
 
     inited: boolean;
@@ -33,6 +34,7 @@ export default class CreditMiningFarmPageStore {
     miningFarmDetailsEntity: MiningFarmDetailsEntity;
     collectionEntities: CollectionEntity[];
     queuedCollectionEntities: CollectionEntity[];
+    approvedCollectionEntities: CollectionEntity[];
     collectionDetailsMap: Map<string, CollectionDetailsEntity>;
 
     constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, nftRepo: NftRepo, accountSessionStore: AccountSessionStore, alertStore: AlertStore, walletStore: WalletStore) {
@@ -43,8 +45,9 @@ export default class CreditMiningFarmPageStore {
         this.alertStore = alertStore;
         this.walletStore = walletStore;
 
-        this.gridViewState = new GridViewState(this.fetchCollections, 3, 4, 6);
+        this.gridViewState = new GridViewState(this.fetchAnyCollections, 3, 4, 6);
         this.queuedCollectionsTableState = new TableState(S.NOT_EXISTS, [], this.fetchQueuedCollections, 5);
+        this.approvedCollectionsTableState = new TableState(S.NOT_EXISTS, [], this.fetchApprovedCollections, 5);
         this.collectionFilterModel = new CollectionFilterModel();
         this.collectionFilterModel.markAnyCollectins();
 
@@ -53,6 +56,7 @@ export default class CreditMiningFarmPageStore {
         this.miningFarmDetailsEntity = null;
         this.collectionEntities = null;
         this.queuedCollectionEntities = null;
+        this.approvedCollectionEntities = null;
         this.collectionDetailsMap = new Map<string, CollectionDetailsEntity>();
 
         makeAutoObservable(this);
@@ -73,7 +77,8 @@ export default class CreditMiningFarmPageStore {
         if (this.miningFarmEntity !== null) {
             this.collectionFilterModel.farmId = this.miningFarmEntity.id;
             await this.fetchMiningFarmDetails();
-            await this.fetchCollections();
+            await this.fetchApprovedCollections();
+            await this.fetchAnyCollections();
             await this.fetchQueuedCollections();
         }
         this.inited = true;
@@ -88,7 +93,7 @@ export default class CreditMiningFarmPageStore {
     }
 
     fetchQueuedCollections = async () => {
-        if (!this.accountSessionStore.isSuperAdmin()) {
+        if (this.accountSessionStore.isSuperAdmin() === false) {
             this.queuedCollectionEntities = [];
             return;
         }
@@ -98,6 +103,7 @@ export default class CreditMiningFarmPageStore {
         collectionFilterModel.from = this.queuedCollectionsTableState.tableFilterState.from;
         collectionFilterModel.count = this.queuedCollectionsTableState.tableFilterState.itemsPerPage;
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilterModel);
+        await this.fetchCollectionDetails(collectionEntities);
 
         runInAction(() => {
             this.queuedCollectionEntities = collectionEntities;
@@ -105,44 +111,67 @@ export default class CreditMiningFarmPageStore {
         });
     }
 
-    fetchCollections = async () => {
+    fetchApprovedCollections = async () => {
+        if (this.accountSessionStore.isSuperAdmin() === false) {
+            this.approvedCollectionEntities = [];
+            return;
+        }
+
+        const collectionFilterModel = new CollectionFilterModel();
+        collectionFilterModel.status = [CollectionStatus.APPROVED];
+        collectionFilterModel.from = this.approvedCollectionsTableState.tableFilterState.from;
+        collectionFilterModel.count = this.approvedCollectionsTableState.tableFilterState.itemsPerPage;
+        const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilterModel);
+        await this.fetchCollectionDetails(collectionEntities);
+
+        runInAction(() => {
+            this.approvedCollectionEntities = collectionEntities;
+            this.approvedCollectionsTableState.tableFilterState.total = total;
+        });
+    }
+
+    fetchAnyCollections = async () => {
+        if (this.accountSessionStore.isSuperAdmin() === true) {
+            this.collectionEntities = [];
+            return;
+        }
+
         this.gridViewState.setIsLoading(true);
 
-        this.collectionFilterModel.status = [CollectionStatus.APPROVED];
         this.collectionFilterModel.from = this.gridViewState.getFrom();
         this.collectionFilterModel.count = this.gridViewState.getItemsPerPage();
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(this.collectionFilterModel);
+        await this.fetchCollectionDetails(collectionEntities);
 
         runInAction(() => {
             this.collectionEntities = collectionEntities;
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
         });
-
     }
 
-    async fetchCollectionDetails() {
-        const activeCollectionIds = this.collectionEntities.map((entity) => entity.id);
-        const queuedCollectionIds = this.collectionEntities.map((entity) => entity.id);
-        const allIds = activeCollectionIds.concat(queuedCollectionIds);
-        const collectionDetails = await this.collectionRepo.fetchCollectionsDetailsByIds(allIds);
+    private async fetchCollectionDetails(collectionEntities: CollectionEntity[]) {
+        const collectionIds = collectionEntities.map((entity) => entity.id);
+        const collectionDetails = await this.collectionRepo.fetchCollectionsDetailsByIds(collectionIds);
+        const collectionDetailsMap = this.collectionDetailsMap;
+        this.collectionDetailsMap = null;
 
         collectionDetails.forEach((collectionDetailsEntity) => {
-            this.collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
+            collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
+        });
+
+        runInAction(() => {
+            this.collectionDetailsMap = collectionDetailsMap;
         })
     }
 
     getFloorPrice(collectionId: string): string {
-        const collectionDetails = this.collectionDetailsMap.get(collectionId);
-        if (!collectionDetails) {
-            return '';
-        }
-        return collectionDetails.formatFloorPriceInCudos();
+        return this.collectionDetailsMap.get(collectionId)?.formatFloorPriceInCudos() ?? '';
     }
 
     onChangeSearchWord = (searchString: string) => {
         this.collectionFilterModel.searchString = searchString;
-        this.fetchCollections();
+        this.fetchAnyCollections();
     }
 
     async onClickApproveCollection(collectionEntity: CollectionEntity) {
@@ -154,7 +183,8 @@ export default class CreditMiningFarmPageStore {
         try {
             collectionEntity.markApproved();
             await this.collectionRepo.approveCollection(collectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
-            await this.fetchCollections();
+            await this.fetchQueuedCollections();
+            await this.fetchApprovedCollections();
         } catch (e) {
             this.alertStore.show(e.message);
         }
@@ -163,14 +193,11 @@ export default class CreditMiningFarmPageStore {
     async onClickRejectCollection(collectionEntity: CollectionEntity) {
         try {
             const collectionClone = collectionEntity.clone();
-
             collectionClone.markRejected();
-            const nftFilter = new NftFilterEntity();
-            nftFilter.collectionIds = [collectionClone.id];
 
-            const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
-            await this.collectionRepo.creditCollection(collectionClone, nftEntities);
+            await this.collectionRepo.editCollection(collectionClone);
             await this.fetchQueuedCollections();
+            await this.fetchApprovedCollections();
         } catch (e) {
             console.log(e);
         }

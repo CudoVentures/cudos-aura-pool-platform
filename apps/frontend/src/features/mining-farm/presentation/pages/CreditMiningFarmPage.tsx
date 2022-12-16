@@ -21,7 +21,7 @@ import PageAdminHeader from '../../../header/presentation/components/PageAdminHe
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button, { ButtonColor, ButtonPadding, ButtonRadius, ButtonType } from '../../../../core/presentation/components/Button';
+import Button, { ButtonColor, ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
 import GridView from '../../../../core/presentation/components/GridView';
 import CollectionPreview from '../../../collection/presentation/components/CollectionPreview';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
@@ -34,14 +34,14 @@ import NoCollectionView from '../../../collection/presentation/components/NoColl
 import StyledContainer from '../../../../core/presentation/components/StyledContainer';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import { ALIGN_CENTER, ALIGN_LEFT, ALIGN_RIGHT } from '../../../../core/presentation/components/TableDesktop';
+import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
+import MiningFarmStatusBadge from '../components/MiningFarmStatusBadge';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
-import SvgMiningFarmStatusReview from '../../../../public/assets/vectors/mining-farm-status-review.svg';
-import SvgMiningFarmStatusApproved from '../../../../public/assets/vectors/mining-farm-status-approved.svg';
 import '../styles/page-credit-mining-farm.css';
 
 type Props = {
@@ -58,9 +58,9 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
 
     const miningFarmEntity = creditMiningFarmPageStore.miningFarmEntity;
     const miningFarmDetailsEntity = creditMiningFarmPageStore.miningFarmDetailsEntity;
-    const activeCollectionEntities = creditMiningFarmPageStore.collectionEntities;
-    const collectionFilterModel = creditMiningFarmPageStore.collectionFilterModel;
     const queuedCollectionEntities = creditMiningFarmPageStore.queuedCollectionEntities;
+    const approvedCollectionEntities = creditMiningFarmPageStore.approvedCollectionEntities;
+    const collectionFilterModel = creditMiningFarmPageStore.collectionFilterModel;
 
     useEffect(() => {
         appStore.useLoading(async () => {
@@ -98,63 +98,138 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     }
 
     function onClickQueuedCollectionRow(index) {
-        console.log(index)
+        navigate(`${AppRoutes.CREDIT_COLLECTION}/${queuedCollectionEntities[index].id}`);
     }
 
     function onClickActiveCollectionRow(index) {
-        console.log(index)
+        navigate(`${AppRoutes.CREDIT_COLLECTION}/${approvedCollectionEntities[index].id}`);
     }
 
     function renderQueuedCollectionsRows() {
-        const rows = [];
-
-        queuedCollectionEntities.forEach((collectionEntity: CollectionEntity) => {
-            rows.push(
-                createTableRow([
-                    createTableCell((
-                        <div className = { 'FlexRow Bold' } >
-                            <div className = { 'QueuedCollectionImg ImgCoverNode' } style = { ProjectUtils.makeBgImgStyle(collectionEntity.coverImgUrl) } />
-                            { collectionEntity.name }
-                        </div>
-                    )),
-                    createTableCellString(creditMiningFarmPageStore.getFloorPrice(collectionEntity.id)),
-                    createTableCell((
-                        <Actions height = { ActionsHeight.HEIGHT_32 }>
-                            <Button color = { ButtonColor.SCHEME_GREEN } type = { ButtonType.TEXT_INLINE } onClick = { () => creditMiningFarmPageStore.onClickApproveCollection(collectionEntity) }>
-                                <Svg svg = { CheckCircleOutlineIcon } />
+        return queuedCollectionEntities.map((collectionEntity: CollectionEntity) => {
+            return createTableRow([
+                createTableCell((
+                    <div className = { 'FlexRow Bold' } >
+                        <div className = { 'QueuedCollectionImg ImgCoverNode' } style = { ProjectUtils.makeBgImgStyle(collectionEntity.coverImgUrl) } />
+                        { collectionEntity.name }
+                    </div>
+                )),
+                createTableCellString(creditMiningFarmPageStore.getFloorPrice(collectionEntity.id)),
+                createTableCell((
+                    <Actions height = { ActionsHeight.HEIGHT_32 }>
+                        <Button color = { ButtonColor.SCHEME_GREEN } type = { ButtonType.TEXT_INLINE } onClick = { () => creditMiningFarmPageStore.onClickApproveCollection(collectionEntity) }>
+                            <Svg svg = { CheckCircleOutlineIcon } />
                             Approve
-                            </Button>
-                            <Button color = { ButtonColor.SCHEME_RED } type = { ButtonType.TEXT_INLINE } onClick = { () => creditMiningFarmPageStore.onClickRejectCollection(collectionEntity) }>
-                                <Svg svg = { HighlightOffIcon } />
+                        </Button>
+                        <Button color = { ButtonColor.SCHEME_RED } type = { ButtonType.TEXT_INLINE } onClick = { () => creditMiningFarmPageStore.onClickRejectCollection(collectionEntity) }>
+                            <Svg svg = { HighlightOffIcon } />
                             Reject
-                            </Button>
-                        </Actions>
-                    )),
-                ]),
-            )
+                        </Button>
+                    </Actions>
+                )),
+            ]);
         });
-
-        return rows;
     }
 
     function renderActiveCollectionsRows() {
-        const rows = [];
+        return approvedCollectionEntities.map((collectionEntity: CollectionEntity) => {
+            return createTableRow([
+                createTableCell((
+                    <div className = { 'FlexRow Bold' } >
+                        <div className = { 'QueuedCollectionImg ImgCoverNode' } style = { ProjectUtils.makeBgImgStyle(collectionEntity.coverImgUrl) } />
+                        { collectionEntity.name }
+                    </div>
+                )),
+                createTableCellString(creditMiningFarmPageStore.getFloorPrice(collectionEntity.id)),
+            ])
+        });
+    }
 
-        activeCollectionEntities.forEach((collectionEntity: CollectionEntity) => {
-            rows.push(
-                createTableRow([
-                    createTableCell((
-                        <div className = { 'FlexRow Bold' } >
-                            <div className = { 'QueuedCollectionImg ImgCoverNode' } style = { ProjectUtils.makeBgImgStyle(collectionEntity.coverImgUrl) } />
-                            { collectionEntity.name }
-                        </div>
-                    )),
-                    createTableCellString(creditMiningFarmPageStore.getFloorPrice(collectionEntity.id)),
-                ]),
-            )
-        })
+    function renderDefaultCollectionsView() {
+        if (accountSessionStore.isSuperAdmin() === true) {
+            return null;
+        }
 
-        return rows;
+        const collectionEntities = creditMiningFarmPageStore.collectionEntities;
+        return (
+            <DataGridLayout
+                className = { ' CollectionsCnt' }
+                headerLeft = { (
+                    <>
+                        <Input
+                            className={'SearchBar'}
+                            value = {collectionFilterModel.searchString}
+                            onChange = { creditMiningFarmPageStore.onChangeSearchWord }
+                            placeholder = {'Search Collections name'}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start" >
+                                    <Svg svg={SearchIcon} />
+                                </InputAdornment>,
+                            }} />
+                    </>
+                ) } >
+
+                { collectionEntities === null ? (
+                    <LoadingIndicator />
+                ) : (
+                    <GridView
+                        gridViewState={creditMiningFarmPageStore.gridViewState}
+                        defaultContent={collectionEntities.length === 0 ? <NoCollectionView /> : null} >
+                        { collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
+                            return (
+                                <CollectionPreview
+                                    key={index}
+                                    collectionEntity={collectionEntity}
+                                    miningFarmName={miningFarmEntity.name}
+                                    displayStatus = { true } />
+                            )
+                        }) }
+                    </GridView>
+                ) }
+
+            </DataGridLayout>
+        )
+    }
+
+    function renderSuperAdminCollectionsView() {
+        if (accountSessionStore.isSuperAdmin() === false) {
+            return null;
+        }
+
+        return (
+            <ColumnLayout>
+                <StyledContainer>
+                    <div className={'B1 Bold'}>Collections Pending Approval</div>
+                    { queuedCollectionEntities === null ? (
+                        <LoadingIndicator />
+                    ) : (
+                        <Table
+                            legend={['Collection', 'Floor Price', 'Action']}
+                            widths={['34%', '33%', '33%']}
+                            aligns={[ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT]}
+                            tableState={creditMiningFarmPageStore.queuedCollectionsTableState}
+                            onClickRow = { onClickQueuedCollectionRow }
+                            showPaging = { true }
+                            rows={renderQueuedCollectionsRows()} />
+                    ) }
+                </StyledContainer>
+                <StyledContainer>
+                    <div className={'B1 Bold'}>Active Collections</div>
+                    { approvedCollectionEntities === null ? (
+                        <LoadingIndicator />
+                    ) : (
+                        <Table
+                            legend={['Collection', 'Floor Price']}
+                            widths={['34%', '66%']}
+                            aligns={[ALIGN_LEFT, ALIGN_LEFT]}
+                            tableState={creditMiningFarmPageStore.approvedCollectionsTableState}
+                            onClickRow = { onClickActiveCollectionRow }
+                            showPaging = { true }
+                            rows={renderActiveCollectionsRows()} />
+                    ) }
+                </StyledContainer>
+            </ColumnLayout>
+        )
     }
 
     return (
@@ -224,24 +299,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                             ) }
                             <div className={'MiningFarmNameCnt FlexRow'}>
                                 <span className = { 'H2 Bold' }>{miningFarmEntity.name}</span>
-                                { miningFarmEntity.isQueued() === true && (
-                                    <div className = { 'StatusBadge FlexRow Bold ReviewBadge' } >
-                                        <Svg svg = { SvgMiningFarmStatusReview } />
-                                        Under review
-                                    </div>
-                                ) }
-                                { miningFarmEntity.isRejected() === true && (
-                                    <div className = { 'StatusBadge FlexRow Bold RejectedBadge' } >
-                                        <Svg svg = { HighlightOffIcon } />
-                                        Rejected
-                                    </div>
-                                ) }
-                                { miningFarmEntity.isApproved() === true && (
-                                    <div className = { 'StatusBadge FlexRow Bold ApprovedBadge' } >
-                                        <Svg svg = { SvgMiningFarmStatusApproved } />
-                                        Verified
-                                    </div>
-                                ) }
+                                <MiningFarmStatusBadge className = { 'MiningFarmStatusBadge' } miningFarmEntity = { miningFarmEntity } />
                             </div>
                             <div className={'MiningFarmDataCnt Grid GridColumns2'}>
                                 <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
@@ -255,121 +313,42 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                                             createDataPreview('NFTs Owned', miningFarmDetailsEntity.nftsOwned),
                                             createDataPreview('Total NFTs Sold', miningFarmDetailsEntity.totalNftsSold),
                                         ] } >
-                                        {miningFarmEntity?.isQueued() && accountSessionStore.isSuperAdmin()
-                                        && (<Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} >
-                                            <Button
-                                                radius={ButtonRadius.RADIUS_16}
-                                                padding={ButtonPadding.PADDING_48}
-                                                color={ButtonColor.SCHEME_2}
-                                                onClick={creditMiningFarmPageStore.rejectMiningFarm}
-                                            >
-                                                <Svg svg={HighlightOffIcon}/>
-                                                Reject Farm
-                                            </Button>
-                                            <Button
-                                                radius={ButtonRadius.RADIUS_16}
-                                                padding={ButtonPadding.PADDING_48}
-                                                onClick={creditMiningFarmPageStore.approveMiningFarm}
-                                            >
-                                                <Svg svg={CheckCircleOutlineIcon}/>
-                                                Approve Farm
-                                            </Button>
-                                        </Actions>)
-                                        }
+                                        { miningFarmEntity.isQueued() === true && accountSessionStore.isSuperAdmin() === true && (
+                                            <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} >
+                                                <Button
+                                                    padding={ButtonPadding.PADDING_48}
+                                                    color={ButtonColor.SCHEME_4}
+                                                    onClick={creditMiningFarmPageStore.rejectMiningFarm} >
+                                                    <Svg svg={HighlightOffIcon}/>
+                                                    Reject Farm
+                                                </Button>
+                                                <Button
+                                                    padding={ButtonPadding.PADDING_48}
+                                                    onClick={creditMiningFarmPageStore.approveMiningFarm} >
+                                                    <Svg svg={CheckCircleOutlineIcon}/>
+                                                    Approve Farm
+                                                </Button>
+                                            </Actions>
+                                        ) }
                                     </DataPreviewLayout>
                                 ) }
                             </div>
                             { miningFarmEntity.isApproved() === true && (
                                 <>
-                                    {accountSessionStore.isSuperAdmin() === true && (
-                                        <>
-                                            <div className = { 'SectionDivider' } />
-                                            <div className={'CollectionsOwnedHeader FlexRow'}>
-                                                <div className={'H2 Bold'}>Collections Owned</div>
-                                                { accountSessionStore.isAdmin() === true && (
-                                                    <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_CENTER}>
-                                                        <Button onClick={onClickCreateCollection} >
-                                                            <Svg svg={AddIcon}/>
-                                            Create Collection
-                                                        </Button>
-                                                    </Actions>
-                                                ) }
-                                            </div>
-                                            <DataGridLayout
-                                                className = { 'CollectionsCnt' }
-                                                headerLeft = { (
-                                                    <>
-                                                        <Input
-                                                            className={'SearchBar'}
-                                                            value = {collectionFilterModel.searchString}
-                                                            onChange = { creditMiningFarmPageStore.onChangeSearchWord }
-                                                            placeholder = {'Search Collections name'}
-                                                            InputProps={{
-                                                                startAdornment: <InputAdornment position="start" >
-                                                                    <Svg svg={SearchIcon} />
-                                                                </InputAdornment>,
-                                                            }} />
-                                                    </>
-                                                ) } >
-
-                                                { activeCollectionEntities === null && (
-                                                    <LoadingIndicator />
-                                                ) }
-
-                                                { activeCollectionEntities !== null && (
-                                                    <GridView
-                                                        gridViewState={creditMiningFarmPageStore.gridViewState}
-                                                        defaultContent={activeCollectionEntities.length === 0 ? <NoCollectionView /> : null} >
-                                                        { activeCollectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
-                                                            return (
-                                                                <CollectionPreview
-                                                                    key={index}
-                                                                    collectionEntity={collectionEntity}
-                                                                    miningFarmName={miningFarmEntity.name}
-                                                                    displayStatus = { true } />
-                                                            )
-                                                        }) }
-                                                    </GridView>
-                                                ) }
-
-                                            </DataGridLayout>
-                                        </>
-                                    )}
-                                    {accountSessionStore.isSuperAdmin() === true && (
-                                        <div className={'FlexColumn AdminTablesHolder'}>
-                                            <div className={'H2 Bold'}>Collection Items</div>
-                                            <StyledContainer>
-                                                <div className={'B1 Bold'}>Collections Pending Approval</div>
-                                                { queuedCollectionEntities === null ? (
-                                                    <LoadingIndicator />
-                                                ) : (
-                                                    <Table
-                                                        legend={['Collection', 'Floor Price', 'Action']}
-                                                        widths={['34%', '33%', '33%']}
-                                                        aligns={[ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT]}
-                                                        tableState={creditMiningFarmPageStore.queuedCollectionsTableState}
-                                                        onClickRow = { onClickQueuedCollectionRow }
-                                                        showPaging = { true }
-                                                        rows={renderQueuedCollectionsRows()} />
-                                                ) }
-                                            </StyledContainer>
-                                            <StyledContainer>
-                                                <div className={'B1 Bold'}>Active Collections ({creditMiningFarmPageStore.gridViewState.getItemCount()})</div>
-                                                { activeCollectionEntities === null ? (
-                                                    <LoadingIndicator />
-                                                ) : (
-                                                    <Table
-                                                        legend={['Collection', 'Floor Price']}
-                                                        widths={['34%', '66%']}
-                                                        aligns={[ALIGN_LEFT, ALIGN_LEFT]}
-                                                        tableState={creditMiningFarmPageStore.gridViewState.tableState}
-                                                        onClickRow = { onClickActiveCollectionRow }
-                                                        showPaging = { true }
-                                                        rows={renderActiveCollectionsRows()} />
-                                                ) }
-                                            </StyledContainer>
-                                        </div>
-                                    )}
+                                    <div className = { 'SectionDivider' } />
+                                    <div className={'CollectionsHeader FlexRow'}>
+                                        <div className={'H2 Bold'}>Collections Items</div>
+                                        { accountSessionStore.isAdmin() === true && (
+                                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_CENTER}>
+                                                <Button onClick={onClickCreateCollection} >
+                                                    <Svg svg={AddIcon}/>
+                                                    Create Collection
+                                                </Button>
+                                            </Actions>
+                                        ) }
+                                    </div>
+                                    { renderDefaultCollectionsView() }
+                                    { renderSuperAdminCollectionsView() }
                                 </>
                             ) }
                         </>

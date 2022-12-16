@@ -4,6 +4,7 @@ import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import CollectionEntity from '../../entities/CollectionEntity';
+import CollectionStatusBadge from './CollectionStatusBadge';
 
 import '../styles/collection-preview.css';
 
@@ -25,7 +26,7 @@ export default function CollectionPreview({ collectionEntity, miningFarmName, di
         <div className="CollectionPreview FlexColumn" onClick={onClickNft}>
             <div className="CollectionPreviewImage ImgCoverNode" style = { ProjectUtils.makeBgImgStyle(collectionEntity.profileImgUrl) } >
                 { displayStatus === true && (
-                    <div className = { 'CollectionStatusLabel'} >{ collectionEntity.formatStatusName() }</div>
+                    <CollectionStatusBadge className = { 'CollectionStatusLabel' } collectionEntity = { collectionEntity } />
                 ) }
             </div>
             <div className={'MiningFarmName'}>{miningFarmName}</div>
