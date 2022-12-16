@@ -1,3 +1,7 @@
 .PageSuperAdminCollections .PageContent {
     padding: 36px var(--page-spacing-h);
 }
+
+.PageSuperAdminCollections .PageContent .TableHeaderRow .SearchInput{
+    width: 20%;
+}

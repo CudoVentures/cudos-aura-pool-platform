@@ -2,18 +2,16 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import CollectionEntity from '../../entities/CollectionEntity';
-import CollectionFilterModel, { CollectionHashPowerFilter } from '../../utilities/CollectionFilterModel';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import ExploreCollectionsPageStore from '../stores/ExploreCollectionsPageStore';
 
-import { InputAdornment, MenuItem } from '@mui/material';
+import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import Svg from '../../../../core/presentation/components/Svg';
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
-import Select from '../../../../core/presentation/components/Select';
 import GridView from '../../../../core/presentation/components/GridView';
 import CollectionPreview from '../components/CollectionPreview';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
