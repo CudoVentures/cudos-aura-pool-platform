@@ -16,11 +16,13 @@ import { MiningFarmRepo } from './repos/mining-farm.repo';
 import { EnergySourceRepo } from './repos/energy-source.repo';
 import { ManufacturerRepo } from './repos/manufacturer.repo';
 import { MinerRepo } from './repos/miner.repo';
+import AccountService from '../account/account.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
     imports: [SequelizeModule.forFeature([MiningFarmRepo, EnergySourceRepo, MinerRepo, ManufacturerRepo, VisitorRepo]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
     controllers: [FarmController],
-    providers: [FarmService, CollectionService, NFTService, VisitorService, GraphqlService, DataService],
+    providers: [FarmService, CollectionService, NFTService, VisitorService, GraphqlService, DataService, AccountService, JwtService],
     exports: [VisitorService],
 })
 export class FarmModule {}

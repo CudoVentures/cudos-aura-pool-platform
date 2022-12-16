@@ -22,20 +22,21 @@ export enum ContainerPadding {
 
 export type Props = {
     className?: string;
+    onClick?: () => void;
     containerWidth?: ContainerWidth,
     containerBackground?: ContainerBackground,
     containerPadding?: ContainerPadding,
     containerShadow?: boolean,
 }
 
-export default function StyledContainer({ className, containerWidth, containerBackground, containerPadding, containerShadow, children }: React.PropsWithChildren < Props >) {
+export default function StyledContainer({ className, onClick, containerWidth, containerBackground, containerPadding, containerShadow, children }: React.PropsWithChildren < Props >) {
 
     function cssContainerShadow() {
         return containerShadow === true ? 'Shadow' : '';
     }
 
     return (
-        <div className={`StyledContainer ${containerWidth} ${containerBackground} ${containerPadding} ${cssContainerShadow()} ${className}`}>
+        <div className={`StyledContainer ${containerWidth} ${containerBackground} ${containerPadding} ${cssContainerShadow()} ${className}`} onClick = { onClick }>
             {children}
         </div>
     )
@@ -43,6 +44,7 @@ export default function StyledContainer({ className, containerWidth, containerBa
 
 StyledContainer.defaultProps = {
     className: '',
+    onClick: undefined,
     containerWidth: ContainerWidth.LARGE,
     containerBackground: ContainerBackground.WHITE,
     containerPadding: ContainerPadding.PADDING_40,

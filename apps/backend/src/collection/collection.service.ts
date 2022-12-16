@@ -14,6 +14,7 @@ import { CollectionDenomExistsError, CollectionWrongDenomError } from '../common
 import { CollectionEntity } from './entities/collection.entity';
 import { CollectionDetailsEntity } from './entities/collection-details.entity';
 import { CollectionOrderBy } from './collection.types';
+import AccountService from '../account/account.service';
 
 @Injectable()
 export class CollectionService {
@@ -23,6 +24,7 @@ export class CollectionService {
     @InjectModel(NftRepo)
     private nftRepo: typeof NftRepo,
     private graphqlService: GraphqlService,
+    private accountService: AccountService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -149,7 +151,7 @@ export class CollectionService {
         tx: Transaction = undefined,
     ): Promise<CollectionEntity> {
 
-        collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(' ', '');
+        collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(/ /g, '');
         try {
             checkValidNftDenomId(collectionEntity.denomId);
         } catch (e) {
@@ -242,10 +244,13 @@ export class CollectionService {
 
         const collectionDetailsEntity = new CollectionDetailsEntity();
 
+        const { adminEntity } = await this.accountService.findAccounts(collection.creatorId);
+
         collectionDetailsEntity.id = collectionId;
         collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos;
         collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString() || '0';
         collectionDetailsEntity.owners = uniqueOwnersArray.length;
+        collectionDetailsEntity.cudosAddress = adminEntity?.cudosWalletAddress ?? '';
         collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
 
         return collectionDetailsEntity;

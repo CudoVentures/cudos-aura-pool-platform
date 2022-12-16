@@ -5,6 +5,7 @@ export class CollectionDetailsEntity {
     floorPriceInAcudos: string;
     volumeInAcudos: string;
     owners: number;
+    cudosAddress: string;
     remainingHashPowerInTH: number;
 
     constructor() {
@@ -12,6 +13,7 @@ export class CollectionDetailsEntity {
         this.floorPriceInAcudos = NOT_EXISTS_STRING;
         this.volumeInAcudos = NOT_EXISTS_STRING;
         this.owners = NOT_EXISTS_INT;
+        this.cudosAddress = '';
         this.remainingHashPowerInTH = NOT_EXISTS_INT;
     }
 
@@ -21,6 +23,7 @@ export class CollectionDetailsEntity {
             'floorPriceInAcudos': entity.floorPriceInAcudos,
             'volumeInAcudos': entity.volumeInAcudos,
             'owners': entity.owners,
+            'cudosAddress': entity.cudosAddress,
             'remainingHashPowerInTH': entity.remainingHashPowerInTH,
         }
     }

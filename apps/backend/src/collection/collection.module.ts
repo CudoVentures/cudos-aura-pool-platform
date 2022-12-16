@@ -16,6 +16,8 @@ import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
 import { EnergySourceRepo } from '../farm/repos/energy-source.repo';
 import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
 import { MinerRepo } from '../farm/repos/miner.repo';
+import AccountService from '../account/account.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -25,7 +27,7 @@ import { MinerRepo } from '../farm/repos/miner.repo';
         HttpModule,
         VisitorModule,
     ],
-    providers: [CollectionService, NFTService, FarmService, GraphqlService, DataService],
+    providers: [CollectionService, NFTService, FarmService, GraphqlService, DataService, AccountService, JwtService],
     controllers: [CollectionController],
     exports: [SequelizeModule, CollectionService, DataService],
 })

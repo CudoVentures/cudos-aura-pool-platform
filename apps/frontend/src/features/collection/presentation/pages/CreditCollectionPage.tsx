@@ -79,6 +79,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         navigate(`${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/${collectionEntity.id}`);
     }
 
+    console.log(collectionDetailsEntity);
     return (
         <PageLayoutComponent className = { 'PageCreditCollection' }>
             <PageHeader />

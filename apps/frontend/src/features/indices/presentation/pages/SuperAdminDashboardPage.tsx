@@ -87,7 +87,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore }: Props) {
                 </>
             ) }>
 
-            <PageSuperAdminHeader />Days
+            <PageSuperAdminHeader />
             <ColumnLayout className = { 'PageContent AppContent' } >
                 <div className={'H1 ExtraBold'}>Dashboard</div>
                 <div className={'Grid GridColumns2'}>

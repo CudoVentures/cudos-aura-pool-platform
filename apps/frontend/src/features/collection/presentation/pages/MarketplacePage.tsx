@@ -77,21 +77,6 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                 </div>
 
                 <div className = { 'SectionWrapper' } >
-                    <div className={'H2 Bold SectionHeadingCnt'}>New Hash Rate NFT Drops</div>
-                    <Slider>
-                        {marketplaceStore.newNftDropsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>)}
-                        {marketplaceStore.newNftDropsEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => {
-                            return (
-                                <NftPreviewInPicture
-                                    key={index}
-                                    nftEntity={nftEntity}
-                                    collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)} />
-                            )
-                        })}
-                    </Slider>
-                </div>
-
-                <div className = { 'SectionWrapper' } >
                     <div className={'H2 Bold SectionHeadingCnt'}>Trending NFTs</div>
                     <Slider>
                         {marketplaceStore.trendingNftEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>)}
@@ -115,6 +100,21 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                             See All NFTs
                         </Button>
                     </Actions>
+                </div>
+
+                <div className = { 'SectionWrapper' } >
+                    <div className={'H2 Bold SectionHeadingCnt'}>New Hash Rate NFT Drops</div>
+                    <Slider>
+                        {marketplaceStore.newNftDropsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>)}
+                        {marketplaceStore.newNftDropsEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => {
+                            return (
+                                <NftPreviewInPicture
+                                    key={index}
+                                    nftEntity={nftEntity}
+                                    collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)} />
+                            )
+                        })}
+                    </Slider>
                 </div>
 
                 <div className = { 'SectionWrapper' } >

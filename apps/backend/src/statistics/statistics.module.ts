@@ -19,6 +19,8 @@ import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
 import { EnergySourceRepo } from '../farm/repos/energy-source.repo';
 import { MinerRepo } from '../farm/repos/miner.repo';
 import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
+import AccountService from '../account/account.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -37,7 +39,7 @@ import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
         HttpModule,
     ],
     controllers: [StatisticsController],
-    providers: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService, FarmService],
+    providers: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService, FarmService, AccountService, JwtService],
     exports: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService],
 })
 export class StatisticsModule {}

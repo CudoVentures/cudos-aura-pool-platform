@@ -1,6 +1,7 @@
 .MiningFarmPreview {
     width: 100%;
     flex-grow: 1;
+    margin: 0;
 }
 
 .MiningFarmPreview .MiningFarmPreviewCoverImage {
@@ -21,9 +22,23 @@
 }
 
 .MiningFarmPreview .MiningFarmName {
+    color: var(--color-neutral-100);
     margin-bottom: 8px;
 }
 
 .MiningFarmPreview .MiningFarmDesc {
+    color: var(--color-neutral-070);
     margin-bottom: 16px;
+}
+
+.MiningFarmPreview .HorizontalSeparator {
+    margin-bottom: 12px;
+}
+
+.MiningFarmPreview .MiningFarmProperty .MiningFarmPropertyName {
+    color: var(--color-neutral-070);
+}
+
+.MiningFarmPreview .MiningFarmProperty .MiningFarmPropertyValue {
+    color: var(--color-neutral-100);
 }
