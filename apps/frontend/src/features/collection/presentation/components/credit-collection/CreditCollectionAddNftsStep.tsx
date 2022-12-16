@@ -10,6 +10,9 @@ import NftPreview from '../../../../nft/presentation/components/NftPreview';
 import Actions, { ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button from '../../../../../core/presentation/components/Button';
 import CreditCollectionAddNftsTable from './CreditCollectionAddNftsTable';
+import StyledContainer, { ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
+import ColumnLayout from '../../../../../core/presentation/components/ColumnLayout';
+import InfoBlueBox from '../../../../../core/presentation/components/InfoBlueBox';
 
 import '../../styles/credit-collection-add-nfts-step.css';
 
@@ -38,22 +41,32 @@ function CreditCollectionAddNftsStep({ alertStore, creditCollectionStore }: Prop
                     <CreditCollectionNavRow className = { 'FormNav' } />
                     <CreditCollectionAddNftForm />
                 </div>
-                <div className={'PreviewAndFinishContainer FlexColumn'}>
-                    <div className={'PreviewContainer'}>
+                <ColumnLayout>
+                    <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
+                        <div className={'H3 Bold ColorNeutral100'}>NFT Preview</div>
+                        <div className={'H3 ColorNeutral060'}>This is how your NFT would look like in AuraPool’s Marketplace</div>
                         { selectedNftEntity !== null && (
-                            <NftPreview
-                                nftEntity={selectedNftEntity}
-                                collectionName={collectionEntity.name}
-                                disabled={true} />
+                            <StyledContainer
+                                className = { 'NftPreviewCnt' }
+                                containerPadding = { ContainerPadding.PADDING_24 } >
+                                <NftPreview
+                                    nftEntity={selectedNftEntity}
+                                    collectionName={collectionEntity.name}
+                                    disabled={true} />
+                            </StyledContainer>
                         ) }
-                    </div>
-                    <div className={'FinishContainer FlexColumn'}>
-                        <div className={'B1'}>If you’re done with adding NFTs to this collection preview the details and send for approval to the Super Admin. Once the collection is approved you’ll be notified on your email and it will be listed in the Marketplace.</div>
-                        <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                            <Button onClick={ onClickPreviewAndSend } >Preview & Send</Button>
-                        </Actions>
-                    </div>
-                </div>
+                    </StyledContainer>
+                    <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
+                        <ColumnLayout>
+                            <div className = { 'H3 Bold ColorNeutral100' }>Send for Approval</div>
+                            <InfoBlueBox
+                                text = { 'If you’re done with adding NFTs to this collection preview the details and send for approval to the Super Admin. Once the collection is approved you’ll be notified on your email and it will be listed in the Marketplace.' } />
+                            <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                <Button onClick={ onClickPreviewAndSend } >Preview & Send</Button>
+                            </Actions>
+                        </ColumnLayout>
+                    </StyledContainer>
+                </ColumnLayout>
             </div>
             <CreditCollectionAddNftsTable />
         </div>

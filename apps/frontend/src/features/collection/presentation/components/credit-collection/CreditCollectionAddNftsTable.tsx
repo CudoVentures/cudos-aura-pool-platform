@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../../core/presentation/components/TableDesktop';
+import { ALIGN_LEFT } from '../../../../../core/presentation/components/TableDesktop';
 import Table, { createTableCell, createTableRow } from '../../../../../core/presentation/components/Table';
 import Actions, { ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button, { ButtonColor, ButtonType } from '../../../../../core/presentation/components/Button';
@@ -11,7 +11,9 @@ import Svg from '../../../../../core/presentation/components/Svg';
 import TableState from '../../../../../core/presentation/stores/TableState';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
+import ColumnLayout from '../../../../../core/presentation/components/ColumnLayout';
 
+import SvgGridNoContent from '../../../../../public/assets/vectors/no-data-small.svg';
 import '../../styles/credit-collection-add-nfts-table.css';
 
 type Props = {
@@ -43,7 +45,7 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                             <Svg svg={BorderColorIcon} />
                             Edit
                         </Button>
-                        <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE} color={ButtonColor.SCHEME_3} className={ 'DeleteActionButton' }>
+                        <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE} color={ButtonColor.SCHEME_RED}>
                             <Svg svg={DeleteForeverIcon} />
                             Delete
                         </Button>
@@ -58,9 +60,8 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
 
     return (
         <div className = { 'CreditCollectionAddNftsTable' }>
-            <div className={'H2 Bold'}>Added NFTs ({nftEntities.length})</div>
+            <div className={'H3 ExtraBold'}>Added NFTs ({nftEntities.length})</div>
             <Table
-                className={''}
                 legend={TABLE_LEGEND}
                 widths={TABLE_WIDTHS}
                 aligns={TABLE_ALINGS}
@@ -73,10 +74,11 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
 
     function EmptyTableContent() {
         return (
-            <div className={'NoContentFound FlexColumn'}>
-                <div className={'H3 Bold'}>No Items Yet</div>
-                <div className={'B1'}>Looks like you haven’t added anything</div>
-            </div>
+            <ColumnLayout className = { 'NoContentFound' } gap = { 16 } >
+                <Svg svg = { SvgGridNoContent } />
+                <div className={'H3 Bold ColorNeutral100'}>No NFTs uploaded yet</div>
+                <div className={'B1 ColorNeutral060'}>Looks like you still don’t have NFTs uploaded</div>
+            </ColumnLayout>
         )
     }
 }

@@ -1,10 +1,9 @@
-.CreditCollectionSuccessModal {
-    gap: 40px;
-    justify-content: center;
+.CreditCollectionSuccessModal .CreditCollectionSuccessModalCnt {
+    gap: 24px;
     align-items: center;
 }
 
-.CreditCollectionSuccessModal  .SuccessSvg {
+.CreditCollectionSuccessModal .CreditCollectionSuccessModalCnt  .SuccessSvg {
     width: 70px; height: 70px;
     color: var(--color-success-060);
 }

@@ -94,7 +94,7 @@ export default class CreditCollectionPageStore {
         try {
             const collectionClone = this.collectionEntity.clone();
             collectionClone.markRejected();
-            await this.collectionRepo.creditCollection(collectionClone, this.nftEntities);
+            await this.collectionRepo.editCollection(collectionClone);
             this.collectionEntity.markRejected();
         } catch (e) {
             console.log(e);

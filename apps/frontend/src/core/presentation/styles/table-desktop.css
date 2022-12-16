@@ -10,7 +10,7 @@
 }
 
 .TableDesktop .Empty {
-    height: 128px;
+    min-height: 128px;
     /* background: var(--color-neutral-010); */
 }
 

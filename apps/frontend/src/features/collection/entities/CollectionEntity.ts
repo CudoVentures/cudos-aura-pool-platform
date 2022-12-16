@@ -177,7 +177,7 @@ export default class CollectionEntity {
         model.name = json.name ?? model.name;
         model.denomId = json.denomId ?? model.denomId;
         model.description = json.description ?? model.description;
-        model.hashPowerInTh = Number(json.hashing_power ?? model.hashPowerInTh);
+        model.hashPowerInTh = Number(json.hashingPower ?? model.hashPowerInTh);
         model.profileImgUrl = json.mainImage ?? model.profileImgUrl;
         model.coverImgUrl = json.bannerImage ?? model.coverImgUrl;
         model.status = json.status ?? model.status;

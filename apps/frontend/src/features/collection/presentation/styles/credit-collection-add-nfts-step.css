@@ -1,5 +1,5 @@
 .CreditCollectionAddNftsStep .FormAndPreviewContainer {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 2fr) minmax(0, 2fr);
     gap: 70px;
     margin-bottom: 100px;
 }
@@ -8,19 +8,7 @@
     margin-bottom: 50px;
 }
 
-.CreditCollectionAddNftsStep .FormAndPreviewContainer .PreviewAndFinishContainer {
-    justify-content: space-between;
-}
-
-.CreditCollectionAddNftsStep .FormAndPreviewContainer .PreviewAndFinishContainer .PreviewContainer {
-    padding: 16px;
-    border: 2px solid var(--color-neutral-060);
-    border-radius: 20px;
-}
-
-.CreditCollectionAddNftsStep .FormAndPreviewContainer .PreviewAndFinishContainer .FinishContainer {
-    gap: 10px;
-    padding: 16px;
-    border-radius: 10px;
-    background: var(--color-neutral);
+.CreditCollectionAddNftsStep .FormAndPreviewContainer .NftPreviewCnt {
+    width: 300px;
+    margin: 40px auto;
 }

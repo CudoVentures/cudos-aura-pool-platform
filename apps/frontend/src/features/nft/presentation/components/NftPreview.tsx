@@ -12,12 +12,13 @@ import SvgCudosLogo from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/nft-preview.css';
 
 type Props = {
+    className?: string;
     nftEntity: NftEntity,
     collectionName: string
     disabled?: boolean
 }
 
-function NftPreview({ nftEntity, collectionName, disabled }: Props) {
+function NftPreview({ className, nftEntity, collectionName, disabled }: Props) {
     const navigate = useNavigate();
 
     const onClickNft = () => {
@@ -27,7 +28,7 @@ function NftPreview({ nftEntity, collectionName, disabled }: Props) {
     const hasImage = nftEntity.imageUrl !== S.Strings.EMPTY;
 
     return (
-        <div className={`NftPreview FlexColumn ${S.CSS.getClassName(disabled === false, 'Clickable')}`} onClick={disabled === false ? onClickNft : null}>
+        <div className={`NftPreview FlexColumn ${S.CSS.getClassName(disabled === false, 'Clickable')} ${className}`} onClick={disabled === false ? onClickNft : null}>
             <div
                 className={`NftPreviewImage ImgCoverNode FlexRow ${S.CSS.getClassName(hasImage === false, 'Empty')}`}
                 style={{
@@ -50,6 +51,7 @@ function NftPreview({ nftEntity, collectionName, disabled }: Props) {
 }
 
 NftPreview.defaultProps = {
+    className: '',
     disabled: false,
 }
 

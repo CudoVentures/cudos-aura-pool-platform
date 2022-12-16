@@ -15,6 +15,7 @@ import CreditCollectionSuccessModal from '../components/credit-collection/Credit
 import CreditCollectionAddNftsStep from '../components/credit-collection/CreditCollectionAddNftsStep';
 import CreditCollectionFinishStep from '../components/credit-collection/CreditCollectionFinishStep';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
+import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
 import '../styles/page-credit-collection-details-add-nfts.css';
 
@@ -54,7 +55,7 @@ function CreditCollectionDetailsAddNftsPage({ appStore, creditCollectionStore }:
 
             <PageAdminHeader />
 
-            <div className = { 'PageContent AppContent' } >
+            <ColumnLayout className = { 'PageContent PageContentDefaultPadding AppContent' } >
                 {collectionEntity === null ? (
                     <LoadingIndicator />
                 ) : (
@@ -64,7 +65,7 @@ function CreditCollectionDetailsAddNftsPage({ appStore, creditCollectionStore }:
                             createBreadcrumb('Collection', onClickNavigateCollection),
                             createBreadcrumb('Add NFTs'),
                         ] } />
-                        <StyledContainer className={'FlexColumn BorderContainer'}>
+                        <StyledContainer>
                             {creditCollectionStore.isStepAddNfts() === true && (
                                 <CreditCollectionAddNftsStep />
                             )}
@@ -74,7 +75,7 @@ function CreditCollectionDetailsAddNftsPage({ appStore, creditCollectionStore }:
                         </StyledContainer>
                     </>
                 ) }
-            </div>
+            </ColumnLayout>
 
             <PageFooter />
 

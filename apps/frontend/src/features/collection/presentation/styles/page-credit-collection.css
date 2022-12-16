@@ -13,14 +13,8 @@
     gap: 20px;
 }
 
-.PageCreditCollection .NameStatusRow .ReviewBadge,
-.PageCreditCollection .NameStatusRow .RejectedBadge {
-    color: #fff;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 6px;
-    margin-left: 26px;
-    background: var(--color-neutral-060);
+.PageCreditCollection .NameStatusRow .CollectionStatusBadge {
+    margin-left: 24px;
 }
 
 
@@ -38,7 +32,7 @@
 .PageCreditCollection .SectionDivider {
     height: 1px;
     margin: 110px 0 24px 0;
-    background: var(--color-neutral-060);
+    background: var(--color-neutral-020);
 }
 
 .PageCreditCollection .NftsCnt {

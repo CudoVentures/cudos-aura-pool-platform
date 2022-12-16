@@ -32,8 +32,8 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
             <ColumnLayout>
                 { header }
                 <StyledContainer containerPadding = { ContainerPadding.PADDING_24 }>
-                    <div className={'B1 Bold MiningFarmName ColorNatural100'}>{miningFarmEntity.name}</div>
-                    <div className={'B3 Bold ColorNautral060'}>{miningFarmEntity.description}</div>
+                    <div className={'B1 Bold MiningFarmName ColorNeutral100'}>{miningFarmEntity.name}</div>
+                    <div className={'B3 Bold ColorNeutral060'}>{miningFarmEntity.description}</div>
                 </StyledContainer>
                 <DataPreviewLayout
                     dataPreviews = { [

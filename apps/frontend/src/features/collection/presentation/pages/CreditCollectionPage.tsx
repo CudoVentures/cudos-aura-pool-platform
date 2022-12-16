@@ -27,6 +27,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CollectionStatusBadge from '../components/CollectionStatusBadge';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import '../styles/page-credit-collection.css';
@@ -109,12 +110,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
 
                     <div className={'FlexRow NameStatusRow'}>
                         <div className={'H2 CollectionHeadingName'}>{collectionEntity.name}</div>
-                        {collectionEntity.isStatusQueued() === true && (
-                            <div className={'ReviewBadge'}>Under Review</div>
-                        )}
-                        {collectionEntity.isStatusRejected() === true && (
-                            <div className={'RejectedBadge'}>Rejected</div>
-                        )}
+                        <CollectionStatusBadge className = { 'CollectionStatusBadge' } collectionEntity = { collectionEntity } />
                     </div>
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
@@ -139,27 +135,23 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                     </div>,
                                 ),
                             ]} >
-                                {collectionEntity?.isStatusQueued() && accountSessionStore.isSuperAdmin()
-                                        && (<Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} >
-                                            <Button
-                                                radius={ButtonRadius.RADIUS_16}
-                                                padding={ButtonPadding.PADDING_48}
-                                                color={ButtonColor.SCHEME_2}
-                                                onClick={creditCollectionPageStore.rejectCollection}
-                                            >
-                                                <Svg svg={HighlightOffIcon}/>
-                                                Reject Collection
-                                            </Button>
-                                            <Button
-                                                radius={ButtonRadius.RADIUS_16}
-                                                padding={ButtonPadding.PADDING_48}
-                                                onClick={creditCollectionPageStore.approveCollection}
-                                            >
-                                                <Svg svg={CheckCircleOutlineIcon}/>
-                                                Approve Collection
-                                            </Button>
-                                        </Actions>)
-                                }
+                                {collectionEntity.isStatusQueued() && accountSessionStore.isSuperAdmin() && (
+                                    <Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} >
+                                        <Button
+                                            padding={ButtonPadding.PADDING_48}
+                                            color={ButtonColor.SCHEME_4}
+                                            onClick={creditCollectionPageStore.rejectCollection} >
+                                            <Svg svg={HighlightOffIcon}/>
+                                            Reject Collection
+                                        </Button>
+                                        <Button
+                                            padding={ButtonPadding.PADDING_48}
+                                            onClick={creditCollectionPageStore.approveCollection} >
+                                            <Svg svg={CheckCircleOutlineIcon}/>
+                                            Approve Collection
+                                        </Button>
+                                    </Actions>
+                                ) }
                             </DataPreviewLayout>
                         )}
                     </div>

@@ -65,7 +65,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                     <StyledContainer className={'MiningFarmForm'}>
                         <ColumnLayout>
                             <div>
-                                <div className={'H2 ColorNatural100 ExtraBold'}>Calculate Your Potential Rewards</div>
+                                <div className={'H2 ColorNeutral100 ExtraBold'}>Calculate Your Potential Rewards</div>
                                 <div className={'B1 RewardsCalculatorSubHeading'}>Here we have some description text that leads the user to properly calculate the rewards</div>
                             </div>
                             <Select

@@ -3,29 +3,14 @@
     gap: 24px;
 }
 
-
-.CreditCollectionAddNftForm .ImagePreview {
-    border-radius: 20px;
-    background-size: cover;
-    background-position: center;
-    justify-content: center;
-    align-items: center;
-}
-
-.CreditCollectionAddNftForm .ImagePreview.Empty {
-    background-color: var(--color-neutral-060);
-}
-
 .CreditCollectionAddNftForm .MainImagePreview {
     width: 150px; height: 150px;
+    border-radius: 16px;
+    background-color: var(--color-neutral-020);
 }
 
-.CreditCollectionAddNftForm .MainImagePreview.Empty .EmptyPictureSvg {
+.CreditCollectionAddNftForm .MainImagePreview.Empty img {
     width: 40px; height: 40px;
-}
-
-.CreditCollectionAddNftForm .ImageLabel .Gray {
-    color: var(--color-neutral-060);
 }
 
 .CreditCollectionAddNftForm .HeaderWithButton {

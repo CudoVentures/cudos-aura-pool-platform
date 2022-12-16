@@ -20,7 +20,7 @@ import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDeskto
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 type Props = {
-    superAdminMiningFarmsPageStore: SuperAdminMningFarmsPageStore;
+    superAdminMiningFarmsPageStore?: SuperAdminMningFarmsPageStore;
 }
 
 function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore }: Props) {

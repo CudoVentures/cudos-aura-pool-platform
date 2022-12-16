@@ -1,10 +1,27 @@
-.CreditCollectionFinish {
-    gap: 30px;
+.CreditCollectionFinish .CreditCollectionFinishTitle {
+    color: var(--color-neutral-100);
+    margin-bottom: 8px;
 }
 
-.CreditCollectionFinish .InstructionsBox{
+.CreditCollectionFinish .CreditCollectionFinishSubtitle {
+    color: var(--color-neutral-060);
+    margin-bottom: 20px;
+}
+
+.CreditCollectionFinish .CreditCollectionAddNftFinishDataPreview {
+    margin-bottom: 20px;
+}
+
+.CreditCollectionFinish .InstructionsBox {
     padding: 16px;
     background: var(--color-primary-010);
     color: var(--color-primary-060);
+    font-weight: 700;
     border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.CreditCollectionFinish .InstructionsBox ul {
+    padding: 0 0 0 24px;
+    margin: 0;
 }

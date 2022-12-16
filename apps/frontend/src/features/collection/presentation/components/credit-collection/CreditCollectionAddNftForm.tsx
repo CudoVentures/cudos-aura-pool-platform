@@ -21,7 +21,6 @@ import FieldColumnWrapper from '../../../../../core/presentation/components/Fiel
 
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import '../../styles/credit-collection-add-nft-form.css';
 
@@ -74,11 +73,9 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
             <div className={'HorizontalSeparator'}></div>
             <div
                 style={ selectedNftEntity === null ? null : ProjectUtils.makeBgImgStyle(selectedNftEntity.imageUrl) }
-                className={`MainImagePreview ImagePreview FlexRow ${S.CSS.getClassName(creditCollectionStore.isSelectedNftImageEmpty(), 'Empty')}`} >
+                className={`MainImagePreview ImgCoverNode FlexSingleCenter ${S.CSS.getClassName(creditCollectionStore.isSelectedNftImageEmpty(), 'Empty')}`} >
                 {creditCollectionStore.isSelectedNftImageEmpty() === true && (
-                    <div className={'EmptyPictureSvg'}>
-                        <Svg svg={InsertPhotoIcon} size={SvgSize.CUSTOM}/>
-                    </div>
+                    <img src={'/assets/img/no-image.png'} />
                 )}
             </div>
             <div className={'ImageLabel FlexColumn'}>

@@ -207,11 +207,6 @@ label {
     width: 100%;
 }
 
-.HorizontalSeparator {
-    width: 100%;
-    border: 1px solid var(--color-neutral-060);
-}
-
 *, *:after, *:before {
     transition-property:none;
 

@@ -2,6 +2,6 @@
     width:100%; height: 100%;
 }
 
-.DeleteActionButton {
-    color: var(--color-error-060);
+.CreditCollectionAddNftsTable .NoContentFound {
+    align-items: center;
 }

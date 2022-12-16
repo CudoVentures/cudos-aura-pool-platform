@@ -3,23 +3,17 @@
     gap: 24px;
 }
 
-.CreditCollectionDetailsForm .ImagePreview {
-    border-radius: 20px;
-    background-size: cover;
-    background-position: center;
-    justify-content: center;
-    align-items: center;
-}
-
-.CreditCollectionDetailsForm .ImagePreview.Empty {
-    background-color: var(--color-neutral-060);
+.CreditCollectionDetailsForm .CreditCollectionDetailsFormHeader > *:not(:last-child) {
+    margin-top: 8px;
 }
 
 .CreditCollectionDetailsForm .MainImagePreview {
     width: 150px; height: 150px;
+    border-radius: 16px;
+    background-color: var(--color-neutral-010);
 }
 
-.CreditCollectionDetailsForm .MainImagePreview.Empty .EmptyPictureSvg {
+.CreditCollectionDetailsForm .MainImagePreview.Empty img {
     width: 40px; height: 40px;
 }
 
@@ -28,10 +22,12 @@
 }
 
 .CreditCollectionDetailsForm .BannerImagePreview {
-    height: 200px; width: 100%;
+    width: 100%; height: 200px; 
+    border-radius: 16px;
+    background-color: var(--color-neutral-010);
 }
 
-.CreditCollectionDetailsForm .BannerImagePreview.Empty .EmptyPictureSvg {
+.CreditCollectionDetailsForm .BannerImagePreview.Empty img {
     width: 70px; height: 70px;
 }
 

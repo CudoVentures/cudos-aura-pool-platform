@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
+import BigNumber from 'bignumber.js';
 
 import S from '../../../../../core/utilities/Main';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
@@ -9,7 +10,8 @@ import ProjectUtils from '../../../../../core/utilities/ProjectUtils';
 import AlertStore from '../../../../../core/presentation/stores/AlertStore';
 import AppRoutes from '../../../../app-routes/entities/AppRoutes';
 
-import Svg, { SvgSize } from '../../../../../core/presentation/components/Svg';
+import { InputAdornment } from '@mui/material';
+import Svg from '../../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../../core/presentation/components/Actions';
 import Button, { ButtonPadding } from '../../../../../core/presentation/components/Button';
 import UploaderComponent from '../../../../../core/presentation/components/UploaderComponent';
@@ -19,11 +21,8 @@ import InfoBlueBox from '../../../../../core/presentation/components/InfoBlueBox
 import Checkbox from '../../../../../core/presentation/components/Checkbox';
 import FieldColumnWrapper from '../../../../../core/presentation/components/FieldColumnWrapper';
 
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import '../../styles/credit-collection-details-form.css';
-import { InputAdornment } from '@mui/material';
-import BigNumber from 'bignumber.js';
 
 type Props = {
     alertStore?: AlertStore;
@@ -129,21 +128,21 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
 
     return (
         <div className={'CreditCollectionDetailsForm FlexColumn'}>
-            <div className={'H3 Bold'}>Create Collecton</div>
-            <div className={'B1'}>Fill in the needed information for the collection</div>
+            <div className = { 'CreditCollectionDetailsFormHeader' }>
+                <div className={'H2 ExtraBold ColorNeutral100'}>Create Collecton</div>
+                <div className={'B1 ColorNeutral060'}>Fill in the needed information for the collection</div>
+            </div>
             <div className={'HorizontalSeparator'}></div>
             <div
                 style={ ProjectUtils.makeBgImgStyle(collectionEntity.profileImgUrl) }
-                className={`MainImagePreview ImagePreview FlexRow ${S.CSS.getClassName(creditCollectionStore.isProfilePictureEmpty(), 'Empty')}`} >
+                className={`MainImagePreview ImgCoverNode FlexSingleCenter ImagePreview FlexRow ${S.CSS.getClassName(creditCollectionStore.isProfilePictureEmpty(), 'Empty')}`} >
                 {creditCollectionStore.isProfilePictureEmpty() === true && (
-                    <div className={'EmptyPictureSvg'}>
-                        <Svg svg={InsertPhotoIcon} size={SvgSize.CUSTOM}/>
-                    </div>
+                    <img src={'/assets/img/no-image.png'} />
                 )}
             </div>
             <div className={'ImageLabel FlexColumn'}>
                 <div className={'B2 Bold'}>Main Image</div>
-                <div className={'B3 SemiBold'}>File Format: <span className={'Gray'}>.svg, .png, .jpeg, .gif</span></div>
+                <div className={'B3 SemiBold ColorNeutral060'}>File Format: <span className={'ColorNeutral070'}>.svg, .png, .jpeg, .gif</span></div>
             </div>
             <div className={'B1 SemiBold'}>600 x 400 recommended</div>
             <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT} height={ActionsHeight.HEIGHT_48}>
@@ -168,16 +167,14 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             <div className={'HorizontalSeparator'}></div>
             <div
                 style={ ProjectUtils.makeBgImgStyle(collectionEntity.coverImgUrl) }
-                className={`BannerImagePreview ImagePreview FlexRow ${S.CSS.getClassName(creditCollectionStore.isCoverPictureEmpty(), 'Empty')}`} >
+                className={`BannerImagePreview ImgCoverNode FlexSingleCenter ${S.CSS.getClassName(creditCollectionStore.isCoverPictureEmpty(), 'Empty')}`} >
                 { creditCollectionStore.isCoverPictureEmpty() === true && (
-                    <div className={'EmptyPictureSvg'}>
-                        <Svg svg={InsertPhotoIcon} size={SvgSize.CUSTOM}/>
-                    </div>
+                    <img src={'/assets/img/no-image.png'} />
                 )}
             </div>
             <div className={'ImageLabel FlexColumn'}>
                 <div className={'B2 Bold'}>Banner Image</div>
-                <div className={'B3 SemiBold'}>File Format: <span className={'Gray'}>.svg, .png, .jpeg, .gif</span></div>
+                <div className={'B3 SemiBold ColorNeutral060'}>File Format: <span className={'ColorNeutral070'}>.svg, .png, .jpeg, .gif</span></div>
             </div>
             <div className={'B1 SemiBold'}>1400 x 350 recommended</div>
             <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT} height={ActionsHeight.HEIGHT_48}>
@@ -279,7 +276,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             { creditCollectionStore.defaultHashAndPriceValues === S.INT_TRUE && (
                 <>
                     <Input
-                        label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Paid monthly in BTC'} />}
+                        label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'The hashing power represented by each individual NFT.'} />}
                         placeholder={'Enter hash power...'}
                         value={defaultHashPowerPerNftInTh}
                         inputType = { InputType.REAL }
@@ -291,7 +288,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                             ),
                         }} />
                     <Input
-                        label={'Price per NFT'}
+                        label={<TextWithTooltip text={'Price per NFT'} tooltipText={'The sale price for each indivudial NFT, fees and royalties included.'} />}
                         placeholder={'Enter price...'}
                         inputType = { InputType.REAL }
                         value={defaultPricePerNftInCudos}

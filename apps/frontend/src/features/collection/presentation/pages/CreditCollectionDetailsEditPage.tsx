@@ -14,6 +14,7 @@ import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/com
 import CreditCollectionSuccessModal from '../components/credit-collection/CreditCollectionSuccessModal';
 import CreditCollectionDetailsStep from '../components/credit-collection/CreditCollectionDetailsStep';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
+import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
 import '../styles/page-credit-collection-details-edit.css';
 
@@ -53,7 +54,7 @@ function CreditCollectionDetailsEditPage({ appStore, creditCollectionStore }: Pr
 
             <PageAdminHeader />
 
-            <div className = { 'PageContent AppContent' } >
+            <ColumnLayout className = { 'PageContent PageContentDefaultPadding AppContent' } >
                 {collectionEntity === null ? (
                     <LoadingIndicator />
                 ) : (
@@ -63,14 +64,14 @@ function CreditCollectionDetailsEditPage({ appStore, creditCollectionStore }: Pr
                             createBreadcrumb('Collection', onClickNavigateCollection),
                             createBreadcrumb('Edit Collection'),
                         ] } />
-                        <StyledContainer className={'FlexColumn BorderContainer'}>
+                        <StyledContainer>
                             {creditCollectionStore.isStepDetails() === true && (
                                 <CreditCollectionDetailsStep />
                             )}
                         </StyledContainer>
                     </>
                 ) }
-            </div>
+            </ColumnLayout>
 
             <PageFooter />
 

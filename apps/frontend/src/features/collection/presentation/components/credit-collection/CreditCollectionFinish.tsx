@@ -33,10 +33,10 @@ function CreditCollectionFinish({ creditCollectionStore, creditCollectionSuccess
 
     return (
         <div className={'CreditCollectionFinish FlexColumn '}>
-            <div className={'H3 Bold'}>Finalise</div>
-            <div className={'B1'}>Check all the iformation related to the collection.</div>
+            <div className={'H2 ExtraBold CreditCollectionFinishTitle'}>Finalise</div>
+            <div className={'B1 CreditCollectionFinishSubtitle'}>Check all the iformation related to the collection.</div>
             {creditCollectionStore.isAddNftsMode() === true && (
-                <DataPreviewLayout dataPreviews={dataPreviews}/>
+                <DataPreviewLayout className = { 'CreditCollectionAddNftFinishDataPreview' } dataPreviews={dataPreviews}/>
             )}
             <StyledContainer
                 containerBackground={ContainerBackground.GRAY}

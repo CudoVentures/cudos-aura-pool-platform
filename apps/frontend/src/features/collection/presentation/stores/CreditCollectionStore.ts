@@ -102,9 +102,9 @@ export default class CreditCollectionStore {
     async initAsAddNfts(collectionId: string) {
         await this.fetchCollectionData(collectionId);
         await this.fetchMiningFarmDetails();
-        if (this.nftEntities.length === 0) {
-            this.initNewNftEntity();
-        }
+        // if (this.nftEntities.length === 0) {
+        this.initNewNftEntity();
+        // }
 
         runInAction(() => {
             this.creditStep = CreditCollectionDetailsSteps.ADD_NFTS;

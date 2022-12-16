@@ -31,40 +31,32 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
             previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerPerNftInTh()));
         }
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));
+        previews.push(createDataPreview('Royalties', collectionEntity.royalties));
         previews.push(createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInPercentage()));
 
         return previews
     }
     return (
         <div className={'CreditCollectionSidePreview FlexColumn'}>
-            <div className={'H3 Bold'}>Collection Preview</div>
-            <div className={'B1'}>This is how your collection details view would look like in AuraPool</div>
+            <div className={'H3 Bold CreditCollectionSidePreviewTitle'}>Collection Preview</div>
+            <div className={'B1 CreditCollectionSidePreviewSubtitle'}>This is how your collection details view would look like in AuraPool</div>
             <StyledContainer
                 className = { 'PreviewBorderContainer FlexColumn' }
-                containerShadow = { false }
-                containerPadding = { ContainerPadding.PADDING_16 } >
-                <div className={`CoverPicture ImgCoverNode ${S.CSS.getClassName(creditCollectionStore.isCoverPictureEmpty(), 'Empty')}`}
-                    style={{
-                        backgroundImage: `url("${collectionEntity.coverImgUrl}")`,
-                    }} >
+                containerPadding = { ContainerPadding.PADDING_24 } >
+                <div className={`CoverPicture ImgCoverNode FlexSingleCenter ${S.CSS.getClassName(creditCollectionStore.isCoverPictureEmpty(), 'Empty')}`}
+                    style={ ProjectUtils.makeBgImgStyle(collectionEntity.coverImgUrl)} >
                     {creditCollectionStore.isProfilePictureEmpty() === true && (
-                        <div className={'EmptyPictureSvg'}>
-                            <Svg svg={InsertPhotoIcon} size={SvgSize.CUSTOM}/>
-                        </div>
+                        <img src={'/assets/img/no-image.png'} />
                     )}
-                    <div className={`ProfilePicture ImgCoverNode ${S.CSS.getClassName(creditCollectionStore.isProfilePictureEmpty(), 'Empty')}`}
-                        style={{
-                            backgroundImage: `url("${collectionEntity.profileImgUrl}")`,
-                        }} >
+                    <div className={`ProfilePicture ImgCoverNode FlexSingleCenter ${S.CSS.getClassName(creditCollectionStore.isProfilePictureEmpty(), 'Empty')}`}
+                        style={ ProjectUtils.makeBgImgStyle(collectionEntity.profileImgUrl)} >
                         {creditCollectionStore.isProfilePictureEmpty() === true && (
-                            <div className={'EmptyPictureSvg'}>
-                                <Svg svg={InsertPhotoIcon} size={SvgSize.CUSTOM}/>
-                            </div>
+                            <img src={'/assets/img/no-image.png'} />
                         )}
                     </div>
                 </div>
-                <div className={'H3 Bold'}>{collectionEntity.name || 'No Name'}</div>
-                <div className={'B3'}>{collectionEntity.description || 'No Description'}</div>
+                <div className={'H3 ExtraBold ColorNeutral100 CollectionPreviewName'}>{collectionEntity.name || 'No Name'}</div>
+                <div className={'B1 ColorNeutral060 CollectionPreviewDesc'}>{collectionEntity.description || 'No Description'}</div>
                 {size === CreditCollectionSidePreviewSize.FULL && (<DataPreviewLayout dataPreviews={createDataPreviews()}/>)}
             </StyledContainer>
         </div>

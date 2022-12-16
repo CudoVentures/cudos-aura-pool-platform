@@ -32,7 +32,7 @@ function NoCollectionView({ accountSessionStore }: Props) {
             <div className={'H3 Bold'}>No Collections Yet</div>
             { accountSessionStore.isAdmin() === true && (
                 <>
-                    <div className={'B1 ColorNautral060'}>Looks like you still don’t have collections</div>
+                    <div className={'B1 ColorNeutral060'}>Looks like you still don’t have collections</div>
                     {/* <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} >
                         <Button onClick={onClickCreateCollection}>
                             <Svg svg={AddIcon} />

@@ -24,7 +24,7 @@ import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import DefaultIntervalPicker from '../../../analytics/presentation/components/DefaultIntervalPicker';
 
 type Props = {
-    superAdminDashboardPageStore: SuperAdminDashboardPageStore
+    superAdminDashboardPageStore?: SuperAdminDashboardPageStore
 }
 
 function SuperAdminDashboardPage({ superAdminDashboardPageStore }: Props) {

@@ -15,6 +15,7 @@ import CreditCollectionSuccessModal from '../components/credit-collection/Credit
 import CreditCollectionDetailsStep from '../components/credit-collection/CreditCollectionDetailsStep';
 import CreditCollectionAddNftsStep from '../components/credit-collection/CreditCollectionAddNftsStep';
 import CreditCollectionFinishStep from '../components/credit-collection/CreditCollectionFinishStep';
+import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
 import '../styles/page-credit-collection-details-create.css';
 
@@ -49,12 +50,12 @@ function CreditCollectionDetailsCreatePage({ appStore, creditCollectionStore }: 
 
             <PageAdminHeader />
 
-            <div className = { 'PageContent AppContent' } >
+            <ColumnLayout className = { 'PageContent PageContentDefaultPadding AppContent' } >
                 <Breadcrumbs crumbs={ [
                     createBreadcrumb('My Collections', onClickNavigateCreditMiningFarm),
                     createBreadcrumb('Create Collection'),
                 ] } />
-                <StyledContainer className={'FlexColumn BorderContainer'}>
+                <StyledContainer>
                     {collectionEntity !== null && (
                         <>
                             {creditCollectionStore.isStepDetails() === true && (
@@ -69,7 +70,7 @@ function CreditCollectionDetailsCreatePage({ appStore, creditCollectionStore }: 
                         </>
                     )}
                 </StyledContainer>
-            </div>
+            </ColumnLayout>
 
             <PageFooter />
 

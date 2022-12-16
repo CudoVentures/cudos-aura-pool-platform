@@ -1,33 +1,20 @@
-.CreditCollectionSidePreview {
-    gap: 25px;
+.CreditCollectionSidePreview .CreditCollectionSidePreviewTitle {
+    margin-bottom: 8px;
 }
 
-.CreditCollectionSidePreview .PreviewBorderContainer {
-    gap: 24px;
-    align-items: flex-start;
-}
-
-.CreditCollectionSidePreview .PreviewBorderContainer .ImgCoverNode {
-    display: flex;
-    border-radius: 20px;
-    background-size: cover;
-    background-position: center;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    flex-shrink: 0;
-}
-
-.CreditCollectionSidePreview .PreviewBorderContainer .ImgCoverNode.Empty {
-    background-color: var(--color-neutral-020);
+.CreditCollectionSidePreview .CreditCollectionSidePreviewSubtitle {
+    margin-bottom: 24px;
 }
 
 .CreditCollectionSidePreview .PreviewBorderContainer .CoverPicture {
     width: 100%; height: 125px;
+    position: relative;
+    border-radius: 16px;
     margin-bottom: 25px;
+    background-color: var(--color-neutral-010);
 }
 
-.CreditCollectionSidePreview .PreviewBorderContainer .CoverPicture.Empty .EmptyPictureSvg {
+.CreditCollectionSidePreview .PreviewBorderContainer .CoverPicture.Empty img {
     width: 40px; height: 40px;
 }
 
@@ -35,11 +22,21 @@
 .CreditCollectionSidePreview .PreviewBorderContainer .ProfilePicture {
     width: 70px; height: 70px;
     position: absolute;
-    left: 25px; bottom: -25px;
+    left: 10px; bottom: -25px;
     border: 2px solid #FFFFFF;
-    border-radius: 8px;
+    border-radius: 16px;
+    background-color: var(--color-neutral-010);
+    box-shadow: 2px 2px 30px rgba(8, 9, 12, 0.1);
 }
 
-.CreditCollectionSidePreview .PreviewBorderContainer .ProfilePicture.Empty .EmptyPictureSvg {
-    width: 20px; height: 20px;
+.CreditCollectionSidePreview .PreviewBorderContainer .ProfilePicture.Empty img {
+    width: 16px; height: 16px;
+}
+
+.CreditCollectionSidePreview .PreviewBorderContainer .CollectionPreviewName {
+    margin-top: 16px;
+}
+
+.CreditCollectionSidePreview .PreviewBorderContainer .CollectionPreviewDesc {
+    margin-top: 8px;
 }
