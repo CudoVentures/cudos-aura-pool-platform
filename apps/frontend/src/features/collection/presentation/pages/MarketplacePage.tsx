@@ -7,10 +7,7 @@ import MarketplaceStore from '../stores/MarketplaceStore';
 import NftEntity from '../../../nft/entities/NftEntity';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
-import SearchIcon from '@mui/icons-material/Search';
-import { InputAdornment } from '@mui/material';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import Input, { InputType } from '../../../../core/presentation/components/Input';
 import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import TopCollections from '../components/TopCollections';
@@ -22,7 +19,6 @@ import NftPreview from '../../../nft/presentation/components/NftPreview';
 import MiningFarmPreview from '../../../mining-farm/presentation/components/MiningFarmPreview';
 import DefaultIntervalPicker from '../../../analytics/presentation/components/DefaultIntervalPicker';
 
-import Svg from '../../../../core/presentation/components/Svg';
 import '../styles/page-marketplace.css';
 
 type Props = {
@@ -45,6 +41,10 @@ function MarkedplacePage({ marketplaceStore }: Props) {
         navigate(AppRoutes.EXPLORE_MINING_FARMS);
     }
 
+    function onClickExploreMarketplace() {
+        window.location.hash = '#marketplace-heading';
+    }
+
     useEffect(() => {
         async function run() {
             await marketplaceStore.init();
@@ -57,38 +57,50 @@ function MarkedplacePage({ marketplaceStore }: Props) {
             <PageHeader />
             <div className={'PageContent AppContent'} >
 
-                <div className={'ExploreCollections FlexColumn'}>
-                    <div className={'PageHeading H1 Bold'}>Explore NFT Collections</div>
-                    <div className={'Grid GridColumns3'}>
-                        <div></div>
-                        <Input
-                            inputType={InputType.TEXT}
-                            className={'SearchBar'}
-                            value = { marketplaceStore.searchString }
-                            onChange = { marketplaceStore.changeSearchString }
-                            placeholder = {'Search Collections, Farms and accounts'}
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start" >
-                                    <Svg svg={SearchIcon}/>
-                                </InputAdornment>,
-                            }} />
-                        <div></div>
+                <div className = { 'MarketplaceHero' } >
+                    <div className = { 'MarketplaceHeroInfo' } >
+                        <div className = { 'MarketplaceHeroInfoHeadingLine1 ExtraBold' } >Mine BTC</div>
+                        <div className = { 'MarketplaceHeroInfoHeadingLine2 ExtraBold' } >Sustainably</div>
+                        <div className = { 'H3 MarketplaceHeroInfoDesc' } >Enabling mining power access to the next million miners</div>
+                        <div className = { 'MarketplaceHeroInfoCons FlexRow' } >
+                            <label>Daily payments</label>
+                            <label>Mine on real bitcoin</label>
+                            <label>Simple process</label>
+                        </div>
+                        <Actions>
+                            <Button onClick = { onClickExploreMarketplace }>Explore Marketplace</Button>
+                        </Actions>
+                    </div>
+                    <div className = { 'MarketplaceHeroBg' }>
+                        <div className = { 'HeroCircle HeroCircle03' } />
+                        <img className = { 'HeroImg02' } src={'/assets/img/marketplace-hero-02.png'} />
+                        <div className = { 'HeroCircle HeroCircle01' } />
+                        <div className = { 'HeroCircle HeroCircle02' } />
+                        <img className = { 'HeroImg01' } src={'/assets/img/marketplace-hero-01.png'} />
                     </div>
                 </div>
 
+                <div id = 'marketplace-heading' className={'MarketplaceHeading'}>
+                    <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
+                    <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
+                </div>
+
                 <div className = { 'SectionWrapper' } >
-                    <div className={'H2 Bold SectionHeadingCnt'}>Trending NFTs</div>
-                    <Slider>
-                        {marketplaceStore.trendingNftEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>)}
-                        {marketplaceStore.trendingNftEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => {
-                            return (
-                                <NftPreview
-                                    key={index}
-                                    nftEntity={nftEntity}
-                                    collectionName={marketplaceStore.getCollectionName(nftEntity.collectionId)} />
-                            )
-                        })}
-                    </Slider>
+                    <div className={'H2 ExtraBold SectionHeadingCnt'}>Trending NFTs</div>
+                    { marketplaceStore.trendingNftEntities.length === 0 ? (
+                        <div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>
+                    ) : (
+                        <Slider>
+                            {marketplaceStore.trendingNftEntities.map((nftEntity: NftEntity, index: number) => {
+                                return (
+                                    <NftPreview
+                                        key={index}
+                                        nftEntity={nftEntity}
+                                        collectionName={marketplaceStore.getCollectionName(nftEntity.collectionId)} />
+                                )
+                            })}
+                        </Slider>
+                    ) }
                     <Actions
                         className = { 'SectionActions' }
                         layout={ActionsLayout.LAYOUT_ROW_CENTER}
@@ -102,24 +114,36 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                     </Actions>
                 </div>
 
-                <div className = { 'SectionWrapper' } >
-                    <div className={'H2 Bold SectionHeadingCnt'}>New Hash Rate NFT Drops</div>
-                    <Slider>
-                        {marketplaceStore.newNftDropsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>)}
-                        {marketplaceStore.newNftDropsEntities.slice(0, 4).map((nftEntity: NftEntity, index: number) => {
-                            return (
-                                <NftPreviewInPicture
-                                    key={index}
-                                    nftEntity={nftEntity}
-                                    collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)} />
-                            )
-                        })}
-                    </Slider>
+                <div className = { 'SectionWrapper SectionHashRateDrops' } >
+                    <div className = { 'HashRateDropsInfo FlexColumn' } >
+                        <div className = { 'H2 ExtraBold' } >New Hash Rate NFT Drops</div>
+                        <div className = { 'B1' } >Powered by AuraPool Protocol</div>
+                        <Actions className = { 'HashRateDropsInfoActions' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL } >
+                            <Button onClick = { onClickSeeAllFarms }>Explore NFTs</Button>
+                        </Actions>
+                    </div>
+
+                    <div className = { 'HashRateDropsCnt' }>
+                        { marketplaceStore.newNftDropsEntities.length === 0 ? (
+                            <div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>
+                        ) : (
+                            <Slider itemsPerPage = { 3 } showDots = { false } navWithTransparency = { false } >
+                                { marketplaceStore.newNftDropsEntities.map((nftEntity: NftEntity, index: number) => {
+                                    return (
+                                        <NftPreviewInPicture
+                                            key={index}
+                                            nftEntity={nftEntity}
+                                            collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)} />
+                                    )
+                                }) }
+                            </Slider>
+                        ) }
+                    </div>
                 </div>
 
                 <div className = { 'SectionWrapper' } >
                     <div className = { 'SectionHeadingCnt' } >
-                        <div className={'H2 Bold'}>Top Collections</div>
+                        <div className={'H2 ExtraBold'}>Top Collections</div>
                         <div className = { 'CenterCnt FlexSingleCenter' } >
                             <DefaultIntervalPicker defaultIntervalPickerState={marketplaceStore.defaultIntervalPickerState} />
                         </div>
@@ -140,14 +164,21 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                 </div>
 
                 <div className={'SectionWrapper'}>
-                    <div className={'SectionHeadingCnt H2 Bold'}>Popular Farms</div>
-                    <Slider maxItems={3}>
-                        {marketplaceStore.popularFarmsEntities.length === 0 && (<div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>)}
-                        {marketplaceStore.popularFarmsEntities.slice(0, 3).map((miningFarmEntity: MiningFarmEntity, index: number) => <MiningFarmPreview
-                            key={index}
-                            miningFarmEntity={miningFarmEntity}
-                        />)}
-                    </Slider>
+                    <div className={'SectionHeadingCnt H2 ExtraBold'}>Popular Farms</div>
+                    { marketplaceStore.popularFarmsEntities.length === 0 ? (
+                        <div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>
+                    ) : (
+                        <Slider itemsPerPage = { 3 } >
+                            { marketplaceStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
+                                return (
+                                    <MiningFarmPreview
+                                        key={index}
+                                        miningFarmEntity={miningFarmEntity}
+                                        miningFarmDetailsEntity = { marketplaceStore.getMiningFarmDetailsEntity(miningFarmEntity.id) } />
+                                )
+                            }) }
+                        </Slider>
+                    ) }
                     <Actions
                         className = { 'SectionActions' }
                         layout={ActionsLayout.LAYOUT_ROW_CENTER}

@@ -3,23 +3,95 @@
     padding: 70px var(--page-spacing-h);
 }
 
-.PageMarketplace .ExploreCollections {
-    align-items: center;
-    margin-bottom: 150px;
+.PageMarketplace .MarketplaceHero {
+    position: relative;
+    margin: 90px 0 260px 0;
 }
 
-.PageMarketplace .ExploreCollections .PageHeading {
-    font-size: 64px;
-    margin: 130px 0 40px 0;
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo {
+    display: inline-flex; flex-direction: column;
 }
 
-.PageMarketplace .ExploreCollections .SearchBar {
-    width: 420px;
-    margin-bottom: 40px;
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine1 {
+    color: var(--color-neutral-100);
+    text-transform: uppercase;
+    font-size: 80px;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine2 {
+    font-size: 80px;
+    margin-bottom: 16px;
+
+    background: linear-gradient(270deg, #67D271 0%, #08BDDC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+
+    opacity: 0.8;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoDesc {
+    color: var(--color-neutral-060);
+    margin-bottom: 64px;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoCons {
+    color: var(--color-neutral-080);
+    font-weight: 700; font-size: 10px;
+    text-transform: uppercase;
+    margin-bottom: 52px;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoCons label {
+    padding: 8px 16px;
+    border-left: 1px solid var(--color-neutral-080);
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg {
+    position: absolute;
+    bottom: -122px; right: 0;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg01 {
+    width: 576px;
+    position: absolute;
+    right: 125px; bottom: 55px;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg02 {
+    width: 576px;
+    position: absolute;
+    right: 0; bottom: 0;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle {
+    width: 427px; height: 427px;
+    position: absolute;
+    filter: blur(75px);
+    border-radius: 50%;
+    background-color: var(--color-primary-030);
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle01 {
+    right: 270px; bottom: 90px;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle02 {
+    right: 120px; bottom: 290px;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle03 {
+    right: 0px; bottom: 150px;
+}
+
+.PageMarketplace .MarketplaceHeading {
+    text-align: center;
+    margin-bottom: 90px;
 }
 
 .PageMarketplace .SectionWrapper {
-    margin-top: 120px;
+    margin-bottom: 160px;
 }
 
 .PageMarketplace .SectionWrapper .SectionHeadingCnt {
@@ -36,5 +108,28 @@
 }
 
 .PageMarketplace .SectionWrapper .SectionActions {
-    margin-top: 50px;
+    margin-top: 40px;
+}
+
+.PageMarketplace .SectionHashRateDrops {
+    display: flex;
+    color: #fff;
+    border-radius: 40px;
+    padding: 58px 40px;
+    background: linear-gradient(0deg, rgba(8, 9, 12, 0.4), rgba(8, 9, 12, 0.4)), linear-gradient(270deg, #67D271 0%, #08BDDC 100%);
+}
+
+.PageMarketplace .SectionHashRateDrops .HashRateDropsInfo {
+    width: 210px;
+    flex: 0 0 auto;
+    margin-right: 40px;
+}
+
+.PageMarketplace .SectionHashRateDrops .HashRateDropsInfo .HashRateDropsInfoActions {
+    margin-top: auto;
+}
+
+.PageMarketplace .SectionHashRateDrops .HashRateDropsCnt {
+    width: 0;
+    flex: 1 1 auto;
 }

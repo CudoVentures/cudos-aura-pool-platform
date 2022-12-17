@@ -26,8 +26,8 @@ export default function MiningFarmPeview({ miningFarmEntity, miningFarmDetailsEn
     function renderMiningFarmProperties(name, value) {
         return (
             <div className = { 'MiningFarmProperty FlexSplit' } >
-                <div className = { 'MiningFarmPropertyName' } >Total hashrate</div>
-                <div className = { 'StartRight MiningFarmPropertyValue' } >{miningFarmEntity.formatHashPowerInTh()}</div>
+                <div className = { 'MiningFarmPropertyName' } >{ name } </div>
+                <div className = { 'StartRight MiningFarmPropertyValue' } >{ value }</div>
             </div>
         )
     }
@@ -45,8 +45,8 @@ export default function MiningFarmPeview({ miningFarmEntity, miningFarmDetailsEn
             <div className = { 'HorizontalSeparator' } />
             <ColumnLayout gap = { 8 } className = { 'MiningFarmInfo' } >
                 { renderMiningFarmProperties('Total hashrate', miningFarmEntity.formatHashPowerInTh()) }
-                { renderMiningFarmProperties('NFTs Owned', miningFarmDetailsEntity?.nftsOwned ?? 0) }
-                { renderMiningFarmProperties('Total NFTs Sold', miningFarmDetailsEntity?.totalNftsSold ?? 0) }
+                { renderMiningFarmProperties('NFTs Owned', miningFarmDetailsEntity.nftsOwned) }
+                { renderMiningFarmProperties('Total NFTs Sold', miningFarmDetailsEntity.totalNftsSold) }
             </ColumnLayout>
         </StyledContainer>
     );

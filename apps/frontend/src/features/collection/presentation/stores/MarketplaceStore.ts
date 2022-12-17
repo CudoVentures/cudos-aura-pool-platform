@@ -1,14 +1,13 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import CollectionEntity from '../../entities/CollectionEntity';
-import S from '../../../../core/utilities/Main';
 import CollectionRepo from '../repos/CollectionRepo';
-import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
+import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 
 export default class MarketplaceStore {
 
@@ -16,7 +15,6 @@ export default class MarketplaceStore {
     nftRepo: NftRepo;
     miningFarmRepo: MiningFarmRepo;
 
-    searchString: string;
     defaultIntervalPickerState: DefaultIntervalPickerState;
 
     collectionMap: Map < string, CollectionEntity >;
@@ -25,13 +23,13 @@ export default class MarketplaceStore {
     newNftDropsEntities: NftEntity[];
     trendingNftEntities: NftEntity[];
     popularFarmsEntities: MiningFarmEntity[];
+    miningFarmDetailsMap: Map < string, MiningFarmDetailsEntity >;
 
     constructor(collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.collectionRepo = collectionRepo;
         this.nftRepo = nftRepo;
         this.miningFarmRepo = miningFarmRepo;
 
-        this.searchString = S.Strings.EMPTY;
         this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopCollections);
 
         this.collectionMap = new Map();
@@ -40,6 +38,7 @@ export default class MarketplaceStore {
         this.newNftDropsEntities = [];
         this.trendingNftEntities = [];
         this.popularFarmsEntities = [];
+        this.miningFarmDetailsMap = new Map();
 
         makeAutoObservable(this);
     }
@@ -85,7 +84,20 @@ export default class MarketplaceStore {
     }
 
     async fetchPopularFarms() {
-        this.popularFarmsEntities = await this.miningFarmRepo.fetchPopularMiningFarms();
+        const popularFarmsEntities = await this.miningFarmRepo.fetchPopularMiningFarms();
+
+        const miningFarmIds = popularFarmsEntities.map((miningFarmEntity) => miningFarmEntity.id);
+
+        const miningFarmDetailsEntities = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmIds);
+        const miningFarmDetailsMap = new Map();
+        miningFarmDetailsEntities.forEach((miningFarmDetailsEntity) => {
+            miningFarmDetailsMap.set(miningFarmDetailsEntity.miningFarmId, miningFarmDetailsEntity);
+        });
+
+        runInAction(() => {
+            this.popularFarmsEntities = popularFarmsEntities;
+            this.miningFarmDetailsMap = miningFarmDetailsMap;
+        });
     }
 
     async fetchCollectionsForEntities(nftEntities: NftEntity[]) {
@@ -112,8 +124,8 @@ export default class MarketplaceStore {
         return this.collectionMap.get(collectionId)?.name ?? '';
     }
 
-    changeSearchString = (searchString: string) => {
-        this.searchString = searchString;
+    getMiningFarmDetailsEntity(miningFarmId: string): MiningFarmDetailsEntity {
+        return this.miningFarmDetailsMap.get(miningFarmId) ?? null;
     }
 
 }

@@ -1,12 +1,73 @@
-.Slider {
-    gap: 20px;
+.Slider.WithDots {
+    padding-bottom: 64px;
 }
 
-.Slider.Items4 > *{
-    max-width: 25%;
+.Slider .SliderCnt .SliderChildWrapper {
+    padding: 0 12px;
+}
+
+.Slider .SliderCnt li:first-child .SliderChildWrapper {
+    padding-left: 20px;
+}
+
+.Slider .SliderCnt li:last-child .SliderChildWrapper:last-child {
+    padding-right: 20px;
+}
+
+.Slider .NavArrows {
+    position: absolute;
+    top: 0; bottom: 0;
+    color: #000;
+    margin: auto;
+}
+
+.Slider .NavArrows .NavSvg {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.Slider .NavArrows.NavArrowsRight .NavSvg {
+    transform: rotate(180deg);
+}
+
+.Slider .NavArrows.NavArrowsLeft {
+    left: 0;
+    padding-right: 96px;
+}
+
+.Slider.NavWithTransparency .NavArrows.NavArrowsLeft {
+    padding-left: 10px;
+    background: linear-gradient(90deg, #ffffffff 40px, #ffffff00);
+}
+
+.Slider .NavArrows.NavArrowsRight {
+    right: 0;
+    padding-left: 96px;
+}
+
+.Slider.NavWithTransparency .NavArrows.NavArrowsRight {
+    padding-right: 10px;
+    background: linear-gradient(-90deg, #ffffffff 40px, #ffffff00);
 }
 
 
-.Slider.Items3 > *{
-    max-width: 33%;
+.Slider .DotsCnt .react-multi-carousel-dot {
+    height: 4px;
+    display: flex;
+    background: var(--color-neutral-020);
+}
+
+.Slider .DotsCnt .react-multi-carousel-dot button {
+    width: 20px; height: 4px;
+    border-radius: 0;
+    border: 0;
+    margin: 0;
+    background: none;
+}
+
+.Slider .DotsCnt .react-multi-carousel-dot.react-multi-carousel-dot--active button {
+    background: linear-gradient(270deg, #67D271 0%, #08BDDC 100%);
 }
