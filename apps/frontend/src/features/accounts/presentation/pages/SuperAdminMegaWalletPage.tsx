@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react'
 
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
@@ -11,8 +11,8 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Button, { ButtonColor, ButtonPadding } from '../../../../core/presentation/components/Button';
 import SuperAdminMegaWalletPageStore from '../stores/SuperAdminMegaWalletPageStore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import StyledContainer from '../../../../core/presentation/components/StyledContainer';
+import Actions, { ActionsHeight } from '../../../../core/presentation/components/Actions';
+import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import Select from '../../../../core/presentation/components/Select';
 import S from '../../../../core/utilities/Main';
@@ -28,6 +28,8 @@ import MegaWalletSettingsModal from '../components/MegaWalletSettingsModal';
 import MegaWalletSettingsModalStore, { MegaWalletSettings } from '../stores/MegaWalletSettingsModalStore';
 import MegaWalletTransferModalStore, { MegaWalletTransferType } from '../stores/MegaWalletTransferModalStore';
 import MegaWalletTransferModal from '../components/MegaWalletTransferModal';
+import StyledLayout from '../../../../core/presentation/components/StyledLayout';
+import RowLayout from '../../../../core/presentation/components/RowLayout';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
@@ -36,13 +38,6 @@ type Props = {
     cudosStore?: CudosStore;
     alertStore?: AlertStore;
     walletStore?: WalletStore;
-}
-
-type RoyaltyBoxProps = {
-    heading: string;
-    amount: number;
-    buttonText: string;
-    onClickChange: () => void;
 }
 
 function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTransferModalStore, megaWalletSettingsModalStore, cudosStore, walletStore, alertStore }: Props) {
@@ -99,25 +94,18 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
 
     }
 
-    function RoyaltyBoxContainer({ heading, amount, buttonText, onClickChange }: RoyaltyBoxProps) {
+    function renderBoxContainer(heading, amount, buttonText, onClickChange) {
         return (
-            <StyledContainer className={'RoyaltyBox FlexColumn'}>
-                <div className={'B1 SemiBold RoyaltyName'}>{heading}</div>
-                <div className={'FlexColumn InnerColumn'}>
-                    <div className={'FlexRow RoyaltyAmountRow'}>
-                        <div className={'H1 ExtraBold'}>{amount}</div>
-                        <div className={'H2 SemiBold'}>%</div>
-                    </div>
-                    <Actions
-                        layout={ActionsLayout.LAYOUT_COLUMN_FULL}
-                        height={ActionsHeight.HEIGHT_32}
-                    >
-                        <Button
-                            onClick={onClickChange}
-                            color={ButtonColor.SCHEME_4}
-                        >{buttonText}</Button>
-                    </Actions>
-                </div>
+            <StyledContainer className={'RoyaltyBox FlexColumn'} containerPadding = { ContainerPadding.PADDING_24 } >
+                <div className={'B1 SemiBold ColorNeutral070'}>{heading}</div>
+                <div className={'H2 ExtraBold RoyaltyBoxAmount'} > { amount } <span className = { 'B1 SemiBold ColorNeutral060' }>%</span></div>
+                <Actions height={ActionsHeight.HEIGHT_32} >
+                    <Button
+                        onClick={onClickChange}
+                        color={ButtonColor.SCHEME_4}>
+                        {buttonText}
+                    </Button>
+                </Actions>
             </StyledContainer>
         )
     }
@@ -158,9 +146,9 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
             ) } >
 
             <PageSuperAdminHeader />
-            <ColumnLayout className={'PageContent AppContent'} >
-                <div className={'H1 ExtraBold'}>Mega Wallet</div>
-                <div className={'Grid GridColumns2 MainBoxContainer'}>
+            <ColumnLayout className={'PageContent PageContentDefaultPadding AppContent'} >
+                <div className={'H2 ExtraBold'}>Mega Wallet</div>
+                <RowLayout className = { 'MainBoxContainer' } numColumns = { 2 } gap = { 16 } >
                     <StyledContainer className={'FlexColumn WalletPreview'}>
                         <div className={'FlexRow AddressLine'}>
                             <div className={'FlexRow IconAddressHolder'}>
@@ -191,44 +179,23 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                             >Transfer</Button>
                         </div>
                     </StyledContainer>
-                    <div className={'Grid GridColumns2 RoyaltyBoxesLayout'}>
-                        <RoyaltyBoxContainer
-                            heading={'Global Royalties'}
-                            amount={superAdminEntity.globalCudosRoyaltiesPercent}
-                            buttonText={'Change Global Royalties'}
-                            onClickChange={onClickChangeGlobalRoyalties}
-                        />
-                        <RoyaltyBoxContainer
-                            heading={'Global Fees'}
-                            amount={superAdminEntity.globalCudosFeesPercent}
-                            buttonText={'Change Global Fees'}
-                            onClickChange={onClickChangeGlobalFees}
-                        />
-                        <RoyaltyBoxContainer
-                            heading={'Resale Fees'}
-                            amount={superAdminEntity.resaleCudosRoyaltiesPercent}
-                            buttonText={'Change Resale Fees'}
-                            onClickChange={onClickChangeResaleFees}
-                        />
-                        <RoyaltyBoxContainer
-                            heading={'Royalty Fee upon first sale of NFT'}
-                            amount={superAdminEntity.firstSaleCudosRoyaltiesPercent}
-                            buttonText={'Change Royalty Fees'}
-                            onClickChange={onClickChangeFirstSaleFees}
-                        />
-                    </div>
-                </div>
-                <StyledContainer>
-                    <div className={'TableHeader FlexRow'}>
-                        <div className={'H3 ExtraBolc'}>MegaWallet Activity</div>
+                    <RowLayout className={'RoyaltyBoxesLayout'} numColumns = { 2 } gap = { 16 }>
+                        { renderBoxContainer('Global Royalties', superAdminEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) }
+                        { renderBoxContainer('Global Fees', superAdminEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) }
+                        { renderBoxContainer('Resale Fees', superAdminEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
+                        { renderBoxContainer('Royalty Fee upon first sale of NFT', superAdminEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
+                    </RowLayout>
+                </RowLayout>
+                <StyledLayout
+                    title = { 'MegaWallet Activity' }
+                    headerRight = {
                         <Select
                             className={'TableSort'}
                             onChange={superAdminMegaWalletPageStore.onChangeTableFilter}
-                            value={superAdminMegaWalletPageStore.walletEventType.eventType}
-                        >
+                            value={superAdminMegaWalletPageStore.walletEventType.eventType} >
                             <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
                         </Select>
-                    </div>
+                    } >
                     { walletEventsEntities === null ? (
                         <LoadingIndicator />
                     ) : (
@@ -240,7 +207,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                             tableState={superAdminMegaWalletPageStore.walletEventTableState}
                             rows={renderWalletActivityTableRows()} />
                     )}
-                </StyledContainer>
+                </StyledLayout>
             </ColumnLayout>
 
         </PageLayoutComponent>

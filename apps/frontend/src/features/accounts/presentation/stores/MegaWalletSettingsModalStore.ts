@@ -10,8 +10,6 @@ export enum MegaWalletSettings {
     GLOBAL_FEES = '3',
     RESALE_FEES = '4',
     FIRST_SALE_FEE = '5',
-    TRANSFER = '6',
-    DEPOSIT = '7'
 }
 
 export default class MegaWalletSettingsModalStore extends ModalStore {
@@ -34,10 +32,7 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
     }
 
     @action
-    showSignal(
-        superAdminEntity: SuperAdminEntity,
-        settingType: MegaWalletSettings,
-    ) {
+    showSignal(superAdminEntity: SuperAdminEntity, settingType: MegaWalletSettings) {
         this.superAdminEntity = superAdminEntity;
 
         if (this.isSettingTypeAddress()) {
@@ -101,14 +96,6 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
 
     isSettingTypeResaleFees(): boolean {
         return this.settingType === MegaWalletSettings.RESALE_FEES;
-    }
-
-    isSettingTransfer(): boolean {
-        return this.settingType === MegaWalletSettings.TRANSFER;
-    }
-
-    isSettingDeposit(): boolean {
-        return this.settingType === MegaWalletSettings.DEPOSIT;
     }
 
     onInputChange = (input) => {

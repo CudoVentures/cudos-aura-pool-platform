@@ -1,13 +1,16 @@
 import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import MegaWalletSettingsModalStore, { MegaWalletSettings } from '../stores/MegaWalletSettingsModalStore';
+import MegaWalletSettingsModalStore from '../stores/MegaWalletSettingsModalStore';
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import ValidationState, { InputValidation } from '../../../../core/presentation/stores/ValidationState';
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
 import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import Button from '../../../../core/presentation/components/Button';
+
+import '../styles/mega-wallet-settings-modal.css';
+import { InputAdornment } from '@mui/material';
 
 type Props = {
     megaWalletSettingsModalStore?: MegaWalletSettingsModalStore;
@@ -28,7 +31,7 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
 
     return (
         <ModalWindow
-            className = { 'ChangeValueModal' }
+            className = { 'MegaWalletSettingsModal' }
             modalStore = { megaWalletSettingsModalStore } >
             {megaWalletSettingsModalStore.isSettingTypeAddress() === true && (
                 <SettingLayout
@@ -83,9 +86,9 @@ const SettingLayout = inject((stores) => stores)(observer(({
     inputValidation,
     megaWalletSettingsModalStore,
 }: SettingLayoutProps) => <>
-    <div className = { 'TitleCnt' } >
-        <div className = { 'Title H2 Bold' } >{modalTitle}</div>
-        <div className = {'SubTitle B2'} >{modalSubTitle}</div>
+    <div className = { 'MegaWalletSettingsModalTitleCnt' } >
+        <div className = { 'H3 ExtraBold' } >{modalTitle}</div>
+        <div className = { 'B2 ColorNeutral060 '} >{modalSubTitle}</div>
     </div>
     <ColumnLayout>
         <Input
@@ -93,15 +96,21 @@ const SettingLayout = inject((stores) => stores)(observer(({
             inputType={inputType}
             value={megaWalletSettingsModalStore.getCurrentValue()}
             inputValidation={inputValidation}
-            gray={true}/>
+            gray={true}
+            InputProps = {{
+                endAdornment: <InputAdornment position="end"> % </InputAdornment>,
+            }}/>
         <Input
             label={`New ${label}`}
             inputType={inputType}
             inputValidation={inputValidation}
             value={megaWalletSettingsModalStore.value}
-            onChange={megaWalletSettingsModalStore.onInputChange}/>
+            onChange={megaWalletSettingsModalStore.onInputChange}
+            InputProps = {{
+                endAdornment: <InputAdornment position="end"> % </InputAdornment>,
+            }} />
         <Actions className = { 'SubmitButton' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL }>
-            <Button onClick={megaWalletSettingsModalStore.onSubmit} > Submit </Button>
+            <Button onClick={megaWalletSettingsModalStore.onSubmit} > Save Changes </Button>
         </Actions>
     </ColumnLayout>
 </>));
