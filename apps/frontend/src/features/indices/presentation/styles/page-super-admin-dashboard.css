@@ -1,9 +1,12 @@
-.PageSuperAdminDashboard .PageContent {
-    padding: 36px var(--page-spacing-h);
+.PageSuperAdminDashboard .TopPerformingMiningFarmsTable .TopPerformingMiningFarmImg {
+    width: 64px; height: 64px;
+    margin-right: 16px;
 }
 
-.PageSuperAdminDashboard .TableHeader {
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 24px;
+.PageSuperAdminDashboard .TopPerformingMiningFarmsTable .TopPerformingMiningFarmsCellTitle {
+    margin-bottom: 4px;
+}
+
+.PageSuperAdminDashboard .TopPerformingMiningFarmsTable .FarmVolumePriceRow {
+    gap: 4px;
 }

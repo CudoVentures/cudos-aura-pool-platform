@@ -14,9 +14,10 @@ type Props = {
     headerRight?: React.ReactNode;
     bottomCenterButtons?: React.ReactNode;
     bottomRightButtons?: React.ReactNode;
+    hasBottomDivider?: boolean;
 }
 
-export default function StyledLayout({ className, title, smallTitle, headerRight, bottomCenterButtons, bottomRightButtons, children }: React.PropsWithChildren < Props >) {
+export default function StyledLayout({ className, title, smallTitle, headerRight, bottomCenterButtons, bottomRightButtons, hasBottomDivider, children }: React.PropsWithChildren < Props >) {
     return (
         <StyledContainer className = { `StyledLayout ${className}` } containerPadding = { ContainerPadding.PADDING_24 } >
             <div className = { 'StyledLayoutHeader FlexRow FlexSplit' } >
@@ -30,7 +31,7 @@ export default function StyledLayout({ className, title, smallTitle, headerRight
             <div className = { 'StylesLayoutContent' } >
                 { children }
             </div>
-            <div className = { 'StyledLayoutBottom' } >
+            <div className = { `StyledLayoutBottom ${S.CSS.getClassName(hasBottomDivider, 'WithDivider')}` } >
                 { bottomCenterButtons !== null && (
                     <Actions height = { ActionsHeight.HEIGHT_32 } layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
                         { bottomCenterButtons }
@@ -52,4 +53,5 @@ StyledLayout.defaultProps = {
     headerRight: null,
     bottomCenterButtons: null,
     bottomRightButtons: null,
+    hasBottomDivider: false,
 }

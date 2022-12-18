@@ -1,10 +1,7 @@
 import TableState from '../../../../core/presentation/stores/TableState';
 import { makeAutoObservable, runInAction } from 'mobx';
-import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
-import CollectionFilterModel from '../../../collection/utilities/CollectionFilterModel';
 import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../../mining-farm/utilities/MiningFarmFilterModel';
-import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
@@ -37,20 +34,12 @@ export default class SuperAdminDashboardPageStore {
         this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, 5);
 
         this.topPerformingFarms = null;
-
-        this.topPerformingFarmsDetailsMap = new Map<string, MiningFarmDetailsEntity>();
+        this.topPerformingFarmsDetailsMap = new Map();
 
         makeAutoObservable(this);
     }
 
     init(): void {
-        this.topPerformingFarms = null;
-        this.topPerformingFarmsDetailsMap = new Map<string, MiningFarmDetailsEntity>();
-
-        this.fetch();
-    }
-
-    fetch(): void {
         this.fetchTopPerformingFarmEntities();
     }
 
@@ -59,19 +48,19 @@ export default class SuperAdminDashboardPageStore {
         miningFarmFilter.from = this.topFarmsTableState.tableFilterState.from;
         miningFarmFilter.count = this.topFarmsTableState.tableFilterState.itemsPerPage;
         miningFarmFilter.status = [MiningFarmStatus.APPROVED];
-        miningFarmFilter.orderBy = MiningFarmOrderBy.ERFORMANCE_DESC;
+        miningFarmFilter.orderBy = MiningFarmOrderBy.PERFORMANCE_DESC;
 
         const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter);
         const miningFarmDetails = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((entity) => entity.id));
-
-        console.log(miningFarmEntities);
+        const topPerformingFarmsDetailsMap = new Map();
+        miningFarmDetails.forEach((entity) => {
+            topPerformingFarmsDetailsMap.set(entity.miningFarmId, entity);
+        })
 
         runInAction(() => {
             this.topPerformingFarms = miningFarmEntities;
+            this.topPerformingFarmsDetailsMap = topPerformingFarmsDetailsMap;
             this.topFarmsTableState.tableFilterState.total = total;
-            miningFarmDetails.forEach((entity) => {
-                this.topPerformingFarmsDetailsMap.set(entity.miningFarmId, entity);
-            })
         })
     }
 

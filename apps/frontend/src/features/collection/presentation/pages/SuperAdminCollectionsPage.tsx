@@ -21,7 +21,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SuperAdminCollectionsPageStore from '../stores/SuperAdminCollectionsPageStore';
 
 type Props = {
-    superAdminCollectionsPageStore: SuperAdminCollectionsPageStore
+    superAdminCollectionsPageStore?: SuperAdminCollectionsPageStore
 }
 
 function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {

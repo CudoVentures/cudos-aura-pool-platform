@@ -119,7 +119,7 @@
 }
 
 html {
-	color: #000;
+	color: var(--color-neutral-100);
     font-family:Poppins, OpenSans, sans-serif; font-weight:400; font-size:14px;
     scroll-behavior: smooth;
 }
@@ -232,6 +232,14 @@ html.OverflowHidden {
 
 .ColorPrimary060 {
     color: var(--color-primary-060)
+}
+
+.ColorError060 {
+    color: var(--color-error-060)
+}
+
+.ColorSuccess060 {
+    color: var(--color-success-060)
 }
 
 /* PageContent */

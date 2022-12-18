@@ -7,5 +7,9 @@
 }
 
 .StyledLayout .StyledLayoutBottom {
-    margin-top: 48px;
+    padding-top: 32px;
+}
+
+.StyledLayout .StyledLayoutBottom.WithDivider {
+    border-top: 1px solid var(--color-neutral-020);
 }
