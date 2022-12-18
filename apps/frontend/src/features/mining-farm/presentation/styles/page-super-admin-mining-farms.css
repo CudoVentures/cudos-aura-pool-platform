@@ -1,25 +1,12 @@
-.PageSuperAdminMiningFarms .PageContent {
-    padding: 36px var(--page-spacing-h);
+.PageSuperAdminMiningFarms .AllMiningFarmsTable .MiningFarmImg {
+    width: 64px; height: 64px;
+    margin-right: 16px;
 }
 
-.PageSuperAdminMiningFarms .PageContent .TableHeaderRow .SearchInput {
-    width: 20%;
-} 
-
-.PageSuperAdminMiningFarms .PageContent .FarmNameImageCell {
-    gap: 16px;
-    align-items: center;
+.PageSuperAdminMiningFarms .AllMiningFarmsTable .MiningFarmsCellTitle {
+    margin-bottom: 4px;
 }
 
-.PageSuperAdminMiningFarms .PageContent .FarmNameImageCell .FarmImage {
-    width: 80px; height: 80px;
-    border-radius: 8px;
-    background-position: center;
-    background-size: cover;
-}
-
-.PageSuperAdminMiningFarms .PageContent .FarmVolumeCell,
-.PageSuperAdminMiningFarms .PageContent .FloorPrice {
-    gap: 5px;
-    align-items: flex-start;
+.PageSuperAdminMiningFarms .AllMiningFarmsTable .FarmVolumePriceRow {
+    gap: 4px;
 }

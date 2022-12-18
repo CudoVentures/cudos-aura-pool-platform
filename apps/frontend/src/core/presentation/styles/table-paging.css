@@ -1,7 +1,6 @@
 .TablePaging {
     display: flex;
     align-items: center; justify-content: center;
-    color: var(--color-neutral-050);
     font-size: 14px;
     padding: 12px;
 }
@@ -17,15 +16,19 @@
 }
 
 .TablePaging .IconArrow {
-    width: 16px; height: 16px;
+    width: 24px; height: 24px;
 }
 
 .TablePaging > div {
-    padding: 7px 12px;
+    width: 32px; height: 32px; line-height: 32px;
+    text-align: center;
+    border-radius: 8px;
+    /* padding: 7px 12px; */
     margin: 0 4px;
 }
 
 .TablePaging > div.Active {
-    color: var(--color-primary-060);
+    color: #fff;
     font-weight:700;
+    background: var(--color-neutral-100);
 }
