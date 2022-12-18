@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react'
 import BigNumber from 'bignumber.js';
+import { useNavigate } from 'react-router-dom';
 
 import SuperAdminMningFarmsPageStore from '../stores/SuperAdminMningFarmsPageStore';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import { InputAdornment } from '@mui/material';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
@@ -33,7 +35,13 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
         superAdminMiningFarmsPageStore.init();
     }, []);
 
+    const navigate = useNavigate();
     const { tableState, miningFarmFilterModel, miningFarmEntities } = superAdminMiningFarmsPageStore;
+
+    function onClickTopFarmRow(i: number) {
+        const miningFarmEntity = miningFarmEntities[i];
+        navigate(`${AppRoutes.CREDIT_MINING_FARM}/${miningFarmEntity.id}`);
+    }
 
     function renderAllFarmsRows() {
         return miningFarmEntities.map((miningFarmEntity) => createTableRow([
@@ -103,6 +111,7 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
                             widths={['40%', '20%', '20%', '20%']}
                             aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]}
                             tableState={tableState}
+                            onClickRow = { onClickTopFarmRow }
                             rows={renderAllFarmsRows()} />
                     )}
                 </StyledLayout>
