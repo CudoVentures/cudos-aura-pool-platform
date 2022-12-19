@@ -1,7 +1,10 @@
-query NftTransferHistory($tokenId: bigint!, $denomId: String!) {
-  nft_transfer_history(where: {id: {_eq: $tokenId}, denom_id: {_eq: $denomId}}) {
-    timestamp
-    old_owner
+query NftTransferHistory($denomId: String!, $tokenIds: [bigint!]) {
+  nft_transfer_history(where: {id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}) {
+    id
+    denom_id
     new_owner
+    old_owner
+    timestamp
+    transaction_hash
   }
 }

@@ -16948,12 +16948,12 @@ export type MarketplaceNftPriceSumTotalQueryVariables = Exact<{ [key: string]: n
 export type MarketplaceNftPriceSumTotalQuery = { __typename?: 'query_root', marketplace_nft_buy_history_aggregate: { __typename?: 'marketplace_nft_buy_history_aggregate', aggregate?: { __typename?: 'marketplace_nft_buy_history_aggregate_fields', sum?: { __typename?: 'marketplace_nft_buy_history_sum_fields', price?: any | null, usd_price?: any | null, btc_price?: any | null } | null } | null } };
 
 export type MarketplaceNftTradeHistoryQueryVariables = Exact<{
-  tokenId: Scalars['bigint'];
   denomId: Scalars['String'];
+  tokenIds?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
 }>;
 
 
-export type MarketplaceNftTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', btc_price: any, price: any, usd_price: any, timestamp: any, seller: string, buyer: string }> };
+export type MarketplaceNftTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string }> };
 
 export type MarketplaceNftPlatformTradeHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -17005,12 +17005,12 @@ export type NftNftsByTokenIdsQueryVariables = Exact<{
 export type NftNftsByTokenIdsQuery = { __typename?: 'query_root', nft_nft: Array<{ __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string }> };
 
 export type NftTransferHistoryQueryVariables = Exact<{
-  tokenId: Scalars['bigint'];
   denomId: Scalars['String'];
+  tokenIds?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
 }>;
 
 
-export type NftTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', timestamp: any, old_owner: string, new_owner: string }> };
+export type NftTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string }> };
 
 
 export const LastParsedHeightDocument = gql`
@@ -17079,16 +17079,19 @@ export const MarketplaceNftPriceSumTotalDocument = gql`
 }
     `;
 export const MarketplaceNftTradeHistoryDocument = gql`
-    query MarketplaceNftTradeHistory($tokenId: bigint!, $denomId: String!) {
+    query MarketplaceNftTradeHistory($denomId: String!, $tokenIds: [bigint!]) {
   marketplace_nft_buy_history(
-    where: {token_id: {_eq: $tokenId}, denom_id: {_eq: $denomId}}
+    where: {token_id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}
   ) {
-    btc_price
-    price
-    usd_price
-    timestamp
-    seller
     buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
   }
 }
     `;
@@ -17206,11 +17209,14 @@ export const NftNftsByTokenIdsDocument = gql`
 }
     `;
 export const NftTransferHistoryDocument = gql`
-    query NftTransferHistory($tokenId: bigint!, $denomId: String!) {
-  nft_transfer_history(where: {id: {_eq: $tokenId}, denom_id: {_eq: $denomId}}) {
-    timestamp
-    old_owner
+    query NftTransferHistory($denomId: String!, $tokenIds: [bigint!]) {
+  nft_transfer_history(where: {id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}) {
+    id
+    denom_id
     new_owner
+    old_owner
+    timestamp
+    transaction_hash
   }
 }
     `;

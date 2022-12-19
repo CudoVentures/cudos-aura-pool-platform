@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
+import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
+import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
+import { IntBoolValue } from '../common/utils';
 import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
@@ -25,25 +28,45 @@ export class StatisticsService {
     // eslint-disable-next-line no-empty-function
     ) {}
 
-    async fetchNftEventsByFilter(nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: TransferHistoryEntity[], total: number }> {
+    async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: TransferHistoryEntity[], total: number }> {
+        const nftFilterEntity = new NftFilterEntity();
 
-        let nftTransferHistory = [];
-        let nftTradeHistory = [];
-        
+        if(nftEventFilterEntity.isBySessionAccount() === true) {
+            nftFilterEntity.sessionAccount = IntBoolValue.TRUE;
+        }
 
-        
-        // fetch by session account
-        // fetch by nft id
-        // fetch by event type
-        const nftEntity = await this.nftService.findOne(nftEventFilterEntity.nftId)
-        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
-        const tokenId = nftEntity.tokenId;
-        const denomId = collectionEntity.denomId;
+        if (nftEventFilterEntity.isByNftId()) {
+            nftFilterEntity.nftIds = [nftEventFilterEntity.nftId];
+        }
+        //TODO fetch by event type
 
-         nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(tokenId, denomId);
-         nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(tokenId, denomId);
+        nftFilterEntity.from = nftEventFilterEntity.from;
+        nftFilterEntity.count = nftEventFilterEntity.count;
 
-        const history: TransferHistoryEntry[] = [];
+        const { nftEntities } = await this.nftService.findByFilter(userEntity, nftFilterEntity)
+
+        const collectionFilter = new CollectionFilterEntity();
+        collectionFilter.collectionIds = nftEntities.map((nftEntity) => nftEntity.collectionId.toString());
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilter);
+
+        const denomIdTokenIdsMap = new Map<string, string[]>();
+
+        collectionEntities.forEach((collectionEntity) => {
+            const denomId = collectionEntity.denomId;
+            const nftEntitiesForCollection = nftEntities.filter((nftEntity) => nftEntity.collectionId === collectionEntity.id);
+
+            if (nftEntitiesForCollection.length === 0){
+                throw Error('Some problem with relations collectionId and nft');
+            }
+
+            denomIdTokenIdsMap.set(denomId, nftEntitiesForCollection.map((nftEntity) => nftEntity.id));
+        });
+
+        const history: TransferHistoryEntity[] = [];
+
+        const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(denomId, tokenIds);
+        const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(denomId, tokenIds);
+
 
         nftTransferHistory.forEach((transfer) => {
             let eventType = 'transfer';

@@ -23,3 +23,5 @@ export class NftEventFilterValidationJson {
     @IsOptional()
         count: number;
 }
+
+
