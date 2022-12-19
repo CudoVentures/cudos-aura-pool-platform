@@ -15,10 +15,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { NFTService } from '../nft/nft.service';
 import { AppRequest } from '../common/commont.types';
-import { NftEventFilterDto } from './dto/event-history-filter.dto';
 import { NOT_EXISTS_INT } from '../common/utils';
 import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqTransferHistory } from './dto/requests.dto';
 import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResTransferHistory } from './dto/responses.dto';
+import NftTransferHistoryEntity from './entities/nft-transfer-history.entity';
 
 @ApiTags('Statistics')
 @Controller('statistics')
