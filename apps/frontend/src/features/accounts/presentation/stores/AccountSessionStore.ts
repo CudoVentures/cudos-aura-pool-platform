@@ -224,8 +224,17 @@ export default class AccountSessionStore {
             await this.loadAdminMiningFarmApproval();
 
             console.log('Logged as admin => wallet:', this.walletStore.isConnected())
-        } else if (this.isSuperAdmin() === true) {
-            console.log('Logged as super admin => wallet:', false);
+        } else if (accountEntity?.isSuperAdmin() === true && superAdminEntity !== null) {
+            await this.walletStore.tryConnect();
+
+            if (this.walletStore.isConnected() === true) {
+                // if (adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
+                //     await this.walletStore.disconnect();
+                //     return;
+                // }
+            }
+
+            console.log('Logged as super => wallet:', this.walletStore.isConnected())
         }
 
         runInAction(() => {

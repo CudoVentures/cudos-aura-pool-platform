@@ -32,17 +32,19 @@ import RowLayout from '../../../../core/presentation/components/RowLayout';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import '../styles/page-super-admin-mega-wallet.css'
 import MegaWalletBalance from '../components/MegaWalletBalance';
+import MegaWalletBalanceStore from '../stores/MegaWalletBalanceStore';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
     megaWalletSettingsModalStore?: MegaWalletSettingsModalStore;
     megaWalletTransferModalStore?: MegaWalletTransferModalStore;
+    megaWalletBalanceStore?: MegaWalletBalanceStore;
     cudosStore?: CudosStore;
     alertStore?: AlertStore;
     walletStore?: WalletStore;
 }
 
-function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTransferModalStore, megaWalletSettingsModalStore, cudosStore, walletStore, alertStore }: Props) {
+function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTransferModalStore, megaWalletBalanceStore, megaWalletSettingsModalStore, cudosStore, walletStore, alertStore }: Props) {
     const { walletEventsEntities, accountSessionStore } = superAdminMegaWalletPageStore;
     const { superAdminEntity } = accountSessionStore;
 
@@ -56,7 +58,9 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
             alertStore.show('Please connect your wallet.');
             return;
         }
-        megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.DEPOSIT);
+        megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.DEPOSIT, () => {
+            megaWalletBalanceStore.fetchWalletBalance();
+        });
     }
 
     function onClickTransfer() {
@@ -70,7 +74,9 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
             return;
         }
 
-        megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.TRANSFER);
+        megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.TRANSFER, () => {
+            megaWalletBalanceStore.fetchWalletBalance();
+        });
     }
 
     // const onClickChangeAddress = () => {
