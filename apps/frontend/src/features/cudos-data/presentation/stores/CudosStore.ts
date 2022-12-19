@@ -61,6 +61,10 @@ export default class CudosStore {
         return this.convertAcudosInUsd(acudosPrice).toFixed(4);
     }
 
+    static convertAcudosInCudos(acudosPrice: BigNumber): BigNumber {
+        return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+    }
+
     formatCudosPriceChangeInPercentage(): string {
         return `${this.getCudosPriceChangeInPercentage().toFixed(2)} %`;
     }

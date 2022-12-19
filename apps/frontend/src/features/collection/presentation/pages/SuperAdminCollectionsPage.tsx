@@ -49,7 +49,7 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
             <PageSuperAdminHeader />
 
             <ColumnLayout className={'PageContent AppContent'} >
-                <div className={'H1 ExtraBold'}>Collections</div>
+                <div className={'H2 ExtraBold'}>Collections</div>
                 <QueuedCollections dashboardMode = { false } />
                 <StyledContainer>
                     <div className={'TableHeaderRow FlexRow SpaceBetween'}>

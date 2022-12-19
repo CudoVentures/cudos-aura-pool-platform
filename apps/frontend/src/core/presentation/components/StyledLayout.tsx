@@ -19,7 +19,7 @@ type Props = {
 
 export default function StyledLayout({ className, title, smallTitle, headerRight, bottomCenterButtons, bottomRightButtons, hasBottomDivider, children }: React.PropsWithChildren < Props >) {
     return (
-        <StyledContainer className = { `StyledLayout ${className}` } containerPadding = { ContainerPadding.PADDING_24 } >
+        <StyledContainer className = { `StyledLayout FlexColumn ${className}` } containerPadding = { ContainerPadding.PADDING_24 } >
             <div className = { 'StyledLayoutHeader FlexRow FlexSplit' } >
                 <div className = { `StyleLayoutTitle ExtraBold H1 ${S.CSS.getClassName(smallTitle, 'StyleLayoutTitleSmall')}` } >{ title }</div>
                 { headerRight !== null && (

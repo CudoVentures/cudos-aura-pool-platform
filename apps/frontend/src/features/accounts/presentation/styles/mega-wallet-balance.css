@@ -1,0 +1,8 @@
+.MegaWalletBalance .AmountInCudos {
+    display: flex; align-items: baseline;
+    gap: 4px;
+}
+
+.MegaWalletBalance .AmountDollars {
+    color: var(--color-primary-060);
+}
