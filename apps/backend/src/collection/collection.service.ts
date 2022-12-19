@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CollectionRepo } from './repos/collection.repo';
+import { CollectionRepo, CollectionRepoColumn } from './repos/collection.repo';
 import { CollectionStatus } from './utils';
 import { NftRepo } from '../nft/repos/nft.repo';
 import { NftStatus } from '../nft/nft.types';
@@ -101,6 +101,17 @@ export class CollectionService {
             collectionEntities,
             total,
         };
+    }
+
+    async findByCollectionIds(collectionIds: number[]): Promise < CollectionEntity[] > {
+        const collectionRepos = await this.collectionModel.findAll({
+            where: {
+                [CollectionRepoColumn.ID]: collectionIds,
+            },
+        })
+        return collectionRepos.map((collectionRepo) => {
+            return CollectionEntity.fromRepo(collectionRepo);
+        });
     }
 
     async findIdsByStatus(status: CollectionStatus[]): Promise < number[] > {
