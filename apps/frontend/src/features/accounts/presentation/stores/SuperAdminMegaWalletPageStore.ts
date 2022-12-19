@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import S from '../../../../core/utilities/Main';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import WalletEventEntity, { WalletEventItemType, WalletEventType } from '../../entities/WalletEventEntity';
 import AccountSessionStore from './AccountSessionStore';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 export default class SuperAdminMegaWalletPageStore {
     cudosRepo: CudosRepo;
@@ -14,7 +16,7 @@ export default class SuperAdminMegaWalletPageStore {
     walletEventTableState: TableState;
 
     walletEventsEntities: WalletEventEntity[]
-    superAdminWalletAddessCudosBalance: BigNumber;
+    superAdminWalletBalanceInAcudos: BigNumber;
 
     constructor(cudosRepo: CudosRepo, accountSessionStore: AccountSessionStore) {
         this.cudosRepo = cudosRepo;
@@ -23,7 +25,7 @@ export default class SuperAdminMegaWalletPageStore {
         this.walletEventType = { eventType: 0 };
         this.walletEventTableState = new TableState(0, [], this.fetchMegaWalletActivity, 10);
         this.walletEventsEntities = null;
-        this.superAdminWalletAddessCudosBalance = null;
+        this.superAdminWalletBalanceInAcudos = null;
 
         makeAutoObservable(this);
     }
@@ -34,7 +36,7 @@ export default class SuperAdminMegaWalletPageStore {
     }
 
     async fetchWalletBalance() {
-        this.superAdminWalletAddessCudosBalance = await this.cudosRepo.fetchCudosBalance(this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress);
+        this.superAdminWalletBalanceInAcudos = await this.cudosRepo.fetchAcudosBalance(this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress);
     }
 
     async fetchMegaWalletActivity() {
@@ -58,7 +60,11 @@ export default class SuperAdminMegaWalletPageStore {
         // TODO:
     }
 
-    getSuperAdminBalance() {
-        return this.superAdminWalletAddessCudosBalance ?? new BigNumber(0);
+    getSuperAdminBalanceInAcudos(): BigNumber {
+        return this.superAdminWalletBalanceInAcudos ?? new BigNumber(0);
+    }
+
+    formatSuperAdminBalance(): string {
+        return numeral(CudosStore.convertAcudosInCudos(this.getSuperAdminBalanceInAcudos()).toString()).format('0,0.000000');
     }
 }

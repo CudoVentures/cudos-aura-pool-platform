@@ -95,7 +95,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
 
             <PageSuperAdminHeader />
             <ColumnLayout className = { 'PageContent PageContentDefaultPadding AppContent' } >
-                <div className={'H1 ExtraBold'}>Dashboard</div>
+                <div className={'H2 ExtraBold'}>Dashboard</div>
                 <RowLayout numColumns = { 2 }>
                     <div></div>
                     <StyledLayout

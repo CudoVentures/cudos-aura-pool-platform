@@ -8,6 +8,7 @@ export enum ActionsLayout {
     LAYOUT_ROW_CENTER = 'Row Center',
     LAYOUT_ROW_RIGHT = 'Row Right',
     LAYOUT_ROW_ENDS = 'Row Ends',
+    LAYOUT_ROW_FULL = 'Row Full',
     LAYOUT_COLUMN_FULL = 'Column Full',
     LAYOUT_COLUMN_CENTER = 'Column Center',
     LAYOUT_COLUMN_LEFT = 'Column Left',

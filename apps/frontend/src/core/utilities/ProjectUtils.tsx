@@ -198,14 +198,6 @@ export default class ProjectUtils {
         return { timestampFrom, timestampTo };
     }
 
-    static formatBalanceInCudosInt(balance: BigNumber): string {
-        return balance?.toFixed(0) ?? '0';
-    }
-
-    static formatBalanceInCudosFraction(balance: BigNumber): string {
-        return balance?.minus(balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0) ?? '0000';
-    }
-
 }
 
 function getQueryArray() {

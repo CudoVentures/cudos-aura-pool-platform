@@ -7,6 +7,6 @@ export default interface CudosRepo {
     setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
 
     fetchCudosData(): Promise < CudosDataEntity >;
-    fetchCudosBalance(address: string): Promise <BigNumber>;
+    fetchAcudosBalance(address: string): Promise <BigNumber>;
 
 }

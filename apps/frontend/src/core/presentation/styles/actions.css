@@ -23,6 +23,16 @@
     align-self:stretch;
 }
 
+.Actions.Row.Full {
+    width: 100%;
+}
+
+.Actions.Row.Full > * {
+    width: 0;
+    gap: 16px;
+    flex: 1 1 auto;
+}
+
 .Actions.Row {
     height:100%;
 }

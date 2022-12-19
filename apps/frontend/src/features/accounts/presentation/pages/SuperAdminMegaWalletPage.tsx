@@ -1,35 +1,36 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react'
+import numeral from 'numeral';
 
+import ProjectUtils from '../../../../core/utilities/ProjectUtils';
+import S from '../../../../core/utilities/Main';
+import SuperAdminMegaWalletPageStore from '../stores/SuperAdminMegaWalletPageStore';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import AlertStore from '../../../../core/presentation/stores/AlertStore';
+import MegaWalletSettingsModalStore, { MegaWalletSettings } from '../stores/MegaWalletSettingsModalStore';
+import MegaWalletTransferModalStore, { MegaWalletTransferType } from '../stores/MegaWalletTransferModalStore';
+
+import MenuItem from '@mui/material/MenuItem/MenuItem';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
 import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
-
-import '../styles/page-super-admin-mega-wallet.css'
 import Svg from '../../../../core/presentation/components/Svg';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Button, { ButtonColor, ButtonPadding } from '../../../../core/presentation/components/Button';
-import SuperAdminMegaWalletPageStore from '../stores/SuperAdminMegaWalletPageStore';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import Actions, { ActionsHeight } from '../../../../core/presentation/components/Actions';
+import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import Select from '../../../../core/presentation/components/Select';
-import S from '../../../../core/utilities/Main';
-import MenuItem from '@mui/material/MenuItem/MenuItem';
 import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
-import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import BigNumber from 'bignumber.js';
-import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import MegaWalletSettingsModal from '../components/MegaWalletSettingsModal';
-import MegaWalletSettingsModalStore, { MegaWalletSettings } from '../stores/MegaWalletSettingsModalStore';
-import MegaWalletTransferModalStore, { MegaWalletTransferType } from '../stores/MegaWalletTransferModalStore';
 import MegaWalletTransferModal from '../components/MegaWalletTransferModal';
 import StyledLayout from '../../../../core/presentation/components/StyledLayout';
 import RowLayout from '../../../../core/presentation/components/RowLayout';
+
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import '../styles/page-super-admin-mega-wallet.css'
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
@@ -55,7 +56,6 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
             return;
         }
         megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.DEPOSIT);
-
     }
 
     function onClickTransfer() {
@@ -152,32 +152,34 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                     <StyledContainer className={'FlexColumn WalletPreview'}>
                         <div className={'FlexRow AddressLine'}>
                             <div className={'FlexRow IconAddressHolder'}>
-                                <div className={'ProfilePicture '} style={ProjectUtils.makeBgImgStyle('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png')}/>
-                                <div className={'Address B2 Bold'}>{accountSessionStore.superAdminEntity.cudosRoyalteesAddress}</div>
+                                <div className={'ProfilePicture ImgContainNode'} style={ProjectUtils.makeBgImgStyle('/assets/img/profile-wallet.png')}/>
+                                <div className={'B2 Bold'}>{accountSessionStore.superAdminEntity.cudosRoyalteesAddress}</div>
                                 <Svg svg={ContentCopyIcon} className={'Clickable'} onClick={() => ProjectUtils.copyText(accountSessionStore.superAdminEntity.cudosRoyalteesAddress)}/>
                             </div>
-                            <Svg svg={BorderColorIcon} className={'Clickable EditAddressButton'} onClick={onClickChangeAddress}/>
+                            {/* <Svg svg={BorderColorIcon} className={'Clickable EditAddressButton'} onClick={onClickChangeAddress}/> */}
                         </div>
-                        <div className={'FlexColumn PriceColumn'}>
+                        <div className = { 'HorizontalSeparator' } />
+                        <div>
                             <div className={'FlexRow AmountInCudos'}>
-                                <div className={'H2 ExtraBold'}>{`${ProjectUtils.formatBalanceInCudosInt(superAdminMegaWalletPageStore.getSuperAdminBalance())}.${ProjectUtils.formatBalanceInCudosFraction(superAdminMegaWalletPageStore.getSuperAdminBalance())}`}</div>
-                                <div className={'H3 SemiBold AmountDenom'}>CUDOS</div>
+                                <div className={'H2 ExtraBold'}>{superAdminMegaWalletPageStore.formatSuperAdminBalance()}</div>
+                                <div className={'H3 SemiBold ColorNeutral060'}>CUDOS</div>
                             </div>
-                            <div className={'H3 SemiBold AmountDollars'}>${cudosStore.convertAcudosInUsdAsString(superAdminMegaWalletPageStore.getSuperAdminBalance().multipliedBy((new BigNumber(10)).pow(18)))}</div>
+                            <div className={'H3 SemiBold AmountDollars'}>{cudosStore.formatConvertedAcudosInUsd(superAdminMegaWalletPageStore.getSuperAdminBalanceInAcudos())}</div>
                         </div>
-                        <div className={'Grid GridColumns2 ActionsRow'}>
+                        <Actions className = { 'ActionsRow' } layout = { ActionsLayout.LAYOUT_ROW_FULL } >
                             <Button
                                 color={ButtonColor.SCHEME_4}
                                 padding={ButtonPadding.PADDING_48}
-                                onClick={onClickDeposit}
-                            >Deposit</Button>
-
+                                onClick={onClickDeposit}>
+                                Deposit
+                            </Button>
                             <Button
                                 color={ButtonColor.SCHEME_1}
                                 padding={ButtonPadding.PADDING_48}
-                                onClick={onClickTransfer}
-                            >Transfer</Button>
-                        </div>
+                                onClick={onClickTransfer}>
+                                Transfer
+                            </Button>
+                        </Actions>
                     </StyledContainer>
                     <RowLayout className={'RoyaltyBoxesLayout'} numColumns = { 2 } gap = { 16 }>
                         { renderBoxContainer('Global Royalties', superAdminEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) }

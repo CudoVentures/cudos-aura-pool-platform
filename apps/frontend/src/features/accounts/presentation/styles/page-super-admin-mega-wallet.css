@@ -13,41 +13,39 @@
 }
 
 .PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .AddressLine .IconAddressHolder .ProfilePicture {
-    height: 80px; width: 80px; border-radius: 50px;
+    height: 80px; width: 80px;
+    border-radius: 50%;
 }
 
-.PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .AddressLine .EditAddressButton {
+/* .PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .AddressLine .EditAddressButton {
     padding: 10px;
     border-radius: 12px;
     background-color: var(--color-neutral-100);
     color: #fff;
+} */
+
+.PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .HorizontalSeparator {
+    margin: 24px 0;
 }
 
-.PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .PriceColumn .AmountInCudos {
+.PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .AmountInCudos {
     gap: 10px;
     align-items: baseline;
 }
 
-.PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .PriceColumn .AmountDollars {
+.PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .AmountDollars {
     color: var(--color-primary-060);
 }
 
 .PageSuperAdminMegaWallet .MainBoxContainer .WalletPreview .ActionsRow {
-    width: 100%;
-    height: 40px;
-    gap: 20px;
+    margin-top: 70px;
 }
 
 .PageSuperAdminMegaWallet .MainBoxContainer .RoyaltyBoxesLayout .RoyaltyBoxAmount {
     margin-top: auto;
 }
 
-.PageSuperAdminMegaWall et .TableHeader {
-    justify-content: space-between;
-    align-items: center;
-}
-
-.PageSuperAdminMegaWallet .TableHeader .TableSort {
+.PageSuperAdminMegaWallet .TableSort {
     width: 100px;
 }
 

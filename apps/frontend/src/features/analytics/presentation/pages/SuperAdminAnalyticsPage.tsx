@@ -23,7 +23,7 @@ function SuperAdminAnalyticsPage({}: Props) {
 
             <PageSuperAdminHeader />
             <ColumnLayout className={'PageContent AppContent'} >
-                <div className={'H1 ExtraBold'}>Analytics</div>
+                <div className={'H2 ExtraBold'}>Analytics</div>
             </ColumnLayout>
 
         </PageLayoutComponent>
