@@ -11,14 +11,14 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import { GraphqlService } from '../graphql/graphql.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { NFTService } from '../nft/nft.service';
 import { AppRequest } from '../common/commont.types';
 import { NftEventFilterDto } from './dto/event-history-filter.dto';
 import { NOT_EXISTS_INT } from '../common/utils';
-import { ReqTransferHistory } from './dto/requests.dto';
-import { ResTransferHistory } from './dto/responses.dto';
+import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqTransferHistory } from './dto/requests.dto';
+import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResTransferHistory } from './dto/responses.dto';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -88,35 +88,39 @@ export class StatisticsController {
         //     total: history.length,
         // };
 
-        return {
-            nftEventEntities: [],
-            total: 0,
-        }
+        return new ResTransferHistory([], 0);
     }
 
-    @Get('earnings/nft/:id')
+    @ApiBearerAuth('access-token')
+    @Post('fetchNftEarningsBySessionAccount')
     @HttpCode(200)
-    async getNftEarnings(@Param('id') id: string, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise<{nftEarningsDto: string[]}> {
-        const nftEarningsDto = await this.statisticsService.fetchNftEarnings(id, { timestampFrom, timestampTo });
-
-        return { nftEarningsDto };
+    async fetchNftEarningsBySessionAccount(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqFetchNftEarningsBySessionAccount: ReqFetchNftEarningsBySessionAccount,
+    ): Promise < ResFetchNftEarningsBySessionAccount > {
+        const cudosAddress = req.sessionUserEntity.cudosWalletAddress;
+        const userEarningsEntity = await this.statisticsService.fetchEarningsByCudosAddress(cudosAddress, reqFetchNftEarningsBySessionAccount.timestampFrom, reqFetchNftEarningsBySessionAccount.timestampTo);
+        return new ResFetchNftEarningsBySessionAccount(userEarningsEntity);
     }
 
-    @Get('earnings/session-account')
+    @Post('fetchNftEarningsByNftId')
     @HttpCode(200)
-    async getAddressEarnings(@Req() req: AppRequest, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise <{userEarningsDto}> {
-        const cudosAddress = req.sessionUserEntity.cudosWalletAddress
-        const userEarningsDto = await this.statisticsService.fetchAddressEarnings(cudosAddress, { timestampFrom, timestampTo })
-
-        return { userEarningsDto }
+    async fetchNftEarningsByNftId(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqFetchNftEarningsByNftId: ReqFetchNftEarningsByNftId,
+    ): Promise < ResFetchNftEarningsByNftId > {
+        const nftEarningsEntity = await this.statisticsService.fetchEarningsByNftId(reqFetchNftEarningsByNftId.nftId, reqFetchNftEarningsByNftId.timestampFrom, reqFetchNftEarningsByNftId.timestampTo);
+        return new ResFetchNftEarningsByNftId(nftEarningsEntity);
     }
 
-    @Get('earnings/farm/:farmId')
+    @Post('fetchNftEarningsByMiningFarmId')
     @HttpCode(200)
-    async getFarmEarnings(@Param('farmId', ParseIntPipe) farmId: number, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise <any> {
-        const farmEarnings = await this.statisticsService.fetchFarmEarnings(farmId, { timestampFrom, timestampTo })
-
-        return farmEarnings
+    async fetchNftEarningsByMiningFarmId(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqFetchNftEarningsByNftId: ReqFetchNftEarningsByMiningFarmId,
+    ): Promise < ResFetchNftEarningsByMiningFarmId > {
+        const miningFarmEarningsEntity = await this.statisticsService.fetchEarningsByMiningFarmId(parseInt(reqFetchNftEarningsByNftId.miningFarmId), reqFetchNftEarningsByNftId.timestampFrom, reqFetchNftEarningsByNftId.timestampTo);
+        return new ResFetchNftEarningsByMiningFarmId(miningFarmEarningsEntity);
     }
 
     @Get('earnings/platform')

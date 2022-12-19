@@ -9,4 +9,8 @@ export class TransferHistoryEntity {
     usdPrice: string;
     btcPrice: string;
     acudosPrice: string;
+
+    static toJson(m: any): any {
+        return m;
+    }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import BigNumber from 'bignumber.js';
 import { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
@@ -9,8 +10,11 @@ import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
+import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
+import NftEarningsEntity from './entities/nft-earnings.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import { TransferHistoryEntity } from './entities/transfer-history.entity';
+import UserEarningsEntity from './entities/user-earnings.entity';
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { dayInMs, getDays } from './utils';
@@ -31,14 +35,14 @@ export class StatisticsService {
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: TransferHistoryEntity[], total: number }> {
         const nftFilterEntity = new NftFilterEntity();
 
-        if(nftEventFilterEntity.isBySessionAccount() === true) {
+        if (nftEventFilterEntity.isBySessionAccount() === true) {
             nftFilterEntity.sessionAccount = IntBoolValue.TRUE;
         }
 
         if (nftEventFilterEntity.isByNftId()) {
             nftFilterEntity.nftIds = [nftEventFilterEntity.nftId];
         }
-        //TODO fetch by event type
+        // TODO fetch by event type
 
         nftFilterEntity.from = nftEventFilterEntity.from;
         nftFilterEntity.count = nftEventFilterEntity.count;
@@ -55,7 +59,7 @@ export class StatisticsService {
             const denomId = collectionEntity.denomId;
             const nftEntitiesForCollection = nftEntities.filter((nftEntity) => nftEntity.collectionId === collectionEntity.id);
 
-            if (nftEntitiesForCollection.length === 0){
+            if (nftEntitiesForCollection.length === 0) {
                 throw Error('Some problem with relations collectionId and nft');
             }
 
@@ -66,7 +70,6 @@ export class StatisticsService {
 
         const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(denomId, tokenIds);
         const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(denomId, tokenIds);
-
 
         nftTransferHistory.forEach((transfer) => {
             let eventType = 'transfer';
@@ -105,36 +108,8 @@ export class StatisticsService {
         history.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
     }
 
-    async fetchNftEarnings(nftId: string, filters: { timestampFrom: string, timestampTo: string }): Promise<string[]> {
-        const nftEntity = await this.nftService.findOne(nftId)
-        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
-        const tokenId = nftEntity.tokenId;
-        const denomId = collectionEntity.denomId;
-
-        const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
-
-        if (!tokenId) {
-            return days.map((day) => null)
-        }
-        const payoutHistory = await this.nftPayoutHistoryModel.findAll({ where: {
-            token_id: tokenId,
-            denom_id: denomId,
-            payout_period_start: {
-                [Op.gte]: Number(filters.timestampFrom) / 1000,
-
-            },
-            payout_period_end: {
-                [Op.lte]: Number(filters.timestampTo) / 1000,
-            },
-        } })
-
-        const rewardsPerDay = days.map(((day) => payoutHistory.find((row) => (row.payout_period_start * 1000) >= day && (row.payout_period_end * 1000) <= day + dayInMs)?.reward.toString() || null))
-
-        return rewardsPerDay
-    }
-
-    async fetchAddressEarnings(cudosAddress: string, filters: { timestampFrom: string, timestampTo: string }): Promise<any> {
-        const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
+    async fetchEarningsByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
+        const days = getDays(Number(timestampFrom), Number(timestampTo))
 
         const ownerPayoutHistoryForPeriod = await this.nftOwnersPayoutHistoryModel.findAll({
             where: {
@@ -143,10 +118,10 @@ export class StatisticsService {
             include: [{ model: NftPayoutHistory,
                 where: {
                     payout_period_start: {
-                        [Op.gte]: Number(filters.timestampFrom) / 1000,
+                        [Op.gte]: timestampFrom / 1000,
                     },
                     payout_period_end: {
-                        [Op.lte]: Number(filters.timestampTo) / 1000,
+                        [Op.lte]: timestampTo / 1000,
                     },
                 },
             }],
@@ -162,18 +137,55 @@ export class StatisticsService {
 
         const totalNftsOwned = await this.graphqlService.fetchTotalNftsByAddress(cudosAddress)
 
-        return {
-            totalEarningInBtc,
-            totalNftBought: totalNftsOwned,
-            earningsPerDayInUsd: rewardsPerDay,
-            btcEarnedInBtc: 0,
-        }
+        const userEarningsEntity = new UserEarningsEntity();
+        userEarningsEntity.totalEarningInBtc = new BigNumber(totalEarningInBtc);
+        userEarningsEntity.totalNftBought = totalNftsOwned;
+        userEarningsEntity.earningsPerDayInUsd = rewardsPerDay;
+        userEarningsEntity.btcEarnedInBtc = new BigNumber(0);
+
+        return userEarningsEntity;
+        // return {
+        //     totalEarningInBtc,
+        //     totalNftBought: totalNftsOwned,
+        //     earningsPerDayInUsd: rewardsPerDay,
+        //     btcEarnedInBtc: 0,
+        // }
     }
 
-    async fetchFarmEarnings(farmId: number, filters: { timestampFrom: string, timestampTo: string }): Promise<any> {
-        const days = getDays(Number(filters.timestampFrom), Number(filters.timestampTo))
+    async fetchEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {
+        const nftEntity = await this.nftService.findOne(nftId)
+        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
+        const tokenId = nftEntity.tokenId;
+        const denomId = collectionEntity.denomId;
 
-        const collections = await this.collectionService.findByFarmId(farmId)
+        const days = getDays(Number(timestampFrom), Number(timestampTo))
+
+        if (!tokenId) {
+            return new NftEarningsEntity();
+        }
+        const payoutHistory = await this.nftPayoutHistoryModel.findAll({ where: {
+            token_id: tokenId,
+            denom_id: denomId,
+            payout_period_start: {
+                [Op.gte]: Number(timestampFrom) / 1000,
+
+            },
+            payout_period_end: {
+                [Op.lte]: Number(timestampTo) / 1000,
+            },
+        } })
+
+        const rewardsPerDay = days.map(((day) => payoutHistory.find((row) => (row.payout_period_start * 1000) >= day && (row.payout_period_end * 1000) <= day + dayInMs)?.reward.toString() || null))
+
+        const nftEarningsEntity = new NftEarningsEntity();
+        nftEarningsEntity.earningsPerDayInBtc = rewardsPerDay.map((s) => new BigNumber(s));
+        return nftEarningsEntity;
+    }
+
+    async fetchEarningsByMiningFarmId(miningFarmId: number, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
+        const days = getDays(Number(timestampFrom), Number(timestampTo))
+
+        const collections = await this.collectionService.findByFarmId(miningFarmId)
         const tempNftFilterEntity = new NftFilterEntity();
         tempNftFilterEntity.collectionIds = collections.map((collection) => collection.id.toString())
         const { nftEntities } = await this.nftService.findByFilter(null, tempNftFilterEntity);
@@ -187,10 +199,10 @@ export class StatisticsService {
                 tokenId: nft.tokenId,
                 denomId: collections.find((collection) => collection.id === nft.collectionId).denomId,
                 payout_period_start: {
-                    [Op.gte]: Number(filters.timestampFrom) / 1000,
+                    [Op.gte]: Number(timestampFrom) / 1000,
                 },
                 payout_period_end: {
-                    [Op.lte]: Number(filters.timestampTo) / 1000,
+                    [Op.lte]: Number(timestampTo) / 1000,
                 },
             } })
 
@@ -216,12 +228,13 @@ export class StatisticsService {
             return earningsForDay
         })
 
-        return {
-            totalMiningFarmSalesInAcudos: totalFarmSales.salesInAcudos || 0,
-            totalNftSold: nfts.length,
-            totalMiningFarmSalesInUsd: totalFarmSales.salesInUsd || 0,
-            maintenanceFeeDepositedInBtc,
-            earningsPerDayInUsd,
-        }
+        const miningFarmEarningsEntity = new MiningFarmEarningsEntity();
+        miningFarmEarningsEntity.totalMiningFarmSalesInAcudos = new BigNumber(totalFarmSales.salesInAcudos || 0);
+        miningFarmEarningsEntity.totalNftSold = nfts.length;
+        // miningFarmEarningsEntity.totalMiningFarmSalesInUsd = totalFarmSales.salesInUsd || 0;
+        miningFarmEarningsEntity.maintenanceFeeDepositedInBtc = new BigNumber(maintenanceFeeDepositedInBtc);
+        miningFarmEarningsEntity.earningsPerDayInUsd = earningsPerDayInUsd;
+
+        return miningFarmEarningsEntity;
     }
 }

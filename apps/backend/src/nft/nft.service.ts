@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize, { Op, Transaction } from 'sequelize';
+import sequelize, { Op, Transaction, where } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
@@ -9,6 +9,7 @@ import { NftOrderBy, NftStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
+import AppRepo from '../common/repo/app.repo';
 
 @Injectable()
 export class NFTService {
@@ -92,6 +93,18 @@ export class NFTService {
             total,
         };
 
+    }
+
+    async findByAccountId(accountId: number): Promise < NftEntity[] > {
+        const whereClause = new NftRepo();
+        whereClause.creatorId = accountId;
+        const nftRepos = await this.nftRepo.findAll({
+            where: AppRepo.toJsonWhere(whereClause),
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
     }
 
     async findOne(id: string): Promise < NftEntity > {

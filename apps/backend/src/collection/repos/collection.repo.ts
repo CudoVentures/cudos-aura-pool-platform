@@ -13,6 +13,23 @@ import { CollectionStatus } from '../utils';
 import AccountRepo from '../../account/repos/account.repo';
 import { MiningFarmRepo } from '../../farm/repos/mining-farm.repo';
 
+export const enum CollectionRepoColumn {
+    ID = 'id',
+    NAME = 'name',
+    DESCRIPTION = 'description',
+    DENOM_ID = 'denom_id',
+    HASHING_POWER = 'hashing_power',
+    ROYALTIES = 'royalties',
+    STATUS = 'status',
+    MAIN_IMAGE = 'main_image',
+    BANNER_IMAGE = 'banner_image',
+    FARM_ID = 'farm_id',
+    CREATOR_ID = 'creator_id',
+    DELETE_AT = 'deleted_at',
+    CREATE_AT = 'created_at',
+    UPDATED_AT = 'updated_at',
+}
+
 @Table({
     freezeTableName: true,
     tableName: 'collections',
