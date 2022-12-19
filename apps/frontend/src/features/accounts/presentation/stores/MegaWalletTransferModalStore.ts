@@ -20,6 +20,7 @@ export default class MegaWalletTransferModalStore extends ModalStore {
     @observable amount: string;
     @observable balance: BigNumber;
     @observable transferType: MegaWalletTransferType;
+    @observable onFinish: () => void
 
     constructor(accountSessionStore: AccountSessionStore, walletStore: WalletStore) {
         super();
@@ -37,13 +38,11 @@ export default class MegaWalletTransferModalStore extends ModalStore {
     }
 
     @action
-    showSignal(
-        superAdminEntity: SuperAdminEntity,
-        transferType: MegaWalletTransferType,
-    ) {
+    showSignal(superAdminEntity: SuperAdminEntity, transferType: MegaWalletTransferType, onFinish: () => void) {
         this.superAdminEntity = superAdminEntity;
         this.transferType = transferType;
         this.amount = '0';
+        this.onFinish = onFinish;
         this.fetchBalance();
 
         if (this.isTransfer() === true) {
@@ -106,6 +105,7 @@ export default class MegaWalletTransferModalStore extends ModalStore {
     onSubmit = async () => {
         try {
             await this.walletStore.sendCudos(this.destionationAddress, new BigNumber(this.amount));
+            this.hide();
         } catch (e) {
             console.log(e);
         }

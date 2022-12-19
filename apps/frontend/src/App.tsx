@@ -121,6 +121,7 @@ nftRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disable
 visitorRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 statisticsRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 accountRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+walletRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 
 bitcoinRepo.setPresentationAlertCallbacks(alertStore.show);
 cudosRepo.setPresentationAlertCallbacks(alertStore.show);
@@ -130,6 +131,7 @@ nftRepo.setPresentationAlertCallbacks(alertStore.show);
 visitorRepo.setPresentationAlertCallbacks(alertStore.show);
 statisticsRepo.setPresentationAlertCallbacks(alertStore.show);
 accountRepo.setPresentationAlertCallbacks(alertStore.show);
+walletRepo.setPresentationAlertCallbacks(alertStore.show);
 
 const App = () => {
 

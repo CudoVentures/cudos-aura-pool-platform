@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import Input, { InputType } from '../../../../core/presentation/components/Input';
-import ValidationState, { InputValidation } from '../../../../core/presentation/stores/ValidationState';
+import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
 import ModalWindow from '../../../../core/presentation/components/ModalWindow';
@@ -19,6 +19,11 @@ function MegaWalletTransferModal({ megaWalletTransferModalStore }: Props) {
     const validationCudosAddress = useRef(validationState.addCudosAddressValidation('Invalid cudos address')).current;
     const validationPositiveAmount = useRef(validationState.addValidation('Invalid amount', (value) => (new BigNumber(value)?.gt(0)))).current;
     const amountUnderBalance = useRef(validationState.addValidation('Amount bigger than balance', (value) => (new BigNumber(value)?.lte(megaWalletTransferModalStore.balance)))).current;
+
+    async function onClickSubmit() {
+        await megaWalletTransferModalStore.onSubmit();
+        megaWalletTransferModalStore?.onFinish();
+    }
 
     return (
         <ModalWindow
@@ -54,7 +59,7 @@ function MegaWalletTransferModal({ megaWalletTransferModalStore }: Props) {
                     </div>
                 </Input>
                 <Actions className = { 'SubmitButton' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL }>
-                    <Button onClick={megaWalletTransferModalStore.onSubmit} > Submit </Button>
+                    <Button onClick={onClickSubmit} > Submit </Button>
                 </Actions>
             </ColumnLayout>
         </ModalWindow>
