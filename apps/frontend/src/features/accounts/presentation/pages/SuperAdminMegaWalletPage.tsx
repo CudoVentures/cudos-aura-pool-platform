@@ -28,9 +28,10 @@ import MegaWalletTransferModal from '../components/MegaWalletTransferModal';
 import StyledLayout from '../../../../core/presentation/components/StyledLayout';
 import RowLayout from '../../../../core/presentation/components/RowLayout';
 
-import BorderColorIcon from '@mui/icons-material/BorderColor';
+// import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import '../styles/page-super-admin-mega-wallet.css'
+import MegaWalletBalance from '../components/MegaWalletBalance';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
@@ -72,9 +73,9 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
         megaWalletTransferModalStore.showSignal(superAdminEntity, MegaWalletTransferType.TRANSFER);
     }
 
-    const onClickChangeAddress = () => {
-        megaWalletSettingsModalStore.showSignal(MegaWalletSettings.ADRESS);
-    }
+    // const onClickChangeAddress = () => {
+    //     megaWalletSettingsModalStore.showSignal(MegaWalletSettings.ADRESS);
+    // }
 
     const onClickChangeGlobalRoyalties = () => {
         megaWalletSettingsModalStore.showSignal(MegaWalletSettings.GLOBAL_ROYALTIES);
@@ -159,13 +160,14 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                             {/* <Svg svg={BorderColorIcon} className={'Clickable EditAddressButton'} onClick={onClickChangeAddress}/> */}
                         </div>
                         <div className = { 'HorizontalSeparator' } />
-                        <div>
+                        {/* <div>
                             <div className={'FlexRow AmountInCudos'}>
                                 <div className={'H2 ExtraBold'}>{superAdminMegaWalletPageStore.formatSuperAdminBalance()}</div>
                                 <div className={'H3 SemiBold ColorNeutral060'}>CUDOS</div>
                             </div>
                             <div className={'H3 SemiBold AmountDollars'}>{cudosStore.formatConvertedAcudosInUsd(superAdminMegaWalletPageStore.getSuperAdminBalanceInAcudos())}</div>
-                        </div>
+                        </div> */}
+                        <MegaWalletBalance />
                         <Actions className = { 'ActionsRow' } layout = { ActionsLayout.LAYOUT_ROW_FULL } >
                             <Button
                                 color={ButtonColor.SCHEME_4}

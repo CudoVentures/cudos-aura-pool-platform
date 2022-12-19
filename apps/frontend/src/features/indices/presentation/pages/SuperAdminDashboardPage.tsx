@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
+import BigNumber from 'bignumber.js';
 
 import ViewCollectionModal from '../../../collection/presentation/components/ViewCollectionModal';
 import ViewMiningFarmModal from '../../../mining-farm/presentation/components/ViewMiningFarmModal';
@@ -8,6 +9,7 @@ import ChangePasswordModal from '../../../accounts/presentation/components/Chang
 import SuperAdminDashboardPageStore from '../stores/SuperAdminDashboardPageStore';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
@@ -24,8 +26,8 @@ import DefaultIntervalPicker from '../../../analytics/presentation/components/De
 import RowLayout from '../../../../core/presentation/components/RowLayout';
 
 import '../styles/page-super-admin-dashboard.css';
-import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
-import BigNumber from 'bignumber.js';
+import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
+import MegaWalletBalance from '../../../accounts/presentation/components/MegaWalletBalance';
 
 type Props = {
     superAdminDashboardPageStore?: SuperAdminDashboardPageStore
@@ -42,6 +44,10 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
         cudosStore.init();
         superAdminDashboardPageStore.init();
     }, []);
+
+    function onClickAnalytics() {
+        navigate(AppRoutes.SUPER_ADMIN_ANALYTICS);
+    }
 
     function onClickAllFarms() {
         navigate(AppRoutes.SUPER_ADMIN_MINING_FARMS);
@@ -97,7 +103,20 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
             <ColumnLayout className = { 'PageContent PageContentDefaultPadding AppContent' } >
                 <div className={'H2 ExtraBold'}>Dashboard</div>
                 <RowLayout numColumns = { 2 }>
-                    <div></div>
+                    <ColumnLayout>
+                        <StyledLayout
+                            title = { 'Total Platform Sales' }
+                            hasBottomDivider = { true }
+                            bottomRightButtons = {
+                                <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAnalytics }>See All Analytics</Button>
+                            } >
+
+                        </StyledLayout>
+                        <StyledContainer className = { 'MegaWalletCnt' } containerPadding = { ContainerPadding.PADDING_24 }>
+                            <div className = { 'MegaWalletBalanceTitle B1 SemiBold ColorNeutral070' } >MegaWallet Balance</div>
+                            <MegaWalletBalance />
+                        </StyledContainer>
+                    </ColumnLayout>
                     <StyledLayout
                         className = { 'BestPerformingFarms' }
                         title = { 'Top 5 Best Permorfming Farms' }

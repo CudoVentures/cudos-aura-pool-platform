@@ -1,3 +1,7 @@
+.PageSuperAdminDashboard .MegaWalletCnt .MegaWalletBalanceTitle {
+    margin-bottom: 16px;
+}
+
 .PageSuperAdminDashboard .TopPerformingMiningFarmsTable .TopPerformingMiningFarmImg {
     width: 64px; height: 64px;
     margin-right: 16px;

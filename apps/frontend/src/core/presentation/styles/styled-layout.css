@@ -8,6 +8,7 @@
 
 .StyledLayout .StyledLayoutBottom {
     padding-top: 32px;
+    margin-top: auto;
 }
 
 .StyledLayout .StyledLayoutBottom.WithDivider {
