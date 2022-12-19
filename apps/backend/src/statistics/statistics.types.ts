@@ -17,11 +17,17 @@ export class NftEventFilterValidationJson {
 
     @IsNumber()
     @IsOptional()
+        timestampFrom: number;
+
+    @IsNumber()
+    @IsOptional()
+        timestampTo: number;
+
+    @IsNumber()
+    @IsOptional()
         from: number;
 
     @IsNumber()
     @IsOptional()
         count: number;
 }
-
-

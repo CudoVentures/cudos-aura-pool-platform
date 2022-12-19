@@ -1,4 +1,4 @@
-import { TransferHistoryEntity } from '../entities/transfer-history.entity';
+import { TransferHistoryEntity } from '../entities/nft-transfer-history.entity';
 
 export class ResTransferHistory {
     nftEventEntityJsons: TransferHistoryEntity;
