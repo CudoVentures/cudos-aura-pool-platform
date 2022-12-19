@@ -15,7 +15,12 @@ import MyEarningsTab from '../components/user-profile/MyEarningsTab';
 import MyHistoryTab from '../components/user-profile/MyHistoryTab';
 import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 import MyNftsTab from '../components/user-profile/MyNftsTab';
+import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
+import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
+import Button, { ButtonColor } from '../../../../core/presentation/components/Button';
 
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import SvgCudosLogo from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-user-profile.css';
 
 type Props = {
@@ -36,17 +41,40 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
     const accountEntity = accountSessionStore.accountEntity;
     const userEntity = accountSessionStore.userEntity;
 
+    function onClickProfileImages() {
+
+    }
+
+    function onClickEditBtcAddres() {
+
+    }
+
     return (
         <PageLayoutComponent className = { 'PageUserProfile' }>
             <PageHeader />
 
             <div className={'PageContent AppContent'} >
                 <ProfileHeader coverPictureUrl={userEntity.coverImgUrl} profilePictureUrl={userEntity.profileImgUrl} />
+                <Actions layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
+                    <Button
+                        onClick={onClickProfileImages}
+                        color={ButtonColor.SCHEME_4} >
+                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                        Edit Profile images
+                    </Button>
+                    <Button
+                        onClick={onClickEditBtcAddres}
+                        color={ButtonColor.SCHEME_4} >
+                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                        Edit BTC Address
+                    </Button>
+                </Actions>
                 <div className={'ProfileHeaderDataRow'}>
                     <div className={'AccountName H2 Bold'}>{accountEntity.name}</div>
                     <div className={'FlexRow'}>
-                        <div className={'CudosWalletAddrees ColorPrimary060'}>{userEntity.cudosWalletAddress}</div>
-                        <div className={'JoinDate B3'}>joined {accountEntity.formatDateJoined()}</div>
+                        <Svg svg = { SvgCudosLogo } />
+                        <div className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</div>
+                        <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div>
                     </div>
                 </div>
                 <div className = { 'SectionDivider' } />

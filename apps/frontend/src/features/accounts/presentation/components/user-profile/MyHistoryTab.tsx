@@ -1,6 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
+import S from '../../../../../core/utilities/Main';
 import UserProfilePageStore from '../../stores/UserProfilePageStore';
 import { NftEventType } from '../../../../analytics/entities/NftEventEntity';
 
@@ -10,7 +11,6 @@ import Select from '../../../../../core/presentation/components/Select';
 import NftEventTable from '../../../../analytics/presentation/components/NftEventTable';
 
 import '../../styles/my-history-tab.css';
-import S from '../../../../../core/utilities/Main';
 
 type Props = {
     userProfilePageStore?: UserProfilePageStore

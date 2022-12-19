@@ -1,10 +1,8 @@
 import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Param, Res, HttpCode } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ResFetchSessionAccounts } from '../auth/dto/responses.dto';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';

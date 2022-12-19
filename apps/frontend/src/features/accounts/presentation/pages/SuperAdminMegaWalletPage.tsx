@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react'
-import numeral from 'numeral';
 
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import S from '../../../../core/utilities/Main';
@@ -10,6 +9,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import MegaWalletSettingsModalStore, { MegaWalletSettings } from '../stores/MegaWalletSettingsModalStore';
 import MegaWalletTransferModalStore, { MegaWalletTransferType } from '../stores/MegaWalletTransferModalStore';
+import MegaWalletBalanceStore from '../stores/MegaWalletBalanceStore';
 
 import MenuItem from '@mui/material/MenuItem/MenuItem';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
@@ -27,12 +27,11 @@ import MegaWalletSettingsModal from '../components/MegaWalletSettingsModal';
 import MegaWalletTransferModal from '../components/MegaWalletTransferModal';
 import StyledLayout from '../../../../core/presentation/components/StyledLayout';
 import RowLayout from '../../../../core/presentation/components/RowLayout';
+import MegaWalletBalance from '../components/MegaWalletBalance';
 
 // import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import '../styles/page-super-admin-mega-wallet.css'
-import MegaWalletBalance from '../components/MegaWalletBalance';
-import MegaWalletBalanceStore from '../stores/MegaWalletBalanceStore';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;

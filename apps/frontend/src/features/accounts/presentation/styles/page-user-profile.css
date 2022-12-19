@@ -6,12 +6,13 @@
     margin-top: 24px;
 }
 
-/* .PageUserProfile .PageContent .ProfileHeaderDataRow .LeftSide{
-    gap: 25px;
-} */
-
 .PageUserProfile .PageContent .ProfileHeaderDataRow .AccountName {
     margin-bottom: 24px;
+}
+
+.PageUserProfile .PageContent .ProfileHeaderDataRow .CudosWalletAddrees {
+    max-width: 180px;
+    margin-left: 4px;
 }
 
 .PageUserProfile .PageContent .ProfileHeaderDataRow .JoinDate {
@@ -24,28 +25,6 @@
     margin: 110px 0 24px 0;
     background: var(--color-neutral-020);
 }
-
-/* .PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide {
-    gap: 25px;
-}
-
-.PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide .BtcEarned {
-    gap: 25px;
-}
-
-.PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide .BtcEarned .BtcValueRow {
-    gap: 10px;
-    align-items: center;
-}
-
-.PageUserProfile .PageContent .ProfileHeaderDataRow .RightSide .Gray {
-    color: var(--color-neutral-060);
-}
-
-.PageUserProfile .PageContent .ProfileNavHolder{
-    justify-content: center;
-    margin-bottom: 50px;
-} */
 
 .PageUserProfile .PageContent .NavRowHolder {
     align-self: center;
