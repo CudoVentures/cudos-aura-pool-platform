@@ -6,6 +6,8 @@ import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
+import NftEventFilterEntity from './entities/nft-event-filter.entity';
+import { TransferHistoryEntity } from './entities/transfer-history.entity';
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { dayInMs, getDays } from './utils';
@@ -23,57 +25,62 @@ export class StatisticsService {
     // eslint-disable-next-line no-empty-function
     ) {}
 
-    // async fetchNftEventsByFilter(nftEventFilterDto: NftEventFilterDto): Promise<{ nftEventEntities: TransferHistoryEntry[], total: number }> {
+    async fetchNftEventsByFilter(nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: TransferHistoryEntity[], total: number }> {
 
-    //     // fetch by session account
-    //     // fetch by nft id
-    //     // fetch by event type
-    //     const nftEntity = await this.nftService.findOne(nftEventFilterDto.nftId)
-    //     const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
-    //     const tokenId = nftEntity.tokenId;
-    //     const denomId = collectionEntity.denomId;
+        let nftTransferHistory = [];
+        let nftTradeHistory = [];
+        
 
-    //     const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(tokenId, denomId);
-    //     const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(tokenId, denomId);
+        
+        // fetch by session account
+        // fetch by nft id
+        // fetch by event type
+        const nftEntity = await this.nftService.findOne(nftEventFilterEntity.nftId)
+        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
+        const tokenId = nftEntity.tokenId;
+        const denomId = collectionEntity.denomId;
 
-    //     const history: TransferHistoryEntry[] = [];
+         nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(tokenId, denomId);
+         nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(tokenId, denomId);
 
-    //     nftTransferHistory.forEach((transfer) => {
-    //         let eventType = 'transfer';
-    //         if (transfer.old_owner == '0x0') {
-    //             eventType = 'mint';
-    //         }
+        const history: TransferHistoryEntry[] = [];
 
-    //         history.push({
-    //             nftId: uid,
-    //             from: transfer.old_owner,
-    //             to: transfer.new_owner,
-    //             hashing_power,
-    //             timestamp: transfer.timestamp,
-    //             eventType,
-    //         });
-    //     });
+        nftTransferHistory.forEach((transfer) => {
+            let eventType = 'transfer';
+            if (transfer.old_owner == '0x0') {
+                eventType = 'mint';
+            }
 
-    //     nftTradeHistory.forEach((trade) => {
-    //         let eventType = 'sale';
-    //         if (trade.seller = '0x0') {
-    //             eventType = 'mint';
-    //         }
+            history.push({
+                nftId: uid,
+                from: transfer.old_owner,
+                to: transfer.new_owner,
+                hashing_power,
+                timestamp: transfer.timestamp,
+                eventType,
+            });
+        });
 
-    //         history.push({
-    //             nftId: uid,
-    //             from: trade.seller,
-    //             to: trade.buyer,
-    //             timestamp: trade.timestamp,
-    //             btcPrice: trade.btc_price,
-    //             usdPrice: trade.usd_price,
-    //             acudosPrice: trade.price,
-    //             eventType,
-    //         });
-    //     });
+        nftTradeHistory.forEach((trade) => {
+            let eventType = 'sale';
+            if (trade.seller = '0x0') {
+                eventType = 'mint';
+            }
 
-    //     history.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
-    // }
+            history.push({
+                nftId: uid,
+                from: trade.seller,
+                to: trade.buyer,
+                timestamp: trade.timestamp,
+                btcPrice: trade.btc_price,
+                usdPrice: trade.usd_price,
+                acudosPrice: trade.price,
+                eventType,
+            });
+        });
+
+        history.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+    }
 
     async fetchNftEarnings(nftId: string, filters: { timestampFrom: string, timestampTo: string }): Promise<string[]> {
         const nftEntity = await this.nftService.findOne(nftId)

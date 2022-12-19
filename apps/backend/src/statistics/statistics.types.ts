@@ -1,11 +1,11 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export enum NftEventType {
     TRANSFER = 1,
     MINT = 2,
 }
 
-export class NftEventFilterDto {
+export class NftEventFilterValidationJson {
 
     @IsNumber()
     @IsOptional()

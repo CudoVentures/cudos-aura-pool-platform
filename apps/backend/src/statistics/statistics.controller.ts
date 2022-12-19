@@ -8,15 +8,17 @@ import {
     Post,
     Body,
     HttpCode,
+    ValidationPipe,
 } from '@nestjs/common';
 import { GraphqlService } from '../graphql/graphql.service';
-import { TransferHistoryEntry } from './dto/transfer-history.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { NFTService } from '../nft/nft.service';
 import { AppRequest } from '../common/commont.types';
 import { NftEventFilterDto } from './dto/event-history-filter.dto';
 import { NOT_EXISTS_INT } from '../common/utils';
+import { ReqTransferHistory } from './dto/requests.dto';
+import { ResTransferHistory } from './dto/responses.dto';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -30,8 +32,13 @@ export class StatisticsController {
 
     @Post('history/nft')
     @HttpCode(200)
-    async getTransferHistory(@Body() nftEventFilterDto: NftEventFilterDto): Promise<{ nftEventDtos: TransferHistoryEntry[], total: number }> {
-        // const { nftEventEntities, total } = await this.statisticsService.fetchNftEventsByFilter(nftEventFilterDto);
+    async getTransferHistory(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqTransferHistory: ReqTransferHistory,
+    ): Promise<ResTransferHistory> {
+        // const nftEventFilterEntity = reqTransferHistory.nftEventFilterEntity;
+
+        // const { nftEventEntities, total } = await this.statisticsService.fetchNftEventsByFilter(nftEventFilterEntity);
 
         // const { token_id, collection } = await this.nftService.findOne(uid)
         // const { denom_id } = collection
@@ -81,7 +88,10 @@ export class StatisticsController {
         //     total: history.length,
         // };
 
-        return { nftEventDtos: [], total: 0 };
+        return {
+            nftEventEntities: [],
+            total: 0,
+        }
     }
 
     @Get('earnings/nft/:id')
@@ -105,6 +115,17 @@ export class StatisticsController {
     @HttpCode(200)
     async getFarmEarnings(@Param('farmId', ParseIntPipe) farmId: number, @Query('timestampFrom') timestampFrom: string, @Query('timestampTo') timestampTo: string): Promise <any> {
         const farmEarnings = await this.statisticsService.fetchFarmEarnings(farmId, { timestampFrom, timestampTo })
+
+        return farmEarnings
+    }
+
+    @Get('earnings/platform')
+    @HttpCode(200)
+    async getPlatformEarnings(): Promise <ResPlatformEarnings> {
+        // get filter from req
+        // fetch earnings
+        // return res
+        const platformEarnings = await this.statisticsService.fetchPlatformEarnings();
 
         return farmEarnings
     }
