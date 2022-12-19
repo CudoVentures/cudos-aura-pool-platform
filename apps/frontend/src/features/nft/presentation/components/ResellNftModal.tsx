@@ -19,6 +19,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import '../styles/resell-nft-modal.css';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import BigNumber from 'bignumber.js';
 
 type Props = {
     walletStore?: WalletStore;
@@ -29,6 +30,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
     const nftEntity = resellNftModalStore.nftEntity;
     const validationState = useRef(new ValidationState()).current;
     const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
+    const nftPriceValidationNotZero = useRef(validationState.addValidation('Price must be more than 0.', (value) => (new BigNumber(value).gt(0)))).current;
 
     function onClickSubmitForSell() {
         if (validationState.getIsErrorPresent() === true) {
@@ -63,7 +65,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                     onChange={resellNftModalStore.setPrice}
                     label={'Set NFT Price'}
                     placeholder={'0'}
-                    inputValidation={nftPriceValidation}
+                    inputValidation={[nftPriceValidation, nftPriceValidationNotZero]}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end" > CUDOS </InputAdornment>
