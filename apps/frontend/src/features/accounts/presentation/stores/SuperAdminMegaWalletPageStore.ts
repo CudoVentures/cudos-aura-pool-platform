@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
+import S from '../../../../core/utilities/Main';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import WalletEventEntity, { WalletEventItemType, WalletEventType } from '../../entities/WalletEventEntity';
 import AccountSessionStore from './AccountSessionStore';
@@ -8,7 +9,7 @@ export default class SuperAdminMegaWalletPageStore {
     cudosRepo: CudosRepo;
     accountSessionStore: AccountSessionStore;
 
-    walletEventType: {eventType: number}
+    walletEventType: number;
     walletEventTableState: TableState;
 
     walletEventsEntities: WalletEventEntity[]
@@ -17,7 +18,7 @@ export default class SuperAdminMegaWalletPageStore {
         this.cudosRepo = cudosRepo;
         this.accountSessionStore = accountSessionStore;
 
-        this.walletEventType = { eventType: 0 };
+        this.walletEventType = S.NOT_EXISTS;
         this.walletEventTableState = new TableState(0, [], this.fetchMegaWalletActivity, 10);
         this.walletEventsEntities = null;
 

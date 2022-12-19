@@ -202,7 +202,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                         <Select
                             className={'TableSort'}
                             onChange={superAdminMegaWalletPageStore.onChangeTableFilter}
-                            value={superAdminMegaWalletPageStore.walletEventType.eventType} >
+                            value={superAdminMegaWalletPageStore.walletEventType} >
                             <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
                         </Select>
                     } >
