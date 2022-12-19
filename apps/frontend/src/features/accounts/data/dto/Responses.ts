@@ -41,7 +41,7 @@ export class ResEditSessionAccount {
 
 }
 
-export class ResEditSuperAdminAccount {
+export class ResEditSessionSuperAdmin {
     superAdminEntity: SuperAdminEntity;
 
     constructor(axiosData: any) {

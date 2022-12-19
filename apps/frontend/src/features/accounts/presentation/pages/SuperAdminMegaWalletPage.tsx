@@ -73,24 +73,24 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
     }
 
     const onClickChangeAddress = () => {
-        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.ADRESS);
+        megaWalletSettingsModalStore.showSignal(MegaWalletSettings.ADRESS);
     }
 
     const onClickChangeGlobalRoyalties = () => {
-        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.GLOBAL_ROYALTIES);
+        megaWalletSettingsModalStore.showSignal(MegaWalletSettings.GLOBAL_ROYALTIES);
     }
 
     function onClickChangeGlobalFees() {
-        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.GLOBAL_FEES);
+        megaWalletSettingsModalStore.showSignal(MegaWalletSettings.GLOBAL_FEES);
     }
 
     function onClickChangeResaleFees() {
-        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.RESALE_FEES);
+        megaWalletSettingsModalStore.showSignal(MegaWalletSettings.RESALE_FEES);
 
     }
 
     function onClickChangeFirstSaleFees() {
-        megaWalletSettingsModalStore.showSignal(superAdminEntity, MegaWalletSettings.FIRST_SALE_FEE);
+        megaWalletSettingsModalStore.showSignal(MegaWalletSettings.FIRST_SALE_FEE);
 
     }
 

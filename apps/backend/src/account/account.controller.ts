@@ -8,11 +8,12 @@ import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
-import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSuperAdminAccount, ReqForgottenPassword } from './dto/requests.dto';
-import { ResEditSessionAccount, ResEditSuperAdminAccount, ResFetchFarmOwnerAccount } from './dto/responses.dto';
+import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSessionSuperAdmin, ReqForgottenPassword } from './dto/requests.dto';
+import { ResEditSessionAccount, ResEditSessionSuperAdmin, ResFetchFarmOwnerAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
 import SuperAdminEntity from './entities/super-admin.entity';
 import { IsSessionAccountGuard } from './guards/is-session-account.guard';
+import { IsSessionSuperAdminGuard } from './guards/is-session-super-admin.guard';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -47,19 +48,19 @@ export class AccountController {
         return new ResEditSessionAccount(accountEntity);
     }
 
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]), IsSessionAccountGuard)
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]), IsSessionSuperAdminGuard)
     @UseInterceptors(TransactionInterceptor)
-    @Post('editSuperAdminAccount')
+    @Post('editSessionSuperAdmin')
     @HttpCode(200)
-    async editSuperAdminAccount(
+    async editSessionSuperAdmin(
         @Req() req: AppRequest,
-        @Body(new ValidationPipe({ transform: true })) reqEditSuperAdminAccount: ReqEditSuperAdminAccount,
-    ): Promise < ResEditSuperAdminAccount > {
-        let superAdminEntity = SuperAdminEntity.fromJson(reqEditSuperAdminAccount.superAdminEntity);
+        @Body(new ValidationPipe({ transform: true })) reqEditSessionSuperAdmin: ReqEditSessionSuperAdmin,
+    ): Promise < ResEditSessionSuperAdmin > {
+        let superAdminEntity = SuperAdminEntity.fromJson(reqEditSessionSuperAdmin.superAdminEntity);
 
         superAdminEntity = await this.accountService.creditSuperAdmin(superAdminEntity, req.transaction);
 
-        return new ResEditSuperAdminAccount(superAdminEntity);
+        return new ResEditSessionSuperAdmin(superAdminEntity);
     }
 
     @UseInterceptors(TransactionInterceptor)

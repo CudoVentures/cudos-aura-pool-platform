@@ -24,7 +24,7 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
 
         this.accountSessionStore = accountSessionStore;
 
-        this.superAdminEntity = null;
+        // this.superAdminEntity = null;
         this.value = null;
         this.settingType = null;
 
@@ -32,11 +32,11 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
     }
 
     @action
-    showSignal(superAdminEntity: SuperAdminEntity, settingType: MegaWalletSettings) {
-        this.superAdminEntity = superAdminEntity;
+    showSignal(settingType: MegaWalletSettings) {
+        // this.superAdminEntity = superAdminEntity;
 
         if (this.isSettingTypeAddress()) {
-            this.value = superAdminEntity.cudosRoyalteesAddress;
+            this.value = this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress;
         }
 
         this.settingType = settingType;
@@ -49,30 +49,30 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
     hide = () => {
         this.value = null;
         this.settingType = null;
-        this.superAdminEntity = null;
+        // this.superAdminEntity = null;
 
         super.hide();
     }
 
     getCurrentValue(): string {
         if (this.isSettingTypeFirstSaleFees()) {
-            return this.superAdminEntity.firstSaleCudosRoyaltiesPercent.toString();
+            return this.accountSessionStore.superAdminEntity.firstSaleCudosRoyaltiesPercent.toString();
         }
 
         if (this.isSettingTypeResaleFees()) {
-            return this.superAdminEntity.resaleCudosRoyaltiesPercent.toString();
+            return this.accountSessionStore.superAdminEntity.resaleCudosRoyaltiesPercent.toString();
         }
 
         if (this.isSettingTypeGlobalRoyalties()) {
-            return this.superAdminEntity.globalCudosRoyaltiesPercent.toString();
+            return this.accountSessionStore.superAdminEntity.globalCudosRoyaltiesPercent.toString();
         }
 
         if (this.isSettingTypeGlobalFees()) {
-            return this.superAdminEntity.globalCudosFeesPercent.toString();
+            return this.accountSessionStore.superAdminEntity.globalCudosFeesPercent.toString();
         }
 
         if (this.isSettingTypeAddress()) {
-            return this.superAdminEntity.cudosRoyalteesAddress;
+            return this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress;
         }
 
         return '';
@@ -103,8 +103,7 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
     }
 
     onSubmit = async () => {
-        const superAdminEntity = new SuperAdminEntity();
-        Object.assign(superAdminEntity, this.superAdminEntity);
+        const superAdminEntity = this.accountSessionStore.superAdminEntity.clone();
 
         try {
             if (this.isSettingTypeAddress() === true) {
@@ -130,8 +129,7 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
                 superAdminEntity.resaleCudosRoyaltiesPercent = parseFloat(this.value);
             }
 
-            await this.accountSessionStore.editSuperAdminAccount(superAdminEntity);
-            Object.assign(this.superAdminEntity, superAdminEntity);
+            await this.accountSessionStore.editSessionSuperAdmin(superAdminEntity);
 
             this.hide();
         } catch (e) {

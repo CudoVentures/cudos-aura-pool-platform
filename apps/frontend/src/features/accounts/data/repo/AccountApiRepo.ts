@@ -101,10 +101,10 @@ export default class AccountApiRepo implements AccountRepo {
         }
     }
 
-    async editSuperAdminAccount(accountEntity: AccountEntity, superAdminEntity: SuperAdminEntity): Promise < void > {
+    async editSessionSuperAdmin(superAdminEntity: SuperAdminEntity): Promise < void > {
         try {
             this.disableActions?.();
-            const resultSuperAdminEntity = await this.accountApi.editSuperAdminAccount(accountEntity, superAdminEntity);
+            const resultSuperAdminEntity = await this.accountApi.editSessionSuperAdmin(superAdminEntity);
             Object.assign(superAdminEntity, resultSuperAdminEntity);
         } finally {
             this.enableActions?.();

@@ -13,13 +13,7 @@ export class ReqEditSessionAccount {
 
 }
 
-export class ReqEditSuperAdminAccount {
-    @IsDefined()
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested()
-    @Type(() => AccountJsonValidator)
-        accountEntity: AccountJsonValidator;
+export class ReqEditSessionSuperAdmin {
 
     @IsDefined()
     @IsNotEmptyObject()

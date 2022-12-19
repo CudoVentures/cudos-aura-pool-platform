@@ -66,13 +66,11 @@ export class ReqEditSessionAccount {
 
 }
 
-export class ReqEditSuperAdminAccount {
+export class ReqEditSessionSuperAdmin {
 
-    accountEntity: AccountEntity;
     superAdminEntity: SuperAdminEntity;
 
-    constructor(accountEntity: AccountEntity, superAdminEntity: SuperAdminEntity) {
-        this.accountEntity = AccountEntity.toJson(accountEntity);
+    constructor(superAdminEntity: SuperAdminEntity) {
         this.superAdminEntity = SuperAdminEntity.toJson(superAdminEntity);
     }
 

@@ -15,17 +15,10 @@ export default class SuperAdminEntity {
         this.superAdminId = S.Strings.NOT_EXISTS;
         this.accountId = S.Strings.NOT_EXISTS;
         this.cudosRoyalteesAddress = '';
-        this.firstSaleCudosRoyaltiesPercent = S.NOT_EXISTS
-        this.resaleCudosRoyaltiesPercent = S.NOT_EXISTS
-        this.globalCudosFeesPercent = S.NOT_EXISTS
-        this.globalCudosRoyaltiesPercent = S.NOT_EXISTS
-
-        // // TODO: REMOVE HARDCODED VALUES
-        // this.cudosRoyalteesAddress = 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0';
-        // this.firstSaleCudosRoyaltiesPercent = 2
-        // this.resaleCudosRoyaltiesPercent = 2.5
-        // this.globalCudosFeesPercent = 10
-        // this.globalCudosRoyaltiesPercent = 5
+        this.firstSaleCudosRoyaltiesPercent = S.NOT_EXISTS;
+        this.resaleCudosRoyaltiesPercent = S.NOT_EXISTS;
+        this.globalCudosFeesPercent = S.NOT_EXISTS;
+        this.globalCudosRoyaltiesPercent = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -34,7 +27,15 @@ export default class SuperAdminEntity {
         return this.superAdminId === S.Strings.NOT_EXISTS;
     }
 
-    static toJson(model: SuperAdminEntity) {
+    clone(): SuperAdminEntity {
+        return Object.assign(new SuperAdminEntity(), this);
+    }
+
+    copy(source: SuperAdminEntity) {
+        Object.assign(this, source);
+    }
+
+    static toJson(model: SuperAdminEntity): any {
         if (model === null) {
             return null;
         }

@@ -13,7 +13,7 @@ export class ResEditSessionAccount {
 
 }
 
-export class ResEditSuperAdminAccount {
+export class ResEditSessionSuperAdmin {
 
     superAdminEntity: SuperAdminJsonValidator;
 

@@ -189,8 +189,8 @@ export default class AccountSessionStore {
         });
     }
 
-    async editSuperAdminAccount(superAdminEntity: SuperAdminEntity) {
-        await this.accountRepo.editSuperAdminAccount(this.accountEntity, superAdminEntity)
+    async editSessionSuperAdmin(superAdminEntity: SuperAdminEntity) {
+        await this.accountRepo.editSessionSuperAdmin(superAdminEntity)
 
         runInAction(() => {
             Object.assign(this.superAdminEntity, superAdminEntity);
