@@ -1,7 +1,6 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
 import NftMarketplaceTradeHistoryEntity from '../../graphql/entities/nft-marketplace-trade-history.entity';
 import NftModuleNftTransferHistoryEntity from '../../graphql/entities/nft-module-nft-transfer-history';
-import { MarketplaceNftTradeHistoryQuery } from '../../graphql/types';
 
 const ZERO_ADDRESS = '0x0';
 
@@ -11,7 +10,7 @@ export enum NftTransferHistoryEventType {
     SALE = 'sale',
 }
 
-export class NftTransferHistoryEntity {
+export default class NftTransferHistoryEntity {
     nftId: string;
     denomId: string;
     tokenId: string;
@@ -64,5 +63,21 @@ export class NftTransferHistoryEntity {
         entity.acudosPrice = nftMarketplaceTradeHistoryEntity.price ?? entity.acudosPrice;
 
         return entity;
+    }
+
+    static toJson(entity: NftTransferHistoryEntity): any {
+        return {
+            'nftId': entity.nftId,
+            'denomId': entity.denomId,
+            'tokenId': entity.tokenId,
+            'seller': entity.seller,
+            'buyer': entity.buyer,
+            'timestamp': entity.timestamp,
+            'eventType': entity.eventType,
+            'price': entity.price,
+            'usdPrice': entity.usdPrice,
+            'btcPrice': entity.btcPrice,
+            'acudosPrice': entity.acudosPrice,
+        }
     }
 }
