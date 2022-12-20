@@ -3,6 +3,7 @@ import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
+import MiningFarmPerformanceEntity from '../../entities/MiningFarmPerformanceEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 
 export default interface MiningFarmRepo {
@@ -12,6 +13,7 @@ export default interface MiningFarmRepo {
 
     fetchAllMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
     fetchPopularMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
+    fetchBestPerformingMiningFarm(timestampFrom: number, timestampTo: number): Promise < { miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[] } >;
     fetchMiningFarmsByIds(miningFarmIds: string[], status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
     fetchMiningFarmById(miningFarmId: string, status?: MiningFarmStatus): Promise < MiningFarmEntity >;
     fetchMiningFarmBySessionAccountId(status?: MiningFarmStatus): Promise < MiningFarmEntity >;

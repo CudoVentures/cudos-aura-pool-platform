@@ -3,13 +3,16 @@ import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
+import MiningFarmPerformanceEntity from '../../entities/MiningFarmPerformanceEntity';
 
 export class ResFetchBestPerformingMiningFarms {
 
     miningFarmEntities: MiningFarmEntity[];
+    miningFarmPerformanceEntities: MiningFarmPerformanceEntity[];
 
-    constructor(miningFarmEntities: MiningFarmEntity[]) {
-        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e));
+    constructor(axiosData: any) {
+        this.miningFarmEntities = axiosData.miningFarmEntities.map((e) => MiningFarmEntity.fromJson(e));
+        this.miningFarmPerformanceEntities = axiosData.miningFarmPerformanceEntities.map((e) => MiningFarmPerformanceEntity.fromJson(e));
     }
 
 }

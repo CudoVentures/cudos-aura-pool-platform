@@ -50,8 +50,8 @@ export class FarmController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
     ): Promise < ResFetchBestPerformingMiningFarms > {
-        const miningFarmEntities = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo);
-        return new ResFetchBestPerformingMiningFarms(miningFarmEntities);
+        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo);
+        return new ResFetchBestPerformingMiningFarms(miningFarmEntities, miningFarmPerformanceEntities);
     }
 
     @Post('fetchMiningFarmsDetailsByIds')

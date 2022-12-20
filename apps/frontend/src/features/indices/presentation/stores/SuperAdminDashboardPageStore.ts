@@ -1,14 +1,13 @@
 import TableState from '../../../../core/presentation/stores/TableState';
 import { makeAutoObservable, runInAction } from 'mobx';
-import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
-import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../../mining-farm/utilities/MiningFarmFilterModel';
+import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
-import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
+import MiningFarmPerformanceEntity from '../../../mining-farm/entities/MiningFarmPerformanceEntity';
 
 export default class SuperAdminDashboardPageStore {
     miningFarmRepo: MiningFarmRepo;
@@ -20,8 +19,8 @@ export default class SuperAdminDashboardPageStore {
     topFarmsTableState: TableState;
     defaultIntervalPickerState: DefaultIntervalPickerState;
 
-    topPerformingFarms: MiningFarmEntity[];
-    topPerformingFarmsDetailsMap: Map<string, MiningFarmDetailsEntity>;
+    bestPerformingMiningFarms: MiningFarmEntity[];
+    miningFarmPerformanceEntitiesMap: Map < string, MiningFarmPerformanceEntity >;
 
     constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.miningFarmRepo = miningFarmRepo;
@@ -31,10 +30,10 @@ export default class SuperAdminDashboardPageStore {
         this.alertStore = alertStore;
 
         this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
-        this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, 5);
+        this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, Number.MAX_SAFE_INTEGER);
 
-        this.topPerformingFarms = null;
-        this.topPerformingFarmsDetailsMap = new Map();
+        this.bestPerformingMiningFarms = null;
+        this.miningFarmPerformanceEntitiesMap = new Map();
 
         makeAutoObservable(this);
     }
@@ -44,27 +43,20 @@ export default class SuperAdminDashboardPageStore {
     }
 
     fetchTopPerformingFarmEntities = async (): Promise<void> => {
-        const miningFarmFilter = new MiningFarmFilterModel();
-        miningFarmFilter.from = this.topFarmsTableState.tableFilterState.from;
-        miningFarmFilter.count = this.topFarmsTableState.tableFilterState.itemsPerPage;
-        miningFarmFilter.status = [MiningFarmStatus.APPROVED];
-        miningFarmFilter.orderBy = MiningFarmOrderBy.PERFORMANCE_DESC;
-
-        const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter);
-        const miningFarmDetails = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((entity) => entity.id));
-        const topPerformingFarmsDetailsMap = new Map();
-        miningFarmDetails.forEach((entity) => {
-            topPerformingFarmsDetailsMap.set(entity.miningFarmId, entity);
-        })
+        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmRepo.fetchBestPerformingMiningFarm(this.defaultIntervalPickerState.earningsTimestampFrom, this.defaultIntervalPickerState.earningsTimestampTo);
+        const miningFarmPerformanceEntitiesMap = new Map();
+        miningFarmPerformanceEntities.forEach((miningFarmPerformanceEntity) => {
+            miningFarmPerformanceEntitiesMap.set(miningFarmPerformanceEntity.miningFarmId, miningFarmPerformanceEntity);
+        });
 
         runInAction(() => {
-            this.topPerformingFarms = miningFarmEntities;
-            this.topPerformingFarmsDetailsMap = topPerformingFarmsDetailsMap;
-            this.topFarmsTableState.tableFilterState.total = total;
+            this.bestPerformingMiningFarms = miningFarmEntities;
+            this.miningFarmPerformanceEntitiesMap = miningFarmPerformanceEntitiesMap;
+            this.topFarmsTableState.tableFilterState.total = miningFarmEntities.length; // no paging here
         })
     }
 
-    getMiningFarmDetails(id: string): MiningFarmDetailsEntity {
-        return this.topPerformingFarmsDetailsMap.get(id) ?? null;
+    getMiningFarmPerformanceEntity(miningFarmId: string): MiningFarmPerformanceEntity {
+        return this.miningFarmPerformanceEntitiesMap.get(miningFarmId) ?? null;
     }
 }

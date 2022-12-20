@@ -7,6 +7,7 @@ import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import axios from '../../../../core/utilities/AxiosWrapper';
 import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm, ReqFetchBestPerformingMiningFarms, ReqFetchMiningFarmDetails } from '../dto/Requests';
 import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchBestPerformingMiningFarms, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners, ResFetchMiningFarmDetails } from '../dto/Responses';
+import MiningFarmPerformanceEntity from '../../entities/MiningFarmPerformanceEntity';
 
 export default class MiningFarmApi {
 
@@ -19,10 +20,13 @@ export default class MiningFarmApi {
         }
     }
 
-    async fetchBestPerformingMiningFarm(timestampFrom: number, timestampTo: number): Promise < MiningFarmEntity[] > {
-        const { data } = await axios.post('/api/v1/farm/fetchMiningFarmsDetailsByIds', new ReqFetchBestPerformingMiningFarms(timestampFrom, timestampTo));
+    async fetchBestPerformingMiningFarm(timestampFrom: number, timestampTo: number): Promise < { miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[] } > {
+        const { data } = await axios.post('/api/v1/farm/fetchBestPerformingMiningFarm', new ReqFetchBestPerformingMiningFarms(timestampFrom, timestampTo));
         const res = new ResFetchBestPerformingMiningFarms(data);
-        return res.miningFarmEntities;
+        return {
+            miningFarmEntities: res.miningFarmEntities,
+            miningFarmPerformanceEntities: res.miningFarmPerformanceEntities,
+        };
     }
 
     async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {

@@ -8,6 +8,7 @@ import MiningFarmFilterModel, { MiningFarmOrderBy } from '../../utilities/Mining
 import MiningFarmApi from '../data-sources/MiningFarmApi';
 import S from '../../../../core/utilities/Main';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
+import MiningFarmPerformanceEntity from '../../entities/MiningFarmPerformanceEntity';
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -54,7 +55,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         return miningFarmEntities;
     }
 
-    async fetchBestPerformingMiningFarm(timestampFrom: number, timestampTo: number): Promise < MiningFarmEntity[] > {
+    async fetchBestPerformingMiningFarm(timestampFrom: number, timestampTo: number): Promise < { miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[] } > {
         try {
             this.disableActions?.();
             return await this.miningFarmApi.fetchBestPerformingMiningFarm(timestampFrom, timestampTo);

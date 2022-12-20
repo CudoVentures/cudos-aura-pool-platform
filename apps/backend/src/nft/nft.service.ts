@@ -116,6 +116,18 @@ export class NFTService {
         });
     }
 
+    async findByCollectionIds(collectionIds: number[]) {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.COLLECTION_ID]: collectionIds,
+            },
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
     async findByCollectionIdsAndTokenIds(collectionIds: number[], tokenIds: string[]) {
         const nftRepos = await this.nftRepo.findAll({
             where: {

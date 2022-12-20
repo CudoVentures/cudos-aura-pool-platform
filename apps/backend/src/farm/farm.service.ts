@@ -25,6 +25,8 @@ import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity
 import { StatisticsService } from '../statistics/statistics.service';
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
 import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
+import BigNumber from 'bignumber.js';
+import { NOT_EXISTS_INT } from '../common/utils';
 
 @Injectable()
 export class FarmService {
@@ -100,7 +102,7 @@ export class FarmService {
         };
     }
 
-    async findBestPerformingMiningFarms(timestampFrom: number, timestampTo: number): Promise < MiningFarmEntity[] > {
+    async findBestPerformingMiningFarms(timestampFrom: number, timestampTo: number): Promise < { miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[] } > {
         const nftToMiningFarmIdsMap = new Map < string, number >();
         const collectionToMiningFarmIdsMap = new Map < number, number >();
         const miningFarmIdToVolumeInUsdMap = new Map < number, number >();
@@ -113,8 +115,8 @@ export class FarmService {
         const { nftEventEntities, nftEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
         const collectionIds = nftEntities.map((nftEntity) => nftEntity.collectionId);
         const collectionEntities = await this.collectionService.findByCollectionIds(collectionIds);
-        const miningFarmIds = collectionEntities.map((collectionEntity) => collectionEntity.farmId);
-        const miningFarmEntities = await this.findMiningFarmByIds(miningFarmIds);
+        let miningFarmIds = collectionEntities.map((collectionEntity) => collectionEntity.farmId);
+        let miningFarmEntities = await this.findMiningFarmByIds(miningFarmIds);
 
         collectionEntities.forEach((collectionEntity) => {
             collectionToMiningFarmIdsMap.set(collectionEntity.id, collectionEntity.farmId);
@@ -135,11 +137,71 @@ export class FarmService {
             return volumeInUsdB - volumeInUsdA;
         });
 
-        return miningFarmEntities;
+        // miningFarmEntities = await this.findMiningFarmByIds([1]); // debug
+        miningFarmEntities = miningFarmEntities.slice(0, 5);
+        miningFarmIds = miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id);
+
+        const miningFarmPerformanceEntities = await this.findMiningFarmPerformanceByIds(miningFarmIds);
+
+        return { miningFarmEntities, miningFarmPerformanceEntities };
     }
 
-    async findMiningFarmPerformanceByIds(ids: number): Promise < MiningFarmPerformanceEntity > {
+    async findMiningFarmPerformanceByIds(miningFarmIds: number[]): Promise < MiningFarmPerformanceEntity[] > {
+        const selectedMiningFarmIds = new Set(miningFarmIds);
+        const miningFarmIdToPerformanceEntitiesMap = new Map < number, MiningFarmPerformanceEntity >();
+        const nftToMiningFarmIdsMap = new Map < string, number >();
+        const collectionToMiningFarmIdsMap = new Map < number, number >();
 
+        const date = new Date();
+        date.setDate(date.getDate() - 1);
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.timestampFrom = Date.now();
+        nftEventFilterEntity.timestampTo = date.getTime();
+        nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT, NftTransferHistoryEventType.SALE];
+        const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
+
+        const collectionEntities = await this.collectionService.findByMiningFarmIds(miningFarmIds);
+        const collectionIds = collectionEntities.map((collectionEntity) => collectionEntity.id);
+        const nftEntities = await this.nftService.findByCollectionIds(collectionIds);
+        collectionEntities.forEach((collectionEntity) => {
+            collectionToMiningFarmIdsMap.set(collectionEntity.id, collectionEntity.farmId);
+        });
+        miningFarmIds.forEach((miningFarmId) => {
+            miningFarmIdToPerformanceEntitiesMap.set(miningFarmId, MiningFarmPerformanceEntity.newInstanceForMiningFarm(miningFarmId));
+        });
+        nftEntities.forEach((nftEntity) => {
+            const miningFarmId = collectionToMiningFarmIdsMap.get(nftEntity.collectionId);
+            nftToMiningFarmIdsMap.set(nftEntity.id, miningFarmId);
+
+            const miningFarmPerformanceEntity = miningFarmIdToPerformanceEntitiesMap.get(miningFarmId);
+            const nftPriceInACudos = new BigNumber(nftEntity.price);
+            if (miningFarmPerformanceEntity.floorPriceInAcudos.gt(nftPriceInACudos) === true) {
+                miningFarmPerformanceEntity.floorPriceInAcudos = nftPriceInACudos;
+            }
+        });
+
+        nftEventEntities.forEach((nftEventEntity) => {
+            const miningFarmId = nftToMiningFarmIdsMap.get(nftEventEntity.nftId) ?? NOT_EXISTS_INT;
+            if (selectedMiningFarmIds.has(miningFarmId) === false) {
+                return;
+            }
+
+            let miningFarmPerformanceEntity = miningFarmIdToPerformanceEntitiesMap.get(miningFarmId);
+            if (miningFarmPerformanceEntity === undefined) {
+                miningFarmPerformanceEntity = MiningFarmPerformanceEntity.newInstanceForMiningFarm(miningFarmId);
+                miningFarmIdToPerformanceEntitiesMap.set(miningFarmId, miningFarmPerformanceEntity);
+            }
+
+            miningFarmPerformanceEntity.volumePer24HoursInAcudos.plus(nftEventEntity.transferPriceInAcudos);
+            miningFarmPerformanceEntity.volumePer24HoursInUsd.plus(nftEventEntity.transferPriceInUsd);
+        });
+
+        const miningFarmPerformanceEntities = [];
+        miningFarmIdToPerformanceEntitiesMap.forEach((miningFarmPerformanceEntity) => {
+            miningFarmPerformanceEntities.push(miningFarmPerformanceEntity);
+        });
+
+        return miningFarmPerformanceEntities;
     }
 
     async findMiningFarmById(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < MiningFarmEntity > {
@@ -151,12 +213,12 @@ export class FarmService {
     }
 
     async findMiningFarmByIds(miningFarmIds: number[]): Promise < MiningFarmEntity[] > {
-        const miningFarmRepo = await this.miningFarmRepo.findAll({
+        const miningFarmRepos = await this.miningFarmRepo.findAll({
             where: {
                 [MiningFarmRepoColumn.ID]: miningFarmIds,
             },
         });
-        return miningFarmRepo.map((miningFarmRepo) => {
+        return miningFarmRepos.map((miningFarmRepo) => {
             return MiningFarmEntity.fromRepo(miningFarmRepo);
         });
     }
