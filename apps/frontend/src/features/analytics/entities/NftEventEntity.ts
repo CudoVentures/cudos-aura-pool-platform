@@ -40,6 +40,10 @@ export default class NftEventEntity {
         makeAutoObservable(this);
     }
 
+    hasPrice(): boolean {
+        return this.transferPriceInAcudos.eq(new BigNumber(S.NOT_EXISTS)) === false;
+    }
+
     formatTransferPriceInCudos(): string {
         return `${this.transferPriceInAcudos.div(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(2)} CUDOS`;
     }

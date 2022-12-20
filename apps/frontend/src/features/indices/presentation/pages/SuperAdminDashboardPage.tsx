@@ -26,6 +26,9 @@ import DefaultIntervalPicker from '../../../analytics/presentation/components/De
 import RowLayout from '../../../../core/presentation/components/RowLayout';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 import MegaWalletBalance from '../../../accounts/presentation/components/MegaWalletBalance';
+import ChartHeading from '../../../analytics/presentation/components/ChartHeading';
+import DailyChart from '../../../analytics/presentation/components/DailyChart';
+import ChartInfo from '../../../analytics/presentation/components/ChartInfo';
 
 import '../styles/page-super-admin-dashboard.css';
 
@@ -36,7 +39,7 @@ type Props = {
 
 function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: Props) {
     const bestPerformingMiningFarms = superAdminDashboardPageStore.bestPerformingMiningFarms;
-    const defaultIntervalPickerState = superAdminDashboardPageStore.defaultIntervalPickerState;
+    const { totalEarningsEntity, earningsDefaultIntervalPickerState, farmsDefaultIntervalPickerState } = superAdminDashboardPageStore;
 
     const navigate = useNavigate();
 
@@ -109,7 +112,27 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                             bottomRightButtons = {
                                 <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAnalytics }>See All Analytics</Button>
                             } >
-
+                            { totalEarningsEntity === null ? (
+                                <LoadingIndicator />
+                            ) : (
+                                <>
+                                    <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
+                                        <ChartHeading
+                                            leftContent = { (
+                                                <>
+                                                    <ChartInfo label = { 'Total Platform Sales'} value = { cudosStore.formatConvertedAcudosInUsd(totalEarningsEntity.totalSalesInAcudos)} />
+                                                </>
+                                            ) }
+                                            rightContent = { (
+                                                <DefaultIntervalPicker defaultIntervalPickerState = { earningsDefaultIntervalPickerState } />
+                                            ) } />
+                                        <DailyChart
+                                            timestampFrom = { earningsDefaultIntervalPickerState.earningsTimestampFrom }
+                                            timestampTo = { earningsDefaultIntervalPickerState.earningsTimestampTo }
+                                            data = { totalEarningsEntity.earningsPerDayInUsd } />
+                                    </StyledContainer>
+                                </>
+                            ) }
                         </StyledLayout>
                         <StyledContainer className = { 'MegaWalletCnt' } containerPadding = { ContainerPadding.PADDING_24 }>
                             <div className = { 'MegaWalletBalanceTitle B1 SemiBold ColorNeutral070' } >MegaWallet Balance</div>
@@ -121,7 +144,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                         title = { 'Top 5 Best Permorfming Farms' }
                         hasBottomDivider = { true }
                         headerRight = {
-                            <DefaultIntervalPicker defaultIntervalPickerState = { defaultIntervalPickerState } />
+                            <DefaultIntervalPicker defaultIntervalPickerState = { farmsDefaultIntervalPickerState } />
                         }
                         bottomRightButtons = {
                             <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAllFarms }>See all farms</Button>

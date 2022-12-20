@@ -107,7 +107,6 @@ export class StatisticsService {
         const nftEventEntities: NftEventEntity[] = [];
 
         nftModuleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
-
             const nftMapForDenom = denomIdTokenIdNftsMap.get(nftModuleNftTransferEntity.denomId);
             if (!nftMapForDenom) {
                 return;
@@ -119,14 +118,14 @@ export class StatisticsService {
                 return;
             }
 
-            const nftTransferHistoryEntity = NftEventEntity.fromNftModuleTransferHistory(nftModuleNftTransferEntity);
-            nftTransferHistoryEntity.nftId = nftId;
+            const nftEventEntity = NftEventEntity.fromNftModuleTransferHistory(nftModuleNftTransferEntity);
+            nftEventEntity.nftId = nftId;
 
-            nftEventEntities.push(nftTransferHistoryEntity);
+            nftEventEntities.push(nftEventEntity);
         });
 
         nftMarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
-
+            console.log(nftMarketplaceTradeHistoryEntity)
             const nftMapForDenom = denomIdTokenIdNftsMap.get(nftMarketplaceTradeHistoryEntity.denomId);
             if (!nftMapForDenom) {
                 return;
@@ -138,10 +137,10 @@ export class StatisticsService {
                 return;
             }
 
-            const nftTransferHistoryEntity = NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity);
-            nftTransferHistoryEntity.nftId = nftId;
+            const nftEventEntity = NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity);
+            nftEventEntity.nftId = nftId;
 
-            nftEventEntities.push(nftTransferHistoryEntity);
+            nftEventEntities.push(nftEventEntity);
         });
 
         // make nft map for faster filter later

@@ -73,8 +73,13 @@ function NftEventTable({ className, tableState, nftEventEntities, getNftEntityBy
                 tableCells.concat([
                     createTableCell((
                         <div className={'FlexColumn'}>
-                            <div className={'B2 Bold'}>{nftEventEntity.formatTransferPriceInCudos()}</div>
-                            <div className={'B3 SemiBold'}>{nftEventEntity.formatTransferPriceInUsd()}</div>
+                            {nftEventEntity.hasPrice() === true && (<>
+                                <div className={'B2 Bold'}>{nftEventEntity.formatTransferPriceInCudos()}</div>
+                                <div className={'B3 SemiBold'}>{nftEventEntity.formatTransferPriceInUsd()}</div>
+                            </>)}
+                            {nftEventEntity.hasPrice() === false && (
+                                'N/A'
+                            )}
                         </div>
                     )),
                     createTableCellString(nftEventEntity.quantity.toString()),

@@ -51,8 +51,7 @@ export default class NftEventEntity {
     static fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) {
         const entity = new NftEventEntity();
 
-        console.log(nftMarketplaceTradeHistoryEntity);
-        entity.eventType = NftTransferHistoryEventType.SALE;
+        entity.eventType = nftMarketplaceTradeHistoryEntity.seller === ZERO_ADDRESS ? NftTransferHistoryEventType.MINT : NftTransferHistoryEventType.SALE;
         entity.denomId = nftMarketplaceTradeHistoryEntity.denomId ?? entity.denomId;
         entity.tokenId = nftMarketplaceTradeHistoryEntity.tokenId ?? entity.tokenId;
         entity.fromAddress = nftMarketplaceTradeHistoryEntity.seller ?? entity.fromAddress;

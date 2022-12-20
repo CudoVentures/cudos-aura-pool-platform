@@ -8,42 +8,55 @@ import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import MiningFarmPerformanceEntity from '../../../mining-farm/entities/MiningFarmPerformanceEntity';
+import TotalEarningsEntity from '../../../analytics/entities/TotalEarningsEntity';
+import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
 
 export default class SuperAdminDashboardPageStore {
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
+    statisticsRepo: StatisticsRepo;
     walletStore: WalletStore;
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
 
     topFarmsTableState: TableState;
-    defaultIntervalPickerState: DefaultIntervalPickerState;
+    earningsDefaultIntervalPickerState: DefaultIntervalPickerState;
+    farmsDefaultIntervalPickerState: DefaultIntervalPickerState;
 
     bestPerformingMiningFarms: MiningFarmEntity[];
     miningFarmPerformanceEntitiesMap: Map < string, MiningFarmPerformanceEntity >;
+    totalEarningsEntity: TotalEarningsEntity;
 
-    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
+    constructor(statisticsRepo: StatisticsRepo, miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
+        this.statisticsRepo = statisticsRepo;
         this.walletStore = walletStore;
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
 
-        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
         this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, Number.MAX_SAFE_INTEGER);
+        this.earningsDefaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTotalEarnngsEntity);
+        this.farmsDefaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
 
         this.bestPerformingMiningFarms = null;
         this.miningFarmPerformanceEntitiesMap = new Map();
+        this.totalEarningsEntity = null;
 
         makeAutoObservable(this);
     }
 
     init(): void {
+        this.fetchTotalEarnngsEntity();
         this.fetchTopPerformingFarmEntities();
     }
 
+    fetchTotalEarnngsEntity = async (): Promise<void> => {
+        this.totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(this.earningsDefaultIntervalPickerState.earningsTimestampFrom, this.earningsDefaultIntervalPickerState.earningsTimestampTo);
+    }
+
     fetchTopPerformingFarmEntities = async (): Promise<void> => {
-        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmRepo.fetchBestPerformingMiningFarm(this.defaultIntervalPickerState.earningsTimestampFrom, this.defaultIntervalPickerState.earningsTimestampTo);
+        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmRepo.fetchBestPerformingMiningFarm(this.farmsDefaultIntervalPickerState.earningsTimestampFrom, this.farmsDefaultIntervalPickerState.earningsTimestampTo);
         const miningFarmPerformanceEntitiesMap = new Map();
         miningFarmPerformanceEntities.forEach((miningFarmPerformanceEntity) => {
             miningFarmPerformanceEntitiesMap.set(miningFarmPerformanceEntity.miningFarmId, miningFarmPerformanceEntity);
