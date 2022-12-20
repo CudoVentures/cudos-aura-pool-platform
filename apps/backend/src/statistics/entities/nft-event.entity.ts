@@ -38,7 +38,7 @@ export default class NftEventEntity {
     static fromNftModuleTransferHistory(nftModuleTransferHostoryEntity: NftModuleNftTransferHistoryEntity) {
         const entity = new NftEventEntity();
 
-        entity.eventType = nftModuleTransferHostoryEntity.oldOwner === ZERO_ADDRESS ? NftTransferHistoryEventType.TRANSFER : NftTransferHistoryEventType.MINT;
+        entity.eventType = nftModuleTransferHostoryEntity.oldOwner === ZERO_ADDRESS ? NftTransferHistoryEventType.MINT : NftTransferHistoryEventType.TRANSFER;
         entity.denomId = nftModuleTransferHostoryEntity.denomId ?? entity.denomId;
         entity.tokenId = nftModuleTransferHostoryEntity.tokenId ?? entity.tokenId;
         entity.fromAddress = nftModuleTransferHostoryEntity.oldOwner ?? entity.fromAddress;
@@ -51,7 +51,7 @@ export default class NftEventEntity {
     static fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) {
         const entity = new NftEventEntity();
 
-        entity.eventType = nftMarketplaceTradeHistoryEntity.seller === ZERO_ADDRESS ? NftTransferHistoryEventType.SALE : NftTransferHistoryEventType.MINT;
+        entity.eventType = NftTransferHistoryEventType.SALE;
         entity.denomId = nftMarketplaceTradeHistoryEntity.denomId ?? entity.denomId;
         entity.tokenId = nftMarketplaceTradeHistoryEntity.tokenId ?? entity.tokenId;
         entity.fromAddress = nftMarketplaceTradeHistoryEntity.seller ?? entity.fromAddress;

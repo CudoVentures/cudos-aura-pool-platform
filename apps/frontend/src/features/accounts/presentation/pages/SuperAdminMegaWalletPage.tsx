@@ -32,6 +32,7 @@ import MegaWalletBalance from '../components/MegaWalletBalance';
 // import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import '../styles/page-super-admin-mega-wallet.css'
+import { NftEventType } from '../../../analytics/entities/NftEventEntity';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
@@ -202,8 +203,11 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                         <Select
                             className={'TableSort'}
                             onChange={superAdminMegaWalletPageStore.onChangeTableFilter}
-                            value={superAdminMegaWalletPageStore.walletEventType} >
+                            value={superAdminMegaWalletPageStore.eventType} >
                             <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
+                            <MenuItem value = { NftEventType.MINT }> Mint </MenuItem>
+                            <MenuItem value = { NftEventType.TRANSFER }> Transfer </MenuItem>
+                            <MenuItem value = { NftEventType.SALE }> Sale </MenuItem>
                         </Select>
                     } >
                     { nftEventEntities === null ? (
