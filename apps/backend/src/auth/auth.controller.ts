@@ -21,7 +21,7 @@ export class AuthController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin,
     ): Promise < ResLogin > {
-        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.bitcoinPayoutWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, req.transaction);
+        const accessToken = await this.authService.login(reqLogin.email, reqLogin.password, reqLogin.cudosWalletAddress, reqLogin.walletName, reqLogin.pubKeyType, reqLogin.pubKeyValue, reqLogin.signature, req.transaction);
         return new ResLogin(accessToken);
     }
 

@@ -137,16 +137,16 @@ export default class AccountSessionStore {
     }
 
     async loginWithCredentials(username: string, password: string) {
-        await this.login(username, password, '', '', '', null, S.NOT_EXISTS, S.NOT_EXISTS);
+        await this.login(username, password, '', '', null, S.NOT_EXISTS, S.NOT_EXISTS);
     }
 
-    async loginWithWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature, sequence: number, accountNumber: number) {
-        await this.login('', '', cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+    async loginWithWallet(cudosWalletAddress: string, walletName: string, signedTx: StdSignature, sequence: number, accountNumber: number) {
+        await this.login('', '', cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
-            await this.accountRepo.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+            await this.accountRepo.login(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
         } finally {
             await this.loadSessionAccountsAndSync();
         }

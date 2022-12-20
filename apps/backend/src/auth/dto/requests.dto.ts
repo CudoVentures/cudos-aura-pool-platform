@@ -12,9 +12,6 @@ export class ReqLogin {
         cudosWalletAddress: string;
 
     @IsString()
-        bitcoinPayoutWalletAddress: string;
-
-    @IsString()
         walletName: string;
 
     @IsString()

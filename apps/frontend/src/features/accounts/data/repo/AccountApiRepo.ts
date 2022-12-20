@@ -33,10 +33,10 @@ export default class AccountApiRepo implements AccountRepo {
         this.showAlert = showAlert;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
-            return await this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+            return await this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
         } catch (e) {
             switch (parseBackendErrorType(e)) {
                 case BackendErrorType.WRONG_USER_OR_PASSWORD:

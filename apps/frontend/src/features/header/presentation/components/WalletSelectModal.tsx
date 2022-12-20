@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +6,6 @@ import S from '../../../../core/utilities/Main';
 import WalletSelectModalStore, { ProgressSteps } from '../stores/WalletSelectModalStore';
 import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
-import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
@@ -36,8 +35,6 @@ type Props = {
 function WalletSelectModal({ walletSelectModalStore, walletStore, accountSessionStore, alertStore }: Props) {
 
     const navigate = useNavigate();
-    const validationState = useRef(new ValidationState()).current;
-    const validationBitcoin = useRef(validationState.addBitcoinAddressValidation('Invalid address')).current;
 
     async function onClickToggleKeplr() {
         await tryConnect(SessionStorageWalletOptions.KEPLR);
@@ -73,21 +70,10 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     async function register() {
         if (walletSelectModalStore.isModeUser() === true) {
             const address = walletStore.getAddress()
-            await accountSessionStore.loginWithWallet(address, walletSelectModalStore.bitcoinAddress, walletStore.getName(), walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
+            await accountSessionStore.loginWithWallet(address, walletStore.getName(), walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
         }
 
         walletSelectModalStore.onFinish?.(walletSelectModalStore.signature, walletSelectModalStore.sequence, walletSelectModalStore.accountNumber);
-    }
-
-    async function sendBitcoinAddressTx() {
-        walletSelectModalStore.markBitcoinAddressTxWaiting();
-        try {
-            await walletSelectModalStore.confirmBitcoinAddress();
-            walletSelectModalStore.markBitcoinAddressTxDoneSuccessfully();
-        } catch (ex) {
-            alertStore.show(ex.message);
-            walletSelectModalStore.markBitcoinAddressTxError();
-        }
     }
 
     async function sendIdentityTx() {
@@ -103,22 +89,10 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         }
     }
 
-    function onChangeBitcoinAddress(value) {
-        walletSelectModalStore.bitcoinAddress = value;
-    }
-
     async function onClickBack() {
         switch (walletSelectModalStore.progressStep) {
-            case ProgressSteps.BTC:
-                walletSelectModalStore.moveToProgressStepConnectWallet();
-                break;
             case ProgressSteps.SIGN:
-                if (await walletSelectModalStore.isBitcoinAddressSet()) {
-                    walletSelectModalStore.moveToProgressStepConnectWallet();
-                    break;
-                }
-
-                walletSelectModalStore.moveToProgressStepBtc();
+                walletSelectModalStore.moveToProgressStepConnectWallet();
                 break;
             case ProgressSteps.KYC:
                 walletSelectModalStore.moveToProgressStepSign();
@@ -131,11 +105,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         switch (walletSelectModalStore.progressStep) {
             case ProgressSteps.CONNECT_WALLET:
                 if (walletSelectModalStore.isModeUser() === true) {
-                    if (await walletSelectModalStore.isBitcoinAddressSet()) {
-                        walletSelectModalStore.moveToProgressStepSign();
-                        break;
-                    }
-                    walletSelectModalStore.moveToProgressStepBtc();
+                    walletSelectModalStore.moveToProgressStepSign();
                 } else if (walletSelectModalStore.isModeAdmin() === true) {
                     if (accountSessionStore.isLoggedIn() === false) {
                         walletSelectModalStore.moveToProgressStepSign();
@@ -144,17 +114,6 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     }
                 } else if (walletSelectModalStore.isModeSuperAdmin() === true) {
                     walletSelectModalStore.hide();
-                }
-                break;
-            case ProgressSteps.BTC:
-                if (walletSelectModalStore.isBitcoinAddressTxDoneSuccessfully() === false) {
-                    if (validationState.getIsErrorPresent() === true) {
-                        validationState.setShowErrors(true);
-                        return;
-                    }
-                    sendBitcoinAddressTx();
-                } else {
-                    walletSelectModalStore.moveToProgressStepSign();
                 }
                 break;
             case ProgressSteps.SIGN:
@@ -188,9 +147,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         if (walletSelectModalStore.isModeUser() === true) {
             return [
                 createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false),
-                createNavStep(2, 'Set BTC Address', walletSelectModalStore.isProgressStepBtc() === true, walletSelectModalStore.isProgressStepSign() || walletSelectModalStore.isProgressStepKyc()),
-                createNavStep(3, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
-                createNavStep(4, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
+                createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
+                createNavStep(3, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
             ]
         }
 
@@ -221,26 +179,6 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 <div className = { 'LoadingSubtitle' } > { subtitle } </div>
             </div>
         )
-    }
-
-    function renderBitcoinAddressTxEndAdornment() {
-        if (walletSelectModalStore.isBitcoinAddressTxDoneSuccessfully() === true) {
-            return (
-                <InputAdornment position = 'end' >
-                    <Svg className = { 'IconInputAdornment IconInputAdornmentSuccess' } svg = { CheckIcon } size = { SvgSize.CUSTOM } />
-                </InputAdornment>
-            )
-        }
-
-        if (walletSelectModalStore.isBitcoinAddressTxError() === true) {
-            return (
-                <InputAdornment position = 'end' >
-                    <Svg className = { 'IconInputAdornment IconInputAdornmentError' } svg = { ClearIcon } size = { SvgSize.CUSTOM } />
-                </InputAdornment>
-            )
-        }
-
-        return null
     }
 
     function renderIdentityTxEndAdornment() {
@@ -314,37 +252,6 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 </AnimationContainer>
             </AnimationContainer>
 
-            <AnimationContainer className = { 'ProgressStep ProgressStepBtc FlexColumn' } active = { walletSelectModalStore.isProgressStepBtc() } >
-                <AnimationContainer active = { walletSelectModalStore.isBitcoinAddressTxWaiting() === false }>
-                    <div className = { 'H3 Bold' } >
-                        Provide your BTC Address
-                    </div>
-
-                    <div className = { 'ModalWalletSubtitle' } >
-                        This address will be used for all their BTC payouts from all NFTs that they could own in the future.
-                    </div>
-
-                    <Input
-                        label={'Set Rewards Recipient Address (BTC Address)'}
-                        placeholder={'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'}
-                        value={walletSelectModalStore.bitcoinAddress}
-                        inputValidation={validationBitcoin}
-                        onChange={onChangeBitcoinAddress}
-                        InputProps = { {
-                            endAdornment: renderBitcoinAddressTxEndAdornment(),
-                        } } />
-                </AnimationContainer>
-                <AnimationContainer active = { walletSelectModalStore.isBitcoinAddressTxWaiting() === true }>
-                    { renderLoading(
-                        'Processing', (
-                            <>
-                              Please don’t close this window.<br />It will be ready in a second.
-                            </>
-                        ),
-                    ) }
-                </AnimationContainer>
-            </AnimationContainer>
-
             <AnimationContainer className = { 'ProgressStep ProgressStepSign FlexColumn' } active = { walletSelectModalStore.isProgressStepSign() } >
                 <AnimationContainer active = { walletSelectModalStore.isIdentityTxWaiting() === false }>
                     <div className = { 'H3 Bold' } >
@@ -382,7 +289,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 </div>
             </AnimationContainer>
 
-            { walletSelectModalStore.isWalletConnecting() === false && walletSelectModalStore.isBitcoinAddressTxWaiting() === false && walletSelectModalStore.isIdentityTxWaiting() === false && (
+            { walletSelectModalStore.isWalletConnecting() === false && walletSelectModalStore.isIdentityTxWaiting() === false && (
                 <div className = { 'ModalWalletFooter B2 SemiBold FlexSplit' } >
                     { walletSelectModalStore.isProgressStepConnectWallet() === true ? (
                         <div className = { 'WalletInfo FlexColumn' }>
