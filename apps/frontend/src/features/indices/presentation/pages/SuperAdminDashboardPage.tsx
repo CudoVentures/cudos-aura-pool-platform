@@ -108,7 +108,6 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                     <ColumnLayout>
                         <StyledLayout
                             title = { 'Total Platform Sales' }
-                            hasBottomDivider = { true }
                             bottomRightButtons = {
                                 <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAnalytics }>See All Analytics</Button>
                             } >
