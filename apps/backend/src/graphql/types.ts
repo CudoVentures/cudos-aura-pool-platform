@@ -16958,7 +16958,7 @@ export type MarketplaceNftTradeHistoryQuery = { __typename?: 'query_root', marke
 export type MarketplaceNftPlatformTradeHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MarketplaceNftPlatformTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', btc_price: any, price: any, usd_price: any, timestamp: any, seller: string, buyer: string }> };
+export type MarketplaceNftPlatformTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string }> };
 
 export type MarketplaceNftsByDenomIdQueryVariables = Exact<{
   denom_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -17103,12 +17103,15 @@ export const MarketplaceNftTradeHistoryDocument = gql`
 export const MarketplaceNftPlatformTradeHistoryDocument = gql`
     query MarketplaceNftPlatformTradeHistory {
   marketplace_nft_buy_history {
-    btc_price
-    price
-    usd_price
-    timestamp
-    seller
     buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
   }
 }
     `;
