@@ -9,30 +9,38 @@ import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
+import TotalEarningsEntity from '../../../analytics/entities/TotalEarningsEntity';
+import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
 
 export default class SuperAdminDashboardPageStore {
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
+    statisticsRepo: StatisticsRepo;
     walletStore: WalletStore;
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
 
     topFarmsTableState: TableState;
-    defaultIntervalPickerState: DefaultIntervalPickerState;
+    earningsDefaultIntervalPickerState: DefaultIntervalPickerState;
+    farmsDefaultIntervalPickerState: DefaultIntervalPickerState;
 
+    totalEarningsEntity: TotalEarningsEntity;
     topPerformingFarms: MiningFarmEntity[];
     topPerformingFarmsDetailsMap: Map<string, MiningFarmDetailsEntity>;
 
-    constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
+    constructor(statisticsRepo: StatisticsRepo, miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
+        this.statisticsRepo = statisticsRepo;
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
         this.walletStore = walletStore;
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
 
-        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
+        this.earningsDefaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
+        this.farmsDefaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
         this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, 5);
 
+        this.totalEarningsEntity = null;
         this.topPerformingFarms = null;
         this.topPerformingFarmsDetailsMap = new Map();
 
@@ -40,7 +48,12 @@ export default class SuperAdminDashboardPageStore {
     }
 
     init(): void {
+        this.fetchTotalEarnngsEntity();
         this.fetchTopPerformingFarmEntities();
+    }
+
+    async fetchTotalEarnngsEntity(): Promise<void> {
+        this.totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(this.earningsDefaultIntervalPickerState.earningsTimestampFrom, this.earningsDefaultIntervalPickerState.earningsTimestampTo);
     }
 
     fetchTopPerformingFarmEntities = async (): Promise<void> => {
