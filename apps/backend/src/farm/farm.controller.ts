@@ -18,9 +18,9 @@ import MiningFarmFilterModel from './dto/farm-filter.model';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
-import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm, ReqFetchMiningFarmDetails } from './dto/requests.dto';
+import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm, ReqFetchBestPerformingMiningFarms, ReqFetchMiningFarmDetails } from './dto/requests.dto';
 import MiningFarmEntity from './entities/mining-farm.entity';
-import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners, ResFetchMiningFarmDetails } from './dto/responses.dto';
+import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchBestPerformingMiningFarms, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners, ResFetchMiningFarmDetails, ResFetchMiningFarmsByFilter } from './dto/responses.dto';
 import { FarmStatus } from './farm.types';
 import EnergySourceEntity from './entities/energy-source.entity';
 import MinerEntity from './entities/miner.entity';
@@ -36,11 +36,22 @@ export class FarmController {
 
     @Post()
     @HttpCode(200)
-    async findAll(
+    async fetchMiningFarmsByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
-    ): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
-        return this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
+    ): Promise < ResFetchMiningFarmsByFilter > {
+        const { miningFarmEntities, total } = await this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
+        return new ResFetchMiningFarmsByFilter(miningFarmEntities, total);
+    }
+
+    @Post('fetchBestPerformingMiningFarm')
+    @HttpCode(200)
+    async fetchBestPerformingMiningFarm(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
+    ): Promise < ResFetchBestPerformingMiningFarms > {
+        const miningFarmEntities = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo);
+        return new ResFetchBestPerformingMiningFarms(miningFarmEntities);
     }
 
     @Post('fetchMiningFarmsDetailsByIds')

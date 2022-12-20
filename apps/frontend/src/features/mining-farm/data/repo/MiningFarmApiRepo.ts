@@ -28,7 +28,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         this.disableActions = disableActions;
     }
 
-    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void) {
         this.showAlert = showAlert;
     }
 
@@ -36,10 +36,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
         miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
-
-        if (status) {
-            miningFarmFilterModel.status = [status];
-        }
+        miningFarmFilterModel.status = [status];
 
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities
@@ -55,6 +52,15 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         }
         const { miningFarmEntities, total } = await this.fetchMiningFarmsByFilter(miningFarmFilterModel);
         return miningFarmEntities;
+    }
+
+    async fetchBestPerformingMiningFarm(timestampFrom: number, timestampTo: number): Promise < MiningFarmEntity[] > {
+        try {
+            this.disableActions?.();
+            return await this.miningFarmApi.fetchBestPerformingMiningFarm(timestampFrom, timestampTo);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchMiningFarmsByIds(miningFarmIds: string[], status: MiningFarmStatus): Promise < MiningFarmEntity[] > {

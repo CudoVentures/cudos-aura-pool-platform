@@ -17,6 +17,7 @@ import { CollectionOrderBy } from './collection.types';
 import AccountService from '../account/account.service';
 import { StatisticsService } from '../statistics/statistics.service';
 import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity';
+import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
 
 @Injectable()
 export class CollectionService {
@@ -100,6 +101,7 @@ export class CollectionService {
         const nftEventFilterEntity = new NftEventFilterEntity();
         nftEventFilterEntity.timestampFrom = timestampFrom;
         nftEventFilterEntity.timestampTo = timestampTo;
+        nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT, NftTransferHistoryEventType.SALE];
 
         const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
         const denomIds = nftEventEntities.map((nftEventEntity) => nftEventEntity.denomId);

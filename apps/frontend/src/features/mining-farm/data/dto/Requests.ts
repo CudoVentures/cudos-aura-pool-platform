@@ -3,6 +3,18 @@ import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 
+export class ReqFetchBestPerformingMiningFarms {
+
+    timestampFrom: number;
+    timestampTo: number;
+
+    constructor(timestampFrom: number, timestampTo: number) {
+        this.timestampFrom = timestampFrom;
+        this.timestampTo = timestampTo;
+    }
+
+}
+
 export class ReqCreditMiningFarm {
 
     miningFarmEntity: MiningFarmEntity;

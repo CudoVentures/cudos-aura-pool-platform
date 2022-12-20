@@ -4,6 +4,16 @@ import MinerEntity from '../../entities/MinerEntity';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 
+export class ResFetchBestPerformingMiningFarms {
+
+    miningFarmEntities: MiningFarmEntity[];
+
+    constructor(miningFarmEntities: MiningFarmEntity[]) {
+        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e));
+    }
+
+}
+
 export class ResCreditMiningFarm {
 
     miningFarmEntity: MiningFarmEntity;

@@ -43,7 +43,7 @@ export class NFTController {
 
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
         const nftEntity = nftEntities[0];
-        const collectionEntity = await this.collectionService.findOne(nftEntities[0].collectionId);
+        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
         return { ...NftEntity.toJson(nftEntity), denomId: collectionEntity.denomId };
     }
 

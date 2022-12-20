@@ -5,6 +5,28 @@ import MiningFarmDetailsEntity from '../entities/mining-farm-details.entity';
 import MiningFarmEntity from '../entities/mining-farm.entity';
 import { EnergySourceJsonValidator, ManufacturerJsonValidator, MinerJsonValidator, MiningFarmDetailsJsonValidator, MiningFarmJsonValidator } from '../farm.types';
 
+export class ResFetchMiningFarmsByFilter {
+
+    miningFarmEntities: MiningFarmJsonValidator[];
+    total: number;
+
+    constructor(miningFarmEntities: MiningFarmEntity[], total: number) {
+        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e));
+        this.total = total;
+    }
+
+}
+
+export class ResFetchBestPerformingMiningFarms {
+
+    miningFarmEntities: MiningFarmJsonValidator[];
+
+    constructor(miningFarmEntities: MiningFarmEntity[]) {
+        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e));
+    }
+
+}
+
 export class ResCreditMiningFarm {
 
     miningFarmEntity: MiningFarmJsonValidator;
