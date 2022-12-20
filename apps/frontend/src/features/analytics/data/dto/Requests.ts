@@ -1,3 +1,13 @@
+import NftEventFilterModel from '../../entities/NftEventFilterModel';
+
+export class ReqNftEventEntitiesByFilter {
+    nftEventFilterEntity: NftEventFilterModel;
+
+    constructor(nftEventFilterEntity: NftEventFilterModel) {
+        this.nftEventFilterEntity = NftEventFilterModel.toJson(nftEventFilterEntity);
+    }
+}
+
 export class ReqFetchNftEarningsBySessionAccount {
 
     timestampFrom: number;

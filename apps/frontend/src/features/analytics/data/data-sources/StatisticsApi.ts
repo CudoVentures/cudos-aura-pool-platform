@@ -1,19 +1,21 @@
 import axios from '../../../../core/utilities/AxiosWrapper';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
-import NftEventEntity from '../../entities/NftEventEntity';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
 import UserEarningsEntity from '../../entities/UserEarningsEntity';
-import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount } from '../dto/Requests';
-import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount } from '../dto/Responses';
+import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqNftEventEntitiesByFilter } from '../dto/Requests';
+import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResNftEventEntitiesByFilter } from '../dto/Responses';
 
 export default class StatisticsApi {
 
-    async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
-        const { data } = await axios.post('/api/v1/statistics/history/nft', { nftEventFilterModel })
-        const total = data.total;
-        const nftEventEntities = data.transferHistoryEntity.map((nftEventJson) => NftEventEntity.fromJson(nftEventJson));
-        return { nftEventEntities, total };
+    async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < ResNftEventEntitiesByFilter > {
+        const req = new ReqNftEventEntitiesByFilter(nftEventFilterModel);
+
+        const { data } = await axios.post('/api/v1/statistics/history/nft', req);
+
+        const res = new ResNftEventEntitiesByFilter(data);
+
+        return res;
     }
 
     async fetchNftEarningsBySessionAccount(timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {

@@ -1,21 +1,33 @@
-import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../../common/utils';
+import { IntBoolValue, NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../../common/utils';
 import { NftEventFilterValidationJson } from '../statistics.types';
+import { NftTransferHistoryEventType } from './nft-event.entity';
 
 export default class NftEventFilterEntity {
-    sessionAccount: number;
+    sessionAccount: IntBoolValue;
     nftId: string;
+    eventTypes: NftTransferHistoryEventType[];
     timestampFrom: number;
     timestampTo: number;
     from: number;
     count: number;
 
     constructor() {
-        this.sessionAccount = NOT_EXISTS_INT;
+        this.sessionAccount = IntBoolValue.FALSE;
         this.nftId = NOT_EXISTS_STRING;
+        this.eventTypes = null;
         this.timestampFrom = NOT_EXISTS_INT;
         this.timestampTo = NOT_EXISTS_INT;
         this.from = NOT_EXISTS_INT;
         this.count = NOT_EXISTS_INT;
+    }
+
+    isPlatformFilter(): boolean {
+        return this.sessionAccount === IntBoolValue.FALSE
+            && this.nftId === NOT_EXISTS_STRING
+    }
+
+    isEventFilterSet(): boolean {
+        return this.eventTypes !== null;
     }
 
     isTimestampFilterSet(): boolean {
@@ -27,7 +39,7 @@ export default class NftEventFilterEntity {
     }
 
     isBySessionAccount(): boolean {
-        return this.sessionAccount !== NOT_EXISTS_INT;
+        return this.sessionAccount === IntBoolValue.TRUE;
     }
 
     static fromJson(json: NftEventFilterValidationJson): NftEventFilterEntity {
@@ -35,10 +47,11 @@ export default class NftEventFilterEntity {
 
         entity.sessionAccount = json.sessionAccount ?? entity.sessionAccount;
         entity.nftId = json.nftId ?? entity.nftId;
-        entity.timestampFrom = json.timestampFrom ?? entity.timestampFrom
-        entity.timestampTo = json.timestampTo ?? entity.timestampTo
-        entity.from = json.from ?? entity.from
-        entity.count = json.count ?? entity.count
+        entity.eventTypes = json.eventTypes ?? entity.eventTypes;
+        entity.timestampFrom = json.timestampFrom ?? entity.timestampFrom;
+        entity.timestampTo = json.timestampTo ?? entity.timestampTo;
+        entity.from = json.from ?? entity.from;
+        entity.count = json.count ?? entity.count;
 
         return entity;
     }

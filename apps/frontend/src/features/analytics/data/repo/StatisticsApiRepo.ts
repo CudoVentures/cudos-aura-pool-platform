@@ -1,3 +1,4 @@
+import NftEntity from '../../../nft/entities/NftEntity';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
@@ -29,7 +30,7 @@ export default class StatisticsApiRepo implements StatisticsRepo {
         this.showAlert = showAlert;
     }
 
-    async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], total: number } > {
+    async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < { nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number } > {
         try {
             this.disableActions?.();
             return await this.statisticsApi.fetchNftEvents(nftEventFilterModel);

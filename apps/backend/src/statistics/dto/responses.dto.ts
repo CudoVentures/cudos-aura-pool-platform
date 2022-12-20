@@ -1,14 +1,17 @@
-import NftTransferHistoryEntity from '../entities/nft-transfer-history.entity';
+import NftEventEntity from '../entities/nft-event.entity';
 import MiningFarmEarningsEntity from '../entities/mining-farm-earnings.entity';
 import NftEarningsEntity from '../entities/nft-earnings.entity';
 import UserEarningsEntity from '../entities/user-earnings.entity';
+import NftEntity from '../../nft/entities/nft.entity';
 
-export class ResTransferHistory {
-    transferHistoryEntity: NftTransferHistoryEntity;
+export class ResNftEventsByFilter {
+    nftEventEntities: NftEventEntity[];
+    nftEntities: NftEntity[]
     total: number;
 
-    constructor(nftEventEntities: NftTransferHistoryEntity, total: number) {
-        this.transferHistoryEntity = NftTransferHistoryEntity.toJson(nftEventEntities);
+    constructor(nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number) {
+        this.nftEventEntities = nftEventEntities.map((entity) => NftEventEntity.toJson(entity));
+        this.nftEntities = nftEntities.map((entity) => NftEntity.toJson(entity));
         this.total = total;
     }
 }

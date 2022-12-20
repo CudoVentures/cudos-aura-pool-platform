@@ -1,13 +1,15 @@
-import { IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import NftEventFilterEntity from '../entities/nft-event-filter.entity'
 import { NftEventFilterValidationJson } from '../statistics.types'
 
-export class ReqTransferHistory {
-    // nftEventFilterEntity: NftEventFilterEntity;
-
-    // constructor(nftEventFilterJson: NftEventFilterValidationJson) {
-    //     this.nftEventFilterEntity = NftEventFilterEntity.fromJson(nftEventFilterJson);
-    // }
+export class ReqNftEventsByFilter {
+    @IsDefined()
+    @IsNotEmptyObject()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => NftEventFilterValidationJson)
+        nftEventFilterEntity: NftEventFilterValidationJson;
 }
 
 export class ReqFetchNftEarningsBySessionAccount {

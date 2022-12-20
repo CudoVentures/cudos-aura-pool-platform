@@ -32,7 +32,7 @@ export default class NftMarketplaceTradeHistoryEntity {
         entity.price = json.price || entity.price;
         entity.seller = json.seller || entity.seller;
         entity.timestamp = parseInt(json.timestamp || entity.timestamp.toString());
-        entity.tokenId = json.token_id || entity.tokenId;
+        entity.tokenId = json.token_id?.toString() || entity.tokenId;
         entity.usdPrice = parseInt(json.usd_price || entity.usdPrice.toString());
         entity.transactionHash = json.transaction_hash || entity.transactionHash;
 

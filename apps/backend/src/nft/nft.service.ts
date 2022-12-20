@@ -4,7 +4,7 @@ import sequelize, { Op, Transaction, where } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
-import { NftRepo } from './repos/nft.repo';
+import { NftRepo, NftRepoColumn } from './repos/nft.repo';
 import { NftOrderBy, NftStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
@@ -100,6 +100,19 @@ export class NFTService {
         whereClause.creatorId = accountId;
         const nftRepos = await this.nftRepo.findAll({
             where: AppRepo.toJsonWhere(whereClause),
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
+    async findByCollectionIdsAndTokenIds(collectionIds: number[], tokenIds: string[]) {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.COLLECTION_ID]: collectionIds,
+                [NftRepoColumn.TOKEN_ID]: tokenIds,
+            },
         });
 
         return nftRepos.map((nftRepo) => {
