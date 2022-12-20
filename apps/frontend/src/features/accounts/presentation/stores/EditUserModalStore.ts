@@ -41,7 +41,9 @@ export default class EditUserModalStore extends ModalStore {
     showSignalWithDefaultCallback(userEntity: UserEntity) {
         const clonedUserEntity = userEntity.clone();
         this.showSignal(clonedUserEntity, () => {
-            userEntity.copy(clonedUserEntity);
+            runInAction(() => {
+                userEntity.copy(clonedUserEntity);
+            });
         });
     }
 
@@ -64,8 +66,7 @@ export default class EditUserModalStore extends ModalStore {
         this.profileImage = ImageEntity.new(base64File, PictureType.USER_PROFILE);
     }
 
-    @action
-    async executeMiningFarmEditEdit() {
+    async editSessionUser() {
         this.userEntity.coverImgUrl = this.coverImage.base64;
         this.userEntity.profileImgUrl = this.profileImage.base64;
         await this.accountRepo.editSessionUser(this.userEntity);

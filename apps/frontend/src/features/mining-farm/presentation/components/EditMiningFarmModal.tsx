@@ -36,9 +36,12 @@ function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore 
     }
 
     return (
-        <ModalWindow modalStore = { editMiningFarmModalStore } >
+        <ModalWindow className = { 'EditMiningFarmModal' } modalStore = { editMiningFarmModalStore } >
             { editMiningFarmModalStore.visible === true && (
-                <div className={'EditMiningFarmModal FlexColumn'}>
+                <>
+                    <div className = { 'ModalTitleRow' } >
+                        <div className = { 'H3 Bold' } >Edit Profile</div>
+                    </div>
                     <div
                         className={'CoverPicture FlexColumn'}
                         style={ ProjectUtils.makeBgImgStyle(editMiningFarmModalStore.coverImage.base64) } >
@@ -86,7 +89,7 @@ function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore 
                     <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                         <Button onClick={onClickSaveChanges}>Save Changes</Button>
                     </Actions>
-                </div>
+                </>
             ) }
         </ModalWindow>
     )

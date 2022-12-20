@@ -30,7 +30,7 @@ function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
     }
 
     async function onClickSaveChanges() {
-        await editUserModalStore.executeMiningFarmEditEdit();
+        await editUserModalStore.editSessionUser();
         editUserModalStore.onFinish();
         editUserModalStore.hide();
         snackStore.showSuccess('Profile was updated');
@@ -40,7 +40,9 @@ function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
         <ModalWindow className = { 'EditUserModal' } modalStore = { editUserModalStore } >
             { editUserModalStore.visible === true && (
                 <>
-                    <div className = { 'H3 Bold EditUserTitle' } >Edit Profile</div>
+                    <div className = { 'ModalTitleRow' } >
+                        <div className = { 'H3 Bold' } >Edit Profile</div>
+                    </div>
                     <div
                         className={'CoverPicture FlexColumn'}
                         style={ ProjectUtils.makeBgImgStyle(editUserModalStore.coverImage.base64) } >

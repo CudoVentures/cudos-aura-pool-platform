@@ -41,7 +41,9 @@ export default class EditMiningFarmModalStore extends ModalStore {
     showSignalWithDefaultCallback(miningFarmEntity: MiningFarmEntity) {
         const clonedMiningFarmEntity = miningFarmEntity.clone();
         this.showSignal(clonedMiningFarmEntity, () => {
-            miningFarmEntity.copy(clonedMiningFarmEntity);
+            runInAction(() => {
+                miningFarmEntity.copy(clonedMiningFarmEntity);
+            });
         });
     }
 
@@ -64,7 +66,6 @@ export default class EditMiningFarmModalStore extends ModalStore {
         this.profileImage = ImageEntity.new(base64File, PictureType.FARM_PROFILE);
     }
 
-    @action
     async executeMiningFarmEditEdit() {
         this.miningFarmEntity.coverImgUrl = this.coverImage.base64;
         this.miningFarmEntity.profileImgUrl = this.profileImage.base64;

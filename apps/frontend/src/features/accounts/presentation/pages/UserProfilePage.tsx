@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import AccountSessionStore from '../stores/AccountSessionStore';
-import AppStore from '../../../../core/presentation/stores/AppStore';
 import UserProfilePageStore from '../stores/UserProfilePageStore';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import EditUserBtcModal from '../components/EditUserBtcModal';
+import EditUserBtcModalStore from '../stores/EditUserBtcModalStore';
 import EditUserModalStore from '../stores/EditUserModalStore';
 
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
@@ -30,9 +31,10 @@ type Props = {
     accountSessionStore?: AccountSessionStore;
     userProfilePageStore?: UserProfilePageStore,
     editUserModalStore?: EditUserModalStore;
+    editUserBtcModalStore?: EditUserBtcModalStore;
 }
 
-function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore }: Props) {
+function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore, editUserBtcModalStore }: Props) {
     useEffect(() => {
         async function init() {
             await bitcoinStore.init();
@@ -49,7 +51,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
     }
 
     function onClickEditBtcAddres() {
-
+        editUserBtcModalStore.showSignalWithDefaultCallback(userEntity);
     }
 
     return (
@@ -58,6 +60,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
             modals = {
                 <>
                     <EditUserModal />
+                    <EditUserBtcModal />
                 </>
             } >
             <PageHeader />

@@ -1,7 +1,6 @@
 import { StdSignature } from 'cudosjs';
 import { action, observable, makeObservable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import S from '../../../../core/utilities/Main';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';

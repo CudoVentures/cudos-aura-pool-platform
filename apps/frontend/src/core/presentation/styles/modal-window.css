@@ -94,27 +94,18 @@
     padding: 0px;
 }
 
-.ModalWindowWrapper .ActionsBottom {
-    margin-top: 32px;
+.ModalWindowWrapper .ModalActionsBottom {
+    margin-top: 24px;
 }
 
 .ModalWindowWrapper .ModalTitleRow {
     display: flex;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
 }
 
 .ModalWindowWrapper .ModalTitleRow .ModalTitle {
-    color: #000;
-    font-size: 24px; font-weight: 700;
 }
 
 .ModalWindowWrapper .ModalSubtitle {
-    text-align:center;
-}
-
-.ModalWindowWrapper hr {
-    height: 1px;
-    border: 0;
-    margin: 16px 0;
-    background-color: var(--color-gray);
+    
 }
