@@ -143,6 +143,12 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         navigate(AppRoutes.LOGIN);
     }
 
+    async function onClickLogout() {
+        await accountSessionStore.logout();
+        walletSelectModalStore.hide();
+        navigate(AppRoutes.HOME);
+    }
+
     function renderNavSteps(): NavStep[] {
         if (walletSelectModalStore.isModeUser() === true) {
             return [
@@ -321,7 +327,13 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                         ) : (
                             <>
                                 { accountSessionStore.isLoggedIn() === true && (
-                                    <Button onClick = { onClickLogin }>Log with other account</Button>
+                                    <>
+                                        { accountSessionStore.isUser() === true ? (
+                                            <Button onClick = { onClickLogout }>Logout with current account</Button>
+                                        ) : (
+                                            <Button onClick = { onClickLogin }>Log in with other account</Button>
+                                        ) }
+                                    </>
                                 ) }
                             </>
                         ) }
