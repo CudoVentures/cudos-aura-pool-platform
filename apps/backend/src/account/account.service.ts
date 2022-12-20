@@ -96,6 +96,18 @@ export default class AccountService {
         return AccountEntity.fromRepo(accountRepo);
     }
 
+    async findAdminByAccountId(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < AdminEntity | null > {
+        const whereAdminRepo = new AdminRepo();
+        whereAdminRepo.accountId = accountId;
+        const adminRepo = await this.adminRepo.findOne({
+            where: AppRepo.toJsonWhere(whereAdminRepo),
+            transaction: tx,
+            lock,
+        })
+
+        return AdminEntity.fromRepo(adminRepo);
+    }
+
     async findUserById(userId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < UserEntity | null > {
         const whereUserRepo = new UserRepo();
         whereUserRepo.userId = userId;

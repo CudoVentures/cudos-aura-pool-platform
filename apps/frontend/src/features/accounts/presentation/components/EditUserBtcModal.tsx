@@ -25,7 +25,7 @@ function EditUserBtcModal({ snackStore, editUserBtcModalStore }: Props) {
         }
 
         try {
-            await editUserBtcModalStore.confirmBitcoinAddress();
+            await editUserBtcModalStore.creditBitcoinPayoutAddress();
             await editUserBtcModalStore.editSessionUser();
             editUserBtcModalStore.onFinish();
             editUserBtcModalStore.hide();

@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { StargateClient } from 'cudosjs';
-import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import S from '../../../../core/utilities/Main';
+import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
+import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../../presentation/repos/CudosRepo';
 import CudosApi from '../data-sources/CudosApi';
@@ -26,7 +28,7 @@ export default class CudosApiRepo implements CudosRepo {
         this.disableActions = disableActions;
     }
 
-    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void) {
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void) {
         this.showAlert = showAlert;
     }
 
@@ -57,17 +59,44 @@ export default class CudosApiRepo implements CudosRepo {
         return cudosDataEntity;
     }
 
-    async fetchAcudosBalance(address: string): Promise <BigNumber> {
+    async fetchAcudosBalance(cudosWalletAddress: string): Promise < BigNumber > {
         try {
             this.disableActions?.();
             const client = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
-            const coin = await client.getBalance(address, CHAIN_DETAILS.NATIVE_TOKEN_DENOM);
+            const coin = await client.getBalance(cudosWalletAddress, CHAIN_DETAILS.NATIVE_TOKEN_DENOM);
 
             return new BigNumber(coin.amount);
         } catch (ex) {
             return new BigNumber(0);
         } finally {
             this.enableActions?.();
+        }
+    }
+
+    async creditBitcoinPayoutAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < void > {
+        try {
+            this.disableActions?.();
+
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
+            const availableBtcAddress = await this.fetchBitcoinPayoutAddress(cudosWalletAddress);
+            if (availableBtcAddress === '') {
+                await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
+            } else {
+                await client.addressbookUpdateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
+            }
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchBitcoinPayoutAddress(cudosAddress: string): Promise < string > {
+        try {
+            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
+            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
+
+            return res.address.value
+        } catch (e) {
+            return S.Strings.EMPTY;
         }
     }
 

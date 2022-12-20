@@ -171,7 +171,7 @@ export default class AccountStorageRepo implements AccountRepo {
 
     }
 
-    async confirmBitcoinAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
+    async creditBitcoinPayoutAddress(bitcoinAddress: string, ledger: Ledger, network: string): Promise < void > {
         const adminJson = this.storageHelper.adminsJson.find((json) => {
             return json.accountId === this.storageHelper.sessionAdmin.accountId;
         });

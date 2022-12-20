@@ -3,7 +3,6 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import { StdSignature } from 'cudosjs';
-import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 
 export default interface AccountRepo {
 
@@ -21,7 +20,4 @@ export default interface AccountRepo {
     forgottenPassword(email: string): Promise < void >
     sendSessionAccountVerificationEmail(): Promise < void >
     fetchFarmOwnerAccount(accountId: string): Promise < AdminEntity >;
-    confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean >
-    fetchBitcoinAddress(cudosAddress: string): Promise < string >;
-    fetchAddressCudosBalance(cudosAddress: string): Promise < string >;
 }

@@ -130,10 +130,10 @@ export class AccountController {
 
     @Get(':accountId')
     @HttpCode(200)
-    async fetchFarmOwnerAccounts(
+    async fetchFarmOwnerAccount(
         @Param('accountId') accountId: number,
     ): Promise < ResFetchFarmOwnerAccount > {
-        const res = await this.accountService.findAccounts(accountId);
-        return new ResFetchFarmOwnerAccount(res.adminEntity);
+        const adminEntity = await this.accountService.findAdminByAccountId(accountId);
+        return new ResFetchFarmOwnerAccount(adminEntity);
     }
 }
