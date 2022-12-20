@@ -1,7 +1,9 @@
 import {
     Body,
     Controller,
+    forwardRef,
     HttpCode,
+    Inject,
     Post,
     Put,
     Req,
@@ -32,6 +34,7 @@ import NftFilterEntity from '../nft/entities/nft-filter.entity';
 @Controller('collection')
 export class CollectionController {
     constructor(
+        @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private nftService: NFTService,
         private dataService: DataService,

@@ -60,10 +60,6 @@ export default class CollectionFilterEntity {
         return this.timestampTo !== NOT_EXISTS_INT;
     }
 
-    isSortByTop() {
-        return this.orderBy === CollectionOrderBy.TOP_ASC || this.orderBy === CollectionOrderBy.TOP_DESC;
-    }
-
     static fromJson(json: CollectionFilterJsonValidator): CollectionFilterEntity {
         const entity = new CollectionFilterEntity();
 

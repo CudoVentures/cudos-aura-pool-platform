@@ -12,6 +12,14 @@ export class ResFetchCollectionsByFilter {
     }
 }
 
+export class ResFetchTopCollections {
+    collectionEntities: CollectionEntity[];
+
+    constructor(data) {
+        this.collectionEntities = data.collectionEntities.map((collectionJson) => CollectionEntity.fromJson(collectionJson));
+    }
+}
+
 export class ResCreditCollection {
     collectionEntity: CollectionEntity;
     nftEntities: NftEntity[];

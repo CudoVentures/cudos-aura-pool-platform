@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { HttpService } from '@nestjs/axios';
 import MiningFarmFilterModel from './dto/farm-filter.model';
@@ -34,6 +34,7 @@ export class FarmService {
         @InjectModel(ManufacturerRepo)
         private manufacturerRepo: typeof ManufacturerRepo,
         private nftService: NFTService,
+        @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private httpService: HttpService,
         private visitorService: VisitorService,

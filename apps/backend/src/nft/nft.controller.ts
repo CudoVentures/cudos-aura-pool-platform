@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -17,6 +17,7 @@ import { CollectionService } from '../collection/collection.service';
 export class NFTController {
     constructor(
         private nftService: NFTService,
+        @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private graphqlService: GraphqlService,
     // eslint-disable-next-line no-empty-function

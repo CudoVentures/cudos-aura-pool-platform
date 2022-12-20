@@ -4,8 +4,8 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../../core/utilities/AxiosWrapper';
-import { ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter } from '../dto/Requests';
-import { ResCreditCollection, ResEditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter } from '../dto/Responses';
+import { ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter, ReqFetchTopCollections } from '../dto/Requests';
+import { ResCreditCollection, ResEditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter, ResFetchTopCollections } from '../dto/Responses';
 
 const COLLECTION_URL = '/api/v1/collection';
 
@@ -14,13 +14,15 @@ export default class CollectionApi {
         return null;
     }
 
+    async fetchTopCollections(timestampFrom: number, timestampTo: number): Promise < CollectionEntity[] > {
+        const { data } = await axios.post(`${COLLECTION_URL}/fetchTopCollections`, new ReqFetchTopCollections(timestampFrom, timestampTo));
+        const res = new ResFetchTopCollections(data);
+        return res.collectionEntities;
+    }
+
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
-        const req = new ReqFetchCollectionsByFilter(collectionFilterModel);
-
-        const { data } = await axios.post(COLLECTION_URL, req)
-
+        const { data } = await axios.post(COLLECTION_URL, new ReqFetchCollectionsByFilter(collectionFilterModel));
         const res = new ResFetchCollectionsByFilter(data);
-
         return {
             collectionEntities: res.collectionEntities,
             total: res.total,

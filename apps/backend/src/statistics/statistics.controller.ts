@@ -6,6 +6,8 @@ import {
     Body,
     HttpCode,
     ValidationPipe,
+    forwardRef,
+    Inject,
 } from '@nestjs/common';
 import { GraphqlService } from '../graphql/graphql.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -21,6 +23,7 @@ import NftEventFilterEntity from './entities/nft-event-filter.entity';
 export class StatisticsController {
     constructor(
         private graphqlService: GraphqlService,
+        @Inject(forwardRef(() => StatisticsService))
         private statisticsService: StatisticsService,
         private nftService: NFTService,
     // eslint-disable-next-line no-empty-function

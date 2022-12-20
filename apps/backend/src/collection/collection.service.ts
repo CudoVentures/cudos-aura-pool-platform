@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CollectionRepo, CollectionRepoColumn } from './repos/collection.repo';
 import { CollectionStatus } from './utils';
@@ -15,6 +15,8 @@ import { CollectionEntity } from './entities/collection.entity';
 import { CollectionDetailsEntity } from './entities/collection-details.entity';
 import { CollectionOrderBy } from './collection.types';
 import AccountService from '../account/account.service';
+import { StatisticsService } from '../statistics/statistics.service';
+import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity';
 
 @Injectable()
 export class CollectionService {
@@ -25,6 +27,8 @@ export class CollectionService {
     private nftRepo: typeof NftRepo,
     private graphqlService: GraphqlService,
     private accountService: AccountService,
+    @Inject(forwardRef(() => StatisticsService))
+    private statisticsService: StatisticsService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -81,18 +85,6 @@ export class CollectionService {
         });
 
         let collectionEntities = collectionRepos.map((collectionRepo) => CollectionEntity.fromRepo(collectionRepo));
-        // if (collectionFitlerEntity.isSortByTrending() === true) {
-        //     const nftIds = collectionEntities.map((nftEntity) => {
-        //         return nftEntity.id;
-        //     });
-        //     const sortDirection = Math.floor(Math.abs(collectionFitlerEntity.orderBy) / collectionFitlerEntity.orderBy);
-        //     const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
-        //     collectionEntities.sort((a: NFT, b: NFT) => {
-        //         const visitsA = visitorMap.get(a.id) ?? 0;
-        //         const visitsB = visitorMap.get(b.id) ?? 0;
-        //         return sortDirection * (visitsA - visitsB);
-        //     });
-        // }
 
         const total = collectionEntities.length;
         collectionEntities = collectionEntities.slice(collectionFitlerEntity.from, collectionFitlerEntity.from + collectionFitlerEntity.count);
@@ -104,8 +96,27 @@ export class CollectionService {
     }
 
     async findTopCollections(timestampFrom: number, timestampTo: number): Promise < CollectionEntity[] > {
+        const turnoversMap = new Map < string, number >();
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.timestampFrom = timestampFrom;
+        nftEventFilterEntity.timestampTo = timestampTo;
 
-        return [];
+        const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const denomIds = nftEventEntities.map((nftEventEntity) => nftEventEntity.denomId);
+        const collectionEntities = await this.findByDenomIds(denomIds);
+
+        nftEventEntities.forEach((nftEventEntity) => {
+            const value = turnoversMap.get(nftEventEntity.denomId) ?? 0;
+            turnoversMap.set(nftEventEntity.denomId, value + 1);
+        });
+
+        collectionEntities.sort((a: CollectionEntity, b: CollectionEntity) => {
+            const turnoversA = turnoversMap.get(a.denomId) ?? 0;
+            const turnoversB = turnoversMap.get(b.denomId) ?? 0;
+            return turnoversB - turnoversA;
+        });
+
+        return collectionEntities;
     }
 
     async findByCollectionIds(collectionIds: number[]): Promise < CollectionEntity[] > {
