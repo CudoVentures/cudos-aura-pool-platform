@@ -82,7 +82,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     }
 
     function onClickProfileImages() {
-        editMiningFarmModalStore.showSignal(miningFarmEntity);
+        editMiningFarmModalStore.showSignalWithDefaultCallback(miningFarmEntity);
     }
 
     function onClickEditProfile() {

@@ -50,12 +50,12 @@ export class AuthService {
         await this.emailService.sendVerificationEmail(accountEntity);
     }
 
-    async login(email: string, pass: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, tx: Transaction = undefined): Promise < string > {
+    async login(email: string, pass: string, cudosWalletAddress: string, walletName: string, pubKeyType: string, pubKeyValue: string, signature: string, tx: Transaction = undefined): Promise < string > {
         let accountEntity = null;
         if (email !== '' || pass !== '') {
             accountEntity = await this.loginUsingCredentials(email, pass);
         } else {
-            accountEntity = await this.loginUsingWallet(cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, pubKeyType, pubKeyValue, signature, tx);
+            accountEntity = await this.loginUsingWallet(cudosWalletAddress, walletName, pubKeyType, pubKeyValue, signature, tx);
         }
 
         // update last login time
@@ -79,7 +79,7 @@ export class AuthService {
         return accountEntity;
     }
 
-    private async loginUsingWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, tx: Transaction = undefined): Promise < AccountEntity > {
+    private async loginUsingWallet(cudosWalletAddress: string, walletName: string, pubKeyType: any, pubKeyValue: any, signature: string, tx: Transaction = undefined): Promise < AccountEntity > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature);
         if (!isSigner) {
             throw new WrongNonceSignatureException();
@@ -97,7 +97,6 @@ export class AuthService {
             userEntity = new UserEntity();
             userEntity.accountId = accountEntity.accountId;
             userEntity.cudosWalletAddress = cudosWalletAddress;
-            userEntity.bitcoinPayoutWalletAddress = bitcoinPayoutWalletAddress;
             userEntity = await this.accountService.creditUser(userEntity, tx);
         } else {
             accountEntity = await this.accountService.findAccountById(userEntity.accountId);

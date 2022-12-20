@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import UserProfilePageStore from '../../stores/UserProfilePageStore';
+import WalletStore from '../../../../ledger/presentation/stores/WalletStore';
+import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
+import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 import StyledContainer, { ContainerPadding } from '../../../../../core/presentation/components/StyledContainer';
 import ChartHeading from '../../../../analytics/presentation/components/ChartHeading';
@@ -9,11 +12,7 @@ import ChartInfo from '../../../../analytics/presentation/components/ChartInfo';
 import DefaultIntervalPicker from '../../../../analytics/presentation/components/DefaultIntervalPicker';
 import DailyChart from '../../../../analytics/presentation/components/DailyChart';
 
-import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinStore';
-
 import '../../styles/my-earnings-tab.css';
-import WalletStore from '../../../../ledger/presentation/stores/WalletStore';
-import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     bitcoinStore?: BitcoinStore

@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../core/utilities/Main';
-import EditMiningFarmModalStore from '../stores/EditMiningFarmModalStore';
+import EditUserModalStore from '../stores/EditUserModalStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import SnackStore from '../../../../core/presentation/stores/SnackStore';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
@@ -15,51 +15,53 @@ import UploaderComponent from '../../../../core/presentation/components/Uploader
 
 import ClearIcon from '@mui/icons-material/Clear';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import '../styles/edit-mining-farm-modal.css';
+import '../styles/edit-user-modal.css';
 
 type Props = {
     alertStore?: AlertStore;
     snackStore?: SnackStore;
-    editMiningFarmModalStore?: EditMiningFarmModalStore;
+    editUserModalStore?: EditUserModalStore;
 }
 
-function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore }: Props) {
+function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
+
     function onClickRemoveCoverImage() {
-        editMiningFarmModalStore.changeCoverImage(S.Strings.EMPTY);
+        editUserModalStore.changeCoverImage(S.Strings.EMPTY);
     }
 
     async function onClickSaveChanges() {
-        await editMiningFarmModalStore.executeMiningFarmEditEdit();
-        editMiningFarmModalStore.onFinish();
-        editMiningFarmModalStore.hide();
+        await editUserModalStore.editSessionUser();
+        editUserModalStore.onFinish();
+        editUserModalStore.hide();
         snackStore.showSuccess('Profile was updated');
     }
 
     return (
-        <ModalWindow className = { 'EditMiningFarmModal' } modalStore = { editMiningFarmModalStore } >
-            { editMiningFarmModalStore.visible === true && (
+        <ModalWindow className = { 'EditUserModal' } modalStore = { editUserModalStore } >
+            { editUserModalStore.visible === true && (
                 <>
                     <div className = { 'ModalTitleRow' } >
                         <div className = { 'H3 Bold' } >Edit Profile</div>
                     </div>
                     <div
                         className={'CoverPicture FlexColumn'}
-                        style={ ProjectUtils.makeBgImgStyle(editMiningFarmModalStore.coverImage.base64) } >
+                        style={ ProjectUtils.makeBgImgStyle(editUserModalStore.coverImage.base64) } >
                         <div
                             className={'ProfilePicture FlexColumn'}
-                            style={ ProjectUtils.makeBgImgStyle(editMiningFarmModalStore.profileImage.base64) } >
+                            style={ ProjectUtils.makeBgImgStyle(editUserModalStore.profileImage.base64) } >
                             <div className={'Overlay'} />
                             <div className={'SvgButton FlexRow Clickable'}>
                                 <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={BorderColorIcon} />
                                 <UploaderComponent
                                     id = { this }
                                     params = { {
-                                        'maxSize': 73400320, // 70MB
+                                        'maxSize': 1 << 20, // 1 MB
+                                        'fileExt': '.png, .jpg',
                                         'onExceedLimit': () => {
-                                            alertStore.show('File limit is 70MB!');
+                                            alertStore.show('Max file size is 1MB!');
                                         },
                                         onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                                            editMiningFarmModalStore.changeProfileImage(base64File);
+                                            editUserModalStore.changeProfileImage(base64File);
                                         },
                                     } } />
                             </div>
@@ -72,12 +74,13 @@ function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore 
                                 <UploaderComponent
                                     id = { this }
                                     params = { {
-                                        'maxSize': 73400320, // 70MB
+                                        'maxSize': 1 << 20, // 1 MB
+                                        'fileExt': '.png, .jpg',
                                         'onExceedLimit': () => {
-                                            alertStore.show('File limit is 70MB!');
+                                            alertStore.show('Max file size is 1MB!');
                                         },
                                         onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                                            editMiningFarmModalStore.changeCoverImage(base64File);
+                                            editUserModalStore.changeCoverImage(base64File);
                                         },
                                     } } />
                             </div>
@@ -96,4 +99,4 @@ function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore 
 
 }
 
-export default inject((stores) => stores)(observer(EditMiningFarmModal));
+export default inject((stores) => stores)(observer(EditUserModal));

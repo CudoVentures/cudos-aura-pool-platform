@@ -4,11 +4,8 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
-import { GasPrice, StargateClient, StdSignature } from 'cudosjs';
-import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../../core/utilities/Constants';
-import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
+import { StdSignature } from 'cudosjs';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
-import S from '../../../../core/utilities/Main';
 
 export default class AccountApiRepo implements AccountRepo {
 
@@ -33,10 +30,10 @@ export default class AccountApiRepo implements AccountRepo {
         this.showAlert = showAlert;
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
             this.disableActions?.();
-            return await this.accountApi.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+            return await this.accountApi.login(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
         } catch (e) {
             switch (parseBackendErrorType(e)) {
                 case BackendErrorType.WRONG_USER_OR_PASSWORD:
@@ -101,6 +98,16 @@ export default class AccountApiRepo implements AccountRepo {
         }
     }
 
+    async editSessionUser(userEntity: UserEntity): Promise < void > {
+        try {
+            this.disableActions?.();
+            const resultUserEntity = await this.accountApi.editSessionUser(userEntity);
+            Object.assign(userEntity, resultUserEntity);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
     async editSessionSuperAdmin(superAdminEntity: SuperAdminEntity): Promise < void > {
         try {
             this.disableActions?.();
@@ -146,42 +153,6 @@ export default class AccountApiRepo implements AccountRepo {
             return this.accountApi.sendSessionAccountVerificationEmail();
         } finally {
             this.enableActions?.();
-        }
-    }
-
-    async confirmBitcoinAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < boolean > {
-        try {
-            this.disableActions?.();
-
-            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
-            await client.addressbookCreateAddress(cudosWalletAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL, bitcoinAddress, gasPrice);
-            return true;
-        } catch (ex) {
-            return false;
-        } finally {
-            this.enableActions?.();
-        }
-    }
-
-    async fetchAddressCudosBalance(cudosAddress: string): Promise < string > {
-        try {
-            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
-            const res = await cudosClient.getBalance(cudosAddress, CHAIN_DETAILS.NATIVE_TOKEN_DENOM);
-
-            return res.amount;
-        } catch (e) {
-            return S.Strings.NOT_EXISTS;
-        }
-    }
-
-    async fetchBitcoinAddress(cudosAddress: string): Promise < string > {
-        try {
-            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
-            const res = await cudosClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
-
-            return res.address.value
-        } catch (e) {
-            return S.Strings.EMPTY;
         }
     }
 

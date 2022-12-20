@@ -1,5 +1,5 @@
 import S from '../../../../core/utilities/Main';
-import { action, makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable, runInAction } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
@@ -7,6 +7,7 @@ import NftRepo from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
+import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 
 export enum ModalStage {
     PREVIEW,
@@ -17,7 +18,8 @@ export enum ModalStage {
 
 export default class BuyNftModalStore extends ModalStore {
     nftRepo: NftRepo;
-    accountRepo: AccountRepo
+    accountRepo: AccountRepo;
+    cudosRepo: CudosRepo;
     walletStore: WalletStore;
 
     @observable nftEntity: NftEntity;
@@ -27,11 +29,12 @@ export default class BuyNftModalStore extends ModalStore {
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
-    constructor(nftRepo: NftRepo, walletStore: WalletStore, accountRepo: AccountRepo) {
+    constructor(nftRepo: NftRepo, walletStore: WalletStore, accountRepo: AccountRepo, cudosRepo: CudosRepo) {
         super();
 
         this.nftRepo = nftRepo;
         this.accountRepo = accountRepo;
+        this.cudosRepo = cudosRepo;
 
         this.walletStore = walletStore;
 
@@ -58,19 +61,20 @@ export default class BuyNftModalStore extends ModalStore {
         this.txHash = null;
     }
 
-    @action
-    showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
-        this.nftEntity = nftEntity;
-        this.cudosPrice = cudosPrice;
-        this.collectionEntity = collectionEntity;
-        this.modalStage = ModalStage.PREVIEW;
-        this.txHash = S.Strings.EMPTY;
+    async showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
+        const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.address);
 
-        this.accountRepo.fetchBitcoinAddress(this.walletStore.address).then((btcAddress) => {
-            this.recipient = btcAddress;
+        runInAction(() => {
+            this.nftEntity = nftEntity;
+            this.cudosPrice = cudosPrice;
+            this.collectionEntity = collectionEntity;
+            this.modalStage = ModalStage.PREVIEW;
+            this.txHash = S.Strings.EMPTY;
+
+            this.recipient = recipient;
+
+            this.show();
         });
-
-        this.show();
     }
 
     hide = () => {

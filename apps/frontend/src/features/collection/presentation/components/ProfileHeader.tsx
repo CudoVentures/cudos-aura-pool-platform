@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 import '../styles/profile-header.css';

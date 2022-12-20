@@ -4,7 +4,7 @@ import { ReqEditSessionSuperAdmin } from '../dto/requests.dto';
 import SuperAdminEntity from '../entities/super-admin.entity';
 
 @Injectable()
-export class IsSessionSuperAdminGuard implements CanActivate {
+export class ЕditSessionSuperAdminGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise < boolean > {
         const request = context.switchToHttp().getRequest < RequestWithSessionAccounts >();

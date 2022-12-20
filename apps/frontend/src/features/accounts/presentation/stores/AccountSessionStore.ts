@@ -48,6 +48,10 @@ export default class AccountSessionStore {
         return this.isLoggedIn() === true && this.walletStore.isConnected() === true;
     }
 
+    isUserAndWalletConnected() {
+        return this.isUser() === true && this.walletStore.isConnected() === true;
+    }
+
     isUser(): boolean {
         if (!this.accountEntity) {
             return false;
@@ -136,17 +140,25 @@ export default class AccountSessionStore {
         return this.shouldChangePassword === S.INT_TRUE;
     }
 
+    shouldUserRegisterBtcAddress(): boolean {
+        if (this.isUser() === false) {
+            return false;
+        }
+
+        return this.userEntity.hasBitcoinPayoutWalletAddress() === false;
+    }
+
     async loginWithCredentials(username: string, password: string) {
-        await this.login(username, password, '', '', '', null, S.NOT_EXISTS, S.NOT_EXISTS);
+        await this.login(username, password, '', '', null, S.NOT_EXISTS, S.NOT_EXISTS);
     }
 
-    async loginWithWallet(cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature, sequence: number, accountNumber: number) {
-        await this.login('', '', cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+    async loginWithWallet(cudosWalletAddress: string, walletName: string, signedTx: StdSignature, sequence: number, accountNumber: number) {
+        await this.login('', '', cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
     }
 
-    async login(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
+    async login(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number): Promise < void > {
         try {
-            await this.accountRepo.login(username, password, cudosWalletAddress, bitcoinPayoutWalletAddress, walletName, signedTx, sequence, accountNumber);
+            await this.accountRepo.login(username, password, cudosWalletAddress, walletName, signedTx, sequence, accountNumber);
         } finally {
             await this.loadSessionAccountsAndSync();
         }

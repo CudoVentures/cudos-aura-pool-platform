@@ -1,13 +1,13 @@
 import { StdSignature } from '@cosmjs/amino';
 import AccountEntity from '../../entities/AccountEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
+import UserEntity from '../../entities/UserEntity';
 
 export class ReqLogin {
 
     email: string;
     password: string;
     cudosWalletAddress: string;
-    bitcoinPayoutWalletAddress: string;
     walletName: string;
     pubKeyType: string;
     pubKeyValue: string;
@@ -15,11 +15,10 @@ export class ReqLogin {
     sequence: number;
     accountNumber: number;
 
-    constructor(username: string, password: string, cudosWalletAddress: string, bitcoinPayoutWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number) {
+    constructor(username: string, password: string, cudosWalletAddress: string, walletName: string, signedTx: StdSignature | null, sequence: number, accountNumber: number) {
         this.email = username;
         this.password = password;
         this.cudosWalletAddress = cudosWalletAddress;
-        this.bitcoinPayoutWalletAddress = bitcoinPayoutWalletAddress;
         this.walletName = walletName;
         this.pubKeyType = signedTx?.pub_key.type ?? '';
         this.pubKeyValue = signedTx?.pub_key.value ?? '';
@@ -62,6 +61,16 @@ export class ReqEditSessionAccount {
 
     constructor(accountEntity: AccountEntity) {
         this.accountEntity = AccountEntity.toJson(accountEntity);
+    }
+
+}
+
+export class ReqEditSessionUser {
+
+    userEntity: UserEntity;
+
+    constructor(userEntity: UserEntity) {
+        this.userEntity = UserEntity.toJson(userEntity);
     }
 
 }

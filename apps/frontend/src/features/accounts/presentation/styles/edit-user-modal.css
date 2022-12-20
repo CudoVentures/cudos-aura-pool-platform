@@ -1,8 +1,4 @@
-.EditMiningFarmModal {
-    gap: 30px;
-}
-
-.EditMiningFarmModal .Overlay {
+.EditUserModal .Overlay {
     width: 100%; height: 100%;
     border-radius: 8px;
     position: absolute;
@@ -10,7 +6,7 @@
     z-index: 2;
 }
 
-.EditMiningFarmModal .CoverPicture {
+.EditUserModal .CoverPicture {
     background-size: cover;
     background-position: center;
     position: relative;
@@ -23,7 +19,7 @@
     margin-bottom: 40px;
 }
 
-.EditMiningFarmModal .CoverPicture .ProfilePicture {
+.EditUserModal .CoverPicture .ProfilePicture {
     background-size: contain;
     position: absolute;
     left: 10px;
@@ -36,15 +32,15 @@
     z-index: 3;
 }
 
-.EditMiningFarmModal .CoverPicture .ProfilePicture .Overlay {
+.EditUserModal .CoverPicture .ProfilePicture .Overlay {
     z-index: 4;
 }
 
-.EditMiningFarmModal .CoverPicture .ButtonsRow {
+.EditUserModal .CoverPicture .ButtonsRow {
     gap: 10px;
 }
 
-.EditMiningFarmModal .CoverPicture .SvgButton {
+.EditUserModal .CoverPicture .SvgButton {
     width: 25px; height: 25px;
     background-color: #fff;
     justify-content: center;
@@ -53,6 +49,6 @@
     z-index: 5;
 }
 
-.EditMiningFarmModal .CoverPicture .SvgButton .SvgButtonSvg {
+.EditUserModal .CoverPicture .SvgButton .SvgButtonSvg {
     width: 15px; height: 15px;
 }

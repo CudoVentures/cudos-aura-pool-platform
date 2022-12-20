@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsDefined, IsNotEmptyObject, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { AccountJsonValidator, SuperAdminJsonValidator } from '../account.types';
+import { AccountJsonValidator, SuperAdminJsonValidator, UserJsonValidator } from '../account.types';
 
 export class ReqEditSessionAccount {
 
@@ -10,6 +10,17 @@ export class ReqEditSessionAccount {
     @ValidateNested()
     @Type(() => AccountJsonValidator)
         accountEntity: AccountJsonValidator;
+
+}
+
+export class ReqEditSessionUser {
+
+    @IsDefined()
+    @IsNotEmptyObject()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => UserJsonValidator)
+        userEntity: UserJsonValidator;
 
 }
 

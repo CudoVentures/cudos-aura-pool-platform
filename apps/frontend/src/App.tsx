@@ -56,6 +56,8 @@ import MegaWalletTransferModalStore from './features/accounts/presentation/store
 import SuperAdminMningFarmsPageStore from './features/mining-farm/presentation/stores/SuperAdminMningFarmsPageStore';
 import SuperAdminCollectionsPageStore from './features/collection/presentation/stores/SuperAdminCollectionsPageStore';
 import MegaWalletBalanceStore from './features/accounts/presentation/stores/MegaWalletBalanceStore';
+import EditUserModalStore from './features/accounts/presentation/stores/EditUserModalStore';
+import EditUserBtcModalStore from './features/accounts/presentation/stores/EditUserBtcModalStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -100,8 +102,10 @@ const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, nftRep
 const superAdminMegaWalletPageStore = new SuperAdminMegaWalletPageStore(cudosRepo, statisticsRepo, accountSessionStore);
 const superAdminMiningFarmsPageStore = new SuperAdminMningFarmsPageStore(miningFarmRepo);
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
+const editUserModalStore = new EditUserModalStore(accountRepo);
+const editUserBtcModalStore = new EditUserBtcModalStore(accountRepo, cudosRepo, alertStore, walletStore);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
-const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore, accountRepo);
+const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore, accountRepo, cudosRepo);
 const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo, accountRepo, miningFarmRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
@@ -170,6 +174,8 @@ const App = () => {
                 buyNftModalStore = { buyNftModalStore }
                 resellNftModalStore = { resellNftModalStore }
                 editMiningFarmModalStore = { editMiningFarmModalStore }
+                editUserModalStore = { editUserModalStore }
+                editUserBtcModalStore = { editUserBtcModalStore }
                 creditCollectionSuccessModalStore = { creditCollectionSuccessModalStore }
                 creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
                 superAdminDashboardPageStore = { superAdminDashboardPageStore }
