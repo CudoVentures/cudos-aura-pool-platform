@@ -1,4 +1,5 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
+import { UserJsonValidator } from '../account.types';
 import UserRepo from '../repos/user.repo';
 
 export default class UserEntity {
@@ -23,7 +24,7 @@ export default class UserEntity {
         return this.userId === NOT_EXISTS_INT;
     }
 
-    static toRepo(entity: UserEntity): any {
+    static toRepo(entity: UserEntity): UserRepo {
         if (entity === null) {
             return null;
         }
@@ -59,14 +60,14 @@ export default class UserEntity {
         return entity;
     }
 
-    static toJson(entity: UserEntity): any {
+    static toJson(entity: UserEntity): UserJsonValidator {
         if (entity === null) {
             return null;
         }
 
         return {
-            'userId': entity.userId,
-            'accountId': entity.accountId,
+            'userId': entity.userId.toString(),
+            'accountId': entity.accountId.toString(),
             'cudosWalletAddress': entity.cudosWalletAddress,
             'bitcoinPayoutWalletAddress': entity.bitcoinPayoutWalletAddress,
             'profileImgUrl': entity.profileImgUrl,
@@ -74,15 +75,15 @@ export default class UserEntity {
         }
     }
 
-    static fromJson(json): UserEntity {
+    static fromJson(json: UserJsonValidator): UserEntity {
         if (json === null) {
             return null;
         }
 
         const entity = new UserEntity();
 
-        entity.userId = parseInt(json.userId ?? entity.userId);
-        entity.accountId = parseInt(json.accountId ?? entity.accountId);
+        entity.userId = parseInt(json.userId ?? entity.userId.toString());
+        entity.accountId = parseInt(json.accountId ?? entity.accountId.toString());
         entity.cudosWalletAddress = json.cudosWalletAddress ?? entity.cudosWalletAddress;
         entity.bitcoinPayoutWalletAddress = json.bitcoinPayoutWalletAddress ?? entity.bitcoinPayoutWalletAddress;
         entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;

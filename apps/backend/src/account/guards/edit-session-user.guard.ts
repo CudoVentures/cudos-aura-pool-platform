@@ -1,10 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable, ValidationPipe } from '@nestjs/common';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
-import { ReqEditSessionAccount } from '../dto/requests.dto';
-import AccountEntity from '../entities/account.entity';
+import { ReqEditSessionUser } from '../dto/requests.dto';
+import UserEntity from '../entities/user.entity';
 
 @Injectable()
-export class IsSessionAccountGuard implements CanActivate {
+export class EditSessionUserGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise < boolean > {
         const request = context.switchToHttp().getRequest < RequestWithSessionAccounts >();
@@ -12,14 +12,14 @@ export class IsSessionAccountGuard implements CanActivate {
 
         const req = await (new ValidationPipe().transform(body, {
             type: 'body',
-        })) as unknown as ReqEditSessionAccount;
-        const accountEntity = AccountEntity.fromJson(req.accountEntity);
+        })) as unknown as ReqEditSessionUser;
+        const userEntity = UserEntity.fromJson(req.userEntity);
 
-        if (request.sessionAccountEntity === null) {
+        if (request.sessionUserEntity === null) {
             return false;
         }
 
-        return accountEntity.accountId === request.sessionAccountEntity.accountId;
+        return userEntity.accountId === request.sessionUserEntity.accountId;
     }
 
 }

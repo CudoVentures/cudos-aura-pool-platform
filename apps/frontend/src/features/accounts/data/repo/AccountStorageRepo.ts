@@ -153,6 +153,9 @@ export default class AccountStorageRepo implements AccountRepo {
         this.storageHelper.save();
     }
 
+    async editSessionUser(userEntity: UserEntity): Promise < void > {
+    }
+
     async editSessionSuperAdmin(superAdminEntity: SuperAdminEntity): Promise < void > {
 
     }

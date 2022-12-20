@@ -70,13 +70,6 @@ export default class MiningFarmEntity {
         entity.primaryAccountOwnerEmail = primaryAccountOwnerEmail;
         return entity;
     }
-
-    clone(): MiningFarmEntity {
-        const entity = new MiningFarmEntity();
-        Object.assign(entity, this);
-        return entity;
-    }
-
     isCudosMintNftRoyaltiesPercentSet(): boolean {
         return this.cudosMintNftRoyaltiesPercent !== S.NOT_EXISTS;
     }
@@ -127,6 +120,14 @@ export default class MiningFarmEntity {
 
     formatMaintenanceFeesInBtc(): string {
         return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
+    }
+
+    clone(): MiningFarmEntity {
+        return Object.assign(new MiningFarmEntity(), this);
+    }
+
+    copy(source: MiningFarmEntity) {
+        Object.assign(this, source);
     }
 
     static toJson(entity: MiningFarmEntity): any {

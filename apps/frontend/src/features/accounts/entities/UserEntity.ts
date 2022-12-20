@@ -1,3 +1,4 @@
+import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 
 export default class UserEntity {
@@ -16,10 +17,20 @@ export default class UserEntity {
         this.bitcoinPayoutWalletAddress = '';
         this.profileImgUrl = '/assets/temp/profile-preview.png';
         this.coverImgUrl = '/assets/temp/profile-cover.png';
+
+        makeAutoObservable(this);
     }
 
     isNew(): boolean {
         return this.userId === S.Strings.NOT_EXISTS;
+    }
+
+    clone(): UserEntity {
+        return Object.assign(new UserEntity(), this);
+    }
+
+    copy(source: UserEntity) {
+        Object.assign(this, source)
     }
 
     static toJson(entity: UserEntity): any {

@@ -7,6 +7,8 @@ export enum PictureType {
     FARM_PHOTO = '3',
     COLLECTION_PROFILE = '4',
     COLLECTION_COVER = '5',
+    USER_COVER = '6',
+    USER_PROFILE = '7'
 }
 
 export default class ImageEntity {

@@ -41,6 +41,16 @@ export class ResEditSessionAccount {
 
 }
 
+export class ResEditSessionUser {
+
+    userEntity: UserEntity;
+
+    constructor(axiosData: any) {
+        this.userEntity = UserEntity.fromJson(axiosData.userEntity);
+    }
+
+}
+
 export class ResEditSessionSuperAdmin {
     superAdminEntity: SuperAdminEntity;
 

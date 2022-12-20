@@ -35,6 +35,28 @@ export class AccountJsonValidator {
 
 }
 
+export class UserJsonValidator {
+
+    @IsString()
+        userId: string;
+
+    @IsString()
+        accountId: string;
+
+    @IsString()
+        cudosWalletAddress: string;
+
+    @IsString()
+        bitcoinPayoutWalletAddress: string;
+
+    @IsString()
+        profileImgUrl: string;
+
+    @IsString()
+        coverImgUrl: string;
+
+}
+
 export class SuperAdminJsonValidator {
     @IsString()
         superAdminId: string;

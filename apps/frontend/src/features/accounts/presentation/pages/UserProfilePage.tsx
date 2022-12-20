@@ -5,6 +5,7 @@ import AccountSessionStore from '../stores/AccountSessionStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import UserProfilePageStore from '../stores/UserProfilePageStore';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import EditUserModalStore from '../stores/EditUserModalStore';
 
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
@@ -18,31 +19,33 @@ import MyNftsTab from '../components/user-profile/MyNftsTab';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonColor } from '../../../../core/presentation/components/Button';
+import EditUserModal from '../components/EditUserModal';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SvgCudosLogo from '../../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-user-profile.css';
 
 type Props = {
-    appStore?: AppStore;
     bitcoinStore?: BitcoinStore;
     accountSessionStore?: AccountSessionStore;
     userProfilePageStore?: UserProfilePageStore,
+    editUserModalStore?: EditUserModalStore;
 }
 
-function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, accountSessionStore }: Props) {
+function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore }: Props) {
     useEffect(() => {
-        appStore.useLoading(async () => {
+        async function init() {
             await bitcoinStore.init();
             await userProfilePageStore.init();
-        })
-    }, [])
+        }
+        init();
+    }, []);
 
     const accountEntity = accountSessionStore.accountEntity;
     const userEntity = accountSessionStore.userEntity;
 
     function onClickProfileImages() {
-
+        editUserModalStore.showSignalWithDefaultCallback(userEntity);
     }
 
     function onClickEditBtcAddres() {
@@ -50,7 +53,13 @@ function UserProfilePage({ appStore, bitcoinStore, userProfilePageStore, account
     }
 
     return (
-        <PageLayoutComponent className = { 'PageUserProfile' }>
+        <PageLayoutComponent
+            className = { 'PageUserProfile' }
+            modals = {
+                <>
+                    <EditUserModal />
+                </>
+            } >
             <PageHeader />
 
             <div className={'PageContent AppContent'} >

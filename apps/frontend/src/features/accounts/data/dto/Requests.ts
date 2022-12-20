@@ -1,6 +1,7 @@
 import { StdSignature } from '@cosmjs/amino';
 import AccountEntity from '../../entities/AccountEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
+import UserEntity from '../../entities/UserEntity';
 
 export class ReqLogin {
 
@@ -62,6 +63,16 @@ export class ReqEditSessionAccount {
 
     constructor(accountEntity: AccountEntity) {
         this.accountEntity = AccountEntity.toJson(accountEntity);
+    }
+
+}
+
+export class ReqEditSessionUser {
+
+    userEntity: UserEntity;
+
+    constructor(userEntity: UserEntity) {
+        this.userEntity = UserEntity.toJson(userEntity);
     }
 
 }

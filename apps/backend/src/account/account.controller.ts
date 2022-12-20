@@ -6,12 +6,14 @@ import { AppRequest } from '../common/commont.types';
 import EmailService from '../email/email.service';
 import AccountService from './account.service';
 import { AccountType } from './account.types';
-import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSessionSuperAdmin, ReqForgottenPassword } from './dto/requests.dto';
-import { ResEditSessionAccount, ResEditSessionSuperAdmin, ResFetchFarmOwnerAccount } from './dto/responses.dto';
+import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSessionSuperAdmin, ReqEditSessionUser, ReqForgottenPassword } from './dto/requests.dto';
+import { ResEditSessionAccount, ResEditSessionSuperAdmin, ResEditSessionUser, ResFetchFarmOwnerAccount } from './dto/responses.dto';
 import AccountEntity from './entities/account.entity';
 import SuperAdminEntity from './entities/super-admin.entity';
-import { IsSessionAccountGuard } from './guards/is-session-account.guard';
-import { IsSessionSuperAdminGuard } from './guards/is-session-super-admin.guard';
+import UserEntity from './entities/user.entity';
+import { ЕditSessionAccountGuard } from './guards/edit-session-account.guard';
+import { ЕditSessionSuperAdminGuard } from './guards/edit-session-super-admin.guard';
+import { EditSessionUserGuard } from './guards/edit-session-user.guard';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -19,10 +21,9 @@ export class AccountController {
     constructor(
         private accountService: AccountService,
         private emailService: EmailService,
-    // eslint-disable-next-line no-empty-function
     ) {}
 
-    @UseGuards(RoleGuard([AccountType.ADMIN]), IsSessionAccountGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN]), ЕditSessionAccountGuard)
     @UseInterceptors(TransactionInterceptor)
     @Post('editSessionAccount')
     @HttpCode(200)
@@ -32,7 +33,7 @@ export class AccountController {
     ): Promise < ResEditSessionAccount > {
         let accountEntity = AccountEntity.fromJson(reqEditSessionAccount.accountEntity);
 
-        const isEmailChanged = req.sessionAccountEntity && req.sessionAccountEntity.email !== accountEntity.email
+        const isEmailChanged = req.sessionAccountEntity.email !== accountEntity.email
         if (isEmailChanged) {
             accountEntity.markAsEmailNotVerified();
         }
@@ -46,7 +47,22 @@ export class AccountController {
         return new ResEditSessionAccount(accountEntity);
     }
 
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]), IsSessionSuperAdminGuard)
+    @UseGuards(RoleGuard([AccountType.USER]), EditSessionUserGuard)
+    @UseInterceptors(TransactionInterceptor)
+    @Post('editSessionUser')
+    @HttpCode(200)
+    async editSessionUser(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqEditSessionUser: ReqEditSessionUser,
+    ): Promise < ResEditSessionUser > {
+        let userEntity = UserEntity.fromJson(reqEditSessionUser.userEntity);
+
+        userEntity = await this.accountService.creditUser(userEntity, req.transaction);
+
+        return new ResEditSessionUser(userEntity);
+    }
+
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]), ЕditSessionSuperAdminGuard)
     @UseInterceptors(TransactionInterceptor)
     @Post('editSessionSuperAdmin')
     @HttpCode(200)

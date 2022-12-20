@@ -56,6 +56,7 @@ import MegaWalletTransferModalStore from './features/accounts/presentation/store
 import SuperAdminMningFarmsPageStore from './features/mining-farm/presentation/stores/SuperAdminMningFarmsPageStore';
 import SuperAdminCollectionsPageStore from './features/collection/presentation/stores/SuperAdminCollectionsPageStore';
 import MegaWalletBalanceStore from './features/accounts/presentation/stores/MegaWalletBalanceStore';
+import EditUserModalStore from './features/accounts/presentation/stores/EditUserModalStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -100,6 +101,7 @@ const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, nftRep
 const superAdminMegaWalletPageStore = new SuperAdminMegaWalletPageStore(cudosRepo, accountSessionStore);
 const superAdminMiningFarmsPageStore = new SuperAdminMningFarmsPageStore(miningFarmRepo);
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
+const editUserModalStore = new EditUserModalStore(accountRepo);
 const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore();
 const buyNftModalStore = new BuyNftModalStore(nftRepo, walletStore, accountRepo);
 const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
@@ -170,6 +172,7 @@ const App = () => {
                 buyNftModalStore = { buyNftModalStore }
                 resellNftModalStore = { resellNftModalStore }
                 editMiningFarmModalStore = { editMiningFarmModalStore }
+                editUserModalStore = { editUserModalStore }
                 creditCollectionSuccessModalStore = { creditCollectionSuccessModalStore }
                 creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
                 superAdminDashboardPageStore = { superAdminDashboardPageStore }
