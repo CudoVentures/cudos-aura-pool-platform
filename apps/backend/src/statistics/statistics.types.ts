@@ -1,4 +1,5 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { NftTransferHistoryEventType } from './entities/nft-event.entity';
 
 export enum NftEventType {
     TRANSFER = 1,
@@ -14,6 +15,11 @@ export class NftEventFilterValidationJson {
     @IsString()
     @IsOptional()
         nftId: string;
+
+    @IsArray()
+    @IsEnum(NftTransferHistoryEventType, { each: true })
+    @IsOptional()
+        eventTypes: NftTransferHistoryEventType[];
 
     @IsNumber()
     @IsOptional()

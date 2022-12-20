@@ -1,6 +1,6 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
 
-export default class NftModuleNftTransferHistoryEntity {
+export default class NftModuleNftTransferEntity {
     tokenId: string;
     denomId: string;
     newOwner: string;
@@ -18,14 +18,14 @@ export default class NftModuleNftTransferHistoryEntity {
     }
 
     static fromGraphQl(json) {
-        const entity = new NftModuleNftTransferHistoryEntity();
+        const entity = new NftModuleNftTransferEntity();
 
-        entity.tokenId = json.id || entity.tokenId;
-        entity.denomId = json.denomId || entity.denomId;
-        entity.newOwner = json.newOwner || entity.newOwner;
-        entity.oldOwner = json.oldOwner || entity.oldOwner;
+        entity.tokenId = json.id.toString() || entity.tokenId;
+        entity.denomId = json.denom_id || entity.denomId;
+        entity.newOwner = json.new_owner || entity.newOwner;
+        entity.oldOwner = json.old_owner || entity.oldOwner;
         entity.timestamp = parseInt(json.timestamp || entity.timestamp.toString());
-        entity.transactionHash = json.transactionHash || entity.transactionHash;
+        entity.transactionHash = json.transaction_hash || entity.transactionHash;
 
         return entity;
     }

@@ -1,9 +1,6 @@
 import {
     Get,
-    Param,
     Controller,
-    Query,
-    ParseIntPipe,
     Req,
     Post,
     Body,
@@ -15,10 +12,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { NFTService } from '../nft/nft.service';
 import { AppRequest } from '../common/commont.types';
-import { NOT_EXISTS_INT } from '../common/utils';
-import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqTransferHistory } from './dto/requests.dto';
-import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResTransferHistory } from './dto/responses.dto';
-import NftTransferHistoryEntity from './entities/nft-transfer-history.entity';
+import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqNftEventsByFilter } from './dto/requests.dto';
+import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResNftEventsByFilter } from './dto/responses.dto';
+import NftEventFilterEntity from './entities/nft-event-filter.entity';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -34,61 +30,13 @@ export class StatisticsController {
     @HttpCode(200)
     async getTransferHistory(
         @Req() req: AppRequest,
-        @Body(new ValidationPipe({ transform: true })) reqTransferHistory: ReqTransferHistory,
-    ): Promise<ResTransferHistory> {
-        // const nftEventFilterEntity = reqTransferHistory.nftEventFilterEntity;
+        @Body(new ValidationPipe({ transform: true })) reqNftEventsByFilter: ReqNftEventsByFilter,
+    ): Promise<ResNftEventsByFilter> {
+        const eventFilterEntity = NftEventFilterEntity.fromJson(reqNftEventsByFilter.nftEventFilterEntity);
 
-        // const { nftEventEntities, total } = await this.statisticsService.fetchNftEventsByFilter(nftEventFilterEntity);
+        const { nftEventEntities, nftEntities, total } = await this.statisticsService.fetchNftEventsByFilter(req.sessionUserEntity, eventFilterEntity);
 
-        // const { token_id, collection } = await this.nftService.findOne(uid)
-        // const { denom_id } = collection
-
-        // const nftTransferHistory = await this.graphqlService.fetchNftTransferHistory(token_id, denom_id);
-        // const nftTradeHistory = await this.graphqlService.fetchMarketplaceNftTradeHistory(token_id, denom_id);
-
-        // const history: TransferHistoryEntry[] = [];
-
-        // nftTransferHistory.forEach((transfer) => {
-        //     let eventType = 'transfer';
-        //     if (transfer.old_owner == '0x0') {
-        //         eventType = 'mint';
-        //     }
-
-        //     history.push({
-        //         nftId: uid,
-        //         from: transfer.old_owner,
-        //         to: transfer.new_owner,
-        //         timestamp: transfer.timestamp,
-        //         eventType,
-        //     });
-        // });
-
-        // nftTradeHistory.forEach((trade) => {
-        //     let eventType = 'sale';
-        //     if (trade.seller = '0x0') {
-        //         eventType = 'mint';
-        //     }
-
-        //     history.push({
-        //         nftId: uid,
-        //         from: trade.seller,
-        //         to: trade.buyer,
-        //         timestamp: trade.timestamp,
-        //         btcPrice: trade.btc_price,
-        //         usdPrice: trade.usd_price,
-        //         acudosPrice: trade.price,
-        //         eventType,
-        //     });
-        // });
-
-        // history.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
-
-        // return {
-        //     nftEventEntities: history,
-        //     total: history.length,
-        // };
-
-        return new ResTransferHistory([], 0);
+        return new ResNftEventsByFilter(nftEventEntities, nftEntities, total);
     }
 
     @ApiBearerAuth('access-token')

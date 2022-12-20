@@ -14,6 +14,23 @@ import AccountRepo from '../../account/repos/account.repo';
 import { CollectionRepo } from '../../collection/repos/collection.repo';
 import { NftStatus } from '../nft.types';
 
+export const enum NftRepoColumn {
+    ID = 'id',
+    NAME = 'name',
+    URI = 'uri',
+    DATA = 'data',
+    HASHING_POWER = 'hashing_power',
+    price = 'price',
+    EXPIRATION_DATE = 'expiration_date',
+    STATUS = 'status',
+    TOKEN_ID = 'token_id',
+    COLLECTION_ID = 'collection_id',
+    CREATOR_ID = 'creator_id',
+    DELETE_AT = 'deleted_at',
+    CURRENT_OWNER = 'current_owner',
+    MARKETPLACE_NFT_ID = 'marketplace_nft_id',
+}
+
 @Table({
     freezeTableName: true,
     tableName: 'nfts',

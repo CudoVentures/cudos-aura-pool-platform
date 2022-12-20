@@ -119,6 +119,18 @@ export class CollectionService {
         });
     }
 
+    async findByDenomIds(denomIds: string[]): Promise < CollectionEntity[] > {
+        const collectionRepos = await this.collectionModel.findAll({
+            where: {
+                [CollectionRepoColumn.DENOM_ID]: denomIds,
+            },
+        })
+
+        return collectionRepos.map((collectionRepo) => {
+            return CollectionEntity.fromRepo(collectionRepo);
+        });
+    }
+
     async findIdsByStatus(status: CollectionStatus[]): Promise < number[] > {
         const collections = await this.collectionModel.findAll({
             where: {

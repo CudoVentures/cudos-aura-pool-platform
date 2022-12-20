@@ -17012,6 +17012,11 @@ export type NftTransferHistoryQueryVariables = Exact<{
 
 export type NftTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string }> };
 
+export type NftPlatformTransferHistoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NftPlatformTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string }> };
+
 
 export const LastParsedHeightDocument = gql`
     query LastParsedHeight {
@@ -17220,6 +17225,18 @@ export const NftTransferHistoryDocument = gql`
   }
 }
     `;
+export const NftPlatformTransferHistoryDocument = gql`
+    query NftPlatformTransferHistory {
+  nft_transfer_history {
+    id
+    denom_id
+    new_owner
+    old_owner
+    timestamp
+    transaction_hash
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -17269,6 +17286,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     NftTransferHistory(variables: NftTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryQuery>(NftTransferHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistory', 'query');
+    },
+    NftPlatformTransferHistory(variables?: NftPlatformTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftPlatformTransferHistoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftPlatformTransferHistoryQuery>(NftPlatformTransferHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftPlatformTransferHistory', 'query');
     }
   };
 }

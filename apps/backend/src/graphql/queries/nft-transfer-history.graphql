@@ -8,3 +8,15 @@ query NftTransferHistory($denomId: String!, $tokenIds: [bigint!]) {
     transaction_hash
   }
 }
+
+query NftPlatformTransferHistory {
+  nft_transfer_history {
+    id
+    denom_id
+    new_owner
+    old_owner
+    timestamp
+    transaction_hash
+  }
+}
+

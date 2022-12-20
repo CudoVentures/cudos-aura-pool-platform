@@ -18,7 +18,6 @@ export default class StatisticsStorageRepo implements StatisticsRepo {
         for (let i = 0; i < 21; ++i) {
             const nftEventEntity = new NftEventEntity();
             nftEventEntities.push(nftEventEntity);
-            nftEventEntity.nftEventId = `${i + 1}`;
             nftEventEntity.nftId = '1';
             nftEventEntity.fromAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';
             nftEventEntity.toAddress = 'cudos1veuwr0t46fknaymy2q6yzmhcn2e0kfmdftsnws';

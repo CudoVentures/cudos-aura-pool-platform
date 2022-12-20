@@ -31,6 +31,8 @@ import {
     MarketplaceNftPlatformTradeHistoryDocument,
     LastParsedHeightDocument,
     LastParsedHeightQuery,
+    NftPlatformTransferHistoryQuery,
+    NftPlatformTransferHistoryDocument,
 } from './types';
 import { MarketplaceNftFilters } from '../nft/nft.types';
 import NftModuleNftTransferHistoryEntity from './entities/nft-module-nft-transfer-history';
@@ -126,7 +128,7 @@ export class GraphqlService {
             variables: { denomId, tokenIds },
         });
 
-        const nftTransferHistoryEntities = res.data.data?.nft_transfer_history?.map((json) => NftTransferHistoryEntity.fromGraphQl(json));
+        const nftTransferHistoryEntities = res.data.data?.nft_transfer_history?.map((json) => NftModuleNftTransferHistoryEntity.fromGraphQl(json));
 
         return nftTransferHistoryEntities || [];
     }
@@ -142,12 +144,24 @@ export class GraphqlService {
         return nftMarketplaceTradeHistoryEntity || [];
     }
 
-    async fetchMarketplacePlatformNftTradeHistory(): Promise<MarketplaceNftPlatformTradeHistoryQuery> {
+    async fetchNftPlatformTransferHistory(): Promise<NftModuleNftTransferHistoryEntity[]> {
+        const res: AxiosResponse<{ data: NftPlatformTransferHistoryQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(NftPlatformTransferHistoryDocument),
+        });
+
+        const nftTransferHistoryEntities = res.data.data?.nft_transfer_history?.map((json) => NftModuleNftTransferHistoryEntity.fromGraphQl(json));
+
+        return nftTransferHistoryEntities || [];
+    }
+
+    async fetchMarketplacePlatformNftTradeHistory(): Promise<NftMarketplaceTradeHistoryEntity[]> {
         const res: AxiosResponse<{ data: MarketplaceNftPlatformTradeHistoryQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceNftPlatformTradeHistoryDocument),
         });
 
-        return res.data.data;
+        const nftMarketplaceTradeHistoryEntity = res.data.data?.marketplace_nft_buy_history?.map((json) => NftMarketplaceTradeHistoryEntity.fromGraphQl(json));
+
+        return nftMarketplaceTradeHistoryEntity || [];
     }
 
     async fetchCollectionTotalSales(denomIds: string[]): Promise<{ salesInAcudos: number, salesInBtc: number, salesInUsd: number }> {

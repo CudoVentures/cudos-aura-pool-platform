@@ -1,26 +1,33 @@
 import { makeAutoObservable } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import S from '../../../../core/utilities/Main';
+import NftEventEntity from '../../../analytics/entities/NftEventEntity';
+import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
+import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
-import WalletEventEntity, { WalletEventItemType, WalletEventType } from '../../entities/WalletEventEntity';
+import NftEntity from '../../../nft/entities/NftEntity';
 import AccountSessionStore from './AccountSessionStore';
 
 export default class SuperAdminMegaWalletPageStore {
     cudosRepo: CudosRepo;
+    statisticsRepo: StatisticsRepo;
     accountSessionStore: AccountSessionStore;
 
     walletEventType: number;
     walletEventTableState: TableState;
 
-    walletEventsEntities: WalletEventEntity[]
+    nftEventEntities: NftEventEntity[]
+    nftEntitiesMap: Map<string, NftEntity>;
 
-    constructor(cudosRepo: CudosRepo, accountSessionStore: AccountSessionStore) {
+    constructor(cudosRepo: CudosRepo, statisticsRepo: StatisticsRepo, accountSessionStore: AccountSessionStore) {
         this.cudosRepo = cudosRepo;
         this.accountSessionStore = accountSessionStore;
+        this.statisticsRepo = statisticsRepo;
 
         this.walletEventType = S.NOT_EXISTS;
         this.walletEventTableState = new TableState(0, [], this.fetchMegaWalletActivity, 10);
-        this.walletEventsEntities = null;
+        this.nftEventEntities = null;
+        this.nftEntitiesMap = new Map<string, NftEntity>();
 
         makeAutoObservable(this);
     }
@@ -30,20 +37,16 @@ export default class SuperAdminMegaWalletPageStore {
     }
 
     async fetchMegaWalletActivity() {
-        const evenJson = {
-            'id': '1',
-            'address': 'cudos1wegwegwegwegwegwegwegwegwegwegwegwegweg',
-            'eventType': WalletEventType.FEE,
-            'itemType': WalletEventItemType.NFT,
-            'itemId': '1',
-            'fromAddress': 'cudos1wegwegwegwegwegwegwegwegwegwegwegwegweg',
-            'timestamp': 325235235235,
-        }
+        const nftEventsFilterModel = new NftEventFilterModel();
+        const { nftEventEntities, nftEntities } = await this.statisticsRepo.fetchNftEvents(nftEventsFilterModel);
 
-        this.walletEventsEntities = [];
-        for (let i = 0; i < 5; i++) {
-            this.walletEventsEntities.push(WalletEventEntity.fromJson(evenJson));
-        }
+        console.log(nftEventEntities);
+        this.nftEventEntities = nftEventEntities;
+        nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
+    }
+
+    getNftEntity(id: string): NftEntity {
+        return this.nftEntitiesMap.get(id) || null;
     }
 
     onChangeTableFilter = async () => {

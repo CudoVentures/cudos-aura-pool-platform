@@ -44,7 +44,7 @@ type Props = {
 }
 
 function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTransferModalStore, megaWalletBalanceStore, megaWalletSettingsModalStore, cudosStore, walletStore, alertStore }: Props) {
-    const { walletEventsEntities, accountSessionStore } = superAdminMegaWalletPageStore;
+    const { nftEventEntities, accountSessionStore } = superAdminMegaWalletPageStore;
     const { superAdminEntity } = accountSessionStore;
 
     useEffect(() => {
@@ -118,23 +118,24 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
 
     // TODO: real values
     function renderWalletActivityTableRows() {
-        return walletEventsEntities.map((walletEventEntity) => {
+        return nftEventEntities.map((nftEventEntity) => {
+            const nftEntity = superAdminMegaWalletPageStore.getNftEntity(nftEventEntity.nftId);
             const rowCells = [
-                createTableCellString(walletEventEntity.formatType()),
+                createTableCellString(nftEventEntity.getEventActivityDisplayName()),
                 createTableCell(
                     <div className={'FlexRow EventItemPreviewCell'}>
-                        <div className={'EventItemPicture'} style={ProjectUtils.makeBgImgStyle('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png')}/>
-                        <div className={'EventItemNmae'}>12345</div>
+                        <div className={'EventItemPicture'} style={ProjectUtils.makeBgImgStyle(nftEntity.imageUrl)}/>
+                        <div className={'EventItemNmae'}>{nftEntity.name}</div>
                     </div>,
                 ),
                 createTableCell(
                     <div className={'FlexColumn EventPtice'}>
-                        <div className={'B2 Bold EventPriceCudos'}>69.96 CUDOS</div>
-                        <div className={'B3 SemiBold EventPriceDollars'}>$123.45</div>
+                        <div className={'B2 Bold EventPriceCudos'}>{nftEventEntity.formatTransferPriceInCudos()}</div>
+                        <div className={'B3 SemiBold EventPriceDollars'}>{nftEventEntity.formatTransferPriceInUsd()}</div>
                     </div>,
                 ),
-                createTableCell(<div className={'B3 SemiBold EventFromAddress'}>{ProjectUtils.shortenAddressString(walletEventEntity.fromAddress, 15)}</div>),
-                createTableCellString(walletEventEntity.formatTimeSince()),
+                createTableCell(<div className={'B3 SemiBold EventFromAddress'}>{ProjectUtils.shortenAddressString(nftEventEntity.fromAddress, 15)}</div>),
+                createTableCellString(nftEventEntity.getTimePassedDisplay()),
             ];
 
             return createTableRow(rowCells);
@@ -205,7 +206,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                             <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
                         </Select>
                     } >
-                    { walletEventsEntities === null ? (
+                    { nftEventEntities === null ? (
                         <LoadingIndicator />
                     ) : (
                         <Table
