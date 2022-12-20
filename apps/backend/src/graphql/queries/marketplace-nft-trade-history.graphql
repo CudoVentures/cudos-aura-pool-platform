@@ -1,5 +1,5 @@
-query MarketplaceNftTradeHistory($denomId: String!, $tokenIds: [bigint!]) {
-  marketplace_nft_buy_history(where: {token_id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}) {
+query MarketplaceNftTradeHistoryByUniqueIds($uniqIds: [String!]) {
+  marketplace_nft_buy_history(where: { uniq_id: {_in: $uniqIds}}) {
     buyer
     btc_price
     denom_id
@@ -9,17 +9,22 @@ query MarketplaceNftTradeHistory($denomId: String!, $tokenIds: [bigint!]) {
     token_id
     usd_price
     transaction_hash
+    uniq_id
   }
 }
 
 query MarketplaceNftPlatformTradeHistory {
   marketplace_nft_buy_history {
-    btc_price
-    price
-    usd_price
-    timestamp
-    seller
     buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
+    uniq_id
   }
 }
 

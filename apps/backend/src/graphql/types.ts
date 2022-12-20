@@ -5851,6 +5851,7 @@ export type Marketplace_Nft = {
   transaction: Transaction;
   transaction_hash: Scalars['String'];
   uid?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
 };
 
 /** aggregated selection of "marketplace_nft" */
@@ -5906,6 +5907,7 @@ export type Marketplace_Nft_Bool_Exp = {
   transaction?: InputMaybe<Transaction_Bool_Exp>;
   transaction_hash?: InputMaybe<String_Comparison_Exp>;
   uid?: InputMaybe<String_Comparison_Exp>;
+  uniq_id?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** columns and relationships of "marketplace_nft_buy_history" */
@@ -5925,6 +5927,7 @@ export type Marketplace_Nft_Buy_History = {
   /** An object relationship */
   transaction: Transaction;
   transaction_hash: Scalars['String'];
+  uniq_id?: Maybe<Scalars['String']>;
   usd_price: Scalars['numeric'];
 };
 
@@ -5984,6 +5987,7 @@ export type Marketplace_Nft_Buy_History_Bool_Exp = {
   token_id?: InputMaybe<Bigint_Comparison_Exp>;
   transaction?: InputMaybe<Transaction_Bool_Exp>;
   transaction_hash?: InputMaybe<String_Comparison_Exp>;
+  uniq_id?: InputMaybe<String_Comparison_Exp>;
   usd_price?: InputMaybe<Numeric_Comparison_Exp>;
 };
 
@@ -5998,6 +6002,7 @@ export type Marketplace_Nft_Buy_History_Max_Fields = {
   timestamp?: Maybe<Scalars['bigint']>;
   token_id?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
   usd_price?: Maybe<Scalars['numeric']>;
 };
 
@@ -6012,6 +6017,7 @@ export type Marketplace_Nft_Buy_History_Min_Fields = {
   timestamp?: Maybe<Scalars['bigint']>;
   token_id?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
   usd_price?: Maybe<Scalars['numeric']>;
 };
 
@@ -6028,6 +6034,7 @@ export type Marketplace_Nft_Buy_History_Order_By = {
   token_id?: InputMaybe<Order_By>;
   transaction?: InputMaybe<Transaction_Order_By>;
   transaction_hash?: InputMaybe<Order_By>;
+  uniq_id?: InputMaybe<Order_By>;
   usd_price?: InputMaybe<Order_By>;
 };
 
@@ -6049,6 +6056,8 @@ export enum Marketplace_Nft_Buy_History_Select_Column {
   TokenId = 'token_id',
   /** column name */
   TransactionHash = 'transaction_hash',
+  /** column name */
+  UniqId = 'uniq_id',
   /** column name */
   UsdPrice = 'usd_price'
 }
@@ -6133,6 +6142,7 @@ export type Marketplace_Nft_Max_Fields = {
   token_id?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
   uid?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
 };
 
 /** aggregate min on columns */
@@ -6145,6 +6155,7 @@ export type Marketplace_Nft_Min_Fields = {
   token_id?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
   uid?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
 };
 
 /** Ordering options when selecting data from "marketplace_nft". */
@@ -6159,6 +6170,7 @@ export type Marketplace_Nft_Order_By = {
   transaction?: InputMaybe<Transaction_Order_By>;
   transaction_hash?: InputMaybe<Order_By>;
   uid?: InputMaybe<Order_By>;
+  uniq_id?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "marketplace_nft" */
@@ -6176,7 +6188,9 @@ export enum Marketplace_Nft_Select_Column {
   /** column name */
   TransactionHash = 'transaction_hash',
   /** column name */
-  Uid = 'uid'
+  Uid = 'uid',
+  /** column name */
+  UniqId = 'uniq_id'
 }
 
 /** aggregate stddev on columns */
@@ -6818,6 +6832,7 @@ export type Nft_Nft = {
   /** An object relationship */
   transaction: Transaction;
   transaction_hash: Scalars['String'];
+  uniq_id?: Maybe<Scalars['String']>;
   uri: Scalars['String'];
 };
 
@@ -6880,6 +6895,7 @@ export type Nft_Nft_Bool_Exp = {
   sender?: InputMaybe<String_Comparison_Exp>;
   transaction?: InputMaybe<Transaction_Bool_Exp>;
   transaction_hash?: InputMaybe<String_Comparison_Exp>;
+  uniq_id?: InputMaybe<String_Comparison_Exp>;
   uri?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -6894,6 +6910,7 @@ export type Nft_Nft_Max_Fields = {
   owner?: Maybe<Scalars['String']>;
   sender?: Maybe<Scalars['String']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
   uri?: Maybe<Scalars['String']>;
 };
 
@@ -6908,6 +6925,7 @@ export type Nft_Nft_Min_Fields = {
   owner?: Maybe<Scalars['String']>;
   sender?: Maybe<Scalars['String']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
   uri?: Maybe<Scalars['String']>;
 };
 
@@ -6925,6 +6943,7 @@ export type Nft_Nft_Order_By = {
   sender?: InputMaybe<Order_By>;
   transaction?: InputMaybe<Transaction_Order_By>;
   transaction_hash?: InputMaybe<Order_By>;
+  uniq_id?: InputMaybe<Order_By>;
   uri?: InputMaybe<Order_By>;
 };
 
@@ -6950,6 +6969,8 @@ export enum Nft_Nft_Select_Column {
   Sender = 'sender',
   /** column name */
   TransactionHash = 'transaction_hash',
+  /** column name */
+  UniqId = 'uniq_id',
   /** column name */
   Uri = 'uri'
 }
@@ -7009,6 +7030,7 @@ export type Nft_Transfer_History = {
   /** An object relationship */
   transaction: Transaction;
   transaction_hash: Scalars['String'];
+  uniq_id?: Maybe<Scalars['String']>;
 };
 
 /** aggregated selection of "nft_transfer_history" */
@@ -7061,6 +7083,7 @@ export type Nft_Transfer_History_Bool_Exp = {
   timestamp?: InputMaybe<Bigint_Comparison_Exp>;
   transaction?: InputMaybe<Transaction_Bool_Exp>;
   transaction_hash?: InputMaybe<String_Comparison_Exp>;
+  uniq_id?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
@@ -7072,6 +7095,7 @@ export type Nft_Transfer_History_Max_Fields = {
   old_owner?: Maybe<Scalars['String']>;
   timestamp?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
 };
 
 /** aggregate min on columns */
@@ -7083,6 +7107,7 @@ export type Nft_Transfer_History_Min_Fields = {
   old_owner?: Maybe<Scalars['String']>;
   timestamp?: Maybe<Scalars['bigint']>;
   transaction_hash?: Maybe<Scalars['String']>;
+  uniq_id?: Maybe<Scalars['String']>;
 };
 
 /** Ordering options when selecting data from "nft_transfer_history". */
@@ -7095,6 +7120,7 @@ export type Nft_Transfer_History_Order_By = {
   timestamp?: InputMaybe<Order_By>;
   transaction?: InputMaybe<Transaction_Order_By>;
   transaction_hash?: InputMaybe<Order_By>;
+  uniq_id?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "nft_transfer_history" */
@@ -7110,7 +7136,9 @@ export enum Nft_Transfer_History_Select_Column {
   /** column name */
   Timestamp = 'timestamp',
   /** column name */
-  TransactionHash = 'transaction_hash'
+  TransactionHash = 'transaction_hash',
+  /** column name */
+  UniqId = 'uniq_id'
 }
 
 /** aggregate stddev on columns */
@@ -16947,18 +16975,17 @@ export type MarketplaceNftPriceSumTotalQueryVariables = Exact<{ [key: string]: n
 
 export type MarketplaceNftPriceSumTotalQuery = { __typename?: 'query_root', marketplace_nft_buy_history_aggregate: { __typename?: 'marketplace_nft_buy_history_aggregate', aggregate?: { __typename?: 'marketplace_nft_buy_history_aggregate_fields', sum?: { __typename?: 'marketplace_nft_buy_history_sum_fields', price?: any | null, usd_price?: any | null, btc_price?: any | null } | null } | null } };
 
-export type MarketplaceNftTradeHistoryQueryVariables = Exact<{
-  denomId: Scalars['String'];
-  tokenIds?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
+export type MarketplaceNftTradeHistoryByUniqueIdsQueryVariables = Exact<{
+  uniqIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type MarketplaceNftTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string }> };
+export type MarketplaceNftTradeHistoryByUniqueIdsQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type MarketplaceNftPlatformTradeHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MarketplaceNftPlatformTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', btc_price: any, price: any, usd_price: any, timestamp: any, seller: string, buyer: string }> };
+export type MarketplaceNftPlatformTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type MarketplaceNftsByDenomIdQueryVariables = Exact<{
   denom_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -17004,18 +17031,17 @@ export type NftNftsByTokenIdsQueryVariables = Exact<{
 
 export type NftNftsByTokenIdsQuery = { __typename?: 'query_root', nft_nft: Array<{ __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string }> };
 
-export type NftTransferHistoryQueryVariables = Exact<{
-  denomId: Scalars['String'];
-  tokenIds?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
+export type NftTransferHistoryByUniqueIdsQueryVariables = Exact<{
+  uniqIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type NftTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string }> };
+export type NftTransferHistoryByUniqueIdsQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type NftPlatformTransferHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NftPlatformTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string }> };
+export type NftPlatformTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
 
 
 export const LastParsedHeightDocument = gql`
@@ -17083,11 +17109,9 @@ export const MarketplaceNftPriceSumTotalDocument = gql`
   }
 }
     `;
-export const MarketplaceNftTradeHistoryDocument = gql`
-    query MarketplaceNftTradeHistory($denomId: String!, $tokenIds: [bigint!]) {
-  marketplace_nft_buy_history(
-    where: {token_id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}
-  ) {
+export const MarketplaceNftTradeHistoryByUniqueIdsDocument = gql`
+    query MarketplaceNftTradeHistoryByUniqueIds($uniqIds: [String!]) {
+  marketplace_nft_buy_history(where: {uniq_id: {_in: $uniqIds}}) {
     buyer
     btc_price
     denom_id
@@ -17097,18 +17121,23 @@ export const MarketplaceNftTradeHistoryDocument = gql`
     token_id
     usd_price
     transaction_hash
+    uniq_id
   }
 }
     `;
 export const MarketplaceNftPlatformTradeHistoryDocument = gql`
     query MarketplaceNftPlatformTradeHistory {
   marketplace_nft_buy_history {
-    btc_price
-    price
-    usd_price
-    timestamp
-    seller
     buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
+    uniq_id
   }
 }
     `;
@@ -17213,15 +17242,16 @@ export const NftNftsByTokenIdsDocument = gql`
   }
 }
     `;
-export const NftTransferHistoryDocument = gql`
-    query NftTransferHistory($denomId: String!, $tokenIds: [bigint!]) {
-  nft_transfer_history(where: {id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}) {
+export const NftTransferHistoryByUniqueIdsDocument = gql`
+    query NftTransferHistoryByUniqueIds($uniqIds: [String!]) {
+  nft_transfer_history(where: {uniq_id: {_in: $uniqIds}}) {
     id
     denom_id
     new_owner
     old_owner
     timestamp
     transaction_hash
+    uniq_id
   }
 }
     `;
@@ -17234,6 +17264,7 @@ export const NftPlatformTransferHistoryDocument = gql`
     old_owner
     timestamp
     transaction_hash
+    uniq_id
   }
 }
     `;
@@ -17260,8 +17291,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     MarketplaceNftPriceSumTotal(variables?: MarketplaceNftPriceSumTotalQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPriceSumTotalQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumTotalQuery>(MarketplaceNftPriceSumTotalDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPriceSumTotal', 'query');
     },
-    MarketplaceNftTradeHistory(variables: MarketplaceNftTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryQuery>(MarketplaceNftTradeHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistory', 'query');
+    MarketplaceNftTradeHistoryByUniqueIds(variables?: MarketplaceNftTradeHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByUniqueIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByUniqueIdsQuery>(MarketplaceNftTradeHistoryByUniqueIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByUniqueIds', 'query');
     },
     MarketplaceNftPlatformTradeHistory(variables?: MarketplaceNftPlatformTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPlatformTradeHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPlatformTradeHistoryQuery>(MarketplaceNftPlatformTradeHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPlatformTradeHistory', 'query');
@@ -17284,8 +17315,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     NftNftsByTokenIds(variables?: NftNftsByTokenIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftNftsByTokenIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<NftNftsByTokenIdsQuery>(NftNftsByTokenIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftNftsByTokenIds', 'query');
     },
-    NftTransferHistory(variables: NftTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryQuery>(NftTransferHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistory', 'query');
+    NftTransferHistoryByUniqueIds(variables?: NftTransferHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryByUniqueIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryByUniqueIdsQuery>(NftTransferHistoryByUniqueIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistoryByUniqueIds', 'query');
     },
     NftPlatformTransferHistory(variables?: NftPlatformTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftPlatformTransferHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<NftPlatformTransferHistoryQuery>(NftPlatformTransferHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftPlatformTransferHistory', 'query');
