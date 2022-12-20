@@ -2,6 +2,7 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
+import TotalEarningsEntity from '../../entities/TotalEarningsEntity';
 import UserEarningsEntity from '../../entities/UserEarningsEntity';
 
 export class ResNftEventEntitiesByFilter {
@@ -42,6 +43,16 @@ export class ResFetchNftEarningsByMiningFarmId {
 
     constructor(axiosData: any) {
         this.miningFarmEarningsEntity = MiningFarmEarningsEntity.fromJson(axiosData.miningFarmEarningsEntity);
+    }
+
+}
+
+export class ResFetchTotalNftEarnings {
+
+    totalEarningsEntity: TotalEarningsEntity;
+
+    constructor(axiosData: any) {
+        this.totalEarningsEntity = TotalEarningsEntity.fromJson(axiosData.totalEarningsEntity);
     }
 
 }

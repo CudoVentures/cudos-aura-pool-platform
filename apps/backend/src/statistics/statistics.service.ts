@@ -68,15 +68,15 @@ export class StatisticsService {
 
     async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
         // fetch all events from graphql
-        const nftmoduleNftTransferEntities = await this.graphqlService.fetchNftPlatformTransferHistory();
-        const nftmarketplaceTradeEntities = await this.graphqlService.fetchMarketplacePlatformNftTradeHistory();
+        const nftModuleNftTransferEntities = await this.graphqlService.fetchNftPlatformTransferHistory();
+        const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplacePlatformNftTradeHistory();
         // get denom and token ids for query from db
-        let denomIds = nftmoduleNftTransferEntities.map((entity) => entity.denomId);
-        denomIds = denomIds.concat(nftmarketplaceTradeEntities.map((entity) => entity.denomId));
+        let denomIds = nftModuleNftTransferEntities.map((entity) => entity.denomId);
+        denomIds = denomIds.concat(nftMarketplaceTradeEntities.map((entity) => entity.denomId));
         denomIds = denomIds.filter((denomId, i) => denomIds.findIndex((id) => id === denomId) === i);
 
-        let tokenIds = nftmoduleNftTransferEntities.map((entity) => entity.tokenId);
-        tokenIds = tokenIds.concat(nftmarketplaceTradeEntities.map((entity) => entity.tokenId));
+        let tokenIds = nftModuleNftTransferEntities.map((entity) => entity.tokenId);
+        tokenIds = tokenIds.concat(nftMarketplaceTradeEntities.map((entity) => entity.tokenId));
         tokenIds = tokenIds.filter((tokenId, i) => tokenIds.findIndex((id) => id === tokenId) === i);
 
         // get collections so we can query nfts by collection ids
@@ -105,7 +105,7 @@ export class StatisticsService {
 
         const nftEventEntities: NftEventEntity[] = [];
 
-        nftmoduleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
+        nftModuleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
 
             const nftMapForDenom = denomIdTokenIdNftsMap.get(nftModuleNftTransferEntity.denomId);
             if (!nftMapForDenom) {
@@ -124,7 +124,7 @@ export class StatisticsService {
             nftEventEntities.push(nftTransferHistoryEntity);
         });
 
-        nftmarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
+        nftMarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
 
             const nftMapForDenom = denomIdTokenIdNftsMap.get(nftMarketplaceTradeHistoryEntity.denomId);
             if (!nftMapForDenom) {
@@ -186,10 +186,10 @@ export class StatisticsService {
 
             const tokenIds = nftEntitiesForCollection.map((nftEntity) => nftEntity.tokenId);
 
-            const nftmoduleNftTransferEntities = await this.graphqlService.fetchNftTransferHistory(denomId, tokenIds);
-            const nftmarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistory(denomId, tokenIds);
+            const nftModuleNftTransferEntities = await this.graphqlService.fetchNftTransferHistory(denomId, tokenIds);
+            const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistory(denomId, tokenIds);
 
-            nftmoduleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
+            nftModuleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
                 const nftId = nftTokenIdNftMap.get(nftModuleNftTransferEntity.tokenId).id;
                 const nftTransferHistoryEntity = NftEventEntity.fromNftModuleTransferHistory(nftModuleNftTransferEntity);
                 nftTransferHistoryEntity.nftId = nftId;
@@ -197,7 +197,7 @@ export class StatisticsService {
                 nftEventEntities.push(nftTransferHistoryEntity);
             })
 
-            nftmarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
+            nftMarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
                 const nftId = nftTokenIdNftMap.get(nftMarketplaceTradeHistoryEntity.tokenId).id;
                 const nftTransferHistoryEntity = NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity);
                 nftTransferHistoryEntity.nftId = nftId;

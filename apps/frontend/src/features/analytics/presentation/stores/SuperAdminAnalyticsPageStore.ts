@@ -10,16 +10,14 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import NftEventEntity, { NftEventType } from '../../entities/NftEventEntity';
 import DefaultIntervalPickerState from './DefaultIntervalPickerState';
 import S from '../../../../core/utilities/Main';
+import TotalEarningsEntity from '../../entities/TotalEarningsEntity';
 
-export default class AnalyticsPageStore {
+export default class SuperAdminAnalyticsPageStore {
 
     statisticsRepo: StatisticsRepo;
-    nftRepo: NftRepo;
-    collectionRepo: CollectionRepo;
-    miningFarmRepo: MiningFarmRepo;
 
     defaultIntervalPickerState: DefaultIntervalPickerState;
-    miningFarmEarningsEntity: MiningFarmEarningsEntity;
+    totalEarningsEntity: TotalEarningsEntity;
 
     eventType: NftEventType;
     nftEventFilterModel: NftEventFilterModel;
@@ -27,14 +25,11 @@ export default class AnalyticsPageStore {
     nftEntitiesMap: Map < string, NftEntity >;
     analyticsTableState: TableState;
 
-    constructor(statisticsRepo: StatisticsRepo, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
+    constructor(statisticsRepo: StatisticsRepo) {
         this.statisticsRepo = statisticsRepo;
-        this.nftRepo = nftRepo;
-        this.collectionRepo = collectionRepo;
-        this.miningFarmRepo = miningFarmRepo;
 
         this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchEarnings);
-        this.miningFarmEarningsEntity = null;
+        this.totalEarningsEntity = null;
 
         this.eventType = S.NOT_EXISTS;
         this.nftEventFilterModel = new NftEventFilterModel();
@@ -46,16 +41,13 @@ export default class AnalyticsPageStore {
     }
 
     async init() {
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
-        this.nftEventFilterModel.miningFarmId = miningFarmEntity.id;
-
         await this.fetchEarnings();
         await this.fetchNftEvents();
     }
 
     fetchEarnings = async () => {
         const defaultIntervalPickerState = this.defaultIntervalPickerState;
-        this.miningFarmEarningsEntity = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.nftEventFilterModel.miningFarmId, defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+        this.totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
     }
 
     fetchNftEvents = async () => {

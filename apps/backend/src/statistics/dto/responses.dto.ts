@@ -3,6 +3,7 @@ import MiningFarmEarningsEntity from '../entities/mining-farm-earnings.entity';
 import NftEarningsEntity from '../entities/nft-earnings.entity';
 import UserEarningsEntity from '../entities/user-earnings.entity';
 import NftEntity from '../../nft/entities/nft.entity';
+import TotalEarningsEntity from '../entities/platform-earnings.entity';
 
 export class ResNftEventsByFilter {
     nftEventEntities: NftEventEntity[];
@@ -42,6 +43,16 @@ export class ResFetchNftEarningsByMiningFarmId {
 
     constructor(miningFarmEarningsEntity: MiningFarmEarningsEntity) {
         this.miningFarmEarningsEntity = MiningFarmEarningsEntity.toJson(miningFarmEarningsEntity);
+    }
+
+}
+
+export class ResFetchTotalNftEarnings {
+
+    totalEarningsEntity: any;
+
+    constructor(totalEarningsEntity: TotalEarningsEntity) {
+        this.totalEarningsEntity = TotalEarningsEntity.toJson(totalEarningsEntity);
     }
 
 }

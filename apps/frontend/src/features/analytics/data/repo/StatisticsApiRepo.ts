@@ -3,6 +3,7 @@ import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
+import TotalEarningsEntity from '../../entities/TotalEarningsEntity';
 import UserEarningsEntity from '../../entities/UserEarningsEntity';
 import StatisticsRepo from '../../presentation/repos/StatisticsRepo';
 import StatisticsApi from '../data-sources/StatisticsApi';
@@ -61,6 +62,15 @@ export default class StatisticsApiRepo implements StatisticsRepo {
         try {
             this.disableActions?.();
             return await this.statisticsApi.fetchNftEarningsByMiningFarmId(miningFarmId, timestampFrom, timestampTo);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchTotalNftEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchTotalNftEarnings(timestampFrom, timestampTo);
         } finally {
             this.enableActions?.();
         }

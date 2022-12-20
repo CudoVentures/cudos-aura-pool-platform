@@ -47,3 +47,13 @@ export class ReqFetchNftEarningsByMiningFarmId {
         timestampTo: number;
 
 }
+
+export class ReqFetchTotalNftEarnings {
+
+    @IsNumber()
+        timestampFrom: number;
+
+    @IsNumber()
+        timestampTo: number;
+
+}

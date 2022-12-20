@@ -47,3 +47,15 @@ export class ReqFetchNftEarningsByMiningFarmId {
     }
 
 }
+
+export class ReqFetchTotalNftEarnings {
+
+    timestampFrom: number;
+    timestampTo: number
+
+    constructor(timestampFrom: number, timestampTo: number) {
+        this.timestampFrom = timestampFrom;
+        this.timestampTo = timestampTo;
+    }
+
+}

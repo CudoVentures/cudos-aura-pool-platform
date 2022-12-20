@@ -30,7 +30,7 @@ type Props = {
     walletStore?: WalletStore
 }
 
-function MarkedplacePage({ analyticsPageStore, cudosStore, bitcoinStore, walletStore }: Props) {
+function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletStore }: Props) {
     const { miningFarmEarningsEntity, defaultIntervalPickerState } = analyticsPageStore;
 
     useEffect(() => {
@@ -102,10 +102,11 @@ function MarkedplacePage({ analyticsPageStore, cudosStore, bitcoinStore, walletS
                             <Select
                                 className={'TableFilter'}
                                 onChange={analyticsPageStore.onChangeTableFilter}
-                                value={analyticsPageStore.nftEventFilterModel.eventType} >
+                                value={analyticsPageStore.eventType} >
                                 <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
                                 <MenuItem value = { NftEventType.TRANSFER }> Transfer </MenuItem>
                                 <MenuItem value = { NftEventType.MINT }> Mint </MenuItem>
+                                <MenuItem value = { NftEventType.SALE }> Sale </MenuItem>
                             </Select>
                         </div>
                         <NftEventTable
@@ -122,4 +123,4 @@ function MarkedplacePage({ analyticsPageStore, cudosStore, bitcoinStore, walletS
     )
 }
 
-export default inject((stores) => stores)(observer(MarkedplacePage));
+export default inject((stores) => stores)(observer(AnalyticsPage));
