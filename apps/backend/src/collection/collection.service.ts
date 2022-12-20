@@ -103,6 +103,11 @@ export class CollectionService {
         };
     }
 
+    async findTopCollections(timestampFrom: number, timestampTo: number): Promise < CollectionEntity[] > {
+
+        return [];
+    }
+
     async findByCollectionIds(collectionIds: number[]): Promise < CollectionEntity[] > {
         const collectionRepos = await this.collectionModel.findAll({
             where: {

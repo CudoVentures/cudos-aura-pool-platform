@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsDefined, IsNotEmpty, IsNotEmptyObject, IsObject, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsDefined, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { NftJsonValidator } from '../../nft/nft.types';
 import { CollectionFilterJsonValidator, CollectionJsonValidator } from '../collection.types';
 
@@ -51,6 +51,15 @@ export class ReqFetchCollectionsByFilter {
     @ValidateNested()
     @Type(() => CollectionFilterJsonValidator)
         collectionFilter: CollectionFilterJsonValidator
+}
+
+export class ReqFetchTopCollections {
+
+    @IsNumber()
+        timestampFrom: number;
+
+    @IsNumber()
+        timestampTo: number;
 }
 
 export class ReqFetchCollectionDetails {

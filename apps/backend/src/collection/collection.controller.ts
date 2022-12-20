@@ -1,18 +1,16 @@
 import {
     Body,
     Controller,
-    Get,
     HttpCode,
     Post,
     Put,
-    Query,
     Req,
     UseGuards,
     UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ModuleName, ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter, ReqUpdateCollectionChainData } from './dto/requests.dto';
+import { ModuleName, ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter, ReqFetchTopCollections, ReqUpdateCollectionChainData } from './dto/requests.dto';
 import { CollectionService } from './collection.service';
 import { NFTService } from '../nft/nft.service';
 import RoleGuard from '../auth/guards/role.guard';
@@ -26,7 +24,7 @@ import { AccountType } from '../account/account.types';
 import { CollectionCreationError, DataServiceError, ERROR_TYPES } from '../common/errors/errors';
 import { CollectionEntity } from './entities/collection.entity';
 import NftEntity from '../nft/entities/nft.entity';
-import { ResFetchCollectionsByFilter, ResCreditCollection, ResFetchCollectionDetails, ResEditCollection } from './dto/responses.dto';
+import { ResFetchCollectionsByFilter, ResCreditCollection, ResFetchCollectionDetails, ResEditCollection, ResFetchTopCollections } from './dto/responses.dto';
 import CollectionFilterEntity from './entities/collection-filter.entity';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 
@@ -50,6 +48,15 @@ export class CollectionController {
         const { collectionEntities, total } = await this.collectionService.findByFilter(collectionFilterEntity);
 
         return new ResFetchCollectionsByFilter(collectionEntities, total);
+    }
+
+    @Post('fetchTopCollections')
+    @HttpCode(200)
+    async fetchTopCollections(
+        @Body(new ValidationPipe({ transform: true })) reqFetchTopCollections: ReqFetchTopCollections,
+    ): Promise < ResFetchTopCollections > {
+        const collectionEntities = await this.collectionService.findTopCollections(reqFetchTopCollections.timestampFrom, reqFetchTopCollections.timestampTo);
+        return new ResFetchTopCollections(collectionEntities);
     }
 
     @Post('details')
