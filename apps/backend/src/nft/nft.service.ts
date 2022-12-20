@@ -96,6 +96,14 @@ export class NFTService {
 
     }
 
+    async findAll(): Promise <NftEntity[]> {
+        const nftRepos = await this.nftRepo.findAll();
+
+        const nftEntities = nftRepos.map((nftRepo) => NftEntity.fromRepo(nftRepo));
+
+        return nftEntities;
+    }
+
     async findByAccountId(accountId: number): Promise < NftEntity[] > {
         const whereClause = new NftRepo();
         whereClause.creatorId = accountId;

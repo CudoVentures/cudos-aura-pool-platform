@@ -37,6 +37,7 @@ import {
 import { MarketplaceNftFilters } from '../nft/nft.types';
 import NftModuleNftTransferHistoryEntity from './entities/nft-module-nft-transfer-history';
 import NftMarketplaceTradeHistoryEntity from './entities/nft-marketplace-trade-history.entity';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class GraphqlService {
@@ -177,12 +178,17 @@ export class GraphqlService {
         };
     }
 
-    async fetchTotalPlatformSales(): Promise<MarketplaceNftPriceSumTotalQuery> {
+    async fetchTotalPlatformSales(): Promise<{saledInUsd: number, salesInBtc: BigNumber, salesInAcudos: BigNumber}> {
         const res: AxiosResponse<{ data: MarketplaceNftPriceSumTotalQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceNftPriceSumTotalDocument),
         });
+        const totalSales = res.data?.data?.marketplace_nft_buy_history_aggregate?.aggregate?.sum;
 
-        return res.data.data;
+        return {
+            saledInUsd: parseFloat(totalSales.usd_price || 0),
+            salesInBtc: new BigNumber(totalSales.btc_price || 0),
+            salesInAcudos: new BigNumber(totalSales.price || 0),
+        };
     }
 
     async fetchTotalNftsByAddress(address: string): Promise<number> {

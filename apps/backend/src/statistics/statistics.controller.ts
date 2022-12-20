@@ -8,15 +8,18 @@ import {
     ValidationPipe,
     forwardRef,
     Inject,
+    UseGuards,
 } from '@nestjs/common';
 import { GraphqlService } from '../graphql/graphql.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { NFTService } from '../nft/nft.service';
 import { AppRequest } from '../common/commont.types';
-import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqNftEventsByFilter } from './dto/requests.dto';
-import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResNftEventsByFilter } from './dto/responses.dto';
+import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqFetchTotalNftEarnings, ReqNftEventsByFilter } from './dto/requests.dto';
+import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchTotalNftEarnings, ResNftEventsByFilter } from './dto/responses.dto';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
+import { AccountType } from '../account/account.types';
+import RoleGuard from '../auth/guards/role.guard';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -29,9 +32,9 @@ export class StatisticsController {
     // eslint-disable-next-line no-empty-function
     ) {}
 
-    @Post('history/nft')
+    @Post('events/nft')
     @HttpCode(200)
-    async getTransferHistory(
+    async getNftEvents(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqNftEventsByFilter: ReqNftEventsByFilter,
     ): Promise<ResNftEventsByFilter> {
@@ -74,14 +77,15 @@ export class StatisticsController {
         return new ResFetchNftEarningsByMiningFarmId(miningFarmEarningsEntity);
     }
 
-    @Get('earnings/platform')
+    @ApiBearerAuth('access-token')
+    @Post('earnings/total')
     @HttpCode(200)
-    async getPlatformEarnings(): Promise <ResPlatformEarnings> {
-        // get filter from req
-        // fetch earnings
-        // return res
-        const platformEarnings = await this.statisticsService.fetchPlatformEarnings();
-
-        return farmEarnings
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    async getPlatformEarnings(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqFetchTotalNftEarnings: ReqFetchTotalNftEarnings,
+    ): Promise <ResFetchTotalNftEarnings> {
+        const totalEarningsEntity = await this.statisticsService.fetchPlatformEarnings(reqFetchTotalNftEarnings.timestampFrom, reqFetchTotalNftEarnings.timestampTo);
+        return new ResFetchTotalNftEarnings(totalEarningsEntity);
     }
 }

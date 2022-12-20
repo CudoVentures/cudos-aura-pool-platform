@@ -58,6 +58,7 @@ import SuperAdminCollectionsPageStore from './features/collection/presentation/s
 import MegaWalletBalanceStore from './features/accounts/presentation/stores/MegaWalletBalanceStore';
 import EditUserModalStore from './features/accounts/presentation/stores/EditUserModalStore';
 import EditUserBtcModalStore from './features/accounts/presentation/stores/EditUserBtcModalStore';
+import SuperAdminAnalyticsPageStore from './features/analytics/presentation/stores/SuperAdminAnalyticsPageStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -94,6 +95,7 @@ const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collect
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo, accountSessionStore, alertStore, walletStore);
 const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, statisticsRepo);
 const analyticsPageStore = new AnalyticsPageStore(statisticsRepo, nftRepo, collectionRepo, miningFarmRepo);
+const superAdminAnalyticsPageStore = new SuperAdminAnalyticsPageStore(statisticsRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo, alertStore);
 const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
 const visitorStore = new VisitorStore(visitorRepo);
@@ -184,6 +186,7 @@ const App = () => {
                 queuedMiningFarmsStore = { queuedMiningFarmsStore }
                 queuedCollectionsStore = { queuedCollectionsStore }
                 analyticsPageStore = { analyticsPageStore }
+                superAdminAnalyticsPageStore = { superAdminAnalyticsPageStore }
                 viewCollectionModalStore = { viewCollectionModalStore }
                 viewMiningFarmModalStore = { viewMiningFarmModalStore }
                 changePasswordModalStore = { changePasswordModalStore }

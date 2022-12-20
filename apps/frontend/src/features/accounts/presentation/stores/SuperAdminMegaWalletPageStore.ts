@@ -42,7 +42,6 @@ export default class SuperAdminMegaWalletPageStore {
             nftEventsFilterModel.eventTypes = [this.eventType];
         }
         const { nftEventEntities, nftEntities } = await this.statisticsRepo.fetchNftEvents(nftEventsFilterModel);
-        console.log(nftEventEntities)
         this.nftEventEntities = nftEventEntities;
         nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
     }

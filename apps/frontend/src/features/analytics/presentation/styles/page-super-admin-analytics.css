@@ -1,3 +1,33 @@
 .PageSuperAdminAnalytics .PageContent {
-    padding: 36px var(--page-spacing-h);
+    padding: 24px var(--page-spacing-h);
+    gap: 24px;
+}
+
+.PageSuperAdminAnalytics .PageContent .TheChart {
+    height: 450px;
+}
+
+.PageSuperAdminAnalytics .PageContent .BalancesDataContainer {
+    gap: 24px;
+}
+
+.PageSuperAdminAnalytics .PageContent .BalancesDataContainer .BalanceColumn {
+    gap: 16px;
+}
+
+.PageSuperAdminAnalytics .PageContent .BalancesDataContainer .BalanceColumn .ValueColumn .SecondaryColor {
+    color: var(--color-neutral-060);    
+}
+
+.PageSuperAdminAnalytics .PageContent .TableContainer {
+    gap: 30px;
+}
+
+.PageSuperAdminAnalytics .PageContent .TableContainer .TableHeader {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.PageSuperAdminAnalytics .PageContent .TableContainer .TableHeader .TableFilter {
+    width: 20%;
 }
