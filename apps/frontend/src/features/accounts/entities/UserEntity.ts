@@ -33,6 +33,10 @@ export default class UserEntity {
         Object.assign(this, source)
     }
 
+    hasBitcoinPayoutWalletAddress(): boolean {
+        return this.bitcoinPayoutWalletAddress !== '';
+    }
+
     static toJson(entity: UserEntity): any {
         if (entity === null) {
             return null;

@@ -67,6 +67,15 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         run();
     }, []);
 
+    function showBtcAlert() {
+        alertStore.positiveLabel = 'Register';
+        alertStore.positiveListener = () => {
+            navigate(AppRoutes.USER_PROFILE);
+        };
+        alertStore.msg = 'You must register BTC payout adress first';
+        alertStore.visible = true;
+    }
+
     function onClickNavigateMarketplace() {
         navigate(AppRoutes.MARKETPLACE);
     }
@@ -76,6 +85,11 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
     }
 
     function onClickBuyNft() {
+        if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
+            showBtcAlert();
+            return;
+        }
+
         const balance = walletStore.getBalanceSafe().multipliedBy((new BigNumber(10).pow(18)));
         if (balance.lt(nftEntity.priceInAcudos)) {
             alertStore.show('Your balance is not enough to buy this.');
@@ -86,6 +100,11 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
     }
 
     function onClickResellNft() {
+        if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
+            showBtcAlert();
+            return;
+        }
+
         resellNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
 
@@ -208,7 +227,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                 </Actions>
                             </div>
                             <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
-                                { accountSessionStore.isLoggedInAndWalletConnected() && (
+                                { accountSessionStore.isUserAndWalletConnected() && (
                                     <>
                                         { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>

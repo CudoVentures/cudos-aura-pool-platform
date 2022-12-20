@@ -48,6 +48,10 @@ export default class AccountSessionStore {
         return this.isLoggedIn() === true && this.walletStore.isConnected() === true;
     }
 
+    isUserAndWalletConnected() {
+        return this.isUser() === true && this.walletStore.isConnected() === true;
+    }
+
     isUser(): boolean {
         if (!this.accountEntity) {
             return false;
@@ -134,6 +138,14 @@ export default class AccountSessionStore {
 
     shouldUpdatePassword(): boolean {
         return this.shouldChangePassword === S.INT_TRUE;
+    }
+
+    shouldUserRegisterBtcAddress(): boolean {
+        if (this.isUser() === false) {
+            return false;
+        }
+
+        return this.userEntity.hasBitcoinPayoutWalletAddress() === false;
     }
 
     async loginWithCredentials(username: string, password: string) {
