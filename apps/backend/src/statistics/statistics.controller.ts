@@ -6,6 +6,8 @@ import {
     Body,
     HttpCode,
     ValidationPipe,
+    forwardRef,
+    Inject,
     UseGuards,
 } from '@nestjs/common';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -24,6 +26,7 @@ import RoleGuard from '../auth/guards/role.guard';
 export class StatisticsController {
     constructor(
         private graphqlService: GraphqlService,
+        @Inject(forwardRef(() => StatisticsService))
         private statisticsService: StatisticsService,
         private nftService: NFTService,
     // eslint-disable-next-line no-empty-function

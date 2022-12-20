@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
 import { Op } from 'sequelize';
@@ -28,6 +28,7 @@ import { dayInMs, getDays } from './utils';
 export class StatisticsService {
     constructor(
         private nftService: NFTService,
+        @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private graphqlService: GraphqlService,
         @InjectModel(NftPayoutHistory)
@@ -66,7 +67,7 @@ export class StatisticsService {
         }
     }
 
-    async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
         // fetch all events from graphql
         const nftModuleNftTransferEntities = await this.graphqlService.fetchNftPlatformTransferHistory();
         const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplacePlatformNftTradeHistory();
@@ -154,7 +155,7 @@ export class StatisticsService {
         }
     }
 
-    async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
         const nftFilterEntity = new NftFilterEntity();
 
         if (nftEventFilterEntity.isBySessionAccount() === true) {

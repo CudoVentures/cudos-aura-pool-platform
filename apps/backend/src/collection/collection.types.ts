@@ -64,8 +64,6 @@ export class CollectionJsonValidator {
 }
 
 export enum CollectionOrderBy {
-    TOP_ASC = 1,
-    TOP_DESC = -CollectionOrderBy.TOP_ASC,
     TIMESTAMP_ASC = 2,
     TIMESTAMP_DESC = -CollectionOrderBy.TIMESTAMP_ASC,
 }

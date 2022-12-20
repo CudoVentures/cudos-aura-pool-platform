@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CollectionService } from '../collection.service';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
 import { CollectionEntity } from '../entities/collection.entity';
@@ -6,7 +6,7 @@ import { CollectionEntity } from '../entities/collection.entity';
 @Injectable()
 export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
-    constructor(private collectionService: CollectionService) {}
+    constructor(@Inject(forwardRef(() => CollectionService)) private collectionService: CollectionService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();

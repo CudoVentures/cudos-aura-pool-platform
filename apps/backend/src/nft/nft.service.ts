@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import sequelize, { Op, Transaction, where } from 'sequelize';
 import { v4 as uuid } from 'uuid';
@@ -16,6 +16,7 @@ export class NFTService {
     constructor(
         @InjectModel(NftRepo)
         private nftRepo: typeof NftRepo,
+        @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private visitorService: VisitorService,
     // eslint-disable-next-line no-empty-function

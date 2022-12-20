@@ -16,6 +16,7 @@ import UserRepo from '../account/repos/user.repo';
 import AdminRepo from '../account/repos/admin.repo';
 import SuperAdminRepo from '../account/repos/super-admin.repo';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
+import { StatisticsService } from '../statistics/statistics.service';
 
 @Module({
     imports: [
@@ -25,7 +26,7 @@ import { JwtService } from '@nestjs/jwt/dist/jwt.service';
         VisitorModule,
         forwardRef(() => CollectionModule),
     ],
-    providers: [NFTService, GraphqlService, CollectionService, AccountService, JwtService],
+    providers: [NFTService, GraphqlService, CollectionService, AccountService, JwtService, StatisticsService],
     controllers: [NFTController],
     exports: [SequelizeModule],
 })

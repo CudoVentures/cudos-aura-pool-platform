@@ -34,6 +34,14 @@ export class ResFetchCollectionsByFilter {
     }
 }
 
+export class ResFetchTopCollections {
+    collectionEntities: CollectionJsonValidator[];
+
+    constructor(collectionEntities: CollectionEntity[]) {
+        this.collectionEntities = collectionEntities.map((collectionEntity) => CollectionEntity.toJson(collectionEntity));
+    }
+}
+
 export class ResFetchCollectionDetails {
     collectionDetailsEntities: any[];
 

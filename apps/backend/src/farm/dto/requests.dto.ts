@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsDefined, IsNotEmptyObject, IsObject, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { EnergySourceJsonValidator, ManufacturerJsonValidator, MinerJsonValidator, MiningFarmJsonValidator } from '../farm.types';
 
 export class ReqCreditMiningFarm {
@@ -10,6 +10,16 @@ export class ReqCreditMiningFarm {
     @ValidateNested()
     @Type(() => MiningFarmJsonValidator)
         miningFarmEntity: MiningFarmJsonValidator;
+
+}
+
+export class ReqFetchBestPerformingMiningFarms {
+
+    @IsNumber()
+        timestampFrom: number;
+
+    @IsNumber()
+        timestampTo: number;
 
 }
 

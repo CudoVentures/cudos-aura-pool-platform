@@ -53,15 +53,13 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
-    async fetchTopCollections(timestampFrom: number, timestampTo: number, status: CollectionStatus = CollectionStatus.APPROVED): Promise < CollectionEntity[] > {
-        const collectionFilterModel = new CollectionFilterModel();
-        collectionFilterModel.status = [status];
-        collectionFilterModel.timestampFrom = timestampFrom;
-        collectionFilterModel.timestampTo = timestampTo;
-        collectionFilterModel.orderBy = CollectionOrderBy.TOP_DESC;
-
-        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
-        return collectionEntities;
+    async fetchTopCollections(timestampFrom: number, timestampTo: number): Promise < CollectionEntity[] > {
+        try {
+            this.disableActions?.();
+            return await this.collectionApi.fetchTopCollections(timestampFrom, timestampTo);
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchCollectionsByIds(collectionIds: string[], status?: CollectionStatus): Promise < CollectionEntity[] > {

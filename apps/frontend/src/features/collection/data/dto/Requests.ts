@@ -10,6 +10,16 @@ export class ReqFetchCollectionsByFilter {
     }
 }
 
+export class ReqFetchTopCollections {
+    timestampFrom: number;
+    timestampTo: number;
+
+    constructor(timestampFrom: number, timestampTo: number) {
+        this.timestampFrom = timestampFrom;
+        this.timestampTo = timestampTo;
+    }
+}
+
 export class ReqCreditCollection {
     collectionDto: CollectionEntity;
     nftDtos: NftEntity[];

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -17,6 +17,7 @@ import { CollectionService } from '../collection/collection.service';
 export class NFTController {
     constructor(
         private nftService: NFTService,
+        @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private graphqlService: GraphqlService,
     // eslint-disable-next-line no-empty-function
@@ -34,6 +35,7 @@ export class NFTController {
         return new ResFetchNftsByFilter(nftEntities, total);
     }
 
+    // used by on-demand-minting
     @Get(':id')
     @HttpCode(200)
     async findOne(@Param('id') id: string): Promise<any> {
@@ -42,8 +44,13 @@ export class NFTController {
 
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
         const nftEntity = nftEntities[0];
-        const collectionEntity = await this.collectionService.findOne(nftEntities[0].collectionId);
-        return { ...NftEntity.toJson(nftEntity), denomId: collectionEntity.denomId };
+        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
+        return { ...NftEntity.toJson(nftEntity),
+            denomId: collectionEntity.denomId,
+            data: {
+                expiration_date: nftEntity.expirationDateTimestamp,
+                hash_rate_owned: nftEntity.hashingPower,
+            } };
     }
 
     @UseInterceptors(TransactionInterceptor)

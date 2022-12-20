@@ -17,8 +17,8 @@ export default class NftEventFilterEntity {
         this.eventTypes = null;
         this.timestampFrom = NOT_EXISTS_INT;
         this.timestampTo = NOT_EXISTS_INT;
-        this.from = NOT_EXISTS_INT;
-        this.count = NOT_EXISTS_INT;
+        this.from = 0;
+        this.count = Number.MAX_SAFE_INTEGER;
     }
 
     isPlatformFilter(): boolean {
