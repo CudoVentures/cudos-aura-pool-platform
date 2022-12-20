@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import S from '../../../../core/utilities/Main';
-import NftEventEntity from '../../../analytics/entities/NftEventEntity';
+import NftEventEntity, { NftEventType } from '../../../analytics/entities/NftEventEntity';
 import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
 import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
@@ -13,7 +13,7 @@ export default class SuperAdminMegaWalletPageStore {
     statisticsRepo: StatisticsRepo;
     accountSessionStore: AccountSessionStore;
 
-    walletEventType: number;
+    eventType: NftEventType;
     walletEventTableState: TableState;
 
     nftEventEntities: NftEventEntity[]
@@ -24,7 +24,7 @@ export default class SuperAdminMegaWalletPageStore {
         this.accountSessionStore = accountSessionStore;
         this.statisticsRepo = statisticsRepo;
 
-        this.walletEventType = S.NOT_EXISTS;
+        this.eventType = S.NOT_EXISTS;
         this.walletEventTableState = new TableState(0, [], this.fetchMegaWalletActivity, 10);
         this.nftEventEntities = null;
         this.nftEntitiesMap = new Map<string, NftEntity>();
@@ -38,9 +38,11 @@ export default class SuperAdminMegaWalletPageStore {
 
     async fetchMegaWalletActivity() {
         const nftEventsFilterModel = new NftEventFilterModel();
+        if (this.eventType !== S.NOT_EXISTS) {
+            nftEventsFilterModel.eventTypes = [this.eventType];
+        }
         const { nftEventEntities, nftEntities } = await this.statisticsRepo.fetchNftEvents(nftEventsFilterModel);
-
-        console.log(nftEventEntities);
+        console.log(nftEventEntities)
         this.nftEventEntities = nftEventEntities;
         nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
     }
@@ -49,7 +51,9 @@ export default class SuperAdminMegaWalletPageStore {
         return this.nftEntitiesMap.get(id) || null;
     }
 
-    onChangeTableFilter = async () => {
-        // TODO:
+    onChangeTableFilter = (value) => {
+        this.eventType = value;
+
+        this.fetchMegaWalletActivity();
     }
 }

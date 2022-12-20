@@ -115,6 +115,22 @@ export class MiningFarmDetailsJsonValidator {
 
 }
 
+export class MiningFarmPerformanceJsonValidator {
+
+    @IsString()
+        miningFarmId: string;
+
+    @IsString()
+        volumePer24HoursInAcudos: string;
+
+    @IsString()
+        volumePer24HoursInUsd: string;
+
+    @IsString()
+        floorPriceInAcudos: string;
+
+}
+
 export class EnergySourceJsonValidator {
 
     @IsString()

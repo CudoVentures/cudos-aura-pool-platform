@@ -24,6 +24,7 @@ import MiningFarmDetailsEntity from './entities/mining-farm-details.entity';
 import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity';
 import { StatisticsService } from '../statistics/statistics.service';
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
+import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
 
 @Injectable()
 export class FarmService {
@@ -135,6 +136,10 @@ export class FarmService {
         });
 
         return miningFarmEntities;
+    }
+
+    async findMiningFarmPerformanceByIds(ids: number): Promise < MiningFarmPerformanceEntity > {
+
     }
 
     async findMiningFarmById(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < MiningFarmEntity > {
