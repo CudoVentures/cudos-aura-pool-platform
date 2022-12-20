@@ -17,6 +17,7 @@ import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
 import NftEarningsEntity from './entities/nft-earnings.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import NftEventEntity from './entities/nft-event.entity';
+import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
 
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
@@ -161,48 +162,50 @@ export class StatisticsService {
         if (nftEventFilterEntity.isBySessionAccount() === true) {
             nftFilterEntity.sessionAccount = IntBoolValue.TRUE;
         }
-
         if (nftEventFilterEntity.isByNftId()) {
             nftFilterEntity.nftIds = [nftEventFilterEntity.nftId];
         }
+
         const { nftEntities } = await this.nftService.findByFilter(userEntity, nftFilterEntity)
-        const tokenIdNftMap = new Map<string, NftEntity>();
-        nftEntities.forEach((nftEntity) => {
-            tokenIdNftMap.set(nftEntity.tokenId, nftEntity);
-        })
 
-        const collectionEntities = await this.collectionService.findByCollectionIds(nftEntities.map((nftEntity) => nftEntity.collectionId));
-        const collectionIdCollectionMap = new Map<number, CollectionEntity>();
-        collectionEntities.forEach((collectionEntity) => {
-            collectionIdCollectionMap.set(collectionEntity.id, collectionEntity);
-        })
-
-        // this is a row in bdjuno that combines denom id and token id for easier search
-        const uniqIds = nftEntities.map((nftEntity) => {
-            const collectionEntity = collectionIdCollectionMap.get(nftEntity.collectionId);
-            return `${nftEntity.tokenId}@${collectionEntity.denomId}`;
-        })
-
-        const nftmoduleNftTransferEntities = await this.graphqlService.fetchNftTransferHistoryByUniqueIds(uniqIds);
-        const nftmarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByUniqueIds(uniqIds);
+        const collectionFilter = new CollectionFilterEntity();
+        collectionFilter.collectionIds = nftEntities.map((nftEntity) => nftEntity.collectionId.toString());
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilter);
 
         const nftEventEntities: NftEventEntity[] = [];
 
-        nftmoduleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
-            const nftId = tokenIdNftMap.get(nftModuleNftTransferEntity.tokenId).id;
-            const nftTransferHistoryEntity = NftEventEntity.fromNftModuleTransferHistory(nftModuleNftTransferEntity);
-            nftTransferHistoryEntity.nftId = nftId;
+        // TODO: make better after new column uniw_id is implemented in bdjuno
+        for (let i = 0; i < collectionEntities.length; i++) {
+            const collectionEntity = collectionEntities[i];
+            const denomId = collectionEntity.denomId;
+            const nftEntitiesForCollection = nftEntities.filter((nftEntity) => nftEntity.collectionId === collectionEntity.id);
+            const nftTokenIdNftMap = new Map<string, NftEntity>();
+            nftEntitiesForCollection.forEach((nftEntity) => nftTokenIdNftMap.set(nftEntity.tokenId, nftEntity));
+            if (nftEntitiesForCollection.length === 0) {
+                throw Error('Some problem with relations collectionId and nft');
+            }
 
-            nftEventEntities.push(nftTransferHistoryEntity);
-        })
+            const tokenIds = nftEntitiesForCollection.map((nftEntity) => nftEntity.tokenId);
 
-        nftmarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
-            const nftId = tokenIdNftMap.get(nftMarketplaceTradeHistoryEntity.tokenId).id;
-            const nftTransferHistoryEntity = NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity);
-            nftTransferHistoryEntity.nftId = nftId;
+            const nftmoduleNftTransferEntities = await this.graphqlService.fetchNftTransferHistory(denomId, tokenIds);
+            const nftmarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistory(denomId, tokenIds);
 
-            nftEventEntities.push(nftTransferHistoryEntity);
-        })
+            nftmoduleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
+                const nftId = nftTokenIdNftMap.get(nftModuleNftTransferEntity.tokenId).id;
+                const nftTransferHistoryEntity = NftEventEntity.fromNftModuleTransferHistory(nftModuleNftTransferEntity);
+                nftTransferHistoryEntity.nftId = nftId;
+
+                nftEventEntities.push(nftTransferHistoryEntity);
+            })
+
+            nftmarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
+                const nftId = nftTokenIdNftMap.get(nftMarketplaceTradeHistoryEntity.tokenId).id;
+                const nftTransferHistoryEntity = NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity);
+                nftTransferHistoryEntity.nftId = nftId;
+
+                nftEventEntities.push(nftTransferHistoryEntity);
+            })
+        }
 
         const nftEntitiesMap = new Map<string, NftEntity>();
         nftEntities.forEach((nftEntity) => {
@@ -343,5 +346,39 @@ export class StatisticsService {
         miningFarmEarningsEntity.earningsPerDayInUsd = earningsPerDayInUsd;
 
         return miningFarmEarningsEntity;
+    }
+
+    async fetchPlatformEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
+        const days = getDays(Number(timestampFrom), Number(timestampTo))
+
+        const payoutHistoryForPeriod = await this.nftPayoutHistoryModel.findAll({ where: {
+            payout_period_start: {
+                [Op.gte]: Number(timestampFrom) / 1000,
+            },
+            payout_period_end: {
+                [Op.lte]: Number(timestampTo) / 1000,
+            },
+        } })
+
+        const earningsPerDayInUsd = days.map((day) => {
+            let earningsForDay = 0
+
+            payoutHistoryForPeriod.forEach((nftPayoutHistory) => {
+                if ((nftPayoutHistory.payout_period_start * 1000) >= day && (nftPayoutHistory.payout_period_end * 1000) <= day + dayInMs) {
+                    earningsForDay += Number(nftPayoutHistory.reward)
+                }
+            })
+
+            return earningsForDay
+        })
+
+        const { salesInAcudos } = await this.graphqlService.fetchTotalPlatformSales();
+
+        const totalEarningsEntity = new TotalEarningsEntity();
+
+        totalEarningsEntity.totalSalesInAcudos = salesInAcudos
+        totalEarningsEntity.earningsPerDayInUsd = earningsPerDayInUsd;
+
+        return totalEarningsEntity;
     }
 }
