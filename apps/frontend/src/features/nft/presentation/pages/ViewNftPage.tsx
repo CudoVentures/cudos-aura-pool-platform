@@ -67,15 +67,6 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         run();
     }, []);
 
-    function showBtcAlert() {
-        alertStore.positiveLabel = 'Register';
-        alertStore.positiveListener = () => {
-            navigate(AppRoutes.USER_PROFILE);
-        };
-        alertStore.msg = 'You must register BTC payout adress first';
-        alertStore.visible = true;
-    }
-
     function onClickNavigateMarketplace() {
         navigate(AppRoutes.MARKETPLACE);
     }
@@ -86,7 +77,12 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
 
     function onClickBuyNft() {
         if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
-            showBtcAlert();
+            alertStore.positiveLabel = 'Register';
+            alertStore.positiveListener = () => {
+                navigate(AppRoutes.USER_PROFILE);
+            };
+            alertStore.msg = 'You must register BTC payout adress first';
+            alertStore.visible = true;
             return;
         }
 
@@ -100,11 +96,6 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
     }
 
     function onClickResellNft() {
-        if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
-            showBtcAlert();
-            return;
-        }
-
         resellNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
 
