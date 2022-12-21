@@ -22,8 +22,7 @@ export default class NftEventFilterEntity {
     }
 
     isPlatformFilter(): boolean {
-        return this.sessionAccount === IntBoolValue.FALSE
-            && this.nftId === NOT_EXISTS_STRING
+        return this.sessionAccount === IntBoolValue.FALSE && this.nftId === NOT_EXISTS_STRING
     }
 
     isEventFilterSet(): boolean {

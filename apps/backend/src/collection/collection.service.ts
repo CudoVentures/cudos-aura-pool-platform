@@ -187,6 +187,18 @@ export class CollectionService {
         return collectionRepos.map((collectionRepo) => CollectionEntity.fromRepo(collectionRepo));
     }
 
+    async findByMiningFarmIds(miningFarmIds: number[]): Promise < CollectionEntity[] > {
+        const collectionRepos = await this.collectionModel.findAll({
+            where: {
+                [CollectionRepoColumn.FARM_ID]: miningFarmIds,
+            },
+        })
+
+        return collectionRepos.map((collectionRepo) => {
+            return CollectionEntity.fromRepo(collectionRepo);
+        });
+    }
+
     async createOne(
         collectionEntity: CollectionEntity,
         tx: Transaction = undefined,

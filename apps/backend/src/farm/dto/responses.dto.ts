@@ -2,8 +2,9 @@ import EnergySourceEntity from '../entities/energy-source.entity';
 import ManufacturerEntity from '../entities/manufacturer.entity';
 import MinerEntity from '../entities/miner.entity';
 import MiningFarmDetailsEntity from '../entities/mining-farm-details.entity';
+import MiningFarmPerformanceEntity from '../entities/mining-farm-performance.entity';
 import MiningFarmEntity from '../entities/mining-farm.entity';
-import { EnergySourceJsonValidator, ManufacturerJsonValidator, MinerJsonValidator, MiningFarmDetailsJsonValidator, MiningFarmJsonValidator } from '../farm.types';
+import { EnergySourceJsonValidator, ManufacturerJsonValidator, MinerJsonValidator, MiningFarmDetailsJsonValidator, MiningFarmJsonValidator, MiningFarmPerformanceJsonValidator } from '../farm.types';
 
 export class ResFetchMiningFarmsByFilter {
 
@@ -20,9 +21,11 @@ export class ResFetchMiningFarmsByFilter {
 export class ResFetchBestPerformingMiningFarms {
 
     miningFarmEntities: MiningFarmJsonValidator[];
+    miningFarmPerformanceEntities: MiningFarmPerformanceJsonValidator[];
 
-    constructor(miningFarmEntities: MiningFarmEntity[]) {
+    constructor(miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[]) {
         this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e));
+        this.miningFarmPerformanceEntities = miningFarmPerformanceEntities.map((e) => MiningFarmPerformanceEntity.toJson(e));
     }
 
 }

@@ -21,13 +21,17 @@ import { MinerRepo } from '../farm/repos/miner.repo';
 import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
 import AccountService from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
+import { NftOwnersPayoutHistoryRepo } from './repos/nft-owners-payout-history.repo';
+import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
 
 @Module({
     imports: [
         SequelizeModule.forFeature([
             DestinationAddressesWithAmount,
             NftOwnersPayoutHistory,
+            NftOwnersPayoutHistoryRepo,
             NftPayoutHistory,
+            NftPayoutHistoryRepo,
             MiningFarmRepo,
             MinerRepo,
             ManufacturerRepo,

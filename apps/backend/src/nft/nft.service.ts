@@ -116,6 +116,33 @@ export class NFTService {
         });
     }
 
+    async findActiveByCurrentOwner(cudosWalletAddress: string): Promise < NftEntity[] > {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.CURRENT_OWNER]: cudosWalletAddress,
+                [NftRepoColumn.EXPIRATION_DATE]: {
+                    [Op.lte]: new Date(),
+                },
+            },
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
+    async findByCollectionIds(collectionIds: number[]) {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.COLLECTION_ID]: collectionIds,
+            },
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
     async findByCollectionIdsAndTokenIds(collectionIds: number[], tokenIds: string[]) {
         const nftRepos = await this.nftRepo.findAll({
             where: {

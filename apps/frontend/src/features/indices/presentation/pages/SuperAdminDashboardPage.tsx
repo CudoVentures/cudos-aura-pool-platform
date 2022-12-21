@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
-import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 
 import ViewCollectionModal from '../../../collection/presentation/components/ViewCollectionModal';
 import ViewMiningFarmModal from '../../../mining-farm/presentation/components/ViewMiningFarmModal';
@@ -24,13 +24,13 @@ import Table, { createTableCell, createTableRow } from '../../../../core/present
 import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
 import DefaultIntervalPicker from '../../../analytics/presentation/components/DefaultIntervalPicker';
 import RowLayout from '../../../../core/presentation/components/RowLayout';
-
-import '../styles/page-super-admin-dashboard.css';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 import MegaWalletBalance from '../../../accounts/presentation/components/MegaWalletBalance';
 import ChartHeading from '../../../analytics/presentation/components/ChartHeading';
 import DailyChart from '../../../analytics/presentation/components/DailyChart';
 import ChartInfo from '../../../analytics/presentation/components/ChartInfo';
+
+import '../styles/page-super-admin-dashboard.css';
 
 type Props = {
     superAdminDashboardPageStore?: SuperAdminDashboardPageStore
@@ -38,7 +38,8 @@ type Props = {
 }
 
 function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: Props) {
-    const { totalEarningsEntity, topPerformingFarms, earningsDefaultIntervalPickerState, farmsDefaultIntervalPickerState } = superAdminDashboardPageStore;
+    const bestPerformingMiningFarms = superAdminDashboardPageStore.bestPerformingMiningFarms;
+    const { totalEarningsEntity, earningsDefaultIntervalPickerState, farmsDefaultIntervalPickerState } = superAdminDashboardPageStore;
 
     const navigate = useNavigate();
 
@@ -56,14 +57,13 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
     }
 
     function onClickTopFarmRow(i: number) {
-        const miningFarmEntity = topPerformingFarms[i];
+        const miningFarmEntity = bestPerformingMiningFarms[i];
         navigate(`${AppRoutes.CREDIT_MINING_FARM}/${miningFarmEntity.id}`);
     }
 
-    // TODO: get real statistics
     function renderTopPerformingFarmRows() {
-        return topPerformingFarms.map((miningFarmEntity) => {
-            const miningFarmDetailsEntity = superAdminDashboardPageStore.getMiningFarmDetails(miningFarmEntity.id);
+        return bestPerformingMiningFarms.map((miningFarmEntity) => {
+            const miningFarmPerformanceEntity = superAdminDashboardPageStore.getMiningFarmPerformanceEntity(miningFarmEntity.id);
             return createTableRow([
                 createTableCell((
                     <div className = { 'FlexRow Bold' } >
@@ -73,17 +73,17 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 )),
                 createTableCell((
                     <div className = { 'Bold' } >
-                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>3,4K CUDOS</div>
+                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudos(miningFarmPerformanceEntity.volumePer24HoursInAcudos)}</div>
                         <div className={'B3 FlexRow FarmVolumePriceRow'}>
-                            <div className={'SemiBold ColorNeutral060'}>$1.4M</div>
-                            <div className={'ColorSuccess060'}>+39.1%</div>
+                            <div className={'SemiBold ColorNeutral060'}>{numeral(miningFarmPerformanceEntity.volumePer24HoursInUsd).format(ProjectUtils.NUMERAL_USD)}</div>
+                            {/* <div className={'ColorSuccess060'}>+39.1%</div> */}
                         </div>
                     </div>
                 )),
                 createTableCell((
                     <div className = { 'Bold' } >
-                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>1K CUDOS</div>
-                        <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatConvertedAcudosInUsd(new BigNumber(10000000000000000000000))}</div>
+                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudos(miningFarmPerformanceEntity.floorPriceInAcudos)}</div>
+                        <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatConvertedAcudosInUsd(miningFarmPerformanceEntity.floorPriceInAcudos)}</div>
                     </div>
                 )),
             ]);
@@ -107,8 +107,6 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 <RowLayout numColumns = { 2 }>
                     <ColumnLayout>
                         <StyledLayout
-                            title = { 'Total Platform Sales' }
-                            hasBottomDivider = { true }
                             bottomRightButtons = {
                                 <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAnalytics }>See All Analytics</Button>
                             } >
@@ -116,21 +114,19 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                                 <LoadingIndicator />
                             ) : (
                                 <>
-                                    <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
-                                        <ChartHeading
-                                            leftContent = { (
-                                                <>
-                                                    <ChartInfo label = { 'Total Platform Sales'} value = { cudosStore.formatConvertedAcudosInUsd(totalEarningsEntity.totalSalesInAcudos)} />
-                                                </>
-                                            ) }
-                                            rightContent = { (
-                                                <DefaultIntervalPicker defaultIntervalPickerState = { earningsDefaultIntervalPickerState } />
-                                            ) } />
-                                        <DailyChart
-                                            timestampFrom = { earningsDefaultIntervalPickerState.earningsTimestampFrom }
-                                            timestampTo = { earningsDefaultIntervalPickerState.earningsTimestampTo }
-                                            data = { totalEarningsEntity.earningsPerDayInUsd } />
-                                    </StyledContainer>
+                                    <ChartHeading
+                                        leftContent = { (
+                                            <>
+                                                <ChartInfo label = { 'Total Platform Sales'} value = { cudosStore.formatConvertedAcudosInUsd(totalEarningsEntity.totalSalesInAcudos)} />
+                                            </>
+                                        ) }
+                                        rightContent = { (
+                                            <DefaultIntervalPicker defaultIntervalPickerState = { earningsDefaultIntervalPickerState } />
+                                        ) } />
+                                    <DailyChart
+                                        timestampFrom = { earningsDefaultIntervalPickerState.earningsTimestampFrom }
+                                        timestampTo = { earningsDefaultIntervalPickerState.earningsTimestampTo }
+                                        data = { totalEarningsEntity.earningsPerDayInUsd } />
                                 </>
                             ) }
                         </StyledLayout>
@@ -149,7 +145,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                         bottomRightButtons = {
                             <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAllFarms }>See all farms</Button>
                         } >
-                        { topPerformingFarms === null ? (
+                        { bestPerformingMiningFarms === null ? (
                             <LoadingIndicator />
                         ) : (
                             <Table

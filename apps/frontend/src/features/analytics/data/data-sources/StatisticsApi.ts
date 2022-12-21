@@ -13,12 +13,8 @@ const STATISTICS_URL = '/api/v1/statistics';
 export default class StatisticsApi {
 
     async fetchNftEvents(nftEventFilterModel: NftEventFilterModel): Promise < ResNftEventEntitiesByFilter > {
-        const req = new ReqNftEventEntitiesByFilter(nftEventFilterModel);
-
-        const { data } = await axios.post(`${STATISTICS_URL}/events/nft`, req);
-
+        const { data } = await axios.post(`${STATISTICS_URL}/events/nft`, new ReqNftEventEntitiesByFilter(nftEventFilterModel));
         const res = new ResNftEventEntitiesByFilter(data);
-
         return res;
     }
 
@@ -48,21 +44,11 @@ export default class StatisticsApi {
         const { data } = await axios.post(`${STATISTICS_URL}/fetchNftEarningsByMiningFarmId`, new ReqFetchNftEarningsByMiningFarmId(miningFarmId, timestampFrom, timestampTo))
         const res = new ResFetchNftEarningsByMiningFarmId(data);
         return res.miningFarmEarningsEntity;
-        // const miningFarmEarningsEntity = new MiningFarmEarningsEntity();
-
-        // miningFarmEarningsEntity.totalMiningFarmSalesInAcudos = new BigNumber(41253113).multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
-        // miningFarmEarningsEntity.totalNftSold = 41;
-        // miningFarmEarningsEntity.maintenanceFeeDepositedInBtc = new BigNumber(4.2);
-        // miningFarmEarningsEntity.earningsPerDayInUsd = [100, 32, 231, 511, 531, 81];
-
-        // return miningFarmEarningsEntity;
     }
 
     async fetchTotalNftEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
-
-        const { data } = await axios.post(`${STATISTICS_URL}/earnings/total`, new ReqFetchTotalNftEarnings(timestampFrom, timestampTo))
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchPlatformEarnings`, new ReqFetchTotalNftEarnings(timestampFrom, timestampTo))
         const res = new ResFetchTotalNftEarnings(data);
-
         return res.totalEarningsEntity;
     }
 
