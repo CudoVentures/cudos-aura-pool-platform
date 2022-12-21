@@ -14,6 +14,8 @@ import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
 import EarningsPerDayEntity from './entities/earnings-per-day.entity';
+import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
+import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
 import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
 import NftEarningsEntity from './entities/nft-earnings.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
@@ -75,10 +77,45 @@ export class StatisticsService {
         }
     }
 
-    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    async fetchMegaWalletEventsByFilter(megaWalletEventFilterEntity: MegaWalletEventFilterEntity): Promise<{ megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number }> {
+        const { nftEventEntities, nftEntitiesMap, collectionIdCollectionMap } = await this.fetchPlatformNftEvents();
+
+        let filteredNftEntities = nftEventEntities.filter((nftEventEntity) => nftEventEntity.hasPrice() === true);
+
+        const megaWalletEventEntities = filteredNftEntities.map((nftEventEntity) => {
+            const nftEntity = nftEntitiesMap.get(nftEventEntity.tokenId);
+            return MegaWalletEventEntity.fromNftEventEntity(nftEventEntity, collectionIdCollectionMap.get(nftEntity.collectionId))
+        });
+
+        nftEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+
+        // filter for event type
+        filteredNftEntities = megaWalletEventFilterEntity.isEventFilterSet()
+            ? nftEventEntities.filter((entity) => megaWalletEventFilterEntity.eventTypes.includes(entity.eventType))
+            : nftEventEntities;
+
+        // filter for period
+        filteredNftEntities = megaWalletEventFilterEntity.isTimestampFilterSet()
+            ? filteredNftEntities.filter((entity) => entity.timestamp >= megaWalletEventFilterEntity.timestampFrom && entity.timestamp <= megaWalletEventFilterEntity.timestampTo)
+            : filteredNftEntities;
+
+        // slice
+        filteredNftEntities = filteredNftEntities.slice(megaWalletEventFilterEntity.from, megaWalletEventFilterEntity.from + megaWalletEventFilterEntity.count);
+
+        const nftEntities = filteredNftEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+
+        return {
+            nftEventEntities: filteredNftEntities,
+            nftEntities,
+            total: nftEventEntities.length,
+        }
+    }
+
+    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>, collectionIdCollectionMap: Map<number, CollectionEntity> } > {
         // fetch all events from graphql
         const nftModuleNftTransferEntities = await this.graphqlService.fetchNftPlatformTransferHistory();
         const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplacePlatformNftTradeHistory();
+
         // get denom and token ids for query from db
         let denomIds = nftModuleNftTransferEntities.map((entity) => entity.denomId);
         denomIds = denomIds.concat(nftMarketplaceTradeEntities.map((entity) => entity.denomId));
@@ -151,7 +188,7 @@ export class StatisticsService {
             nftEventEntities.push(nftEventEntity);
         });
 
-        // make nft map for faster filter later
+        // make maps for faster filter later
         const nftEntitiesMap = new Map<string, NftEntity>();
         nfts.forEach((nftEntity) => {
             nftEntitiesMap.set(nftEntity.id, nftEntity);
@@ -160,59 +197,58 @@ export class StatisticsService {
         return {
             nftEventEntities,
             nftEntitiesMap,
+            collectionIdCollectionMap,
         }
     }
 
-    private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
         const nftFilterEntity = new NftFilterEntity();
-
         if (nftEventFilterEntity.isBySessionAccount() === true) {
             nftFilterEntity.sessionAccount = IntBoolValue.TRUE;
         }
+
         if (nftEventFilterEntity.isByNftId()) {
             nftFilterEntity.nftIds = [nftEventFilterEntity.nftId];
         }
 
         const { nftEntities } = await this.nftService.findByFilter(userEntity, nftFilterEntity)
+        const tokenIdNftMap = new Map<string, NftEntity>();
+        nftEntities.forEach((nftEntity) => {
+            tokenIdNftMap.set(nftEntity.tokenId, nftEntity);
+        })
 
-        const collectionFilter = new CollectionFilterEntity();
-        collectionFilter.collectionIds = nftEntities.map((nftEntity) => nftEntity.collectionId.toString());
-        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilter);
+        const collectionEntities = await this.collectionService.findByCollectionIds(nftEntities.map((nftEntity) => nftEntity.collectionId));
+        const collectionIdCollectionMap = new Map<number, CollectionEntity>();
+        collectionEntities.forEach((collectionEntity) => {
+            collectionIdCollectionMap.set(collectionEntity.id, collectionEntity);
+        })
+
+        // this is a row in bdjuno that combines denom id and token id for easier search
+        const uniqIds = nftEntities.map((nftEntity) => {
+            const collectionEntity = collectionIdCollectionMap.get(nftEntity.collectionId);
+            return `${nftEntity.tokenId}@${collectionEntity.denomId}`;
+        })
+
+        const nftmoduleNftTransferEntities = await this.graphqlService.fetchNftTransferHistoryByUniqueIds(uniqIds);
+        const nftmarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByUniqueIds(uniqIds);
 
         const nftEventEntities: NftEventEntity[] = [];
 
-        // TODO: make better after new column uniw_id is implemented in bdjuno
-        for (let i = 0; i < collectionEntities.length; i++) {
-            const collectionEntity = collectionEntities[i];
-            const denomId = collectionEntity.denomId;
-            const nftEntitiesForCollection = nftEntities.filter((nftEntity) => nftEntity.collectionId === collectionEntity.id);
-            const nftTokenIdNftMap = new Map<string, NftEntity>();
-            nftEntitiesForCollection.forEach((nftEntity) => nftTokenIdNftMap.set(nftEntity.tokenId, nftEntity));
-            if (nftEntitiesForCollection.length === 0) {
-                throw Error('Some problem with relations collectionId and nft');
-            }
+        nftmoduleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
+            const nftId = tokenIdNftMap.get(nftModuleNftTransferEntity.tokenId).id;
+            const nftTransferHistoryEntity = NftEventEntity.fromNftModuleTransferHistory(nftModuleNftTransferEntity);
+            nftTransferHistoryEntity.nftId = nftId;
 
-            const tokenIds = nftEntitiesForCollection.map((nftEntity) => nftEntity.tokenId);
+            nftEventEntities.push(nftTransferHistoryEntity);
+        })
 
-            const nftModuleNftTransferEntities = await this.graphqlService.fetchNftTransferHistory(denomId, tokenIds);
-            const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistory(denomId, tokenIds);
+        nftmarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
+            const nftId = tokenIdNftMap.get(nftMarketplaceTradeHistoryEntity.tokenId).id;
+            const nftTransferHistoryEntity = NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity);
+            nftTransferHistoryEntity.nftId = nftId;
 
-            nftModuleNftTransferEntities.forEach((nftModuleNftTransferEntity: NftModuleNftTransferEntity) => {
-                const nftId = nftTokenIdNftMap.get(nftModuleNftTransferEntity.tokenId).id;
-                const nftTransferHistoryEntity = NftEventEntity.fromNftModuleTransferHistory(nftModuleNftTransferEntity);
-                nftTransferHistoryEntity.nftId = nftId;
-
-                nftEventEntities.push(nftTransferHistoryEntity);
-            })
-
-            nftMarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
-                const nftId = nftTokenIdNftMap.get(nftMarketplaceTradeHistoryEntity.tokenId).id;
-                const nftTransferHistoryEntity = NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEntity);
-                nftTransferHistoryEntity.nftId = nftId;
-
-                nftEventEntities.push(nftTransferHistoryEntity);
-            })
-        }
+            nftEventEntities.push(nftTransferHistoryEntity);
+        })
 
         const nftEntitiesMap = new Map<string, NftEntity>();
         nftEntities.forEach((nftEntity) => {

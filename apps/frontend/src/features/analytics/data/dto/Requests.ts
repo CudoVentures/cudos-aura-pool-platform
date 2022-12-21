@@ -1,3 +1,4 @@
+import MegaWalletEventFilterModel from '../../entities/MegaWalletEventFilterModel';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
 
 export class ReqNftEventEntitiesByFilter {
@@ -5,6 +6,14 @@ export class ReqNftEventEntitiesByFilter {
 
     constructor(nftEventFilterEntity: NftEventFilterModel) {
         this.nftEventFilterEntity = NftEventFilterModel.toJson(nftEventFilterEntity);
+    }
+}
+
+export class ReqMegaWalletEventEntitiesByFilter {
+    megaWalletEventFilterEntity: MegaWalletEventFilterModel;
+
+    constructor(megaWalletEventFilterEntity: MegaWalletEventFilterModel) {
+        this.megaWalletEventFilterEntity = MegaWalletEventFilterModel.toJson(megaWalletEventFilterEntity);
     }
 }
 

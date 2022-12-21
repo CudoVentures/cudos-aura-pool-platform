@@ -35,6 +35,10 @@ export default class NftEventEntity {
         this.transferPriceInAcudos = new BigNumber(NOT_EXISTS_INT);
     }
 
+    hasPrice(): boolean {
+        return this.transferPriceInAcudos.eq(new BigNumber(0)) === false;
+    }
+
     static fromNftModuleTransferHistory(nftModuleTransferHostoryEntity: NftModuleNftTransferHistoryEntity) {
         const entity = new NftEventEntity();
 
