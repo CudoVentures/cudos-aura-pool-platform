@@ -1,4 +1,5 @@
 import NftEntity from '../../../nft/entities/NftEntity';
+import MegaWalletEventEntity from '../../entities/MegaWalletEventEntity';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
@@ -12,6 +13,18 @@ export class ResNftEventEntitiesByFilter {
 
     constructor(axiosData: any) {
         this.nftEventEntities = axiosData.nftEventEntities.map((json) => NftEventEntity.fromJson(json));
+        this.nftEntities = axiosData.nftEntities.map((json) => NftEntity.fromJson(json));
+        this.total = axiosData.total;
+    }
+}
+
+export class ResMegaWalletEventEntitiesByFilter {
+    megaWalletEventEntities: MegaWalletEventEntity[];
+    nftEntities: NftEntity[];
+    total: number;
+
+    constructor(axiosData: any) {
+        this.megaWalletEventEntities = axiosData.megaWalletEventEntities.map((json) => MegaWalletEventEntity.fromJson(json));
         this.nftEntities = axiosData.nftEntities.map((json) => NftEntity.fromJson(json));
         this.total = axiosData.total;
     }

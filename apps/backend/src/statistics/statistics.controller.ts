@@ -15,11 +15,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { NFTService } from '../nft/nft.service';
 import { AppRequest } from '../common/commont.types';
-import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqFetchTotalNftEarnings, ReqNftEventsByFilter } from './dto/requests.dto';
-import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchTotalNftEarnings, ResNftEventsByFilter } from './dto/responses.dto';
+import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqFetchTotalNftEarnings, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
+import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchTotalNftEarnings, ResMegaWalletEventsByFilter, ResNftEventsByFilter } from './dto/responses.dto';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
+import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -43,6 +44,19 @@ export class StatisticsController {
         const { nftEventEntities, nftEntities, total } = await this.statisticsService.fetchNftEventsByFilter(req.sessionUserEntity, eventFilterEntity);
 
         return new ResNftEventsByFilter(nftEventEntities, nftEntities, total);
+    }
+
+    @Post('events/mega-wallet')
+    @HttpCode(200)
+    async getMegaWalletEvents(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqMegaWalletEventsByFilter: ReqMegaWalletEventsByFilter,
+    ): Promise<ResMegaWalletEventsByFilter> {
+        const eventFilterEntity = MegaWalletEventFilterEntity.fromJson(reqMegaWalletEventsByFilter.megaWalletEventFilterEntity);
+
+        const { megaWalletEventEntities, nftEntities, total } = await this.statisticsService.fetchMegaWalletEventsByFilter(req.sessionSuperAdminEntity, eventFilterEntity);
+
+        return new ResMegaWalletEventsByFilter(megaWalletEventEntities, nftEntities, total);
     }
 
     @ApiBearerAuth('access-token')

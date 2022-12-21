@@ -4,14 +4,27 @@ import NftEarningsEntity from '../entities/nft-earnings.entity';
 import UserEarningsEntity from '../entities/user-earnings.entity';
 import NftEntity from '../../nft/entities/nft.entity';
 import TotalEarningsEntity from '../entities/platform-earnings.entity';
+import MegaWalletEventEntity from '../entities/mega-wallet-event.entity';
 
 export class ResNftEventsByFilter {
     nftEventEntities: NftEventEntity[];
-    nftEntities: NftEntity[]
+    nftEntities: any[]
     total: number;
 
     constructor(nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number) {
         this.nftEventEntities = nftEventEntities.map((entity) => NftEventEntity.toJson(entity));
+        this.nftEntities = nftEntities.map((entity) => NftEntity.toJson(entity));
+        this.total = total;
+    }
+}
+
+export class ResMegaWalletEventsByFilter {
+    megaWalletEventEntities: MegaWalletEventEntity[];
+    nftEntities: any[]
+    total: number;
+
+    constructor(megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number) {
+        this.megaWalletEventEntities = megaWalletEventEntities.map((entity) => MegaWalletEventEntity.toJson(entity));
         this.nftEntities = nftEntities.map((entity) => NftEntity.toJson(entity));
         this.total = total;
     }

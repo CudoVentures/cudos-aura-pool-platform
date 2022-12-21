@@ -1,4 +1,6 @@
 import NftEntity from '../../../nft/entities/NftEntity';
+import MegaWalletEventEntity from '../../entities/MegaWalletEventEntity';
+import MegaWalletEventFilterModel from '../../entities/MegaWalletEventFilterModel';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
@@ -35,6 +37,15 @@ export default class StatisticsApiRepo implements StatisticsRepo {
         try {
             this.disableActions?.();
             return await this.statisticsApi.fetchNftEvents(nftEventFilterModel);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchMegaWalletEventEntities(megaWalletEventFilterModel: MegaWalletEventFilterModel): Promise < { megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number } > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchMegaWalletEventEntities(megaWalletEventFilterModel);
         } finally {
             this.enableActions?.();
         }

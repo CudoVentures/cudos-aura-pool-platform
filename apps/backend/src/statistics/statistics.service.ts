@@ -13,10 +13,12 @@ import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
+import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
+import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
 import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
 import NftEarningsEntity from './entities/nft-earnings.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
-import NftEventEntity from './entities/nft-event.entity';
+import NftEventEntity, { NftTransferHistoryEventType } from './entities/nft-event.entity';
 import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
 
@@ -67,10 +69,45 @@ export class StatisticsService {
         }
     }
 
-    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    async fetchMegaWalletEventsByFilter(megaWalletEventFilterEntity: MegaWalletEventFilterEntity): Promise<{ megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number }> {
+        const { nftEventEntities, nftEntitiesMap, collectionIdCollectionMap } = await this.fetchPlatformNftEvents();
+
+        let filteredNftEntities = nftEventEntities.filter((nftEventEntity) => nftEventEntity.hasPrice() === true);
+
+        const megaWalletEventEntities = filteredNftEntities.map((nftEventEntity) => {
+            const nftEntity = nftEntitiesMap.get(nftEventEntity.tokenId);
+            return MegaWalletEventEntity.fromNftEventEntity(nftEventEntity, collectionIdCollectionMap.get(nftEntity.collectionId))
+        });
+
+        nftEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+
+        // filter for event type
+        filteredNftEntities = megaWalletEventFilterEntity.isEventFilterSet()
+            ? nftEventEntities.filter((entity) => megaWalletEventFilterEntity.eventTypes.includes(entity.eventType))
+            : nftEventEntities;
+
+        // filter for period
+        filteredNftEntities = megaWalletEventFilterEntity.isTimestampFilterSet()
+            ? filteredNftEntities.filter((entity) => entity.timestamp >= megaWalletEventFilterEntity.timestampFrom && entity.timestamp <= megaWalletEventFilterEntity.timestampTo)
+            : filteredNftEntities;
+
+        // slice
+        filteredNftEntities = filteredNftEntities.slice(megaWalletEventFilterEntity.from, megaWalletEventFilterEntity.from + megaWalletEventFilterEntity.count);
+
+        const nftEntities = filteredNftEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+
+        return {
+            nftEventEntities: filteredNftEntities,
+            nftEntities,
+            total: nftEventEntities.length,
+        }
+    }
+
+    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>, collectionIdCollectionMap: Map<number, CollectionEntity> } > {
         // fetch all events from graphql
         const nftModuleNftTransferEntities = await this.graphqlService.fetchNftPlatformTransferHistory();
         const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplacePlatformNftTradeHistory();
+
         // get denom and token ids for query from db
         let denomIds = nftModuleNftTransferEntities.map((entity) => entity.denomId);
         denomIds = denomIds.concat(nftMarketplaceTradeEntities.map((entity) => entity.denomId));
@@ -143,7 +180,7 @@ export class StatisticsService {
             nftEventEntities.push(nftEventEntity);
         });
 
-        // make nft map for faster filter later
+        // make maps for faster filter later
         const nftEntitiesMap = new Map<string, NftEntity>();
         nfts.forEach((nftEntity) => {
             nftEntitiesMap.set(nftEntity.id, nftEntity);
@@ -152,10 +189,11 @@ export class StatisticsService {
         return {
             nftEventEntities,
             nftEntitiesMap,
+            collectionIdCollectionMap,
         }
     }
 
-    private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>} > {
         const nftFilterEntity = new NftFilterEntity();
 
         if (nftEventFilterEntity.isBySessionAccount() === true) {

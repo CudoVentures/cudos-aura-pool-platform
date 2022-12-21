@@ -1,6 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import S from '../../../../core/utilities/Main';
+import MegaWalletEventEntity from '../../../analytics/entities/MegaWalletEventEntity';
+import MegaWalletEventFilterModel from '../../../analytics/entities/MegaWalletEventFilterModel';
 import NftEventEntity, { NftEventType } from '../../../analytics/entities/NftEventEntity';
 import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
 import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
@@ -16,7 +18,7 @@ export default class SuperAdminMegaWalletPageStore {
     eventType: NftEventType;
     walletEventTableState: TableState;
 
-    nftEventEntities: NftEventEntity[]
+    megaWalletEventEntities: MegaWalletEventEntity[]
     nftEntitiesMap: Map<string, NftEntity>;
 
     constructor(cudosRepo: CudosRepo, statisticsRepo: StatisticsRepo, accountSessionStore: AccountSessionStore) {
@@ -26,7 +28,7 @@ export default class SuperAdminMegaWalletPageStore {
 
         this.eventType = S.NOT_EXISTS;
         this.walletEventTableState = new TableState(0, [], this.fetchMegaWalletActivity, 10);
-        this.nftEventEntities = null;
+        this.megaWalletEventEntities = null;
         this.nftEntitiesMap = new Map<string, NftEntity>();
 
         makeAutoObservable(this);
@@ -37,12 +39,12 @@ export default class SuperAdminMegaWalletPageStore {
     }
 
     async fetchMegaWalletActivity() {
-        const nftEventsFilterModel = new NftEventFilterModel();
+        const megaWalletEventFilterModel = new MegaWalletEventFilterModel();
         if (this.eventType !== S.NOT_EXISTS) {
-            nftEventsFilterModel.eventTypes = [this.eventType];
+            megaWalletEventFilterModel.eventTypes = [this.eventType];
         }
-        const { nftEventEntities, nftEntities } = await this.statisticsRepo.fetchNftEvents(nftEventsFilterModel);
-        this.nftEventEntities = nftEventEntities;
+        const { megaWalletEventEntities, nftEntities } = await this.statisticsRepo.fetchMegaWalletEventEntities(megaWalletEventFilterModel);
+        this.megaWalletEventEntities = megaWalletEventEntities;
         nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
     }
 
