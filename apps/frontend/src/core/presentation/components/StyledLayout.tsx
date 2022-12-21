@@ -9,7 +9,7 @@ import '../styles/styled-layout.css';
 
 type Props = {
     className?: string;
-    title: string;
+    title?: string;
     smallTitle?: boolean;
     headerRight?: React.ReactNode;
     bottomCenterButtons?: React.ReactNode;
@@ -20,14 +20,18 @@ type Props = {
 export default function StyledLayout({ className, title, smallTitle, headerRight, bottomCenterButtons, bottomRightButtons, hasBottomDivider, children }: React.PropsWithChildren < Props >) {
     return (
         <StyledContainer className = { `StyledLayout FlexColumn ${className}` } containerPadding = { ContainerPadding.PADDING_24 } >
-            <div className = { 'StyledLayoutHeader FlexRow FlexSplit' } >
-                <div className = { `StyleLayoutTitle ExtraBold H1 ${S.CSS.getClassName(smallTitle, 'StyleLayoutTitleSmall')}` } >{ title }</div>
-                { headerRight !== null && (
-                    <div className = { 'StartRight FlexRow' } >
-                        { headerRight }
-                    </div>
-                ) }
-            </div>
+            { (title !== null || headerRight !== null) && (
+                <div className = { 'StyledLayoutHeader FlexRow FlexSplit' } >
+                    { title !== null && (
+                        <div className = { `StyleLayoutTitle ExtraBold H1 ${S.CSS.getClassName(smallTitle, 'StyleLayoutTitleSmall')}` } >{ title }</div>
+                    ) }
+                    { headerRight !== null && (
+                        <div className = { 'StartRight FlexRow' } >
+                            { headerRight }
+                        </div>
+                    ) }
+                </div>
+            )}
             <div className = { 'StylesLayoutContent' } >
                 { children }
             </div>
@@ -49,6 +53,7 @@ export default function StyledLayout({ className, title, smallTitle, headerRight
 
 StyledLayout.defaultProps = {
     className: '',
+    title: null,
     smallTitle: true,
     headerRight: null,
     bottomCenterButtons: null,

@@ -171,7 +171,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
 
                     <Breadcrumbs crumbs={ [
                         createBreadcrumb('Marketplace', onClickNavigateMarketplace),
-                        createBreadcrumb('NFT Name Details'),
+                        createBreadcrumb('NFT Details'),
                     ] }/>
 
                     <div className={'NftInfoCnt Grid GridColumns2'}>

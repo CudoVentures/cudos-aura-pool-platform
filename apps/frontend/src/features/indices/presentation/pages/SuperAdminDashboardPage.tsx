@@ -107,7 +107,6 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 <RowLayout numColumns = { 2 }>
                     <ColumnLayout>
                         <StyledLayout
-                            title = { 'Total Platform Sales' }
                             bottomRightButtons = {
                                 <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAnalytics }>See All Analytics</Button>
                             } >
@@ -115,21 +114,19 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                                 <LoadingIndicator />
                             ) : (
                                 <>
-                                    <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
-                                        <ChartHeading
-                                            leftContent = { (
-                                                <>
-                                                    <ChartInfo label = { 'Total Platform Sales'} value = { cudosStore.formatConvertedAcudosInUsd(totalEarningsEntity.totalSalesInAcudos)} />
-                                                </>
-                                            ) }
-                                            rightContent = { (
-                                                <DefaultIntervalPicker defaultIntervalPickerState = { earningsDefaultIntervalPickerState } />
-                                            ) } />
-                                        <DailyChart
-                                            timestampFrom = { earningsDefaultIntervalPickerState.earningsTimestampFrom }
-                                            timestampTo = { earningsDefaultIntervalPickerState.earningsTimestampTo }
-                                            data = { totalEarningsEntity.earningsPerDayInUsd } />
-                                    </StyledContainer>
+                                    <ChartHeading
+                                        leftContent = { (
+                                            <>
+                                                <ChartInfo label = { 'Total Platform Sales'} value = { cudosStore.formatConvertedAcudosInUsd(totalEarningsEntity.totalSalesInAcudos)} />
+                                            </>
+                                        ) }
+                                        rightContent = { (
+                                            <DefaultIntervalPicker defaultIntervalPickerState = { earningsDefaultIntervalPickerState } />
+                                        ) } />
+                                    <DailyChart
+                                        timestampFrom = { earningsDefaultIntervalPickerState.earningsTimestampFrom }
+                                        timestampTo = { earningsDefaultIntervalPickerState.earningsTimestampTo }
+                                        data = { totalEarningsEntity.earningsPerDayInUsd } />
                                 </>
                             ) }
                         </StyledLayout>

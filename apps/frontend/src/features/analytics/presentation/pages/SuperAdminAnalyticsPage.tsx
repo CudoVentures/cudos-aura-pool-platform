@@ -31,7 +31,6 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, cudosStore }: P
 
     useEffect(() => {
         superAdminAnalyticsPageStore.init();
-
     }, []);
 
     return (
