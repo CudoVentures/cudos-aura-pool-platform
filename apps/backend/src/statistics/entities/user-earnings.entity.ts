@@ -5,7 +5,7 @@ export default class UserEarningsEntity {
     totalEarningInBtc: BigNumber;
     totalNftBought: number;
     totalContractHashPowerInTh: number;
-    earningsPerDayInUsd: number[];
+    earningsPerDayInUsd: BigNumber[];
     btcEarnedInBtc: BigNumber;
 
     constructor() {
@@ -25,7 +25,7 @@ export default class UserEarningsEntity {
             'totalEarningInBtc': entity.totalEarningInBtc.toString(),
             'totalNftBought': entity.totalNftBought,
             'totalContractHashPowerInTh': entity.totalContractHashPowerInTh,
-            'earningsPerDayInUsd': entity.earningsPerDayInUsd,
+            'earningsPerDayInUsd': entity.earningsPerDayInUsd.map((bn) => bn.toString()),
             'btcEarnedInBtc': entity.btcEarnedInBtc.toString(),
         }
     }
@@ -40,7 +40,7 @@ export default class UserEarningsEntity {
         entity.totalEarningInBtc = new BigNumber(json.totalEarningInBtc ?? entity.totalEarningInBtc);
         entity.totalNftBought = parseInt(json.totalNftBought ?? entity.totalNftBought);
         entity.totalContractHashPowerInTh = parseInt(json.totalContractHashPowerInTh ?? entity.totalContractHashPowerInTh);
-        entity.earningsPerDayInUsd = (json.earningsPerDayInUsd ?? entity.earningsPerDayInUsd).map((j) => parseInt(j));
+        entity.earningsPerDayInUsd = (json.earningsPerDayInUsd ?? entity.earningsPerDayInUsd).map((j) => new BigNumber(j));
         entity.btcEarnedInBtc = new BigNumber(json.btcEarnedInBtc ?? entity.btcEarnedInBtc);
 
         return entity;

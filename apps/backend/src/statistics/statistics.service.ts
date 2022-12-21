@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
-import { Op } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
 import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
@@ -17,12 +17,15 @@ import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
 import NftEarningsEntity from './entities/nft-earnings.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import NftEventEntity from './entities/nft-event.entity';
+import { NftOwnersPayoutHistoryEntity } from './entities/nft-owners-payout-history.entity';
 import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
 
 import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
-import { dayInMs, getDays } from './utils';
+import { NftOwnersPayoutHistoryRepo, NftOwnersPayoutHistoryRepoColumn } from './repos/nft-owners-payout-history.repo';
+import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
+import { dayInMs, findIndexInDays, getDays } from './statistics.types';
 
 @Injectable()
 export class StatisticsService {
@@ -35,6 +38,10 @@ export class StatisticsService {
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
         @InjectModel(NftOwnersPayoutHistory)
         private nftOwnersPayoutHistoryModel: typeof NftOwnersPayoutHistory,
+        @InjectModel(NftPayoutHistoryRepo)
+        private nftPayoutHistoryRepo: typeof NftPayoutHistoryRepo,
+        @InjectModel(NftOwnersPayoutHistoryRepo)
+        private nftOwnersPayoutHistoryRepo: typeof NftOwnersPayoutHistoryRepo,
     ) {}
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
@@ -219,45 +226,58 @@ export class StatisticsService {
     async fetchEarningsByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
         const days = getDays(Number(timestampFrom), Number(timestampTo))
 
-        const ownerPayoutHistoryForPeriod = await this.nftOwnersPayoutHistoryModel.findAll({
+        const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
-                owner: cudosAddress,
-            },
-            include: [{ model: NftPayoutHistory,
-                where: {
-                    payout_period_start: {
-                        [Op.gte]: timestampFrom / 1000,
-                    },
-                    payout_period_end: {
-                        [Op.lte]: timestampTo / 1000,
-                    },
+                [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
+                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
+                    [Op.gte]: new Date(timestampFrom),
                 },
-            }],
-        })
-        const rewardsPerDay = days.map((day) => ownerPayoutHistoryForPeriod.filter((row) => (row.nft_payout_history.payout_period_start * 1000) >= day && (row.nft_payout_history.payout_period_end * 1000) <= day + dayInMs).reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0))
-
-        const ownerPayoutHistory = await this.nftOwnersPayoutHistoryModel.findAll({
-            where: {
-                owner: cudosAddress,
+                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
+                    [Op.lte]: new Date(timestampTo),
+                },
+                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
             },
-        })
-        const totalEarningInBtc = ownerPayoutHistory.reduce((prevVal, currVal) => prevVal + Number(currVal.reward), 0)
+        });
+        const nftOwnersPayoutHistoryEntities = nftOwnersPayoutHistoryRepos.map((nftOwnersPayoutHistoryRepo) => {
+            return NftOwnersPayoutHistoryEntity.fromRepo(nftOwnersPayoutHistoryRepo);
+        });
+        const earningsPerDayInBtc = days.map(() => new BigNumber(0));
+        nftOwnersPayoutHistoryEntities.forEach((nftOwnersPayoutHistoryEntity) => {
+            const dayIndex = findIndexInDays(days, nftOwnersPayoutHistoryEntity.createdAt);
+            if (dayIndex !== -1) {
+                earningsPerDayInBtc[dayIndex].plus(nftOwnersPayoutHistoryEntity.reward);
+            }
+        });
 
-        const totalNftsOwned = await this.graphqlService.fetchTotalNftsByAddress(cudosAddress)
+        const sqlRow = await this.nftOwnersPayoutHistoryRepo.findOne({
+            where: {
+                [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
+                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
+            },
+            attributes: [
+                [sequelize.fn('SUM', sequelize.col(NftOwnersPayoutHistoryRepoColumn.REWARD)), 'sumOfRewards'],
+            ],
+        });
+        const sumOfRewards = sqlRow.getDataValue('sumOfRewards');
+        const totalEarningInBtc = new BigNumber(sumOfRewards ?? 0);
+
+        // const totalNftsOwned = await this.graphqlService.fetchTotalNftsByAddress(cudosAddress);
+        const activeNftEntities = await this.nftService.findActiveByCurrentOwner(cudosAddress);
+        const totalContractHashPowerInTh = activeNftEntities.reduce((acc, nftEntity) => {
+            return acc + nftEntity.hashingPower;
+        }, 0);
+        const btcEarnedInBtc = earningsPerDayInBtc.reduce((acc, reward) => {
+            return acc.plus(reward);
+        }, new BigNumber(0));
 
         const userEarningsEntity = new UserEarningsEntity();
-        userEarningsEntity.totalEarningInBtc = new BigNumber(totalEarningInBtc);
-        userEarningsEntity.totalNftBought = totalNftsOwned;
-        userEarningsEntity.earningsPerDayInUsd = rewardsPerDay;
-        userEarningsEntity.btcEarnedInBtc = new BigNumber(0);
+        userEarningsEntity.totalEarningInBtc = totalEarningInBtc;
+        userEarningsEntity.totalNftBought = activeNftEntities.length;
+        userEarningsEntity.totalContractHashPowerInTh = totalContractHashPowerInTh;
+        userEarningsEntity.earningsPerDayInUsd = earningsPerDayInBtc;
+        userEarningsEntity.btcEarnedInBtc = btcEarnedInBtc;
 
         return userEarningsEntity;
-        // return {
-        //     totalEarningInBtc,
-        //     totalNftBought: totalNftsOwned,
-        //     earningsPerDayInUsd: rewardsPerDay,
-        //     btcEarnedInBtc: 0,
-        // }
     }
 
     async fetchEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {

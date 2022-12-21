@@ -4,10 +4,11 @@ import NftEarningsEntity from '../entities/nft-earnings.entity';
 import UserEarningsEntity from '../entities/user-earnings.entity';
 import NftEntity from '../../nft/entities/nft.entity';
 import TotalEarningsEntity from '../entities/platform-earnings.entity';
+import { NftJsonValidator } from '../../nft/nft.types';
 
 export class ResNftEventsByFilter {
     nftEventEntities: NftEventEntity[];
-    nftEntities: NftEntity[]
+    nftEntities: NftJsonValidator[]
     total: number;
 
     constructor(nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number) {

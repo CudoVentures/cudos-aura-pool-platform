@@ -25,9 +25,11 @@ import { NFTService } from '../nft/nft.service';
 import { StatisticsService } from '../statistics/statistics.service';
 import { NftPayoutHistory } from '../statistics/models/nft-payout-history.model';
 import { NftOwnersPayoutHistory } from '../statistics/models/nft-owners-payout-history.model';
+import { NftPayoutHistoryRepo } from '../statistics/repos/nft-payout-history.repo';
+import { NftOwnersPayoutHistoryRepo } from '../statistics/repos/nft-owners-payout-history.repo';
 
 @Module({
-    imports: [SequelizeModule.forFeature([VisitorRepo, AccountRepo, UserRepo, AdminRepo, SuperAdminRepo, MiningFarmRepo, CollectionRepo, NftRepo, ManufacturerRepo, EnergySourceRepo, MinerRepo, NftPayoutHistory, NftOwnersPayoutHistory]), HttpModule],
+    imports: [SequelizeModule.forFeature([VisitorRepo, AccountRepo, UserRepo, AdminRepo, SuperAdminRepo, MiningFarmRepo, CollectionRepo, NftRepo, ManufacturerRepo, EnergySourceRepo, MinerRepo, NftPayoutHistory, NftPayoutHistoryRepo, NftOwnersPayoutHistory, NftOwnersPayoutHistoryRepo]), HttpModule],
     providers: [AccountService, EmailService, JwtService, FarmService, VisitorService, DataService, CollectionService, GraphqlService, NFTService, StatisticsService],
     exports: [AccountModule, AccountService, CollectionService],
     controllers: [AccountController],
