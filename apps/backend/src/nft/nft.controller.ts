@@ -47,10 +47,10 @@ export class NFTController {
         const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
         return { ...NftEntity.toJson(nftEntity),
             denomId: collectionEntity.denomId,
-            data: {
+            data: JSON.stringify({
                 expiration_date: nftEntity.expirationDateTimestamp,
                 hash_rate_owned: nftEntity.hashingPower,
-            } };
+            }) };
     }
 
     @UseInterceptors(TransactionInterceptor)
