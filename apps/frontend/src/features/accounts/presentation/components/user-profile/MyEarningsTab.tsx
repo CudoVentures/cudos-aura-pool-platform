@@ -45,7 +45,7 @@ function MyEarningsTab({ bitcoinStore, cudosStore, userProfilePageStore, walletS
                 <DailyChart
                     timestampFrom = { defaultIntervalPickerState.earningsTimestampFrom }
                     timestampTo = { defaultIntervalPickerState.earningsTimestampTo }
-                    data = { userEarningsEntity.earningsPerDayInUsd } />
+                    data = { userEarningsEntity.getEarningsPerDayInBtcAsNumber() } />
             </StyledContainer>
             <div className={'Grid GridColumns3 BalancesDataContainer'}>
                 <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
