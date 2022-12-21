@@ -35,7 +35,6 @@ export class StatisticsService {
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
         @InjectModel(NftOwnersPayoutHistory)
         private nftOwnersPayoutHistoryModel: typeof NftOwnersPayoutHistory,
-    // eslint-disable-next-line no-empty-function
     ) {}
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {

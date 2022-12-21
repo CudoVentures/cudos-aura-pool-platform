@@ -74,7 +74,7 @@ module.exports = {
         "no-multi-assign": "off",
         "dot-notation": "off",
         "newline-per-chained-call": "off",
-        "no-empty-funciton": "off",
+        "no-empty-function": "off",
         "import/extensions": [ "error", "ignorePackages", {
             "js": "never",
             "jsx": "never",

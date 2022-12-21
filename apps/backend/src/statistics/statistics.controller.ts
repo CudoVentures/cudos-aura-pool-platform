@@ -39,9 +39,7 @@ export class StatisticsController {
         @Body(new ValidationPipe({ transform: true })) reqNftEventsByFilter: ReqNftEventsByFilter,
     ): Promise<ResNftEventsByFilter> {
         const eventFilterEntity = NftEventFilterEntity.fromJson(reqNftEventsByFilter.nftEventFilterEntity);
-
         const { nftEventEntities, nftEntities, total } = await this.statisticsService.fetchNftEventsByFilter(req.sessionUserEntity, eventFilterEntity);
-
         return new ResNftEventsByFilter(nftEventEntities, nftEntities, total);
     }
 
@@ -78,10 +76,10 @@ export class StatisticsController {
     }
 
     @ApiBearerAuth('access-token')
-    @Post('earnings/total')
+    @Post('fetchPlatformEarnings')
     @HttpCode(200)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
-    async getPlatformEarnings(
+    async fetchPlatformEarnings(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchTotalNftEarnings: ReqFetchTotalNftEarnings,
     ): Promise <ResFetchTotalNftEarnings> {
