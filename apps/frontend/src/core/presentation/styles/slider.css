@@ -14,6 +14,18 @@
     padding-right: 20px;
 }
 
+.Slider.ExtendPaddingForShadow .SliderCnt .SliderChildWrapper {
+    padding: 32px;
+}
+
+.Slider.ExtendPaddingForShadow .SliderCnt li:first-child .SliderChildWrapper {
+    padding-left: 48px;
+}
+
+.Slider.ExtendPaddingForShadow .SliderCnt li:last-child .SliderChildWrapper:last-child {
+    padding-right: 48px;
+}
+
 .Slider .NavArrows {
     position: absolute;
     top: 0; bottom: 0;

@@ -168,7 +168,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                     { marketplaceStore.popularFarmsEntities.length === 0 ? (
                         <div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>
                     ) : (
-                        <Slider itemsPerPage = { 3 } >
+                        <Slider itemsPerPage = { 3 } extendPaddingForShadow = { true } >
                             { marketplaceStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
                                 return (
                                     <MiningFarmPreview

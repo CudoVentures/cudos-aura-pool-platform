@@ -12,11 +12,12 @@ import ColumnLayout from '../../../../core/presentation/components/ColumnLayout'
 import '../styles/mining-farm-preview.css';
 
 type Props = {
+    className?: string,
     miningFarmEntity: MiningFarmEntity,
     miningFarmDetailsEntity: MiningFarmDetailsEntity,
 }
 
-export default function MiningFarmPeview({ miningFarmEntity, miningFarmDetailsEntity }: Props) {
+export default function MiningFarmPeview({ className, miningFarmEntity, miningFarmDetailsEntity }: Props) {
     const navigate = useNavigate();
 
     const onClickMiningFarm = () => {
@@ -34,7 +35,7 @@ export default function MiningFarmPeview({ miningFarmEntity, miningFarmDetailsEn
 
     return (
         <StyledContainer
-            className={'MiningFarmPreview FlexColumn Clickable'}
+            className={`MiningFarmPreview FlexColumn Clickable ${className}`}
             containerPadding = { ContainerPadding.PADDING_16 }
             onClick={onClickMiningFarm}>
             <div className={'MiningFarmPreviewCoverImage ImgCoverNode'} style={ ProjectUtils.makeBgImgStyle(miningFarmEntity.coverImgUrl)} >
@@ -51,3 +52,7 @@ export default function MiningFarmPeview({ miningFarmEntity, miningFarmDetailsEn
         </StyledContainer>
     );
 }
+
+MiningFarmPeview.defaultProps = {
+    className: '',
+};
