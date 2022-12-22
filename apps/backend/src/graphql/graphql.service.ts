@@ -38,6 +38,7 @@ import { MarketplaceNftFilters } from '../nft/nft.types';
 import NftModuleNftTransferHistoryEntity from './entities/nft-module-nft-transfer-history';
 import NftMarketplaceTradeHistoryEntity from './entities/nft-marketplace-trade-history.entity';
 import BigNumber from 'bignumber.js';
+import { ChainMarketplaceCollectionDto } from '../collection/dto/chain-marketplace-collection.dto';
 
 @Injectable()
 export class GraphqlService {
@@ -87,13 +88,15 @@ export class GraphqlService {
         return res.data.data;
     }
 
-    async fetchMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise< MarketplaceCollectionsByDenomIdsQuery > {
+    async fetchMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise< ChainMarketplaceCollectionDto[] > {
         const res = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceCollectionsByDenomIdsDocument),
             variables: { denomIds },
         });
 
-        return res.data.data;
+        const chainMarketplaceCollectionDtos = res.data.data.marketplace_collection.map((queryCollection) => ChainMarketplaceCollectionDto.fromQuery(queryCollection));
+
+        return chainMarketplaceCollectionDtos;
     }
 
     async fetchNftCollectionsByDenomIds(denomIds: string[]): Promise< NftCollectionsByDenomIdsQuery > {

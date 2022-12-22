@@ -276,6 +276,10 @@ export class CollectionController {
                 const denomId = chainNftCollectionDto.id;
                 const collectionEntity = await this.collectionService.findOneByDenomId(denomId);
 
+                if (!collectionEntity) {
+                    return;
+                }
+
                 collectionEntity.name = chainNftCollectionDto.name;
                 collectionEntity.description = chainNftCollectionDto.description;
 

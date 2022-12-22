@@ -262,8 +262,7 @@ export class CollectionService {
     }
 
     async getChainMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise < ChainMarketplaceCollectionDto[] > {
-        const queryRes = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
-        return queryRes.marketplace_collection.map((queryCollection) => ChainMarketplaceCollectionDto.fromQuery(queryCollection));
+        return this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
     }
 
     async getChainNftCollectionsByDenomIds(denomIds: string[]): Promise < ChainNftCollectionDto[] > {

@@ -1,9 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
+import { filter } from 'rxjs';
 import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
+import { ChainMarketplaceCollectionDto } from '../collection/dto/chain-marketplace-collection.dto';
 import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import { IntBoolValue } from '../common/utils';
@@ -76,40 +78,48 @@ export class StatisticsService {
     }
 
     async fetchMegaWalletEventsByFilter(megaWalletEventFilterEntity: MegaWalletEventFilterEntity): Promise<{ megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number }> {
-        const { nftEventEntities, nftEntitiesMap, collectionIdCollectionMap } = await this.fetchPlatformNftEvents();
+        const { nftEventEntities, nftEntitiesMap } = await this.fetchPlatformNftEvents();
 
-        let filteredNftEntities = nftEventEntities.filter((nftEventEntity) => nftEventEntity.hasPrice() === true);
+        const filteredNftEntities = nftEventEntities.filter((nftEventEntity) => nftEventEntity.hasPrice() === true);
 
-        const megaWalletEventEntities = filteredNftEntities.map((nftEventEntity) => {
-            const nftEntity = nftEntitiesMap.get(nftEventEntity.tokenId);
-            return MegaWalletEventEntity.fromNftEventEntity(nftEventEntity, collectionIdCollectionMap.get(nftEntity.collectionId))
+        let denomIds = filteredNftEntities.map((nftEventEntity) => nftEventEntity.denomId);
+        denomIds = denomIds.filter((denomId, i) => denomIds.findIndex((value) => value === denomId) === i);
+
+        const marketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
+        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionDto>();
+        marketplaceCollectionEntities.forEach((marketplaceCollectionEntity) => {
+            denomIdMarketplaceCollectionEntityMap.set(marketplaceCollectionEntity.denomId, marketplaceCollectionEntity);
+        })
+
+        let megaWalletEventEntities = filteredNftEntities.map((nftEventEntity) => {
+            return MegaWalletEventEntity.fromNftEventEntity(nftEventEntity, marketplaceCollectionEntities.get(nftEventEntity.denomId))
         });
 
-        nftEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+        megaWalletEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
 
         // filter for event type
-        filteredNftEntities = megaWalletEventFilterEntity.isEventFilterSet()
-            ? nftEventEntities.filter((entity) => megaWalletEventFilterEntity.eventTypes.includes(entity.eventType))
-            : nftEventEntities;
+        megaWalletEventEntities = megaWalletEventFilterEntity.isEventFilterSet()
+            ? megaWalletEventEntities.filter((entity) => megaWalletEventFilterEntity.eventTypes.includes(entity.eventType))
+            : megaWalletEventEntities;
 
         // filter for period
-        filteredNftEntities = megaWalletEventFilterEntity.isTimestampFilterSet()
-            ? filteredNftEntities.filter((entity) => entity.timestamp >= megaWalletEventFilterEntity.timestampFrom && entity.timestamp <= megaWalletEventFilterEntity.timestampTo)
-            : filteredNftEntities;
+        megaWalletEventEntities = megaWalletEventFilterEntity.isTimestampFilterSet()
+            ? megaWalletEventEntities.filter((entity) => entity.timestamp >= megaWalletEventFilterEntity.timestampFrom && entity.timestamp <= megaWalletEventFilterEntity.timestampTo)
+            : megaWalletEventEntities;
 
         // slice
-        filteredNftEntities = filteredNftEntities.slice(megaWalletEventFilterEntity.from, megaWalletEventFilterEntity.from + megaWalletEventFilterEntity.count);
+        megaWalletEventEntities = megaWalletEventEntities.slice(megaWalletEventFilterEntity.from, megaWalletEventFilterEntity.from + megaWalletEventFilterEntity.count);
 
-        const nftEntities = filteredNftEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+        const nftEntities = megaWalletEventEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
 
         return {
-            nftEventEntities: filteredNftEntities,
+            megaWalletEventEntities,
             nftEntities,
             total: nftEventEntities.length,
         }
     }
 
-    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>, collectionIdCollectionMap: Map<number, CollectionEntity> } > {
+    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>} > {
         // fetch all events from graphql
         const nftModuleNftTransferEntities = await this.graphqlService.fetchNftPlatformTransferHistory();
         const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplacePlatformNftTradeHistory();

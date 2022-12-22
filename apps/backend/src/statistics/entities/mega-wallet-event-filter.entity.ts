@@ -1,5 +1,5 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
-import { MegaWalletEventFilterValidationJson, NftEventFilterValidationJson } from '../statistics.types';
+import { MegaWalletEventFilterValidationJson } from '../statistics.types';
 import { MegaWalletEventType } from './mega-wallet-event.entity';
 
 export default class MegaWalletEventFilterEntity {

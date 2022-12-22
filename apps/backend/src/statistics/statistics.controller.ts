@@ -52,7 +52,7 @@ export class StatisticsController {
     ): Promise<ResMegaWalletEventsByFilter> {
         const eventFilterEntity = MegaWalletEventFilterEntity.fromJson(reqMegaWalletEventsByFilter.megaWalletEventFilterEntity);
 
-        const { megaWalletEventEntities, nftEntities, total } = await this.statisticsService.fetchMegaWalletEventsByFilter(req.sessionSuperAdminEntity, eventFilterEntity);
+        const { megaWalletEventEntities, nftEntities, total } = await this.statisticsService.fetchMegaWalletEventsByFilter(eventFilterEntity);
 
         return new ResMegaWalletEventsByFilter(megaWalletEventEntities, nftEntities, total);
     }
