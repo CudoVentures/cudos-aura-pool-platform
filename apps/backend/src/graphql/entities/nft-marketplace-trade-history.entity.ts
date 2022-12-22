@@ -31,7 +31,8 @@ export default class NftMarketplaceTradeHistoryEntity {
         entity.denomId = json.denom_id || entity.denomId;
         entity.price = json.price || entity.price;
         entity.seller = json.seller || entity.seller;
-        entity.timestamp = parseInt(json.timestamp || entity.timestamp.toString());
+        // graphql holds this in seconds, we need it in ms
+        entity.timestamp = parseInt(json.timestamp || entity.timestamp.toString()) * 1000;
         entity.tokenId = json.token_id?.toString() || entity.tokenId;
         entity.usdPrice = parseInt(json.usd_price || entity.usdPrice.toString());
         entity.transactionHash = json.transaction_hash || entity.transactionHash;
