@@ -51,12 +51,12 @@
     height: 80px; width: 80px;
 }
 
-.PageSuperAdminMegaWallet .WalletEventTable .EventPtice {
+.PageSuperAdminMegaWallet .WalletEventTable .EventPrice {
     align-items: flex-start;
     gap: 10px;
 }
 
-.PageSuperAdminMegaWallet .WalletEventTable .EventPtice .EventPriceDollars {
+.PageSuperAdminMegaWallet .WalletEventTable .EventPrice .EventPriceDollars {
     color: var(--color-primary-060);
 }
 

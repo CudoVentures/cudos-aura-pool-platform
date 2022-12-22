@@ -13,13 +13,14 @@ type Props = {
     itemsPerPage?: number;
     showDots?: boolean;
     navWithTransparency?: boolean;
+    extendPaddingForShadow?: boolean;
 }
 
-export default function Slider({ className, children, showDots, itemsPerPage, navWithTransparency }: React.PropsWithChildren< Props >) {
+export default function Slider({ className, children, showDots, itemsPerPage, navWithTransparency, extendPaddingForShadow }: React.PropsWithChildren< Props >) {
 
     return (
         <Carousel
-            className = { `Slider ${className} ${S.CSS.getClassName(showDots, 'WithDots')} ${S.CSS.getClassName(navWithTransparency, 'NavWithTransparency')}` }
+            className = { `Slider ${className} ${S.CSS.getClassName(showDots, 'WithDots')} ${S.CSS.getClassName(navWithTransparency, 'NavWithTransparency')} ${S.CSS.getClassName(extendPaddingForShadow, 'ExtendPaddingForShadow')}` }
             showDots = { showDots }
             customLeftArrow = { <LeftArrow /> }
             customRightArrow = { <RightArrow />}
@@ -57,6 +58,7 @@ Slider.defaultProps = {
     itemsPerPage: 4,
     showDots: true,
     navWithTransparency: true,
+    extendPaddingForShadow: false,
 }
 
 function LeftArrow({ onClick, ...rest }) {

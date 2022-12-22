@@ -57,6 +57,8 @@ export default class NftApiRepo implements NftRepo {
 
         nftFilterModel.collectionStatus = [status];
         nftFilterModel.orderBy = NftOrderBy.TIMESTAMP_DESC;
+        nftFilterModel.from = 0;
+        nftFilterModel.count = 10;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
@@ -67,6 +69,8 @@ export default class NftApiRepo implements NftRepo {
 
         nftFilterModel.collectionStatus = [status];
         nftFilterModel.orderBy = NftOrderBy.TRENDING_DESC;
+        nftFilterModel.from = 0;
+        nftFilterModel.count = 10;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;

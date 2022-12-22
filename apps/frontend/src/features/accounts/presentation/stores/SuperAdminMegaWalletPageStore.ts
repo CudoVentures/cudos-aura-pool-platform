@@ -44,9 +44,9 @@ export default class SuperAdminMegaWalletPageStore {
         }
         const { megaWalletEventEntities, nftEntities, total } = await this.statisticsRepo.fetchMegaWalletEventEntities(megaWalletEventFilterModel);
         runInAction(() => {
+            nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
             this.walletEventTableState.tableFilterState.total = total;
             this.megaWalletEventEntities = megaWalletEventEntities;
-            nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
         })
     }
 

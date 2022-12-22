@@ -46,7 +46,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     async fetchPopularMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
         const miningFarmFilterModel = new MiningFarmFilterModel();
         miningFarmFilterModel.from = 0;
-        miningFarmFilterModel.count = Number.MAX_SAFE_INTEGER;
+        miningFarmFilterModel.count = 10;
         miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
         if (status) {
             miningFarmFilterModel.status = [status];

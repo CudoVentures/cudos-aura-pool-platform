@@ -125,12 +125,12 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                 createTableCellString(megaWalletEventEntity.getEventActivityDisplayName()),
                 createTableCell(
                     <div className={'FlexRow EventItemPreviewCell'}>
-                        <div className={'EventItemPicture'} style={ProjectUtils.makeBgImgStyle(nftEntity.imageUrl)}/>
+                        <div className={'EventItemPicture ImgCoverNode'} style={ProjectUtils.makeBgImgStyle(nftEntity.imageUrl)}/>
                         <div className={'EventItemNmae'}>{nftEntity.name}</div>
                     </div>,
                 ),
                 createTableCell(
-                    <div className={'FlexColumn EventPtice'}>
+                    <div className={'FlexColumn EventPrice'}>
                         <div className={'B2 Bold EventPriceCudos'}>{megaWalletEventEntity.formatTransferPriceInCudos()}</div>
                         <div className={'B3 SemiBold EventPriceDollars'}>{megaWalletEventEntity.formatTransferPriceInUsd()}</div>
                     </div>,
