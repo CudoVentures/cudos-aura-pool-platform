@@ -1,10 +1,11 @@
+import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
 
 export default class NftMarketplaceTradeHistoryEntity {
     buyer: string;
-    btcPrice: string;
+    btcPrice: BigNumber;
     denomId: string;
-    price: string;
+    acudosPrice: BigNumber;
     seller: string;
     timestamp: number;
     tokenId: string;
@@ -13,9 +14,9 @@ export default class NftMarketplaceTradeHistoryEntity {
 
     constructor() {
         this.buyer = '';
-        this.btcPrice = '';
+        this.btcPrice = new BigNumber(NOT_EXISTS_INT);
         this.denomId = '';
-        this.price = '';
+        this.acudosPrice = new BigNumber(NOT_EXISTS_INT);
         this.seller = '';
         this.timestamp = NOT_EXISTS_INT;
         this.tokenId = '';
@@ -27,9 +28,9 @@ export default class NftMarketplaceTradeHistoryEntity {
         const entity = new NftMarketplaceTradeHistoryEntity();
 
         entity.buyer = json.buyer || entity.buyer;
-        entity.btcPrice = json.btc_price || entity.btcPrice;
+        entity.btcPrice = new BigNumber(json.btc_price || entity.btcPrice);
         entity.denomId = json.denom_id || entity.denomId;
-        entity.price = json.price || entity.price;
+        entity.acudosPrice = new BigNumber(json.price || entity.acudosPrice);
         entity.seller = json.seller || entity.seller;
         // graphql holds this in seconds, we need it in ms
         entity.timestamp = parseInt(json.timestamp || entity.timestamp.toString()) * 1000;

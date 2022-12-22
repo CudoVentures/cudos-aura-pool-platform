@@ -34,6 +34,10 @@ export class NFTService {
             whereClause.collection_id = await this.collectionService.findIdsByStatus(nftFilterEntity.getCollectionStatus());
         }
 
+        if (nftFilterEntity.hasNftStatus() === true) {
+            whereClause.status = nftFilterEntity.nftStatus;
+        }
+
         if (nftFilterEntity.hasCollectionIds() === true) {
             if (whereClause.collection_id === undefined) {
                 whereClause.collection_id = nftFilterEntity.collectionIds;
@@ -57,6 +61,10 @@ export class NFTService {
         }
 
         switch (nftFilterEntity.orderBy) {
+            case NftOrderBy.PRICE_ASC:
+            case NftOrderBy.PRICE_DESC:
+                orderByClause = [['price']]
+                break;
             case NftOrderBy.TIMESTAMP_ASC:
             case NftOrderBy.TIMESTAMP_DESC:
             default:

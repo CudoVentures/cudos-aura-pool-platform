@@ -19,7 +19,7 @@ import PageHeader from '../../../header/presentation/components/PageHeader';
 import PageFooter from '../../../footer/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button, { ButtonColor, ButtonPadding, ButtonRadius } from '../../../../core/presentation/components/Button';
+import Button, { ButtonColor, ButtonPadding } from '../../../../core/presentation/components/Button';
 import GridView from '../../../../core/presentation/components/GridView';
 import NftPreview from '../../../nft/presentation/components/NftPreview';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
@@ -79,7 +79,6 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         navigate(`${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/${collectionEntity.id}`);
     }
 
-    console.log(collectionDetailsEntity);
     return (
         <PageLayoutComponent className = { 'PageCreditCollection' }>
             <PageHeader />

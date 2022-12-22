@@ -1,7 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
-
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -201,6 +200,7 @@ export type Account = {
   vesting_account?: Maybe<Vesting_Account>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountProposal_DepositsArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Deposit_Select_Column>>;
@@ -209,6 +209,7 @@ export type AccountProposal_DepositsArgs = {
   order_by?: InputMaybe<Array<Proposal_Deposit_Order_By>>;
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
+
 
 /** columns and relationships of "account" */
 export type AccountProposal_Deposits_AggregateArgs = {
@@ -219,6 +220,7 @@ export type AccountProposal_Deposits_AggregateArgs = {
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountProposal_VotesArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Select_Column>>;
@@ -227,6 +229,7 @@ export type AccountProposal_VotesArgs = {
   order_by?: InputMaybe<Array<Proposal_Vote_Order_By>>;
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
+
 
 /** columns and relationships of "account" */
 export type AccountProposal_Votes_AggregateArgs = {
@@ -237,6 +240,7 @@ export type AccountProposal_Votes_AggregateArgs = {
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountProposalsArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Select_Column>>;
@@ -245,6 +249,7 @@ export type AccountProposalsArgs = {
   order_by?: InputMaybe<Array<Proposal_Order_By>>;
   where?: InputMaybe<Proposal_Bool_Exp>;
 };
+
 
 /** columns and relationships of "account" */
 export type AccountProposals_AggregateArgs = {
@@ -255,6 +260,7 @@ export type AccountProposals_AggregateArgs = {
   where?: InputMaybe<Proposal_Bool_Exp>;
 };
 
+
 /** columns and relationships of "account" */
 export type AccountValidator_InfosArgs = {
   distinct_on?: InputMaybe<Array<Validator_Info_Select_Column>>;
@@ -263,6 +269,7 @@ export type AccountValidator_InfosArgs = {
   order_by?: InputMaybe<Array<Validator_Info_Order_By>>;
   where?: InputMaybe<Validator_Info_Bool_Exp>;
 };
+
 
 /** columns and relationships of "account" */
 export type AccountValidator_Infos_AggregateArgs = {
@@ -287,6 +294,7 @@ export type Account_Aggregate_Fields = {
   max?: Maybe<Account_Max_Fields>;
   min?: Maybe<Account_Min_Fields>;
 };
+
 
 /** aggregate fields of "account" */
 export type Account_Aggregate_FieldsCountArgs = {
@@ -364,6 +372,7 @@ export type Adjusted_Supply_Aggregate_Fields = {
   var_samp?: Maybe<Adjusted_Supply_Var_Samp_Fields>;
   variance?: Maybe<Adjusted_Supply_Variance_Fields>;
 };
+
 
 /** aggregate fields of "adjusted_supply" */
 export type Adjusted_Supply_Aggregate_FieldsCountArgs = {
@@ -494,6 +503,7 @@ export type Apr_Aggregate_Fields = {
   variance?: Maybe<Apr_Variance_Fields>;
 };
 
+
 /** aggregate fields of "apr" */
 export type Apr_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Apr_Select_Column>>;
@@ -622,6 +632,7 @@ export type Average_Block_Time_From_Genesis_Aggregate_Fields = {
   var_samp?: Maybe<Average_Block_Time_From_Genesis_Var_Samp_Fields>;
   variance?: Maybe<Average_Block_Time_From_Genesis_Variance_Fields>;
 };
+
 
 /** aggregate fields of "average_block_time_from_genesis" */
 export type Average_Block_Time_From_Genesis_Aggregate_FieldsCountArgs = {
@@ -752,6 +763,7 @@ export type Average_Block_Time_Per_Day_Aggregate_Fields = {
   variance?: Maybe<Average_Block_Time_Per_Day_Variance_Fields>;
 };
 
+
 /** aggregate fields of "average_block_time_per_day" */
 export type Average_Block_Time_Per_Day_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Average_Block_Time_Per_Day_Select_Column>>;
@@ -881,6 +893,7 @@ export type Average_Block_Time_Per_Hour_Aggregate_Fields = {
   variance?: Maybe<Average_Block_Time_Per_Hour_Variance_Fields>;
 };
 
+
 /** aggregate fields of "average_block_time_per_hour" */
 export type Average_Block_Time_Per_Hour_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Average_Block_Time_Per_Hour_Select_Column>>;
@@ -1009,6 +1022,7 @@ export type Average_Block_Time_Per_Minute_Aggregate_Fields = {
   var_samp?: Maybe<Average_Block_Time_Per_Minute_Var_Samp_Fields>;
   variance?: Maybe<Average_Block_Time_Per_Minute_Variance_Fields>;
 };
+
 
 /** aggregate fields of "average_block_time_per_minute" */
 export type Average_Block_Time_Per_Minute_Aggregate_FieldsCountArgs = {
@@ -1147,6 +1161,7 @@ export type Block = {
   validator_voting_powers_aggregate: Validator_Voting_Power_Aggregate;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockPre_CommitsArgs = {
   distinct_on?: InputMaybe<Array<Pre_Commit_Select_Column>>;
@@ -1155,6 +1170,7 @@ export type BlockPre_CommitsArgs = {
   order_by?: InputMaybe<Array<Pre_Commit_Order_By>>;
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
+
 
 /** columns and relationships of "block" */
 export type BlockPre_Commits_AggregateArgs = {
@@ -1165,6 +1181,7 @@ export type BlockPre_Commits_AggregateArgs = {
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockTransactionsArgs = {
   distinct_on?: InputMaybe<Array<Transaction_Select_Column>>;
@@ -1173,6 +1190,7 @@ export type BlockTransactionsArgs = {
   order_by?: InputMaybe<Array<Transaction_Order_By>>;
   where?: InputMaybe<Transaction_Bool_Exp>;
 };
+
 
 /** columns and relationships of "block" */
 export type BlockTransactions_AggregateArgs = {
@@ -1183,6 +1201,7 @@ export type BlockTransactions_AggregateArgs = {
   where?: InputMaybe<Transaction_Bool_Exp>;
 };
 
+
 /** columns and relationships of "block" */
 export type BlockValidator_Voting_PowersArgs = {
   distinct_on?: InputMaybe<Array<Validator_Voting_Power_Select_Column>>;
@@ -1191,6 +1210,7 @@ export type BlockValidator_Voting_PowersArgs = {
   order_by?: InputMaybe<Array<Validator_Voting_Power_Order_By>>;
   where?: InputMaybe<Validator_Voting_Power_Bool_Exp>;
 };
+
 
 /** columns and relationships of "block" */
 export type BlockValidator_Voting_Powers_AggregateArgs = {
@@ -1223,6 +1243,7 @@ export type Block_Aggregate_Fields = {
   var_samp?: Maybe<Block_Var_Samp_Fields>;
   variance?: Maybe<Block_Variance_Fields>;
 };
+
 
 /** aggregate fields of "block" */
 export type Block_Aggregate_FieldsCountArgs = {
@@ -1497,6 +1518,7 @@ export type Community_Pool_Aggregate_Fields = {
   variance?: Maybe<Community_Pool_Variance_Fields>;
 };
 
+
 /** aggregate fields of "community_pool" */
 export type Community_Pool_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Community_Pool_Select_Column>>;
@@ -1620,6 +1642,7 @@ export type Cosmwasm_Clear_Admin_Aggregate_Fields = {
   var_samp?: Maybe<Cosmwasm_Clear_Admin_Var_Samp_Fields>;
   variance?: Maybe<Cosmwasm_Clear_Admin_Variance_Fields>;
 };
+
 
 /** aggregate fields of "cosmwasm_clear_admin" */
 export type Cosmwasm_Clear_Admin_Aggregate_FieldsCountArgs = {
@@ -1745,10 +1768,12 @@ export type Cosmwasm_Execute = {
   transaction_hash: Scalars['String'];
 };
 
+
 /** columns and relationships of "cosmwasm_execute" */
 export type Cosmwasm_ExecuteArgumentsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
+
 
 /** columns and relationships of "cosmwasm_execute" */
 export type Cosmwasm_ExecuteFundsArgs = {
@@ -1777,6 +1802,7 @@ export type Cosmwasm_Execute_Aggregate_Fields = {
   var_samp?: Maybe<Cosmwasm_Execute_Var_Samp_Fields>;
   variance?: Maybe<Cosmwasm_Execute_Variance_Fields>;
 };
+
 
 /** aggregate fields of "cosmwasm_execute" */
 export type Cosmwasm_Execute_Aggregate_FieldsCountArgs = {
@@ -1917,6 +1943,7 @@ export type Cosmwasm_Instantiate = {
   transaction_hash: Scalars['String'];
 };
 
+
 /** columns and relationships of "cosmwasm_instantiate" */
 export type Cosmwasm_InstantiateFundsArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -1944,6 +1971,7 @@ export type Cosmwasm_Instantiate_Aggregate_Fields = {
   var_samp?: Maybe<Cosmwasm_Instantiate_Var_Samp_Fields>;
   variance?: Maybe<Cosmwasm_Instantiate_Variance_Fields>;
 };
+
 
 /** aggregate fields of "cosmwasm_instantiate" */
 export type Cosmwasm_Instantiate_Aggregate_FieldsCountArgs = {
@@ -2090,6 +2118,7 @@ export type Cosmwasm_Migrate = {
   transaction_hash: Scalars['String'];
 };
 
+
 /** columns and relationships of "cosmwasm_migrate" */
 export type Cosmwasm_MigrateArgumentsArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -2117,6 +2146,7 @@ export type Cosmwasm_Migrate_Aggregate_Fields = {
   var_samp?: Maybe<Cosmwasm_Migrate_Var_Samp_Fields>;
   variance?: Maybe<Cosmwasm_Migrate_Variance_Fields>;
 };
+
 
 /** aggregate fields of "cosmwasm_migrate" */
 export type Cosmwasm_Migrate_Aggregate_FieldsCountArgs = {
@@ -2250,6 +2280,7 @@ export type Cosmwasm_Store = {
   transaction_hash: Scalars['String'];
 };
 
+
 /** columns and relationships of "cosmwasm_store" */
 export type Cosmwasm_StoreInstantiate_PermissionArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -2277,6 +2308,7 @@ export type Cosmwasm_Store_Aggregate_Fields = {
   var_samp?: Maybe<Cosmwasm_Store_Var_Samp_Fields>;
   variance?: Maybe<Cosmwasm_Store_Variance_Fields>;
 };
+
 
 /** aggregate fields of "cosmwasm_store" */
 export type Cosmwasm_Store_Aggregate_FieldsCountArgs = {
@@ -2427,6 +2459,7 @@ export type Cosmwasm_Update_Admin_Aggregate_Fields = {
   variance?: Maybe<Cosmwasm_Update_Admin_Variance_Fields>;
 };
 
+
 /** aggregate fields of "cosmwasm_update_admin" */
 export type Cosmwasm_Update_Admin_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Cosmwasm_Update_Admin_Select_Column>>;
@@ -2567,6 +2600,7 @@ export type Cw20token_Balance_Aggregate_Fields = {
   min?: Maybe<Cw20token_Balance_Min_Fields>;
 };
 
+
 /** aggregate fields of "cw20token_balance" */
 export type Cw20token_Balance_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Cw20token_Balance_Select_Column>>;
@@ -2688,6 +2722,7 @@ export type Cw20token_Info = {
   type?: Maybe<Scalars['String']>;
 };
 
+
 /** columns and relationships of "cw20token_info" */
 export type Cw20token_InfoBalancesArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Balance_Select_Column>>;
@@ -2696,6 +2731,7 @@ export type Cw20token_InfoBalancesArgs = {
   order_by?: InputMaybe<Array<Cw20token_Balance_Order_By>>;
   where?: InputMaybe<Cw20token_Balance_Bool_Exp>;
 };
+
 
 /** columns and relationships of "cw20token_info" */
 export type Cw20token_InfoBalances_AggregateArgs = {
@@ -2728,6 +2764,7 @@ export type Cw20token_Info_Aggregate_Fields = {
   var_samp?: Maybe<Cw20token_Info_Var_Samp_Fields>;
   variance?: Maybe<Cw20token_Info_Variance_Fields>;
 };
+
 
 /** aggregate fields of "cw20token_info" */
 export type Cw20token_Info_Aggregate_FieldsCountArgs = {
@@ -2935,6 +2972,7 @@ export type Delegation_Aggregate_Fields = {
   min?: Maybe<Delegation_Min_Fields>;
 };
 
+
 /** aggregate fields of "delegation" */
 export type Delegation_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Delegation_Select_Column>>;
@@ -3025,6 +3063,7 @@ export type Distinct_Message = {
   value?: Maybe<Scalars['jsonb']>;
 };
 
+
 /** columns and relationships of "distinct_message" */
 export type Distinct_MessageValueArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -3052,6 +3091,7 @@ export type Distinct_Message_Aggregate_Fields = {
   var_samp?: Maybe<Distinct_Message_Var_Samp_Fields>;
   variance?: Maybe<Distinct_Message_Variance_Fields>;
 };
+
 
 /** aggregate fields of "distinct_message" */
 export type Distinct_Message_Aggregate_FieldsCountArgs = {
@@ -3182,6 +3222,7 @@ export type Distribution_Params = {
   params: Scalars['jsonb'];
 };
 
+
 /** columns and relationships of "distribution_params" */
 export type Distribution_ParamsParamsArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -3209,6 +3250,7 @@ export type Distribution_Params_Aggregate_Fields = {
   var_samp?: Maybe<Distribution_Params_Var_Samp_Fields>;
   variance?: Maybe<Distribution_Params_Variance_Fields>;
 };
+
 
 /** aggregate fields of "distribution_params" */
 export type Distribution_Params_Aggregate_FieldsCountArgs = {
@@ -3337,6 +3379,7 @@ export type Double_Sign_Evidence_Aggregate_Fields = {
   var_samp?: Maybe<Double_Sign_Evidence_Var_Samp_Fields>;
   variance?: Maybe<Double_Sign_Evidence_Variance_Fields>;
 };
+
 
 /** aggregate fields of "double_sign_evidence" */
 export type Double_Sign_Evidence_Aggregate_FieldsCountArgs = {
@@ -3563,6 +3606,7 @@ export type Double_Sign_Vote = {
   validator_index: Scalars['Int'];
 };
 
+
 /** columns and relationships of "double_sign_vote" */
 export type Double_Sign_VoteDoubleSignEvidencesByVoteBIdArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Evidence_Select_Column>>;
@@ -3571,6 +3615,7 @@ export type Double_Sign_VoteDoubleSignEvidencesByVoteBIdArgs = {
   order_by?: InputMaybe<Array<Double_Sign_Evidence_Order_By>>;
   where?: InputMaybe<Double_Sign_Evidence_Bool_Exp>;
 };
+
 
 /** columns and relationships of "double_sign_vote" */
 export type Double_Sign_VoteDoubleSignEvidencesByVoteBId_AggregateArgs = {
@@ -3581,6 +3626,7 @@ export type Double_Sign_VoteDoubleSignEvidencesByVoteBId_AggregateArgs = {
   where?: InputMaybe<Double_Sign_Evidence_Bool_Exp>;
 };
 
+
 /** columns and relationships of "double_sign_vote" */
 export type Double_Sign_VoteDouble_Sign_EvidencesArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Evidence_Select_Column>>;
@@ -3589,6 +3635,7 @@ export type Double_Sign_VoteDouble_Sign_EvidencesArgs = {
   order_by?: InputMaybe<Array<Double_Sign_Evidence_Order_By>>;
   where?: InputMaybe<Double_Sign_Evidence_Bool_Exp>;
 };
+
 
 /** columns and relationships of "double_sign_vote" */
 export type Double_Sign_VoteDouble_Sign_Evidences_AggregateArgs = {
@@ -3621,6 +3668,7 @@ export type Double_Sign_Vote_Aggregate_Fields = {
   var_samp?: Maybe<Double_Sign_Vote_Var_Samp_Fields>;
   variance?: Maybe<Double_Sign_Vote_Variance_Fields>;
 };
+
 
 /** aggregate fields of "double_sign_vote" */
 export type Double_Sign_Vote_Aggregate_FieldsCountArgs = {
@@ -3908,6 +3956,7 @@ export type Fee_Grant_Allowance = {
   id: Scalars['Int'];
 };
 
+
 /** columns and relationships of "fee_grant_allowance" */
 export type Fee_Grant_AllowanceAllowanceArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -3935,6 +3984,7 @@ export type Fee_Grant_Allowance_Aggregate_Fields = {
   var_samp?: Maybe<Fee_Grant_Allowance_Var_Samp_Fields>;
   variance?: Maybe<Fee_Grant_Allowance_Variance_Fields>;
 };
+
 
 /** aggregate fields of "fee_grant_allowance" */
 export type Fee_Grant_Allowance_Aggregate_FieldsCountArgs = {
@@ -4082,6 +4132,7 @@ export type Genesis_Aggregate_Fields = {
   variance?: Maybe<Genesis_Variance_Fields>;
 };
 
+
 /** aggregate fields of "genesis" */
 export type Genesis_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Genesis_Select_Column>>;
@@ -4189,15 +4240,18 @@ export type Gov_Params = {
   voting_params: Scalars['jsonb'];
 };
 
+
 /** columns and relationships of "gov_params" */
 export type Gov_ParamsDeposit_ParamsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
 
+
 /** columns and relationships of "gov_params" */
 export type Gov_ParamsTally_ParamsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
+
 
 /** columns and relationships of "gov_params" */
 export type Gov_ParamsVoting_ParamsArgs = {
@@ -4226,6 +4280,7 @@ export type Gov_Params_Aggregate_Fields = {
   var_samp?: Maybe<Gov_Params_Var_Samp_Fields>;
   variance?: Maybe<Gov_Params_Variance_Fields>;
 };
+
 
 /** aggregate fields of "gov_params" */
 export type Gov_Params_Aggregate_FieldsCountArgs = {
@@ -4350,6 +4405,7 @@ export type Group_Member = {
   weight: Scalars['Int'];
 };
 
+
 /** columns and relationships of "group_member" */
 export type Group_MemberGroup_Proposal_VotesArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
@@ -4358,6 +4414,7 @@ export type Group_MemberGroup_Proposal_VotesArgs = {
   order_by?: InputMaybe<Array<Group_Proposal_Vote_Order_By>>;
   where?: InputMaybe<Group_Proposal_Vote_Bool_Exp>;
 };
+
 
 /** columns and relationships of "group_member" */
 export type Group_MemberGroup_Proposal_Votes_AggregateArgs = {
@@ -4390,6 +4447,7 @@ export type Group_Member_Aggregate_Fields = {
   var_samp?: Maybe<Group_Member_Var_Samp_Fields>;
   variance?: Maybe<Group_Member_Variance_Fields>;
 };
+
 
 /** aggregate fields of "group_member" */
 export type Group_Member_Aggregate_FieldsCountArgs = {
@@ -4622,6 +4680,7 @@ export type Group_Proposal = {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+
 /** columns and relationships of "group_proposal" */
 export type Group_ProposalGroup_Proposal_VotesArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
@@ -4631,6 +4690,7 @@ export type Group_ProposalGroup_Proposal_VotesArgs = {
   where?: InputMaybe<Group_Proposal_Vote_Bool_Exp>;
 };
 
+
 /** columns and relationships of "group_proposal" */
 export type Group_ProposalGroup_Proposal_Votes_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
@@ -4639,6 +4699,7 @@ export type Group_ProposalGroup_Proposal_Votes_AggregateArgs = {
   order_by?: InputMaybe<Array<Group_Proposal_Vote_Order_By>>;
   where?: InputMaybe<Group_Proposal_Vote_Bool_Exp>;
 };
+
 
 /** columns and relationships of "group_proposal" */
 export type Group_ProposalMessagesArgs = {
@@ -4667,6 +4728,7 @@ export type Group_Proposal_Aggregate_Fields = {
   var_samp?: Maybe<Group_Proposal_Var_Samp_Fields>;
   variance?: Maybe<Group_Proposal_Variance_Fields>;
 };
+
 
 /** aggregate fields of "group_proposal" */
 export type Group_Proposal_Aggregate_FieldsCountArgs = {
@@ -5004,6 +5066,7 @@ export type Group_Proposal_Vote_Aggregate_Fields = {
   variance?: Maybe<Group_Proposal_Vote_Variance_Fields>;
 };
 
+
 /** aggregate fields of "group_proposal_vote" */
 export type Group_Proposal_Vote_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
@@ -5230,6 +5293,7 @@ export type Group_With_Policy = {
   voting_period: Scalars['bigint'];
 };
 
+
 /** columns and relationships of "group_with_policy" */
 export type Group_With_PolicyGroup_MembersArgs = {
   distinct_on?: InputMaybe<Array<Group_Member_Select_Column>>;
@@ -5238,6 +5302,7 @@ export type Group_With_PolicyGroup_MembersArgs = {
   order_by?: InputMaybe<Array<Group_Member_Order_By>>;
   where?: InputMaybe<Group_Member_Bool_Exp>;
 };
+
 
 /** columns and relationships of "group_with_policy" */
 export type Group_With_PolicyGroup_Members_AggregateArgs = {
@@ -5248,6 +5313,7 @@ export type Group_With_PolicyGroup_Members_AggregateArgs = {
   where?: InputMaybe<Group_Member_Bool_Exp>;
 };
 
+
 /** columns and relationships of "group_with_policy" */
 export type Group_With_PolicyGroup_ProposalsArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Select_Column>>;
@@ -5256,6 +5322,7 @@ export type Group_With_PolicyGroup_ProposalsArgs = {
   order_by?: InputMaybe<Array<Group_Proposal_Order_By>>;
   where?: InputMaybe<Group_Proposal_Bool_Exp>;
 };
+
 
 /** columns and relationships of "group_with_policy" */
 export type Group_With_PolicyGroup_Proposals_AggregateArgs = {
@@ -5288,6 +5355,7 @@ export type Group_With_Policy_Aggregate_Fields = {
   var_samp?: Maybe<Group_With_Policy_Var_Samp_Fields>;
   variance?: Maybe<Group_With_Policy_Variance_Fields>;
 };
+
 
 /** aggregate fields of "group_with_policy" */
 export type Group_With_Policy_Aggregate_FieldsCountArgs = {
@@ -5468,6 +5536,7 @@ export type Inflation_Aggregate_Fields = {
   variance?: Maybe<Inflation_Variance_Fields>;
 };
 
+
 /** aggregate fields of "inflation" */
 export type Inflation_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Inflation_Select_Column>>;
@@ -5642,6 +5711,7 @@ export type Marketplace_Collection_Aggregate_Fields = {
   variance?: Maybe<Marketplace_Collection_Variance_Fields>;
 };
 
+
 /** aggregate fields of "marketplace_collection" */
 export type Marketplace_Collection_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Marketplace_Collection_Select_Column>>;
@@ -5807,6 +5877,7 @@ export type Marketplace_Nft_Aggregate_Fields = {
   variance?: Maybe<Marketplace_Nft_Variance_Fields>;
 };
 
+
 /** aggregate fields of "marketplace_nft" */
 export type Marketplace_Nft_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Marketplace_Nft_Select_Column>>;
@@ -5882,6 +5953,7 @@ export type Marketplace_Nft_Buy_History_Aggregate_Fields = {
   var_samp?: Maybe<Marketplace_Nft_Buy_History_Var_Samp_Fields>;
   variance?: Maybe<Marketplace_Nft_Buy_History_Variance_Fields>;
 };
+
 
 /** aggregate fields of "marketplace_nft_buy_history" */
 export type Marketplace_Nft_Buy_History_Aggregate_FieldsCountArgs = {
@@ -6189,6 +6261,7 @@ export type Message = {
   value: Scalars['jsonb'];
 };
 
+
 /** columns and relationships of "message" */
 export type MessageValueArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -6216,6 +6289,7 @@ export type Message_Aggregate_Fields = {
   var_samp?: Maybe<Message_Var_Samp_Fields>;
   variance?: Maybe<Message_Variance_Fields>;
 };
+
 
 /** aggregate fields of "message" */
 export type Message_Aggregate_FieldsCountArgs = {
@@ -6415,6 +6489,7 @@ export type Mint_Params = {
   params: Scalars['jsonb'];
 };
 
+
 /** columns and relationships of "mint_params" */
 export type Mint_ParamsParamsArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -6442,6 +6517,7 @@ export type Mint_Params_Aggregate_Fields = {
   var_samp?: Maybe<Mint_Params_Var_Samp_Fields>;
   variance?: Maybe<Mint_Params_Variance_Fields>;
 };
+
 
 /** aggregate fields of "mint_params" */
 export type Mint_Params_Aggregate_FieldsCountArgs = {
@@ -6557,6 +6633,7 @@ export type Modules_Aggregate_Fields = {
   min?: Maybe<Modules_Min_Fields>;
 };
 
+
 /** aggregate fields of "modules" */
 export type Modules_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Modules_Select_Column>>;
@@ -6613,6 +6690,7 @@ export type Nft_Denom = {
   transaction_hash: Scalars['String'];
 };
 
+
 /** columns and relationships of "nft_denom" */
 export type Nft_DenomData_JsonArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -6632,6 +6710,7 @@ export type Nft_Denom_Aggregate_Fields = {
   max?: Maybe<Nft_Denom_Max_Fields>;
   min?: Maybe<Nft_Denom_Min_Fields>;
 };
+
 
 /** aggregate fields of "nft_denom" */
 export type Nft_Denom_Aggregate_FieldsCountArgs = {
@@ -6757,6 +6836,7 @@ export type Nft_Nft = {
   uri: Scalars['String'];
 };
 
+
 /** columns and relationships of "nft_nft" */
 export type Nft_NftData_JsonArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -6784,6 +6864,7 @@ export type Nft_Nft_Aggregate_Fields = {
   var_samp?: Maybe<Nft_Nft_Var_Samp_Fields>;
   variance?: Maybe<Nft_Nft_Variance_Fields>;
 };
+
 
 /** aggregate fields of "nft_nft" */
 export type Nft_Nft_Aggregate_FieldsCountArgs = {
@@ -6974,6 +7055,7 @@ export type Nft_Transfer_History_Aggregate_Fields = {
   var_samp?: Maybe<Nft_Transfer_History_Var_Samp_Fields>;
   variance?: Maybe<Nft_Transfer_History_Variance_Fields>;
 };
+
 
 /** aggregate fields of "nft_transfer_history" */
 export type Nft_Transfer_History_Aggregate_FieldsCountArgs = {
@@ -7183,6 +7265,7 @@ export type Pre_Commit_Aggregate_Fields = {
   var_samp?: Maybe<Pre_Commit_Var_Samp_Fields>;
   variance?: Maybe<Pre_Commit_Variance_Fields>;
 };
+
 
 /** aggregate fields of "pre_commit" */
 export type Pre_Commit_Aggregate_FieldsCountArgs = {
@@ -7439,10 +7522,12 @@ export type Proposal = {
   voting_start_time?: Maybe<Scalars['timestamp']>;
 };
 
+
 /** columns and relationships of "proposal" */
 export type ProposalContentArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
+
 
 /** columns and relationships of "proposal" */
 export type ProposalProposal_DepositsArgs = {
@@ -7453,6 +7538,7 @@ export type ProposalProposal_DepositsArgs = {
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
 
+
 /** columns and relationships of "proposal" */
 export type ProposalProposal_Deposits_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Deposit_Select_Column>>;
@@ -7461,6 +7547,7 @@ export type ProposalProposal_Deposits_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Deposit_Order_By>>;
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
+
 
 /** columns and relationships of "proposal" */
 export type ProposalProposal_Tally_ResultsArgs = {
@@ -7471,6 +7558,7 @@ export type ProposalProposal_Tally_ResultsArgs = {
   where?: InputMaybe<Proposal_Tally_Result_Bool_Exp>;
 };
 
+
 /** columns and relationships of "proposal" */
 export type ProposalProposal_Tally_Results_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Tally_Result_Select_Column>>;
@@ -7479,6 +7567,7 @@ export type ProposalProposal_Tally_Results_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Tally_Result_Order_By>>;
   where?: InputMaybe<Proposal_Tally_Result_Bool_Exp>;
 };
+
 
 /** columns and relationships of "proposal" */
 export type ProposalProposal_VotesArgs = {
@@ -7489,6 +7578,7 @@ export type ProposalProposal_VotesArgs = {
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
 
+
 /** columns and relationships of "proposal" */
 export type ProposalProposal_Votes_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Select_Column>>;
@@ -7498,6 +7588,7 @@ export type ProposalProposal_Votes_AggregateArgs = {
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
 
+
 /** columns and relationships of "proposal" */
 export type ProposalValidator_Status_SnapshotsArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Validator_Status_Snapshot_Select_Column>>;
@@ -7506,6 +7597,7 @@ export type ProposalValidator_Status_SnapshotsArgs = {
   order_by?: InputMaybe<Array<Proposal_Validator_Status_Snapshot_Order_By>>;
   where?: InputMaybe<Proposal_Validator_Status_Snapshot_Bool_Exp>;
 };
+
 
 /** columns and relationships of "proposal" */
 export type ProposalValidator_Status_Snapshots_AggregateArgs = {
@@ -7538,6 +7630,7 @@ export type Proposal_Aggregate_Fields = {
   var_samp?: Maybe<Proposal_Var_Samp_Fields>;
   variance?: Maybe<Proposal_Variance_Fields>;
 };
+
 
 /** aggregate fields of "proposal" */
 export type Proposal_Aggregate_FieldsCountArgs = {
@@ -7634,6 +7727,7 @@ export type Proposal_Deposit_Aggregate_Fields = {
   var_samp?: Maybe<Proposal_Deposit_Var_Samp_Fields>;
   variance?: Maybe<Proposal_Deposit_Variance_Fields>;
 };
+
 
 /** aggregate fields of "proposal_deposit" */
 export type Proposal_Deposit_Aggregate_FieldsCountArgs = {
@@ -7987,6 +8081,7 @@ export type Proposal_Staking_Pool_Snapshot_Aggregate_Fields = {
   variance?: Maybe<Proposal_Staking_Pool_Snapshot_Variance_Fields>;
 };
 
+
 /** aggregate fields of "proposal_staking_pool_snapshot" */
 export type Proposal_Staking_Pool_Snapshot_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Proposal_Staking_Pool_Snapshot_Select_Column>>;
@@ -8208,6 +8303,7 @@ export type Proposal_Tally_Result_Aggregate_Fields = {
   var_samp?: Maybe<Proposal_Tally_Result_Var_Samp_Fields>;
   variance?: Maybe<Proposal_Tally_Result_Variance_Fields>;
 };
+
 
 /** aggregate fields of "proposal_tally_result" */
 export type Proposal_Tally_Result_Aggregate_FieldsCountArgs = {
@@ -8455,6 +8551,7 @@ export type Proposal_Validator_Status_Snapshot_Aggregate_Fields = {
   var_samp?: Maybe<Proposal_Validator_Status_Snapshot_Var_Samp_Fields>;
   variance?: Maybe<Proposal_Validator_Status_Snapshot_Variance_Fields>;
 };
+
 
 /** aggregate fields of "proposal_validator_status_snapshot" */
 export type Proposal_Validator_Status_Snapshot_Aggregate_FieldsCountArgs = {
@@ -8787,6 +8884,7 @@ export type Proposal_Vote_Aggregate_Fields = {
   variance?: Maybe<Proposal_Vote_Variance_Fields>;
 };
 
+
 /** aggregate fields of "proposal_vote" */
 export type Proposal_Vote_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Proposal_Vote_Select_Column>>;
@@ -9017,6 +9115,7 @@ export type Proposal_Vote_Weighted_Aggregate_Fields = {
   var_samp?: Maybe<Proposal_Vote_Weighted_Var_Samp_Fields>;
   variance?: Maybe<Proposal_Vote_Weighted_Variance_Fields>;
 };
+
 
 /** aggregate fields of "proposal_vote_weighted" */
 export type Proposal_Vote_Weighted_Aggregate_FieldsCountArgs = {
@@ -9524,6 +9623,7 @@ export type Query_Root = {
   vesting_period_aggregate: Vesting_Period_Aggregate;
 };
 
+
 export type Query_RootAccountArgs = {
   distinct_on?: InputMaybe<Array<Account_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9531,6 +9631,7 @@ export type Query_RootAccountArgs = {
   order_by?: InputMaybe<Array<Account_Order_By>>;
   where?: InputMaybe<Account_Bool_Exp>;
 };
+
 
 export type Query_RootAccount_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Account_Select_Column>>;
@@ -9540,14 +9641,17 @@ export type Query_RootAccount_AggregateArgs = {
   where?: InputMaybe<Account_Bool_Exp>;
 };
 
+
 export type Query_RootAccount_By_PkArgs = {
   address: Scalars['String'];
 };
+
 
 export type Query_RootAction_Account_BalanceArgs = {
   address: Scalars['String'];
   height?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type Query_RootAction_DelegationArgs = {
   address: Scalars['String'];
@@ -9557,19 +9661,23 @@ export type Query_RootAction_DelegationArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type Query_RootAction_Delegation_RewardArgs = {
   address: Scalars['String'];
   height?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type Query_RootAction_Delegation_TotalArgs = {
   address: Scalars['String'];
   height?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type Query_RootAction_Delegator_Withdraw_AddressArgs = {
   address: Scalars['String'];
 };
+
 
 export type Query_RootAction_Nft_Transfer_EventsArgs = {
   denom_id: Scalars['String'];
@@ -9577,6 +9685,7 @@ export type Query_RootAction_Nft_Transfer_EventsArgs = {
   to_time?: InputMaybe<Scalars['Int']>;
   token_id: Scalars['Int'];
 };
+
 
 export type Query_RootAction_RedelegationArgs = {
   address: Scalars['String'];
@@ -9586,6 +9695,7 @@ export type Query_RootAction_RedelegationArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type Query_RootAction_Unbonding_DelegationArgs = {
   address: Scalars['String'];
   count_total?: InputMaybe<Scalars['Boolean']>;
@@ -9594,14 +9704,17 @@ export type Query_RootAction_Unbonding_DelegationArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type Query_RootAction_Unbonding_Delegation_TotalArgs = {
   address: Scalars['String'];
   height?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type Query_RootAction_Validator_Commission_AmountArgs = {
   address: Scalars['String'];
 };
+
 
 export type Query_RootAction_Validator_DelegationsArgs = {
   address: Scalars['String'];
@@ -9609,6 +9722,7 @@ export type Query_RootAction_Validator_DelegationsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type Query_RootAction_Validator_Redelegations_FromArgs = {
   address: Scalars['String'];
@@ -9618,12 +9732,14 @@ export type Query_RootAction_Validator_Redelegations_FromArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type Query_RootAction_Validator_Unbonding_DelegationsArgs = {
   address: Scalars['String'];
   count_total?: InputMaybe<Scalars['Boolean']>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type Query_RootAdjusted_SupplyArgs = {
   distinct_on?: InputMaybe<Array<Adjusted_Supply_Select_Column>>;
@@ -9633,6 +9749,7 @@ export type Query_RootAdjusted_SupplyArgs = {
   where?: InputMaybe<Adjusted_Supply_Bool_Exp>;
 };
 
+
 export type Query_RootAdjusted_Supply_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Adjusted_Supply_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9640,6 +9757,7 @@ export type Query_RootAdjusted_Supply_AggregateArgs = {
   order_by?: InputMaybe<Array<Adjusted_Supply_Order_By>>;
   where?: InputMaybe<Adjusted_Supply_Bool_Exp>;
 };
+
 
 export type Query_RootAprArgs = {
   distinct_on?: InputMaybe<Array<Apr_Select_Column>>;
@@ -9649,6 +9767,7 @@ export type Query_RootAprArgs = {
   where?: InputMaybe<Apr_Bool_Exp>;
 };
 
+
 export type Query_RootApr_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Apr_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9656,6 +9775,7 @@ export type Query_RootApr_AggregateArgs = {
   order_by?: InputMaybe<Array<Apr_Order_By>>;
   where?: InputMaybe<Apr_Bool_Exp>;
 };
+
 
 export type Query_RootAverage_Block_Time_From_GenesisArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_From_Genesis_Select_Column>>;
@@ -9665,6 +9785,7 @@ export type Query_RootAverage_Block_Time_From_GenesisArgs = {
   where?: InputMaybe<Average_Block_Time_From_Genesis_Bool_Exp>;
 };
 
+
 export type Query_RootAverage_Block_Time_From_Genesis_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_From_Genesis_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9672,6 +9793,7 @@ export type Query_RootAverage_Block_Time_From_Genesis_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_From_Genesis_Order_By>>;
   where?: InputMaybe<Average_Block_Time_From_Genesis_Bool_Exp>;
 };
+
 
 export type Query_RootAverage_Block_Time_Per_DayArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Day_Select_Column>>;
@@ -9681,6 +9803,7 @@ export type Query_RootAverage_Block_Time_Per_DayArgs = {
   where?: InputMaybe<Average_Block_Time_Per_Day_Bool_Exp>;
 };
 
+
 export type Query_RootAverage_Block_Time_Per_Day_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Day_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9688,6 +9811,7 @@ export type Query_RootAverage_Block_Time_Per_Day_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_Per_Day_Order_By>>;
   where?: InputMaybe<Average_Block_Time_Per_Day_Bool_Exp>;
 };
+
 
 export type Query_RootAverage_Block_Time_Per_HourArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Hour_Select_Column>>;
@@ -9697,6 +9821,7 @@ export type Query_RootAverage_Block_Time_Per_HourArgs = {
   where?: InputMaybe<Average_Block_Time_Per_Hour_Bool_Exp>;
 };
 
+
 export type Query_RootAverage_Block_Time_Per_Hour_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Hour_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9704,6 +9829,7 @@ export type Query_RootAverage_Block_Time_Per_Hour_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_Per_Hour_Order_By>>;
   where?: InputMaybe<Average_Block_Time_Per_Hour_Bool_Exp>;
 };
+
 
 export type Query_RootAverage_Block_Time_Per_MinuteArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Minute_Select_Column>>;
@@ -9713,6 +9839,7 @@ export type Query_RootAverage_Block_Time_Per_MinuteArgs = {
   where?: InputMaybe<Average_Block_Time_Per_Minute_Bool_Exp>;
 };
 
+
 export type Query_RootAverage_Block_Time_Per_Minute_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Minute_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9720,6 +9847,7 @@ export type Query_RootAverage_Block_Time_Per_Minute_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_Per_Minute_Order_By>>;
   where?: InputMaybe<Average_Block_Time_Per_Minute_Bool_Exp>;
 };
+
 
 export type Query_RootBlockArgs = {
   distinct_on?: InputMaybe<Array<Block_Select_Column>>;
@@ -9729,6 +9857,7 @@ export type Query_RootBlockArgs = {
   where?: InputMaybe<Block_Bool_Exp>;
 };
 
+
 export type Query_RootBlock_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Block_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9737,9 +9866,11 @@ export type Query_RootBlock_AggregateArgs = {
   where?: InputMaybe<Block_Bool_Exp>;
 };
 
+
 export type Query_RootBlock_By_PkArgs = {
   height: Scalars['bigint'];
 };
+
 
 export type Query_RootCommunity_PoolArgs = {
   distinct_on?: InputMaybe<Array<Community_Pool_Select_Column>>;
@@ -9749,6 +9880,7 @@ export type Query_RootCommunity_PoolArgs = {
   where?: InputMaybe<Community_Pool_Bool_Exp>;
 };
 
+
 export type Query_RootCommunity_Pool_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Community_Pool_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9756,6 +9888,7 @@ export type Query_RootCommunity_Pool_AggregateArgs = {
   order_by?: InputMaybe<Array<Community_Pool_Order_By>>;
   where?: InputMaybe<Community_Pool_Bool_Exp>;
 };
+
 
 export type Query_RootCosmwasm_Clear_AdminArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Clear_Admin_Select_Column>>;
@@ -9765,6 +9898,7 @@ export type Query_RootCosmwasm_Clear_AdminArgs = {
   where?: InputMaybe<Cosmwasm_Clear_Admin_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Clear_Admin_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Clear_Admin_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9773,10 +9907,12 @@ export type Query_RootCosmwasm_Clear_Admin_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Clear_Admin_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Clear_Admin_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Query_RootCosmwasm_ExecuteArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Execute_Select_Column>>;
@@ -9786,6 +9922,7 @@ export type Query_RootCosmwasm_ExecuteArgs = {
   where?: InputMaybe<Cosmwasm_Execute_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Execute_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Execute_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9794,10 +9931,12 @@ export type Query_RootCosmwasm_Execute_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Execute_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Execute_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Query_RootCosmwasm_InstantiateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Instantiate_Select_Column>>;
@@ -9807,6 +9946,7 @@ export type Query_RootCosmwasm_InstantiateArgs = {
   where?: InputMaybe<Cosmwasm_Instantiate_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Instantiate_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Instantiate_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9815,10 +9955,12 @@ export type Query_RootCosmwasm_Instantiate_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Instantiate_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Instantiate_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Query_RootCosmwasm_MigrateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Migrate_Select_Column>>;
@@ -9828,6 +9970,7 @@ export type Query_RootCosmwasm_MigrateArgs = {
   where?: InputMaybe<Cosmwasm_Migrate_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Migrate_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Migrate_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9836,10 +9979,12 @@ export type Query_RootCosmwasm_Migrate_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Migrate_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Migrate_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Query_RootCosmwasm_StoreArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Store_Select_Column>>;
@@ -9849,6 +9994,7 @@ export type Query_RootCosmwasm_StoreArgs = {
   where?: InputMaybe<Cosmwasm_Store_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Store_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Store_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9857,10 +10003,12 @@ export type Query_RootCosmwasm_Store_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Store_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Store_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Query_RootCosmwasm_Update_AdminArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Update_Admin_Select_Column>>;
@@ -9870,6 +10018,7 @@ export type Query_RootCosmwasm_Update_AdminArgs = {
   where?: InputMaybe<Cosmwasm_Update_Admin_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Update_Admin_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Update_Admin_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9878,10 +10027,12 @@ export type Query_RootCosmwasm_Update_Admin_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Update_Admin_Bool_Exp>;
 };
 
+
 export type Query_RootCosmwasm_Update_Admin_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Query_RootCw20token_BalanceArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Balance_Select_Column>>;
@@ -9891,6 +10042,7 @@ export type Query_RootCw20token_BalanceArgs = {
   where?: InputMaybe<Cw20token_Balance_Bool_Exp>;
 };
 
+
 export type Query_RootCw20token_Balance_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Balance_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9899,10 +10051,12 @@ export type Query_RootCw20token_Balance_AggregateArgs = {
   where?: InputMaybe<Cw20token_Balance_Bool_Exp>;
 };
 
+
 export type Query_RootCw20token_Balance_By_PkArgs = {
   address: Scalars['String'];
   token: Scalars['String'];
 };
+
 
 export type Query_RootCw20token_Code_IdArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Code_Id_Select_Column>>;
@@ -9912,9 +10066,11 @@ export type Query_RootCw20token_Code_IdArgs = {
   where?: InputMaybe<Cw20token_Code_Id_Bool_Exp>;
 };
 
+
 export type Query_RootCw20token_Code_Id_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootCw20token_InfoArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Info_Select_Column>>;
@@ -9924,6 +10080,7 @@ export type Query_RootCw20token_InfoArgs = {
   where?: InputMaybe<Cw20token_Info_Bool_Exp>;
 };
 
+
 export type Query_RootCw20token_Info_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Info_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9932,9 +10089,11 @@ export type Query_RootCw20token_Info_AggregateArgs = {
   where?: InputMaybe<Cw20token_Info_Bool_Exp>;
 };
 
+
 export type Query_RootCw20token_Info_By_PkArgs = {
   address: Scalars['String'];
 };
+
 
 export type Query_RootDelegationArgs = {
   distinct_on?: InputMaybe<Array<Delegation_Select_Column>>;
@@ -9944,6 +10103,7 @@ export type Query_RootDelegationArgs = {
   where?: InputMaybe<Delegation_Bool_Exp>;
 };
 
+
 export type Query_RootDelegation_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Delegation_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9951,6 +10111,7 @@ export type Query_RootDelegation_AggregateArgs = {
   order_by?: InputMaybe<Array<Delegation_Order_By>>;
   where?: InputMaybe<Delegation_Bool_Exp>;
 };
+
 
 export type Query_RootDenoms_By_Data_PropertyArgs = {
   args: Denoms_By_Data_Property_Args;
@@ -9961,6 +10122,7 @@ export type Query_RootDenoms_By_Data_PropertyArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Query_RootDenoms_By_Data_Property_AggregateArgs = {
   args: Denoms_By_Data_Property_Args;
   distinct_on?: InputMaybe<Array<Nft_Denom_Select_Column>>;
@@ -9970,6 +10132,7 @@ export type Query_RootDenoms_By_Data_Property_AggregateArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Query_RootDistinct_MessageArgs = {
   distinct_on?: InputMaybe<Array<Distinct_Message_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9977,6 +10140,7 @@ export type Query_RootDistinct_MessageArgs = {
   order_by?: InputMaybe<Array<Distinct_Message_Order_By>>;
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
+
 
 export type Query_RootDistinct_Message_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Distinct_Message_Select_Column>>;
@@ -9986,6 +10150,7 @@ export type Query_RootDistinct_Message_AggregateArgs = {
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
 
+
 export type Query_RootDistribution_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Distribution_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9993,6 +10158,7 @@ export type Query_RootDistribution_ParamsArgs = {
   order_by?: InputMaybe<Array<Distribution_Params_Order_By>>;
   where?: InputMaybe<Distribution_Params_Bool_Exp>;
 };
+
 
 export type Query_RootDistribution_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Distribution_Params_Select_Column>>;
@@ -10002,9 +10168,11 @@ export type Query_RootDistribution_Params_AggregateArgs = {
   where?: InputMaybe<Distribution_Params_Bool_Exp>;
 };
 
+
 export type Query_RootDistribution_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Query_RootDouble_Sign_EvidenceArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Evidence_Select_Column>>;
@@ -10014,6 +10182,7 @@ export type Query_RootDouble_Sign_EvidenceArgs = {
   where?: InputMaybe<Double_Sign_Evidence_Bool_Exp>;
 };
 
+
 export type Query_RootDouble_Sign_Evidence_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Evidence_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10021,6 +10190,7 @@ export type Query_RootDouble_Sign_Evidence_AggregateArgs = {
   order_by?: InputMaybe<Array<Double_Sign_Evidence_Order_By>>;
   where?: InputMaybe<Double_Sign_Evidence_Bool_Exp>;
 };
+
 
 export type Query_RootDouble_Sign_VoteArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Vote_Select_Column>>;
@@ -10030,6 +10200,7 @@ export type Query_RootDouble_Sign_VoteArgs = {
   where?: InputMaybe<Double_Sign_Vote_Bool_Exp>;
 };
 
+
 export type Query_RootDouble_Sign_Vote_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Vote_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10038,9 +10209,11 @@ export type Query_RootDouble_Sign_Vote_AggregateArgs = {
   where?: InputMaybe<Double_Sign_Vote_Bool_Exp>;
 };
 
+
 export type Query_RootDouble_Sign_Vote_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootFee_Grant_AllowanceArgs = {
   distinct_on?: InputMaybe<Array<Fee_Grant_Allowance_Select_Column>>;
@@ -10050,6 +10223,7 @@ export type Query_RootFee_Grant_AllowanceArgs = {
   where?: InputMaybe<Fee_Grant_Allowance_Bool_Exp>;
 };
 
+
 export type Query_RootFee_Grant_Allowance_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Fee_Grant_Allowance_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10058,9 +10232,11 @@ export type Query_RootFee_Grant_Allowance_AggregateArgs = {
   where?: InputMaybe<Fee_Grant_Allowance_Bool_Exp>;
 };
 
+
 export type Query_RootFee_Grant_Allowance_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootGenesisArgs = {
   distinct_on?: InputMaybe<Array<Genesis_Select_Column>>;
@@ -10070,6 +10246,7 @@ export type Query_RootGenesisArgs = {
   where?: InputMaybe<Genesis_Bool_Exp>;
 };
 
+
 export type Query_RootGenesis_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Genesis_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10077,6 +10254,7 @@ export type Query_RootGenesis_AggregateArgs = {
   order_by?: InputMaybe<Array<Genesis_Order_By>>;
   where?: InputMaybe<Genesis_Bool_Exp>;
 };
+
 
 export type Query_RootGov_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Gov_Params_Select_Column>>;
@@ -10086,6 +10264,7 @@ export type Query_RootGov_ParamsArgs = {
   where?: InputMaybe<Gov_Params_Bool_Exp>;
 };
 
+
 export type Query_RootGov_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Gov_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10094,9 +10273,11 @@ export type Query_RootGov_Params_AggregateArgs = {
   where?: InputMaybe<Gov_Params_Bool_Exp>;
 };
 
+
 export type Query_RootGov_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Query_RootGravity_Messages_By_AddressArgs = {
   args: Gravity_Messages_By_Address_Args;
@@ -10107,6 +10288,7 @@ export type Query_RootGravity_Messages_By_AddressArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Query_RootGravity_Messages_By_Address_AggregateArgs = {
   args: Gravity_Messages_By_Address_Args;
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
@@ -10116,6 +10298,7 @@ export type Query_RootGravity_Messages_By_Address_AggregateArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_MemberArgs = {
   distinct_on?: InputMaybe<Array<Group_Member_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10123,6 +10306,7 @@ export type Query_RootGroup_MemberArgs = {
   order_by?: InputMaybe<Array<Group_Member_Order_By>>;
   where?: InputMaybe<Group_Member_Bool_Exp>;
 };
+
 
 export type Query_RootGroup_Member_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_Member_Select_Column>>;
@@ -10132,10 +10316,12 @@ export type Query_RootGroup_Member_AggregateArgs = {
   where?: InputMaybe<Group_Member_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_Member_By_PkArgs = {
   address: Scalars['String'];
   group_id: Scalars['Int'];
 };
+
 
 export type Query_RootGroup_ProposalArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Select_Column>>;
@@ -10145,6 +10331,7 @@ export type Query_RootGroup_ProposalArgs = {
   where?: InputMaybe<Group_Proposal_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_Proposal_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10153,9 +10340,11 @@ export type Query_RootGroup_Proposal_AggregateArgs = {
   where?: InputMaybe<Group_Proposal_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_Proposal_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootGroup_Proposal_VoteArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
@@ -10165,6 +10354,7 @@ export type Query_RootGroup_Proposal_VoteArgs = {
   where?: InputMaybe<Group_Proposal_Vote_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_Proposal_Vote_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10173,10 +10363,12 @@ export type Query_RootGroup_Proposal_Vote_AggregateArgs = {
   where?: InputMaybe<Group_Proposal_Vote_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_Proposal_Vote_By_PkArgs = {
   proposal_id: Scalars['Int'];
   voter: Scalars['String'];
 };
+
 
 export type Query_RootGroup_With_PolicyArgs = {
   distinct_on?: InputMaybe<Array<Group_With_Policy_Select_Column>>;
@@ -10186,6 +10378,7 @@ export type Query_RootGroup_With_PolicyArgs = {
   where?: InputMaybe<Group_With_Policy_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_With_Policy_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_With_Policy_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10194,9 +10387,11 @@ export type Query_RootGroup_With_Policy_AggregateArgs = {
   where?: InputMaybe<Group_With_Policy_Bool_Exp>;
 };
 
+
 export type Query_RootGroup_With_Policy_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootInflationArgs = {
   distinct_on?: InputMaybe<Array<Inflation_Select_Column>>;
@@ -10206,6 +10401,7 @@ export type Query_RootInflationArgs = {
   where?: InputMaybe<Inflation_Bool_Exp>;
 };
 
+
 export type Query_RootInflation_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Inflation_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10213,6 +10409,7 @@ export type Query_RootInflation_AggregateArgs = {
   order_by?: InputMaybe<Array<Inflation_Order_By>>;
   where?: InputMaybe<Inflation_Bool_Exp>;
 };
+
 
 export type Query_RootMarketplace_CollectionArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Collection_Select_Column>>;
@@ -10222,6 +10419,7 @@ export type Query_RootMarketplace_CollectionArgs = {
   where?: InputMaybe<Marketplace_Collection_Bool_Exp>;
 };
 
+
 export type Query_RootMarketplace_Collection_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Collection_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10230,9 +10428,11 @@ export type Query_RootMarketplace_Collection_AggregateArgs = {
   where?: InputMaybe<Marketplace_Collection_Bool_Exp>;
 };
 
+
 export type Query_RootMarketplace_Collection_By_PkArgs = {
   id: Scalars['bigint'];
 };
+
 
 export type Query_RootMarketplace_NftArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Select_Column>>;
@@ -10242,6 +10442,7 @@ export type Query_RootMarketplace_NftArgs = {
   where?: InputMaybe<Marketplace_Nft_Bool_Exp>;
 };
 
+
 export type Query_RootMarketplace_Nft_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10249,6 +10450,7 @@ export type Query_RootMarketplace_Nft_AggregateArgs = {
   order_by?: InputMaybe<Array<Marketplace_Nft_Order_By>>;
   where?: InputMaybe<Marketplace_Nft_Bool_Exp>;
 };
+
 
 export type Query_RootMarketplace_Nft_Buy_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Buy_History_Select_Column>>;
@@ -10258,6 +10460,7 @@ export type Query_RootMarketplace_Nft_Buy_HistoryArgs = {
   where?: InputMaybe<Marketplace_Nft_Buy_History_Bool_Exp>;
 };
 
+
 export type Query_RootMarketplace_Nft_Buy_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Buy_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10266,10 +10469,12 @@ export type Query_RootMarketplace_Nft_Buy_History_AggregateArgs = {
   where?: InputMaybe<Marketplace_Nft_Buy_History_Bool_Exp>;
 };
 
+
 export type Query_RootMarketplace_Nft_By_PkArgs = {
   denom_id: Scalars['String'];
   token_id: Scalars['bigint'];
 };
+
 
 export type Query_RootMessageArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
@@ -10279,6 +10484,7 @@ export type Query_RootMessageArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Query_RootMessage_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10286,6 +10492,7 @@ export type Query_RootMessage_AggregateArgs = {
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
+
 
 export type Query_RootMessages_By_AddressArgs = {
   args: Messages_By_Address_Args;
@@ -10296,6 +10503,7 @@ export type Query_RootMessages_By_AddressArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Query_RootMessages_By_Address_AggregateArgs = {
   args: Messages_By_Address_Args;
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
@@ -10304,6 +10512,7 @@ export type Query_RootMessages_By_Address_AggregateArgs = {
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
+
 
 export type Query_RootMessages_By_Address_Distinct_On_Tx_HashArgs = {
   args: Messages_By_Address_Distinct_On_Tx_Hash_Args;
@@ -10314,6 +10523,7 @@ export type Query_RootMessages_By_Address_Distinct_On_Tx_HashArgs = {
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
 
+
 export type Query_RootMessages_By_Address_Distinct_On_Tx_Hash_AggregateArgs = {
   args: Messages_By_Address_Distinct_On_Tx_Hash_Args;
   distinct_on?: InputMaybe<Array<Distinct_Message_Select_Column>>;
@@ -10323,6 +10533,7 @@ export type Query_RootMessages_By_Address_Distinct_On_Tx_Hash_AggregateArgs = {
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
 
+
 export type Query_RootMint_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Mint_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10330,6 +10541,7 @@ export type Query_RootMint_ParamsArgs = {
   order_by?: InputMaybe<Array<Mint_Params_Order_By>>;
   where?: InputMaybe<Mint_Params_Bool_Exp>;
 };
+
 
 export type Query_RootMint_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Mint_Params_Select_Column>>;
@@ -10339,9 +10551,11 @@ export type Query_RootMint_Params_AggregateArgs = {
   where?: InputMaybe<Mint_Params_Bool_Exp>;
 };
 
+
 export type Query_RootMint_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Query_RootModulesArgs = {
   distinct_on?: InputMaybe<Array<Modules_Select_Column>>;
@@ -10351,6 +10565,7 @@ export type Query_RootModulesArgs = {
   where?: InputMaybe<Modules_Bool_Exp>;
 };
 
+
 export type Query_RootModules_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Modules_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10359,9 +10574,11 @@ export type Query_RootModules_AggregateArgs = {
   where?: InputMaybe<Modules_Bool_Exp>;
 };
 
+
 export type Query_RootModules_By_PkArgs = {
   module_name: Scalars['String'];
 };
+
 
 export type Query_RootNft_DenomArgs = {
   distinct_on?: InputMaybe<Array<Nft_Denom_Select_Column>>;
@@ -10371,6 +10588,7 @@ export type Query_RootNft_DenomArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Query_RootNft_Denom_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Nft_Denom_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10379,9 +10597,11 @@ export type Query_RootNft_Denom_AggregateArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Query_RootNft_Denom_By_PkArgs = {
   id: Scalars['String'];
 };
+
 
 export type Query_RootNft_NftArgs = {
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
@@ -10391,6 +10611,7 @@ export type Query_RootNft_NftArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Query_RootNft_Nft_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10399,10 +10620,12 @@ export type Query_RootNft_Nft_AggregateArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Query_RootNft_Nft_By_PkArgs = {
   denom_id: Scalars['String'];
   id: Scalars['bigint'];
 };
+
 
 export type Query_RootNft_Transfer_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Nft_Transfer_History_Select_Column>>;
@@ -10412,6 +10635,7 @@ export type Query_RootNft_Transfer_HistoryArgs = {
   where?: InputMaybe<Nft_Transfer_History_Bool_Exp>;
 };
 
+
 export type Query_RootNft_Transfer_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Nft_Transfer_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10419,6 +10643,7 @@ export type Query_RootNft_Transfer_History_AggregateArgs = {
   order_by?: InputMaybe<Array<Nft_Transfer_History_Order_By>>;
   where?: InputMaybe<Nft_Transfer_History_Bool_Exp>;
 };
+
 
 export type Query_RootNfts_By_Data_PropertyArgs = {
   args: Nfts_By_Data_Property_Args;
@@ -10429,6 +10654,7 @@ export type Query_RootNfts_By_Data_PropertyArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Query_RootNfts_By_Data_Property_AggregateArgs = {
   args: Nfts_By_Data_Property_Args;
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
@@ -10437,6 +10663,7 @@ export type Query_RootNfts_By_Data_Property_AggregateArgs = {
   order_by?: InputMaybe<Array<Nft_Nft_Order_By>>;
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
+
 
 export type Query_RootNfts_By_Expiration_DateArgs = {
   args: Nfts_By_Expiration_Date_Args;
@@ -10447,6 +10674,7 @@ export type Query_RootNfts_By_Expiration_DateArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Query_RootNfts_By_Expiration_Date_AggregateArgs = {
   args: Nfts_By_Expiration_Date_Args;
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
@@ -10456,6 +10684,7 @@ export type Query_RootNfts_By_Expiration_Date_AggregateArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Query_RootPre_CommitArgs = {
   distinct_on?: InputMaybe<Array<Pre_Commit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10463,6 +10692,7 @@ export type Query_RootPre_CommitArgs = {
   order_by?: InputMaybe<Array<Pre_Commit_Order_By>>;
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
+
 
 export type Query_RootPre_Commit_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Pre_Commit_Select_Column>>;
@@ -10472,6 +10702,7 @@ export type Query_RootPre_Commit_AggregateArgs = {
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
 
+
 export type Query_RootProposalArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10479,6 +10710,7 @@ export type Query_RootProposalArgs = {
   order_by?: InputMaybe<Array<Proposal_Order_By>>;
   where?: InputMaybe<Proposal_Bool_Exp>;
 };
+
 
 export type Query_RootProposal_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Select_Column>>;
@@ -10488,9 +10720,11 @@ export type Query_RootProposal_AggregateArgs = {
   where?: InputMaybe<Proposal_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootProposal_DepositArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Deposit_Select_Column>>;
@@ -10500,6 +10734,7 @@ export type Query_RootProposal_DepositArgs = {
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Deposit_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Deposit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10507,6 +10742,7 @@ export type Query_RootProposal_Deposit_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Deposit_Order_By>>;
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
+
 
 export type Query_RootProposal_Staking_Pool_SnapshotArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Staking_Pool_Snapshot_Select_Column>>;
@@ -10516,6 +10752,7 @@ export type Query_RootProposal_Staking_Pool_SnapshotArgs = {
   where?: InputMaybe<Proposal_Staking_Pool_Snapshot_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Staking_Pool_Snapshot_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Staking_Pool_Snapshot_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10524,9 +10761,11 @@ export type Query_RootProposal_Staking_Pool_Snapshot_AggregateArgs = {
   where?: InputMaybe<Proposal_Staking_Pool_Snapshot_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Staking_Pool_Snapshot_By_PkArgs = {
   proposal_id: Scalars['Int'];
 };
+
 
 export type Query_RootProposal_Tally_ResultArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Tally_Result_Select_Column>>;
@@ -10536,6 +10775,7 @@ export type Query_RootProposal_Tally_ResultArgs = {
   where?: InputMaybe<Proposal_Tally_Result_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Tally_Result_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Tally_Result_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10544,9 +10784,11 @@ export type Query_RootProposal_Tally_Result_AggregateArgs = {
   where?: InputMaybe<Proposal_Tally_Result_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Tally_Result_By_PkArgs = {
   proposal_id: Scalars['Int'];
 };
+
 
 export type Query_RootProposal_Validator_Status_SnapshotArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Validator_Status_Snapshot_Select_Column>>;
@@ -10556,6 +10798,7 @@ export type Query_RootProposal_Validator_Status_SnapshotArgs = {
   where?: InputMaybe<Proposal_Validator_Status_Snapshot_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Validator_Status_Snapshot_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Validator_Status_Snapshot_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10564,9 +10807,11 @@ export type Query_RootProposal_Validator_Status_Snapshot_AggregateArgs = {
   where?: InputMaybe<Proposal_Validator_Status_Snapshot_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Validator_Status_Snapshot_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootProposal_VoteArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Select_Column>>;
@@ -10576,6 +10821,7 @@ export type Query_RootProposal_VoteArgs = {
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Vote_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10583,6 +10829,7 @@ export type Query_RootProposal_Vote_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Vote_Order_By>>;
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
+
 
 export type Query_RootProposal_Vote_WeightedArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Weighted_Select_Column>>;
@@ -10592,6 +10839,7 @@ export type Query_RootProposal_Vote_WeightedArgs = {
   where?: InputMaybe<Proposal_Vote_Weighted_Bool_Exp>;
 };
 
+
 export type Query_RootProposal_Vote_Weighted_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Weighted_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10599,6 +10847,7 @@ export type Query_RootProposal_Vote_Weighted_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Vote_Weighted_Order_By>>;
   where?: InputMaybe<Proposal_Vote_Weighted_Bool_Exp>;
 };
+
 
 export type Query_RootSlashing_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Slashing_Params_Select_Column>>;
@@ -10608,6 +10857,7 @@ export type Query_RootSlashing_ParamsArgs = {
   where?: InputMaybe<Slashing_Params_Bool_Exp>;
 };
 
+
 export type Query_RootSlashing_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Slashing_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10616,9 +10866,11 @@ export type Query_RootSlashing_Params_AggregateArgs = {
   where?: InputMaybe<Slashing_Params_Bool_Exp>;
 };
 
+
 export type Query_RootSlashing_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Query_RootStaking_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Params_Select_Column>>;
@@ -10628,6 +10880,7 @@ export type Query_RootStaking_ParamsArgs = {
   where?: InputMaybe<Staking_Params_Bool_Exp>;
 };
 
+
 export type Query_RootStaking_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Staking_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10636,9 +10889,11 @@ export type Query_RootStaking_Params_AggregateArgs = {
   where?: InputMaybe<Staking_Params_Bool_Exp>;
 };
 
+
 export type Query_RootStaking_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Query_RootStaking_PoolArgs = {
   distinct_on?: InputMaybe<Array<Staking_Pool_Select_Column>>;
@@ -10648,6 +10903,7 @@ export type Query_RootStaking_PoolArgs = {
   where?: InputMaybe<Staking_Pool_Bool_Exp>;
 };
 
+
 export type Query_RootStaking_Pool_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Staking_Pool_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10655,6 +10911,7 @@ export type Query_RootStaking_Pool_AggregateArgs = {
   order_by?: InputMaybe<Array<Staking_Pool_Order_By>>;
   where?: InputMaybe<Staking_Pool_Bool_Exp>;
 };
+
 
 export type Query_RootSupplyArgs = {
   distinct_on?: InputMaybe<Array<Supply_Select_Column>>;
@@ -10664,6 +10921,7 @@ export type Query_RootSupplyArgs = {
   where?: InputMaybe<Supply_Bool_Exp>;
 };
 
+
 export type Query_RootSupply_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Supply_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10671,6 +10929,7 @@ export type Query_RootSupply_AggregateArgs = {
   order_by?: InputMaybe<Array<Supply_Order_By>>;
   where?: InputMaybe<Supply_Bool_Exp>;
 };
+
 
 export type Query_RootTokenArgs = {
   distinct_on?: InputMaybe<Array<Token_Select_Column>>;
@@ -10680,6 +10939,7 @@ export type Query_RootTokenArgs = {
   where?: InputMaybe<Token_Bool_Exp>;
 };
 
+
 export type Query_RootToken_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10687,6 +10947,7 @@ export type Query_RootToken_AggregateArgs = {
   order_by?: InputMaybe<Array<Token_Order_By>>;
   where?: InputMaybe<Token_Bool_Exp>;
 };
+
 
 export type Query_RootToken_PriceArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_Select_Column>>;
@@ -10696,6 +10957,7 @@ export type Query_RootToken_PriceArgs = {
   where?: InputMaybe<Token_Price_Bool_Exp>;
 };
 
+
 export type Query_RootToken_Price_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10704,9 +10966,11 @@ export type Query_RootToken_Price_AggregateArgs = {
   where?: InputMaybe<Token_Price_Bool_Exp>;
 };
 
+
 export type Query_RootToken_Price_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootToken_Price_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_History_Select_Column>>;
@@ -10716,6 +10980,7 @@ export type Query_RootToken_Price_HistoryArgs = {
   where?: InputMaybe<Token_Price_History_Bool_Exp>;
 };
 
+
 export type Query_RootToken_Price_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10723,6 +10988,7 @@ export type Query_RootToken_Price_History_AggregateArgs = {
   order_by?: InputMaybe<Array<Token_Price_History_Order_By>>;
   where?: InputMaybe<Token_Price_History_Bool_Exp>;
 };
+
 
 export type Query_RootToken_UnitArgs = {
   distinct_on?: InputMaybe<Array<Token_Unit_Select_Column>>;
@@ -10732,6 +10998,7 @@ export type Query_RootToken_UnitArgs = {
   where?: InputMaybe<Token_Unit_Bool_Exp>;
 };
 
+
 export type Query_RootToken_Unit_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Unit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10739,6 +11006,7 @@ export type Query_RootToken_Unit_AggregateArgs = {
   order_by?: InputMaybe<Array<Token_Unit_Order_By>>;
   where?: InputMaybe<Token_Unit_Bool_Exp>;
 };
+
 
 export type Query_RootTransactionArgs = {
   distinct_on?: InputMaybe<Array<Transaction_Select_Column>>;
@@ -10748,6 +11016,7 @@ export type Query_RootTransactionArgs = {
   where?: InputMaybe<Transaction_Bool_Exp>;
 };
 
+
 export type Query_RootTransaction_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Transaction_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10756,9 +11025,11 @@ export type Query_RootTransaction_AggregateArgs = {
   where?: InputMaybe<Transaction_Bool_Exp>;
 };
 
+
 export type Query_RootTransaction_By_PkArgs = {
   hash: Scalars['String'];
 };
+
 
 export type Query_RootValidatorArgs = {
   distinct_on?: InputMaybe<Array<Validator_Select_Column>>;
@@ -10768,6 +11039,7 @@ export type Query_RootValidatorArgs = {
   where?: InputMaybe<Validator_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10776,9 +11048,11 @@ export type Query_RootValidator_AggregateArgs = {
   where?: InputMaybe<Validator_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_By_PkArgs = {
   consensus_address: Scalars['String'];
 };
+
 
 export type Query_RootValidator_CommissionArgs = {
   distinct_on?: InputMaybe<Array<Validator_Commission_Select_Column>>;
@@ -10788,6 +11062,7 @@ export type Query_RootValidator_CommissionArgs = {
   where?: InputMaybe<Validator_Commission_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Commission_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Commission_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10796,9 +11071,11 @@ export type Query_RootValidator_Commission_AggregateArgs = {
   where?: InputMaybe<Validator_Commission_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Commission_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Query_RootValidator_DescriptionArgs = {
   distinct_on?: InputMaybe<Array<Validator_Description_Select_Column>>;
@@ -10808,6 +11085,7 @@ export type Query_RootValidator_DescriptionArgs = {
   where?: InputMaybe<Validator_Description_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Description_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Description_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10816,9 +11094,11 @@ export type Query_RootValidator_Description_AggregateArgs = {
   where?: InputMaybe<Validator_Description_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Description_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Query_RootValidator_InfoArgs = {
   distinct_on?: InputMaybe<Array<Validator_Info_Select_Column>>;
@@ -10828,6 +11108,7 @@ export type Query_RootValidator_InfoArgs = {
   where?: InputMaybe<Validator_Info_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Info_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Info_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10836,9 +11117,11 @@ export type Query_RootValidator_Info_AggregateArgs = {
   where?: InputMaybe<Validator_Info_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Info_By_PkArgs = {
   consensus_address: Scalars['String'];
 };
+
 
 export type Query_RootValidator_Signing_InfoArgs = {
   distinct_on?: InputMaybe<Array<Validator_Signing_Info_Select_Column>>;
@@ -10848,6 +11131,7 @@ export type Query_RootValidator_Signing_InfoArgs = {
   where?: InputMaybe<Validator_Signing_Info_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Signing_Info_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Signing_Info_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10856,9 +11140,11 @@ export type Query_RootValidator_Signing_Info_AggregateArgs = {
   where?: InputMaybe<Validator_Signing_Info_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Signing_Info_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Query_RootValidator_StatusArgs = {
   distinct_on?: InputMaybe<Array<Validator_Status_Select_Column>>;
@@ -10868,6 +11154,7 @@ export type Query_RootValidator_StatusArgs = {
   where?: InputMaybe<Validator_Status_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Status_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Status_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10876,9 +11163,11 @@ export type Query_RootValidator_Status_AggregateArgs = {
   where?: InputMaybe<Validator_Status_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Status_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Query_RootValidator_Voting_PowerArgs = {
   distinct_on?: InputMaybe<Array<Validator_Voting_Power_Select_Column>>;
@@ -10888,6 +11177,7 @@ export type Query_RootValidator_Voting_PowerArgs = {
   where?: InputMaybe<Validator_Voting_Power_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Voting_Power_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Voting_Power_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10896,9 +11186,11 @@ export type Query_RootValidator_Voting_Power_AggregateArgs = {
   where?: InputMaybe<Validator_Voting_Power_Bool_Exp>;
 };
 
+
 export type Query_RootValidator_Voting_Power_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Query_RootVesting_AccountArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Account_Select_Column>>;
@@ -10908,6 +11200,7 @@ export type Query_RootVesting_AccountArgs = {
   where?: InputMaybe<Vesting_Account_Bool_Exp>;
 };
 
+
 export type Query_RootVesting_Account_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Account_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10916,9 +11209,11 @@ export type Query_RootVesting_Account_AggregateArgs = {
   where?: InputMaybe<Vesting_Account_Bool_Exp>;
 };
 
+
 export type Query_RootVesting_Account_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Query_RootVesting_PeriodArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Period_Select_Column>>;
@@ -10927,6 +11222,7 @@ export type Query_RootVesting_PeriodArgs = {
   order_by?: InputMaybe<Array<Vesting_Period_Order_By>>;
   where?: InputMaybe<Vesting_Period_Bool_Exp>;
 };
+
 
 export type Query_RootVesting_Period_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Period_Select_Column>>;
@@ -10943,6 +11239,7 @@ export type Slashing_Params = {
   one_row_id: Scalars['Boolean'];
   params: Scalars['jsonb'];
 };
+
 
 /** columns and relationships of "slashing_params" */
 export type Slashing_ParamsParamsArgs = {
@@ -10971,6 +11268,7 @@ export type Slashing_Params_Aggregate_Fields = {
   var_samp?: Maybe<Slashing_Params_Var_Samp_Fields>;
   variance?: Maybe<Slashing_Params_Variance_Fields>;
 };
+
 
 /** aggregate fields of "slashing_params" */
 export type Slashing_Params_Aggregate_FieldsCountArgs = {
@@ -11086,6 +11384,7 @@ export type Staking_Params = {
   params: Scalars['jsonb'];
 };
 
+
 /** columns and relationships of "staking_params" */
 export type Staking_ParamsParamsArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -11113,6 +11412,7 @@ export type Staking_Params_Aggregate_Fields = {
   var_samp?: Maybe<Staking_Params_Var_Samp_Fields>;
   variance?: Maybe<Staking_Params_Variance_Fields>;
 };
+
 
 /** aggregate fields of "staking_params" */
 export type Staking_Params_Aggregate_FieldsCountArgs = {
@@ -11237,6 +11537,7 @@ export type Staking_Pool_Aggregate_Fields = {
   var_samp?: Maybe<Staking_Pool_Var_Samp_Fields>;
   variance?: Maybe<Staking_Pool_Variance_Fields>;
 };
+
 
 /** aggregate fields of "staking_pool" */
 export type Staking_Pool_Aggregate_FieldsCountArgs = {
@@ -11723,6 +12024,7 @@ export type Subscription_Root = {
   vesting_period_aggregate: Vesting_Period_Aggregate;
 };
 
+
 export type Subscription_RootAccountArgs = {
   distinct_on?: InputMaybe<Array<Account_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11730,6 +12032,7 @@ export type Subscription_RootAccountArgs = {
   order_by?: InputMaybe<Array<Account_Order_By>>;
   where?: InputMaybe<Account_Bool_Exp>;
 };
+
 
 export type Subscription_RootAccount_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Account_Select_Column>>;
@@ -11739,9 +12042,11 @@ export type Subscription_RootAccount_AggregateArgs = {
   where?: InputMaybe<Account_Bool_Exp>;
 };
 
+
 export type Subscription_RootAccount_By_PkArgs = {
   address: Scalars['String'];
 };
+
 
 export type Subscription_RootAdjusted_SupplyArgs = {
   distinct_on?: InputMaybe<Array<Adjusted_Supply_Select_Column>>;
@@ -11751,6 +12056,7 @@ export type Subscription_RootAdjusted_SupplyArgs = {
   where?: InputMaybe<Adjusted_Supply_Bool_Exp>;
 };
 
+
 export type Subscription_RootAdjusted_Supply_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Adjusted_Supply_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11758,6 +12064,7 @@ export type Subscription_RootAdjusted_Supply_AggregateArgs = {
   order_by?: InputMaybe<Array<Adjusted_Supply_Order_By>>;
   where?: InputMaybe<Adjusted_Supply_Bool_Exp>;
 };
+
 
 export type Subscription_RootAprArgs = {
   distinct_on?: InputMaybe<Array<Apr_Select_Column>>;
@@ -11767,6 +12074,7 @@ export type Subscription_RootAprArgs = {
   where?: InputMaybe<Apr_Bool_Exp>;
 };
 
+
 export type Subscription_RootApr_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Apr_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11774,6 +12082,7 @@ export type Subscription_RootApr_AggregateArgs = {
   order_by?: InputMaybe<Array<Apr_Order_By>>;
   where?: InputMaybe<Apr_Bool_Exp>;
 };
+
 
 export type Subscription_RootAverage_Block_Time_From_GenesisArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_From_Genesis_Select_Column>>;
@@ -11783,6 +12092,7 @@ export type Subscription_RootAverage_Block_Time_From_GenesisArgs = {
   where?: InputMaybe<Average_Block_Time_From_Genesis_Bool_Exp>;
 };
 
+
 export type Subscription_RootAverage_Block_Time_From_Genesis_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_From_Genesis_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11790,6 +12100,7 @@ export type Subscription_RootAverage_Block_Time_From_Genesis_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_From_Genesis_Order_By>>;
   where?: InputMaybe<Average_Block_Time_From_Genesis_Bool_Exp>;
 };
+
 
 export type Subscription_RootAverage_Block_Time_Per_DayArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Day_Select_Column>>;
@@ -11799,6 +12110,7 @@ export type Subscription_RootAverage_Block_Time_Per_DayArgs = {
   where?: InputMaybe<Average_Block_Time_Per_Day_Bool_Exp>;
 };
 
+
 export type Subscription_RootAverage_Block_Time_Per_Day_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Day_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11806,6 +12118,7 @@ export type Subscription_RootAverage_Block_Time_Per_Day_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_Per_Day_Order_By>>;
   where?: InputMaybe<Average_Block_Time_Per_Day_Bool_Exp>;
 };
+
 
 export type Subscription_RootAverage_Block_Time_Per_HourArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Hour_Select_Column>>;
@@ -11815,6 +12128,7 @@ export type Subscription_RootAverage_Block_Time_Per_HourArgs = {
   where?: InputMaybe<Average_Block_Time_Per_Hour_Bool_Exp>;
 };
 
+
 export type Subscription_RootAverage_Block_Time_Per_Hour_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Hour_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11822,6 +12136,7 @@ export type Subscription_RootAverage_Block_Time_Per_Hour_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_Per_Hour_Order_By>>;
   where?: InputMaybe<Average_Block_Time_Per_Hour_Bool_Exp>;
 };
+
 
 export type Subscription_RootAverage_Block_Time_Per_MinuteArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Minute_Select_Column>>;
@@ -11831,6 +12146,7 @@ export type Subscription_RootAverage_Block_Time_Per_MinuteArgs = {
   where?: InputMaybe<Average_Block_Time_Per_Minute_Bool_Exp>;
 };
 
+
 export type Subscription_RootAverage_Block_Time_Per_Minute_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Average_Block_Time_Per_Minute_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11838,6 +12154,7 @@ export type Subscription_RootAverage_Block_Time_Per_Minute_AggregateArgs = {
   order_by?: InputMaybe<Array<Average_Block_Time_Per_Minute_Order_By>>;
   where?: InputMaybe<Average_Block_Time_Per_Minute_Bool_Exp>;
 };
+
 
 export type Subscription_RootBlockArgs = {
   distinct_on?: InputMaybe<Array<Block_Select_Column>>;
@@ -11847,6 +12164,7 @@ export type Subscription_RootBlockArgs = {
   where?: InputMaybe<Block_Bool_Exp>;
 };
 
+
 export type Subscription_RootBlock_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Block_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11855,9 +12173,11 @@ export type Subscription_RootBlock_AggregateArgs = {
   where?: InputMaybe<Block_Bool_Exp>;
 };
 
+
 export type Subscription_RootBlock_By_PkArgs = {
   height: Scalars['bigint'];
 };
+
 
 export type Subscription_RootCommunity_PoolArgs = {
   distinct_on?: InputMaybe<Array<Community_Pool_Select_Column>>;
@@ -11867,6 +12187,7 @@ export type Subscription_RootCommunity_PoolArgs = {
   where?: InputMaybe<Community_Pool_Bool_Exp>;
 };
 
+
 export type Subscription_RootCommunity_Pool_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Community_Pool_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11874,6 +12195,7 @@ export type Subscription_RootCommunity_Pool_AggregateArgs = {
   order_by?: InputMaybe<Array<Community_Pool_Order_By>>;
   where?: InputMaybe<Community_Pool_Bool_Exp>;
 };
+
 
 export type Subscription_RootCosmwasm_Clear_AdminArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Clear_Admin_Select_Column>>;
@@ -11883,6 +12205,7 @@ export type Subscription_RootCosmwasm_Clear_AdminArgs = {
   where?: InputMaybe<Cosmwasm_Clear_Admin_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Clear_Admin_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Clear_Admin_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11891,10 +12214,12 @@ export type Subscription_RootCosmwasm_Clear_Admin_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Clear_Admin_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Clear_Admin_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Subscription_RootCosmwasm_ExecuteArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Execute_Select_Column>>;
@@ -11904,6 +12229,7 @@ export type Subscription_RootCosmwasm_ExecuteArgs = {
   where?: InputMaybe<Cosmwasm_Execute_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Execute_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Execute_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11912,10 +12238,12 @@ export type Subscription_RootCosmwasm_Execute_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Execute_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Execute_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Subscription_RootCosmwasm_InstantiateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Instantiate_Select_Column>>;
@@ -11925,6 +12253,7 @@ export type Subscription_RootCosmwasm_InstantiateArgs = {
   where?: InputMaybe<Cosmwasm_Instantiate_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Instantiate_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Instantiate_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11933,10 +12262,12 @@ export type Subscription_RootCosmwasm_Instantiate_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Instantiate_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Instantiate_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Subscription_RootCosmwasm_MigrateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Migrate_Select_Column>>;
@@ -11946,6 +12277,7 @@ export type Subscription_RootCosmwasm_MigrateArgs = {
   where?: InputMaybe<Cosmwasm_Migrate_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Migrate_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Migrate_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11954,10 +12286,12 @@ export type Subscription_RootCosmwasm_Migrate_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Migrate_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Migrate_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Subscription_RootCosmwasm_StoreArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Store_Select_Column>>;
@@ -11967,6 +12301,7 @@ export type Subscription_RootCosmwasm_StoreArgs = {
   where?: InputMaybe<Cosmwasm_Store_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Store_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Store_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11975,10 +12310,12 @@ export type Subscription_RootCosmwasm_Store_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Store_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Store_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Subscription_RootCosmwasm_Update_AdminArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Update_Admin_Select_Column>>;
@@ -11988,6 +12325,7 @@ export type Subscription_RootCosmwasm_Update_AdminArgs = {
   where?: InputMaybe<Cosmwasm_Update_Admin_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Update_Admin_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cosmwasm_Update_Admin_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11996,10 +12334,12 @@ export type Subscription_RootCosmwasm_Update_Admin_AggregateArgs = {
   where?: InputMaybe<Cosmwasm_Update_Admin_Bool_Exp>;
 };
 
+
 export type Subscription_RootCosmwasm_Update_Admin_By_PkArgs = {
   index: Scalars['bigint'];
   transaction_hash: Scalars['String'];
 };
+
 
 export type Subscription_RootCw20token_BalanceArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Balance_Select_Column>>;
@@ -12009,6 +12349,7 @@ export type Subscription_RootCw20token_BalanceArgs = {
   where?: InputMaybe<Cw20token_Balance_Bool_Exp>;
 };
 
+
 export type Subscription_RootCw20token_Balance_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Balance_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12017,10 +12358,12 @@ export type Subscription_RootCw20token_Balance_AggregateArgs = {
   where?: InputMaybe<Cw20token_Balance_Bool_Exp>;
 };
 
+
 export type Subscription_RootCw20token_Balance_By_PkArgs = {
   address: Scalars['String'];
   token: Scalars['String'];
 };
+
 
 export type Subscription_RootCw20token_Code_IdArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Code_Id_Select_Column>>;
@@ -12030,9 +12373,11 @@ export type Subscription_RootCw20token_Code_IdArgs = {
   where?: InputMaybe<Cw20token_Code_Id_Bool_Exp>;
 };
 
+
 export type Subscription_RootCw20token_Code_Id_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootCw20token_InfoArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Info_Select_Column>>;
@@ -12042,6 +12387,7 @@ export type Subscription_RootCw20token_InfoArgs = {
   where?: InputMaybe<Cw20token_Info_Bool_Exp>;
 };
 
+
 export type Subscription_RootCw20token_Info_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Cw20token_Info_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12050,9 +12396,11 @@ export type Subscription_RootCw20token_Info_AggregateArgs = {
   where?: InputMaybe<Cw20token_Info_Bool_Exp>;
 };
 
+
 export type Subscription_RootCw20token_Info_By_PkArgs = {
   address: Scalars['String'];
 };
+
 
 export type Subscription_RootDelegationArgs = {
   distinct_on?: InputMaybe<Array<Delegation_Select_Column>>;
@@ -12062,6 +12410,7 @@ export type Subscription_RootDelegationArgs = {
   where?: InputMaybe<Delegation_Bool_Exp>;
 };
 
+
 export type Subscription_RootDelegation_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Delegation_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12069,6 +12418,7 @@ export type Subscription_RootDelegation_AggregateArgs = {
   order_by?: InputMaybe<Array<Delegation_Order_By>>;
   where?: InputMaybe<Delegation_Bool_Exp>;
 };
+
 
 export type Subscription_RootDenoms_By_Data_PropertyArgs = {
   args: Denoms_By_Data_Property_Args;
@@ -12079,6 +12429,7 @@ export type Subscription_RootDenoms_By_Data_PropertyArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Subscription_RootDenoms_By_Data_Property_AggregateArgs = {
   args: Denoms_By_Data_Property_Args;
   distinct_on?: InputMaybe<Array<Nft_Denom_Select_Column>>;
@@ -12088,6 +12439,7 @@ export type Subscription_RootDenoms_By_Data_Property_AggregateArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Subscription_RootDistinct_MessageArgs = {
   distinct_on?: InputMaybe<Array<Distinct_Message_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12095,6 +12447,7 @@ export type Subscription_RootDistinct_MessageArgs = {
   order_by?: InputMaybe<Array<Distinct_Message_Order_By>>;
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
+
 
 export type Subscription_RootDistinct_Message_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Distinct_Message_Select_Column>>;
@@ -12104,6 +12457,7 @@ export type Subscription_RootDistinct_Message_AggregateArgs = {
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
 
+
 export type Subscription_RootDistribution_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Distribution_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12111,6 +12465,7 @@ export type Subscription_RootDistribution_ParamsArgs = {
   order_by?: InputMaybe<Array<Distribution_Params_Order_By>>;
   where?: InputMaybe<Distribution_Params_Bool_Exp>;
 };
+
 
 export type Subscription_RootDistribution_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Distribution_Params_Select_Column>>;
@@ -12120,9 +12475,11 @@ export type Subscription_RootDistribution_Params_AggregateArgs = {
   where?: InputMaybe<Distribution_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootDistribution_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Subscription_RootDouble_Sign_EvidenceArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Evidence_Select_Column>>;
@@ -12132,6 +12489,7 @@ export type Subscription_RootDouble_Sign_EvidenceArgs = {
   where?: InputMaybe<Double_Sign_Evidence_Bool_Exp>;
 };
 
+
 export type Subscription_RootDouble_Sign_Evidence_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Evidence_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12139,6 +12497,7 @@ export type Subscription_RootDouble_Sign_Evidence_AggregateArgs = {
   order_by?: InputMaybe<Array<Double_Sign_Evidence_Order_By>>;
   where?: InputMaybe<Double_Sign_Evidence_Bool_Exp>;
 };
+
 
 export type Subscription_RootDouble_Sign_VoteArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Vote_Select_Column>>;
@@ -12148,6 +12507,7 @@ export type Subscription_RootDouble_Sign_VoteArgs = {
   where?: InputMaybe<Double_Sign_Vote_Bool_Exp>;
 };
 
+
 export type Subscription_RootDouble_Sign_Vote_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Vote_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12156,9 +12516,11 @@ export type Subscription_RootDouble_Sign_Vote_AggregateArgs = {
   where?: InputMaybe<Double_Sign_Vote_Bool_Exp>;
 };
 
+
 export type Subscription_RootDouble_Sign_Vote_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootFee_Grant_AllowanceArgs = {
   distinct_on?: InputMaybe<Array<Fee_Grant_Allowance_Select_Column>>;
@@ -12168,6 +12530,7 @@ export type Subscription_RootFee_Grant_AllowanceArgs = {
   where?: InputMaybe<Fee_Grant_Allowance_Bool_Exp>;
 };
 
+
 export type Subscription_RootFee_Grant_Allowance_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Fee_Grant_Allowance_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12176,9 +12539,11 @@ export type Subscription_RootFee_Grant_Allowance_AggregateArgs = {
   where?: InputMaybe<Fee_Grant_Allowance_Bool_Exp>;
 };
 
+
 export type Subscription_RootFee_Grant_Allowance_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootGenesisArgs = {
   distinct_on?: InputMaybe<Array<Genesis_Select_Column>>;
@@ -12188,6 +12553,7 @@ export type Subscription_RootGenesisArgs = {
   where?: InputMaybe<Genesis_Bool_Exp>;
 };
 
+
 export type Subscription_RootGenesis_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Genesis_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12195,6 +12561,7 @@ export type Subscription_RootGenesis_AggregateArgs = {
   order_by?: InputMaybe<Array<Genesis_Order_By>>;
   where?: InputMaybe<Genesis_Bool_Exp>;
 };
+
 
 export type Subscription_RootGov_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Gov_Params_Select_Column>>;
@@ -12204,6 +12571,7 @@ export type Subscription_RootGov_ParamsArgs = {
   where?: InputMaybe<Gov_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootGov_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Gov_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12212,9 +12580,11 @@ export type Subscription_RootGov_Params_AggregateArgs = {
   where?: InputMaybe<Gov_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootGov_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Subscription_RootGravity_Messages_By_AddressArgs = {
   args: Gravity_Messages_By_Address_Args;
@@ -12225,6 +12595,7 @@ export type Subscription_RootGravity_Messages_By_AddressArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Subscription_RootGravity_Messages_By_Address_AggregateArgs = {
   args: Gravity_Messages_By_Address_Args;
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
@@ -12234,6 +12605,7 @@ export type Subscription_RootGravity_Messages_By_Address_AggregateArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_MemberArgs = {
   distinct_on?: InputMaybe<Array<Group_Member_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12241,6 +12613,7 @@ export type Subscription_RootGroup_MemberArgs = {
   order_by?: InputMaybe<Array<Group_Member_Order_By>>;
   where?: InputMaybe<Group_Member_Bool_Exp>;
 };
+
 
 export type Subscription_RootGroup_Member_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_Member_Select_Column>>;
@@ -12250,10 +12623,12 @@ export type Subscription_RootGroup_Member_AggregateArgs = {
   where?: InputMaybe<Group_Member_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_Member_By_PkArgs = {
   address: Scalars['String'];
   group_id: Scalars['Int'];
 };
+
 
 export type Subscription_RootGroup_ProposalArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Select_Column>>;
@@ -12263,6 +12638,7 @@ export type Subscription_RootGroup_ProposalArgs = {
   where?: InputMaybe<Group_Proposal_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_Proposal_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12271,9 +12647,11 @@ export type Subscription_RootGroup_Proposal_AggregateArgs = {
   where?: InputMaybe<Group_Proposal_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_Proposal_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootGroup_Proposal_VoteArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
@@ -12283,6 +12661,7 @@ export type Subscription_RootGroup_Proposal_VoteArgs = {
   where?: InputMaybe<Group_Proposal_Vote_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_Proposal_Vote_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_Proposal_Vote_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12291,10 +12670,12 @@ export type Subscription_RootGroup_Proposal_Vote_AggregateArgs = {
   where?: InputMaybe<Group_Proposal_Vote_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_Proposal_Vote_By_PkArgs = {
   proposal_id: Scalars['Int'];
   voter: Scalars['String'];
 };
+
 
 export type Subscription_RootGroup_With_PolicyArgs = {
   distinct_on?: InputMaybe<Array<Group_With_Policy_Select_Column>>;
@@ -12304,6 +12685,7 @@ export type Subscription_RootGroup_With_PolicyArgs = {
   where?: InputMaybe<Group_With_Policy_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_With_Policy_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Group_With_Policy_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12312,9 +12694,11 @@ export type Subscription_RootGroup_With_Policy_AggregateArgs = {
   where?: InputMaybe<Group_With_Policy_Bool_Exp>;
 };
 
+
 export type Subscription_RootGroup_With_Policy_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootInflationArgs = {
   distinct_on?: InputMaybe<Array<Inflation_Select_Column>>;
@@ -12324,6 +12708,7 @@ export type Subscription_RootInflationArgs = {
   where?: InputMaybe<Inflation_Bool_Exp>;
 };
 
+
 export type Subscription_RootInflation_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Inflation_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12331,6 +12716,7 @@ export type Subscription_RootInflation_AggregateArgs = {
   order_by?: InputMaybe<Array<Inflation_Order_By>>;
   where?: InputMaybe<Inflation_Bool_Exp>;
 };
+
 
 export type Subscription_RootMarketplace_CollectionArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Collection_Select_Column>>;
@@ -12340,6 +12726,7 @@ export type Subscription_RootMarketplace_CollectionArgs = {
   where?: InputMaybe<Marketplace_Collection_Bool_Exp>;
 };
 
+
 export type Subscription_RootMarketplace_Collection_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Collection_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12348,9 +12735,11 @@ export type Subscription_RootMarketplace_Collection_AggregateArgs = {
   where?: InputMaybe<Marketplace_Collection_Bool_Exp>;
 };
 
+
 export type Subscription_RootMarketplace_Collection_By_PkArgs = {
   id: Scalars['bigint'];
 };
+
 
 export type Subscription_RootMarketplace_NftArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Select_Column>>;
@@ -12360,6 +12749,7 @@ export type Subscription_RootMarketplace_NftArgs = {
   where?: InputMaybe<Marketplace_Nft_Bool_Exp>;
 };
 
+
 export type Subscription_RootMarketplace_Nft_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12367,6 +12757,7 @@ export type Subscription_RootMarketplace_Nft_AggregateArgs = {
   order_by?: InputMaybe<Array<Marketplace_Nft_Order_By>>;
   where?: InputMaybe<Marketplace_Nft_Bool_Exp>;
 };
+
 
 export type Subscription_RootMarketplace_Nft_Buy_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Buy_History_Select_Column>>;
@@ -12376,6 +12767,7 @@ export type Subscription_RootMarketplace_Nft_Buy_HistoryArgs = {
   where?: InputMaybe<Marketplace_Nft_Buy_History_Bool_Exp>;
 };
 
+
 export type Subscription_RootMarketplace_Nft_Buy_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Marketplace_Nft_Buy_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12384,10 +12776,12 @@ export type Subscription_RootMarketplace_Nft_Buy_History_AggregateArgs = {
   where?: InputMaybe<Marketplace_Nft_Buy_History_Bool_Exp>;
 };
 
+
 export type Subscription_RootMarketplace_Nft_By_PkArgs = {
   denom_id: Scalars['String'];
   token_id: Scalars['bigint'];
 };
+
 
 export type Subscription_RootMessageArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
@@ -12397,6 +12791,7 @@ export type Subscription_RootMessageArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Subscription_RootMessage_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12404,6 +12799,7 @@ export type Subscription_RootMessage_AggregateArgs = {
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
+
 
 export type Subscription_RootMessages_By_AddressArgs = {
   args: Messages_By_Address_Args;
@@ -12414,6 +12810,7 @@ export type Subscription_RootMessages_By_AddressArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 export type Subscription_RootMessages_By_Address_AggregateArgs = {
   args: Messages_By_Address_Args;
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
@@ -12422,6 +12819,7 @@ export type Subscription_RootMessages_By_Address_AggregateArgs = {
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
+
 
 export type Subscription_RootMessages_By_Address_Distinct_On_Tx_HashArgs = {
   args: Messages_By_Address_Distinct_On_Tx_Hash_Args;
@@ -12432,6 +12830,7 @@ export type Subscription_RootMessages_By_Address_Distinct_On_Tx_HashArgs = {
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
 
+
 export type Subscription_RootMessages_By_Address_Distinct_On_Tx_Hash_AggregateArgs = {
   args: Messages_By_Address_Distinct_On_Tx_Hash_Args;
   distinct_on?: InputMaybe<Array<Distinct_Message_Select_Column>>;
@@ -12441,6 +12840,7 @@ export type Subscription_RootMessages_By_Address_Distinct_On_Tx_Hash_AggregateAr
   where?: InputMaybe<Distinct_Message_Bool_Exp>;
 };
 
+
 export type Subscription_RootMint_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Mint_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12448,6 +12848,7 @@ export type Subscription_RootMint_ParamsArgs = {
   order_by?: InputMaybe<Array<Mint_Params_Order_By>>;
   where?: InputMaybe<Mint_Params_Bool_Exp>;
 };
+
 
 export type Subscription_RootMint_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Mint_Params_Select_Column>>;
@@ -12457,9 +12858,11 @@ export type Subscription_RootMint_Params_AggregateArgs = {
   where?: InputMaybe<Mint_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootMint_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Subscription_RootModulesArgs = {
   distinct_on?: InputMaybe<Array<Modules_Select_Column>>;
@@ -12469,6 +12872,7 @@ export type Subscription_RootModulesArgs = {
   where?: InputMaybe<Modules_Bool_Exp>;
 };
 
+
 export type Subscription_RootModules_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Modules_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12477,9 +12881,11 @@ export type Subscription_RootModules_AggregateArgs = {
   where?: InputMaybe<Modules_Bool_Exp>;
 };
 
+
 export type Subscription_RootModules_By_PkArgs = {
   module_name: Scalars['String'];
 };
+
 
 export type Subscription_RootNft_DenomArgs = {
   distinct_on?: InputMaybe<Array<Nft_Denom_Select_Column>>;
@@ -12489,6 +12895,7 @@ export type Subscription_RootNft_DenomArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Subscription_RootNft_Denom_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Nft_Denom_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12497,9 +12904,11 @@ export type Subscription_RootNft_Denom_AggregateArgs = {
   where?: InputMaybe<Nft_Denom_Bool_Exp>;
 };
 
+
 export type Subscription_RootNft_Denom_By_PkArgs = {
   id: Scalars['String'];
 };
+
 
 export type Subscription_RootNft_NftArgs = {
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
@@ -12509,6 +12918,7 @@ export type Subscription_RootNft_NftArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Subscription_RootNft_Nft_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12517,10 +12927,12 @@ export type Subscription_RootNft_Nft_AggregateArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Subscription_RootNft_Nft_By_PkArgs = {
   denom_id: Scalars['String'];
   id: Scalars['bigint'];
 };
+
 
 export type Subscription_RootNft_Transfer_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Nft_Transfer_History_Select_Column>>;
@@ -12530,6 +12942,7 @@ export type Subscription_RootNft_Transfer_HistoryArgs = {
   where?: InputMaybe<Nft_Transfer_History_Bool_Exp>;
 };
 
+
 export type Subscription_RootNft_Transfer_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Nft_Transfer_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12537,6 +12950,7 @@ export type Subscription_RootNft_Transfer_History_AggregateArgs = {
   order_by?: InputMaybe<Array<Nft_Transfer_History_Order_By>>;
   where?: InputMaybe<Nft_Transfer_History_Bool_Exp>;
 };
+
 
 export type Subscription_RootNfts_By_Data_PropertyArgs = {
   args: Nfts_By_Data_Property_Args;
@@ -12547,6 +12961,7 @@ export type Subscription_RootNfts_By_Data_PropertyArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Subscription_RootNfts_By_Data_Property_AggregateArgs = {
   args: Nfts_By_Data_Property_Args;
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
@@ -12555,6 +12970,7 @@ export type Subscription_RootNfts_By_Data_Property_AggregateArgs = {
   order_by?: InputMaybe<Array<Nft_Nft_Order_By>>;
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
+
 
 export type Subscription_RootNfts_By_Expiration_DateArgs = {
   args: Nfts_By_Expiration_Date_Args;
@@ -12565,6 +12981,7 @@ export type Subscription_RootNfts_By_Expiration_DateArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Subscription_RootNfts_By_Expiration_Date_AggregateArgs = {
   args: Nfts_By_Expiration_Date_Args;
   distinct_on?: InputMaybe<Array<Nft_Nft_Select_Column>>;
@@ -12574,6 +12991,7 @@ export type Subscription_RootNfts_By_Expiration_Date_AggregateArgs = {
   where?: InputMaybe<Nft_Nft_Bool_Exp>;
 };
 
+
 export type Subscription_RootPre_CommitArgs = {
   distinct_on?: InputMaybe<Array<Pre_Commit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12581,6 +12999,7 @@ export type Subscription_RootPre_CommitArgs = {
   order_by?: InputMaybe<Array<Pre_Commit_Order_By>>;
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
+
 
 export type Subscription_RootPre_Commit_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Pre_Commit_Select_Column>>;
@@ -12590,6 +13009,7 @@ export type Subscription_RootPre_Commit_AggregateArgs = {
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposalArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12597,6 +13017,7 @@ export type Subscription_RootProposalArgs = {
   order_by?: InputMaybe<Array<Proposal_Order_By>>;
   where?: InputMaybe<Proposal_Bool_Exp>;
 };
+
 
 export type Subscription_RootProposal_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Select_Column>>;
@@ -12606,9 +13027,11 @@ export type Subscription_RootProposal_AggregateArgs = {
   where?: InputMaybe<Proposal_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootProposal_DepositArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Deposit_Select_Column>>;
@@ -12618,6 +13041,7 @@ export type Subscription_RootProposal_DepositArgs = {
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Deposit_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Deposit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12625,6 +13049,7 @@ export type Subscription_RootProposal_Deposit_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Deposit_Order_By>>;
   where?: InputMaybe<Proposal_Deposit_Bool_Exp>;
 };
+
 
 export type Subscription_RootProposal_Staking_Pool_SnapshotArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Staking_Pool_Snapshot_Select_Column>>;
@@ -12634,6 +13059,7 @@ export type Subscription_RootProposal_Staking_Pool_SnapshotArgs = {
   where?: InputMaybe<Proposal_Staking_Pool_Snapshot_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Staking_Pool_Snapshot_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Staking_Pool_Snapshot_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12642,9 +13068,11 @@ export type Subscription_RootProposal_Staking_Pool_Snapshot_AggregateArgs = {
   where?: InputMaybe<Proposal_Staking_Pool_Snapshot_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Staking_Pool_Snapshot_By_PkArgs = {
   proposal_id: Scalars['Int'];
 };
+
 
 export type Subscription_RootProposal_Tally_ResultArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Tally_Result_Select_Column>>;
@@ -12654,6 +13082,7 @@ export type Subscription_RootProposal_Tally_ResultArgs = {
   where?: InputMaybe<Proposal_Tally_Result_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Tally_Result_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Tally_Result_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12662,9 +13091,11 @@ export type Subscription_RootProposal_Tally_Result_AggregateArgs = {
   where?: InputMaybe<Proposal_Tally_Result_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Tally_Result_By_PkArgs = {
   proposal_id: Scalars['Int'];
 };
+
 
 export type Subscription_RootProposal_Validator_Status_SnapshotArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Validator_Status_Snapshot_Select_Column>>;
@@ -12674,6 +13105,7 @@ export type Subscription_RootProposal_Validator_Status_SnapshotArgs = {
   where?: InputMaybe<Proposal_Validator_Status_Snapshot_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Validator_Status_Snapshot_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Validator_Status_Snapshot_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12682,9 +13114,11 @@ export type Subscription_RootProposal_Validator_Status_Snapshot_AggregateArgs = 
   where?: InputMaybe<Proposal_Validator_Status_Snapshot_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Validator_Status_Snapshot_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootProposal_VoteArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Select_Column>>;
@@ -12694,6 +13128,7 @@ export type Subscription_RootProposal_VoteArgs = {
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Vote_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12701,6 +13136,7 @@ export type Subscription_RootProposal_Vote_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Vote_Order_By>>;
   where?: InputMaybe<Proposal_Vote_Bool_Exp>;
 };
+
 
 export type Subscription_RootProposal_Vote_WeightedArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Weighted_Select_Column>>;
@@ -12710,6 +13146,7 @@ export type Subscription_RootProposal_Vote_WeightedArgs = {
   where?: InputMaybe<Proposal_Vote_Weighted_Bool_Exp>;
 };
 
+
 export type Subscription_RootProposal_Vote_Weighted_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Proposal_Vote_Weighted_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12717,6 +13154,7 @@ export type Subscription_RootProposal_Vote_Weighted_AggregateArgs = {
   order_by?: InputMaybe<Array<Proposal_Vote_Weighted_Order_By>>;
   where?: InputMaybe<Proposal_Vote_Weighted_Bool_Exp>;
 };
+
 
 export type Subscription_RootSlashing_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Slashing_Params_Select_Column>>;
@@ -12726,6 +13164,7 @@ export type Subscription_RootSlashing_ParamsArgs = {
   where?: InputMaybe<Slashing_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootSlashing_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Slashing_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12734,9 +13173,11 @@ export type Subscription_RootSlashing_Params_AggregateArgs = {
   where?: InputMaybe<Slashing_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootSlashing_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Subscription_RootStaking_ParamsArgs = {
   distinct_on?: InputMaybe<Array<Staking_Params_Select_Column>>;
@@ -12746,6 +13187,7 @@ export type Subscription_RootStaking_ParamsArgs = {
   where?: InputMaybe<Staking_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootStaking_Params_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Staking_Params_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12754,9 +13196,11 @@ export type Subscription_RootStaking_Params_AggregateArgs = {
   where?: InputMaybe<Staking_Params_Bool_Exp>;
 };
 
+
 export type Subscription_RootStaking_Params_By_PkArgs = {
   one_row_id: Scalars['Boolean'];
 };
+
 
 export type Subscription_RootStaking_PoolArgs = {
   distinct_on?: InputMaybe<Array<Staking_Pool_Select_Column>>;
@@ -12766,6 +13210,7 @@ export type Subscription_RootStaking_PoolArgs = {
   where?: InputMaybe<Staking_Pool_Bool_Exp>;
 };
 
+
 export type Subscription_RootStaking_Pool_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Staking_Pool_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12773,6 +13218,7 @@ export type Subscription_RootStaking_Pool_AggregateArgs = {
   order_by?: InputMaybe<Array<Staking_Pool_Order_By>>;
   where?: InputMaybe<Staking_Pool_Bool_Exp>;
 };
+
 
 export type Subscription_RootSupplyArgs = {
   distinct_on?: InputMaybe<Array<Supply_Select_Column>>;
@@ -12782,6 +13228,7 @@ export type Subscription_RootSupplyArgs = {
   where?: InputMaybe<Supply_Bool_Exp>;
 };
 
+
 export type Subscription_RootSupply_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Supply_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12789,6 +13236,7 @@ export type Subscription_RootSupply_AggregateArgs = {
   order_by?: InputMaybe<Array<Supply_Order_By>>;
   where?: InputMaybe<Supply_Bool_Exp>;
 };
+
 
 export type Subscription_RootTokenArgs = {
   distinct_on?: InputMaybe<Array<Token_Select_Column>>;
@@ -12798,6 +13246,7 @@ export type Subscription_RootTokenArgs = {
   where?: InputMaybe<Token_Bool_Exp>;
 };
 
+
 export type Subscription_RootToken_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12805,6 +13254,7 @@ export type Subscription_RootToken_AggregateArgs = {
   order_by?: InputMaybe<Array<Token_Order_By>>;
   where?: InputMaybe<Token_Bool_Exp>;
 };
+
 
 export type Subscription_RootToken_PriceArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_Select_Column>>;
@@ -12814,6 +13264,7 @@ export type Subscription_RootToken_PriceArgs = {
   where?: InputMaybe<Token_Price_Bool_Exp>;
 };
 
+
 export type Subscription_RootToken_Price_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12822,9 +13273,11 @@ export type Subscription_RootToken_Price_AggregateArgs = {
   where?: InputMaybe<Token_Price_Bool_Exp>;
 };
 
+
 export type Subscription_RootToken_Price_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootToken_Price_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_History_Select_Column>>;
@@ -12834,6 +13287,7 @@ export type Subscription_RootToken_Price_HistoryArgs = {
   where?: InputMaybe<Token_Price_History_Bool_Exp>;
 };
 
+
 export type Subscription_RootToken_Price_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12841,6 +13295,7 @@ export type Subscription_RootToken_Price_History_AggregateArgs = {
   order_by?: InputMaybe<Array<Token_Price_History_Order_By>>;
   where?: InputMaybe<Token_Price_History_Bool_Exp>;
 };
+
 
 export type Subscription_RootToken_UnitArgs = {
   distinct_on?: InputMaybe<Array<Token_Unit_Select_Column>>;
@@ -12850,6 +13305,7 @@ export type Subscription_RootToken_UnitArgs = {
   where?: InputMaybe<Token_Unit_Bool_Exp>;
 };
 
+
 export type Subscription_RootToken_Unit_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Token_Unit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12857,6 +13313,7 @@ export type Subscription_RootToken_Unit_AggregateArgs = {
   order_by?: InputMaybe<Array<Token_Unit_Order_By>>;
   where?: InputMaybe<Token_Unit_Bool_Exp>;
 };
+
 
 export type Subscription_RootTransactionArgs = {
   distinct_on?: InputMaybe<Array<Transaction_Select_Column>>;
@@ -12866,6 +13323,7 @@ export type Subscription_RootTransactionArgs = {
   where?: InputMaybe<Transaction_Bool_Exp>;
 };
 
+
 export type Subscription_RootTransaction_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Transaction_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12874,9 +13332,11 @@ export type Subscription_RootTransaction_AggregateArgs = {
   where?: InputMaybe<Transaction_Bool_Exp>;
 };
 
+
 export type Subscription_RootTransaction_By_PkArgs = {
   hash: Scalars['String'];
 };
+
 
 export type Subscription_RootValidatorArgs = {
   distinct_on?: InputMaybe<Array<Validator_Select_Column>>;
@@ -12886,6 +13346,7 @@ export type Subscription_RootValidatorArgs = {
   where?: InputMaybe<Validator_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12894,9 +13355,11 @@ export type Subscription_RootValidator_AggregateArgs = {
   where?: InputMaybe<Validator_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_By_PkArgs = {
   consensus_address: Scalars['String'];
 };
+
 
 export type Subscription_RootValidator_CommissionArgs = {
   distinct_on?: InputMaybe<Array<Validator_Commission_Select_Column>>;
@@ -12906,6 +13369,7 @@ export type Subscription_RootValidator_CommissionArgs = {
   where?: InputMaybe<Validator_Commission_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Commission_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Commission_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12914,9 +13378,11 @@ export type Subscription_RootValidator_Commission_AggregateArgs = {
   where?: InputMaybe<Validator_Commission_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Commission_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Subscription_RootValidator_DescriptionArgs = {
   distinct_on?: InputMaybe<Array<Validator_Description_Select_Column>>;
@@ -12926,6 +13392,7 @@ export type Subscription_RootValidator_DescriptionArgs = {
   where?: InputMaybe<Validator_Description_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Description_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Description_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12934,9 +13401,11 @@ export type Subscription_RootValidator_Description_AggregateArgs = {
   where?: InputMaybe<Validator_Description_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Description_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Subscription_RootValidator_InfoArgs = {
   distinct_on?: InputMaybe<Array<Validator_Info_Select_Column>>;
@@ -12946,6 +13415,7 @@ export type Subscription_RootValidator_InfoArgs = {
   where?: InputMaybe<Validator_Info_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Info_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Info_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12954,9 +13424,11 @@ export type Subscription_RootValidator_Info_AggregateArgs = {
   where?: InputMaybe<Validator_Info_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Info_By_PkArgs = {
   consensus_address: Scalars['String'];
 };
+
 
 export type Subscription_RootValidator_Signing_InfoArgs = {
   distinct_on?: InputMaybe<Array<Validator_Signing_Info_Select_Column>>;
@@ -12966,6 +13438,7 @@ export type Subscription_RootValidator_Signing_InfoArgs = {
   where?: InputMaybe<Validator_Signing_Info_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Signing_Info_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Signing_Info_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12974,9 +13447,11 @@ export type Subscription_RootValidator_Signing_Info_AggregateArgs = {
   where?: InputMaybe<Validator_Signing_Info_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Signing_Info_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Subscription_RootValidator_StatusArgs = {
   distinct_on?: InputMaybe<Array<Validator_Status_Select_Column>>;
@@ -12986,6 +13461,7 @@ export type Subscription_RootValidator_StatusArgs = {
   where?: InputMaybe<Validator_Status_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Status_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Status_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12994,9 +13470,11 @@ export type Subscription_RootValidator_Status_AggregateArgs = {
   where?: InputMaybe<Validator_Status_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Status_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Subscription_RootValidator_Voting_PowerArgs = {
   distinct_on?: InputMaybe<Array<Validator_Voting_Power_Select_Column>>;
@@ -13006,6 +13484,7 @@ export type Subscription_RootValidator_Voting_PowerArgs = {
   where?: InputMaybe<Validator_Voting_Power_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Voting_Power_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Validator_Voting_Power_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -13014,9 +13493,11 @@ export type Subscription_RootValidator_Voting_Power_AggregateArgs = {
   where?: InputMaybe<Validator_Voting_Power_Bool_Exp>;
 };
 
+
 export type Subscription_RootValidator_Voting_Power_By_PkArgs = {
   validator_address: Scalars['String'];
 };
+
 
 export type Subscription_RootVesting_AccountArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Account_Select_Column>>;
@@ -13026,6 +13507,7 @@ export type Subscription_RootVesting_AccountArgs = {
   where?: InputMaybe<Vesting_Account_Bool_Exp>;
 };
 
+
 export type Subscription_RootVesting_Account_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Account_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -13034,9 +13516,11 @@ export type Subscription_RootVesting_Account_AggregateArgs = {
   where?: InputMaybe<Vesting_Account_Bool_Exp>;
 };
 
+
 export type Subscription_RootVesting_Account_By_PkArgs = {
   id: Scalars['Int'];
 };
+
 
 export type Subscription_RootVesting_PeriodArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Period_Select_Column>>;
@@ -13045,6 +13529,7 @@ export type Subscription_RootVesting_PeriodArgs = {
   order_by?: InputMaybe<Array<Vesting_Period_Order_By>>;
   where?: InputMaybe<Vesting_Period_Bool_Exp>;
 };
+
 
 export type Subscription_RootVesting_Period_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Period_Select_Column>>;
@@ -13083,6 +13568,7 @@ export type Supply_Aggregate_Fields = {
   var_samp?: Maybe<Supply_Var_Samp_Fields>;
   variance?: Maybe<Supply_Variance_Fields>;
 };
+
 
 /** aggregate fields of "supply" */
 export type Supply_Aggregate_FieldsCountArgs = {
@@ -13196,6 +13682,7 @@ export type Token = {
   token_units_aggregate: Token_Unit_Aggregate;
 };
 
+
 /** columns and relationships of "token" */
 export type TokenToken_UnitsArgs = {
   distinct_on?: InputMaybe<Array<Token_Unit_Select_Column>>;
@@ -13204,6 +13691,7 @@ export type TokenToken_UnitsArgs = {
   order_by?: InputMaybe<Array<Token_Unit_Order_By>>;
   where?: InputMaybe<Token_Unit_Bool_Exp>;
 };
+
 
 /** columns and relationships of "token" */
 export type TokenToken_Units_AggregateArgs = {
@@ -13228,6 +13716,7 @@ export type Token_Aggregate_Fields = {
   max?: Maybe<Token_Max_Fields>;
   min?: Maybe<Token_Min_Fields>;
 };
+
 
 /** aggregate fields of "token" */
 export type Token_Aggregate_FieldsCountArgs = {
@@ -13296,6 +13785,7 @@ export type Token_Price_Aggregate_Fields = {
   var_samp?: Maybe<Token_Price_Var_Samp_Fields>;
   variance?: Maybe<Token_Price_Variance_Fields>;
 };
+
 
 /** aggregate fields of "token_price" */
 export type Token_Price_Aggregate_FieldsCountArgs = {
@@ -13379,6 +13869,7 @@ export type Token_Price_History_Aggregate_Fields = {
   var_samp?: Maybe<Token_Price_History_Var_Samp_Fields>;
   variance?: Maybe<Token_Price_History_Variance_Fields>;
 };
+
 
 /** aggregate fields of "token_price_history" */
 export type Token_Price_History_Aggregate_FieldsCountArgs = {
@@ -13767,6 +14258,7 @@ export type Token_Unit = {
   token_prices_aggregate: Token_Price_Aggregate;
 };
 
+
 /** columns and relationships of "token_unit" */
 export type Token_UnitToken_Price_HistoriesArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_History_Select_Column>>;
@@ -13775,6 +14267,7 @@ export type Token_UnitToken_Price_HistoriesArgs = {
   order_by?: InputMaybe<Array<Token_Price_History_Order_By>>;
   where?: InputMaybe<Token_Price_History_Bool_Exp>;
 };
+
 
 /** columns and relationships of "token_unit" */
 export type Token_UnitToken_Price_Histories_AggregateArgs = {
@@ -13785,6 +14278,7 @@ export type Token_UnitToken_Price_Histories_AggregateArgs = {
   where?: InputMaybe<Token_Price_History_Bool_Exp>;
 };
 
+
 /** columns and relationships of "token_unit" */
 export type Token_UnitToken_PricesArgs = {
   distinct_on?: InputMaybe<Array<Token_Price_Select_Column>>;
@@ -13793,6 +14287,7 @@ export type Token_UnitToken_PricesArgs = {
   order_by?: InputMaybe<Array<Token_Price_Order_By>>;
   where?: InputMaybe<Token_Price_Bool_Exp>;
 };
+
 
 /** columns and relationships of "token_unit" */
 export type Token_UnitToken_Prices_AggregateArgs = {
@@ -13825,6 +14320,7 @@ export type Token_Unit_Aggregate_Fields = {
   var_samp?: Maybe<Token_Unit_Var_Samp_Fields>;
   variance?: Maybe<Token_Unit_Variance_Fields>;
 };
+
 
 /** aggregate fields of "token_unit" */
 export type Token_Unit_Aggregate_FieldsCountArgs = {
@@ -14035,20 +14531,24 @@ export type Transaction = {
   success: Scalars['Boolean'];
 };
 
+
 /** columns and relationships of "transaction" */
 export type TransactionFeeArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
+
 
 /** columns and relationships of "transaction" */
 export type TransactionLogsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
 
+
 /** columns and relationships of "transaction" */
 export type TransactionMessagesArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
+
 
 /** columns and relationships of "transaction" */
 export type TransactionMessagesByTransactionHashArgs = {
@@ -14059,6 +14559,7 @@ export type TransactionMessagesByTransactionHashArgs = {
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
+
 /** columns and relationships of "transaction" */
 export type TransactionMessagesByTransactionHash_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
@@ -14067,6 +14568,7 @@ export type TransactionMessagesByTransactionHash_AggregateArgs = {
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
+
 
 /** columns and relationships of "transaction" */
 export type TransactionSigner_InfosArgs = {
@@ -14095,6 +14597,7 @@ export type Transaction_Aggregate_Fields = {
   var_samp?: Maybe<Transaction_Var_Samp_Fields>;
   variance?: Maybe<Transaction_Variance_Fields>;
 };
+
 
 /** aggregate fields of "transaction" */
 export type Transaction_Aggregate_FieldsCountArgs = {
@@ -14391,6 +14894,7 @@ export type Validator = {
   validator_voting_powers_aggregate: Validator_Voting_Power_Aggregate;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorBlocksArgs = {
   distinct_on?: InputMaybe<Array<Block_Select_Column>>;
@@ -14399,6 +14903,7 @@ export type ValidatorBlocksArgs = {
   order_by?: InputMaybe<Array<Block_Order_By>>;
   where?: InputMaybe<Block_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorBlocks_AggregateArgs = {
@@ -14409,6 +14914,7 @@ export type ValidatorBlocks_AggregateArgs = {
   where?: InputMaybe<Block_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorDouble_Sign_VotesArgs = {
   distinct_on?: InputMaybe<Array<Double_Sign_Vote_Select_Column>>;
@@ -14417,6 +14923,7 @@ export type ValidatorDouble_Sign_VotesArgs = {
   order_by?: InputMaybe<Array<Double_Sign_Vote_Order_By>>;
   where?: InputMaybe<Double_Sign_Vote_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorDouble_Sign_Votes_AggregateArgs = {
@@ -14427,6 +14934,7 @@ export type ValidatorDouble_Sign_Votes_AggregateArgs = {
   where?: InputMaybe<Double_Sign_Vote_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorPre_CommitsArgs = {
   distinct_on?: InputMaybe<Array<Pre_Commit_Select_Column>>;
@@ -14435,6 +14943,7 @@ export type ValidatorPre_CommitsArgs = {
   order_by?: InputMaybe<Array<Pre_Commit_Order_By>>;
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorPre_Commits_AggregateArgs = {
@@ -14445,6 +14954,7 @@ export type ValidatorPre_Commits_AggregateArgs = {
   where?: InputMaybe<Pre_Commit_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorValidator_CommissionsArgs = {
   distinct_on?: InputMaybe<Array<Validator_Commission_Select_Column>>;
@@ -14453,6 +14963,7 @@ export type ValidatorValidator_CommissionsArgs = {
   order_by?: InputMaybe<Array<Validator_Commission_Order_By>>;
   where?: InputMaybe<Validator_Commission_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Commissions_AggregateArgs = {
@@ -14463,6 +14974,7 @@ export type ValidatorValidator_Commissions_AggregateArgs = {
   where?: InputMaybe<Validator_Commission_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorValidator_DescriptionsArgs = {
   distinct_on?: InputMaybe<Array<Validator_Description_Select_Column>>;
@@ -14471,6 +14983,7 @@ export type ValidatorValidator_DescriptionsArgs = {
   order_by?: InputMaybe<Array<Validator_Description_Order_By>>;
   where?: InputMaybe<Validator_Description_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Descriptions_AggregateArgs = {
@@ -14481,6 +14994,7 @@ export type ValidatorValidator_Descriptions_AggregateArgs = {
   where?: InputMaybe<Validator_Description_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorValidator_InfosArgs = {
   distinct_on?: InputMaybe<Array<Validator_Info_Select_Column>>;
@@ -14489,6 +15003,7 @@ export type ValidatorValidator_InfosArgs = {
   order_by?: InputMaybe<Array<Validator_Info_Order_By>>;
   where?: InputMaybe<Validator_Info_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Infos_AggregateArgs = {
@@ -14499,6 +15014,7 @@ export type ValidatorValidator_Infos_AggregateArgs = {
   where?: InputMaybe<Validator_Info_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Signing_InfosArgs = {
   distinct_on?: InputMaybe<Array<Validator_Signing_Info_Select_Column>>;
@@ -14507,6 +15023,7 @@ export type ValidatorValidator_Signing_InfosArgs = {
   order_by?: InputMaybe<Array<Validator_Signing_Info_Order_By>>;
   where?: InputMaybe<Validator_Signing_Info_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Signing_Infos_AggregateArgs = {
@@ -14517,6 +15034,7 @@ export type ValidatorValidator_Signing_Infos_AggregateArgs = {
   where?: InputMaybe<Validator_Signing_Info_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorValidator_StatusesArgs = {
   distinct_on?: InputMaybe<Array<Validator_Status_Select_Column>>;
@@ -14525,6 +15043,7 @@ export type ValidatorValidator_StatusesArgs = {
   order_by?: InputMaybe<Array<Validator_Status_Order_By>>;
   where?: InputMaybe<Validator_Status_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Statuses_AggregateArgs = {
@@ -14535,6 +15054,7 @@ export type ValidatorValidator_Statuses_AggregateArgs = {
   where?: InputMaybe<Validator_Status_Bool_Exp>;
 };
 
+
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Voting_PowersArgs = {
   distinct_on?: InputMaybe<Array<Validator_Voting_Power_Select_Column>>;
@@ -14543,6 +15063,7 @@ export type ValidatorValidator_Voting_PowersArgs = {
   order_by?: InputMaybe<Array<Validator_Voting_Power_Order_By>>;
   where?: InputMaybe<Validator_Voting_Power_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator" */
 export type ValidatorValidator_Voting_Powers_AggregateArgs = {
@@ -14567,6 +15088,7 @@ export type Validator_Aggregate_Fields = {
   max?: Maybe<Validator_Max_Fields>;
   min?: Maybe<Validator_Min_Fields>;
 };
+
 
 /** aggregate fields of "validator" */
 export type Validator_Aggregate_FieldsCountArgs = {
@@ -14626,6 +15148,7 @@ export type Validator_Commission_Aggregate_Fields = {
   var_samp?: Maybe<Validator_Commission_Var_Samp_Fields>;
   variance?: Maybe<Validator_Commission_Variance_Fields>;
 };
+
 
 /** aggregate fields of "validator_commission" */
 export type Validator_Commission_Aggregate_FieldsCountArgs = {
@@ -14873,6 +15396,7 @@ export type Validator_Description_Aggregate_Fields = {
   variance?: Maybe<Validator_Description_Variance_Fields>;
 };
 
+
 /** aggregate fields of "validator_description" */
 export type Validator_Description_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Validator_Description_Select_Column>>;
@@ -15099,6 +15623,7 @@ export type Validator_Info = {
   validator: Validator;
 };
 
+
 /** columns and relationships of "validator_info" */
 export type Validator_InfoDelegationsArgs = {
   distinct_on?: InputMaybe<Array<Delegation_Select_Column>>;
@@ -15107,6 +15632,7 @@ export type Validator_InfoDelegationsArgs = {
   order_by?: InputMaybe<Array<Delegation_Order_By>>;
   where?: InputMaybe<Delegation_Bool_Exp>;
 };
+
 
 /** columns and relationships of "validator_info" */
 export type Validator_InfoDelegations_AggregateArgs = {
@@ -15131,6 +15657,7 @@ export type Validator_Info_Aggregate_Fields = {
   max?: Maybe<Validator_Info_Max_Fields>;
   min?: Maybe<Validator_Info_Min_Fields>;
 };
+
 
 /** aggregate fields of "validator_info" */
 export type Validator_Info_Aggregate_FieldsCountArgs = {
@@ -15296,6 +15823,7 @@ export type Validator_Signing_Info_Aggregate_Fields = {
   var_samp?: Maybe<Validator_Signing_Info_Var_Samp_Fields>;
   variance?: Maybe<Validator_Signing_Info_Variance_Fields>;
 };
+
 
 /** aggregate fields of "validator_signing_info" */
 export type Validator_Signing_Info_Aggregate_FieldsCountArgs = {
@@ -15574,6 +16102,7 @@ export type Validator_Status_Aggregate_Fields = {
   variance?: Maybe<Validator_Status_Variance_Fields>;
 };
 
+
 /** aggregate fields of "validator_status" */
 export type Validator_Status_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Validator_Status_Select_Column>>;
@@ -15799,6 +16328,7 @@ export type Validator_Voting_Power_Aggregate_Fields = {
   variance?: Maybe<Validator_Voting_Power_Variance_Fields>;
 };
 
+
 /** aggregate fields of "validator_voting_power" */
 export type Validator_Voting_Power_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Validator_Voting_Power_Select_Column>>;
@@ -16000,6 +16530,7 @@ export type Vesting_Account = {
   vesting_periods_aggregate: Vesting_Period_Aggregate;
 };
 
+
 /** columns and relationships of "vesting_account" */
 export type Vesting_AccountVesting_PeriodsArgs = {
   distinct_on?: InputMaybe<Array<Vesting_Period_Select_Column>>;
@@ -16008,6 +16539,7 @@ export type Vesting_AccountVesting_PeriodsArgs = {
   order_by?: InputMaybe<Array<Vesting_Period_Order_By>>;
   where?: InputMaybe<Vesting_Period_Bool_Exp>;
 };
+
 
 /** columns and relationships of "vesting_account" */
 export type Vesting_AccountVesting_Periods_AggregateArgs = {
@@ -16040,6 +16572,7 @@ export type Vesting_Account_Aggregate_Fields = {
   var_samp?: Maybe<Vesting_Account_Var_Samp_Fields>;
   variance?: Maybe<Vesting_Account_Variance_Fields>;
 };
+
 
 /** aggregate fields of "vesting_account" */
 export type Vesting_Account_Aggregate_FieldsCountArgs = {
@@ -16191,6 +16724,7 @@ export type Vesting_Period_Aggregate_Fields = {
   var_samp?: Maybe<Vesting_Period_Var_Samp_Fields>;
   variance?: Maybe<Vesting_Period_Variance_Fields>;
 };
+
 
 /** aggregate fields of "vesting_period" */
 export type Vesting_Period_Aggregate_FieldsCountArgs = {
@@ -16411,18 +16945,13 @@ export type Vote_Option_Comparison_Exp = {
 
 export type LastParsedHeightQueryVariables = Exact<{ [key: string]: never; }>;
 
+
 export type LastParsedHeightQuery = { __typename?: 'query_root', block_aggregate: { __typename?: 'block_aggregate', aggregate?: { __typename?: 'block_aggregate_fields', max?: { __typename?: 'block_max_fields', height?: any | null } | null } | null } };
-
-export type MarketplaceCollectionQueryVariables = Exact<{
-  denom_id?: InputMaybe<Scalars['String']>;
-  creator?: InputMaybe<Scalars['String']>;
-}>;
-
-export type MarketplaceCollectionQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string }> };
 
 export type MarketplaceCollectionsByDenomIdsQueryVariables = Exact<{
   denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
+
 
 export type MarketplaceCollectionsByDenomIdsQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string }> };
 
@@ -16430,9 +16959,11 @@ export type MarketplaceNftPriceSumByDenomIdQueryVariables = Exact<{
   denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
+
 export type MarketplaceNftPriceSumByDenomIdQuery = { __typename?: 'query_root', marketplace_nft_buy_history_aggregate: { __typename?: 'marketplace_nft_buy_history_aggregate', aggregate?: { __typename?: 'marketplace_nft_buy_history_aggregate_fields', sum?: { __typename?: 'marketplace_nft_buy_history_sum_fields', price?: any | null, usd_price?: any | null, btc_price?: any | null } | null } | null } };
 
 export type MarketplaceNftPriceSumTotalQueryVariables = Exact<{ [key: string]: never; }>;
+
 
 export type MarketplaceNftPriceSumTotalQuery = { __typename?: 'query_root', marketplace_nft_buy_history_aggregate: { __typename?: 'marketplace_nft_buy_history_aggregate', aggregate?: { __typename?: 'marketplace_nft_buy_history_aggregate_fields', sum?: { __typename?: 'marketplace_nft_buy_history_sum_fields', price?: any | null, usd_price?: any | null, btc_price?: any | null } | null } | null } };
 
@@ -16440,15 +16971,18 @@ export type MarketplaceNftTradeHistoryByUniqueIdsQueryVariables = Exact<{
   uniqIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
+
 export type MarketplaceNftTradeHistoryByUniqueIdsQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type MarketplaceNftPlatformTradeHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
+
 export type MarketplaceNftPlatformTradeHistoryQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type MarketplaceNftsByDenomIdQueryVariables = Exact<{
-  denom_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
+
 
 export type MarketplaceNftsByDenomIdQuery = { __typename?: 'query_root', marketplace_nft: Array<{ __typename?: 'marketplace_nft', token_id: any, price?: any | null, id?: any | null, denom_id: string, creator: string, transaction_hash: string, uid?: string | null, nft_nft: { __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string } }> };
 
@@ -16457,42 +16991,35 @@ export type MarketplaceNftsByTokenIdsQueryVariables = Exact<{
   denomId?: InputMaybe<Scalars['String']>;
 }>;
 
+
 export type MarketplaceNftsByTokenIdsQuery = { __typename?: 'query_root', marketplace_nft: Array<{ __typename?: 'marketplace_nft', token_id: any, price?: any | null, id?: any | null, denom_id: string, creator: string, transaction_hash: string, uid?: string | null, nft_nft: { __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string } }> };
 
 export type MarketplaceNftCountByOwnerQueryVariables = Exact<{
   ownerAddress: Scalars['String'];
 }>;
 
+
 export type MarketplaceNftCountByOwnerQuery = { __typename?: 'query_root', marketplace_nft_aggregate: { __typename?: 'marketplace_nft_aggregate', aggregate?: { __typename?: 'marketplace_nft_aggregate_fields', count: number } | null } };
-
-export type GetNftByTxHashQueryVariables = Exact<{
-  tx_hash: Scalars['String'];
-}>;
-
-export type GetNftByTxHashQuery = { __typename?: 'query_root', nft_nft: Array<{ __typename?: 'nft_nft', transaction: { __typename?: 'transaction', memo?: string | null, success: boolean } }> };
 
 export type NftCollectionsByDenomIdsQueryVariables = Exact<{
   denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
+
 export type NftCollectionsByDenomIdsQuery = { __typename?: 'query_root', nft_denom: Array<{ __typename?: 'nft_denom', data_text?: string | null, description?: string | null, id: string, minter?: string | null, name: string, owner: string, schema: string, symbol: string, traits?: string | null, transaction_hash: string }> };
-
-export type NftNftsByTokenIdsQueryVariables = Exact<{
-  tokenIds?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
-  denomId?: InputMaybe<Scalars['String']>;
-}>;
-
-export type NftNftsByTokenIdsQuery = { __typename?: 'query_root', nft_nft: Array<{ __typename?: 'nft_nft', owner: string, sender: string, uri: string, transaction_hash: string, name: string, id: any, denom_id: string, burned?: boolean | null, contract_address_signer: string, data_text: string }> };
 
 export type NftTransferHistoryByUniqueIdsQueryVariables = Exact<{
   uniqIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
+
 export type NftTransferHistoryByUniqueIdsQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type NftPlatformTransferHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
+
 export type NftPlatformTransferHistoryQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
+
 
 export const LastParsedHeightDocument = gql`
     query LastParsedHeight {
@@ -16502,21 +17029,6 @@ export const LastParsedHeightDocument = gql`
         height
       }
     }
-  }
-}
-    `;
-export const MarketplaceCollectionDocument = gql`
-    query MarketplaceCollection($denom_id: String, $creator: String) {
-  marketplace_collection(
-    where: {denom_id: {_eq: $denom_id}, verified: {_eq: true}, creator: {_eq: $creator}}
-  ) {
-    mint_royalties
-    resale_royalties
-    verified
-    creator
-    denom_id
-    id
-    transaction_hash
   }
 }
     `;
@@ -16592,8 +17104,8 @@ export const MarketplaceNftPlatformTradeHistoryDocument = gql`
 }
     `;
 export const MarketplaceNftsByDenomIdDocument = gql`
-    query MarketplaceNftsByDenomId($denom_ids: [String!]) {
-  marketplace_nft(where: {denom_id: {_in: $denom_ids}}) {
+    query MarketplaceNftsByDenomId($denomIds: [String!]) {
+  marketplace_nft(where: {denom_id: {_in: $denomIds}}) {
     token_id
     price
     id
@@ -16650,16 +17162,6 @@ export const MarketplaceNftCountByOwnerDocument = gql`
   }
 }
     `;
-export const GetNftByTxHashDocument = gql`
-    query GetNftByTxHash($tx_hash: String!) {
-  nft_nft(where: {transaction: {hash: {_eq: $tx_hash}, success: {_eq: true}}}) {
-    transaction {
-      memo
-      success
-    }
-  }
-}
-    `;
 export const NftCollectionsByDenomIdsDocument = gql`
     query NftCollectionsByDenomIds($denomIds: [String!]) {
   nft_denom(where: {id: {_in: $denomIds}}) {
@@ -16673,22 +17175,6 @@ export const NftCollectionsByDenomIdsDocument = gql`
     symbol
     traits
     transaction_hash
-  }
-}
-    `;
-export const NftNftsByTokenIdsDocument = gql`
-    query NftNftsByTokenIds($tokenIds: [bigint!], $denomId: String) {
-  nft_nft(where: {id: {_in: $tokenIds}, denom_id: {_eq: $denomId}}) {
-    owner
-    sender
-    uri
-    transaction_hash
-    name
-    id
-    denom_id
-    burned
-    contract_address_signer
-    data_text
   }
 }
     `;
@@ -16721,55 +17207,47 @@ export const NftPlatformTransferHistoryDocument = gql`
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
+
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
-    return {
-        LastParsedHeight(variables?: LastParsedHeightQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<LastParsedHeightQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<LastParsedHeightQuery>(LastParsedHeightDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'LastParsedHeight', 'query');
-        },
-        MarketplaceCollection(variables?: MarketplaceCollectionQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceCollectionQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceCollectionQuery>(MarketplaceCollectionDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceCollection', 'query');
-        },
-        MarketplaceCollectionsByDenomIds(variables?: MarketplaceCollectionsByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceCollectionsByDenomIdsQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceCollectionsByDenomIdsQuery>(MarketplaceCollectionsByDenomIdsDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceCollectionsByDenomIds', 'query');
-        },
-        MarketplaceNftPriceSumByDenomId(variables?: MarketplaceNftPriceSumByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceNftPriceSumByDenomIdQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumByDenomIdQuery>(MarketplaceNftPriceSumByDenomIdDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceNftPriceSumByDenomId', 'query');
-        },
-        MarketplaceNftPriceSumTotal(variables?: MarketplaceNftPriceSumTotalQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceNftPriceSumTotalQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumTotalQuery>(MarketplaceNftPriceSumTotalDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceNftPriceSumTotal', 'query');
-        },
-        MarketplaceNftTradeHistoryByUniqueIds(variables?: MarketplaceNftTradeHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceNftTradeHistoryByUniqueIdsQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByUniqueIdsQuery>(MarketplaceNftTradeHistoryByUniqueIdsDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceNftTradeHistoryByUniqueIds', 'query');
-        },
-        MarketplaceNftPlatformTradeHistory(variables?: MarketplaceNftPlatformTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceNftPlatformTradeHistoryQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPlatformTradeHistoryQuery>(MarketplaceNftPlatformTradeHistoryDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceNftPlatformTradeHistory', 'query');
-        },
-        MarketplaceNftsByDenomId(variables?: MarketplaceNftsByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceNftsByDenomIdQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByDenomIdQuery>(MarketplaceNftsByDenomIdDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceNftsByDenomId', 'query');
-        },
-        MarketplaceNftsByTokenIds(variables?: MarketplaceNftsByTokenIdsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceNftsByTokenIdsQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByTokenIdsQuery>(MarketplaceNftsByTokenIdsDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceNftsByTokenIds', 'query');
-        },
-        MarketplaceNftCountByOwner(variables: MarketplaceNftCountByOwnerQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<MarketplaceNftCountByOwnerQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftCountByOwnerQuery>(MarketplaceNftCountByOwnerDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'MarketplaceNftCountByOwner', 'query');
-        },
-        GetNftByTxHash(variables: GetNftByTxHashQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<GetNftByTxHashQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<GetNftByTxHashQuery>(GetNftByTxHashDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'GetNftByTxHash', 'query');
-        },
-        NftCollectionsByDenomIds(variables?: NftCollectionsByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<NftCollectionsByDenomIdsQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<NftCollectionsByDenomIdsQuery>(NftCollectionsByDenomIdsDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'NftCollectionsByDenomIds', 'query');
-        },
-        NftNftsByTokenIds(variables?: NftNftsByTokenIdsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<NftNftsByTokenIdsQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<NftNftsByTokenIdsQuery>(NftNftsByTokenIdsDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'NftNftsByTokenIds', 'query');
-        },
-        NftTransferHistoryByUniqueIds(variables?: NftTransferHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<NftTransferHistoryByUniqueIdsQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryByUniqueIdsQuery>(NftTransferHistoryByUniqueIdsDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'NftTransferHistoryByUniqueIds', 'query');
-        },
-        NftPlatformTransferHistory(variables?: NftPlatformTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<NftPlatformTransferHistoryQuery> {
-            return withWrapper((wrappedRequestHeaders) => client.request<NftPlatformTransferHistoryQuery>(NftPlatformTransferHistoryDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }), 'NftPlatformTransferHistory', 'query');
-        },
-    };
+  return {
+    LastParsedHeight(variables?: LastParsedHeightQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LastParsedHeightQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<LastParsedHeightQuery>(LastParsedHeightDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'LastParsedHeight', 'query');
+    },
+    MarketplaceCollectionsByDenomIds(variables?: MarketplaceCollectionsByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceCollectionsByDenomIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceCollectionsByDenomIdsQuery>(MarketplaceCollectionsByDenomIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceCollectionsByDenomIds', 'query');
+    },
+    MarketplaceNftPriceSumByDenomId(variables?: MarketplaceNftPriceSumByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPriceSumByDenomIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumByDenomIdQuery>(MarketplaceNftPriceSumByDenomIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPriceSumByDenomId', 'query');
+    },
+    MarketplaceNftPriceSumTotal(variables?: MarketplaceNftPriceSumTotalQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPriceSumTotalQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumTotalQuery>(MarketplaceNftPriceSumTotalDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPriceSumTotal', 'query');
+    },
+    MarketplaceNftTradeHistoryByUniqueIds(variables?: MarketplaceNftTradeHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByUniqueIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByUniqueIdsQuery>(MarketplaceNftTradeHistoryByUniqueIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByUniqueIds', 'query');
+    },
+    MarketplaceNftPlatformTradeHistory(variables?: MarketplaceNftPlatformTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPlatformTradeHistoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPlatformTradeHistoryQuery>(MarketplaceNftPlatformTradeHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPlatformTradeHistory', 'query');
+    },
+    MarketplaceNftsByDenomId(variables?: MarketplaceNftsByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftsByDenomIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByDenomIdQuery>(MarketplaceNftsByDenomIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftsByDenomId', 'query');
+    },
+    MarketplaceNftsByTokenIds(variables?: MarketplaceNftsByTokenIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftsByTokenIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftsByTokenIdsQuery>(MarketplaceNftsByTokenIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftsByTokenIds', 'query');
+    },
+    MarketplaceNftCountByOwner(variables: MarketplaceNftCountByOwnerQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftCountByOwnerQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftCountByOwnerQuery>(MarketplaceNftCountByOwnerDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftCountByOwner', 'query');
+    },
+    NftCollectionsByDenomIds(variables?: NftCollectionsByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftCollectionsByDenomIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftCollectionsByDenomIdsQuery>(NftCollectionsByDenomIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftCollectionsByDenomIds', 'query');
+    },
+    NftTransferHistoryByUniqueIds(variables?: NftTransferHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryByUniqueIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryByUniqueIdsQuery>(NftTransferHistoryByUniqueIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistoryByUniqueIds', 'query');
+    },
+    NftPlatformTransferHistory(variables?: NftPlatformTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftPlatformTransferHistoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftPlatformTransferHistoryQuery>(NftPlatformTransferHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftPlatformTransferHistory', 'query');
+    }
+  };
 }
 export type Sdk = ReturnType<typeof getSdk>;

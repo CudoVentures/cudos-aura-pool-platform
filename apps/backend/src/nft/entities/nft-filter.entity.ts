@@ -1,11 +1,12 @@
 import { CollectionStatus } from '../../collection/utils';
 import { IntBoolValue } from '../../common/utils';
-import { NftFilterJsonValidation, NftOrderBy } from '../nft.types';
+import { NftFilterJsonValidation, NftOrderBy, NftStatus } from '../nft.types';
 
 export default class NftFilterEntity {
     nftIds: string[];
     tokenIds: string[];
     collectionStatus: CollectionStatus[];
+    nftStatus: NftStatus[];
     collectionIds: string[];
     searchString: string;
     sessionAccount: number;
@@ -17,6 +18,7 @@ export default class NftFilterEntity {
         this.nftIds = null;
         this.tokenIds = null;
         this.collectionStatus = null;
+        this.nftStatus = null;
         this.collectionIds = null;
         this.searchString = '';
         this.sessionAccount = IntBoolValue.FALSE;
@@ -35,6 +37,10 @@ export default class NftFilterEntity {
 
     hasCollectionStatus(): boolean {
         return this.collectionStatus !== null && this.collectionStatus.length !== 0;
+    }
+
+    hasNftStatus(): boolean {
+        return this.nftStatus !== null && this.nftStatus.length !== 0;
     }
 
     hasCollectionIds(): boolean {
@@ -63,6 +69,7 @@ export default class NftFilterEntity {
         entity.nftIds = json.nftIds ?? entity.nftIds;
         entity.tokenIds = json.tokenIds ?? entity.tokenIds;
         entity.collectionStatus = json.collectionStatus ?? entity.collectionStatus;
+        entity.nftStatus = json.nftStatus ?? entity.nftStatus;
         entity.collectionIds = json.collectionIds ?? entity.collectionIds;
         entity.searchString = json.searchString ?? entity.searchString;
         entity.sessionAccount = json.sessionAccount ?? entity.sessionAccount;

@@ -2,7 +2,6 @@ import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterc
 import { ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
-import { ChainMarketplaceNftDto } from './dto/chain-marketplace-nft.dto';
 import { NftStatus } from './nft.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
@@ -11,6 +10,9 @@ import NftFilterEntity from './entities/nft-filter.entity';
 import { ResFetchNftsByFilter } from './dto/responses.dto';
 import NftEntity from './entities/nft.entity';
 import { CollectionService } from '../collection/collection.service';
+import BigNumber from 'bignumber.js';
+import { NOT_EXISTS_INT } from '../common/utils';
+import { ChainMarketplaceNftEntity } from '../graphql/entities/nft-marketplace.entity';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -64,39 +66,39 @@ export class NFTController {
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
 
-        if (height > parseInt(bdJunoParsedHeight.block_aggregate.aggregate.max.height)) {
+        if (height > bdJunoParsedHeight) {
             throw new Error(`BDJuno not yet on block:  ${height}`);
         }
+
         const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId)
             .filter((denomId, index, self) => self.indexOf(denomId) === index);
 
-        let chainMarketplaceNftDtos = [];
+        let chainMarketplaceNftEntities: ChainMarketplaceNftEntity[] = [];
         for (let i = 0; i < denomIds.length; i++) {
             const denomId = denomIds[i];
             const tokenIds = nftDataJsons.filter((nftDataJson) => nftDataJson.denomId === denomId).map((nftDataJson) => nftDataJson.tokenId);
 
-            const queryRes = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds, denomId);
-            const marketplaceNftDtos = queryRes.marketplace_nft.map((queryNft) => ChainMarketplaceNftDto.fromQuery(queryNft));
-            chainMarketplaceNftDtos = chainMarketplaceNftDtos.concat(marketplaceNftDtos);
+            const marketplaceNftDtos = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds, denomId);
+            chainMarketplaceNftEntities = chainMarketplaceNftEntities.concat(marketplaceNftDtos);
         }
 
         // fetch nfts
         const nftFilterEntity = new NftFilterEntity();
-        nftFilterEntity.nftIds = chainMarketplaceNftDtos.map((entity) => entity.uid);
+        nftFilterEntity.nftIds = chainMarketplaceNftEntities.map((entity) => entity.uid);
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
 
-        for (let i = 0; i < chainMarketplaceNftDtos.length; i++) {
+        for (let i = 0; i < chainMarketplaceNftEntities.length; i++) {
             const nftEntity = nftEntities[i];
-            const chainMarketplaceNftDto = chainMarketplaceNftDtos.find((dto) => dto.uid === nftEntity.id);
+            const chainMarketplaceNftEntity = chainMarketplaceNftEntities.find((dto) => dto.uid === nftEntity.id);
 
-            nftEntity.data = chainMarketplaceNftDto.data;
-            nftEntity.name = chainMarketplaceNftDto.name;
-            nftEntity.currentOwner = chainMarketplaceNftDto.owner;
-            nftEntity.uri = chainMarketplaceNftDto.uri;
-            nftEntity.price = chainMarketplaceNftDto.price;
-            nftEntity.tokenId = chainMarketplaceNftDto.tokenId;
-            nftEntity.status = chainMarketplaceNftDto.burned === true ? NftStatus.REMOVED : NftStatus.MINTED;
-            nftEntity.marketplaceNftId = chainMarketplaceNftDto.marketplaceNftId.toString();
+            nftEntity.data = chainMarketplaceNftEntity.data;
+            nftEntity.name = chainMarketplaceNftEntity.name;
+            nftEntity.currentOwner = chainMarketplaceNftEntity.owner;
+            nftEntity.uri = chainMarketplaceNftEntity.uri;
+            nftEntity.acudosPrice = chainMarketplaceNftEntity.acudosPrice || new BigNumber(NOT_EXISTS_INT);
+            nftEntity.tokenId = chainMarketplaceNftEntity.tokenId;
+            nftEntity.status = chainMarketplaceNftEntity.burned === true ? NftStatus.REMOVED : NftStatus.MINTED;
+            nftEntity.marketplaceNftId = chainMarketplaceNftEntity.marketplaceNftId.toString();
 
             await this.nftService.updateOneWithStatus(nftEntity.id, nftEntity, req.transaction);
         }

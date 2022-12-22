@@ -10,7 +10,7 @@ type GraphQlCollection = {
     transaction_hash: string
 }
 
-export class ChainMarketplaceCollectionDto {
+export default class ChainMarketplaceCollectionEntity {
     mintRoyalties: Royalty[];
     resaleRoyalties: Royalty[];
     verified: boolean;
@@ -25,8 +25,8 @@ export class ChainMarketplaceCollectionDto {
         this.denomId = '';
     }
 
-    static fromQuery(queryCollection: GraphQlCollection): ChainMarketplaceCollectionDto {
-        const collectionDto = new ChainMarketplaceCollectionDto();
+    static fromGraphQl(queryCollection: GraphQlCollection): ChainMarketplaceCollectionEntity {
+        const collectionDto = new ChainMarketplaceCollectionEntity();
 
         collectionDto.verified = queryCollection.verified ?? collectionDto.verified;
         collectionDto.denomId = queryCollection.denom_id ?? collectionDto.denomId;

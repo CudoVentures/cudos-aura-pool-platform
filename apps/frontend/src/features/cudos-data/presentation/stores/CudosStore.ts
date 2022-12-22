@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import numeral from 'numeral';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import CudosDataEntity from '../../entities/CudosDataEntity';
@@ -26,8 +26,11 @@ export default class CudosStore {
             return;
         }
 
-        this.inited = true;
-        this.cudosDataEntity = await this.cudosRepo.fetchCudosData();
+        const cudosDataEntity = await this.cudosRepo.fetchCudosData();
+        runInAction(() => {
+            this.inited = true;
+            this.cudosDataEntity = cudosDataEntity;
+        })
     }
 
     getCudosPriceInUsd(): number {

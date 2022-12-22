@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CollectionRepo, CollectionRepoColumn } from './repos/collection.repo';
 import { CollectionStatus } from './utils';
 import { NftRepo } from '../nft/repos/nft.repo';
-import { NftStatus } from '../nft/nft.types';
+import { NftOrderBy, NftStatus } from '../nft/nft.types';
 import CollectionFilterModel from './entities/collection-filter.entity';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
-import { ChainMarketplaceCollectionDto } from './dto/chain-marketplace-collection.dto';
-import { ChainNftCollectionDto } from './dto/chain-nft-collection.dto';
+import ChainMarketplaceCollectionEntity from './entities/chain-marketplace-collection.entity';
+import ChainNftCollectionEntity from './entities/chain-nft-collection.entity';
 import { checkValidNftDenomId } from 'cudosjs';
 import { CollectionDenomExistsError, CollectionWrongDenomError } from '../common/errors/errors';
 import { CollectionEntity } from './entities/collection.entity';
@@ -18,6 +18,9 @@ import AccountService from '../account/account.service';
 import { StatisticsService } from '../statistics/statistics.service';
 import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity';
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
+import { NFTService } from '../nft/nft.service';
+import NftFilterEntity from '../nft/entities/nft-filter.entity';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class CollectionService {
@@ -26,6 +29,7 @@ export class CollectionService {
     private collectionModel: typeof CollectionRepo,
     @InjectModel(NftRepo)
     private nftRepo: typeof NftRepo,
+    private nftService: NFTService,
     private graphqlService: GraphqlService,
     private accountService: AccountService,
     @Inject(forwardRef(() => StatisticsService))
@@ -211,7 +215,7 @@ export class CollectionService {
             throw new CollectionWrongDenomError();
         }
         const chainCollections = await this.graphqlService.fetchNftCollectionsByDenomIds([collectionEntity.denomId]);
-        if (chainCollections.nft_denom.length > 0) {
+        if (chainCollections.length > 0) {
             throw new CollectionDenomExistsError();
         }
 
@@ -261,37 +265,46 @@ export class CollectionService {
         return CollectionEntity.fromRepo(collectionRepo);
     }
 
-    async getChainMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise < ChainMarketplaceCollectionDto[] > {
+    async getChainMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise < ChainMarketplaceCollectionEntity[] > {
         return this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
     }
 
-    async getChainNftCollectionsByDenomIds(denomIds: string[]): Promise < ChainNftCollectionDto[] > {
-        const queryRes = await this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
-        return queryRes.nft_denom.map((queryCollection) => ChainNftCollectionDto.fromQuery(queryCollection));
+    async getChainNftCollectionsByDenomIds(denomIds: string[]): Promise < ChainNftCollectionEntity[] > {
+        return this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
     }
 
-    // TODO: redo with big numbers
     async getDetails(collectionId: number): Promise <CollectionDetailsEntity> {
         const collection = await this.collectionModel.findOne({ where: { id: collectionId } })
+
         if (!collection) {
             throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
         }
 
-        const allNfts = await this.nftRepo.findAll({ where: { collection_id: collectionId, status: { [Op.notIn]: [NftStatus.REMOVED] } }, order: [['price', 'ASC']] })
-        const approvedNfts = allNfts.filter((nft) => nft.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-        const soldNfts = await this.graphqlService.fetchNftsByDenomId({ denom_ids: [collection.denomId] }) // Sold NFTs
-        const uniqueOwnersArray = [...new Set(soldNfts.marketplace_nft.map((nft) => nft.nft_nft.owner))] // Unique owners of all the NFTs in the collection
+        const nftFilter = new NftFilterEntity();
+        nftFilter.collectionIds = [collectionId.toString()];
+        nftFilter.nftStatus = [NftStatus.MINTED, NftStatus.QUEUED];
+        nftFilter.orderBy = NftOrderBy.PRICE_ASC
+        const { nftEntities } = await this.nftService.findByFilter(null, nftFilter);
+        console.log('333333333333333333333333')
+
+        const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
+        console.log('4444444444444444444444444444444')
+
+        const soldNfts = await this.graphqlService.fetchNftsByDenomId([collection.denomId]) // Sold NFTs
+        console.log('4444444444444444444444444444444')
+
+        const uniqueOwnersArray = [...new Set(soldNfts.map((nft) => nft.owner))] // Unique owners of all the NFTs in the collection
 
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
-        const sortedByPriceSoldNfts = soldNfts.marketplace_nft.sort((a, b) => a.price - b.price).filter((nft) => nft.price) // Sorting by price and filtering out nfts with price "null" (price "null" means they're not listed for sale)
-        const cheapestNfts = [approvedNfts[0]?.price, sortedByPriceSoldNfts[0]?.price].filter((price) => price).sort((a, b) => Number(a) - Number(b)) // filtering out "undefined" price since both approved and sold NFTs arrays could be empty
-        const floorPriceInAcudos = cheapestNfts[0] || 0 // Price of the cheapest NFT
+        const sortedByPriceSoldNfts = soldNfts.sort((a, b) => a.acudosPrice.comparedTo(b.acudosPrice)).filter((nft) => nft.hasPrice()) // Sorting by price and filtering out nfts with price "null" (price "null" means they're not listed for sale)
+        const cheapestNfts = [approvedNfts[0], sortedByPriceSoldNfts[0]].filter((entity) => entity?.hasPrice()).sort((a, b) => a.acudosPrice.comparedTo(b.acudosPrice)) // filtering out "undefined" price since both approved and sold NFTs arrays could be empty
+        const floorPriceInAcudos = cheapestNfts[0].acudosPrice || new BigNumber(0); // Price of the cheapest NFT
 
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
         const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])
 
         // Get remaining hash power
-        const nftsHashPowerSum = allNfts.reduce((pervVal, currVal) => pervVal + Number(currVal.hashingPower), 0)
+        const nftsHashPowerSum = nftEntities.reduce((pervVal, currVal) => pervVal + Number(currVal.hashingPower), 0)
         const remainingHashPowerInTH = Number(collection.hashingPower) - nftsHashPowerSum
 
         const collectionDetailsEntity = new CollectionDetailsEntity();
@@ -299,7 +312,7 @@ export class CollectionService {
         const { adminEntity } = await this.accountService.findAccounts(collection.creatorId);
 
         collectionDetailsEntity.id = collectionId;
-        collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos;
+        collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString();
         collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString() || '0';
         collectionDetailsEntity.owners = uniqueOwnersArray.length;
         collectionDetailsEntity.cudosAddress = adminEntity?.cudosWalletAddress ?? '';

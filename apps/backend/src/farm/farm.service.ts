@@ -174,9 +174,8 @@ export class FarmService {
             nftToMiningFarmIdsMap.set(nftEntity.id, miningFarmId);
 
             const miningFarmPerformanceEntity = miningFarmIdToPerformanceEntitiesMap.get(miningFarmId);
-            const nftPriceInACudos = new BigNumber(nftEntity.price);
-            if (miningFarmPerformanceEntity.floorPriceInAcudos.gt(nftPriceInACudos) === true) {
-                miningFarmPerformanceEntity.floorPriceInAcudos = nftPriceInACudos;
+            if (miningFarmPerformanceEntity.floorPriceInAcudos.gt(nftEntity.acudosPrice) === true) {
+                miningFarmPerformanceEntity.floorPriceInAcudos = nftEntity.acudosPrice;
             }
         });
 

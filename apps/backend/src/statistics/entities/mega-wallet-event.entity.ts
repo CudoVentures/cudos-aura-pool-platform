@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { ChainMarketplaceCollectionDto } from '../../collection/dto/chain-marketplace-collection.dto';
-import { CollectionEntity } from '../../collection/entities/collection.entity';
+import ChainMarketplaceCollectionEntity from '../../collection/entities/chain-marketplace-collection.entity';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
 import NftEventEntity from './nft-event.entity';
@@ -25,7 +24,7 @@ export default class MegaWalletEventEntity {
         this.transferPriceInAcudos = new BigNumber(NOT_EXISTS_INT);
     }
 
-    static fromNftEventEntity(nftEventEntity: NftEventEntity, marketplaceCollectionEntity: ChainMarketplaceCollectionDto, farmEntity: MiningFarmEntity): MegaWalletEventEntity {
+    static fromNftEventEntity(nftEventEntity: NftEventEntity, marketplaceCollectionEntity: ChainMarketplaceCollectionEntity, farmEntity: MiningFarmEntity): MegaWalletEventEntity {
         const megaWalletEventEntity = new MegaWalletEventEntity();
 
         megaWalletEventEntity.nftId = nftEventEntity.nftId ?? megaWalletEventEntity.nftId;

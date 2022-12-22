@@ -13,7 +13,7 @@ import CategoryEntity from '../../entities/CategoryEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionRepo from '../../presentation/repos/CollectionRepo';
-import CollectionFilterModel, { CollectionOrderBy } from '../../utilities/CollectionFilterModel';
+import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
 
 export default class CollectionApiRepo implements CollectionRepo {

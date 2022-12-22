@@ -11,7 +11,7 @@ export type GraphQlNftCollection = {
     transaction_hash: string;
 }
 
-export class ChainNftCollectionDto {
+export default class ChainNftCollectionEntity {
     data: string;
     description: string;
     id: string;
@@ -36,8 +36,8 @@ export class ChainNftCollectionDto {
         this.transactionHash = '';
     }
 
-    static fromQuery(queryCollection: GraphQlNftCollection): ChainNftCollectionDto {
-        const collectionDto = new ChainNftCollectionDto();
+    static fromGraphQl(queryCollection: GraphQlNftCollection): ChainNftCollectionEntity {
+        const collectionDto = new ChainNftCollectionEntity();
 
         collectionDto.data = queryCollection.data_text ?? collectionDto.data;
         collectionDto.description = queryCollection.description ?? collectionDto.description;

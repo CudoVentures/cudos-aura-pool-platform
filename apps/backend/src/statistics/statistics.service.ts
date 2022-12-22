@@ -1,12 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
-import { filter } from 'rxjs';
 import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
-import { ChainMarketplaceCollectionDto } from '../collection/dto/chain-marketplace-collection.dto';
-import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
+import ChainMarketplaceCollectionEntity from '../collection/entities/chain-marketplace-collection.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import { IntBoolValue } from '../common/utils';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
@@ -29,7 +27,6 @@ import { NftPayoutHistoryEntity } from './entities/nft-payout-history.entity';
 import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
 
-import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
 import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { NftOwnersPayoutHistoryRepo, NftOwnersPayoutHistoryRepoColumn } from './repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo, NftPayoutHistoryRepoColumn } from './repos/nft-payout-history.repo';
@@ -46,8 +43,6 @@ export class StatisticsService {
         private graphqlService: GraphqlService,
         @InjectModel(NftPayoutHistory)
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
-        @InjectModel(NftOwnersPayoutHistory)
-        private nftOwnersPayoutHistoryModel: typeof NftOwnersPayoutHistory,
         @InjectModel(NftPayoutHistoryRepo)
         private nftPayoutHistoryRepo: typeof NftPayoutHistoryRepo,
         @InjectModel(NftOwnersPayoutHistoryRepo)
@@ -92,7 +87,7 @@ export class StatisticsService {
         denomIds = denomIds.filter((denomId, i) => denomIds.findIndex((value) => value === denomId) === i);
 
         const marketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
-        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionDto>();
+        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionEntity>();
         marketplaceCollectionEntities.forEach((marketplaceCollectionEntity) => {
             denomIdMarketplaceCollectionEntityMap.set(marketplaceCollectionEntity.denomId, marketplaceCollectionEntity);
         })
@@ -201,7 +196,6 @@ export class StatisticsService {
         });
 
         nftMarketplaceTradeEntities.forEach((nftMarketplaceTradeHistoryEntity: NftMarketplaceTradeHistoryEntity) => {
-            console.log(nftMarketplaceTradeHistoryEntity)
             const nftMapForDenom = denomIdTokenIdNftsMap.get(nftMarketplaceTradeHistoryEntity.denomId);
             if (!nftMapForDenom) {
                 return;

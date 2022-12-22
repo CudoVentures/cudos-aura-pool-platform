@@ -100,7 +100,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         },
                                     }}
                                     valueLabelDisplay="auto"
-                                    value={parseFloat(rewardsCalculatorStore.hashPowerInThInputValue)}
+                                    value={rewardsCalculatorStore.getHashPowerInThInputValue}
                                     onChange={rewardsCalculatorStore.onChangeHashPowerInThSlider}
                                     min={0}
                                     max={rewardsCalculatorStore.selectedMiningFarmEntity?.hashPowerInTh ?? 1}/>

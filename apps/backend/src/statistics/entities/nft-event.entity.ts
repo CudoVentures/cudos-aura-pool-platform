@@ -65,9 +65,9 @@ export default class NftEventEntity {
         entity.fromAddress = nftMarketplaceTradeHistoryEntity.seller ?? entity.fromAddress;
         entity.toAddress = nftMarketplaceTradeHistoryEntity.buyer ?? entity.toAddress;
         entity.timestamp = nftMarketplaceTradeHistoryEntity.timestamp ?? entity.timestamp;
-        entity.transferPriceInBtc = new BigNumber(nftMarketplaceTradeHistoryEntity.btcPrice ?? entity.transferPriceInBtc);
+        entity.transferPriceInBtc = nftMarketplaceTradeHistoryEntity.btcPrice ?? entity.transferPriceInBtc;
         entity.transferPriceInUsd = nftMarketplaceTradeHistoryEntity.usdPrice ?? entity.transferPriceInUsd;
-        entity.transferPriceInAcudos = new BigNumber(nftMarketplaceTradeHistoryEntity.price ?? entity.transferPriceInAcudos);
+        entity.transferPriceInAcudos = nftMarketplaceTradeHistoryEntity.acudosPrice ?? entity.transferPriceInAcudos;
 
         return entity;
     }

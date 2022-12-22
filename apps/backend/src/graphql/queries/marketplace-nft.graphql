@@ -1,5 +1,5 @@
-query MarketplaceNftsByDenomId($denom_ids: [String!]) {
-  marketplace_nft(where: { denom_id: { _in: $denom_ids } }) {
+query MarketplaceNftsByDenomId($denomIds: [String!]) {
+  marketplace_nft(where: { denom_id: { _in: $denomIds } }) {
     token_id
     price
     id

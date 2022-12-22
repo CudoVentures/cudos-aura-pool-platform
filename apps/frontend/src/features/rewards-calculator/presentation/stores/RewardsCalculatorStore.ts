@@ -1,8 +1,7 @@
-import { computed, makeAutoObservable } from 'mobx';
+import { computed, makeAutoObservable, runInAction } from 'mobx';
 
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
-import S from '../../../../core/utilities/Main';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 import BigNumber from 'bignumber.js';
@@ -32,9 +31,11 @@ export default class RewardsCalculatorStore {
     }
 
     resetDefaults() {
-        this.selectedMiningFarmEntity = null;
-        this.networkDifficultyEdit = null;
-        this.hashPowerInThInputValue = '0';
+        runInAction(() => {
+            this.selectedMiningFarmEntity = null;
+            this.networkDifficultyEdit = null;
+            this.hashPowerInThInputValue = '0';
+        })
     }
 
     isDefault() {
@@ -55,7 +56,10 @@ export default class RewardsCalculatorStore {
 
     async init() {
         await this.bitcoinStore.init();
-        this.miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
+        const miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
+        runInAction(() => {
+            this.miningFarmsEntities = miningFarmsEntities
+        })
     }
 
     hasSelectedMiningFarm(): boolean {
@@ -71,40 +75,49 @@ export default class RewardsCalculatorStore {
     }
 
     onChangeMiningFarm = (selectedMiningFarmId: string) => {
-        this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
-            return entity.id === selectedMiningFarmId;
-        });
+        runInAction(() => {
+            this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
+                return entity.id === selectedMiningFarmId;
+            });
 
-        this.hashPowerInThInputValue = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+            this.hashPowerInThInputValue = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+        });
     }
 
     onChangeHashPowerInInput = (value: string) => {
-        if (value === '') {
-            this.hashPowerInThInputValue = '0';
-            return;
-        }
+        runInAction(() => {
 
-        const floatValue = parseFloat(value);
-        if (floatValue < 0) {
-            value = '0';
-        }
-        if (floatValue > this.selectedMiningFarmEntity.hashPowerInTh) {
-            value = this.selectedMiningFarmEntity.hashPowerInTh.toString();
-        }
+            if (value === '') {
+                this.hashPowerInThInputValue = '0';
+                return;
+            }
 
-        while (value[0] === '0') {
-            value = value.substring(1);
-        }
+            const floatValue = parseFloat(value);
+            if (floatValue < 0) {
+                value = '0';
+            }
+            if (floatValue > this.selectedMiningFarmEntity.hashPowerInTh) {
+                value = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+            }
 
-        this.hashPowerInThInputValue = value;
+            while (value[0] === '0') {
+                value = value.substring(1);
+            }
+
+            this.hashPowerInThInputValue = value;
+        });
     }
 
     onChangeHashPowerInThSlider = (event: MouseEvent, value: number) => {
-        this.hashPowerInThInputValue = value.toString();
+        runInAction(() => {
+            this.hashPowerInThInputValue = value.toString();
+        });
     }
 
     onChangeNetworkDifficulty = (input: string) => {
-        this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
+        runInAction(() => {
+            this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
+        });
     }
 
     getMaintenanceFeePerThInBtc(): BigNumber {
@@ -113,6 +126,10 @@ export default class RewardsCalculatorStore {
         }
 
         return this.selectedMiningFarmEntity.getMaintenanceFeePerThInBtc();
+    }
+
+    getHashPowerInThInputValue(): number {
+        return this.hashPowerInThInputValue
     }
 
     formatCost(): string {

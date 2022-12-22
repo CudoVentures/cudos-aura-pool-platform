@@ -1,5 +1,5 @@
 import S from '../../../../core/utilities/Main';
-import { computed, makeAutoObservable, runInAction } from 'mobx';
+import { action, computed, makeAutoObservable, runInAction } from 'mobx';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../entities/NftEntity';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
@@ -91,21 +91,27 @@ export default class ViewNftPageStore {
         await this.bitcoinStore.init();
         await this.cudosStore.init();
 
-        this.cudosPrice = this.cudosStore.getCudosPriceInUsd();
-        this.bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
+        const cudosPrice = this.cudosStore.getCudosPriceInUsd();
+        const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
+        const nftEntity = await this.nftRepo.fetchNftById(nftId);
+        const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
+        const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
-        this.nftEntity = await this.nftRepo.fetchNftById(nftId);
+        runInAction(async () => {
+            this.cudosPrice = cudosPrice
+            this.bitcoinPrice = bitcoinPrice
+            this.nftEntity = nftEntity
+            this.adminEntity = adminEntity;
+            this.collectionEntity = collectionEntity;
+            this.miningFarmEntity = miningFarmEntity;
+            this.nftEventFilterModel.nftId = this.nftEntity.id;
 
-        this.adminEntity = await this.accountRepo.fetchFarmOwnerAccount(this.nftEntity.creatorId);
+            await this.fetchNftsInTheCollection();
+            await this.fetchEarnings();
+            await this.fetchHistory();
+        });
 
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(this.nftEntity.collectionId);
-        this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
-
-        this.nftEventFilterModel.nftId = this.nftEntity.id;
-
-        await this.fetchNftsInTheCollection();
-        await this.fetchEarnings();
-        await this.fetchHistory();
     }
 
     fetchNftsInTheCollection = async () => {
@@ -122,7 +128,10 @@ export default class ViewNftPageStore {
     }
 
     fetchEarnings = async () => {
-        this.nftEarningsEntity = await this.statisticsRepo.fetchNftEarningsByNftId(this.nftEntity.id, this.defaultIntervalPickerState.earningsTimestampFrom, this.defaultIntervalPickerState.earningsTimestampTo);
+        const nftEarningsEntity = await this.statisticsRepo.fetchNftEarningsByNftId(this.nftEntity.id, this.defaultIntervalPickerState.earningsTimestampFrom, this.defaultIntervalPickerState.earningsTimestampTo);
+        runInAction(() => {
+            this.nftEarningsEntity = nftEarningsEntity;
+        });
     }
 
     fetchHistory = async () => {
@@ -149,15 +158,21 @@ export default class ViewNftPageStore {
     }
 
     onChangeTabEarnings = () => {
-        this.statsTab = StatsTabs.EARNINGS;
+        runInAction(() => {
+            this.statsTab = StatsTabs.EARNINGS;
+        })
     }
 
     onChangeTabInfo = () => {
-        this.statsTab = StatsTabs.INFO;
+        runInAction(() => {
+            this.statsTab = StatsTabs.INFO;
+        })
     }
 
     onChangeTabHistory = () => {
-        this.statsTab = StatsTabs.HISTORY;
+        runInAction(() => {
+            this.statsTab = StatsTabs.HISTORY;
+        })
     }
 
     getNftPriceText() {

@@ -73,14 +73,21 @@ export default class MarketplaceStore {
     async fetchNewNftDrops() {
         const newNftDropsEntities = await this.nftRepo.fetchNewNftDrops();
 
-        await this.fetchCollectionsForEntities(this.newNftDropsEntities);
-        this.newNftDropsEntities = newNftDropsEntities;
+        runInAction(() => {
+            this.newNftDropsEntities = newNftDropsEntities;
+        })
+
+        await this.fetchCollectionsForEntities(newNftDropsEntities);
     }
 
     async fetchTrendingNfts() {
-        this.trendingNftEntities = await this.nftRepo.fetchTrendingNfts();
+        const trendingNftEntities = await this.nftRepo.fetchTrendingNfts();
 
-        await this.fetchCollectionsForEntities(this.trendingNftEntities);
+        runInAction(() => {
+            this.trendingNftEntities = trendingNftEntities;
+        });
+
+        await this.fetchCollectionsForEntities(trendingNftEntities);
     }
 
     async fetchPopularFarms() {
@@ -111,8 +118,10 @@ export default class MarketplaceStore {
     }
 
     addCollectionsToMap(collectionEntities: CollectionEntity[]) {
-        collectionEntities.forEach((collectionEntity: CollectionEntity) => {
-            this.collectionMap.set(collectionEntity.id, collectionEntity);
+        runInAction(() => {
+            collectionEntities.forEach((collectionEntity: CollectionEntity) => {
+                this.collectionMap.set(collectionEntity.id, collectionEntity);
+            })
         })
     }
 

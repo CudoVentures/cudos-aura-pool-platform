@@ -1,21 +1,3 @@
-query MarketplaceCollection($denom_id: String, $creator: String) {
-  marketplace_collection(
-    where: {
-      denom_id: { _eq: $denom_id }
-      verified: { _eq: true }
-      creator: { _eq: $creator }
-    }
-  ) {
-    mint_royalties
-    resale_royalties
-    verified
-    creator
-    denom_id
-    id
-    transaction_hash
-  }
-}
-
 query MarketplaceCollectionsByDenomIds($denomIds: [String!]) {
   marketplace_collection(where: {denom_id: {_in: $denomIds}}) {
     mint_royalties

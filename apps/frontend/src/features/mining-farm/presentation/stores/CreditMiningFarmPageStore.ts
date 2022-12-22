@@ -12,7 +12,6 @@ import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import CollectionDetailsEntity from '../../../collection/entities/CollectionDetailsEntity';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
-import NftFilterEntity from '../../../../../../backend/src/nft/entities/nft-filter.entity';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 export default class CreditMiningFarmPageStore {

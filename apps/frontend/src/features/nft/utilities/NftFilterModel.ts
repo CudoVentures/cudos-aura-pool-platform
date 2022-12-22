@@ -1,18 +1,22 @@
 import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 import { CollectionStatus } from '../../collection/entities/CollectionEntity';
+import { NftStatus } from '../entities/NftEntity';
 
 export enum NftOrderBy {
     TRENDING_ASC = 1,
     TRENDING_DESC = -NftOrderBy.TRENDING_ASC,
     TIMESTAMP_ASC = 2,
     TIMESTAMP_DESC = -NftOrderBy.TIMESTAMP_ASC,
+    PRICE_ASC = 3,
+    PRICE_DESC = -NftOrderBy.PRICE_ASC,
 }
 
 export default class NftFilterModel {
 
     nftIds: string[];
     collectionStatus: CollectionStatus[];
+    nftStatus: NftStatus[];
     collectionIds: string[];
     searchString: string;
     sessionAccount: number;
@@ -23,6 +27,7 @@ export default class NftFilterModel {
     constructor() {
         this.nftIds = null;
         this.collectionStatus = null;
+        this.nftStatus = null;
         this.collectionIds = null;
         this.searchString = '';
         this.sessionAccount = S.INT_FALSE;
@@ -41,6 +46,7 @@ export default class NftFilterModel {
         return {
             'nftIds': entity.nftIds,
             'collectionStatus': entity.collectionStatus,
+            'nftStatus': entity.nftStatus,
             'collectionIds': entity.collectionIds,
             'searchString': entity.searchString,
             'sessionAccount': entity.sessionAccount,

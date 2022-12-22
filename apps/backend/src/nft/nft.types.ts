@@ -66,6 +66,8 @@ export enum NftOrderBy {
     TRENDING_DESC = -NftOrderBy.TRENDING_ASC,
     TIMESTAMP_ASC = 2,
     TIMESTAMP_DESC = -NftOrderBy.TIMESTAMP_ASC,
+    PRICE_ASC = 3,
+    PRICE_DESC = -NftOrderBy.PRICE_ASC,
 }
 
 export class NftFilterJsonValidation {
@@ -83,6 +85,11 @@ export class NftFilterJsonValidation {
     @IsEnum(CollectionStatus, { each: true })
     @IsOptional()
         collectionStatus: CollectionStatus[];
+
+    @IsArray()
+    @IsEnum(NftStatus, { each: true })
+    @IsOptional()
+        nftStatus: NftStatus[];
 
     @IsArray()
     @IsString({ each: true })

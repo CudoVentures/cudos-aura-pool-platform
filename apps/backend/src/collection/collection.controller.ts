@@ -244,44 +244,44 @@ export class CollectionController {
         const module = reqUpdateCollectionChainData.module;
 
         if (module === ModuleName.MARKETPLACE) {
-            const chainMarketplaceCollectionDtos = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
+            const chainMarketplaceCollectionEntitiess = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
 
-            if (chainMarketplaceCollectionDtos.length !== denomIds.length) {
+            if (chainMarketplaceCollectionEntitiess.length !== denomIds.length) {
                 throw new Error('Collections not yet found in BDJuno');
             }
 
-            for (let i = 0; i < chainMarketplaceCollectionDtos.length; i++) {
-                const chainMarketplaceCollectionDto = chainMarketplaceCollectionDtos[i];
-                const denomId = chainMarketplaceCollectionDto.denomId;
+            for (let i = 0; i < chainMarketplaceCollectionEntitiess.length; i++) {
+                const chainMarketplaceCollectionEntity = chainMarketplaceCollectionEntitiess[i];
+                const denomId = chainMarketplaceCollectionEntity.denomId;
 
                 const collectionEntity = await this.collectionService.findOneByDenomId(denomId);
 
                 // TODO: those shouldnt be changeable?
                 // updateCollectionDto.denom_id = denomId;
-                // updateCollectionDto.royalties = chainMarketplaceCollectionDto.;
-                // updateCollectionDto.creator = chainMarketplaceCollectionDto.creator;
-                collectionEntity.status = chainMarketplaceCollectionDto.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
+                // updateCollectionDto.royalties = chainMarketplaceCollectionEntity.;
+                // updateCollectionDto.creator = chainMarketplaceCollectionEntity.creator;
+                collectionEntity.status = chainMarketplaceCollectionEntity.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
 
                 await this.collectionService.updateOneByDenomId(denomId, collectionEntity, req.transaction);
             }
         } else if (module === ModuleName.NFT) {
-            const chainNftCollectionDtos = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);
+            const chainNftCollectionEntities = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);
 
-            if (chainNftCollectionDtos.length !== denomIds.length) {
+            if (chainNftCollectionEntities.length !== denomIds.length) {
                 throw new Error('Collections not yet found in BDJuno');
             }
 
-            for (let i = 0; i < chainNftCollectionDtos.length; i++) {
-                const chainNftCollectionDto = chainNftCollectionDtos[i];
-                const denomId = chainNftCollectionDto.id;
+            for (let i = 0; i < chainNftCollectionEntities.length; i++) {
+                const chainNftCollectionEntity = chainNftCollectionEntities[i];
+                const denomId = chainNftCollectionEntity.id;
                 const collectionEntity = await this.collectionService.findOneByDenomId(denomId);
 
                 if (!collectionEntity) {
                     return;
                 }
 
-                collectionEntity.name = chainNftCollectionDto.name;
-                collectionEntity.description = chainNftCollectionDto.description;
+                collectionEntity.name = chainNftCollectionEntity.name;
+                collectionEntity.description = chainNftCollectionEntity.description;
 
                 await this.collectionService.updateOneByDenomId(denomId, collectionEntity, req.transaction);
             }

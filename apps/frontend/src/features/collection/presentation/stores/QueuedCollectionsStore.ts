@@ -1,10 +1,10 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import NftFilterEntity from '../../../../../../backend/src/nft/entities/nft-filter.entity';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
+import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
@@ -97,7 +97,7 @@ export default class QueuedCollectionsStore {
             const collectionClone = collectionEntity.clone();
 
             collectionClone.markRejected();
-            const nftFilter = new NftFilterEntity();
+            const nftFilter = new NftFilterModel();
             nftFilter.collectionIds = [collectionClone.id];
 
             const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
