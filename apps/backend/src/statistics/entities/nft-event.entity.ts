@@ -36,7 +36,7 @@ export default class NftEventEntity {
     }
 
     hasPrice(): boolean {
-        return this.transferPriceInAcudos.eq(new BigNumber(0)) === false;
+        return this.transferPriceInAcudos.eq(new BigNumber(NOT_EXISTS_INT)) === false;
     }
 
     isMintEvent(): boolean {

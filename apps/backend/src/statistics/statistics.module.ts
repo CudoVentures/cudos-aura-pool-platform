@@ -23,6 +23,7 @@ import AccountService from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
 import { NftOwnersPayoutHistoryRepo } from './repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
+import { FarmModule } from '../farm/farm.module';
 
 @Module({
     imports: [
@@ -44,6 +45,6 @@ import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
     ],
     controllers: [StatisticsController],
     providers: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService, FarmService, AccountService, JwtService],
-    exports: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService],
+    exports: [StatisticsService, NFTService, GraphqlService, CollectionService, VisitorService, DataService, FarmService],
 })
 export class StatisticsModule {}

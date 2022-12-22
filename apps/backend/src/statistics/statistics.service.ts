@@ -9,6 +9,8 @@ import { ChainMarketplaceCollectionDto } from '../collection/dto/chain-marketpla
 import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import { IntBoolValue } from '../common/utils';
+import MiningFarmEntity from '../farm/entities/mining-farm.entity';
+import { FarmService } from '../farm/farm.service';
 import NftMarketplaceTradeHistoryEntity from '../graphql/entities/nft-marketplace-trade-history.entity';
 import NftModuleNftTransferEntity from '../graphql/entities/nft-module-nft-transfer-history';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -39,6 +41,8 @@ export class StatisticsService {
         private nftService: NFTService,
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
+        @Inject(forwardRef(() => FarmService))
+        private farmService: FarmService,
         private graphqlService: GraphqlService,
         @InjectModel(NftPayoutHistory)
         private nftPayoutHistoryModel: typeof NftPayoutHistory,
@@ -93,8 +97,25 @@ export class StatisticsService {
             denomIdMarketplaceCollectionEntityMap.set(marketplaceCollectionEntity.denomId, marketplaceCollectionEntity);
         })
 
+        const collectionEntities = await this.collectionService.findByDenomIds(denomIds);
+        const farmIdCollectionEntityMap = new Map<number, CollectionEntity>();
+        collectionEntities.forEach((collectionEntity) => {
+            farmIdCollectionEntityMap.set(collectionEntity.farmId, collectionEntity);
+        })
+
+        const farmEntities = await this.farmService.findMiningFarmByIds(collectionEntities.map((collectionEntity) => collectionEntity.farmId));
+        const denomIdFarmMap = new Map<string, MiningFarmEntity>();
+        farmEntities.forEach((farmEntity) => {
+            const collectionEntity = farmIdCollectionEntityMap.get(farmEntity.id)
+            denomIdFarmMap.set(collectionEntity.denomId, farmEntity);
+        })
+
         let megaWalletEventEntities = filteredNftEntities.map((nftEventEntity) => {
-            return MegaWalletEventEntity.fromNftEventEntity(nftEventEntity, marketplaceCollectionEntities.get(nftEventEntity.denomId))
+            return MegaWalletEventEntity.fromNftEventEntity(
+                nftEventEntity,
+                denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId),
+                denomIdFarmMap.get(nftEventEntity.denomId),
+            )
         });
 
         megaWalletEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
@@ -207,7 +228,6 @@ export class StatisticsService {
         return {
             nftEventEntities,
             nftEntitiesMap,
-            collectionIdCollectionMap,
         }
     }
 
@@ -410,7 +430,7 @@ export class StatisticsService {
         return totalEarningsEntity;
     }
 
-    private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntities[] > {
+    private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
                 [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
@@ -428,7 +448,7 @@ export class StatisticsService {
         });
     }
 
-    private async fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds: number[], timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntities[] > {
+    private async fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds: number[], timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
                 [NftOwnersPayoutHistoryRepoColumn.OWNER]: nftPayoutHistoryIds,

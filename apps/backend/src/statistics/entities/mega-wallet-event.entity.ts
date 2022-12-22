@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { ChainMarketplaceCollectionDto } from '../../collection/dto/chain-marketplace-collection.dto';
+import { CollectionEntity } from '../../collection/entities/collection.entity';
 import { NOT_EXISTS_INT } from '../../common/utils';
+import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
 import NftEventEntity from './nft-event.entity';
 
 export enum MegaWalletEventType {
@@ -23,7 +25,7 @@ export default class MegaWalletEventEntity {
         this.transferPriceInAcudos = new BigNumber(NOT_EXISTS_INT);
     }
 
-    static fromNftEventEntity(nftEventEntity: NftEventEntity, marketplaceCollectionEntity: ChainMarketplaceCollectionDto): MegaWalletEventEntity {
+    static fromNftEventEntity(nftEventEntity: NftEventEntity, marketplaceCollectionEntity: ChainMarketplaceCollectionDto, farmEntity: MiningFarmEntity): MegaWalletEventEntity {
         const megaWalletEventEntity = new MegaWalletEventEntity();
 
         megaWalletEventEntity.nftId = nftEventEntity.nftId ?? megaWalletEventEntity.nftId;
@@ -33,7 +35,7 @@ export default class MegaWalletEventEntity {
         megaWalletEventEntity.fromAddress = nftEventEntity.toAddress ?? megaWalletEventEntity.fromAddress;
 
         // for mint use the mint cudos royalties, else use resale royalties
-        const ownerAddress = marketplaceCollectionEntity.creator;
+        const ownerAddress = farmEntity.resaleFarmRoyaltiesCudosAddress;
         const cudosRoyaltiespercent = nftEventEntity.isMintEvent() === true
             ? marketplaceCollectionEntity.mintRoyalties.find((royalty) => royalty.address !== ownerAddress)
             : marketplaceCollectionEntity.resaleRoyalties.find((royalty) => royalty.address !== ownerAddress)
