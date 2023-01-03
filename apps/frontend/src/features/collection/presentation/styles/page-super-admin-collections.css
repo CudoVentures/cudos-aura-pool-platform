@@ -2,6 +2,10 @@
     padding: 36px var(--page-spacing-h);
 }
 
-.PageSuperAdminCollections .PageContent .TableHeaderRow .SearchInput{
+.PageSuperAdminCollections .PageContent .TableHeaderRow .SearchInput {
     width: 20%;
+}
+
+.PageSuperAdminCollections .PageContent .TableTypePickerHolder {
+    justify-content: center;
 }

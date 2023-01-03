@@ -19,6 +19,9 @@ import Button, { ButtonPadding } from '../../../../core/presentation/components/
 import TopCollections from '../components/TopCollections';
 import SearchIcon from '@mui/icons-material/Search';
 import SuperAdminCollectionsPageStore from '../stores/SuperAdminCollectionsPageStore';
+import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
+import ApprovedCollections from '../components/ApprovedCollections';
+import RejectedCollections from '../components/RejectedCollections';
 
 type Props = {
     superAdminCollectionsPageStore?: SuperAdminCollectionsPageStore
@@ -29,12 +32,6 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
     useEffect(() => {
         superAdminCollectionsPageStore.init();
     }, []);
-
-    const { collectionEntities, collectionDetailsMap, collectionFilterModel } = superAdminCollectionsPageStore;
-
-    function onClickSeeAllCollections() {
-        // TODO: lead where?
-    }
 
     return (
         <PageLayoutComponent
@@ -49,8 +46,20 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
             <PageSuperAdminHeader />
 
             <ColumnLayout className={'PageContent AppContent'} >
-                <div className={'H2 ExtraBold'}>Collections</div>
-                <QueuedCollections dashboardMode={false} />
+                <div className={'Grid GridColumns3'}>
+                    <div className={'H2 ExtraBold'}>Collections</div>
+                    <div className={'TableTypePickerHolder FlexRow'}>
+                        <NavRowTabs className = { 'TableTypePicker' } navTabs={[
+                            createNavRowTab('Approved', superAdminCollectionsPageStore.isSelectedTableApproved(), superAdminCollectionsPageStore.onClickShowApproved),
+                            createNavRowTab('Pending Approval', superAdminCollectionsPageStore.isSelectedTableQueued(), superAdminCollectionsPageStore.onClickShowQueued),
+                            createNavRowTab('Rejected', superAdminCollectionsPageStore.isSelectedTableRejected(), superAdminCollectionsPageStore.onClickShowRejected),
+                        ]} />
+                    </div>
+                    <div></div>
+                </div>
+                {superAdminCollectionsPageStore.isSelectedTableApproved() && <ApprovedCollections dashboardMode={false} />}
+                {superAdminCollectionsPageStore.isSelectedTableQueued() && <QueuedCollections dashboardMode={false} />}
+                {superAdminCollectionsPageStore.isSelectedTableRejected() && <RejectedCollections dashboardMode={false} />}
                 {/* <StyledContainer>
                     <div className={'TableHeaderRow FlexRow SpaceBetween'}>
                         <div className={'H3 Bold'}>Top Collections</div>

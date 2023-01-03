@@ -60,9 +60,9 @@ function RejectedCollections({ rejectedCollectionsStore, viewCollectionModalStor
                 <LoadingIndicator />
             ) : (
                 <Table
-                    legend={['Collection', 'Description', 'Floor Price']}
-                    widths={['25%', '25%', '50%']}
-                    aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]}
+                    legend={['Collection', 'Description', 'Floor Price', 'Action']}
+                    widths={['25%', '25%', '10%', '40%']}
+                    aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_RIGHT]}
                     tableState={rejectedCollectionsStore.collectionsTableState}
                     onClickRow={onClickCollectionRow}
                     showPaging={dashboardMode === false}

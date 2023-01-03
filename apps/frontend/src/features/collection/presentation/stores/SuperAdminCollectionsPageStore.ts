@@ -1,13 +1,15 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import MiningFarmEntity from '../../entities/MiningFarmEntity';
-import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
-import MiningFarmRepo from '../repos/MiningFarmRepo';
-import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import TableState from '../../../../core/presentation/stores/TableState';
 import CollectionFilterModel, { CollectionOrderBy } from '../../utilities/CollectionFilterModel';
 import CollectionRepo from '../repos/CollectionRepo';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity from '../../entities/CollectionEntity';
+
+export enum SuperAdminCollectionsTableType {
+    APPROVED = 1,
+    QUEUED = 2,
+    REJECTED = 3,
+}
 
 export default class SuperAdminCollectionsPageStore {
 
@@ -18,6 +20,7 @@ export default class SuperAdminCollectionsPageStore {
     tableState: TableState
     collectionEntities: CollectionEntity[];
     collectionDetailsMap: Map<string, CollectionDetailsEntity>;
+    selectedTableType: SuperAdminCollectionsTableType;
 
     constructor(collectionsRepo: CollectionRepo) {
         this.collectionsRepo = collectionsRepo;
@@ -26,6 +29,7 @@ export default class SuperAdminCollectionsPageStore {
 
         this.collectionEntities = null;
         this.collectionDetailsMap = null;
+        this.selectedTableType = SuperAdminCollectionsTableType.APPROVED;
 
         makeAutoObservable(this);
     }
@@ -34,6 +38,7 @@ export default class SuperAdminCollectionsPageStore {
         this.collectionFilterModel = new CollectionFilterModel();
         this.collectionEntities = null;
         this.collectionDetailsMap = new Map<string, CollectionDetailsEntity>();
+        this.selectedTableType = SuperAdminCollectionsTableType.APPROVED;
 
         await this.fetchTopCollections();
     }
@@ -60,4 +65,27 @@ export default class SuperAdminCollectionsPageStore {
         this.fetchTopCollections();
     }
 
+    onClickShowApproved = () => {
+        this.selectedTableType = SuperAdminCollectionsTableType.APPROVED;
+    }
+
+    onClickShowQueued = () => {
+        this.selectedTableType = SuperAdminCollectionsTableType.QUEUED;
+    }
+
+    onClickShowRejected = () => {
+        this.selectedTableType = SuperAdminCollectionsTableType.REJECTED;
+    }
+
+    isSelectedTableApproved() {
+        return this.selectedTableType === SuperAdminCollectionsTableType.APPROVED;
+    }
+
+    isSelectedTableQueued() {
+        return this.selectedTableType === SuperAdminCollectionsTableType.QUEUED;
+    }
+
+    isSelectedTableRejected() {
+        return this.selectedTableType === SuperAdminCollectionsTableType.REJECTED;
+    }
 }

@@ -55,7 +55,7 @@ function ApprovedCollections({ approvedCollectionsStore, viewCollectionModalStor
                 createTableCellString(collectionDetailsEntity?.formatFloorPriceInCudos() ?? ''),
                 createTableCell((
                     <Actions height={ActionsHeight.HEIGHT_32}>
-                        <Button color={ButtonColor.SCHEME_GREEN} type={ButtonType.TEXT_INLINE} onClick={onClickDelete.bind(null, collectionEntity)}>
+                        <Button color={ButtonColor.SCHEME_RED} type={ButtonType.TEXT_INLINE} onClick={onClickDelete.bind(null, collectionEntity)}>
                             <Svg svg={DeleteForeverIcon} />
                             Delete collection
                         </Button>
