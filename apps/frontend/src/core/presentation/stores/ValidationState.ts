@@ -13,6 +13,7 @@ export default class ValidationState {
         makeAutoObservable(this);
     }
 
+    @action
     addValidation(errorMessage, checkValidInput: (value) => boolean): InputValidation {
         const inputValidation = new InputValidation();
         inputValidation.errorMessage = errorMessage;
@@ -23,6 +24,7 @@ export default class ValidationState {
         return inputValidation;
     }
 
+    @action
     addEmptyValidation(errorMessage?: string): InputValidation {
         const inputValidation = InputValidation.emptyValidation(errorMessage);
 
@@ -31,6 +33,7 @@ export default class ValidationState {
         return inputValidation;
     }
 
+    @action
     addMatchStringsValidation(errorMessage?: string): InputValidation[] {
         let firstValue = '', secondValue = '';
 
@@ -56,6 +59,7 @@ export default class ValidationState {
         return [firstInputValidation, secondInputValidation];
     }
 
+    @action
     addEmailValidation(errorMessage?: string) {
         const inputValidation = InputValidation.emailValidation(errorMessage);
 
@@ -64,6 +68,7 @@ export default class ValidationState {
         return inputValidation;
     }
 
+    @action
     addPasswordValidation(errorMessage?: string) {
         const inputValidation = InputValidation.passwordValidation(errorMessage);
 
@@ -72,6 +77,7 @@ export default class ValidationState {
         return inputValidation;
     }
 
+    @action
     addCudosAddressValidation(errorMessage?: string) {
         const inputValidation = InputValidation.cudosAddressValidation(errorMessage);
 
@@ -80,6 +86,7 @@ export default class ValidationState {
         return inputValidation;
     }
 
+    @action
     addBitcoinAddressValidation(errorMessage?: string) {
         const inputValidation = InputValidation.bitcoinAddressValidation(errorMessage);
 
@@ -96,11 +103,11 @@ export default class ValidationState {
         return validation !== undefined;
     }
 
-    setShowErrors = (showErrors: boolean) => {
+    setShowErrors = action((showErrors: boolean) => {
         this.inputValidations.forEach((element) => {
             element.showError = showErrors;
         })
-    }
+    })
 }
 
 export class InputValidation {
@@ -119,10 +126,11 @@ export class InputValidation {
         makeAutoObservable(this);
     }
 
-    onChange = (value: any) => {
+    onChange = action((value: any) => {
         this.isError = this.checkValidInput(value) === false;
-    }
+    })
 
+    @action
     setErrorMessage(errorMessage?: string) {
         if (errorMessage !== undefined) {
             this.errorMessage = errorMessage;
@@ -133,7 +141,7 @@ export class InputValidation {
         const validation = new InputValidation();
 
         validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => value !== null && value !== undefined && value !== S.Strings.EMPTY;
+        validation.checkValidInput = action((value) => value !== null && value !== undefined && value !== S.Strings.EMPTY);
 
         return validation;
     }
@@ -142,13 +150,13 @@ export class InputValidation {
         const validation = new InputValidation();
 
         validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => {
+        validation.checkValidInput = action((value) => {
             const result = value.toLowerCase()
                 .match(
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                 )
             return result !== null;
-        };
+        });
         return validation;
     }
 
@@ -156,7 +164,7 @@ export class InputValidation {
         const validation = new InputValidation();
 
         validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => value.length >= 6;
+        validation.checkValidInput = action((value) => value.length >= 6);
 
         return validation;
     }
@@ -165,7 +173,7 @@ export class InputValidation {
         const validation = new InputValidation();
 
         validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => isValidAddress(value);
+        validation.checkValidInput = action((value) => isValidAddress(value));
 
         return validation;
     }
@@ -174,7 +182,7 @@ export class InputValidation {
         const validation = new InputValidation();
 
         validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = (value) => validate(value);
+        validation.checkValidInput = action((value) => validate(value));
 
         return validation;
     }

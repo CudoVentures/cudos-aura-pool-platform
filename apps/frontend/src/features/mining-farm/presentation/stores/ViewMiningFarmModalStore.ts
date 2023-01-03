@@ -89,28 +89,28 @@ export default class ViewMiningFarmModalStore extends ModalStore {
 
     }
 
-    hide = () => {
+    hide = action(() => {
         this.miningFarmEntity = null;
 
         super.hide();
-    }
+    })
 
-    setEditedCudosMintRoyalties = (value) => {
+    setEditedCudosMintRoyalties = action((value) => {
         this.editedCudosMintRoyalties = Number(value);
-    }
+    })
 
-    setEditedCudosResaleRoyalties = (value) => {
+    setEditedCudosResaleRoyalties = action((value) => {
         this.editedCudosResaleRoyalties = Number(value);
-    }
+    })
 
     areChangesMade(): boolean {
         return this.editedCudosMintRoyalties !== this.miningFarmEntity.cudosMintNftRoyaltiesPercent
-            || this.editedCudosResaleRoyalties !== this.miningFarmEntity.cudosResaleNftRoyaltiesPercent
+            || this.editedCudosResaleRoyalties !== this.miningFarmEntity.cudosResaleNftRoyaltiesPercent;
     }
 
     saveChanges = async () => {
-        this.miningFarmEntity.cudosMintNftRoyaltiesPercent = this.editedCudosMintRoyalties
-        this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.editedCudosResaleRoyalties
+        this.miningFarmEntity.cudosMintNftRoyaltiesPercent = this.editedCudosMintRoyalties;
+        this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.editedCudosResaleRoyalties;
         await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
         this.hide();
     }

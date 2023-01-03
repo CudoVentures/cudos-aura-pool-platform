@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
 import BitcoinRepo from '../repos/BitcoinRepo';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
@@ -34,9 +34,14 @@ export default class BitcoinStore {
             return;
         }
 
-        this.inited = true;
-        this.bitcoinCoinGeckoEntity = await this.bitcoinRepo.fetchBitcoinCoinGecko();
-        this.bitcoinBlockchainInfoEntity = await this.bitcoinRepo.fetchBitcoinBlockchainInfo();
+        const bitcoinCoinGeckoEntity = await this.bitcoinRepo.fetchBitcoinCoinGecko();
+        const bitcoinBlockchainInfoEntity = await this.bitcoinRepo.fetchBitcoinBlockchainInfo();
+
+        runInAction(() => {
+            this.inited = true;
+            this.bitcoinCoinGeckoEntity = bitcoinCoinGeckoEntity;
+            this.bitcoinBlockchainInfoEntity = bitcoinBlockchainInfoEntity;
+        })
     }
 
     getBitcoinPriceInUsd(): number {

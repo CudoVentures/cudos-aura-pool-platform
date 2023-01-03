@@ -1,4 +1,4 @@
-import { computed, makeAutoObservable, runInAction } from 'mobx';
+import { action, computed, makeAutoObservable, runInAction } from 'mobx';
 
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
@@ -30,12 +30,11 @@ export default class RewardsCalculatorStore {
         makeAutoObservable(this);
     }
 
+    @action
     resetDefaults() {
-        runInAction(() => {
-            this.selectedMiningFarmEntity = null;
-            this.networkDifficultyEdit = null;
-            this.hashPowerInThInputValue = '0';
-        })
+        this.selectedMiningFarmEntity = null;
+        this.networkDifficultyEdit = null;
+        this.hashPowerInThInputValue = '0';
     }
 
     isDefault() {
@@ -57,6 +56,7 @@ export default class RewardsCalculatorStore {
     async init() {
         await this.bitcoinStore.init();
         const miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
+
         runInAction(() => {
             this.miningFarmsEntities = miningFarmsEntities
         })
@@ -74,51 +74,42 @@ export default class RewardsCalculatorStore {
         return parseFloat(this.hashPowerInThInputValue);
     }
 
-    onChangeMiningFarm = (selectedMiningFarmId: string) => {
-        runInAction(() => {
-            this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
-                return entity.id === selectedMiningFarmId;
-            });
-
-            this.hashPowerInThInputValue = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+    onChangeMiningFarm = action((selectedMiningFarmId: string) => {
+        this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
+            return entity.id === selectedMiningFarmId;
         });
-    }
 
-    onChangeHashPowerInInput = (value: string) => {
-        runInAction(() => {
+        this.hashPowerInThInputValue = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+    })
 
-            if (value === '') {
-                this.hashPowerInThInputValue = '0';
-                return;
-            }
+    onChangeHashPowerInInput = action((value: string) => {
+        if (value === '') {
+            this.hashPowerInThInputValue = '0';
+            return;
+        }
 
-            const floatValue = parseFloat(value);
-            if (floatValue < 0) {
-                value = '0';
-            }
-            if (floatValue > this.selectedMiningFarmEntity.hashPowerInTh) {
-                value = this.selectedMiningFarmEntity.hashPowerInTh.toString();
-            }
+        const floatValue = parseFloat(value);
+        if (floatValue < 0) {
+            value = '0';
+        }
+        if (floatValue > this.selectedMiningFarmEntity.hashPowerInTh) {
+            value = this.selectedMiningFarmEntity.hashPowerInTh.toString();
+        }
 
-            while (value[0] === '0') {
-                value = value.substring(1);
-            }
+        while (value[0] === '0') {
+            value = value.substring(1);
+        }
 
-            this.hashPowerInThInputValue = value;
-        });
-    }
+        this.hashPowerInThInputValue = value;
+    })
 
-    onChangeHashPowerInThSlider = (event: MouseEvent, value: number) => {
-        runInAction(() => {
-            this.hashPowerInThInputValue = value.toString();
-        });
-    }
+    onChangeHashPowerInThSlider = action((event: MouseEvent, value: number) => {
+        this.hashPowerInThInputValue = value.toString();
+    })
 
-    onChangeNetworkDifficulty = (input: string) => {
-        runInAction(() => {
-            this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
-        });
-    }
+    onChangeNetworkDifficulty = action((input: string) => {
+        this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
+    })
 
     getMaintenanceFeePerThInBtc(): BigNumber {
         if (this.selectedMiningFarmEntity === null) {
@@ -129,7 +120,7 @@ export default class RewardsCalculatorStore {
     }
 
     getHashPowerInThInputValue(): number {
-        return this.hashPowerInThInputValue
+        return parseInt(this.hashPowerInThInputValue);
     }
 
     formatCost(): string {

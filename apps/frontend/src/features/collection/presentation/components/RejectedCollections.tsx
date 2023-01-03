@@ -48,7 +48,7 @@ function RejectedCollections({ rejectedCollectionsStore, viewCollectionModalStor
     return (
         <StyledLayout
             className={'RejectedCollections'}
-            title={'Collections Waiting Approval'} >
+            title={'Rejected Collections'} >
             {collectionEntities === null ? (
                 <LoadingIndicator />
             ) : (

@@ -1,5 +1,5 @@
 import S from '../../../../core/utilities/Main';
-import { action, makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable, runInAction } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
@@ -27,7 +27,7 @@ export default class ResellNftModalStore extends ModalStore {
     @observable modalStage: ModalStage;
     @observable originalPaymentSchedule: number;
     @observable autoPay: number;
-    txHash: string;
+    @observable txHash: string;
 
     constructor(nftRepo: NftRepo, walletStore: WalletStore) {
         super();
@@ -44,9 +44,9 @@ export default class ResellNftModalStore extends ModalStore {
         this.nftEntity = null;
         this.collectionEntity = null;
         this.cudosPrice = S.NOT_EXISTS;
-        this.price = new BigNumber(S.NOT_EXISTS);
+        this.price = new BigNumber(0);
         this.priceDisplay = S.Strings.EMPTY;
-        this.modalStage = S.NOT_EXISTS;
+        this.modalStage = ModalStage.PREVIEW;
         this.autoPay = S.INT_FALSE;
         this.originalPaymentSchedule = S.INT_FALSE;
         this.txHash = S.Strings.EMPTY;
@@ -66,42 +66,39 @@ export default class ResellNftModalStore extends ModalStore {
 
     @action
     showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
+        this.resetValues();
         this.nftEntity = nftEntity;
         this.cudosPrice = cudosPrice;
         this.collectionEntity = collectionEntity;
-        this.modalStage = ModalStage.PREVIEW;
-        this.price = new BigNumber(0);
-        this.priceDisplay = '0';
-        this.autoPay = S.INT_FALSE;
-        this.originalPaymentSchedule = S.INT_FALSE;
-
         this.show();
     }
 
-    hide = () => {
+    hide = action(() => {
         this.nullateValues();
         super.hide();
-    }
+    })
 
-    setPrice = (price: string) => {
+    setPrice = action((price: string) => {
         this.priceDisplay = price;
         this.price = new BigNumber(price);
-    }
+    })
 
-    toggleAutoPay = () => {
+    toggleAutoPay = action(() => {
         this.autoPay = this.autoPay === S.INT_TRUE ? S.INT_FALSE : S.INT_TRUE;
-    }
+    })
 
-    toggleOriginalPaymentSchedule = () => {
+    toggleOriginalPaymentSchedule = action(() => {
         this.originalPaymentSchedule = this.originalPaymentSchedule === S.INT_TRUE ? S.INT_FALSE : S.INT_TRUE;
-    }
+    })
 
-    onClickSubmitForSell = async () => {
+    onClickSubmitForSell = action(async () => {
         this.modalStage = ModalStage.PROCESSING;
         this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.price, this.walletStore.ledger);
 
-        this.modalStage = ModalStage.SUCCESS;
-    }
+        runInAction(() => {
+            this.modalStage = ModalStage.SUCCESS;
+        })
+    })
 
     isStagePreview(): boolean {
         return this.modalStage === ModalStage.PREVIEW;

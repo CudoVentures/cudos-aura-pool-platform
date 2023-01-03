@@ -27,6 +27,7 @@ export default class CudosStore {
         }
 
         const cudosDataEntity = await this.cudosRepo.fetchCudosData();
+
         runInAction(() => {
             this.inited = true;
             this.cudosDataEntity = cudosDataEntity;

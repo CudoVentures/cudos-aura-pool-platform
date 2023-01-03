@@ -1,8 +1,11 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
+import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
+import MiningFarmFilterModel from '../../../mining-farm/utilities/MiningFarmFilterModel';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
@@ -13,6 +16,7 @@ import CollectionRepo from '../repos/CollectionRepo';
 export default class QueuedCollectionsStore {
 
     collectionRepo: CollectionRepo;
+    miningFarmRepo: MiningFarmRepo;
     walletStore: WalletStore;
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
@@ -20,11 +24,13 @@ export default class QueuedCollectionsStore {
 
     collectionsTableState: TableState;
 
+    farmEntitiesMap: Map<string, MiningFarmEntity>;
     collectionEntities: CollectionEntity[];
     collectionDetailsMap: Map < string, CollectionDetailsEntity >;
 
-    constructor(collectionRepo: CollectionRepo, nftRepo: NftRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
+    constructor(collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, nftRepo: NftRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.collectionRepo = collectionRepo;
+        this.miningFarmRepo = miningFarmRepo;
         this.walletStore = walletStore;
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
@@ -32,16 +38,20 @@ export default class QueuedCollectionsStore {
 
         this.collectionsTableState = new TableState(0, [], this.fetchCollections, 8);
 
+        this.farmEntitiesMap = new Map<string, MiningFarmEntity>();
         this.collectionEntities = null;
         this.collectionDetailsMap = null;
 
         makeAutoObservable(this);
     }
 
-    init(itemsPerPage: number) {
+    @action
+    async init(itemsPerPage: number) {
         this.collectionsTableState.tableFilterState.from = 0;
         this.collectionsTableState.tableFilterState.itemsPerPage = itemsPerPage;
-        this.fetchCollections();
+        this.farmEntitiesMap = new Map<string, MiningFarmEntity>();
+        await this.fetchCollections();
+        this.fetchMiningFarms();
     }
 
     async fetchCollections() {
@@ -73,6 +83,16 @@ export default class QueuedCollectionsStore {
         });
     }
 
+    async fetchMiningFarms() {
+        const miningFarmEntities = await this.miningFarmRepo.fetchMiningFarmsByIds(this.collectionEntities.map((entity) => entity.farmId));
+
+        runInAction(() => {
+            miningFarmEntities.forEach((miningFarmEntity) => {
+                this.farmEntitiesMap.set(miningFarmEntity.id, miningFarmEntity);
+            })
+        })
+    }
+
     getCollectionDetails(collectionId: string): CollectionDetailsEntity | null {
         return this.collectionDetailsMap.get(collectionId) ?? null;
     }
@@ -83,10 +103,12 @@ export default class QueuedCollectionsStore {
             return;
         }
 
+        const clonedCollectionEntity = collectionEntity.clone();
+        clonedCollectionEntity.markApproved();
+
         try {
+            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
             collectionEntity.markApproved();
-            await this.collectionRepo.approveCollection(collectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
-            await this.fetchCollections();
         } catch (e) {
             this.alertStore.show(e.message);
         }

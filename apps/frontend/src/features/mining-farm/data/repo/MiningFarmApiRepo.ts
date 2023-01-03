@@ -9,6 +9,7 @@ import MiningFarmApi from '../data-sources/MiningFarmApi';
 import S from '../../../../core/utilities/Main';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 import MiningFarmPerformanceEntity from '../../entities/MiningFarmPerformanceEntity';
+import { runInAction } from 'mobx';
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -120,7 +121,10 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         try {
             this.disableActions?.();
             const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity);
-            Object.assign(miningFarmEntity, resultMiningFarmEntity);
+
+            runInAction(() => {
+                Object.assign(miningFarmEntity, resultMiningFarmEntity);
+            })
         } catch (e) {
             const error = parseBackendErrorType(e);
             switch (error) {

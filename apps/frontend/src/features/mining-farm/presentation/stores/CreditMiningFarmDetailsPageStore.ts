@@ -1,5 +1,5 @@
-import { makeAutoObservable, runInAction } from 'mobx';
-import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
+import { action, makeAutoObservable, runInAction } from 'mobx';
+import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
 import MinerEntity from '../../entities/MinerEntity';
@@ -7,7 +7,6 @@ import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import S from '../../../../core/utilities/Main';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
-import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 
 export default class CreditMiningFarmDetailsPageStore {
 
@@ -88,20 +87,21 @@ export default class CreditMiningFarmDetailsPageStore {
             this.minerEntitiesMap = minerEntitiesMap;
             this.energySourceEntitiesMap = energySourceEntitiesMap;
             this.miningFarmEntity = miningFarmEntity ?? MiningFarmEntity.newInstanceWithEmail(this.accountSessionStore.accountEntity.email);
+            this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity?.accountId;
         });
     }
 
-    setStepFarmDetails = () => {
+    setStepFarmDetails = action(() => {
         this.step = CreditMiningFarmDetailsPageStore.STEP_FARM_DETAILS;
-    }
+    })
 
-    setStepReview = () => {
+    setStepReview = action(() => {
         this.step = CreditMiningFarmDetailsPageStore.STEP_REVIEW;
-    }
+    })
 
-    setStepSuccess = () => {
+    setStepSuccess = action(() => {
         this.step = CreditMiningFarmDetailsPageStore.STEP_SUCCESS;
-    }
+    })
 
     isStepFarmDetails(): boolean {
         return this.step === CreditMiningFarmDetailsPageStore.STEP_FARM_DETAILS;
@@ -117,11 +117,8 @@ export default class CreditMiningFarmDetailsPageStore {
 
     finishCreation = async () => {
         try {
-            this.miningFarmEntity.accountId = this.accountSessionStore.accountEntity?.accountId;
             await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
-            runInAction(() => {
-                this.setStepSuccess();
-            });
+            this.setStepSuccess();
         } catch (e) {
             console.log(e);
         }
@@ -170,6 +167,7 @@ export default class CreditMiningFarmDetailsPageStore {
 
         const manufacturerEntity = ManufacturerEntity.newInstance(S.Strings.NOT_EXISTS, this.manufacturerInputValue);
         await this.miningFarmRepo.creditManufacturer(manufacturerEntity);
+
         runInAction(() => {
             this.manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
             this.manufacturerEntities.push(manufacturerEntity);
@@ -185,6 +183,7 @@ export default class CreditMiningFarmDetailsPageStore {
 
         const minerEntity = MinerEntity.newInstance(S.Strings.NOT_EXISTS, this.minerInputValue)
         await this.miningFarmRepo.creditMiner(minerEntity);
+
         runInAction(() => {
             this.minerEntitiesMap.set(minerEntity.minerId, minerEntity);
             this.minerEntities.push(minerEntity);
@@ -200,6 +199,7 @@ export default class CreditMiningFarmDetailsPageStore {
 
         const energySourceEntity = EnergySourceEntity.newInstance(S.Strings.NOT_EXISTS, this.energySourceInputValue);
         await this.miningFarmRepo.creditEnergySource(energySourceEntity);
+
         runInAction(() => {
             this.energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
             this.energySourceEntities.push(energySourceEntity);

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { action, computed, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
@@ -44,30 +44,24 @@ export default class EditUserBtcModalStore extends ModalStore {
     @action
     showSignalWithDefaultCallback(userEntity: UserEntity) {
         const clonedUserEntity = userEntity.clone();
-        this.showSignal(clonedUserEntity, () => {
-            runInAction(() => {
-                userEntity.copy(clonedUserEntity);
-            });
-        });
+        this.showSignal(clonedUserEntity, action(() => {
+            userEntity.copy(clonedUserEntity);
+        }));
     }
 
-    onChangeBitcoinPayoutWalletAddress = (value: string) => {
-        runInAction(() => {
-            this.bitcoinPayoutWalletAddress = value;
-        });
-    }
+    onChangeBitcoinPayoutWalletAddress = action((value: string) => {
+        this.bitcoinPayoutWalletAddress = value;
+    })
 
     isBtcAddressChanged(): boolean {
         return this.bitcoinPayoutWalletAddress !== this.userEntity.bitcoinPayoutWalletAddress;
     }
 
-    hide = () => {
-        runInAction(() => {
-            this.userEntity = null;
-            this.bitcoinPayoutWalletAddress = '';
-            super.hide();
-        });
-    }
+    hide = action(() => {
+        this.userEntity = null;
+        this.bitcoinPayoutWalletAddress = '';
+        super.hide();
+    })
 
     async creditBitcoinPayoutAddress(): Promise < void > {
         if (this.walletStore.isConnected() === false) {
@@ -92,6 +86,7 @@ export default class EditUserBtcModalStore extends ModalStore {
         }
     }
 
+    @action
     async editSessionUser() {
         this.userEntity.bitcoinPayoutWalletAddress = this.bitcoinPayoutWalletAddress;
         await this.accountRepo.editSessionUser(this.userEntity);

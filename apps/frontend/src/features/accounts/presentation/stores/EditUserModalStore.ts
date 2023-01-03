@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import ImageEntity, { PictureType } from '../../../upload-file/entities/ImageEntity';
 import AccountRepo from '../repos/AccountRepo';
@@ -40,21 +40,18 @@ export default class EditUserModalStore extends ModalStore {
     @action
     showSignalWithDefaultCallback(userEntity: UserEntity) {
         const clonedUserEntity = userEntity.clone();
-        this.showSignal(clonedUserEntity, () => {
-            runInAction(() => {
-                userEntity.copy(clonedUserEntity);
-            });
-        });
+        this.showSignal(clonedUserEntity, action(() => {
+            userEntity.copy(clonedUserEntity);
+        }));
     }
 
-    hide = () => {
-        runInAction(() => {
-            this.userEntity = null;
-            this.coverImage = null;
-            this.profileImage = null;
-            super.hide();
-        });
-    }
+    hide = action(() => {
+        this.userEntity = null;
+        this.coverImage = null;
+        this.profileImage = null;
+
+        super.hide();
+    })
 
     @action
     changeCoverImage(base64File: string) {
@@ -66,6 +63,7 @@ export default class EditUserModalStore extends ModalStore {
         this.profileImage = ImageEntity.new(base64File, PictureType.USER_PROFILE);
     }
 
+    @action
     async editSessionUser() {
         this.userEntity.coverImgUrl = this.coverImage.base64;
         this.userEntity.profileImgUrl = this.profileImage.base64;

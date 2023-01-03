@@ -19,6 +19,7 @@ import AnimationContainer from '../../../../core/presentation/components/Animati
 import StyledContainer, { ContainerBackground, ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 
 import '../styles/credit-account-settings.css';
+import { runInAction } from 'mobx';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -76,11 +77,15 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
     }
 
     function onChangeEmail(value) {
-        self.accountEntity.email = value;
+        runInAction(() => {
+            self.accountEntity.email = value;
+        });
     }
 
     function onChangeOwner(value) {
-        self.accountEntity.name = value;
+        runInAction(() => {
+            self.accountEntity.name = value;
+        });
     }
 
     async function onClickChangeEmail() {

@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import StatisticsRepo from '../repos/StatisticsRepo';
@@ -42,20 +42,27 @@ export default class AnalyticsPageStore {
         this.nftEntitiesMap = new Map();
         this.analyticsTableState = new TableState(0, [], this.fetchNftEvents, 10);
 
-        makeAutoObservable(this);
+        makeAutoObservable(this, { nftEventFilterModel: false });
     }
 
     async init() {
         const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
-        this.nftEventFilterModel.miningFarmId = miningFarmEntity.id;
 
-        await this.fetchEarnings();
-        await this.fetchNftEvents();
+        runInAction(async () => {
+            this.nftEventFilterModel.miningFarmId = miningFarmEntity.id;
+
+            await this.fetchEarnings();
+            await this.fetchNftEvents();
+        })
     }
 
     fetchEarnings = async () => {
         const defaultIntervalPickerState = this.defaultIntervalPickerState;
-        this.miningFarmEarningsEntity = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.nftEventFilterModel.miningFarmId, defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+        const miningFarmEarningsEntity = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.nftEventFilterModel.miningFarmId, defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+
+        runInAction(() => {
+            this.miningFarmEarningsEntity = miningFarmEarningsEntity;
+        });
     }
 
     fetchNftEvents = async () => {
@@ -83,7 +90,7 @@ export default class AnalyticsPageStore {
         return this.nftEntitiesMap.get(nftId) ?? null;
     }
 
-    onChangeTableFilter = (value: number) => {
+    onChangeTableFilter = action((value: number) => {
         this.eventType = value;
-    }
+    })
 }

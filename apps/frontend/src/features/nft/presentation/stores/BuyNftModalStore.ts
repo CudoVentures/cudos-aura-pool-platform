@@ -54,9 +54,9 @@ export default class BuyNftModalStore extends ModalStore {
 
     nullateValues() {
         this.nftEntity = null;
+        this.collectionEntity = null;
         this.cudosPrice = null;
         this.recipient = null;
-        this.collectionEntity = null;
         this.modalStage = null;
         this.txHash = null;
     }
@@ -77,22 +77,24 @@ export default class BuyNftModalStore extends ModalStore {
         });
     }
 
-    hide = () => {
+    hide = action(() => {
         this.nullateValues();
         super.hide();
-    }
+    })
 
-    setRecipient = (recipient: string) => {
+    setRecipient = action((recipient: string) => {
         this.recipient = recipient;
-    }
+    })
 
-    buyNft = async () => {
+    buyNft = action(async () => {
         this.modalStage = ModalStage.PROCESSING;
 
         this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger);
 
-        this.modalStage = ModalStage.SUCCESS;
-    }
+        runInAction(() => {
+            this.modalStage = ModalStage.SUCCESS;
+        })
+    })
 
     getTxLink(): string {
         return `${CHAIN_DETAILS.EXPLORER_URL}/${this.txHash}`

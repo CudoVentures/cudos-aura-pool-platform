@@ -121,7 +121,6 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                 navigate(AppRoutes.CREDIT_MINING_FARM);
             });
         } else {
-            creditCollectionStore.initNewNftEntity();
             creditCollectionStore.moveToStepAddNfts();
         }
     }

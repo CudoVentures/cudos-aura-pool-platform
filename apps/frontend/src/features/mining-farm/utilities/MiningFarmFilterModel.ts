@@ -29,6 +29,14 @@ export default class MiningFarmFilterModel {
         makeAutoObservable(this);
     }
 
+    clone(): MiningFarmFilterModel {
+        const model = new MiningFarmFilterModel();
+
+        Object.assign(model, this);
+
+        return model;
+    }
+
     static toJson(entity: MiningFarmFilterModel) {
         if (entity === null) {
             return null;

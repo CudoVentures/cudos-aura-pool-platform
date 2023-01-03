@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { isValidAddress } from 'cudosjs';
 import { action, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../../core/presentation/stores/ModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
@@ -56,7 +55,7 @@ export default class MegaWalletTransferModalStore extends ModalStore {
         this.show();
     }
 
-    hide = () => {
+    hide = action(() => {
         this.amount = null;
         this.transferType = null;
         this.destionationAddress = null;
@@ -64,7 +63,7 @@ export default class MegaWalletTransferModalStore extends ModalStore {
         this.superAdminEntity = null;
 
         super.hide();
-    }
+    })
 
     isTransfer(): boolean {
         return this.transferType === MegaWalletTransferType.TRANSFER;
@@ -90,17 +89,17 @@ export default class MegaWalletTransferModalStore extends ModalStore {
         return this.balance?.toFormat(fmt) ?? '0 CUDOS';
     }
 
-    onClickSetMax = () => {
+    onClickSetMax = action(() => {
         this.amount = this.balance?.toString() ?? '0';
-    }
+    })
 
-    onAddressChange = (input) => {
+    onAddressChange = action((input) => {
         this.destionationAddress = input;
-    }
+    })
 
-    onInputChange = (input) => {
+    onInputChange = action((input) => {
         this.amount = input
-    }
+    })
 
     onSubmit = async () => {
         try {

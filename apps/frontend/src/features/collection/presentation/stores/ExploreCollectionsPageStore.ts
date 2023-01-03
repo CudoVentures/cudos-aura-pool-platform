@@ -1,5 +1,5 @@
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionEntity from '../../entities/CollectionEntity';
@@ -37,9 +37,13 @@ export default class ExploreCollectionsPageStore {
     fetch = async () => {
         this.gridViewState.setIsLoading(true);
 
-        this.collectionFilterModel.from = this.gridViewState.getFrom();
-        this.collectionFilterModel.count = this.gridViewState.getItemsPerPage();
-        const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(this.collectionFilterModel);
+        const collectionFilterModel = new CollectionFilterModel();
+        Object.assign(collectionFilterModel, this.collectionFilterModel);
+
+        collectionFilterModel.from = this.gridViewState.getFrom();
+        collectionFilterModel.count = this.gridViewState.getItemsPerPage();
+
+        const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilterModel);
         const miningFarmEntities = await this.miningFarmRepo.fetchMiningFarmsByIds(collectionEntities.map((collectionEntity) => {
             return collectionEntity.farmId;
         }));
@@ -61,9 +65,9 @@ export default class ExploreCollectionsPageStore {
         return this.miningFarmEntitiesMap.get(miningFarmId)?.name ?? '';
     }
 
-    onChangeSearchWord = (value) => {
+    onChangeSearchWord = action((value) => {
         this.collectionFilterModel.searchString = value;
         this.fetch();
-    }
+    })
 
 }

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
@@ -41,6 +41,7 @@ export default class CollectionEntity {
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
         this.timestampDeletedAt = S.NOT_EXISTS;
+
         makeAutoObservable(this);
     }
 
@@ -94,18 +95,22 @@ export default class CollectionEntity {
         return this.status === CollectionStatus.REJECTED;
     }
 
+    @action
     markQueued() {
         this.status = CollectionStatus.QUEUED;
     }
 
+    @action
     markApproved() {
         this.status = CollectionStatus.APPROVED;
     }
 
+    @action
     markRejected() {
         this.status = CollectionStatus.REJECTED;
     }
 
+    @action
     markDeleted() {
         this.status = CollectionStatus.DELETED;
     }

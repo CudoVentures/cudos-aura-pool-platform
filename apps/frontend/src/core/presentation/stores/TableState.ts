@@ -1,4 +1,4 @@
-import { makeAutoObservable, makeObservable, observable } from 'mobx';
+import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
 import S from '../../utilities/Main';
 
 /* eslint-disable max-classes-per-file */
@@ -33,6 +33,7 @@ export default class TableState {
         return this.tableSortKeyToIndex.get(Math.abs(this.tableFilterState.sortKey)) || S.NOT_EXISTS;
     }
 
+    @action
     setSortMapping(keys: Array < Array < number > >) {
         this.tableSortKeyToIndex.clear();
         this.tableSortIndexToKey.clear();
@@ -47,21 +48,25 @@ export default class TableState {
         return this.tableSortIndexToKey.has(index);
     }
 
+    @action
     updateTableSortDirection() {
         this.tableFilterState.sortKey *= -1;
         this.onUpdateTable();
     }
 
+    @action
     updateTableSort(sortKey: number) {
         this.tableFilterState.sortKey = sortKey;
         this.onUpdateTable();
     }
 
+    @action
     updateTablePage(from: number) {
         this.tableFilterState.from = from;
         this.onUpdateTable();
     }
 
+    @action
     resetTablePaging() {
         this.tableFilterState.from = 0;
     }

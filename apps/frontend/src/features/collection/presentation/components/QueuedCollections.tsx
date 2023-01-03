@@ -53,7 +53,10 @@ function QueuedCollections({ queuedCollectionsStore, viewCollectionModalStore, d
     }
 
     function renderCollectionsRows() {
-        return collectionEntities.filter((collectionEntity) => collectionEntity.isStatusQueued()).map((collectionEntity) => {
+        return collectionEntities.filter((collectionEntity) => {
+            const miningFarmEntity = queuedCollectionsStore.farmEntitiesMap.get(collectionEntity.farmId);
+            return collectionEntity.isStatusQueued() && miningFarmEntity?.isApproved();
+        }).map((collectionEntity) => {
             const collectionDetailsEntity = queuedCollectionsStore.getCollectionDetails(collectionEntity.id);
             return createTableRow([
                 createTableCell((

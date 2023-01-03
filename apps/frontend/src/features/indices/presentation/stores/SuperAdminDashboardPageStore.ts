@@ -52,7 +52,11 @@ export default class SuperAdminDashboardPageStore {
     }
 
     fetchTotalEarnngsEntity = async (): Promise<void> => {
-        this.totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(this.earningsDefaultIntervalPickerState.earningsTimestampFrom, this.earningsDefaultIntervalPickerState.earningsTimestampTo);
+        const totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(this.earningsDefaultIntervalPickerState.earningsTimestampFrom, this.earningsDefaultIntervalPickerState.earningsTimestampTo);
+
+        runInAction(() => {
+            this.totalEarningsEntity = totalEarningsEntity;
+        })
     }
 
     fetchTopPerformingFarmEntities = async (): Promise<void> => {

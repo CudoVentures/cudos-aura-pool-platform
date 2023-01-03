@@ -40,7 +40,6 @@ export default class ViewCollectionModalStore extends ModalStore {
         makeObservable(this);
     }
 
-    @action
     async showSignal(collectionEntity: CollectionEntity) {
         const nftFilterModel = new NftFilterModel();
         nftFilterModel.collectionIds = [collectionEntity.id];
@@ -60,16 +59,16 @@ export default class ViewCollectionModalStore extends ModalStore {
         });
     }
 
-    hide = () => {
+    hide = action(() => {
         this.collectionEntity = null;
         this.nftEntities = null;
 
         super.hide();
-    }
+    })
 
-    setRoyalties = (value) => {
+    setRoyalties = action((value) => {
         this.editedRoyalties = Number(value);
-    }
+    })
 
     areChangesMade() {
         return this.editedRoyalties !== this.collectionEntity.royalties;

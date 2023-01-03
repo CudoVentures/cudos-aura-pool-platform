@@ -1,5 +1,5 @@
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import NftRepo from '../repos/NftRepo';
@@ -34,7 +34,7 @@ export default class ExploreNftsPageStore {
         await this.fetch();
     }
 
-    fetch = async () => {
+    fetch = action(async () => {
         this.gridViewState.setIsLoading(true);
 
         this.nftFilterModel.from = this.gridViewState.getFrom();
@@ -56,15 +56,15 @@ export default class ExploreNftsPageStore {
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
         });
-    }
+    })
 
     getCollectioName(collectionId: string): string {
         return this.collectionEntitiesMap.get(collectionId)?.name ?? '';
     }
 
-    onChangeSearchWord = (value) => {
+    onChangeSearchWord = action((value) => {
         this.nftFilterModel.searchString = value;
         this.fetch();
-    }
+    })
 
 }

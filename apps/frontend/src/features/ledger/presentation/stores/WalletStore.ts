@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
+import { action, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx';
 import { KeplrWallet, Ledger, CosmostationWallet, StdSignature } from 'cudosjs';
 import S from '../../../../core/utilities/Main';
 import { CHAIN_DETAILS, SIGN_NONCE } from '../../../../core/utilities/Constants';
@@ -75,9 +75,13 @@ export default class WalletStore {
             await this.ledger.connect();
             sessionStorage.setItem(SESSION_STORAGE_WALLET_KEY, ledgerType);
 
-            this.address = this.ledger.accountAddress;
-            this.name = await this.ledger.getName();
-            this.loadBalance(); // to not wait for it
+            const name = await this.ledger.getName();
+
+            runInAction(() => {
+                this.name = name;
+                this.address = this.ledger.accountAddress;
+                this.loadBalance(); // to not wait for it
+            })
         } catch (ex) {
             console.log(ex);
             await this.disconnect();
@@ -131,9 +135,15 @@ export default class WalletStore {
 
     private async loadBalance(): Promise < void > {
         try {
-            this.balance = await this.ledger?.getBalance() ?? new BigNumber(0);
+            const balance = await this.ledger?.getBalance() ?? new BigNumber(0);
+
+            runInAction(() => {
+                this.balance = balance;
+            })
         } catch (ex) {
-            this.balance = new BigNumber(0);
+            runInAction(() => {
+                this.balance = new BigNumber(0);
+            });
         }
     }
 

@@ -40,8 +40,9 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
 
         resellNftModalStore.onClickSubmitForSell();
     }
+
     function PreviewContent() {
-        return (
+        return nftEntity !== null ? (
             <>
                 <div className={'H3 Bold'}>Resell NFT</div>
                 <div className={'BorderContainer FlexRow'}>
@@ -87,7 +88,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                     <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
                 </Actions>
             </>
-        )
+        ) : '';
     }
 
     function ProcessingContent() {

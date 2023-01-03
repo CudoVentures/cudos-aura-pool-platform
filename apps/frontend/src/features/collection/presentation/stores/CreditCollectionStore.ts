@@ -1,7 +1,7 @@
 import S from '../../../../core/utilities/Main';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
-import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
+import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
 import BigNumber from 'bignumber.js';
 import NftEntity from '../../../nft/entities/NftEntity';
@@ -113,38 +113,48 @@ export default class CreditCollectionStore {
     }
 
     async fetchCollectionData(collectionId: string) {
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+
+        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
         nftFilter.count = Number.MAX_SAFE_INTEGER;
-
         const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
-        this.nftEntities = nftEntities;
+
+        runInAction(() => {
+            this.nftEntities = nftEntities;
+            this.collectionEntity = collectionEntity;
+        })
     }
 
     async fetchMiningFarmDetails() {
         try {
-            this.miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.collectionEntity.farmId);
-            this.miningFarmRemainingHashPower = this.miningFarmDetailsEntity.remainingHashPowerInTH;
-            if (this.collectionEntity.isNew() === false) {
-                this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
-            }
+            const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.collectionEntity.farmId);
+
+            runInAction(() => {
+                this.miningFarmDetailsEntity = miningFarmDetailsEntity;
+                this.miningFarmRemainingHashPower = miningFarmDetailsEntity.remainingHashPowerInTH;
+                if (this.collectionEntity.isNew() === false) {
+                    this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
+                }
+            })
         } catch (e) {
             console.log(e);
         }
     }
 
-    moveToStepDetails = () => {
+    moveToStepDetails = action(() => {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
-    }
+    })
 
-    moveToStepAddNfts = () => {
+    moveToStepAddNfts = action(() => {
+        this.initNewNftEntity();
         this.creditStep = CreditCollectionDetailsSteps.ADD_NFTS;
-    }
+    })
 
-    moveToStepFinish = () => {
+    moveToStepFinish = action(() => {
         this.creditStep = CreditCollectionDetailsSteps.FINISH
-    }
+    })
 
     isStepDetails(): boolean {
         return this.creditStep === CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -214,32 +224,32 @@ export default class CreditCollectionStore {
     }
 
     // on change collection
-    onChangeCollectionName = (inputValue: string) => {
+    onChangeCollectionName = action((inputValue: string) => {
         this.collectionEntity.name = inputValue;
-    }
+    })
 
-    onChangeCollectionDescription = (inputValue: string) => {
+    onChangeCollectionDescription = action((inputValue: string) => {
         this.collectionEntity.description = inputValue;
-    }
+    })
 
     // onChangeCollectionPayoutAddress = (inputValue: string) => {
     //     this.collectionEntity.payoutAddress = inputValue;
     // }
 
     // on change nft
-    onChangeSelectedNftName = (nftName: string) => {
+    onChangeSelectedNftName = action((nftName: string) => {
         this.selectedNftEntity.name = nftName;
-    }
+    })
 
-    onChangeSelectedNftHashPowerInTh = (inputValue: string) => {
+    onChangeSelectedNftHashPowerInTh = action((inputValue: string) => {
         this.selectedNftHashingPowerInThInputValue = inputValue;
         this.selectedNftEntity.hashPowerInTh = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
-    }
+    })
 
-    onChangeSelectedNftPriceInCudos = (inputValue: string) => {
+    onChangeSelectedNftPriceInCudos = action((inputValue: string) => {
         this.selectedNftPriceInCudosInputValue = inputValue;
         this.selectedNftEntity.priceInAcudos = inputValue !== '' ? ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(new BigNumber(inputValue)) : null;
-    }
+    })
 
     // onChangeSelectedNftRoyalties = (inputValue: string) => {
     //     this.selectedNftEntity.farmRoyalties = inputValue !== '' ? parseInt(inputValue) : S.NOT_EXISTS;
@@ -250,9 +260,9 @@ export default class CreditCollectionStore {
     //     this.selectedNftEntity.maintenanceFeeInBtc = inputValue !== '' ? new BigNumber(inputValue) : null;
     // }
 
-    onChangeSelectedNftExpirationDate = (expirationDateTimestamp: Date) => {
+    onChangeSelectedNftExpirationDate = action((expirationDateTimestamp: Date) => {
         this.selectedNftEntity.expirationDateTimestamp = expirationDateTimestamp !== null ? expirationDateTimestamp.getTime() : S.NOT_EXISTS;
-    }
+    })
 
     // nft get input value
     getSelectedNftName() {
@@ -276,6 +286,7 @@ export default class CreditCollectionStore {
     }
 
     // nft controls
+    @action
     onClickEditNft(nftEntity: NftEntity) {
         this.selectedNftEntity = nftEntity.cloneDeep();
 
@@ -286,18 +297,21 @@ export default class CreditCollectionStore {
 
     onClickSendForApproval = async () => {
         await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
-        this.collectionEntity.markQueued();
+
+        runInAction(() => {
+            this.collectionEntity.markQueued();
+        })
     }
 
     onClickSave = async () => {
         await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
     }
 
-    onClickDeleteNft = (nftEntityId: string) => {
+    onClickDeleteNft = action((nftEntityId: string) => {
         this.nftEntities = this.nftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
-    }
+    })
 
-    onClickAddToCollection = () => {
+    onClickAddToCollection = action(() => {
         if (this.selectedNftEntity.isNew() === false) {
             const existingNftEntity = this.nftEntities.find((nftEntity: NftEntity) => nftEntity.id === this.selectedNftEntity.id)
             existingNftEntity.copyDeepFrom(this.selectedNftEntity);
@@ -307,6 +321,6 @@ export default class CreditCollectionStore {
         }
 
         this.initNewNftEntity();
-    }
+    })
 
 }

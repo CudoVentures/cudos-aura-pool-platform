@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
@@ -28,16 +28,18 @@ export default class SuperAdminMningFarmsPageStore {
         makeAutoObservable(this);
     }
 
+    @action
     async init() {
         this.miningFarmFilterModel = new MiningFarmFilterModel();
         await this.fetchMiningFarms();
     }
 
     fetchMiningFarms = async () => {
-        this.miningFarmFilterModel.from = this.tableState.tableFilterState.from;
-        this.miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
+        const miningFarmFilterModel = this.miningFarmFilterModel.clone();
+        miningFarmFilterModel.from = this.tableState.tableFilterState.from;
+        miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
 
-        const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(this.miningFarmFilterModel)
+        const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilterModel)
         const miningFarmDetailsEntities = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id));
         const topPerformingFarmsDetailsMap = new Map();
         miningFarmDetailsEntities.forEach((entity) => {
@@ -45,16 +47,18 @@ export default class SuperAdminMningFarmsPageStore {
         })
 
         runInAction(() => {
+            this.miningFarmFilterModel.from = this.tableState.tableFilterState.from;
+            this.miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
             this.miningFarmEntities = miningFarmEntities;
             this.topPerformingFarmsDetailsMap = topPerformingFarmsDetailsMap;
             this.tableState.tableFilterState.total = total;
         });
     }
 
-    onChangeSearchWord = (value) => {
+    onChangeSearchWord = action((value) => {
         this.miningFarmFilterModel.searchString = value;
         this.fetchMiningFarms();
-    }
+    })
 
     getMiningFarmDetails(id: string): MiningFarmDetailsEntity {
         return this.topPerformingFarmsDetailsMap.get(id) ?? null;
