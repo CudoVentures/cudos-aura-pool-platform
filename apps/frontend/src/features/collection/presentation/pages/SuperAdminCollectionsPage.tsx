@@ -38,8 +38,8 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
 
     return (
         <PageLayoutComponent
-            className = { 'PageSuperAdminCollections' }
-            modals = {
+            className={'PageSuperAdminCollections'}
+            modals={
                 <>
                     <ChangePasswordModal />
                     <ViewCollectionModal />
@@ -50,8 +50,8 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
 
             <ColumnLayout className={'PageContent AppContent'} >
                 <div className={'H2 ExtraBold'}>Collections</div>
-                <QueuedCollections dashboardMode = { false } />
-                <StyledContainer>
+                <QueuedCollections dashboardMode={false} />
+                {/* <StyledContainer>
                     <div className={'TableHeaderRow FlexRow SpaceBetween'}>
                         <div className={'H3 Bold'}>Top Collections</div>
                         <Input
@@ -82,7 +82,7 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
                             See All Collections
                         </Button>
                     </Actions>
-                </StyledContainer>
+                </StyledContainer> */}
             </ColumnLayout>
 
         </PageLayoutComponent>

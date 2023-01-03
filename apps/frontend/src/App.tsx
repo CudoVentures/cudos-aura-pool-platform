@@ -59,6 +59,8 @@ import MegaWalletBalanceStore from './features/accounts/presentation/stores/Mega
 import EditUserModalStore from './features/accounts/presentation/stores/EditUserModalStore';
 import EditUserBtcModalStore from './features/accounts/presentation/stores/EditUserBtcModalStore';
 import SuperAdminAnalyticsPageStore from './features/analytics/presentation/stores/SuperAdminAnalyticsPageStore';
+import ApprovedCollectionsStore from './features/collection/presentation/stores/ApprovedCollectionsStore';
+import RejectedCollectionsStore from './features/collection/presentation/stores/RejectedCollectionsStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -101,6 +103,8 @@ const creditCollectionStore = new CreditCollectionStore(accountSessionStore, col
 const visitorStore = new VisitorStore(visitorRepo);
 const queuedMiningFarmsStore = new QueuedMiningFarmsStores(miningFarmRepo, accountSessionStore);
 const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
+const approvedCollectionsStore = new ApprovedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
+const rejectedCollectionsStore = new RejectedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
 const superAdminMegaWalletPageStore = new SuperAdminMegaWalletPageStore(cudosRepo, statisticsRepo, accountSessionStore);
 const superAdminMiningFarmsPageStore = new SuperAdminMningFarmsPageStore(miningFarmRepo);
 const editMiningFarmModalStore = new EditMiningFarmModalStore(miningFarmRepo);
@@ -155,49 +159,51 @@ const App = () => {
     return (
         <StrictMode>
             <Provider
-                appStore = { appStore }
-                alertStore = { alertStore }
-                snackStore = { snackStore }
-                walletStore = { walletStore }
-                bitcoinStore = { bitcoinStore }
-                cudosStore = { cudosStore }
-                categoriesStore = { categoriesStore }
-                accountSessionStore = { accountSessionStore }
-                exampleModalStore = { exampleModalStore }
-                rewardsCalculatorStore = { rewardsCalculatorStore }
-                exploreCollectionsPageStore = { exploreCollectionsPageStore }
-                exploreMiningFarmsPageStore = { exploreMiningFarmsPageStore }
-                exploreNftsPageStore = { exploreNftsPageStore }
-                marketplaceStore = { marketplaceStore }
-                viewNftPageStore = { viewNftPageStore }
-                creditCollectionPageStore = { creditCollectionPageStore }
-                creditMiningFarmPageStore = { creditMiningFarmPageStore }
-                userProfilePageStore = { userProfilePageStore }
-                buyNftModalStore = { buyNftModalStore }
-                resellNftModalStore = { resellNftModalStore }
-                editMiningFarmModalStore = { editMiningFarmModalStore }
-                editUserModalStore = { editUserModalStore }
-                editUserBtcModalStore = { editUserBtcModalStore }
-                creditCollectionSuccessModalStore = { creditCollectionSuccessModalStore }
-                creditMiningFarmDetailsPageStore = { creditMiningFarmDetailsPageStore }
-                superAdminDashboardPageStore = { superAdminDashboardPageStore }
-                creditCollectionStore = { creditCollectionStore }
-                visitorStore = { visitorStore }
-                queuedMiningFarmsStore = { queuedMiningFarmsStore }
-                queuedCollectionsStore = { queuedCollectionsStore }
-                analyticsPageStore = { analyticsPageStore }
-                superAdminAnalyticsPageStore = { superAdminAnalyticsPageStore }
-                viewCollectionModalStore = { viewCollectionModalStore }
-                viewMiningFarmModalStore = { viewMiningFarmModalStore }
-                changePasswordModalStore = { changePasswordModalStore }
-                walletSelectModalStore = { walletSelectModalStore }
-                superAdminMegaWalletPageStore = { superAdminMegaWalletPageStore }
-                valueChangeModalStore = { valueChangeModalStore }
-                megaWalletSettingsModalStore = { megaWalletSettingsModalStore }
-                megaWalletTransferModalStore = { megaWalletTransferModalStore }
-                superAdminMiningFarmsPageStore = { superAdminMiningFarmsPageStore }
-                superAdminCollectionsPageStore = { superAdminCollectionsPageStore }
-                megaWalletBalanceStore = { megaWalletBalanceStore }
+                appStore={appStore}
+                alertStore={alertStore}
+                snackStore={snackStore}
+                walletStore={walletStore}
+                bitcoinStore={bitcoinStore}
+                cudosStore={cudosStore}
+                categoriesStore={categoriesStore}
+                accountSessionStore={accountSessionStore}
+                exampleModalStore={exampleModalStore}
+                rewardsCalculatorStore={rewardsCalculatorStore}
+                exploreCollectionsPageStore={exploreCollectionsPageStore}
+                exploreMiningFarmsPageStore={exploreMiningFarmsPageStore}
+                exploreNftsPageStore={exploreNftsPageStore}
+                marketplaceStore={marketplaceStore}
+                viewNftPageStore={viewNftPageStore}
+                creditCollectionPageStore={creditCollectionPageStore}
+                creditMiningFarmPageStore={creditMiningFarmPageStore}
+                userProfilePageStore={userProfilePageStore}
+                buyNftModalStore={buyNftModalStore}
+                resellNftModalStore={resellNftModalStore}
+                editMiningFarmModalStore={editMiningFarmModalStore}
+                editUserModalStore={editUserModalStore}
+                editUserBtcModalStore={editUserBtcModalStore}
+                creditCollectionSuccessModalStore={creditCollectionSuccessModalStore}
+                creditMiningFarmDetailsPageStore={creditMiningFarmDetailsPageStore}
+                superAdminDashboardPageStore={superAdminDashboardPageStore}
+                creditCollectionStore={creditCollectionStore}
+                visitorStore={visitorStore}
+                queuedMiningFarmsStore={queuedMiningFarmsStore}
+                queuedCollectionsStore={queuedCollectionsStore}
+                analyticsPageStore={analyticsPageStore}
+                superAdminAnalyticsPageStore={superAdminAnalyticsPageStore}
+                viewCollectionModalStore={viewCollectionModalStore}
+                viewMiningFarmModalStore={viewMiningFarmModalStore}
+                changePasswordModalStore={changePasswordModalStore}
+                walletSelectModalStore={walletSelectModalStore}
+                superAdminMegaWalletPageStore={superAdminMegaWalletPageStore}
+                valueChangeModalStore={valueChangeModalStore}
+                megaWalletSettingsModalStore={megaWalletSettingsModalStore}
+                megaWalletTransferModalStore={megaWalletTransferModalStore}
+                superAdminMiningFarmsPageStore={superAdminMiningFarmsPageStore}
+                superAdminCollectionsPageStore={superAdminCollectionsPageStore}
+                megaWalletBalanceStore={megaWalletBalanceStore}
+                approvedCollectionsStore={approvedCollectionsStore}
+                rejectedCollectionsStore={rejectedCollectionsStore}
             >
                 <BrowserRouter>
                     <AppRouter />
