@@ -135,6 +135,7 @@ export class CollectionController {
                     collectionEntity.markQueued();
                 }
                 collectionEntityResult = await this.collectionService.updateOne(collectionId, collectionEntity, req.transaction);
+
                 const tempNftFilterEntity = new NftFilterEntity();
                 tempNftFilterEntity.collectionIds = [collectionId.toString()];
                 const { nftEntities: collectionDbNftEntities } = await this.nftService.findByFilter(null, tempNftFilterEntity);
@@ -146,8 +147,8 @@ export class CollectionController {
                 // CREATE OR UPDATE rest
                 const nftsToCreateOrEdit = nftEntities.map(async (nftEntity: NftEntity) => {
                     // not a new nftEntity
-                    if (!nftEntity.isNew()) {
-                        return this.nftService.updateOne(nftEntity.id, nftEntity, req.transaction)
+                    if (nftEntity.isNew() === false) {
+                        return this.nftService.updateOne(nftEntity.id, nftEntity, req.transaction);
                     }
 
                     nftEntity.collectionId = collectionEntityResult.id;
@@ -218,7 +219,6 @@ export class CollectionController {
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
             this.dataService.cleanUpNewUris(oldUris, newUris);
-
             const errMessage = ex.response?.message;
             switch (errMessage) {
                 case ERROR_TYPES.COLLECTION_DENOM_EXISTS_ERROR:

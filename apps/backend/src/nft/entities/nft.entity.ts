@@ -39,7 +39,8 @@ export default class NftEntity {
     }
 
     isNew(): boolean {
-        return this.id === '';
+        const idAsNumber = parseInt(this.id);
+        return Number.isNaN(idAsNumber) === false && idAsNumber < 0;
     }
 
     isMinted(): boolean {
