@@ -77,19 +77,15 @@ export default class ApprovedCollectionsStore {
         return this.collectionDetailsMap.get(collectionId) ?? null;
     }
 
-    async deleteCollection(collectionEntity: CollectionEntity) {
-        try {
-            const collectionClone = collectionEntity.clone();
+    // async deleteCollection(collectionEntity: CollectionEntity) {
+    //     try {
+    //         const collectionClone = collectionEntity.clone();
 
-            collectionClone.markRejected();
-            const nftFilter = new NftFilterModel();
-            nftFilter.collectionIds = [collectionClone.id];
-
-            const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
-            await this.collectionRepo.creditCollection(collectionClone, nftEntities);
-            collectionEntity.markRejected();
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    //         collectionClone.markRejected();
+    //         await this.collectionRepo.editCollection(collectionClone);
+    //         collectionEntity.markRejected();
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
 }

@@ -48,7 +48,7 @@ export default class CreditMiningFarmPageStore {
         this.queuedCollectionsTableState = new TableState(S.NOT_EXISTS, [], this.fetchQueuedCollections, 5);
         this.approvedCollectionsTableState = new TableState(S.NOT_EXISTS, [], this.fetchApprovedCollections, 5);
         this.collectionFilterModel = new CollectionFilterModel();
-        this.collectionFilterModel.markAnyCollectins();
+        this.collectionFilterModel.markApprovedCollectins();
 
         this.inited = false;
         this.miningFarmEntity = null;
@@ -75,6 +75,9 @@ export default class CreditMiningFarmPageStore {
 
         if (this.miningFarmEntity !== null) {
             this.collectionFilterModel.farmId = this.miningFarmEntity.id;
+            if (this.accountSessionStore.accountEntity?.accountId === this.miningFarmEntity.accountId) {
+                this.collectionFilterModel.markAnyCollectins();
+            }
             await this.fetchMiningFarmDetails();
             await this.fetchApprovedCollections();
             await this.fetchAnyCollections();

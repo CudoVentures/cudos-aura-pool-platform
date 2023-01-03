@@ -1,28 +1,26 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react'
 
+import SuperAdminCollectionsPageStore from '../stores/SuperAdminCollectionsPageStore';
+
 import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
 import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import QueuedCollections from '../components/QueuedCollections';
 import ViewCollectionModal from '../components/ViewCollectionModal';
 import ChangePasswordModal from '../../../accounts/presentation/components/ChangePasswordModal';
-
-import '../styles/page-super-admin-collections.css'
-import SuperAdminCollectionsPageStore from '../stores/SuperAdminCollectionsPageStore';
 import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 import ApprovedCollections from '../components/ApprovedCollections';
 import RejectedCollections from '../components/RejectedCollections';
+import RowLayout from '../../../../core/presentation/components/RowLayout';
+
+import '../styles/page-super-admin-collections.css'
 
 type Props = {
     superAdminCollectionsPageStore?: SuperAdminCollectionsPageStore
 }
 
 function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
-
-    useEffect(() => {
-        superAdminCollectionsPageStore.init();
-    }, []);
 
     return (
         <PageLayoutComponent
@@ -36,8 +34,8 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
 
             <PageSuperAdminHeader />
 
-            <ColumnLayout className={'PageContent AppContent'} >
-                <div className={'Grid GridColumns3'}>
+            <ColumnLayout className={'PageContent PageContentDefaultPadding AppContent'} >
+                <RowLayout numColumns = { 3 } >
                     <div className={'H2 ExtraBold'}>Collections</div>
                     <div className={'TableTypePickerHolder FlexRow'}>
                         <NavRowTabs className = { 'TableTypePicker' } navTabs={[
@@ -47,7 +45,7 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
                         ]} />
                     </div>
                     <div></div>
-                </div>
+                </RowLayout>
                 {superAdminCollectionsPageStore.isSelectedTableApproved() && <ApprovedCollections dashboardMode={false} />}
                 {superAdminCollectionsPageStore.isSelectedTableQueued() && <QueuedCollections dashboardMode={false} />}
                 {superAdminCollectionsPageStore.isSelectedTableRejected() && <RejectedCollections dashboardMode={false} />}

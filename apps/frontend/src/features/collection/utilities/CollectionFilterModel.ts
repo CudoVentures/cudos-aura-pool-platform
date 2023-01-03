@@ -41,6 +41,10 @@ export default class CollectionFilterModel {
         this.status = null;
     }
 
+    markApprovedCollectins() {
+        this.status = [CollectionStatus.APPROVED];
+    }
+
     static toJson(model) {
         if (model === null) {
             return null;

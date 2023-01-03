@@ -1,9 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
-import TableState from '../../../../core/presentation/stores/TableState';
-import CollectionFilterModel, { CollectionOrderBy } from '../../utilities/CollectionFilterModel';
-import CollectionRepo from '../repos/CollectionRepo';
-import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
-import CollectionEntity from '../../entities/CollectionEntity';
+import { makeAutoObservable } from 'mobx';
 
 export enum SuperAdminCollectionsTableType {
     APPROVED = 1,
@@ -13,56 +8,12 @@ export enum SuperAdminCollectionsTableType {
 
 export default class SuperAdminCollectionsPageStore {
 
-    collectionsRepo: CollectionRepo;
-
-    collectionFilterModel: CollectionFilterModel;
-
-    tableState: TableState
-    collectionEntities: CollectionEntity[];
-    collectionDetailsMap: Map<string, CollectionDetailsEntity>;
     selectedTableType: SuperAdminCollectionsTableType;
 
-    constructor(collectionsRepo: CollectionRepo) {
-        this.collectionsRepo = collectionsRepo;
-
-        this.collectionFilterModel = null;
-
-        this.collectionEntities = null;
-        this.collectionDetailsMap = null;
+    constructor() {
         this.selectedTableType = SuperAdminCollectionsTableType.APPROVED;
 
         makeAutoObservable(this);
-    }
-
-    async init() {
-        this.collectionFilterModel = new CollectionFilterModel();
-        this.collectionEntities = null;
-        this.collectionDetailsMap = new Map<string, CollectionDetailsEntity>();
-        this.selectedTableType = SuperAdminCollectionsTableType.APPROVED;
-
-        await this.fetchTopCollections();
-    }
-
-    fetchTopCollections = async () => {
-
-        this.collectionFilterModel.orderBy = CollectionOrderBy.TOP_DESC;
-        this.collectionFilterModel.from = 0
-        this.collectionFilterModel.count = 12
-
-        const { collectionEntities } = await this.collectionsRepo.fetchCollectionsByFilter(this.collectionFilterModel)
-        const collectionDetailsEntities = await this.collectionsRepo.fetchCollectionsDetailsByIds(collectionEntities.map((collectionEntity) => collectionEntity.id));
-
-        runInAction(() => {
-            this.collectionEntities = collectionEntities;
-            collectionDetailsEntities.forEach((collectionDetailsEntity) => {
-                this.collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
-            })
-        });
-    }
-
-    onChangeSearchWord = (value) => {
-        this.collectionFilterModel.searchString = value;
-        this.fetchTopCollections();
     }
 
     onClickShowApproved = () => {

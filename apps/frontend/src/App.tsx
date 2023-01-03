@@ -120,7 +120,7 @@ const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRe
 const valueChangeModalStore = new ValueChangeModalStore();
 const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSessionStore);
 const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSessionStore, walletStore);
-const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore(collectionRepo);
+const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore();
 const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSessionStore);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
