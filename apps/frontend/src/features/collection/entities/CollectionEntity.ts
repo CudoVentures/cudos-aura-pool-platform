@@ -59,6 +59,8 @@ export default class CollectionEntity {
         switch (this.status) {
             case CollectionStatus.QUEUED:
                 return true;
+            case CollectionStatus.REJECTED:
+                return true;
             default:
                 return false;
         }

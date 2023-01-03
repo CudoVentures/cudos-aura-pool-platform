@@ -53,7 +53,7 @@ function QueuedCollections({ queuedCollectionsStore, viewCollectionModalStore, d
     }
 
     function renderCollectionsRows() {
-        return collectionEntities.map((collectionEntity) => {
+        return collectionEntities.filter((collectionEntity) => collectionEntity.isStatusQueued()).map((collectionEntity) => {
             const collectionDetailsEntity = queuedCollectionsStore.getCollectionDetails(collectionEntity.id);
             return createTableRow([
                 createTableCell((
