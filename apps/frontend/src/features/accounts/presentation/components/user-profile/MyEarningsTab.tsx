@@ -36,7 +36,7 @@ function MyEarningsTab({ bitcoinStore, cudosStore, userProfilePageStore, walletS
                     leftContent = { (
                         <>
                             <ChartInfo label = { 'Total BTC Earnings'} value = { bitcoinStore.formatBtcInUsd(userEarningsEntity.totalEarningInBtc)} />
-                            <ChartInfo label = { 'Total NFTs Bought'} value = { userEarningsEntity.totalNftBought.toString() } />
+                            <ChartInfo label = { 'Total active NFTs owned'} value = { userEarningsEntity.totalNftBought.toString() } />
                         </>
                     ) }
                     rightContent = { (
