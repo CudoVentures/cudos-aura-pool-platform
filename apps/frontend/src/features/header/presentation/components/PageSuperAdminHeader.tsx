@@ -7,6 +7,7 @@ import AccountSessionStore from '../../../accounts/presentation/stores/AccountSe
 import ChangePasswordModalStore from '../../../accounts/presentation/stores/ChangePasswordModalStore';
 import HeaderWallet from './HeaderWallet';
 import S from '../../../../core/utilities/Main';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 import Svg from '../../../../core/presentation/components/Svg';
 import Actions from '../../../../core/presentation/components/Actions';
@@ -18,9 +19,10 @@ import '../styles/page-super-admin-header.css'
 type Props = {
     accountSessionStore?: AccountSessionStore;
     changePasswordModalStore?: ChangePasswordModalStore;
+    walletStore?: WalletStore;
 }
 
-function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore }: Props) {
+function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore, walletStore }: Props) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -76,7 +78,9 @@ function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore }:
 
                 <Actions>
                     <Button onClick={onClickChangePassword}>Change Password</Button>
-                    <Button onClick={onClickLogout}>Logout</Button>
+                    { walletStore.isConnected() === false && (
+                        <Button onClick={onClickLogout}>Logout</Button>
+                    ) }
                 </Actions>
             </div>
         </header>

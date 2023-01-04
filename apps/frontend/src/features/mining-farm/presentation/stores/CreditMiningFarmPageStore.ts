@@ -176,13 +176,15 @@ export default class CreditMiningFarmPageStore {
     private async fetchCollectionDetails(collectionEntities: CollectionEntity[]) {
         const collectionIds = collectionEntities.map((entity) => entity.id);
         const collectionDetails = await this.collectionRepo.fetchCollectionsDetailsByIds(collectionIds);
-        const collectionDetailsMap = this.collectionDetailsMap;
-
-        collectionDetails.forEach((collectionDetailsEntity) => {
-            collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
-        });
 
         runInAction(() => {
+            const collectionDetailsMap = this.collectionDetailsMap;
+            this.collectionDetailsMap = null;
+
+            collectionDetails.forEach((collectionDetailsEntity) => {
+                collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
+            });
+
             this.collectionDetailsMap = collectionDetailsMap;
         })
     }
@@ -205,7 +207,9 @@ export default class CreditMiningFarmPageStore {
         try {
             const clonedCollectionEntity = collectionEntity.clone();
             clonedCollectionEntity.markApproved();
-            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
+
+            const signingClient = await this.walletStore.getSigningClient();
+            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
             await this.fetchQueuedCollections();
             await this.fetchApprovedCollections();
         } catch (e) {

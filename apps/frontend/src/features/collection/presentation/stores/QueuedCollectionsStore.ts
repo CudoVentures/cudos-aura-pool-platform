@@ -87,9 +87,14 @@ export default class QueuedCollectionsStore {
         const miningFarmEntities = await this.miningFarmRepo.fetchMiningFarmsByIds(this.collectionEntities.map((entity) => entity.farmId));
 
         runInAction(() => {
+            const cache = this.farmEntitiesMap;
+            this.farmEntitiesMap = null;
+
             miningFarmEntities.forEach((miningFarmEntity) => {
-                this.farmEntitiesMap.set(miningFarmEntity.id, miningFarmEntity);
-            })
+                cache.set(miningFarmEntity.id, miningFarmEntity);
+            });
+
+            this.farmEntitiesMap = cache;
         })
     }
 
@@ -99,7 +104,7 @@ export default class QueuedCollectionsStore {
 
     async approveCollection(collectionEntity: CollectionEntity) {
         if (this.walletStore.isConnected() === false) {
-            this.alertStore.show('You must connect your wallet first');
+            this.alertStore.show('You must connect your marketplace wallet first');
             return;
         }
 
@@ -107,8 +112,9 @@ export default class QueuedCollectionsStore {
         clonedCollectionEntity.markApproved();
 
         try {
-            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
-            collectionEntity.markApproved();
+            const signingClient = await this.walletStore.getSigningClient();
+            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
+            collectionEntity.copy(clonedCollectionEntity);
         } catch (e) {
             this.alertStore.show(e.message);
         }

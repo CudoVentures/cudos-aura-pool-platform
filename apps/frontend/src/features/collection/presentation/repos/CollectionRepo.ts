@@ -1,4 +1,4 @@
-import Ledger from 'cudosjs/build/ledgers/Ledger';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import SuperAdminEntity from '../../../accounts/entities/SuperAdminEntity';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CategoryEntity from '../../entities/CategoryEntity';
@@ -21,5 +21,5 @@ export default interface CollectionRepo {
     creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < void >;
     editCollection(collectionEntity: CollectionEntity): Promise < void >;
 
-    approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger): Promise < string >;
+    approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, creatorCudosAddress: string, signingClient: CudosSigningStargateClient): Promise < string >;
 }

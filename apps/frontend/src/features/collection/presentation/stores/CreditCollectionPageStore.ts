@@ -93,8 +93,10 @@ export default class CreditCollectionPageStore {
         try {
             const collectionClone = this.collectionEntity.clone();
             collectionClone.markApproved();
-            await this.collectionRepo.approveCollection(collectionClone, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
-            this.collectionEntity.markApproved();
+
+            const signingClient = await this.walletStore.getSigningClient();
+            await this.collectionRepo.approveCollection(collectionClone, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
+            this.collectionEntity.copy(collectionClone);
         } catch (e) {
             this.alertStore.show(e.message);
         }

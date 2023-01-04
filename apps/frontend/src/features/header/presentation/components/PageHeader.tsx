@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import S from '../../../../../src/core/utilities/Main';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 import Svg from '../../../../core/presentation/components/Svg';
 import HeaderWallet from './HeaderWallet';
@@ -16,9 +17,10 @@ import '../styles/page-header.css'
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
+    walletStore?: WalletStore,
 }
 
-function PageHeader({ accountSessionStore }: Props) {
+function PageHeader({ accountSessionStore, walletStore }: Props) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -75,7 +77,7 @@ function PageHeader({ accountSessionStore }: Props) {
 
                 <HeaderWallet />
 
-                { accountSessionStore.isLoggedIn() === true && (
+                { accountSessionStore.isLoggedIn() === true && walletStore.isConnected() === false && (
                     <Actions>
                         <Button onClick={onClickLogout}>Logout</Button>
                     </Actions>

@@ -151,6 +151,10 @@ export default class WalletStore {
         return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, this.ledger.offlineSigner);
     }
 
+    async getSigningClient(): Promise < CudosSigningStargateClient > {
+        return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, this.ledger.offlineSigner);
+    }
+
     async signNonceMsg(): Promise < StdSignature > {
         const data = JSON.stringify({
             nonce: SIGN_NONCE,

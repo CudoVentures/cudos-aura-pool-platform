@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react'
 
 import SuperAdminCollectionsPageStore from '../stores/SuperAdminCollectionsPageStore';

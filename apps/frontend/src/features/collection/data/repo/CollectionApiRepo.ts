@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
-import Ledger from 'cudosjs/build/ledgers/Ledger';
+import { GasPrice, checkValidNftDenomId } from 'cudosjs';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
+import e from 'express';
 import { runInAction } from 'mobx';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
@@ -163,7 +164,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
-    async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger): Promise < string > {
+    async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, creatorCudosAddress: string, signingClient: CudosSigningStargateClient): Promise < string > {
 
         checkValidNftDenomId(collectionEntity.denomId)
         const filter = new MiningFarmFilterModel()
@@ -173,7 +174,6 @@ export default class CollectionApiRepo implements CollectionRepo {
 
         const farmOwnerAdminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
 
-        const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
 
         const decimals = (new BigNumber(10)).pow(18);
@@ -193,7 +193,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         }`;
 
         const tx = await signingClient.marketplaceCreateCollection(
-            ledger.accountAddress,
+            creatorCudosAddress,
             collectionEntity.denomId,
             collectionEntity.name,
             'CudosAuraPoolSchema',
@@ -213,7 +213,7 @@ export default class CollectionApiRepo implements CollectionRepo {
             true,
             gasPrice,
             undefined,
-            `Minted by Cudos Aura Pool Service, approved by Super Admin: ${ledger.accountAddress}`,
+            `Minted by Cudos Aura Pool Service, approved by Super Admin: ${creatorCudosAddress}`,
         )
 
         const txHash = tx.transactionHash;
