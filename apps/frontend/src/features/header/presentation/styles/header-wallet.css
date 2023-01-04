@@ -1,5 +1,6 @@
 .HeaderWallet .BalanceRow {
     gap: 10px;
+    margin-right: 40px;
 }
 
 .HeaderWallet .BalanceRow .Secondary {
@@ -11,7 +12,6 @@
     gap: 24px;
     background-color: var(--color-neutral);
     border-radius: 16px;
-    margin-left: 40px;
 }
 
 .HeaderWalletAddressPopover {
@@ -22,4 +22,21 @@
 
 .HeaderWalletAddressPopover .ButtonRow {
     gap: 10px;
+}
+
+@media (max-width: 1870px) {
+ 
+.PageSuperAdminHeader .HeaderWallet .BalanceRow {
+    display: none;
+}
+
+}
+
+
+@media (max-width: 1700px) {
+ 
+.HeaderWallet .BalanceRow {
+    display: none;
+}
+
 }

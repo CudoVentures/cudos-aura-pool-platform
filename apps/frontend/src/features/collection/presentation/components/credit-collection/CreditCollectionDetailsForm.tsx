@@ -128,7 +128,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     return (
         <div className={'CreditCollectionDetailsForm FlexColumn'}>
             <div className = { 'CreditCollectionDetailsFormHeader' }>
-                <div className={'H2 ExtraBold ColorNeutral100'}>Create Collecton</div>
+                <div className={'H2 ExtraBold ColorNeutral100'}>Create Collection</div>
                 <div className={'B1 ColorNeutral060'}>Fill in the needed information for the collection</div>
             </div>
             <div className={'HorizontalSeparator'}></div>

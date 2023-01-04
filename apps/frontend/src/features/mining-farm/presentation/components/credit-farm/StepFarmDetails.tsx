@@ -213,11 +213,13 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         inputValidation={farmOwnerNameValidation}
                         onChange={action((string) => { miningFarmEntity.primaryAccountOwnerName = string })} />
                     <Input
-                        label={'Primary Account Owner Email'}
+                        label = {
+                            <TextWithTooltip text={'Primary Account Owner Email'} tooltipText={'You can’t change primary account owner email'} />
+                        }
                         placeholder={'examplemail@mail.com'}
                         value={miningFarmEntity.primaryAccountOwnerEmail}
-                        inputValidation={farmOwnerEmailValidation}
-                        onChange={action((string) => { miningFarmEntity.primaryAccountOwnerEmail = string })} />
+                        gray = { true }
+                        inputValidation={farmOwnerEmailValidation} />
                 </ColumnLayout>
             </StyledContainer>
 
