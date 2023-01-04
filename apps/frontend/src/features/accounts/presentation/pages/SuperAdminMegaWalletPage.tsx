@@ -69,7 +69,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
             return;
         }
 
-        if (walletStore.address !== superAdminEntity.cudosRoyalteesAddress) {
+        if (walletStore.getAddress() !== superAdminEntity.cudosRoyalteesAddress) {
             alertStore.show('The wallet you have connected is different than the super admin one.');
             return;
         }

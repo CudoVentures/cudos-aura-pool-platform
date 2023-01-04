@@ -3,7 +3,6 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
@@ -15,7 +14,6 @@ export default class SuperAdminDashboardPageStore {
     miningFarmRepo: MiningFarmRepo;
     collectionRepo: CollectionRepo;
     statisticsRepo: StatisticsRepo;
-    walletStore: WalletStore;
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
 
@@ -27,11 +25,10 @@ export default class SuperAdminDashboardPageStore {
     miningFarmPerformanceEntitiesMap: Map < string, MiningFarmPerformanceEntity >;
     totalEarningsEntity: TotalEarningsEntity;
 
-    constructor(statisticsRepo: StatisticsRepo, miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
+    constructor(statisticsRepo: StatisticsRepo, miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
         this.statisticsRepo = statisticsRepo;
-        this.walletStore = walletStore;
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
 

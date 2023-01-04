@@ -207,7 +207,9 @@ export default class CreditMiningFarmPageStore {
         try {
             const clonedCollectionEntity = collectionEntity.clone();
             clonedCollectionEntity.markApproved();
-            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.ledger);
+
+            const signingClient = await this.walletStore.getSigningClient();
+            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
             await this.fetchQueuedCollections();
             await this.fetchApprovedCollections();
         } catch (e) {

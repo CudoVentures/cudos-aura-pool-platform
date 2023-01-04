@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { GasPrice, SigningStargateClient, checkValidNftDenomId } from 'cudosjs';
-import Ledger from 'cudosjs/build/ledgers/Ledger';
+import { GasPrice, checkValidNftDenomId } from 'cudosjs';
+import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
+import e from 'express';
 import { runInAction } from 'mobx';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
@@ -163,55 +164,65 @@ export default class CollectionApiRepo implements CollectionRepo {
         }
     }
 
-    async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, ledger: Ledger): Promise < string > {
+    async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, creatorCudosAddress: string, signingClient: CudosSigningStargateClient): Promise < string > {
+        try {
+            this.disableActions?.();
 
-        checkValidNftDenomId(collectionEntity.denomId)
-        const filter = new MiningFarmFilterModel()
-        filter.miningFarmIds = [collectionEntity.farmId];
-        const miningFarmEntities = (await this.miningFarmApi.fetchMiningFarmsByFilter(filter)).miningFarmEntities;
-        const miningFarmEntity = miningFarmEntities[0];
+            checkValidNftDenomId(collectionEntity.denomId)
+            const filter = new MiningFarmFilterModel()
+            filter.miningFarmIds = [collectionEntity.farmId];
 
-        const adminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
+            const { miningFarmEntities } = await this.miningFarmApi.fetchMiningFarmsByFilter(filter);
+            const miningFarmEntity = miningFarmEntities[0];
 
-        const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
-        const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
+            const adminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
 
-        const decimals = (new BigNumber(10)).pow(18);
-        const cudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
 
-        const innitialOwnerRoyalty = (new BigNumber(100 - cudosMintRoyalties)).multipliedBy(decimals);
-        const innitialCudosRoyalty = (new BigNumber(cudosMintRoyalties)).multipliedBy(decimals);
+            const decimals = (new BigNumber(10)).pow(18);
+            const cudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;
 
-        const secondaryFarmOwnerRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
-        const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
+            const innitialOwnerRoyalty = (new BigNumber(100 - cudosMintRoyalties)).multipliedBy(decimals);
+            const innitialCudosRoyalty = (new BigNumber(cudosMintRoyalties)).multipliedBy(decimals);
 
-        const data = `{"farm_id":"${collectionEntity.farmId}"}`;
-        const tx = await signingClient.marketplaceCreateCollection(
-            ledger.accountAddress,
-            collectionEntity.denomId,
-            collectionEntity.name,
-            'CudosAuraPoolSchema',
-            collectionEntity.name,
-            'NotEditable',
-            '',
-            CHAIN_DETAILS.MINTING_SERVICE_ADDRESS,
-            data,
-            [
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
-                Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
-            ],
-            [
-                Royalty.fromPartial({ address: miningFarmEntity.resaleFarmRoyaltiesCudosAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
-                Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
-            ],
-            true,
-            gasPrice,
-            undefined,
-            `Minted by Cudos Aura Pool Service, approved by Super Admin: ${ledger.accountAddress}`,
-        )
+            const secondaryFarmOwnerRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
+            const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
 
-        const txHash = tx.transactionHash;
+            const data = `{"farm_id":"${collectionEntity.farmId}"}`;
+            const tx = await signingClient.marketplaceCreateCollection(
+                creatorCudosAddress,
+                collectionEntity.denomId,
+                collectionEntity.name,
+                'CudosAuraPoolSchema',
+                collectionEntity.name,
+                'NotEditable',
+                '',
+                CHAIN_DETAILS.MINTING_SERVICE_ADDRESS,
+                data,
+                [
+                    Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
+                    Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
+                ],
+                [
+                    Royalty.fromPartial({ address: miningFarmEntity.resaleFarmRoyaltiesCudosAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
+                    Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
+                ],
+                true,
+                gasPrice,
+                undefined,
+                `Minted by Cudos Aura Pool Service, approved by Super Admin: ${creatorCudosAddress}`,
+            )
 
-        return txHash;
+            const txHash = tx.transactionHash;
+
+            return txHash;
+        } catch (ex) {
+            if (ex.message.indexOf('not admin') !== -1) {
+                throw Error('You must connect Marketplace Admin Wallet in Keplr');
+            }
+            throw ex;
+        } finally {
+            this.enableActions?.();
+        }
     }
 }

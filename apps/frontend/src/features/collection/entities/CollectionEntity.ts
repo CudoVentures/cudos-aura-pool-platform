@@ -45,12 +45,6 @@ export default class CollectionEntity {
         makeAutoObservable(this);
     }
 
-    clone(): CollectionEntity {
-        const entity = new CollectionEntity();
-        Object.assign(entity, this);
-        return entity;
-    }
-
     isNew(): boolean {
         return this.id === S.Strings.NOT_EXISTS;
     }
@@ -146,6 +140,16 @@ export default class CollectionEntity {
             default:
                 return 'Any';
         }
+    }
+
+    clone(): CollectionEntity {
+        const entity = new CollectionEntity();
+        Object.assign(entity, this);
+        return entity;
+    }
+
+    copy(source: CollectionEntity) {
+        Object.assign(this, source);
     }
 
     static toJson(entity: CollectionEntity): any {

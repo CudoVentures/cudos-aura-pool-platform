@@ -2,9 +2,7 @@ import { action, makeAutoObservable, runInAction } from 'mobx';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
-import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
@@ -13,7 +11,6 @@ import CollectionRepo from '../repos/CollectionRepo';
 export default class RejectedCollectionsStore {
 
     collectionRepo: CollectionRepo;
-    walletStore: WalletStore;
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
     nftRepo: NftRepo;
@@ -23,9 +20,8 @@ export default class RejectedCollectionsStore {
     collectionEntities: CollectionEntity[];
     collectionDetailsMap: Map<string, CollectionDetailsEntity>;
 
-    constructor(collectionRepo: CollectionRepo, nftRepo: NftRepo, walletStore: WalletStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
+    constructor(collectionRepo: CollectionRepo, nftRepo: NftRepo, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
         this.collectionRepo = collectionRepo;
-        this.walletStore = walletStore;
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
         this.nftRepo = nftRepo;

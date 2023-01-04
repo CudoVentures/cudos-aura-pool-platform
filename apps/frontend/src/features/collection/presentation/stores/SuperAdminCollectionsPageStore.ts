@@ -11,7 +11,7 @@ export default class SuperAdminCollectionsPageStore {
     selectedTableType: SuperAdminCollectionsTableType;
 
     constructor() {
-        this.selectedTableType = SuperAdminCollectionsTableType.APPROVED;
+        this.selectedTableType = SuperAdminCollectionsTableType.QUEUED;
 
         makeAutoObservable(this);
     }
