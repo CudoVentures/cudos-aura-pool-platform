@@ -87,9 +87,14 @@ export default class QueuedCollectionsStore {
         const miningFarmEntities = await this.miningFarmRepo.fetchMiningFarmsByIds(this.collectionEntities.map((entity) => entity.farmId));
 
         runInAction(() => {
+            const cache = this.farmEntitiesMap;
+            this.farmEntitiesMap = null;
+
             miningFarmEntities.forEach((miningFarmEntity) => {
-                this.farmEntitiesMap.set(miningFarmEntity.id, miningFarmEntity);
+                cache.set(miningFarmEntity.id, miningFarmEntity);
             })
+
+            this.farmEntitiesMap = cache;
         })
     }
 
