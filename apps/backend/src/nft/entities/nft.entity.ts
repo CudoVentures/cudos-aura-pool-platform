@@ -75,7 +75,7 @@ export default class NftEntity {
             'data': entity.data,
             'tokenId': entity.tokenId,
             'hashingPower': entity.hashingPower,
-            'price': entity.acudosPrice.toString(),
+            'price': entity.acudosPrice.toFixed(0),
             'expirationDateTimestamp': entity.expirationDateTimestamp,
             'collectionId': entity.collectionId.toString(),
             'marketplaceNftId': entity.marketplaceNftId,

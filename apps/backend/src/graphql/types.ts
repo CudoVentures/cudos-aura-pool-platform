@@ -16953,7 +16953,7 @@ export type MarketplaceCollectionsByDenomIdsQueryVariables = Exact<{
 }>;
 
 
-export type MarketplaceCollectionsByDenomIdsQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string }> };
+export type MarketplaceCollectionsByDenomIdsQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string, nft_denom: { __typename?: 'nft_denom', data_text?: string | null } }> };
 
 export type MarketplaceNftPriceSumByDenomIdQueryVariables = Exact<{
   denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -16973,6 +16973,13 @@ export type MarketplaceNftTradeHistoryByUniqueIdsQueryVariables = Exact<{
 
 
 export type MarketplaceNftTradeHistoryByUniqueIdsQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
+
+export type MarketplaceNftTradeHistoryByDenomIdsQueryVariables = Exact<{
+  denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type MarketplaceNftTradeHistoryByDenomIdsQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type MarketplaceNftPlatformTradeHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -17042,6 +17049,9 @@ export const MarketplaceCollectionsByDenomIdsDocument = gql`
     denom_id
     id
     transaction_hash
+    nft_denom {
+      data_text
+    }
   }
 }
     `;
@@ -17074,6 +17084,22 @@ export const MarketplaceNftPriceSumTotalDocument = gql`
 export const MarketplaceNftTradeHistoryByUniqueIdsDocument = gql`
     query MarketplaceNftTradeHistoryByUniqueIds($uniqIds: [String!]) {
   marketplace_nft_buy_history(where: {uniq_id: {_in: $uniqIds}}) {
+    buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
+    uniq_id
+  }
+}
+    `;
+export const MarketplaceNftTradeHistoryByDenomIdsDocument = gql`
+    query MarketplaceNftTradeHistoryByDenomIds($denomIds: [String!]) {
+  marketplace_nft_buy_history(where: {denom_id: {_in: $denomIds}}) {
     buyer
     btc_price
     denom_id
@@ -17226,6 +17252,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     MarketplaceNftTradeHistoryByUniqueIds(variables?: MarketplaceNftTradeHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByUniqueIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByUniqueIdsQuery>(MarketplaceNftTradeHistoryByUniqueIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByUniqueIds', 'query');
+    },
+    MarketplaceNftTradeHistoryByDenomIds(variables?: MarketplaceNftTradeHistoryByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByDenomIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByDenomIdsQuery>(MarketplaceNftTradeHistoryByDenomIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByDenomIds', 'query');
     },
     MarketplaceNftPlatformTradeHistory(variables?: MarketplaceNftPlatformTradeHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPlatformTradeHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPlatformTradeHistoryQuery>(MarketplaceNftPlatformTradeHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPlatformTradeHistory', 'query');

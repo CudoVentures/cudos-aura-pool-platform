@@ -7,6 +7,9 @@ query MarketplaceCollectionsByDenomIds($denomIds: [String!]) {
     denom_id
     id
     transaction_hash
+    nft_denom {
+      data_text
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
+import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
@@ -15,7 +16,7 @@ import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
-import EarningsPerDayEntity from './entities/earnings-per-day.entity';
+import EarningsPerDayEntity, { EarningWithTimestampEntity } from './entities/earnings-per-day.entity';
 import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
 import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
 import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
@@ -312,7 +313,7 @@ export class StatisticsService {
         userEarningsEntity.totalEarningInBtc = totalEarningInBtc;
         userEarningsEntity.totalNftBought = activeNftEntities.length;
         userEarningsEntity.totalContractHashPowerInTh = totalContractHashPowerInTh;
-        userEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDayInBtc;
+        userEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDay;
         userEarningsEntity.btcEarnedInBtc = earningsPerDayEntity.sumEarnings();
 
         return userEarningsEntity;
@@ -330,62 +331,105 @@ export class StatisticsService {
         }
 
         const nftEarningsEntity = new NftEarningsEntity();
-        nftEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDayInBtc;
+        nftEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDay;
         return nftEarningsEntity;
     }
 
     async fetchEarningsByMiningFarmId(miningFarmId: number, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
-        const days = getDays(Number(timestampFrom), Number(timestampTo))
-
-        const collections = await this.collectionService.findByFarmId(miningFarmId)
-        const tempNftFilterEntity = new NftFilterEntity();
-        tempNftFilterEntity.collectionIds = collections.map((collection) => collection.id.toString())
-        const { nftEntities } = await this.nftService.findByFilter(null, tempNftFilterEntity);
-
-        const nfts = (await Promise.all(nftEntities)).flat().filter((nft) => nft.tokenId !== '')
-
-        const totalFarmSales = await this.graphqlService.fetchCollectionTotalSales(collections.map((collection) => collection.denomId))
-
-        const nftsWithPayoutHistoryForPeriod = await Promise.all(nfts.map(async (nft) => {
-            const payoutHistoryForPeriod = await this.nftPayoutHistoryModel.findAll({ where: {
-                tokenId: nft.tokenId,
-                denomId: collections.find((collection) => collection.id === nft.collectionId).denomId,
-                payout_period_start: {
-                    [Op.gte]: Number(timestampFrom) / 1000,
-                },
-                payout_period_end: {
-                    [Op.lte]: Number(timestampTo) / 1000,
-                },
-            } })
-
-            const nftMaintenanceFeeForPeriod = payoutHistoryForPeriod.reduce((prevValue, currValue) => prevValue + currValue.maintenance_fee, 0)
-            return {
-                ...NftEntity.toJson(nft),
-                nftMaintenanceFeeForPeriod,
-                payoutHistoryForPeriod,
-            }
-        }))
-
-        const maintenanceFeeDepositedInBtc = nftsWithPayoutHistoryForPeriod.reduce((prevValue, currValue) => prevValue + currValue.nftMaintenanceFeeForPeriod, 0)
-
-        const earningsPerDayInUsd = days.map((day) => {
-            let earningsForDay = 0
-
-            nftsWithPayoutHistoryForPeriod.map((nft) => nft.payoutHistoryForPeriod.forEach((nftPayoutHistory) => {
-                if ((nftPayoutHistory.payout_period_start * 1000) >= day && (nftPayoutHistory.payout_period_end * 1000) <= day + dayInMs) {
-                    earningsForDay += Number(nftPayoutHistory.reward)
-                }
-            }))
-
-            return earningsForDay
+        // fetch all nfts for farm
+        const farmCollectionEntities = await this.collectionService.findByFarmId(miningFarmId);
+        const denomIdCollectionEntityMap = new Map<string, CollectionEntity>();
+        farmCollectionEntities.forEach((collectionEntity: CollectionEntity) => {
+            denomIdCollectionEntityMap.set(collectionEntity.denomId, collectionEntity);
         })
 
+        const farmNftEntities = await this.nftService.findByCollectionIds(farmCollectionEntities.map((collectionEntity) => collectionEntity.id));
+        const farmDenomIds = farmCollectionEntities.map((collectionEntity) => collectionEntity.denomId);
+
+        // fetch marketplace collections for the royalties data
+        const farmMarketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(farmDenomIds);
+        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionEntity>();
+        farmMarketplaceCollectionEntities.forEach((collectionEntity) => {
+            denomIdMarketplaceCollectionEntityMap.set(collectionEntity.denomId, collectionEntity);
+        })
+
+        // calculate total number of sold nfts
+        const mintedNftsCount = farmNftEntities.filter((nftEntity) => nftEntity.isMinted()).length;
+
+        // fetch all events for those nfts
+        const farmNftMarketplaceEventEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(farmDenomIds);
+        const farmNftEventEntities = farmNftMarketplaceEventEntities.map((nftMarketplaceTradeHistoryEventEntity) => NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEventEntity));
+
+        // filter events by minted and by resale
+        const farmNftMintEventEntities = farmNftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isMintEvent() === true);
+        const farmNftSaleEventEntities = farmNftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isSaleEvent() === true);
+
+        const timestampEarningEntities: EarningWithTimestampEntity[] = [];
+
+        // calculate total minted farm royalties and total resale farm royalties
+        const nftMintRoyaltiesSum = farmNftMintEventEntities
+            .map((nftEventEntity) => {
+                const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+                if (!marketplaceCollectionEntity) {
+                    return new BigNumber(0);
+                }
+
+                const farmMintRoyaltiesPercent = marketplaceCollectionEntity.mintRoyalties.find((royalty: Royalty) => royalty.address === marketplaceCollectionEntity.farmMintRoyaltiesAddress);
+
+                if (!farmMintRoyaltiesPercent) {
+                    return new BigNumber(0);
+                }
+
+                const earningFromMint = nftEventEntity.transferPriceInAcudos.multipliedBy(parseInt(farmMintRoyaltiesPercent.percent) / 100);
+                timestampEarningEntities.push(new EarningWithTimestampEntity(nftEventEntity.timestamp, earningFromMint));
+
+                return earningFromMint;
+            })
+            .reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
+
+        const nftResaleRoyaltiesSum = farmNftSaleEventEntities
+            .map((nftEventEntity) => {
+                const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+                if (!marketplaceCollectionEntity) {
+                    return new BigNumber(0);
+                }
+
+                const farmMintRoyaltiesPercent = marketplaceCollectionEntity.mintRoyalties.find((royalty: Royalty) => royalty.address === marketplaceCollectionEntity.farmResaleRoyaltiesAddress);
+
+                if (!farmMintRoyaltiesPercent) {
+                    return new BigNumber(0);
+                }
+
+                const earningFromResale = nftEventEntity.transferPriceInAcudos.multipliedBy(parseInt(farmMintRoyaltiesPercent.percent) / 100);
+                timestampEarningEntities.push(new EarningWithTimestampEntity(nftEventEntity.timestamp, earningFromResale));
+
+                return earningFromResale;
+            })
+            .reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
+
+        // fetch maintenance fees for farm
+        const sumOfMaintenanceFeesRow = await this.nftPayoutHistoryModel.findOne({ where: {
+            [NftPayoutHistoryRepoColumn.DENOM_ID]: farmMarketplaceCollectionEntities.map((marketplaceCollectionEntity) => marketplaceCollectionEntity.denomId),
+        },
+        attributes: [
+            [sequelize.fn('SUM', sequelize.col(NftPayoutHistoryRepoColumn.MAINTENANCE_FEE)), 'sumOfMaintenanceFees'],
+        ] })
+
+        const sumOfMaintenanceFees = sumOfMaintenanceFeesRow.getDataValue('sumOfMaintenanceFees');
+
+        // calculate earnings per day in acudos
+        const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
+        earningsPerDayEntity.calculateEarningsByTimestampEarningEntities(timestampEarningEntities);
+
         const miningFarmEarningsEntity = new MiningFarmEarningsEntity();
-        miningFarmEarningsEntity.totalMiningFarmSalesInAcudos = new BigNumber(totalFarmSales.salesInAcudos || 0);
-        miningFarmEarningsEntity.totalNftSold = nfts.length;
-        // miningFarmEarningsEntity.totalMiningFarmSalesInUsd = totalFarmSales.salesInUsd || 0;
-        miningFarmEarningsEntity.maintenanceFeeDepositedInBtc = new BigNumber(maintenanceFeeDepositedInBtc);
-        miningFarmEarningsEntity.earningsPerDayInUsd = earningsPerDayInUsd;
+
+        miningFarmEarningsEntity.totalMiningFarmSalesInAcudos = nftMintRoyaltiesSum;
+        miningFarmEarningsEntity.totalMiningFarmRoyaltiesInAcudos = nftResaleRoyaltiesSum;
+        miningFarmEarningsEntity.totalNftSold = mintedNftsCount;
+        miningFarmEarningsEntity.maintenanceFeeDepositedInBtc = new BigNumber(sumOfMaintenanceFees ?? 0);
+        miningFarmEarningsEntity.earningsPerDayInAcudos = earningsPerDayEntity.earningsPerDay;
 
         return miningFarmEarningsEntity;
     }

@@ -171,7 +171,7 @@ export default class CollectionApiRepo implements CollectionRepo {
         const miningFarmEntities = (await this.miningFarmApi.fetchMiningFarmsByFilter(filter)).miningFarmEntities;
         const miningFarmEntity = miningFarmEntities[0];
 
-        const adminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
+        const farmOwnerAdminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
 
         const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
         const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
@@ -185,7 +185,13 @@ export default class CollectionApiRepo implements CollectionRepo {
         const secondaryFarmOwnerRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
         const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
 
-        const data = `{"farm_id":"${collectionEntity.farmId}"}`;
+        const data = `{
+            "farm_id":"${collectionEntity.farmId}",
+            "platform_royalties_address": "${superAdminEntity.cudosRoyalteesAddress}",
+            "farm_mint_royalties_address": "${farmOwnerAdminEntity.cudosWalletAddress}",
+            "farm_resale_royalties_address": "${miningFarmEntity.resaleFarmRoyaltiesCudosAddress}"
+        }`;
+
         const tx = await signingClient.marketplaceCreateCollection(
             ledger.accountAddress,
             collectionEntity.denomId,
@@ -197,7 +203,7 @@ export default class CollectionApiRepo implements CollectionRepo {
             CHAIN_DETAILS.MINTING_SERVICE_ADDRESS,
             data,
             [
-                Royalty.fromPartial({ address: adminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
+                Royalty.fromPartial({ address: farmOwnerAdminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
                 Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
             ],
             [
