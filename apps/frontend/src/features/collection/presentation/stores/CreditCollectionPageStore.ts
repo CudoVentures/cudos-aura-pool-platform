@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
@@ -49,18 +49,28 @@ export default class CreditCollectionPageStore {
     }
 
     async init(collectionId: string) {
-        this.nftFilterModel.collectionIds = [collectionId];
-        this.collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
-        this.miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(this.collectionEntity.farmId);
-        await this.fetchCollectionDetails();
-        await this.fetchNfts();
+        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+
+        runInAction(async () => {
+            this.nftFilterModel.collectionIds = [collectionId];
+            this.collectionEntity = collectionEntity;
+            this.miningFarmEntity = miningFarmEntity;
+
+            await this.fetchCollectionDetails();
+            await this.fetchNfts();
+        })
     }
 
     async fetchCollectionDetails() {
-        this.collectionDetailsEntity = await this.collectionRepo.fetchCollectionDetailsById(this.collectionEntity.id);
+        const collectionDetailsEntity = await this.collectionRepo.fetchCollectionDetailsById(this.collectionEntity.id);
+
+        runInAction(() => {
+            this.collectionDetailsEntity = collectionDetailsEntity;
+        })
     }
 
-    fetchNfts = async () => {
+    fetchNfts = action(async () => {
         this.gridViewState.setIsLoading(true);
         this.nftFilterModel.from = this.gridViewState.getFrom();
         this.nftFilterModel.count = this.gridViewState.getItemsPerPage();
@@ -72,7 +82,7 @@ export default class CreditCollectionPageStore {
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
         });
-    }
+    })
 
     approveCollection = async () => {
         if (this.walletStore.isConnected() === false) {

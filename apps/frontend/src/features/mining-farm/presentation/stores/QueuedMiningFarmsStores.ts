@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
@@ -33,6 +33,7 @@ export default class QueuedMiningFarmsStores {
         makeAutoObservable(this);
     }
 
+    @action
     async init(itemsPerPage: number): Promise < void > {
         this.miningFarmsTableState.tableFilterState.from = 0;
         this.miningFarmsTableState.tableFilterState.itemsPerPage = itemsPerPage;
@@ -44,17 +45,17 @@ export default class QueuedMiningFarmsStores {
         this.fetchMiningFarms();
     }
 
-    fetchMiningFarms = (): void => {
+    fetchMiningFarms = async (): Promise<void> => {
         const miningFarmFilter = new MiningFarmFilterModel();
         miningFarmFilter.from = this.miningFarmsTableState.tableFilterState.from;
         miningFarmFilter.count = this.miningFarmsTableState.tableFilterState.itemsPerPage;
         miningFarmFilter.status = [MiningFarmStatus.QUEUED];
 
-        this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter).then(({ miningFarmEntities, total }) => {
-            runInAction(() => {
-                this.miningFarmEntities = miningFarmEntities;
-                this.miningFarmsTableState.tableFilterState.total = total;
-            });
+        const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter);
+
+        runInAction(() => {
+            this.miningFarmEntities = miningFarmEntities;
+            this.miningFarmsTableState.tableFilterState.total = total;
         });
     }
 
@@ -65,11 +66,14 @@ export default class QueuedMiningFarmsStores {
 
         const manufacturerEntities = await this.miningFarmRepo.fetchManufacturers();
         const manufacturerEntitiesMap = new Map();
+
         manufacturerEntities.forEach((manufacturerEntity) => {
             manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
         });
 
-        this.manufacturerEntitiesMap = manufacturerEntitiesMap;
+        runInAction(() => {
+            this.manufacturerEntitiesMap = manufacturerEntitiesMap;
+        })
     }
 
     async fetchMiners() {
@@ -83,7 +87,9 @@ export default class QueuedMiningFarmsStores {
             minerEntitiesMap.set(minerEntity.minerId, minerEntity);
         });
 
-        this.minerEntitiesMap = minerEntitiesMap;
+        runInAction(() => {
+            this.minerEntitiesMap = minerEntitiesMap;
+        });
     }
 
     async fetchEnergySources() {
@@ -97,7 +103,9 @@ export default class QueuedMiningFarmsStores {
             energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
         });
 
-        this.energySourceEntitiesMap = energySourceEntitiesMap;
+        runInAction(() => {
+            this.energySourceEntitiesMap = energySourceEntitiesMap;
+        });
     }
 
     getManufacturersNames(miningFarmEntity: MiningFarmEntity): string {
@@ -119,25 +127,30 @@ export default class QueuedMiningFarmsStores {
     }
 
     async approveMiningFarm(miningFarmEntity: MiningFarmEntity) {
-        miningFarmEntity.markApproved();
+        const clonedMiningFarm = miningFarmEntity.clone();
+        clonedMiningFarm.markApproved();
 
         // if royalties not custom set for this farm, set the super admin standard onss
-        if (miningFarmEntity.isCudosMintNftRoyaltiesPercentSet() === false) {
-            miningFarmEntity.cudosMintNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.firstSaleCudosRoyaltiesPercent;
+        if (clonedMiningFarm.isCudosMintNftRoyaltiesPercentSet() === false) {
+            clonedMiningFarm.cudosMintNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.firstSaleCudosRoyaltiesPercent;
         }
 
-        if (miningFarmEntity.isCudosResaleNftRoyaltiesPercentSet() === false) {
-            miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.resaleCudosRoyaltiesPercent;
+        if (clonedMiningFarm.isCudosResaleNftRoyaltiesPercentSet() === false) {
+            clonedMiningFarm.cudosResaleNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.resaleCudosRoyaltiesPercent;
         }
 
-        await this.miningFarmRepo.creditMiningFarm(miningFarmEntity);
+        await this.miningFarmRepo.creditMiningFarm(clonedMiningFarm);
 
         this.fetchMiningFarms();
     }
 
     async rejectMiningfarm(miningFarmEntity: MiningFarmEntity) {
-        miningFarmEntity.marKRejected();
-        await this.miningFarmRepo.creditMiningFarm(miningFarmEntity);
+        const clonedMiningFarm = miningFarmEntity.clone();
+
+        clonedMiningFarm.marKRejected();
+        await this.miningFarmRepo.creditMiningFarm(clonedMiningFarm);
+
+        this.fetchMiningFarms();
     }
 
 }

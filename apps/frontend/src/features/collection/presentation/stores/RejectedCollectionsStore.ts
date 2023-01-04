@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
@@ -38,6 +38,7 @@ export default class RejectedCollectionsStore {
         makeAutoObservable(this);
     }
 
+    @action
     init(itemsPerPage: number) {
         this.collectionsTableState.tableFilterState.from = 0;
         this.collectionsTableState.tableFilterState.itemsPerPage = itemsPerPage;
@@ -75,21 +76,5 @@ export default class RejectedCollectionsStore {
 
     getCollectionDetails(collectionId: string): CollectionDetailsEntity | null {
         return this.collectionDetailsMap.get(collectionId) ?? null;
-    }
-
-    async deleteCollection(collectionEntity: CollectionEntity) {
-        try {
-            const collectionClone = collectionEntity.clone();
-
-            collectionClone.markRejected();
-            const nftFilter = new NftFilterModel();
-            nftFilter.collectionIds = [collectionClone.id];
-
-            const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
-            await this.collectionRepo.creditCollection(collectionClone, nftEntities);
-            collectionEntity.markRejected();
-        } catch (e) {
-            console.log(e);
-        }
     }
 }

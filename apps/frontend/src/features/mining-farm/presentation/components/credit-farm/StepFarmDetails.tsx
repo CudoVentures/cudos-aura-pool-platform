@@ -28,6 +28,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/step-farm-details.css';
+import { action, runInAction } from 'mobx';
 
 type Props = {
     alertStore?: AlertStore;
@@ -58,41 +59,59 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
     const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(miningFarmEntity.maintenanceFeeInBtc !== null ? miningFarmEntity.maintenanceFeeInBtc.toString() : '')
 
     function onChangeManufacturers(values) {
-        miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
+        runInAction(() => {
+            miningFarmEntity.manufacturerIds = values.map((autocompleteOption) => autocompleteOption.value);
+        });
     }
 
     function onChangeManufacturerInput(e, value) {
-        creditMiningFarmDetailsPageStore.manufacturerInputValue = value;
+        runInAction(() => {
+            creditMiningFarmDetailsPageStore.manufacturerInputValue = value;
+        });
     }
 
     function onChangeMiners(values) {
-        miningFarmEntity.minerIds = values.map((autocompleteOption) => autocompleteOption.value);
+        runInAction(() => {
+            miningFarmEntity.minerIds = values.map((autocompleteOption) => autocompleteOption.value);
+        });
     }
 
     function onChangeMinerInput(e, value) {
-        creditMiningFarmDetailsPageStore.minerInputValue = value;
+        runInAction(() => {
+            creditMiningFarmDetailsPageStore.minerInputValue = value;
+        });
     }
 
     function onChangeEnergySources(values) {
-        miningFarmEntity.energySourceIds = values.map((autocompleteOption) => autocompleteOption.value);
+        runInAction(() => {
+            miningFarmEntity.energySourceIds = values.map((autocompleteOption) => autocompleteOption.value);
+        });
     }
 
     function onChangeEnergySourceInput(e, value) {
-        creditMiningFarmDetailsPageStore.energySourceInputValue = value;
+        runInAction(() => {
+            creditMiningFarmDetailsPageStore.energySourceInputValue = value;
+        });
     }
 
     function onChangeHashPowerInTh(value) {
-        setHashPowerInTh(value);
-        miningFarmEntity.hashPowerInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+        runInAction(() => {
+            setHashPowerInTh(value);
+            miningFarmEntity.hashPowerInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+        });
     }
 
     function onChangeMaintenanceFees(value) {
-        setMaintenanceFeeInBtc(value);
-        miningFarmEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
+        runInAction(() => {
+            setMaintenanceFeeInBtc(value);
+            miningFarmEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
+        });
     }
 
     function onClickRemoveImage(i: number) {
-        miningFarmEntity.farmPhotoUrls.splice(i, 1);
+        runInAction(() => {
+            miningFarmEntity.farmPhotoUrls.splice(i, 1);
+        });
     }
 
     function onClickNextStep() {
@@ -121,18 +140,18 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         placeholder={'e.g Cool Farm'}
                         value={miningFarmEntity.name}
                         inputValidation={farmNameValidation}
-                        onChange={(string) => { miningFarmEntity.name = string }} />
+                        onChange={action((string) => { miningFarmEntity.name = string })} />
                     <Input
                         label={'Description (Optional)'}
                         multiline = { true }
                         value={miningFarmEntity.description}
-                        onChange={(string) => { miningFarmEntity.description = string }} />
+                        onChange={action((string) => { miningFarmEntity.description = string })} />
                     <Input
                         label={'Legal Entity Name'}
                         placeholder={'e.g Cool Farm Inc.'}
                         value={miningFarmEntity.legalName}
                         inputValidation={farmLegalNameValidation}
-                        onChange={(string) => { miningFarmEntity.legalName = string }} />
+                        onChange={action((string) => { miningFarmEntity.legalName = string })} />
                     <Autocomplete
                         label={'Manufacturers'}
                         value = { creditMiningFarmDetailsPageStore.getSelectedManufacturers().map((manufacturerEntity) => {
@@ -192,13 +211,13 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         placeholder={'e.g Steve Jones'}
                         value={miningFarmEntity.primaryAccountOwnerName}
                         inputValidation={farmOwnerNameValidation}
-                        onChange={(string) => { miningFarmEntity.primaryAccountOwnerName = string }} />
+                        onChange={action((string) => { miningFarmEntity.primaryAccountOwnerName = string })} />
                     <Input
                         label={'Primary Account Owner Email'}
                         placeholder={'examplemail@mail.com'}
                         value={miningFarmEntity.primaryAccountOwnerEmail}
                         inputValidation={farmOwnerEmailValidation}
-                        onChange={(string) => { miningFarmEntity.primaryAccountOwnerEmail = string }} />
+                        onChange={action((string) => { miningFarmEntity.primaryAccountOwnerEmail = string })} />
                 </ColumnLayout>
             </StyledContainer>
 
@@ -209,7 +228,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         label={'Machines Location'}
                         placeholder={'e.g Las Brisas, United States'}
                         value={miningFarmEntity.machinesLocation}
-                        onChange={(string) => { miningFarmEntity.machinesLocation = string }}
+                        onChange={action((string) => { miningFarmEntity.machinesLocation = string })}
                         inputValidation={farmLocationValidation}
                         InputProps={{
                             endAdornment: <InputAdornment position="end" >
@@ -261,7 +280,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         placeholder={'cudos1...'}
                         value={miningFarmEntity.resaleFarmRoyaltiesCudosAddress}
                         inputValidation={resaleFarmRoyaltiesCudosAddressValidation}
-                        onChange={(string) => { miningFarmEntity.resaleFarmRoyaltiesCudosAddress = string }} />
+                        onChange={action((string) => { miningFarmEntity.resaleFarmRoyaltiesCudosAddress = string })} />
                     <Input
                         label = {
                             <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The CUDOS address which will collect all sale proceeds from sold NFTs.'} />
@@ -269,7 +288,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.rewardsFromPoolBtcAddress}
                         inputValidation={farmPayoutAddressValidation}
-                        onChange={(string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string }} />
+                        onChange={action((string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string })} />
                     <Input
                         label = {
                             <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on Aura Pool.'} />
@@ -277,7 +296,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.leftoverRewardsBtcAddress}
                         inputValidation={farmLeftoversAddressValidation}
-                        onChange={(string) => { miningFarmEntity.leftoverRewardsBtcAddress = string }} />
+                        onChange={action((string) => { miningFarmEntity.leftoverRewardsBtcAddress = string })} />
                     <Input
                         label = {
                             <TextWithTooltip text={'BTC Address to receive maintenance fees'} tooltipText={'The CUDOS address, which will collect royalties upon resale of an NFT from your farm. This royalty amount can be adjusted in the "Update Farm Details" screen.'} />
@@ -285,7 +304,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.maintenanceFeePayoutBtcAddress}
                         inputValidation={farmMainteannceFeesAddressValidation}
-                        onChange={(string) => { miningFarmEntity.maintenanceFeePayoutBtcAddress = string }} />
+                        onChange={action((string) => { miningFarmEntity.maintenanceFeePayoutBtcAddress = string })} />
                 </ColumnLayout>
             </StyledContainer>
 
@@ -309,10 +328,10 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                                     this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
                                 },
                                 'multi': true,
-                                onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
+                                onReadFileAsBase64: action((base64File, responseData, files: any[], i: number) => {
                                     // onAddFarmPhoto(base64File);
                                     miningFarmEntity.farmPhotoUrls.push(base64File);
-                                },
+                                }),
                             } } />
                     </div>
                     <div className={'UploadedImagesRow FlexRow'}>

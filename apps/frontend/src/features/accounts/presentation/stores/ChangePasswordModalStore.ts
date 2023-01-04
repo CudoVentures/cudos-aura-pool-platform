@@ -34,17 +34,17 @@ export default class ChangePasswordModalStore extends ModalStore {
         this.hide();
     }
 
-    setOldPassword = (value) => {
+    setOldPassword = action((value) => {
         this.oldPassword = value;
-    }
+    })
 
-    setNewPassword = (value) => {
+    setNewPassword = action((value) => {
         this.newPassword = value;
-    }
+    })
 
-    setRepeatNewPassword = (value) => {
+    setRepeatNewPassword = action((value) => {
         this.repeatNewPassword = value;
-    }
+    })
 
     @action
     async showSignal(changeInitialPass: boolean) {
@@ -52,13 +52,12 @@ export default class ChangePasswordModalStore extends ModalStore {
         this.show();
     }
 
-    hide = () => {
+    hide = action(() => {
         this.changeInitialPass = false;
         this.oldPassword = S.Strings.EMPTY;
         this.newPassword = S.Strings.EMPTY;
         this.repeatNewPassword = S.Strings.EMPTY;
-
         super.hide();
-    }
+    })
 
 }

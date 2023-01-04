@@ -1,10 +1,9 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
-import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
@@ -38,6 +37,7 @@ export default class ApprovedCollectionsStore {
         makeAutoObservable(this);
     }
 
+    @action
     init(itemsPerPage: number) {
         this.collectionsTableState.tableFilterState.from = 0;
         this.collectionsTableState.tableFilterState.itemsPerPage = itemsPerPage;

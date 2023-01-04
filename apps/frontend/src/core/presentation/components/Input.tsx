@@ -6,6 +6,7 @@ import { InputValidation } from '../stores/ValidationState';
 
 import { TextField, TextFieldProps } from '@mui/material';
 import '../styles/input.css';
+import { action } from 'mobx';
 
 export enum InputType {
     INTEGER,
@@ -32,7 +33,7 @@ const Input = React.forwardRef(({ children, className, inputType, decimalLength,
 
     const changed = useRef(false);
 
-    useEffect(() => {
+    useEffect(action(() => {
         if (props.value !== undefined) {
             if (Array.isArray(inputValidation)) {
                 inputValidation.forEach((validation) => validation.onChange(props.value));
@@ -52,7 +53,7 @@ const Input = React.forwardRef(({ children, className, inputType, decimalLength,
                 }
             }
         }
-    }, [props.value]);
+    }), [props.value]);
 
     /* listeners */
     function onChangeHandler(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {

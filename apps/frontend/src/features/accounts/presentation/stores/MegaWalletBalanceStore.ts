@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import AccountSessionStore from './AccountSessionStore';
@@ -19,7 +19,11 @@ export default class MegaWalletBalanceStore {
     }
 
     async fetchWalletBalance() {
-        this.superAdminWalletBalanceInAcudos = await this.cudosRepo.fetchAcudosBalance(this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress);
+        const superAdminWalletBalanceInAcudos = await this.cudosRepo.fetchAcudosBalance(this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress);
+
+        runInAction(() => {
+            this.superAdminWalletBalanceInAcudos = superAdminWalletBalanceInAcudos
+        })
     }
 
     getSuperAdminBalanceInAcudos(): BigNumber {

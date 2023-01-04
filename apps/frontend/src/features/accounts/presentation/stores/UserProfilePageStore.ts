@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import S from '../../../../core/utilities/Main';
@@ -15,9 +15,9 @@ import UserEarningsEntity from '../../../analytics/entities/UserEarningsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 
 export enum ProfilePages {
-    NFTS,
-    EARNINGS,
-    HISTORY
+    NFTS = 1,
+    EARNINGS = 2,
+    HISTORY = 3
 }
 
 export default class UserProfilePageStore {
@@ -51,6 +51,15 @@ export default class UserProfilePageStore {
         this.collectionRepo = collectionRepo;
         this.statisticsRepo = statisticsRepo;
 
+        this.initVariables();
+
+        makeAutoObservable(this, {
+            nftFilterModel: false,
+        });
+    }
+
+    @action
+    initVariables() {
         this.profilePage = ProfilePages.NFTS;
         this.gridViewState = new GridViewState(this.fetchMyNfts, 3, 4, 6)
         this.nftFilterModel = new NftFilterModel();
@@ -67,11 +76,11 @@ export default class UserProfilePageStore {
         this.nftEventEntities = null;
         this.nftEntitiesMap = new Map();
         this.historyTableState = new TableState(0, [], this.fetchHistory, 10);
-
-        makeAutoObservable(this);
     }
 
     async init() {
+        this.initVariables();
+
         await this.fetchMyNfts();
         await this.fetchEarnings();
         await this.fetchHistory();
@@ -154,17 +163,17 @@ export default class UserProfilePageStore {
         return this.profilePage === ProfilePages.HISTORY;
     }
 
-    markMyNftTab = () => {
+    markMyNftTab = action(() => {
         this.profilePage = ProfilePages.NFTS;
-    }
+    })
 
-    markMyEarningsTab = () => {
+    markMyEarningsTab = action(() => {
         this.profilePage = ProfilePages.EARNINGS;
-    }
+    })
 
-    markMyHistoryTab = () => {
+    markMyHistoryTab = action(() => {
         this.profilePage = ProfilePages.HISTORY;
-    }
+    })
 
     getCollectionName(collectionId: string): string {
         return this.collectionEntitiesMap.get(collectionId)?.name ?? '';
@@ -175,13 +184,13 @@ export default class UserProfilePageStore {
     }
 
     onChangeSortKey = (sortKey: number) => {
-        this.nftFilterModel.sortKey = sortKey;
+        this.nftFilterModel.orderBy = sortKey;
         this.fetchMyNfts();
     }
 
-    onChangeTableFilter = (value: number) => {
-        this.nftEventFilterModel.eventType = value;
-    }
+    onChangeTableFilter = action((value: number) => {
+        this.nftEventFilterModel.eventTypes = [value];
+    })
 
     getNftEntityById = (nftId: string): NftEntity => {
         return this.nftEntitiesMap.get(nftId);

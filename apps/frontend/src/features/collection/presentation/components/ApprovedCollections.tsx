@@ -67,7 +67,7 @@ function ApprovedCollections({ approvedCollectionsStore, viewCollectionModalStor
     return (
         <StyledLayout
             className={'ApprovedCollections'}
-            title={'Collections Waiting Approval'} >
+            title={'Approved Collections'} >
             {collectionEntities === null ? (
                 <LoadingIndicator />
             ) : (

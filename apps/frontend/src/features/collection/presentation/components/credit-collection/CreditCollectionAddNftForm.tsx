@@ -19,7 +19,6 @@ import InfoBlueBox from '../../../../../core/presentation/components/InfoBlueBox
 import SingleDatepicker from '../../../../../core/presentation/components/SingleDatepicker';
 import FieldColumnWrapper from '../../../../../core/presentation/components/FieldColumnWrapper';
 
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import '../../styles/credit-collection-add-nft-form.css';

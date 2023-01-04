@@ -26,6 +26,7 @@ import ColumnLayout from '../../../../core/presentation/components/ColumnLayout'
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator.css';
+import { action } from 'mobx';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -71,7 +72,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                             <Select
                                 label = { 'Select Mining Farm '}
                                 onChange={rewardsCalculatorStore.onChangeMiningFarm}
-                                value={rewardsCalculatorStore.selectedMiningFarmEntity !== null ? rewardsCalculatorStore.selectedMiningFarmEntity.id : S.Strings.NOT_EXISTS}>
+                                value={rewardsCalculatorStore.selectedMiningFarmEntity !== null ? rewardsCalculatorStore.selectedMiningFarmEntity.id : ''}>
                                 { rewardsCalculatorStore.miningFarmsEntities.map((miningFarmEntity) => {
                                     return (
                                         <MenuItem key = { miningFarmEntity.id } value = { miningFarmEntity.id } > { miningFarmEntity.name } </MenuItem>
@@ -100,7 +101,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                         },
                                     }}
                                     valueLabelDisplay="auto"
-                                    value={rewardsCalculatorStore.getHashPowerInThInputValue}
+                                    value={rewardsCalculatorStore.getHashPowerInThInputValue()}
                                     onChange={rewardsCalculatorStore.onChangeHashPowerInThSlider}
                                     min={0}
                                     max={rewardsCalculatorStore.selectedMiningFarmEntity?.hashPowerInTh ?? 1}/>

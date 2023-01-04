@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import S from '../../../../core/utilities/Main';
 import MegaWalletEventEntity from '../../../analytics/entities/MegaWalletEventEntity';
@@ -42,7 +42,9 @@ export default class SuperAdminMegaWalletPageStore {
         if (this.eventType !== S.NOT_EXISTS) {
             megaWalletEventFilterModel.eventTypes = [this.eventType];
         }
+
         const { megaWalletEventEntities, nftEntities, total } = await this.statisticsRepo.fetchMegaWalletEventEntities(megaWalletEventFilterModel);
+
         runInAction(() => {
             nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
             this.walletEventTableState.tableFilterState.total = total;
@@ -54,9 +56,9 @@ export default class SuperAdminMegaWalletPageStore {
         return this.nftEntitiesMap.get(id) || null;
     }
 
-    onChangeTableFilter = (value) => {
+    onChangeTableFilter = action((value) => {
         this.eventType = value;
 
         this.fetchMegaWalletActivity();
-    }
+    })
 }

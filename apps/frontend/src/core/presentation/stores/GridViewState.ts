@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import TableState from './TableState';
 import S from '../../utilities/Main';
 
@@ -36,6 +36,7 @@ export default class GridViewState {
         makeAutoObservable(this);
     }
 
+    @action
     setGridSettingAndPreviewCount(setting: number) {
         this.gridSetting = setting;
         this.tableState.tableFilterState.itemsPerPage = this.calculateItemsPerPageByGridSettings();
@@ -43,7 +44,7 @@ export default class GridViewState {
         this.fetchCallback();
     }
 
-    calculateItemsPerPageByGridSettings() {
+    calculateItemsPerPageByGridSettings(): number {
         switch (this.gridSetting) {
             case GRID_SETTING.DENSE:
                 return this.denseColumnCount * this.maxRows
@@ -73,10 +74,12 @@ export default class GridViewState {
         return this.gridSetting === setting;
     }
 
+    @action
     setIsLoading(isFetching: boolean) {
         this.isFetching = isFetching;
     }
 
+    @action
     setTotalItems(count: number) {
         this.tableState.tableFilterState.total = count;
     }

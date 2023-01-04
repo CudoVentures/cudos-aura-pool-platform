@@ -134,7 +134,7 @@ export default class ViewNftPageStore {
         });
     }
 
-    fetchHistory = async () => {
+    fetchHistory = action(async () => {
         this.nftEventFilterModel.from = this.historyTableState.tableFilterState.from;
         this.nftEventFilterModel.count = this.historyTableState.tableFilterState.itemsPerPage;
         const { nftEventEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
@@ -143,7 +143,7 @@ export default class ViewNftPageStore {
             this.nftEventEntities = nftEventEntities;
             this.historyTableState.tableFilterState.total = total;
         });
-    }
+    })
 
     isTabEarnings(): boolean {
         return this.statsTab === StatsTabs.EARNINGS;
@@ -157,23 +157,17 @@ export default class ViewNftPageStore {
         return this.statsTab === StatsTabs.HISTORY;
     }
 
-    onChangeTabEarnings = () => {
-        runInAction(() => {
-            this.statsTab = StatsTabs.EARNINGS;
-        })
-    }
+    onChangeTabEarnings = action(() => {
+        this.statsTab = StatsTabs.EARNINGS;
+    })
 
-    onChangeTabInfo = () => {
-        runInAction(() => {
-            this.statsTab = StatsTabs.INFO;
-        })
-    }
+    onChangeTabInfo = action(() => {
+        this.statsTab = StatsTabs.INFO;
+    })
 
-    onChangeTabHistory = () => {
-        runInAction(() => {
-            this.statsTab = StatsTabs.HISTORY;
-        })
-    }
+    onChangeTabHistory = action(() => {
+        this.statsTab = StatsTabs.HISTORY;
+    })
 
     getNftPriceText() {
         if (this.nftEntity.isStatusListed() === false) {

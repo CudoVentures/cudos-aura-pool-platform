@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import WorkerQueueHelper from '../../helpers/WorkerQueueHelper';
 
 export default class AppStore {
@@ -14,10 +14,12 @@ export default class AppStore {
         makeAutoObservable(this);
     }
 
+    @action
     incrementLoading() {
         ++this.loadingPage;
     }
 
+    @action
     decrementLoading() {
         --this.loadingPage;
     }
@@ -32,22 +34,24 @@ export default class AppStore {
         return this.loadingPage !== 0;
     }
 
-    disableActions = () => {
+    disableActions = action(() => {
         ++this.disabledActionsCounter;
-    }
+    })
 
-    enableActions = () => {
+    enableActions = action(() => {
         --this.disabledActionsCounter;
-    }
+    })
 
     hasDisabledActions() {
         return this.disabledActionsCounter !== 0;
     }
 
+    @action
     incremenetDimmer() {
         ++this.dimmer;
     }
 
+    @action
     decrementDimmer() {
         --this.dimmer;
     }

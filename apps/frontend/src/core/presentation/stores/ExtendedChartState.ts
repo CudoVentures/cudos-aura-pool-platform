@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 
 enum StatPeriod {
     TODAY = 1,
@@ -20,6 +20,7 @@ export default class ExtendedChartState {
         makeAutoObservable(this);
     }
 
+    @action
     async init() {
         this.statPeriod = StatPeriod.TODAY;
         this.statistics = [];
@@ -45,7 +46,11 @@ export default class ExtendedChartState {
                 timestamp = now - day;
         }
 
-        this.statistics = await this.callback(timestamp);
+        const statistics = await this.callback(timestamp);
+
+        runInAction(() => {
+            this.statistics = statistics;
+        })
     }
 
     isStatsToday(): boolean {
@@ -60,18 +65,18 @@ export default class ExtendedChartState {
         return this.statPeriod === StatPeriod.MONTH;
     }
 
-    setStatsToday = () => {
+    setStatsToday = action(() => {
         this.statPeriod = StatPeriod.TODAY;
         this.fetch();
-    }
+    })
 
-    setStatsWeek = () => {
+    setStatsWeek = action(() => {
         this.statPeriod = StatPeriod.WEEK;
         this.fetch();
-    }
+    })
 
-    setStatsMonth = () => {
+    setStatsMonth = action(() => {
         this.statPeriod = StatPeriod.MONTH;
         this.fetch();
-    }
+    })
 }

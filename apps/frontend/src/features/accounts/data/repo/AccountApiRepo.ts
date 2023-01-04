@@ -6,6 +6,7 @@ import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
 import { StdSignature } from 'cudosjs';
 import { BackendErrorType, parseBackendErrorType } from '../../../../core/utilities/AxiosWrapper';
+import { runInAction } from 'mobx';
 
 export default class AccountApiRepo implements AccountRepo {
 
@@ -92,7 +93,10 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
             const resultAccountEntity = await this.accountApi.editSessionAccount(accountEntity);
-            Object.assign(accountEntity, resultAccountEntity);
+
+            runInAction(() => {
+                Object.assign(accountEntity, resultAccountEntity);
+            })
         } finally {
             this.enableActions?.();
         }
@@ -102,7 +106,9 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
             const resultUserEntity = await this.accountApi.editSessionUser(userEntity);
-            Object.assign(userEntity, resultUserEntity);
+            runInAction(() => {
+                Object.assign(userEntity, resultUserEntity);
+            });
         } finally {
             this.enableActions?.();
         }
@@ -112,7 +118,9 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
             const resultSuperAdminEntity = await this.accountApi.editSessionSuperAdmin(superAdminEntity);
-            Object.assign(superAdminEntity, resultSuperAdminEntity);
+            runInAction(() => {
+                Object.assign(superAdminEntity, resultSuperAdminEntity);
+            });
         } finally {
             this.enableActions?.();
         }

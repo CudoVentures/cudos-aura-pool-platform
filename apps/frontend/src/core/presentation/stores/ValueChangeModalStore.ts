@@ -50,7 +50,7 @@ export default class ValueChangeModalStore extends ModalStore {
         this.show();
     }
 
-    hide = () => {
+    hide = action(() => {
         this.modalHeader = '';
         this.inputLabels = [];
         this.values = [];
@@ -60,11 +60,11 @@ export default class ValueChangeModalStore extends ModalStore {
         this.onSubmitCallback = null;
 
         super.hide();
-    }
+    })
 
-    onInputChange = (index, input) => {
+    onInputChange = action((index, input) => {
         this.values[index] = input;
-    }
+    })
 
     onSubmit = async () => {
         try {

@@ -171,10 +171,13 @@ export default class AccountSessionStore {
     async logout(): Promise < void > {
         await this.walletStore.disconnect();
         await this.accountRepo.logout();
-        this.accountEntity = null;
-        this.userEntity = null;
-        this.adminEntity = null;
-        this.superAdminEntity = null;
+
+        runInAction(() => {
+            this.accountEntity = null;
+            this.userEntity = null;
+            this.adminEntity = null;
+            this.superAdminEntity = null;
+        })
     }
 
     async editPassword(token: string, pass: string): Promise < void > {
@@ -261,7 +264,10 @@ export default class AccountSessionStore {
 
     async loadAdminMiningFarmApproval(): Promise < void > {
         const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
-        this.approvedMiningFarm = miningFarmEntity?.isApproved() ?? false;
+
+        runInAction(() => {
+            this.approvedMiningFarm = miningFarmEntity?.isApproved() ?? false;
+        })
     }
 
     isInited(): boolean {

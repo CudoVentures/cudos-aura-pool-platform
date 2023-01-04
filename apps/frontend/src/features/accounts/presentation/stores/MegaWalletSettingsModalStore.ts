@@ -46,13 +46,13 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
         this.show();
     }
 
-    hide = () => {
+    hide = action(() => {
         this.value = null;
         this.settingType = null;
         // this.superAdminEntity = null;
 
         super.hide();
-    }
+    })
 
     getCurrentValue(): string {
         if (this.isSettingTypeFirstSaleFees()) {
@@ -98,11 +98,11 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
         return this.settingType === MegaWalletSettings.RESALE_FEES;
     }
 
-    onInputChange = (input) => {
+    onInputChange = action((input: string) => {
         this.value = input;
-    }
+    })
 
-    onSubmit = async () => {
+    onSubmit = action(async () => {
         const superAdminEntity = this.accountSessionStore.superAdminEntity.clone();
 
         try {
@@ -135,5 +135,5 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
         } catch (e) {
             console.log(e);
         }
-    }
+    })
 }

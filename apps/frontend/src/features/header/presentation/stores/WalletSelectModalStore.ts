@@ -65,39 +65,48 @@ export default class WalletSelectModal extends ModalStore {
         makeObservable(this);
     }
 
+    @action
     moveToProgressStepConnectWallet() {
         this.progressStep = ProgressSteps.CONNECT_WALLET;
     }
 
+    @action
     moveToProgressStepSign() {
         this.progressStep = ProgressSteps.SIGN;
     }
 
+    @action
     moveToProgressStepKyc() {
         this.progressStep = ProgressSteps.KYC;
     }
 
+    @action
     markAsWalletConnecting(walletOption: SessionStorageWalletOptions) {
         this.walletOption = walletOption;
         this.walletConnectionStep = WalletConnectionSteps.CONNECTING;
     }
 
+    @action
     markAsWalletConnectedSuccessfully() {
         this.walletConnectionStep = WalletConnectionSteps.CONNECTED_SUCCESSFULLY;
     }
 
+    @action
     markAsWalletError() {
         this.walletConnectionStep = WalletConnectionSteps.ERROR;
     }
 
+    @action
     markIdentityTxWaiting() {
         this.identityTx = TransactionStatus.WAITING;
     }
 
+    @action
     markIdentityTxDoneSuccessfully() {
         this.identityTx = TransactionStatus.DONE_SUCCESSFULLY;
     }
 
+    @action
     markIdentityTxError() {
         this.identityTx = TransactionStatus.ERROR;
     }
@@ -202,7 +211,6 @@ export default class WalletSelectModal extends ModalStore {
         this.showSignal(WalletSelectMode.SUPER_ADMIN, null);
     }
 
-    @action
     showSignal(walletSelectMode: WalletSelectMode, onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void) {
         this.walletSelectMode = walletSelectMode;
         this.progressStep = ProgressSteps.CONNECT_WALLET;
@@ -214,7 +222,7 @@ export default class WalletSelectModal extends ModalStore {
         this.show();
     }
 
-    hide = () => {
+    hide = action(() => {
         this.walletSelectMode = WalletSelectMode.USER;
         this.progressStep = ProgressSteps.CONNECT_WALLET;
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
@@ -226,5 +234,5 @@ export default class WalletSelectModal extends ModalStore {
         this.onFinish = null;
 
         super.hide();
-    }
+    })
 }

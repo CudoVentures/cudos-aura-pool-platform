@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
@@ -72,22 +72,20 @@ export default class MarketplaceStore {
 
     async fetchNewNftDrops() {
         const newNftDropsEntities = await this.nftRepo.fetchNewNftDrops();
+        this.fetchCollectionsForEntities(newNftDropsEntities);
 
         runInAction(() => {
             this.newNftDropsEntities = newNftDropsEntities;
         })
-
-        await this.fetchCollectionsForEntities(newNftDropsEntities);
     }
 
     async fetchTrendingNfts() {
         const trendingNftEntities = await this.nftRepo.fetchTrendingNfts();
+        this.fetchCollectionsForEntities(trendingNftEntities);
 
         runInAction(() => {
             this.trendingNftEntities = trendingNftEntities;
         });
-
-        await this.fetchCollectionsForEntities(trendingNftEntities);
     }
 
     async fetchPopularFarms() {
@@ -117,11 +115,10 @@ export default class MarketplaceStore {
         this.addCollectionsToMap(fetchedCollections);
     }
 
+    @action
     addCollectionsToMap(collectionEntities: CollectionEntity[]) {
-        runInAction(() => {
-            collectionEntities.forEach((collectionEntity: CollectionEntity) => {
-                this.collectionMap.set(collectionEntity.id, collectionEntity);
-            })
+        collectionEntities.forEach((collectionEntity: CollectionEntity) => {
+            this.collectionMap.set(collectionEntity.id, collectionEntity);
         })
     }
 

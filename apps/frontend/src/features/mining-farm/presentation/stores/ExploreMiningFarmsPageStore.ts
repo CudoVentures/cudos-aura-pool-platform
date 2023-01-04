@@ -1,5 +1,5 @@
 import GridViewState from '../../../../core/presentation/stores/GridViewState';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
@@ -33,14 +33,16 @@ export default class ExploreMiningFarmsPageStore {
 
     fetch = async () => {
         this.gridViewState.setIsLoading(true);
+        const miningFarmFilterModel = this.miningFarmFilterModel.clone();
+        miningFarmFilterModel.from = this.gridViewState.getFrom();
+        miningFarmFilterModel.count = this.gridViewState.getItemsPerPage();
 
-        this.miningFarmFilterModel.from = this.gridViewState.getFrom();
-        this.miningFarmFilterModel.count = this.gridViewState.getItemsPerPage();
-
-        const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(this.miningFarmFilterModel)
+        const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilterModel)
         const miningFarmDetailsEntities = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id));
 
         runInAction(() => {
+            this.miningFarmFilterModel.from = this.gridViewState.getFrom();
+            this.miningFarmFilterModel.count = this.gridViewState.getItemsPerPage();
             this.miningFarmEntities = miningFarmEntities;
             this.miningFarmDetailsEntities = miningFarmDetailsEntities;
             this.gridViewState.setTotalItems(total);
@@ -48,9 +50,9 @@ export default class ExploreMiningFarmsPageStore {
         });
     }
 
-    onChangeSearchWord = (value) => {
+    onChangeSearchWord = action((value) => {
         this.miningFarmFilterModel.searchString = value;
         this.fetch();
-    }
+    })
 
 }

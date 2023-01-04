@@ -1,11 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
-import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import StatisticsRepo from '../repos/StatisticsRepo';
-import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
-import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
-import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftEventEntity, { NftEventType } from '../../entities/NftEventEntity';
 import DefaultIntervalPickerState from './DefaultIntervalPickerState';
@@ -47,7 +43,11 @@ export default class SuperAdminAnalyticsPageStore {
 
     fetchEarnings = async () => {
         const defaultIntervalPickerState = this.defaultIntervalPickerState;
-        this.totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+        const totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+
+        runInAction(() => {
+            this.totalEarningsEntity = totalEarningsEntity;
+        })
     }
 
     fetchNftEvents = async () => {
