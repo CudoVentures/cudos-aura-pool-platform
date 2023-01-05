@@ -243,7 +243,8 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         }} />
                 }
                 helperText = { 'Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.' } />
-            <InfoBlueBox text={'Farm admins receives 80% of first NFT sale proceeds. 10% are Aura Pool Fees and 10% will be held to a Cudo account as escrow. Farm admin is able to change their payout address per collection.'} />
+            {/* <InfoBlueBox text={'Farm admins receives 80% of first NFT sale proceeds. 10% are Aura Pool Fees and 10% will be held to a Cudo account as escrow. Farm admin is able to change their payout address per collection.'} /> */}
+            <InfoBlueBox text={'Farm admins receives 80% of first NFT sale proceeds. 10% are Aura Pool Fees and 10% will be held to a Cudo account as escrow.'} />
             {/* <FieldColumnWrapper
                 field = {
                     <Input

@@ -1,46 +1,31 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { HttpModule } from '@nestjs/axios';
 import { CollectionService } from './collection.service';
 import { CollectionController } from './collection.controller';
 import { CollectionRepo } from './repos/collection.repo';
 import { NFTModule } from '../nft/nft.module';
-import { NFTService } from '../nft/nft.service';
-import { GraphqlService } from '../graphql/graphql.service';
 import { NftRepo } from '../nft/repos/nft.repo';
-import { FarmService } from '../farm/farm.service';
+import { GraphqlModule } from '../graphql/graphql.module';
+import { AccountModule } from '../account/account.module';
+import { StatisticsModule } from '../statistics/statistics.module';
 import { FarmModule } from '../farm/farm.module';
-import { VisitorModule } from '../visitor/visitor.module';
-import DataService from '../data/data.service';
-import { MiningFarmRepo } from '../farm/repos/mining-farm.repo';
-import { EnergySourceRepo } from '../farm/repos/energy-source.repo';
-import { ManufacturerRepo } from '../farm/repos/manufacturer.repo';
-import { MinerRepo } from '../farm/repos/miner.repo';
-import AccountService from '../account/account.service';
-import { JwtService } from '@nestjs/jwt';
-import { StatisticsService } from '../statistics/statistics.service';
-import { NftPayoutHistoryRepo } from '../statistics/repos/nft-payout-history.repo';
-import { NftOwnersPayoutHistoryRepo } from '../statistics/repos/nft-owners-payout-history.repo';
+import { DataModule } from '../data/data.module';
 
 @Module({
     imports: [
         SequelizeModule.forFeature([
             CollectionRepo,
             NftRepo,
-            MiningFarmRepo,
-            MinerRepo,
-            ManufacturerRepo,
-            EnergySourceRepo,
-            NftPayoutHistoryRepo,
-            NftOwnersPayoutHistoryRepo,
         ]),
         forwardRef(() => NFTModule),
+        GraphqlModule,
+        AccountModule,
+        DataModule,
         forwardRef(() => FarmModule),
-        HttpModule,
-        VisitorModule,
+        forwardRef(() => StatisticsModule),
     ],
-    providers: [CollectionService, NFTService, FarmService, GraphqlService, DataService, AccountService, JwtService, StatisticsService],
+    providers: [CollectionService],
     controllers: [CollectionController],
-    exports: [SequelizeModule, CollectionService, DataService],
+    exports: [CollectionService],
 })
 export class CollectionModule {}

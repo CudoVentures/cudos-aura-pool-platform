@@ -5,5 +5,6 @@ import { GraphqlService } from './graphql.service';
 @Module({
     imports: [HttpModule],
     providers: [GraphqlService],
+    exports: [GraphqlService],
 })
 export class GraphqlModule {}

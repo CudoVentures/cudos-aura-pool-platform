@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import EmailService from './email.service';
 
 @Module({
-    providers: [EmailService, JwtService],
+    imports: [JwtModule],
+    providers: [EmailService],
     exports: [EmailService],
 })
 export class EmailModule {}
