@@ -10,6 +10,6 @@ import { VisitorService } from './visitor.service';
     ],
     providers: [VisitorService],
     controllers: [VisitorController],
-    exports: [VisitorModule, VisitorService],
+    exports: [VisitorService],
 })
 export class VisitorModule {}

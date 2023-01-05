@@ -28,7 +28,6 @@ export class CollectionService {
     @InjectModel(CollectionRepo)
     private collectionModel: typeof CollectionRepo,
     @InjectModel(NftRepo)
-    private nftRepo: typeof NftRepo,
     private nftService: NFTService,
     private graphqlService: GraphqlService,
     private accountService: AccountService,

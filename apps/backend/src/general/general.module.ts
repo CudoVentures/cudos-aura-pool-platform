@@ -5,7 +5,9 @@ import GeneralService from './general.service';
 import { GeneralRepo } from './repos/general.repo';
 
 @Module({
-    imports: [SequelizeModule.forFeature([GeneralRepo])],
+    imports: [
+        SequelizeModule.forFeature([GeneralRepo]),
+    ],
     providers: [GeneralService],
     controllers: [GeneralController],
     exports: [GeneralService],

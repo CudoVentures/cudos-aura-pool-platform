@@ -28,7 +28,6 @@ import { NftPayoutHistoryEntity } from './entities/nft-payout-history.entity';
 import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
 
-import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { NftOwnersPayoutHistoryRepo, NftOwnersPayoutHistoryRepoColumn } from './repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo, NftPayoutHistoryRepoColumn } from './repos/nft-payout-history.repo';
 import { dayInMs, getDays } from './statistics.types';
@@ -42,8 +41,6 @@ export class StatisticsService {
         @Inject(forwardRef(() => FarmService))
         private farmService: FarmService,
         private graphqlService: GraphqlService,
-        @InjectModel(NftPayoutHistory)
-        private nftPayoutHistoryModel: typeof NftPayoutHistory,
         @InjectModel(NftPayoutHistoryRepo)
         private nftPayoutHistoryRepo: typeof NftPayoutHistoryRepo,
         @InjectModel(NftOwnersPayoutHistoryRepo)
@@ -410,7 +407,7 @@ export class StatisticsService {
             .reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
 
         // fetch maintenance fees for farm
-        const sumOfMaintenanceFeesRow = await this.nftPayoutHistoryModel.findOne({ where: {
+        const sumOfMaintenanceFeesRow = await this.nftPayoutHistoryRepo.findOne({ where: {
             [NftPayoutHistoryRepoColumn.DENOM_ID]: farmMarketplaceCollectionEntities.map((marketplaceCollectionEntity) => marketplaceCollectionEntity.denomId),
         },
         attributes: [
@@ -437,7 +434,7 @@ export class StatisticsService {
     async fetchPlatformEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
         const days = getDays(Number(timestampFrom), Number(timestampTo))
 
-        const payoutHistoryForPeriod = await this.nftPayoutHistoryModel.findAll({ where: {
+        const payoutHistoryForPeriod = await this.nftPayoutHistoryRepo.findAll({ where: {
             payout_period_start: {
                 [Op.gte]: Number(timestampFrom) / 1000,
             },
