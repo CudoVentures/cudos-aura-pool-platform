@@ -19,14 +19,21 @@ import { MinerRepo } from '../farm/repos/miner.repo';
 import AccountService from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
 import { StatisticsService } from '../statistics/statistics.service';
-import { NftPayoutHistory } from '../statistics/models/nft-payout-history.model';
-import { NftOwnersPayoutHistory } from '../statistics/models/nft-owners-payout-history.model';
 import { NftPayoutHistoryRepo } from '../statistics/repos/nft-payout-history.repo';
 import { NftOwnersPayoutHistoryRepo } from '../statistics/repos/nft-owners-payout-history.repo';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([CollectionRepo, NftRepo, MiningFarmRepo, MinerRepo, ManufacturerRepo, EnergySourceRepo, NftPayoutHistory, NftPayoutHistoryRepo, NftOwnersPayoutHistory, NftOwnersPayoutHistoryRepo]),
+        SequelizeModule.forFeature([
+            CollectionRepo,
+            NftRepo,
+            MiningFarmRepo,
+            MinerRepo,
+            ManufacturerRepo,
+            EnergySourceRepo,
+            NftPayoutHistoryRepo,
+            NftOwnersPayoutHistoryRepo,
+        ]),
         forwardRef(() => NFTModule),
         forwardRef(() => FarmModule),
         HttpModule,

@@ -4,8 +4,6 @@ import { HttpModule } from '@nestjs/axios';
 import { NFTModule } from '../nft/nft.module';
 import { NFTService } from '../nft/nft.service';
 import { DestinationAddressesWithAmount } from './models/destination-addresses-with-amount.model';
-import { NftOwnersPayoutHistory } from './models/nft-owners-payout-history.model';
-import { NftPayoutHistory } from './models/nft-payout-history.model';
 import { StatisticsController } from './statistics.controller';
 import { StatisticsService } from './statistics.service';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -23,15 +21,12 @@ import AccountService from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
 import { NftOwnersPayoutHistoryRepo } from './repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
-import { FarmModule } from '../farm/farm.module';
 
 @Module({
     imports: [
         SequelizeModule.forFeature([
             DestinationAddressesWithAmount,
-            NftOwnersPayoutHistory,
             NftOwnersPayoutHistoryRepo,
-            NftPayoutHistory,
             NftPayoutHistoryRepo,
             MiningFarmRepo,
             MinerRepo,

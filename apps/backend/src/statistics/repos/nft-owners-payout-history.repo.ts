@@ -1,4 +1,4 @@
-import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, DataType, ForeignKey } from 'sequelize-typescript';
+import { Column, Model, PrimaryKey, Unique, AutoIncrement, Table, DataType } from 'sequelize-typescript';
 
 const NFT_OWNERS_PAYOUT_HISTORY_TABLE_NAME = 'statistics_nft_owners_payout_history'
 

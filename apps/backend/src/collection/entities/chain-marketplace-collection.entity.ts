@@ -9,7 +9,7 @@ type GraphQlCollection = {
     id: any,
     transaction_hash: string,
     nft_denom: {
-        data_text: string
+        data_text?: string
     },
 }
 

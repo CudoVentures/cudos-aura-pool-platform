@@ -21,7 +21,19 @@ import { JwtService } from '@nestjs/jwt';
 import { StatisticsService } from '../statistics/statistics.service';
 
 @Module({
-    imports: [SequelizeModule.forFeature([MiningFarmRepo, EnergySourceRepo, MinerRepo, ManufacturerRepo, VisitorRepo]), forwardRef(() => CollectionModule), NFTModule, HttpModule, VisitorModule],
+    imports: [
+        SequelizeModule.forFeature([
+            MiningFarmRepo,
+            EnergySourceRepo,
+            MinerRepo,
+            ManufacturerRepo,
+            VisitorRepo,
+        ]),
+        forwardRef(() => CollectionModule),
+        NFTModule,
+        HttpModule,
+        VisitorModule,
+    ],
     controllers: [FarmController],
     providers: [FarmService, CollectionService, NFTService, VisitorService, GraphqlService, DataService, AccountService, JwtService, StatisticsService],
     exports: [VisitorService],

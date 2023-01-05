@@ -10,10 +10,8 @@ import {
     Inject,
     UseGuards,
 } from '@nestjs/common';
-import { GraphqlService } from '../graphql/graphql.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
-import { NFTService } from '../nft/nft.service';
 import { AppRequest } from '../common/commont.types';
 import { ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqFetchTotalNftEarnings, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
 import { ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchTotalNftEarnings, ResMegaWalletEventsByFilter, ResNftEventsByFilter } from './dto/responses.dto';
@@ -26,10 +24,8 @@ import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.ent
 @Controller('statistics')
 export class StatisticsController {
     constructor(
-        private graphqlService: GraphqlService,
         @Inject(forwardRef(() => StatisticsService))
         private statisticsService: StatisticsService,
-        private nftService: NFTService,
     // eslint-disable-next-line no-empty-function
     ) {}
 

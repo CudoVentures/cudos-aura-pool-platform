@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { decodeSignature, StdSignature } from 'cudosjs';
 import { Transaction } from 'sequelize';
@@ -19,7 +18,6 @@ export class AuthService {
     constructor(
         private accountService: AccountService,
         private jwtService: JwtService,
-        private configService: ConfigService,
         private emailService: EmailService,
     ) {}
 

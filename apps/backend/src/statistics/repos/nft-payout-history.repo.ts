@@ -57,5 +57,4 @@ export class NftPayoutHistoryRepo extends Model {
 
     @Column
         updatedAt: Date;
-
 }
