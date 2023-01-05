@@ -43,6 +43,11 @@ export default class NftEventEntity {
         return this.eventType === NftTransferHistoryEventType.MINT;
     }
 
+    isSaleEvent(): boolean {
+        return this.eventType === NftTransferHistoryEventType.SALE;
+
+    }
+
     static fromNftModuleTransferHistory(nftModuleTransferHostoryEntity: NftModuleNftTransferHistoryEntity) {
         const entity = new NftEventEntity();
 

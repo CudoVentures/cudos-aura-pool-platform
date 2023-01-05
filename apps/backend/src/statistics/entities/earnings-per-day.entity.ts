@@ -5,7 +5,7 @@ import { NftOwnersPayoutHistoryEntity } from './nft-owners-payout-history.entity
 export default class EarningsPerDayEntity {
 
     days: number[];
-    earningsPerDayInBtc: BigNumber[];
+    earningsPerDay: BigNumber[];
 
     constructor(timestampFrom: number, timestampTo: number) {
         const pointer = new Date(timestampFrom);
@@ -17,20 +17,29 @@ export default class EarningsPerDayEntity {
         }
 
         this.days = days;
-        this.earningsPerDayInBtc = this.days.map(() => new BigNumber(0));
+        this.earningsPerDay = this.days.map(() => new BigNumber(0));
     }
 
     calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities: NftOwnersPayoutHistoryEntity[]) {
         nftOwnersPayoutHistoryEntities.forEach((nftOwnersPayoutHistoryEntity) => {
             const dayIndex = EarningsPerDayEntity.findIndexInDays(this.days, nftOwnersPayoutHistoryEntity.createdAt);
             if (dayIndex !== NOT_EXISTS_INT) {
-                this.earningsPerDayInBtc[dayIndex].plus(nftOwnersPayoutHistoryEntity.reward);
+                this.earningsPerDay[dayIndex] = this.earningsPerDay[dayIndex].plus(nftOwnersPayoutHistoryEntity.reward);
+            }
+        });
+    }
+
+    calculateEarningsByTimestampEarningEntities(earnintWithTimestampEntities: EarningWithTimestampEntity[]) {
+        earnintWithTimestampEntities.forEach((earnintWithTimestampEntity) => {
+            const dayIndex = EarningsPerDayEntity.findIndexInDays(this.days, earnintWithTimestampEntity.timestamp);
+            if (dayIndex !== NOT_EXISTS_INT) {
+                this.earningsPerDay[dayIndex] = this.earningsPerDay[dayIndex].plus(earnintWithTimestampEntity.earnings);
             }
         });
     }
 
     sumEarnings(): BigNumber {
-        return this.earningsPerDayInBtc.reduce((acc, reward) => {
+        return this.earningsPerDay.reduce((acc, reward) => {
             return acc.plus(reward);
         }, new BigNumber(0));
     }
@@ -67,4 +76,14 @@ export default class EarningsPerDayEntity {
         return result === days.length - 1 ? NOT_EXISTS_INT : result;
     }
 
+}
+
+export class EarningWithTimestampEntity {
+    timestamp: number
+    earnings: BigNumber
+
+    constructor(timestamp: number, earnings: BigNumber) {
+        this.timestamp = timestamp;
+        this.earnings = earnings;
+    }
 }

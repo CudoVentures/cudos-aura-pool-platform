@@ -66,7 +66,7 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
                             <DailyChart
                                 timestampFrom = { defaultIntervalPickerState.earningsTimestampFrom }
                                 timestampTo = { defaultIntervalPickerState.earningsTimestampTo }
-                                data = { miningFarmEarningsEntity.earningsPerDayInUsd } />
+                                data = { miningFarmEarningsEntity.formatEarningsPerDayToCudosNumbers() } />
                         </StyledContainer>
                         <div className={'Grid GridColumns2 BalancesDataContainer'}>
                             <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
