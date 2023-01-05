@@ -1,21 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StatisticsService } from './statistics.service';
-import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
 import { NftOwnersPayoutHistoryRepo } from './repos/nft-owners-payout-history.repo';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
-import { NftModule } from 'cudosjs/build/stargate/modules/nft/module';
 import { GraphqlModule } from '../graphql/graphql.module';
+import { NFTModule } from '../nft/nft.module';
+import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
 
 const moduleMocker = new ModuleMocker(global);
 
 describe('StatisticsService', () => {
     let service: StatisticsService;
+    let module: TestingModule
 
     beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+        module = await Test.createTestingModule({
             imports: [
-                NftModule,
+                NFTModule,
                 GraphqlModule,
                 SequelizeModule.forRootAsync({
                     useFactory: () => {
@@ -28,6 +29,7 @@ describe('StatisticsService', () => {
                             database: 'aura_pool',
                             autoLoadModels: true,
                             synchronize: true,
+                            logging: false,
                         }
                     },
                 }),
@@ -54,14 +56,16 @@ describe('StatisticsService', () => {
         service = module.get<StatisticsService>(StatisticsService);
     });
 
+    afterEach(async () => {
+        await module.close();
+    });
+
     it('should be defined', () => {
         expect(service).toBeDefined();
     });
 
     it('fetchPayoutHistoryByTokenId happy path', async () => {
         const a = await service.fetchEarningsByCudosAddress('a', 123, 123);
-
-        console.log(a);
         expect(true);
     })
 });

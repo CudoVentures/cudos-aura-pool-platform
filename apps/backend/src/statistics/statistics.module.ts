@@ -13,7 +13,6 @@ import { GraphqlModule } from '../graphql/graphql.module';
     imports: [
         SequelizeModule.forFeature([
             NftOwnersPayoutHistoryRepo,
-            // NftPayoutHistory,
             NftPayoutHistoryRepo,
         ]),
         forwardRef(() => NFTModule),
