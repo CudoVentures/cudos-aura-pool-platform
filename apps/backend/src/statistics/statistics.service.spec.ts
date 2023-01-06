@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StatisticsService } from './statistics.service';
 import { NftOwnersPayoutHistoryRepo } from './repos/nft-owners-payout-history.repo';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { SequelizeModule, getModelToken } from '@nestjs/sequelize';
 import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
 import { GraphqlModule } from '../graphql/graphql.module';
 import { NFTModule } from '../nft/nft.module';
@@ -10,7 +10,7 @@ import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
-import { Sequelize } from 'sequelize-typescript';
+import { emptyStatisticsTestData, fillStatisticsTestData } from './utils/test.utils';
 
 describe('StatisticsService', () => {
     let service: StatisticsService;
@@ -85,7 +85,15 @@ describe('StatisticsService', () => {
         await module.close();
     });
 
-    it('should be defined', () => {
+    beforeEach(async () => {
+        await fillStatisticsTestData();
+    })
+
+    afterEach(async () => {
+        await emptyStatisticsTestData();
+    })
+
+    it('should be defined', async () => {
         expect(service).toBeDefined();
     });
 

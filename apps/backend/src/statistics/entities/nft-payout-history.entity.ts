@@ -30,6 +30,24 @@ export class NftPayoutHistoryEntity {
         this.updatedAt = NOT_EXISTS_INT;
     }
 
+    static fromJson(json): NftPayoutHistoryEntity {
+        const entity = new NftPayoutHistoryEntity();
+
+        entity.id = parseInt(json.id ?? entity.id);
+        entity.tokenId = parseInt(json.tokenId ?? entity.tokenId);
+        entity.denomId = json.denomId ?? entity.denomId;
+        entity.payoutPeriodStart = parseInt(json.payoutPeriodStart ?? entity.payoutPeriodStart);
+        entity.payoutPeriodEnd = parseInt(json.payoutPeriodEnd ?? entity.payoutPeriodEnd);
+        entity.reward = new BigNumber(json.reward ?? entity.reward);
+        entity.txHash = json.txHash ?? entity.txHash;
+        entity.maintenanceFee = new BigNumber(json.maintenanceFee ?? entity.maintenanceFee);
+        entity.cudoPartOfMaintenanceFee = new BigNumber(json.cudoPartOfMaintenanceFee ?? entity.cudoPartOfMaintenanceFee);
+        entity.createdAt = parseInt(json.createdAt ?? entity.createdAt);
+        entity.updatedAt = parseInt(json.updatedAt ?? entity.updatedAt);
+
+        return entity;
+    }
+
     // isNew(): boolean {
     //     return this.id === NOT_EXISTS_INT;
     // }
