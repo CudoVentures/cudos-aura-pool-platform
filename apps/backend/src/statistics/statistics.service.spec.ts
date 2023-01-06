@@ -52,11 +52,15 @@ describe('StatisticsService', () => {
                     }],
                 }),
                 SequelizeModule.forRoot({
-                    dialect: 'sqlite',
-                    storage: ':memory:',
+                    dialect: 'postgres',
+                    host: 'host.docker.internal',
+                    port: 5432,
+                    username: 'postgres',
+                    password: 'postgres',
+                    database: 'aura_pool',
                     autoLoadModels: true,
                     synchronize: true,
-                    logging: true,
+                    logging: false,
                 }),
                 SequelizeModule.forFeature([
                     NftOwnersPayoutHistoryRepo,
