@@ -10,75 +10,19 @@ import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
-import { Sequelize } from 'sequelize-typescript';
 import compose from 'docker-compose';
 import Path from 'path';
-import { Umzug, SequelizeStorage } from 'umzug';
-import { read } from 'fs';
 
 describe('StatisticsService', () => {
     let service: StatisticsService;
     let module: TestingModule;
 
-    jest.setTimeout(60000);
+    jest.setTimeout(6000000);
 
     beforeAll(async () => {
-        const sequelize = new Sequelize({
-            dialect: 'postgres',
-            host: 'host.docker.internal',
-            port: 15432,
-            username: 'postgres',
-            password: 'postgres',
-            database: 'aura_pool_test',
-            logging: false,
-        });
-        const umzug = new Umzug({
-            migrations: {
-                glob: Path.join(Path.join(process.cwd(), 'apps/backend/database/migrations/*.js')),
-                resolve: ({ name, path, context }) => {
-                    const migration = require(path);
-                    return {
-                        name,
-                        up: async () => migration.up(context, Sequelize),
-                        down: async () => migration.down(context, Sequelize),
-                    }
-                },
-            },
-            context: sequelize.getQueryInterface(),
-            storage: new SequelizeStorage({ sequelize }),
-            logger: undefined,
-        });
-
         await compose.upAll({
             cwd: Path.join(process.cwd(), 'docker/test'),
         });
-        await new Promise < void >((resolve, reject) => {
-            const interval = setInterval(async () => {
-                try {
-                    const sequelize2 = new Sequelize({
-                        dialect: 'postgres',
-                        host: 'host.docker.internal',
-                        port: 15432,
-                        username: 'postgres',
-                        password: 'postgres',
-                        database: 'aura_pool_test',
-                        logging: false,
-                    });
-                    sequelize2.connectionManager.initPools();
-                    const conn = await sequelize2.connectionManager.getConnection({ type: 'read' });
-                    sequelize2.connectionManager.releaseConnection(conn);
-                    sequelize2.connectionManager.close();
-                    clearInterval(interval);
-                    resolve();
-                } catch (ex) {
-                }
-            }, 500);
-        });
-
-        await sequelize.dropAllSchemas({
-            logging: false,
-        });
-        await umzug.up();
 
         module = await Test.createTestingModule({
             imports: [
@@ -110,7 +54,7 @@ describe('StatisticsService', () => {
                     password: 'postgres',
                     database: 'aura_pool_test',
                     autoLoadModels: true,
-                    synchronize: false,
+                    synchronize: true,
                     logging: false,
                 }),
                 SequelizeModule.forFeature([

@@ -47,7 +47,7 @@ export class NftOwnersPayoutHistoryRepo extends Model {
     @Column
         payout_address: string;
 
-    @Column({ type: DataType.NUMBER })
+    @Column({ type: DataType.DECIMAL })
         reward: number;
 
     @Column
