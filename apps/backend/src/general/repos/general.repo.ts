@@ -6,6 +6,7 @@ import {
     PrimaryKey,
     Unique,
     AutoIncrement,
+    DataType,
 } from 'sequelize-typescript';
 
 export const enum GeneralRepoColumn {
@@ -25,13 +26,15 @@ export class GeneralRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         id: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.INTEGER })
         lastCheckedBlock: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.DATE })
         updatedAt: Date;
 }

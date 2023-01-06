@@ -1,4 +1,4 @@
-import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table } from 'sequelize-typescript';
+import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, DataType } from 'sequelize-typescript';
 import { VISITOR_TABLE_NAME } from '../visitor.types';
 
 export const enum VisitorRepoColumn {
@@ -19,27 +19,28 @@ export default class VisitorRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.BIGINT })
         id: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.INTEGER })
         refType: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING(48) })
         refId: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING(48) })
         visitorUuid: string
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DATE })
         createdAt: Date;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DATE })
         updatedAt: Date;
 
 }

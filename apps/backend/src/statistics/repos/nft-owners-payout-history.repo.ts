@@ -1,4 +1,5 @@
-import { Column, Model, PrimaryKey, Unique, AutoIncrement, Table, DataType } from 'sequelize-typescript';
+import { Column, Model, PrimaryKey, Unique, AutoIncrement, Table, DataType, AllowNull, ForeignKey } from 'sequelize-typescript';
+import { NftPayoutHistoryRepo } from './nft-payout-history.repo';
 
 const NFT_OWNERS_PAYOUT_HISTORY_TABLE_NAME = 'statistics_nft_owners_payout_history'
 
@@ -26,39 +27,49 @@ export class NftOwnersPayoutHistoryRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         id: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         time_owned_from: number;
 
-    @Column
+    @Column({ type: DataType.INTEGER })
         time_owned_to: number;
 
-    @Column
+    @Column({ type: DataType.INTEGER })
         total_time_owned: number;
 
-    @Column({ type: DataType.DOUBLE })
+    @AllowNull(false)
+    @Column({ type: DataType.FLOAT })
         percent_of_time_owned: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
         owner: string;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
         payout_address: string;
 
+    @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
         reward: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
+    @ForeignKey(() => NftPayoutHistoryRepo)
         nft_payout_history_id: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.DATE })
         createdAt: Date;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.DATE })
         updatedAt: Date;
 
-    @Column({ type: DataType.BOOLEAN })
+    @Column({ type: DataType.BOOLEAN, defaultValue: false })
         sent: boolean
 }

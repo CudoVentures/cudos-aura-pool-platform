@@ -1,4 +1,4 @@
-import { Column, Model, PrimaryKey, Unique, AutoIncrement, Table, DataType } from 'sequelize-typescript';
+import { Column, Model, PrimaryKey, Unique, AutoIncrement, Table, DataType, AllowNull } from 'sequelize-typescript';
 
 const NFT_PAYOUT_HISTORY_TABLE_NAME = 'statistics_nft_payout_history'
 
@@ -25,36 +25,47 @@ export class NftPayoutHistoryRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         id: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         token_id: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
         denom_id: string;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         payout_period_start: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         payout_period_end: number;
 
+    @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
         reward: number;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
         tx_hash: string;
 
+    @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
         maintenance_fee: number;
 
+    @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
         cudo_part_of_maintenance_fee: number
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.DATE })
         createdAt: Date;
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.DATE })
         updatedAt: Date;
 }

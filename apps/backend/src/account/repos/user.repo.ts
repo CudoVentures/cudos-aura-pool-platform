@@ -1,4 +1,4 @@
-import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, ForeignKey } from 'sequelize-typescript';
+import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, ForeignKey, DataType } from 'sequelize-typescript';
 import AccountRepo from './account.repo';
 
 const USER_TABLE_NAME = 'account_users'
@@ -23,29 +23,29 @@ export default class UserRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         userId: number;
 
-    @Unique
     @ForeignKey(() => AccountRepo)
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.INTEGER })
         accountId: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         cudosWalletAddress: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING, defaultValue: '' })
         bitcoinPayoutWalletAddress: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         profileImgUrl: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         coverImgUrl: string;
 
 }

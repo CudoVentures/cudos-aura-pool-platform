@@ -14,6 +14,8 @@ import AccountRepo from '../../account/repos/account.repo';
 import { CollectionRepo } from '../../collection/repos/collection.repo';
 import { NftStatus } from '../nft.types';
 
+const NFTS_TABLE_NAME = 'nfts'
+
 export const enum NftRepoColumn {
     ID = 'id',
     NAME = 'name',
@@ -33,30 +35,30 @@ export const enum NftRepoColumn {
 
 @Table({
     freezeTableName: true,
-    tableName: 'nfts',
+    tableName: NFTS_TABLE_NAME,
     underscored: true,
 })
 export class NftRepo extends Model {
     @PrimaryKey
     @Unique
     @IsUUID(4)
-    @Column({
-        type: DataType.UUID,
-    })
+    @AllowNull(false)
+    @Column({ type: DataType.UUID })
         id: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         name: string;
 
-    @Column
+    @AllowNull(true)
+    @Column({ type: DataType.TEXT })
         uri: string;
 
-    @Column
+    @Column({ type: DataType.STRING })
         data: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DECIMAL })
         hashingPower: number;
 
     @AllowNull(false)
@@ -64,38 +66,34 @@ export class NftRepo extends Model {
         price: string;
 
     @AllowNull(false)
-    @IsDate
-    @Column
+    @Column({ type: DataType.DATE })
         expirationDate: Date;
 
     @AllowNull(false)
-    @Column(DataType.ENUM(
-        NftStatus.MINTED,
-        NftStatus.QUEUED,
-        NftStatus.REMOVED,
-    ))
+    @Column({ type: DataType.ENUM(NftStatus.MINTED, NftStatus.QUEUED, NftStatus.REMOVED) })
         status: NftStatus;
 
     @AllowNull(true)
-    @Column
+    @Column({ type: DataType.STRING })
         tokenId: string
 
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
     @ForeignKey(() => CollectionRepo)
         collectionId: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.INTEGER })
     @ForeignKey(() => AccountRepo)
         creatorId: number;
 
-    @Column
+    @Column({ type: DataType.DATE })
         deletedAt: Date;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING, defaultValue: '' })
         currentOwner: string;
 
-    @Column
+    @Column({ type: DataType.INTEGER })
         marketplaceNftId: number;
 }

@@ -1,4 +1,4 @@
-import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table } from 'sequelize-typescript';
+import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, DataType } from 'sequelize-typescript';
 
 const MANUFACTURER_TABLE_NAME = 'manufacturers';
 
@@ -18,11 +18,13 @@ export class ManufacturerRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         id: number;
 
+    @Unique
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         name: string;
 
 }
