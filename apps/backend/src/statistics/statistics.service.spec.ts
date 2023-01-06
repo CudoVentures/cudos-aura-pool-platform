@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { StatisticsService } from './statistics.service';
 import { NftOwnersPayoutHistoryRepo } from './repos/nft-owners-payout-history.repo';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
+import { NftPayoutHistoryRepo, NftPayoutHistoryRepoColumn } from './repos/nft-payout-history.repo';
 import { GraphqlModule } from '../graphql/graphql.module';
 import { NFTModule } from '../nft/nft.module';
 import { FarmModule } from '../farm/farm.module';
@@ -10,9 +10,10 @@ import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
-import { emptyStatisticsTestData, fillStatisticsTestData } from './utils/test.utils';
+import { emptyStatisticsTestData, fillStatisticsTestData, getZeroDatePlusDaysTimestamp } from './utils/test.utils';
 import compose from 'docker-compose';
 import Path from 'path';
+import UserEarningsEntity from './entities/user-earnings.entity';
 
 describe('StatisticsService', () => {
     let service: StatisticsService;
@@ -69,6 +70,7 @@ describe('StatisticsService', () => {
             ],
             providers: [
                 StatisticsService,
+
             ],
         }).compile();
 
@@ -98,7 +100,20 @@ describe('StatisticsService', () => {
     });
 
     it('fetchPayoutHistoryByTokenId happy path', async () => {
-        const a = await service.fetchEarningsByCudosAddress('a', 123, 123);
-        expect(true);
+        const expectedUserEraningsEntity = UserEarningsEntity.fromJson({
+            totalEarningInBtc: '15',
+            totalNftBought: 5,
+            totalContractHashPowerInTh: 15,
+            earningsPerDayInBtc: [
+                '0',
+                '0',
+                '0',
+            ],
+            btcEarnedInBtc: '0',
+        });
+
+        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(5));
+
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 });
