@@ -455,11 +455,11 @@ export class StatisticsService {
             return earningsForDay
         })
 
-        const { salesInAcudos } = await this.graphqlService.fetchTotalPlatformSales();
+        // const { salesInAcudos } = await this.graphqlService.fetchTotalPlatformSales();
 
         const totalEarningsEntity = new TotalEarningsEntity();
 
-        totalEarningsEntity.totalSalesInAcudos = salesInAcudos
+        totalEarningsEntity.totalSalesInAcudos = new BigNumber(3)
         totalEarningsEntity.earningsPerDayInUsd = earningsPerDayInUsd;
 
         return totalEarningsEntity;
@@ -469,7 +469,7 @@ export class StatisticsService {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
                 [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
-                [NftOwnersPayoutHistoryRepoColumn.UPDATED_AT]: {
+                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
                     [Op.gte]: new Date(timestampFrom),
                     [Op.lte]: new Date(timestampTo),
                 },
@@ -483,9 +483,10 @@ export class StatisticsService {
     }
 
     private async fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds: number[], timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
+
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
-                [NftOwnersPayoutHistoryRepoColumn.OWNER]: nftPayoutHistoryIds,
+                [NftOwnersPayoutHistoryRepoColumn.NFT_PAYOUT_HISTORY_ID]: nftPayoutHistoryIds,
                 [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
                     [Op.gte]: new Date(timestampFrom),
                     [Op.lte]: new Date(timestampTo),

@@ -10,10 +10,14 @@ import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
-import { emptyStatisticsTestData, fillStatisticsTestData, getZeroDatePlusDaysTimestamp } from './utils/test.utils';
+import { emptyStatisticsTestData, fillStatisticsTestData, getZeroDatePlusDaysTimestamp, nftTestEntitities } from './utils/test.utils';
 import compose from 'docker-compose';
 import Path from 'path';
 import UserEarningsEntity from './entities/user-earnings.entity';
+import { NftRepo } from '../nft/repos/nft.repo';
+import NftEarningsEntity from './entities/nft-earnings.entity';
+import TotalEarningsEntity from './entities/platform-earnings.entity';
+import BigNumber from 'bignumber.js';
 
 describe('StatisticsService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -106,15 +110,24 @@ describe('StatisticsService', () => {
             totalNftBought: 5,
             totalContractHashPowerInTh: 15,
             earningsPerDayInBtc: [
-                '0',
-                '0',
-                '0',
+                '3',
+                '4',
+                '5',
             ],
-            btcEarnedInBtc: '0',
+            btcEarnedInBtc: '12',
         });
 
-        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(5));
+        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
 
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    it('fetchEarningsByNftId happy path', async () => {
+        const expectedUserEraningsEntity = NftEarningsEntity.fromJson({
+            earningsPerDayInBtc: ['3', '0', '0'],
+        });
+
+        const userEarningsEntity = await service.fetchEarningsByNftId(nftTestEntitities[2].id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 });

@@ -98,7 +98,7 @@ export default class NftEntity {
         entity.uri = repoJson.uri ?? entity.uri;
         entity.tokenId = repoJson.tokenId ?? entity.tokenId;
         entity.data = repoJson.data ?? entity.data;
-        entity.hashingPower = repoJson.hashingPower ?? entity.hashingPower;
+        entity.hashingPower = Number(repoJson.hashingPower ?? entity.hashingPower);
         entity.acudosPrice = new BigNumber(repoJson.price ?? entity.acudosPrice);
         entity.expirationDateTimestamp = repoJson.expirationDate?.getTime() ?? entity.expirationDateTimestamp;
         entity.collectionId = repoJson.collectionId ?? entity.collectionId;
@@ -125,7 +125,7 @@ export default class NftEntity {
         repoJson.uri = entity.uri;
         repoJson.data = entity.data;
         repoJson.tokenId = entity.tokenId;
-        repoJson.hashingPower = entity.hashingPower;
+        repoJson.hashingPower = entity.hashingPower.toString();
         repoJson.price = entity.acudosPrice.toString();
         repoJson.expirationDate = new Date(entity.expirationDateTimestamp);
         repoJson.collectionId = entity.collectionId;

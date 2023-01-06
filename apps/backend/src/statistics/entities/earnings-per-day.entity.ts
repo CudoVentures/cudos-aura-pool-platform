@@ -11,7 +11,7 @@ export default class EarningsPerDayEntity {
         const pointer = new Date(timestampFrom);
         const days = [];
 
-        while (pointer.getTime() < timestampTo) {
+        while (pointer.getTime() <= timestampTo) {
             days.push(pointer.getTime());
             pointer.setDate(pointer.getDate() + 1);
         }

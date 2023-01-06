@@ -7,12 +7,12 @@ import { NftOwnersPayoutHistoryRepo, NftOwnersPayoutHistoryRepoColumn } from '..
 import { NftPayoutHistoryRepo, NftPayoutHistoryRepoColumn } from '../repos/nft-payout-history.repo';
 import { v4 as uuidv4 } from 'uuid';
 
-const nftEntitities = [];
+export const nftTestEntitities = [];
 const nftPayoutHistoryEntities = [];
 const nftOwnersPayoutHistoryEntities = [];
 
 for (let i = 1; i <= 5; i++) {
-    nftEntitities.push({
+    nftTestEntitities.push({
         id: uuidv4(),
         name: `nft${i}`,
         uri: 'someuri',
@@ -31,37 +31,37 @@ for (let i = 1; i <= 5; i++) {
 
     nftPayoutHistoryEntities.push({
         id: i,
-        tokenId: i,
-        denomId: `denom${i}`,
-        payoutPeriodStart: getZeroDatePlusDaysTimestamp(0),
-        payoutPeriodEnd: getZeroDatePlusDaysTimestamp(5),
+        token_id: i,
+        denom_id: `denom${i}`,
+        payout_period_start: getZeroDatePlusDaysTimestamp(0),
+        payout_period_end: getZeroDatePlusDaysTimestamp(5),
         reward: i,
-        txHash: `txhash${i}`,
-        maintenanceFee: i,
-        cudoPartOfMaintenanceFee: i,
-        createdAt: getZeroDatePlusDaysTimestamp(0),
-        updatedAt: getZeroDatePlusDaysTimestamp(0),
+        tx_hash: `txhash${i}`,
+        maintenance_fee: i,
+        cudo_part_of_maintenance_fee: i,
+        createdAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
+        updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
     });
 
     nftOwnersPayoutHistoryEntities.push({
         id: i,
-        timeOwnedFrom: i,
-        timeOwnedTo: i,
-        totalTimeOwned: i,
-        percentOftimeOwned: i,
+        time_owned_from: i,
+        time_owned_to: i,
+        total_time_owned: i,
+        percent_of_time_owned: i,
         owner: 'testowner',
-        payoutAddress: 'testpayout',
+        payout_address: 'testpayout',
         reward: i,
-        nftPayoutHistoryId: i,
-        createdAt: getZeroDatePlusDaysTimestamp(0),
-        updatedAt: getZeroDatePlusDaysTimestamp(0),
+        nft_payout_history_id: i,
+        createdAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
+        updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
         sent: true,
     })
 }
 
 export async function fillStatisticsTestData() {
     try {
-        await NftRepo.bulkCreate(nftEntitities);
+        await NftRepo.bulkCreate(nftTestEntitities);
         await NftPayoutHistoryRepo.bulkCreate(nftPayoutHistoryEntities);
         await NftOwnersPayoutHistoryRepo.bulkCreate(nftOwnersPayoutHistoryEntities);
     } catch (e) {
