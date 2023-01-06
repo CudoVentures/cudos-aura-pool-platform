@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+  cudos-aura-platform-postgres-test:
+    image: postgres
+    container_name: cudos-aura-platform-postgres-test
+    environment:
+      POSTGRES_PASSWORD: "postgress"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_DB: "aura_pool_test"
+    restart: unless-stopped
+    ports:
+      - "15432:5432"

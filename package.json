@@ -167,7 +167,8 @@
     "webpack-cli": "^5.0.1",
     "webpack-node-externals": "^3.0.0",
     "yarn": "^1.22.19",
-    "sqlite3": "^5.1.4"
+    "docker-compose": "^0.23.17",
+    "umzug": "^3.2.1"
   },
   "jest": {
     "moduleFileExtensions": [

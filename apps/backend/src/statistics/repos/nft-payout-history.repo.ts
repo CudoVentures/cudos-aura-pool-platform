@@ -40,16 +40,16 @@ export class NftPayoutHistoryRepo extends Model {
     @Column
         payout_period_end: number;
 
-    @Column({ type: DataType.NUMBER })
+    @Column({ type: DataType.DECIMAL })
         reward: number;
 
     @Column
         tx_hash: string;
 
-    @Column({ type: DataType.NUMBER })
+    @Column({ type: DataType.DECIMAL })
         maintenance_fee: number;
 
-    @Column({ type: DataType.NUMBER })
+    @Column({ type: DataType.DECIMAL })
         cudo_part_of_maintenance_fee: number
 
     @Column
