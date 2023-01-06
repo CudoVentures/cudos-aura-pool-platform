@@ -43,105 +43,106 @@ export class MiningFarmRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         id: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         name: string;
 
-    @Column
+    @Column({ type: DataType.STRING })
         description: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         subAccountName: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         location: string;
 
-    @AllowNull(false)
-    @Column
+    @AllowNull(true)
+    @Column({ type: DataType.STRING })
         primaryAccountOwnerName: string;
 
-    @AllowNull(false)
-    @Column
+    @AllowNull(true)
+    @Column({ type: DataType.STRING })
         primaryAccountOwnerEmail: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DECIMAL })
         cudosMintNftRoyaltiesPercent: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DECIMAL })
         cudosResaleNftRoyaltiesPercent: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         resaleFarmRoyaltiesCudosAddress: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         addressForReceivingRewardsFromPool: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         leftoverRewardPayoutAddress: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         maintenanceFeePayoutAddress: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DECIMAL })
         maintenanceFeeInBtc: string;
 
-    @AllowNull(false)
-    @Column
+    @AllowNull(true)
+    @Column({ type: DataType.DECIMAL })
         totalFarmHashrate: number;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
         manufacturers: string[];
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
         minerTypes: string[];
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
         energySource: string[];
 
-    @AllowNull(false)
-    @Column({ type: DataType.ARRAY(DataType.STRING) })
+    @AllowNull(true)
+    @Column({ type: DataType.ARRAY(DataType.TEXT) })
         images: string[];
 
-    @AllowNull(false)
-    @Column({ type: DataType.STRING })
+    @AllowNull(true)
+    @Column({ type: DataType.TEXT })
         coverImg: string;
 
-    @AllowNull(false)
-    @Column({ type: DataType.STRING })
+    @AllowNull(true)
+    @Column({ type: DataType.TEXT })
         profileImg: string;
 
-    @AllowNull(false)
-    @Column({ type: DataType.STRING })
+    @AllowNull(true)
+    @Column({ type: DataType.ENUM(FarmStatus.APPROVED, FarmStatus.QUEUED, FarmStatus.REJECTED) })
         status: FarmStatus;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.INTEGER })
     @ForeignKey(() => AccountRepo)
         creatorId: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DATE })
         createdAt: Date;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DATE })
         updatedAt: Date;
 
-    @Column
+    @Column({ type: DataType.DATE })
         deletedAt: Date;
 }

@@ -1,4 +1,4 @@
-import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table } from 'sequelize-typescript';
+import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, DataType } from 'sequelize-typescript';
 
 const ENERGY_SOURCE_TABLE_NAME = 'energy_sources';
 
@@ -18,11 +18,13 @@ export class EnergySourceRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         id: number;
 
+    @Unique
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         name: string;
 
 }

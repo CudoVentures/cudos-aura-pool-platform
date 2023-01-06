@@ -16,6 +16,7 @@ import Path from 'path';
 import UserEarningsEntity from './entities/user-earnings.entity';
 
 describe('StatisticsService', () => {
+    const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
     let service: StatisticsService;
     let module: TestingModule;
 
@@ -23,7 +24,7 @@ describe('StatisticsService', () => {
 
     beforeAll(async () => {
         await compose.upAll({
-            cwd: Path.join(process.cwd(), 'docker/test'),
+            cwd: testDbDockerPath,
         });
 
         module = await Test.createTestingModule({
@@ -83,7 +84,7 @@ describe('StatisticsService', () => {
         await module.close();
 
         await compose.down({
-            cwd: Path.join(__dirname, '../../../../docker/test'),
+            cwd: testDbDockerPath,
         });
     });
 

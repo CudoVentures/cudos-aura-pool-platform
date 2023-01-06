@@ -1,4 +1,4 @@
-import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, ForeignKey } from 'sequelize-typescript';
+import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, ForeignKey, DataType } from 'sequelize-typescript';
 import AccountRepo from './account.repo';
 
 const SUPER_ADMIN_TABLE_NAME = 'accounts_super_admins'
@@ -24,33 +24,33 @@ export default class SuperAdminRepo extends Model {
     @Unique
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
         superAdminId: number;
 
     @ForeignKey(() => AccountRepo)
-    @Unique
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.INTEGER })
         accountId: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.STRING })
         cudosRoyalteesAddress: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.FLOAT })
         firstSaleCudosRoyaltiesPercent: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.FLOAT })
         resaleCudosRoyaltiesPercent: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.FLOAT })
         globalCudosFeesPercent: number;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.FLOAT })
         globalCudosRoyaltiesPercent: number;
 
 }

@@ -36,56 +36,53 @@ export const enum CollectionRepoColumn {
     underscored: true,
 })
 export class CollectionRepo extends Model {
-  @Unique
-  @PrimaryKey
-  @AutoIncrement
-  @Column
-      id: number;
+    @Unique
+    @PrimaryKey
+    @AutoIncrement
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
+        id: number;
 
-  @AllowNull(false)
-  @Column
-      name: string;
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        name: string;
 
-  @Column
-      description: string;
+    @Column({ type: DataType.STRING })
+        description: string;
 
-  @AllowNull(false)
-  @Column
-      denomId: string;
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        denomId: string;
 
-  @AllowNull(false)
-  @Column
-      hashingPower: number;
+    @AllowNull(false)
+    @Column({ type: DataType.DECIMAL })
+        hashingPower: number;
 
-  @AllowNull(false)
-  @Column
-      royalties: number;
+    @AllowNull(false)
+    @Column({ type: DataType.DECIMAL })
+        royalties: number;
 
-  @AllowNull(false)
-  @Column
-      mainImage: string;
+    @AllowNull(true)
+    @Column({ type: DataType.TEXT })
+        mainImage: string;
 
-  @AllowNull(false)
-  @Column
-      bannerImage: string;
+    @AllowNull(true)
+    @Column({ type: DataType.TEXT })
+        bannerImage: string;
 
-  @AllowNull(false)
-  @Column(DataType.ENUM(
-      CollectionStatus.QUEUED,
-      CollectionStatus.APPROVED,
-      CollectionStatus.DELETED,
-  ))
-      status: CollectionStatus;
+    @Column({ type: DataType.ENUM(CollectionStatus.QUEUED, CollectionStatus.APPROVED, CollectionStatus.DELETED) })
+        status: CollectionStatus;
 
-  @Column
-  @ForeignKey(() => MiningFarmRepo)
-      farmId: number;
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
+    @ForeignKey(() => MiningFarmRepo)
+        farmId: number;
 
-  @AllowNull(false)
-  @Column
-  @ForeignKey(() => AccountRepo)
-      creatorId: number;
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
+    @ForeignKey(() => AccountRepo)
+        creatorId: number;
 
-  @Column
-      deletedAt: Date;
+    @Column({ type: DataType.DATE })
+        deletedAt: Date;
 }

@@ -488,8 +488,6 @@ export class StatisticsService {
                 [NftOwnersPayoutHistoryRepoColumn.OWNER]: nftPayoutHistoryIds,
                 [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
                     [Op.gte]: new Date(timestampFrom),
-                },
-                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
                     [Op.lte]: new Date(timestampTo),
                 },
                 [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
