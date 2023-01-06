@@ -2,7 +2,6 @@ import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/commo
 import { InjectModel } from '@nestjs/sequelize';
 import { CollectionRepo, CollectionRepoColumn } from './repos/collection.repo';
 import { CollectionStatus } from './utils';
-import { NftRepo } from '../nft/repos/nft.repo';
 import { NftOrderBy, NftStatus } from '../nft/nft.types';
 import CollectionFilterModel from './entities/collection-filter.entity';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
@@ -27,7 +26,6 @@ export class CollectionService {
     constructor(
     @InjectModel(CollectionRepo)
     private collectionModel: typeof CollectionRepo,
-    @InjectModel(NftRepo)
     private nftService: NFTService,
     private graphqlService: GraphqlService,
     private accountService: AccountService,
