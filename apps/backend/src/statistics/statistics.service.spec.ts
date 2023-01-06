@@ -10,6 +10,7 @@ import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
+import { emptyStatisticsTestData, fillStatisticsTestData } from './utils/test.utils';
 import compose from 'docker-compose';
 import Path from 'path';
 
@@ -84,7 +85,15 @@ describe('StatisticsService', () => {
         });
     });
 
-    it('should be defined', () => {
+    beforeEach(async () => {
+        await fillStatisticsTestData();
+    })
+
+    afterEach(async () => {
+        await emptyStatisticsTestData();
+    })
+
+    it('should be defined', async () => {
         expect(service).toBeDefined();
     });
 
