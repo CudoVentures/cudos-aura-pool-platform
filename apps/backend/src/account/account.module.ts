@@ -9,6 +9,7 @@ import SuperAdminRepo from './repos/super-admin.repo';
 import UserRepo from './repos/user.repo';
 import { DataModule } from '../data/data.module';
 import { EmailModule } from '../email/email.module';
+import { jwtConstants } from '../auth/auth.types';
 
 @Module({
     imports: [
@@ -18,7 +19,10 @@ import { EmailModule } from '../email/email.module';
             AdminRepo,
             SuperAdminRepo,
         ]),
-        JwtModule,
+        JwtModule.register({
+            secret: jwtConstants.secret,
+            signOptions: { expiresIn: '7d' },
+        }),
         DataModule,
         EmailModule,
     ],

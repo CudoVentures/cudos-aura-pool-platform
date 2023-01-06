@@ -5,58 +5,79 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
 import { GraphqlModule } from '../graphql/graphql.module';
 import { NFTModule } from '../nft/nft.module';
-import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
+import { FarmModule } from '../farm/farm.module';
+import { CollectionModule } from '../collection/collection.module';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from '../auth/auth.types';
+import { Sequelize } from 'sequelize-typescript';
 
 describe('StatisticsService', () => {
     let service: StatisticsService;
-    let module: TestingModule
+    let module: TestingModule;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
+        // const sequelize = new Sequelize({
+        //     dialect: 'sqlite',
+        //     storage: ':memory:',
+        // });
+        // sequelize.addModels([
+        //     NftOwnersPayoutHistoryRepo,
+        //     NftPayoutHistoryRepo,
+        // ]);
+        // sequelize.getQueryInterface();
+
+        // await sequelize.sync();
+
         module = await Test.createTestingModule({
             imports: [
-                NFTModule,
-                GraphqlModule,
-                SequelizeModule.forRootAsync({
-                    useFactory: () => {
-                        return {
-                            dialect: 'postgres',
-                            host: 'host.docker.internal',
-                            port: 5432,
-                            username: 'postgres',
-                            password: 'postgres',
-                            database: 'aura_pool',
-                            autoLoadModels: true,
-                            synchronize: true,
-                            logging: false,
-                        }
-                    },
+                JwtModule.register({
+                    secret: jwtConstants.secret,
+                    signOptions: { expiresIn: '7d' },
+                }),
+                ConfigModule.forRoot({
+                    isGlobal: true,
+                    envFilePath: ['./config/.env'],
+                    load: [() => {
+                        const Config = {};
+                        Object.keys(process.env).forEach((envName) => {
+                            const envNameUppercase = envName.toUpperCase();
+                            if (envNameUppercase.startsWith('APP_') === false) {
+                                return;
+                            }
+
+                            Config[envNameUppercase] = process.env[envName];
+                        });
+                        return Config;
+                    }],
+                }),
+                SequelizeModule.forRoot({
+                    dialect: 'sqlite',
+                    storage: ':memory:',
+                    autoLoadModels: true,
+                    synchronize: true,
+                    logging: true,
                 }),
                 SequelizeModule.forFeature([
-                    NftPayoutHistoryRepo,
                     NftOwnersPayoutHistoryRepo,
+                    NftPayoutHistoryRepo,
                 ]),
+                NFTModule,
+                CollectionModule,
+                FarmModule,
+                GraphqlModule,
             ],
             providers: [
                 StatisticsService,
             ],
-        }).useMocker((token) => {
-            const results = ['test1', 'test2'];
-            if (token === NftOwnersPayoutHistoryRepo) {
-                return { findAll: jest.fn().mockResolvedValue(results) };
-            }
-            if (typeof token === 'function') {
-                const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-                const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-                return new Mock();
-            }
         }).compile();
+
+        await module.init();
 
         service = module.get<StatisticsService>(StatisticsService);
     });
 
-    afterEach(async () => {
+    afterAll(async () => {
         await module.close();
     });
 
@@ -67,5 +88,5 @@ describe('StatisticsService', () => {
     it('fetchPayoutHistoryByTokenId happy path', async () => {
         const a = await service.fetchEarningsByCudosAddress('a', 123, 123);
         expect(true);
-    })
+    });
 });
