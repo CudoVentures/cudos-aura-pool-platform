@@ -10,6 +10,7 @@ import ChainMarketplaceCollectionEntity from '../../collection/entities/chain-ma
 import NftMarketplaceTradeHistoryEntity from '../../graphql/entities/nft-marketplace-trade-history.entity';
 import BigNumber from 'bignumber.js';
 import NftModuleNftTransferEntity from '../../graphql/entities/nft-module-nft-transfer-history';
+import { NOT_EXISTS_INT } from '../../common/utils';
 
 export const nftTestEntitities = [];
 const nftPayoutHistoryEntities = [];
@@ -136,7 +137,7 @@ const chainMarketplaceCollectionEntities = [
     },
 ];
 
-const collectionEntities = [{
+export const collectionEntities = [{
     id: 1,
     name: 'testcollection',
     description: 'testcollectiondescription',
@@ -204,8 +205,11 @@ const collectionEntities = [{
 }];
 
 for (let i = 1; i <= 5; i++) {
+
+    const uuid = uuidv4();
+
     nftTestEntitities.push({
-        id: uuidv4(),
+        id: uuid,
         name: `nft${i}`,
         uri: 'someuri',
         data: 'somestring',
@@ -218,7 +222,7 @@ for (let i = 1; i <= 5; i++) {
         creatorId: i,
         deletedAt: null,
         currentOwner: 'testowner',
-        marketplaceNftId: i,
+        marketplaceNftId: `${i}`,
     });
 
     nftPayoutHistoryEntities.push({
@@ -296,11 +300,12 @@ export function getGraphQlmarketplaceCollections(): ChainMarketplaceCollectionEn
 }
 
 export function getGraphQlMarketplaceNftEvents(): NftMarketplaceTradeHistoryEntity[] {
-    return chainMarketplaceTradeHistoryEntities.map((json) => {
+    return chainMarketplaceTradeHistoryEntities.map((json, index) => {
         const entity = new NftMarketplaceTradeHistoryEntity();
 
         entity.buyer = json.buyer;
         entity.btcPrice = json.btcPrice;
+        entity.tokenId = json.tokenId;
         entity.denomId = json.denomId;
         entity.acudosPrice = json.acudosPrice;
         entity.seller = json.seller;
@@ -313,7 +318,7 @@ export function getGraphQlMarketplaceNftEvents(): NftMarketplaceTradeHistoryEnti
 }
 
 export function getGraphQlNftNftEvents(): NftModuleNftTransferEntity[] {
-    return chainMarketplaceTradeHistoryEntities.map((json) => {
+    return chainNftTransferHistoryEntities.map((json) => {
         const entity = new NftModuleNftTransferEntity();
 
         entity.denomId = json.denomId;
