@@ -128,6 +128,7 @@ export class NFTService {
         const nftRepos = await this.nftRepo.findAll({
             where: {
                 [NftRepoColumn.CURRENT_OWNER]: cudosWalletAddress,
+                [NftRepoColumn.STATUS]: NftStatus.MINTED,
                 [NftRepoColumn.EXPIRATION_DATE]: {
                     [Op.gt]: new Date(),
                 },

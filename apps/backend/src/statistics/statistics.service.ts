@@ -300,7 +300,6 @@ export class StatisticsService {
         const sumOfRewards = sqlRow.getDataValue('sumOfRewards');
         const totalEarningInBtc = new BigNumber(sumOfRewards ?? 0);
 
-        // const totalNftsOwned = await this.graphqlService.fetchTotalNftsByAddress(cudosAddress);
         const activeNftEntities = await this.nftService.findActiveByCurrentOwner(cudosAddress);
         const totalContractHashPowerInTh = activeNftEntities.reduce((acc, nftEntity) => {
             return acc + nftEntity.hashingPower;
