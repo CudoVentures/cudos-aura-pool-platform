@@ -96,6 +96,9 @@ describe('StatisticsService', () => {
         jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
         jest.spyOn(graphQlService, 'fetchNftTransferHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlNftNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
         jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlMarketplaceNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
+        jest.spyOn(graphQlService, 'fetchNftPlatformTransferHistory').mockImplementation(async () => getGraphQlNftNftEvents());
+        jest.spyOn(graphQlService, 'fetchMarketplacePlatformNftTradeHistory').mockImplementation(async () => getGraphQlMarketplaceNftEvents());
+
     });
 
     afterAll(async () => {
@@ -116,24 +119,6 @@ describe('StatisticsService', () => {
 
     it('should be defined', async () => {
         expect(service).toBeDefined();
-    });
-
-    it('fetchPayoutHistoryByTokenId: Happy path', async () => {
-        const expectedUserEraningsEntity = UserEarningsEntity.fromJson({
-            totalEarningInBtc: '15',
-            totalNftBought: 5,
-            totalContractHashPowerInTh: 15,
-            earningsPerDayInBtc: [
-                '3',
-                '4',
-                '5',
-            ],
-            btcEarnedInBtc: '12',
-        });
-
-        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
-
-        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
     it('fetchEarningsByCudosAddress: Happy path', async () => {
