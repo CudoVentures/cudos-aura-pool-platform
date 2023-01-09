@@ -378,10 +378,10 @@ export class StatisticsService {
                     return new BigNumber(0);
                 }
 
-                const earningFromMint = nftEventEntity.transferPriceInAcudos.multipliedBy(parseInt(farmMintRoyaltiesPercent.percent) / 100);
-                timestampEarningEntities.push(new EarningWithTimestampEntity(nftEventEntity.timestamp, earningFromMint));
+                const mintPrice = nftEventEntity.transferPriceInAcudos;
+                timestampEarningEntities.push(new EarningWithTimestampEntity(nftEventEntity.timestamp, mintPrice.multipliedBy(parseInt(farmMintRoyaltiesPercent.percent) / 100)));
 
-                return earningFromMint;
+                return mintPrice;
             })
             .reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
 
@@ -393,13 +393,13 @@ export class StatisticsService {
                     return new BigNumber(0);
                 }
 
-                const farmMintRoyaltiesPercent = marketplaceCollectionEntity.mintRoyalties.find((royalty: Royalty) => royalty.address === marketplaceCollectionEntity.farmResaleRoyaltiesAddress);
+                const farmResaleRoyaltiesPercent = marketplaceCollectionEntity.resaleRoyalties.find((royalty: Royalty) => royalty.address === marketplaceCollectionEntity.farmResaleRoyaltiesAddress);
 
-                if (!farmMintRoyaltiesPercent) {
+                if (!farmResaleRoyaltiesPercent) {
                     return new BigNumber(0);
                 }
 
-                const earningFromResale = nftEventEntity.transferPriceInAcudos.multipliedBy(parseInt(farmMintRoyaltiesPercent.percent) / 100);
+                const earningFromResale = nftEventEntity.transferPriceInAcudos.multipliedBy(parseInt(farmResaleRoyaltiesPercent.percent) / 100);
                 timestampEarningEntities.push(new EarningWithTimestampEntity(nftEventEntity.timestamp, earningFromResale));
 
                 return earningFromResale;
@@ -431,6 +431,7 @@ export class StatisticsService {
         return miningFarmEarningsEntity;
     }
 
+    // TODO: needs to be rewritten
     async fetchPlatformEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
         const days = getDays(Number(timestampFrom), Number(timestampTo))
 
