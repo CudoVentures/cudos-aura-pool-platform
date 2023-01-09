@@ -320,7 +320,7 @@ export class StatisticsService {
 
         const nftEntity = await this.nftService.findOne(nftId);
         if (nftEntity.isMinted() === true) {
-            const nftPayoutHistoryEntities = await this.fetchPayoutHistoryByTokenId(nftEntity.tokenId);
+            const nftPayoutHistoryEntities = await this.fetchPayoutHistoryByTokenId(nftEntity.getTokenIdAsInt());
             const nftPayoutHistoryIds = nftPayoutHistoryEntities.map((nftPayoutHistoryEntity) => nftPayoutHistoryEntity.id);
             const nftOwnersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds, timestampFrom, timestampTo);
             earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities);
@@ -483,7 +483,6 @@ export class StatisticsService {
     }
 
     private async fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds: number[], timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
-
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
                 [NftOwnersPayoutHistoryRepoColumn.NFT_PAYOUT_HISTORY_ID]: nftPayoutHistoryIds,
@@ -499,12 +498,12 @@ export class StatisticsService {
         });
     }
 
-    private async fetchPayoutHistoryByTokenId(tokenId: string): Promise < NftPayoutHistoryEntity[] > {
+    private async fetchPayoutHistoryByTokenId(tokenId: number): Promise < NftPayoutHistoryEntity[] > {
         const nftPayoutHistoryRepos = await this.nftPayoutHistoryRepo.findAll({
             where: {
                 [NftPayoutHistoryRepoColumn.TOKEN_ID]: tokenId,
             },
-        })
+        });
         return nftPayoutHistoryRepos.map((nftPayoutHistoryRepo) => {
             return NftPayoutHistoryEntity.fromRepo(nftPayoutHistoryRepo);
         });

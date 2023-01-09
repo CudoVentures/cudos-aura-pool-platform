@@ -44,7 +44,12 @@ export default class NftEntity {
     }
 
     isMinted(): boolean {
-        return this.tokenId !== ''
+        return this.status === NftStatus.MINTED && this.tokenId !== '';
+    }
+
+    getTokenIdAsInt(): number {
+        const tokenIdAsInt = parseInt(this.tokenId);
+        return Number.isNaN(tokenIdAsInt) === true ? NOT_EXISTS_INT : tokenIdAsInt;
     }
 
     static fromJson(json: NftJsonValidator): NftEntity {
