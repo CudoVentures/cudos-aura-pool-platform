@@ -65,14 +65,14 @@ export class StatisticsService {
             : filteredNftEntities;
 
         // slice
-        filteredNftEntities = filteredNftEntities.slice(nftEventFilterEntity.from, nftEventFilterEntity.from + nftEventFilterEntity.count);
+        const slicedFilteredNftEntities = filteredNftEntities.slice(nftEventFilterEntity.from, nftEventFilterEntity.from + nftEventFilterEntity.count);
 
-        const nftEntities = filteredNftEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+        const nftEntities = slicedFilteredNftEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
 
         return {
-            nftEventEntities: filteredNftEntities,
+            nftEventEntities: slicedFilteredNftEntities,
             nftEntities,
-            total: nftEventEntities.length,
+            total: filteredNftEntities.length,
         }
     }
 
