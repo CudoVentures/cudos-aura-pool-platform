@@ -223,7 +223,7 @@ export class StatisticsService {
         }
     }
 
-    async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
         const nftFilterEntity = new NftFilterEntity();
         if (nftEventFilterEntity.isBySessionAccount() === true) {
             nftFilterEntity.sessionAccount = IntBoolValue.TRUE;

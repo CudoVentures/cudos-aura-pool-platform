@@ -129,7 +129,7 @@ export class NFTService {
             where: {
                 [NftRepoColumn.CURRENT_OWNER]: cudosWalletAddress,
                 [NftRepoColumn.EXPIRATION_DATE]: {
-                    [Op.lte]: new Date(),
+                    [Op.gt]: new Date(),
                 },
             },
         });
