@@ -225,4 +225,50 @@ describe('StatisticsService', () => {
         // Assert
         expect(userEarningsEntity).toEqual(result);
     });
+
+    it('fetchNftEventsByFilter by platform happy path', async () => {
+        // Arange
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.count = 10;
+        nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT];
+        nftEventFilterEntity.from = 0;
+        nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
+        nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
+
+        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+
+        const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
+            const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
+            return `${entity.tokenId}@${collection.denomId}`;
+        });
+
+        const nftEventEntities = getGraphQlMarketplaceNftEvents()
+            .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
+            .map((entity) => {
+                const nftEventEntity = NftEventEntity.fromNftMarketplaceTradeHistory(entity);
+                const collection = collectionEntities.find((collectionEntity) => collectionEntity.denomId === nftEventEntity.denomId)
+                const nft = nftEntities.find((nftEntity) => nftEntity.tokenId === nftEventEntity.tokenId && nftEntity.collectionId === collection.id);
+
+                nftEventEntity.nftId = nft.id;
+                return nftEventEntity;
+            })
+            .filter((entity) => {
+                return entity.isMintEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
+            });
+
+        const nftEventMap = new Map<string, NftEventEntity>();
+        nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
+
+        const total = nftEventEntities.length;
+
+        nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
+
+        const result = { nftEventEntities, nftEntities, total };
+
+        // Act
+        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(result);
+    });
 });
