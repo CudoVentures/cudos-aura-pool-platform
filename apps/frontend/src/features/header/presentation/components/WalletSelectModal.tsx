@@ -291,7 +291,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     Verify your account
                     <InfoBlueBox
                         className = { 'KycInfo' }
-                        text = { 'This is needed in order for you to buy NFTs. You can skip this step for later, but you won’t be able to complete purchase on one NFT.' } />
+                        text = { 'You can skip this step for now, but you won’t be able to purchase an NFT until you have been verified.' } />
                 </div>
             </AnimationContainer>
 
