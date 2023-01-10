@@ -12,6 +12,10 @@ export class NftEventFilterValidationJson {
     @IsOptional()
         nftId: string;
 
+    @IsString()
+    @IsOptional()
+        miningFarmId: string;
+
     @IsArray()
     @IsEnum(NftTransferHistoryEventType, { each: true })
     @IsOptional()

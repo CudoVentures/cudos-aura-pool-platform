@@ -40,6 +40,10 @@ export class CollectionEntity {
         return this.id === NOT_EXISTS_INT;
     }
 
+    isDeleted(): boolean {
+        return this.status === CollectionStatus.DELETED;
+    }
+
     static toRepo(entity: CollectionEntity): CollectionRepo {
         if (entity === null) {
             return null;
@@ -54,8 +58,8 @@ export class CollectionEntity {
         repoJson.name = entity.name;
         repoJson.description = entity.description;
         repoJson.denomId = entity.denomId;
-        repoJson.hashingPower = entity.hashingPower;
-        repoJson.royalties = entity.royalties;
+        repoJson.hashingPower = entity.hashingPower.toString();
+        repoJson.royalties = entity.royalties.toString();
         repoJson.mainImage = entity.mainImage;
         repoJson.bannerImage = entity.bannerImage;
         repoJson.status = entity.status;
@@ -78,8 +82,8 @@ export class CollectionEntity {
         entity.description = repoJson.description ?? entity.description;
         entity.status = repoJson.status ?? entity.status;
         entity.denomId = repoJson.denomId ?? entity.denomId;
-        entity.hashingPower = repoJson.hashingPower ?? entity.hashingPower;
-        entity.royalties = repoJson.royalties ?? entity.royalties;
+        entity.hashingPower = Number(repoJson.hashingPower) ?? entity.hashingPower;
+        entity.royalties = Number(repoJson.royalties) ?? entity.royalties;
         entity.mainImage = repoJson.mainImage ?? entity.mainImage;
         entity.bannerImage = repoJson.bannerImage ?? entity.bannerImage;
         entity.farmId = repoJson.farmId ?? entity.farmId;

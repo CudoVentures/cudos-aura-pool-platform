@@ -10,6 +10,8 @@ import ChainMarketplaceCollectionEntity from '../../collection/entities/chain-ma
 import NftMarketplaceTradeHistoryEntity from '../../graphql/entities/nft-marketplace-trade-history.entity';
 import BigNumber from 'bignumber.js';
 import NftModuleNftTransferEntity from '../../graphql/entities/nft-module-nft-transfer-history';
+import { collectionEntities } from '../../../test/data/collections.data';
+import { CollectionEntity } from '../../collection/entities/collection.entity';
 
 export const nftTestEntitities = [];
 const nftPayoutHistoryEntities = [];
@@ -170,73 +172,6 @@ const chainMarketplaceCollectionEntities = [
     },
 ];
 
-export const collectionEntities = [{
-    id: 1,
-    name: 'testcollection',
-    description: 'testcollectiondescription',
-    denomId: 'testdenomid1',
-    hashingPower: '15',
-    royalties: '10',
-    mainImage: 'testuri',
-    bannerImage: 'testuri',
-    status: CollectionStatus.APPROVED,
-    farmId: 1,
-    creatorId: 1,
-    timestampDeletedAt: -1,
-}, {
-    id: 2,
-    name: 'testcollection2',
-    description: 'testcollectiondescription',
-    denomId: 'testdenomid2',
-    hashingPower: '15',
-    royalties: '10',
-    mainImage: 'testuri',
-    bannerImage: 'testuri',
-    status: CollectionStatus.APPROVED,
-    farmId: 1,
-    creatorId: 1,
-    timestampDeletedAt: -1,
-}, {
-    id: 3,
-    name: 'testcollection3',
-    description: 'testcollectiondescription',
-    denomId: 'testdenomid3',
-    hashingPower: '15',
-    royalties: '10',
-    mainImage: 'testuri',
-    bannerImage: 'testuri',
-    status: CollectionStatus.APPROVED,
-    farmId: 1,
-    creatorId: 1,
-    timestampDeletedAt: -1,
-}, {
-    id: 4,
-    name: 'testcollection4',
-    description: 'testcollectiondescription',
-    denomId: 'testdenomid4',
-    hashingPower: '15',
-    royalties: '10',
-    mainImage: 'testuri',
-    bannerImage: 'testuri',
-    status: CollectionStatus.APPROVED,
-    farmId: 2,
-    creatorId: 2,
-    timestampDeletedAt: -1,
-}, {
-    id: 5,
-    name: 'testcollection5',
-    description: 'testcollectiondescription',
-    denomId: 'testdenomid5',
-    hashingPower: '15',
-    royalties: '10',
-    mainImage: 'testuri',
-    bannerImage: 'testuri',
-    status: CollectionStatus.APPROVED,
-    farmId: 2,
-    creatorId: 2,
-    timestampDeletedAt: -1,
-}];
-
 for (let i = 1; i <= 5; i++) {
 
     const uuid = uuidv4();
@@ -290,7 +225,7 @@ for (let i = 1; i <= 5; i++) {
 
 export async function fillStatisticsTestData() {
     try {
-        await CollectionRepo.bulkCreate(collectionEntities);
+        await CollectionRepo.bulkCreate(collectionEntities.map((entity) => CollectionEntity.toRepo(entity).toJSON()));
         await NftRepo.bulkCreate(nftTestEntitities);
         await NftPayoutHistoryRepo.bulkCreate(nftPayoutHistoryEntities);
         await NftOwnersPayoutHistoryRepo.bulkCreate(nftOwnersPayoutHistoryEntities);

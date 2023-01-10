@@ -5,6 +5,7 @@ import { NftTransferHistoryEventType } from './nft-event.entity';
 export default class NftEventFilterEntity {
     sessionAccount: IntBoolValue;
     nftId: string;
+    miningFarmId: string;
     eventTypes: NftTransferHistoryEventType[];
     timestampFrom: number;
     timestampTo: number;
@@ -14,6 +15,7 @@ export default class NftEventFilterEntity {
     constructor() {
         this.sessionAccount = IntBoolValue.FALSE;
         this.nftId = NOT_EXISTS_STRING;
+        this.miningFarmId = NOT_EXISTS_STRING;
         this.eventTypes = null;
         this.timestampFrom = NOT_EXISTS_INT;
         this.timestampTo = NOT_EXISTS_INT;
@@ -22,7 +24,9 @@ export default class NftEventFilterEntity {
     }
 
     isPlatformFilter(): boolean {
-        return this.sessionAccount === IntBoolValue.FALSE && this.nftId === NOT_EXISTS_STRING
+        return this.sessionAccount === IntBoolValue.FALSE
+            && this.nftId === NOT_EXISTS_STRING
+            && this.miningFarmId === NOT_EXISTS_STRING
     }
 
     isEventFilterSet(): boolean {
@@ -31,6 +35,10 @@ export default class NftEventFilterEntity {
 
     isTimestampFilterSet(): boolean {
         return this.timestampFrom !== NOT_EXISTS_INT && this.timestampTo !== NOT_EXISTS_INT;
+    }
+
+    isByMiningFarmId(): boolean {
+        return this.miningFarmId !== NOT_EXISTS_STRING;
     }
 
     isByNftId(): boolean {
@@ -46,6 +54,7 @@ export default class NftEventFilterEntity {
 
         entity.sessionAccount = json.sessionAccount ?? entity.sessionAccount;
         entity.nftId = json.nftId ?? entity.nftId;
+        entity.miningFarmId = json.miningFarmId ?? entity.miningFarmId;
         entity.eventTypes = json.eventTypes ?? entity.eventTypes;
         entity.timestampFrom = json.timestampFrom ?? entity.timestampFrom;
         entity.timestampTo = json.timestampTo ?? entity.timestampTo;

@@ -7,6 +7,7 @@ import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
 import ChainMarketplaceCollectionEntity from '../collection/entities/chain-marketplace-collection.entity';
+import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import { DataServiceError } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
@@ -37,6 +38,7 @@ import { dayInMs, getDays } from './statistics.types';
 @Injectable()
 export class StatisticsService {
     constructor(
+        @Inject(forwardRef(() => NFTService))
         private nftService: NFTService,
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
@@ -241,6 +243,13 @@ export class StatisticsService {
         const nftFilterEntity = new NftFilterEntity();
         if (nftEventFilterEntity.isBySessionAccount() === true) {
             nftFilterEntity.sessionAccount = IntBoolValue.TRUE;
+        }
+
+        if (nftEventFilterEntity.isByMiningFarmId() === true) {
+            const collectionFilterEntity = new CollectionFilterEntity();
+            collectionFilterEntity.farmId = nftEventFilterEntity.miningFarmId;
+            const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity);
+            nftFilterEntity.collectionIds = collectionEntities.map((collectionEntity) => collectionEntity.id.toString());
         }
 
         if (nftEventFilterEntity.isByNftId()) {

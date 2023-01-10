@@ -56,11 +56,11 @@ export class CollectionRepo extends Model {
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
-        hashingPower: number;
+        hashingPower: string;
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
-        royalties: number;
+        royalties: string;
 
     @AllowNull(true)
     @Column({ type: DataType.TEXT })
@@ -70,7 +70,7 @@ export class CollectionRepo extends Model {
     @Column({ type: DataType.TEXT })
         bannerImage: string;
 
-    @Column({ type: DataType.ENUM(CollectionStatus.QUEUED, CollectionStatus.APPROVED, CollectionStatus.DELETED) })
+    @Column({ type: DataType.ENUM(CollectionStatus.QUEUED, CollectionStatus.APPROVED, CollectionStatus.DELETED, CollectionStatus.REJECTED) })
         status: CollectionStatus;
 
     @AllowNull(false)

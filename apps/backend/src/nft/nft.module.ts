@@ -12,7 +12,6 @@ import { VisitorModule } from '../visitor/visitor.module';
         SequelizeModule.forFeature([NftRepo]),
         VisitorModule,
         forwardRef(() => GraphqlModule),
-        forwardRef(() => NFTModule),
         forwardRef(() => CollectionModule),
     ],
     providers: [NFTService],

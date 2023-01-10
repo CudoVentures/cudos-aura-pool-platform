@@ -26,6 +26,7 @@ export class CollectionService {
     constructor(
     @InjectModel(CollectionRepo)
     private collectionModel: typeof CollectionRepo,
+    @Inject(forwardRef(() => NFTService))
     private nftService: NFTService,
     private graphqlService: GraphqlService,
     private accountService: AccountService,
@@ -282,13 +283,10 @@ export class CollectionService {
         nftFilter.nftStatus = [NftStatus.MINTED, NftStatus.QUEUED];
         nftFilter.orderBy = NftOrderBy.PRICE_ASC
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilter);
-        console.log('333333333333333333333333')
 
         const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-        console.log('4444444444444444444444444444444')
 
         const soldNfts = await this.graphqlService.fetchNftsByDenomId([collection.denomId]) // Sold NFTs
-        console.log('4444444444444444444444444444444')
 
         const uniqueOwnersArray = [...new Set(soldNfts.map((nft) => nft.owner))] // Unique owners of all the NFTs in the collection
 

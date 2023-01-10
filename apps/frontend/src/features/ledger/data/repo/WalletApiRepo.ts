@@ -33,7 +33,6 @@ export default class WalletApiRepo implements WalletRepo {
                 gasPrice: GasPrice.fromString(CHAIN_DETAILS.GAS_PRICE + CHAIN_DETAILS.NATIVE_TOKEN_DENOM),
             });
 
-            console.log(amount.toString())
             const decimals = (new BigNumber(10)).pow(18);
             const coin = Coin.fromJSON({
                 amount: amount.multipliedBy(decimals).toFixed(),

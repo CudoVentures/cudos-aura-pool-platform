@@ -10,7 +10,7 @@ import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
-import { collectionEntities, emptyStatisticsTestData, fillStatisticsTestData, getGraphQlmarketplaceCollections, getGraphQlMarketplaceNftEvents, getGraphQlNftNftEvents, getZeroDatePlusDaysTimestamp, nftTestEntitities } from './utils/test.utils';
+import { emptyStatisticsTestData, fillStatisticsTestData, getGraphQlmarketplaceCollections, getGraphQlMarketplaceNftEvents, getGraphQlNftNftEvents, getZeroDatePlusDaysTimestamp, nftTestEntitities } from './utils/test.utils';
 import compose from 'docker-compose';
 import Path from 'path';
 import UserEarningsEntity from './entities/user-earnings.entity';
@@ -28,6 +28,7 @@ import NftEntity from '../nft/entities/nft.entity';
 import { CollectionRepo } from '../collection/repos/collection.repo';
 import { CollectionStatus } from '../collection/utils';
 import { DataServiceError } from '../common/errors/errors';
+import { collectionEntities } from '../../test/data/collections.data';
 
 describe('StatisticsService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -86,7 +87,6 @@ describe('StatisticsService', () => {
             ],
             providers: [
                 StatisticsService,
-
             ],
         }).compile();
 
@@ -449,6 +449,55 @@ describe('StatisticsService', () => {
             return `${entity.tokenId}@${collection.denomId}`;
         });
 
+        const nftEventEntities = getGraphQlMarketplaceNftEvents()
+            .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
+            .map((entity) => {
+                const nftEventEntity = NftEventEntity.fromNftMarketplaceTradeHistory(entity);
+                const collection = collectionEntities.find((collectionEntity) => collectionEntity.denomId === nftEventEntity.denomId)
+                const nft = nftEntities.find((nftEntity) => nftEntity.tokenId === nftEventEntity.tokenId && nftEntity.collectionId === collection.id);
+
+                nftEventEntity.nftId = nft.id;
+                return nftEventEntity;
+            })
+            .filter((entity) => {
+                return entity.isMintEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
+            });
+
+        const nftEventMap = new Map<string, NftEventEntity>();
+        nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
+
+        const total = nftEventEntities.length;
+
+        nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
+
+        const result = { nftEventEntities, nftEntities, total };
+
+        // Act
+        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(result);
+    });
+
+    it('fetchNftEventsByFilter by farmid: Happy path', async () => {
+        // Arange
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.miningFarmId = '1';
+        nftEventFilterEntity.count = 10;
+        nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT];
+        nftEventFilterEntity.from = 0;
+        nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
+        nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
+
+        const collectionIds = collectionEntities.filter((collectionEntity) => collectionEntity.farmId === 1)
+            .map((collectionEntity) => collectionEntity.id);
+
+        let nftEntities = nftTestEntitities.filter((json) => collectionIds.includes(json.collectionId))
+            .map((json) => NftEntity.fromRepo(json));
+        const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
+            const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
+            return `${entity.tokenId}@${collection.denomId}`;
+        });
         const nftEventEntities = getGraphQlMarketplaceNftEvents()
             .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
             .map((entity) => {

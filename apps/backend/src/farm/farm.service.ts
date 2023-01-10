@@ -39,6 +39,8 @@ export class FarmService {
         private minerRepo: typeof MinerRepo,
         @InjectModel(ManufacturerRepo)
         private manufacturerRepo: typeof ManufacturerRepo,
+
+        @Inject(forwardRef(() => NFTService))
         private nftService: NFTService,
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
