@@ -9,6 +9,7 @@ import Button from '../../../../core/presentation/components/Button';
 import PageFooter from '../../../../features/footer/presentation/components/PageFooter';
 import PageHeader from '../../../header/presentation/components/PageHeader';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import RewardsCalculatorStore from '../stores/RewardsCalculatorStore';
@@ -26,14 +27,14 @@ import ColumnLayout from '../../../../core/presentation/components/ColumnLayout'
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator.css';
-import { action } from 'mobx';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
+    generalStore?: GeneralStore;
     rewardsCalculatorStore?: RewardsCalculatorStore
 }
 
-function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) {
+function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorStore }: Props) {
 
     const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChangeInUsd();
 
@@ -42,6 +43,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
     useEffect(() => {
         async function run() {
             await bitcoinStore.init();
+            await generalStore.init();
             await rewardsCalculatorStore.init();
         }
         run();
@@ -167,7 +169,7 @@ function RewardsCalculatorPage({ bitcoinStore, rewardsCalculatorStore }: Props) 
                                     className={'DataRowHeading'}
                                     text={'Pool Fee'}
                                     tooltipText={'The percentage from BTC payouts kept by Aura pool as Protocol fees.'} />
-                                <div className={'DataRowValue StartRight'}>{(ProjectUtils.CUDOS_FEE_IN_PERCENT * 100).toFixed(0)} %</div>
+                                <div className={'DataRowValue StartRight'}>{generalStore.settingsEntity.globalCudosFeesPercent.toFixed(4)} %</div>
                             </div>
                             <div className={'DataRow FlexRow FlexSplit'}>
                                 <TextWithTooltip

@@ -37,20 +37,4 @@ export default class SuperAdminRepo extends Model {
     @Column({ type: DataType.STRING })
         cudosRoyalteesAddress: string;
 
-    @AllowNull(false)
-    @Column({ type: DataType.FLOAT })
-        firstSaleCudosRoyaltiesPercent: number;
-
-    @AllowNull(false)
-    @Column({ type: DataType.FLOAT })
-        resaleCudosRoyaltiesPercent: number;
-
-    @AllowNull(false)
-    @Column({ type: DataType.FLOAT })
-        globalCudosFeesPercent: number;
-
-    @AllowNull(false)
-    @Column({ type: DataType.FLOAT })
-        globalCudosRoyaltiesPercent: number;
-
 }

@@ -33,6 +33,7 @@ import MegaWalletBalance from '../components/MegaWalletBalance';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import '../styles/page-super-admin-mega-wallet.css'
 import { NftEventType } from '../../../analytics/entities/NftEventEntity';
+import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
@@ -42,15 +43,18 @@ type Props = {
     cudosStore?: CudosStore;
     alertStore?: AlertStore;
     walletStore?: WalletStore;
+    generalStore?: GeneralStore;
 }
 
-function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTransferModalStore, megaWalletBalanceStore, megaWalletSettingsModalStore, cudosStore, walletStore, alertStore }: Props) {
+function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTransferModalStore, megaWalletBalanceStore, megaWalletSettingsModalStore, cudosStore, walletStore, alertStore, generalStore }: Props) {
     const { megaWalletEventEntities, accountSessionStore } = superAdminMegaWalletPageStore;
     const { superAdminEntity } = accountSessionStore;
+    const { settingsEntity } = generalStore;
 
     useEffect(() => {
         superAdminMegaWalletPageStore.init();
         cudosStore.init();
+        generalStore.init();
     }, []);
 
     function onClickDeposit() {
@@ -191,10 +195,10 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                         </Actions>
                     </StyledContainer>
                     <RowLayout className={'RoyaltyBoxesLayout'} numColumns = { 2 } gap = { 16 }>
-                        { renderBoxContainer('Global Royalties', superAdminEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) }
-                        { renderBoxContainer('Global Fees', superAdminEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) }
-                        { renderBoxContainer('Resale Fees', superAdminEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
-                        { renderBoxContainer('Royalty Fee upon first sale of NFT', superAdminEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
+                        { renderBoxContainer('Global Royalties', settingsEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) }
+                        { renderBoxContainer('Global Fees', settingsEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) }
+                        { renderBoxContainer('Resale Fees', settingsEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
+                        { renderBoxContainer('Royalty Fee upon first sale of NFT', settingsEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
                     </RowLayout>
                 </RowLayout>
                 <StyledLayout

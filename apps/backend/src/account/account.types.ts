@@ -67,16 +67,4 @@ export class SuperAdminJsonValidator {
     @IsString()
         cudosRoyalteesAddress: string;
 
-    @IsNumber()
-        firstSaleCudosRoyaltiesPercent: number;
-
-    @IsNumber()
-        resaleCudosRoyaltiesPercent: number;
-
-    @IsNumber()
-        globalCudosFeesPercent: number;
-
-    @IsNumber()
-        globalCudosRoyaltiesPercent: number;
-
 }

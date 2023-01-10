@@ -1,6 +1,7 @@
 import { action, makeAutoObservable, runInAction } from 'mobx';
 import TableState from '../../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
@@ -12,6 +13,7 @@ export default class QueuedMiningFarmsStores {
 
     miningFarmRepo: MiningFarmRepo;
     accountSessionStore: AccountSessionStore;
+    generalStore: GeneralStore;
 
     miningFarmsTableState: TableState;
 
@@ -20,9 +22,10 @@ export default class QueuedMiningFarmsStores {
     minerEntitiesMap: Map < string, MinerEntity >;
     energySourceEntitiesMap: Map < string, EnergySourceEntity >;
 
-    constructor(miningFarmRepo: MiningFarmRepo, accountSessionStore: AccountSessionStore) {
+    constructor(miningFarmRepo: MiningFarmRepo, accountSessionStore: AccountSessionStore, generalStore: GeneralStore) {
         this.miningFarmRepo = miningFarmRepo;
         this.accountSessionStore = accountSessionStore;
+        this.generalStore = generalStore;
 
         this.miningFarmsTableState = new TableState(0, [], this.fetchMiningFarms, 8);
         this.miningFarmEntities = null;
@@ -41,6 +44,7 @@ export default class QueuedMiningFarmsStores {
         await this.fetchManufacturers();
         await this.fetchMiners();
         await this.fetchEnergySources();
+        await this.generalStore.init();
 
         this.fetchMiningFarms();
     }
@@ -132,11 +136,11 @@ export default class QueuedMiningFarmsStores {
 
         // if royalties not custom set for this farm, set the super admin standard onss
         if (clonedMiningFarm.isCudosMintNftRoyaltiesPercentSet() === false) {
-            clonedMiningFarm.cudosMintNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.firstSaleCudosRoyaltiesPercent;
+            clonedMiningFarm.cudosMintNftRoyaltiesPercent = this.generalStore.settingsEntity.firstSaleCudosRoyaltiesPercent;
         }
 
         if (clonedMiningFarm.isCudosResaleNftRoyaltiesPercentSet() === false) {
-            clonedMiningFarm.cudosResaleNftRoyaltiesPercent = this.accountSessionStore.superAdminEntity.resaleCudosRoyaltiesPercent;
+            clonedMiningFarm.cudosResaleNftRoyaltiesPercent = this.generalStore.settingsEntity.resaleCudosRoyaltiesPercent;
         }
 
         await this.miningFarmRepo.creditMiningFarm(clonedMiningFarm);
