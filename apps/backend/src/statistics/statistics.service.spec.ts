@@ -27,6 +27,7 @@ import { NftStatus } from '../nft/nft.types';
 import NftEntity from '../nft/entities/nft.entity';
 import { CollectionRepo } from '../collection/repos/collection.repo';
 import { CollectionStatus } from '../collection/utils';
+import { DataServiceError } from '../common/errors/errors';
 
 describe('StatisticsService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -121,6 +122,22 @@ describe('StatisticsService', () => {
 
     it('should be defined', async () => {
         expect(service).toBeDefined();
+    });
+
+    it('All: bad timeframe should throw error', async () => {
+        // Arrange
+        const timestampFrom = 10;
+        const timestampTo = 1;
+
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.timestampFrom = timestampFrom;
+        nftEventFilterEntity.timestampTo = timestampTo;
+
+        // Assert
+        expect(() => service.fetchEarningsByMiningFarmId(1, timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
+        expect(() => service.fetchEarningsByCudosAddress('testowner', timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
+        expect(() => service.fetchEarningsByNftId(uuidv4(), timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
+        expect(() => service.fetchNftEventsByFilter(null, nftEventFilterEntity)).rejects.toThrow(DataServiceError);
     });
 
     it('fetchEarningsByCudosAddress: Happy path', async () => {
@@ -320,6 +337,42 @@ describe('StatisticsService', () => {
 
         // Act
         const userEarningsEntity = await service.fetchEarningsByMiningFarmId(1, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+
+        // Assert
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    it('fetchEarningsByMiningFarmId: non existing farm whould return zeroes', async () => {
+        // Arrange
+        const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
+            totalMiningFarmSalesInAcudos: '0',
+            totalMiningFarmRoyaltiesInAcudos: '0',
+            totalNftSold: 0,
+            maintenanceFeeDepositedInBtc: '0',
+            earningsPerDayInAcudos: [
+                '0', '0', '0',
+            ],
+        });
+
+        // Act
+        const userEarningsEntity = await service.fetchEarningsByMiningFarmId(9999, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+
+        // Assert
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    it('fetchEarningsByMiningFarmId: no data for timeframe should return zeroes for statistics and correct for totals', async () => {
+        // Arrange
+        const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
+            totalMiningFarmSalesInAcudos: '6',
+            totalMiningFarmRoyaltiesInAcudos: '0.6',
+            totalNftSold: 3,
+            maintenanceFeeDepositedInBtc: '6',
+            earningsPerDayInAcudos: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+        });
+
+        // Act
+        const userEarningsEntity = await service.fetchEarningsByMiningFarmId(1, getZeroDatePlusDaysTimestamp(20), getZeroDatePlusDaysTimestamp(29));
 
         // Assert
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);

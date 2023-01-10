@@ -1,12 +1,14 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
+import { timeStamp } from 'console';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
 import ChainMarketplaceCollectionEntity from '../collection/entities/chain-marketplace-collection.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
+import { DataServiceError } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
 import { FarmService } from '../farm/farm.service';
@@ -48,6 +50,10 @@ export class StatisticsService {
     ) {}
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
+        if (nftEventFilterEntity.isTimestampFilterSet() === true) {
+            this.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
+        }
+
         const { nftEventEntities, nftEntitiesMap } = nftEventFilterEntity.isPlatformFilter()
             ? await this.fetchPlatformNftEvents()
             : await this.fetchNftEventsByNftFilter(userEntity, nftEventFilterEntity);
@@ -77,6 +83,10 @@ export class StatisticsService {
     }
 
     async fetchMegaWalletEventsByFilter(megaWalletEventFilterEntity: MegaWalletEventFilterEntity): Promise<{ megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number }> {
+        if (megaWalletEventFilterEntity.isTimestampFilterSet() === true) {
+            this.checkTimeframe(megaWalletEventFilterEntity.timestampFrom, megaWalletEventFilterEntity.timestampTo);
+        }
+
         const { nftEventEntities, nftEntitiesMap } = await this.fetchPlatformNftEvents();
 
         const filteredNftEntities = nftEventEntities.filter((nftEventEntity) => nftEventEntity.hasPrice() === true);
@@ -224,6 +234,10 @@ export class StatisticsService {
     }
 
     private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+        if (nftEventFilterEntity.isTimestampFilterSet() === true) {
+            this.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
+        }
+
         const nftFilterEntity = new NftFilterEntity();
         if (nftEventFilterEntity.isBySessionAccount() === true) {
             nftFilterEntity.sessionAccount = IntBoolValue.TRUE;
@@ -284,6 +298,8 @@ export class StatisticsService {
     }
 
     async fetchEarningsByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
+        this.checkTimeframe(timestampFrom, timestampTo);
+
         const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
         const nftOwnersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress, timestampFrom, timestampTo);
         earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities);
@@ -316,6 +332,8 @@ export class StatisticsService {
     }
 
     async fetchEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {
+        this.checkTimeframe(timestampFrom, timestampTo);
+
         const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
 
         const nftEntity = await this.nftService.findOne(nftId);
@@ -332,6 +350,8 @@ export class StatisticsService {
     }
 
     async fetchEarningsByMiningFarmId(miningFarmId: number, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
+        this.checkTimeframe(timestampFrom, timestampTo);
+
         // fetch all nfts for farm
         const farmCollectionEntities = await this.collectionService.findByFarmId(miningFarmId);
         const denomIdCollectionEntityMap = new Map<string, CollectionEntity>();
@@ -432,6 +452,8 @@ export class StatisticsService {
 
     // TODO: needs to be rewritten
     async fetchPlatformEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
+        this.checkTimeframe(timestampFrom, timestampTo);
+
         const days = getDays(Number(timestampFrom), Number(timestampTo))
 
         const payoutHistoryForPeriod = await this.nftPayoutHistoryRepo.findAll({ where: {
@@ -507,5 +529,11 @@ export class StatisticsService {
         return nftPayoutHistoryRepos.map((nftPayoutHistoryRepo) => {
             return NftPayoutHistoryEntity.fromRepo(nftPayoutHistoryRepo);
         });
+    }
+
+    private checkTimeframe(timestampFrom: number, timestampTo: number) {
+        if (timestampFrom > timestampTo) {
+            throw new DataServiceError();
+        }
     }
 }
