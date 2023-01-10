@@ -138,7 +138,8 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                             ),
                         }} />
                 }
-                helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
+                // helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` }
+            />
             <InfoBlueBox text={<>You receive <b>{creditCollectionStore.getCurrentNftIncomeForFarmFormatted()} CUDOS</b> upon the sale and <b>{creditCollectionStore.collectionEntity.formatRoyaltiesInPercentage()}</b> of the price on <b>resale</b></>} />
             {/* <FieldColumnWrapper
                 field = {
