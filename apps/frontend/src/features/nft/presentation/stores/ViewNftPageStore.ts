@@ -20,6 +20,7 @@ import BigNumber from 'bignumber.js';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import AdminEntity from '../../../accounts/entities/AdminEntity';
+import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 
 enum StatsTabs {
     EARNINGS = 0,
@@ -31,6 +32,7 @@ export default class ViewNftPageStore {
 
     bitcoinStore: BitcoinStore;
     cudosStore: CudosStore;
+    generalStore: GeneralStore;
 
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
@@ -56,9 +58,10 @@ export default class ViewNftPageStore {
     nftEventEntities: NftEventEntity[];
     historyTableState: TableState;
 
-    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
+    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, generalStore: GeneralStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
         this.bitcoinStore = bitcoinStore;
         this.cudosStore = cudosStore;
+        this.generalStore = generalStore;
 
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
@@ -90,6 +93,7 @@ export default class ViewNftPageStore {
     async init(nftId: string) {
         await this.bitcoinStore.init();
         await this.cudosStore.init();
+        await this.generalStore.init();
 
         const cudosPrice = this.cudosStore.getCudosPriceInUsd();
         const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
@@ -230,7 +234,7 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(1 / 30));
         const grossProfit = this.calculateGrossProfitPerDay()
-        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
+        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
     }
 
     @computed
@@ -241,7 +245,7 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(7 * 1 / 30));
         const grossProfit = this.calculateGrossProfitPerWeek();
-        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
+        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
     }
 
     @computed
@@ -252,7 +256,7 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee();
         const grossProfit = this.calculateGrossProfitPerMonth();
-        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
+        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
     }
 
     @computed
@@ -263,7 +267,7 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(12));
         const grossProfit = this.calculateGrossProfitPerYear();
-        return grossProfit.multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE).minus(maintenanceFee);
+        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
     }
 
     formatNetProfitPerDay(): string {

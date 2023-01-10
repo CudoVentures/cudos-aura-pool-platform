@@ -120,7 +120,7 @@ describe('StatisticsService', () => {
         await emptyStatisticsTestData();
     })
 
-    it('should be defined', async () => {
+    it('Should be defined', async () => {
         expect(service).toBeDefined();
     });
 
@@ -286,7 +286,7 @@ describe('StatisticsService', () => {
     // - is for collection that is not for that farm
     // - is outside the timeframe borders
     // - is for not minted nfts
-    it('fetchEarningsByMiningFarmId: test with nfts and collections and events not for this farm', async () => {
+    it('fetchEarningsByMiningFarmId: NFTs, collections, events not for a farm', async () => {
         // Arrange
         const id = uuidv4();
         const id2 = uuidv4();
@@ -342,7 +342,7 @@ describe('StatisticsService', () => {
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
-    it('fetchEarningsByMiningFarmId: non existing farm whould return zeroes', async () => {
+    it('fetchEarningsByMiningFarmId: Non-existing farm should return zeroes', async () => {
         // Arrange
         const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
             totalMiningFarmSalesInAcudos: '0',
@@ -361,7 +361,7 @@ describe('StatisticsService', () => {
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
-    it('fetchEarningsByMiningFarmId: no data for timeframe should return zeroes for statistics and correct for totals', async () => {
+    it('fetchEarningsByMiningFarmId: No data for timeframe should return zeroes for statistics and correct for totals', async () => {
         // Arrange
         const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
             totalMiningFarmSalesInAcudos: '6',
@@ -378,7 +378,7 @@ describe('StatisticsService', () => {
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
-    it('fetchNftEventsByFilter by session account: Happy path', async () => {
+    it('fetchNftEventsByFilter: Minted by session account', async () => {
         // Arange
         const userEntity = UserEntity.fromJson({
             userId: '1',
@@ -397,8 +397,7 @@ describe('StatisticsService', () => {
         nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
         nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
 
-        let nftEntities = nftTestEntitities.filter((json) => json.currentOwner === userEntity.cudosWalletAddress)
-            .map((json) => NftEntity.fromRepo(json));
+        let nftEntities = nftTestEntitities.filter((json) => json.currentOwner === userEntity.cudosWalletAddress).map((json) => NftEntity.fromRepo(json));
         const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
             const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
             return `${entity.tokenId}@${collection.denomId}`;
@@ -421,7 +420,6 @@ describe('StatisticsService', () => {
         nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
 
         const total = nftEventEntities.length;
-
         nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
 
         const result = { nftEventEntities, nftEntities, total };
@@ -433,7 +431,60 @@ describe('StatisticsService', () => {
         expect(userEarningsEntity).toEqual(result);
     });
 
-    it('fetchNftEventsByFilter by platform: Happy path', async () => {
+    it('fetchNftEventsByFilter: Sales only', async () => {
+        // Arange
+        const userEntity = UserEntity.fromJson({
+            userId: '1',
+            accountId: '1',
+            cudosWalletAddress: 'testowner',
+            bitcoinPayoutWalletAddress: 'payoutaddress',
+            profileImgUrl: 'someuri',
+            coverImgUrl: 'someuri',
+        });
+
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.count = 10;
+        nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.SALE];
+        nftEventFilterEntity.from = 0;
+        nftEventFilterEntity.sessionAccount = IntBoolValue.FALSE;
+        nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
+        nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
+
+        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+        const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
+            const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
+            return `${entity.tokenId}@${collection.denomId}`;
+        });
+        const nftEventEntities = getGraphQlMarketplaceNftEvents()
+            .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
+            .map((entity) => {
+                const nftEventEntity = NftEventEntity.fromNftMarketplaceTradeHistory(entity);
+                const collection = collectionEntities.find((collectionEntity) => collectionEntity.denomId === nftEventEntity.denomId)
+                const nft = nftEntities.find((nftEntity) => nftEntity.tokenId === nftEventEntity.tokenId && nftEntity.collectionId === collection.id);
+
+                nftEventEntity.nftId = nft.id;
+                return nftEventEntity;
+            })
+            .filter((entity) => {
+                return entity.isSaleEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
+            });
+
+        const nftEventMap = new Map<string, NftEventEntity>();
+        nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
+
+        const total = nftEventEntities.length;
+        nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
+
+        const result = { nftEventEntities, nftEntities, total };
+
+        // Act
+        const userEarningsEntity = await service.fetchNftEventsByFilter(userEntity, nftEventFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(result);
+    });
+
+    it('fetchNftEventsByFilter: By platform minted', async () => {
         // Arange
         const nftEventFilterEntity = new NftEventFilterEntity();
         nftEventFilterEntity.count = 10;
@@ -510,6 +561,52 @@ describe('StatisticsService', () => {
             })
             .filter((entity) => {
                 return entity.isMintEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
+            });
+
+        const nftEventMap = new Map<string, NftEventEntity>();
+        nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
+
+        const total = nftEventEntities.length;
+
+        nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
+
+        const result = { nftEventEntities, nftEntities, total };
+
+        // Act
+        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(result);
+    });
+
+    it('fetchNftEventsByFilter: By platform transferred', async () => {
+        // Arange
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.count = 10;
+        nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.TRANSFER];
+        nftEventFilterEntity.from = 0;
+        nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
+        nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
+
+        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+
+        const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
+            const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
+            return `${entity.tokenId}@${collection.denomId}`;
+        });
+
+        const nftEventEntities = getGraphQlNftNftEvents()
+            .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
+            .map((entity) => {
+                const nftEventEntity = NftEventEntity.fromNftModuleTransferHistory(entity);
+                const collection = collectionEntities.find((collectionEntity) => collectionEntity.denomId === nftEventEntity.denomId)
+                const nft = nftEntities.find((nftEntity) => nftEntity.tokenId === nftEventEntity.tokenId && nftEntity.collectionId === collection.id);
+
+                nftEventEntity.nftId = nft.id;
+                return nftEventEntity;
+            })
+            .filter((entity) => {
+                return entity.isTransferEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
             });
 
         const nftEventMap = new Map<string, NftEventEntity>();

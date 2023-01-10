@@ -7,10 +7,12 @@ import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore
 import BigNumber from 'bignumber.js';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import BitcoinBlockchainInfoEntity from '../../../bitcoin-data/entities/BitcoinBlockchainInfoEntity';
+import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 
 export default class RewardsCalculatorStore {
 
     bitcoinStore: BitcoinStore;
+    generalStore: GeneralStore;
     miningFarmRepo: MiningFarmRepo;
 
     miningFarmsEntities: MiningFarmEntity[];
@@ -19,8 +21,9 @@ export default class RewardsCalculatorStore {
     networkDifficultyEdit: BigNumber;
     hashPowerInThInputValue: string;
 
-    constructor(bitcoinStore: BitcoinStore, miningFarmRepo: MiningFarmRepo) {
+    constructor(bitcoinStore: BitcoinStore, generalStore: GeneralStore, miningFarmRepo: MiningFarmRepo) {
         this.bitcoinStore = bitcoinStore;
+        this.generalStore = generalStore;
         this.miningFarmRepo = miningFarmRepo;
 
         this.miningFarmsEntities = [];
@@ -55,6 +58,7 @@ export default class RewardsCalculatorStore {
 
     async init() {
         await this.bitcoinStore.init();
+        await this.generalStore.init();
         const miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
 
         runInAction(() => {
@@ -148,7 +152,7 @@ export default class RewardsCalculatorStore {
 
         const k = this.getHashPowerInTh() / this.selectedMiningFarmEntity.hashPowerInTh;
         const maintenanceFeeInBtc = new BigNumber(k).multipliedBy(this.selectedMiningFarmEntity.maintenanceFeeInBtc);
-        const incomeAfterCudosFeeInBtc = this.calculateGrossRewardPerMonth().multipliedBy(ProjectUtils.REMAINDER_AFTER_CUDOS_FEE);
+        const incomeAfterCudosFeeInBtc = this.calculateGrossRewardPerMonth().multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee());
         const incomeAfterMaitenanceFeeInBtc = incomeAfterCudosFeeInBtc.minus(maintenanceFeeInBtc);
 
         return incomeAfterMaitenanceFeeInBtc;

@@ -35,6 +35,7 @@ import AccountApiRepo from './features/accounts/data/repo/AccountApiRepo';
 import MiningFarmApiRepo from './features/mining-farm/data/repo/MiningFarmApiRepo';
 import CollectionApiRepo from './features/collection/data/repo/CollectionApiRepo';
 import NftApiRepo from './features/nft/data/repo/NftApiRepo';
+import SettingsApiRepo from './features/general/data/repo/SettingsApiRepo';
 import ViewCollectionModalStore from './features/collection/presentation/stores/ViewCollectionModalStore';
 import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores/ViewMiningFarmModalStore';
 import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
@@ -61,6 +62,7 @@ import EditUserBtcModalStore from './features/accounts/presentation/stores/EditU
 import SuperAdminAnalyticsPageStore from './features/analytics/presentation/stores/SuperAdminAnalyticsPageStore';
 import ApprovedCollectionsStore from './features/collection/presentation/stores/ApprovedCollectionsStore';
 import RejectedCollectionsStore from './features/collection/presentation/stores/RejectedCollectionsStore';
+import GeneralStore from './features/general/presentation/stores/GeneralStore';
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -75,24 +77,26 @@ const visitorRepo = new VisitorApiRepo();
 const statisticsRepo = new StatisticsApiRepo();
 const accountRepo = new AccountApiRepo();
 const walletRepo = new WalletApiRepo();
+const settingsRepo = new SettingsApiRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
 const snackStore = new SnackStore();
 const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore(alertStore, walletRepo);
+const generalStore = new GeneralStore(settingsRepo);
 
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
 const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, miningFarmRepo);
 const categoriesStore = new CategoriesStore(collectionRepo);
-const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, miningFarmRepo);
+const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, generalStore, miningFarmRepo);
 const marketplaceStore = new MarketplaceStore(collectionRepo, nftRepo, miningFarmRepo);
 const superAdminDashboardPageStore = new SuperAdminDashboardPageStore(statisticsRepo, miningFarmRepo, collectionRepo, accountSessionStore, alertStore);
 const exploreCollectionsPageStore = new ExploreCollectionsPageStore(collectionRepo, miningFarmRepo);
 const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRepo);
 const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
-const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, nftRepo, collectionRepo, miningFarmRepo, statisticsRepo, accountRepo);
+const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, generalStore, nftRepo, collectionRepo, miningFarmRepo, statisticsRepo, accountRepo);
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo, walletStore, alertStore, accountSessionStore);
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo, accountSessionStore, alertStore, walletStore);
 const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, statisticsRepo);
@@ -101,7 +105,7 @@ const superAdminAnalyticsPageStore = new SuperAdminAnalyticsPageStore(statistics
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo, alertStore);
 const creditCollectionStore = new CreditCollectionStore(accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
 const visitorStore = new VisitorStore(visitorRepo);
-const queuedMiningFarmsStore = new QueuedMiningFarmsStores(miningFarmRepo, accountSessionStore);
+const queuedMiningFarmsStore = new QueuedMiningFarmsStores(miningFarmRepo, accountSessionStore, generalStore);
 const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, miningFarmRepo, nftRepo, walletStore, accountSessionStore, alertStore);
 const approvedCollectionsStore = new ApprovedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
 const rejectedCollectionsStore = new RejectedCollectionsStore(collectionRepo, nftRepo, accountSessionStore, alertStore);
@@ -118,7 +122,7 @@ const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
 const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
 const valueChangeModalStore = new ValueChangeModalStore();
-const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSessionStore);
+const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSessionStore, generalStore);
 const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSessionStore, walletStore);
 const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore();
 const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSessionStore);
@@ -132,6 +136,7 @@ visitorRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.dis
 statisticsRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 accountRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 walletRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+settingsRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 
 bitcoinRepo.setPresentationAlertCallbacks(alertStore.show);
 cudosRepo.setPresentationAlertCallbacks(alertStore.show);
@@ -142,6 +147,7 @@ visitorRepo.setPresentationAlertCallbacks(alertStore.show);
 statisticsRepo.setPresentationAlertCallbacks(alertStore.show);
 accountRepo.setPresentationAlertCallbacks(alertStore.show);
 walletRepo.setPresentationAlertCallbacks(alertStore.show);
+settingsRepo.setPresentationAlertCallbacks(alertStore.show);
 
 const App = () => {
 
@@ -163,6 +169,7 @@ const App = () => {
                 alertStore={alertStore}
                 snackStore={snackStore}
                 walletStore={walletStore}
+                generalStore={generalStore}
                 bitcoinStore={bitcoinStore}
                 cudosStore={cudosStore}
                 categoriesStore={categoriesStore}
