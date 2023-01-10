@@ -12,7 +12,7 @@ import TempIdGenerator from '../../../../core/utilities/TempIdGenerator';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
-import { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
+import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 
 enum CreditCollectionDetailsSteps {
     COLLECTION_DETAILS = 1,
@@ -41,6 +41,7 @@ export default class CreditCollectionStore {
     collectionEntity: CollectionEntity;
     nftEntities: NftEntity[];
     selectedNftEntity: NftEntity;
+    miningFarmEntity: MiningFarmEntity;
     miningFarmDetailsEntity: MiningFarmDetailsEntity;
     collectionDetailsEntity: CollectionDetailsEntity;
 
@@ -64,6 +65,7 @@ export default class CreditCollectionStore {
         this.collectionEntity = null;
         this.nftEntities = [];
         this.selectedNftEntity = null;
+        this.miningFarmEntity = null;
         this.miningFarmDetailsEntity = null;
         this.collectionDetailsEntity = null;
 
@@ -77,14 +79,14 @@ export default class CreditCollectionStore {
     }
 
     async initAsCreate() {
-        const farmId = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED)).id;
+        const miningFarmEntity = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED));
 
         runInAction(() => {
             this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
             this.creditMode = CreditCollectionMode.CREATE;
             this.collectionEntity = new CollectionEntity();
-            this.collectionEntity.farmId = farmId;
-
+            this.collectionEntity.farmId = miningFarmEntity.id;
+            this.miningFarmEntity = miningFarmEntity;
             this.fetchMiningFarmDetails();
         });
     }
@@ -276,6 +278,12 @@ export default class CreditCollectionStore {
 
     //     return this.selectedNftEntity.farmRoyalties.toString();
     // }
+
+    getCurrentNftIncomeForFarmFormatted(): string {
+        const a = new BigNumber(this.selectedNftPriceInCudosInputValue === '' ? 0 : this.selectedNftPriceInCudosInputValue);
+
+        return a.multipliedBy(1 - (this.miningFarmEntity.cudosMintNftRoyaltiesPercent / 100)).toFormat(2);
+    }
 
     getSelectedNftExpirationDateInputValue(): Date {
         if (this.selectedNftEntity === null || this.selectedNftEntity.expirationDateTimestamp === S.NOT_EXISTS) {

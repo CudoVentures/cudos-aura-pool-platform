@@ -121,7 +121,6 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
                 helperText = { `Available TH: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
-                <InfoBlueBox text={'You receive <b>XX</b> upon the sale and <b>YY</b> on <b>ZZ</b> date'} />
             </FieldColumnWrapper>
             <FieldColumnWrapper
                 field = {
@@ -129,6 +128,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         label={'Price per NFT'}
                         placeholder={'Enter price...'}
                         disabled = { selectedNftEntity === null }
+                        inputType = { InputType.REAL }
                         value={creditCollectionStore.selectedNftPriceInCudosInputValue}
                         inputValidation={nftPriceValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftPriceInCudos}
@@ -139,6 +139,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         }} />
                 }
                 helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` } />
+            <InfoBlueBox text={<>You receive <b>{creditCollectionStore.getCurrentNftIncomeForFarmFormatted()} CUDOS</b> upon the sale and <b>{creditCollectionStore.collectionEntity.formatRoyaltiesInPercentage()}</b> of the price on <b>resale</b></>} />
             {/* <FieldColumnWrapper
                 field = {
                     <Input
