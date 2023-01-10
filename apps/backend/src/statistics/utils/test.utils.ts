@@ -10,7 +10,6 @@ import ChainMarketplaceCollectionEntity from '../../collection/entities/chain-ma
 import NftMarketplaceTradeHistoryEntity from '../../graphql/entities/nft-marketplace-trade-history.entity';
 import BigNumber from 'bignumber.js';
 import NftModuleNftTransferEntity from '../../graphql/entities/nft-module-nft-transfer-history';
-import { NOT_EXISTS_INT } from '../../common/utils';
 
 export const nftTestEntitities = [];
 const nftPayoutHistoryEntities = [];
@@ -51,6 +50,40 @@ for (let i = 1; i <= 5; i++) {
         timestamp: getZeroDatePlusDaysTimestamp(i - 1),
         transactionHash: 'somehash',
     })
+
+    // used for custom test collection and nfts////////////////////////////////////////////////////////////
+    chainMarketplaceTradeHistoryEntities.push({
+        buyer: 'testbuyer',
+        btcPrice: new BigNumber(i / 10000),
+        denomId: 'string',
+        acudosPrice: new BigNumber(i),
+        seller: '0x0',
+        timestamp: getZeroDatePlusDaysTimestamp(i - 1),
+        tokenId: `1${i}`,
+        usdPrice: i,
+        transactionHash: 'sometxhash',
+    });
+    chainMarketplaceTradeHistoryEntities.push({
+        buyer: 'testowner',
+        btcPrice: new BigNumber(i / 10000),
+        denomId: 'string',
+        acudosPrice: new BigNumber(i),
+        seller: 'testbuyer',
+        timestamp: getZeroDatePlusDaysTimestamp(i),
+        tokenId: `1${i}`,
+        usdPrice: i,
+        transactionHash: 'sometxhash',
+    });
+
+    chainNftTransferHistoryEntities.push({
+        tokenId: `1${i}`,
+        denomId: 'string',
+        newOwner: 'testowner',
+        oldOwner: 'testbuyer',
+        timestamp: getZeroDatePlusDaysTimestamp(i - 1),
+        transactionHash: 'somehash',
+    })
+    /// ////////////////////////////////////////////////////////
 }
 
 const chainMarketplaceCollectionEntities = [

@@ -25,6 +25,8 @@ import { NftRepo } from '../nft/repos/nft.repo';
 import { v4 as uuidv4 } from 'uuid';
 import { NftStatus } from '../nft/nft.types';
 import NftEntity from '../nft/entities/nft.entity';
+import { CollectionRepo } from '../collection/repos/collection.repo';
+import { CollectionStatus } from '../collection/utils';
 
 describe('StatisticsService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -221,6 +223,7 @@ describe('StatisticsService', () => {
     });
 
     it('fetchEarningsByNftId: Removed NFTs', async () => {
+        // Arrange
         const id = uuidv4();
         await NftRepo.create({ // not owned
             id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
@@ -236,11 +239,15 @@ describe('StatisticsService', () => {
             earningsPerDayInBtc: ['0', '0', '0'],
         });
 
+        // Act
         const nftEarningsEntity = await service.fetchEarningsByNftId(id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+
+        // Assert
         expect(nftEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
     it('fetchEarningsByMiningFarmId: Happy path', async () => {
+        // Arrange
         const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
             totalMiningFarmSalesInAcudos: '6',
             totalMiningFarmRoyaltiesInAcudos: '0.6',
@@ -251,7 +258,70 @@ describe('StatisticsService', () => {
             ],
         });
 
+        // Act
         const userEarningsEntity = await service.fetchEarningsByMiningFarmId(1, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+
+        // Assert
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    // should not include any data that:
+    // - is for collection that is not for that farm
+    // - is outside the timeframe borders
+    // - is for not minted nfts
+    it('fetchEarningsByMiningFarmId: test with nfts and collections and events not for this farm', async () => {
+        // Arrange
+        const id = uuidv4();
+        const id2 = uuidv4();
+        const id3 = uuidv4();
+        const id4 = uuidv4();
+        const id5 = uuidv4();
+        const id6 = uuidv4();
+
+        await CollectionRepo.create({ // collection in different farm
+            id: 123, name: 'string', description: 'string', denomId: 'string', hashingPower: 4, royalties: 5, mainImage: 'string', bannerImage: 'string', status: CollectionStatus.APPROVED, farmId: 999, creatorId: 23, deletedAt: null,
+        });
+
+        await CollectionRepo.create({ // collection in farm but not approved
+            id: 124, name: 'string2', description: 'string2', denomId: 'string2', hashingPower: 4, royalties: 5, mainImage: 'string', bannerImage: 'string', status: CollectionStatus.QUEUED, farmId: 1, creatorId: 23, deletedAt: null,
+        });
+
+        await NftRepo.create({ // nft in first collection not for this farm
+            id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 10, collectionId: 123, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
+        });
+
+        await NftRepo.create({ // nft in second collection
+            id: id2, name: 'nftX2', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.QUEUED, tokenId: 11, collectionId: 124, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 11,
+        });
+
+        // collection is queued but nft minted. For now it will be included in statistics
+        await NftRepo.create({ // nft in second collection but not minted
+            id: id3, name: 'nftX3', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 12, collectionId: 124, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 12,
+        });
+        await NftRepo.create({ // nft in second collection but removed
+            id: id4, name: 'nftX4', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 13, collectionId: 124, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 13,
+        });
+        await NftRepo.create({ // nft in correct collection and farm, but not minted
+            id: id5, name: 'nftX5', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.QUEUED, tokenId: 14, collectionId: 3, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 14,
+        });
+        await NftRepo.create({ // nft in correct collection and farm, but removed
+            id: id6, name: 'nftX6', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 15, collectionId: 3, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 15,
+        });
+
+        const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
+            totalMiningFarmSalesInAcudos: '6',
+            totalMiningFarmRoyaltiesInAcudos: '0.6',
+            totalNftSold: 4,
+            maintenanceFeeDepositedInBtc: '6',
+            earningsPerDayInAcudos: [
+                '2.9', '0.3', '0',
+            ],
+        });
+
+        // Act
+        const userEarningsEntity = await service.fetchEarningsByMiningFarmId(1, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+
+        // Assert
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
