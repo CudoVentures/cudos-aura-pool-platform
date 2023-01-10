@@ -51,12 +51,10 @@ export class StatisticsService {
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
         if (nftEventFilterEntity.isTimestampFilterSet() === true) {
-            this.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
+            StatisticsService.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
         }
 
-        const { nftEventEntities, nftEntitiesMap } = nftEventFilterEntity.isPlatformFilter()
-            ? await this.fetchPlatformNftEvents()
-            : await this.fetchNftEventsByNftFilter(userEntity, nftEventFilterEntity);
+        const { nftEventEntities, nftEntitiesMap } = nftEventFilterEntity.isPlatformFilter() ? await this.fetchPlatformNftEvents() : await this.fetchNftEventsByNftFilter(userEntity, nftEventFilterEntity);
 
         nftEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
 
@@ -84,7 +82,7 @@ export class StatisticsService {
 
     async fetchMegaWalletEventsByFilter(megaWalletEventFilterEntity: MegaWalletEventFilterEntity): Promise<{ megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number }> {
         if (megaWalletEventFilterEntity.isTimestampFilterSet() === true) {
-            this.checkTimeframe(megaWalletEventFilterEntity.timestampFrom, megaWalletEventFilterEntity.timestampTo);
+            StatisticsService.checkTimeframe(megaWalletEventFilterEntity.timestampFrom, megaWalletEventFilterEntity.timestampTo);
         }
 
         const { nftEventEntities, nftEntitiesMap } = await this.fetchPlatformNftEvents();
@@ -235,7 +233,7 @@ export class StatisticsService {
 
     private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
         if (nftEventFilterEntity.isTimestampFilterSet() === true) {
-            this.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
+            StatisticsService.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
         }
 
         const nftFilterEntity = new NftFilterEntity();
@@ -298,7 +296,7 @@ export class StatisticsService {
     }
 
     async fetchEarningsByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
-        this.checkTimeframe(timestampFrom, timestampTo);
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
 
         const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
         const nftOwnersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress, timestampFrom, timestampTo);
@@ -332,7 +330,7 @@ export class StatisticsService {
     }
 
     async fetchEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {
-        this.checkTimeframe(timestampFrom, timestampTo);
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
 
         const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
 
@@ -350,7 +348,7 @@ export class StatisticsService {
     }
 
     async fetchEarningsByMiningFarmId(miningFarmId: number, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
-        this.checkTimeframe(timestampFrom, timestampTo);
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
 
         // fetch all nfts for farm
         const farmCollectionEntities = await this.collectionService.findByFarmId(miningFarmId);
@@ -452,7 +450,7 @@ export class StatisticsService {
 
     // TODO: needs to be rewritten
     async fetchPlatformEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
-        this.checkTimeframe(timestampFrom, timestampTo);
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
 
         const days = getDays(Number(timestampFrom), Number(timestampTo))
 
@@ -531,7 +529,7 @@ export class StatisticsService {
         });
     }
 
-    private checkTimeframe(timestampFrom: number, timestampTo: number) {
+    private static checkTimeframe(timestampFrom: number, timestampTo: number) {
         if (timestampFrom > timestampTo) {
             throw new DataServiceError();
         }
