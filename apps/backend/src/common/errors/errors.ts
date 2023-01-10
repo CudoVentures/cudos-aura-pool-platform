@@ -15,6 +15,8 @@ export enum ERROR_TYPES {
     DATA_SERVICE_ERROR = '10',
 
     FARM_CREATION_ERROR = '11',
+
+    WRONG_SERVICE_PARAMETERS = '12',
 }
 
 export class WrongUserOrPasswordException extends BadRequestException {
