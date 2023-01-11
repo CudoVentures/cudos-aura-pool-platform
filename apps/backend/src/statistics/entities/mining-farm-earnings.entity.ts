@@ -2,14 +2,14 @@ import BigNumber from 'bignumber.js';
 
 export default class MiningFarmEarningsEntity {
 
-    totalMiningFarmSalesInAcudos: BigNumber;
+    totalMiningFarmNftSalesInAcudos: BigNumber;
     totalMiningFarmRoyaltiesInAcudos: BigNumber;
     totalNftSold: number;
     maintenanceFeeDepositedInBtc: BigNumber;
     earningsPerDayInAcudos: BigNumber[];
 
     constructor() {
-        this.totalMiningFarmSalesInAcudos = new BigNumber(0);
+        this.totalMiningFarmNftSalesInAcudos = new BigNumber(0);
         this.totalMiningFarmRoyaltiesInAcudos = new BigNumber(0);
         this.totalNftSold = 0;
         this.maintenanceFeeDepositedInBtc = new BigNumber(0);
@@ -23,7 +23,7 @@ export default class MiningFarmEarningsEntity {
         }
 
         return {
-            'totalMiningFarmSalesInAcudos': entity.totalMiningFarmSalesInAcudos.toString(),
+            'totalMiningFarmNftSalesInAcudos': entity.totalMiningFarmNftSalesInAcudos.toString(),
             'totalMiningFarmRoyaltiesInAcudos': entity.totalMiningFarmRoyaltiesInAcudos.toString(),
             'totalNftSold': entity.totalNftSold,
             'maintenanceFeeDepositedInBtc': entity.maintenanceFeeDepositedInBtc.toString(),
@@ -38,7 +38,7 @@ export default class MiningFarmEarningsEntity {
 
         const entity = new MiningFarmEarningsEntity();
 
-        entity.totalMiningFarmSalesInAcudos = new BigNumber(json.totalMiningFarmSalesInAcudos ?? entity.totalMiningFarmSalesInAcudos);
+        entity.totalMiningFarmNftSalesInAcudos = new BigNumber(json.totalMiningFarmNftSalesInAcudos ?? entity.totalMiningFarmNftSalesInAcudos);
         entity.totalMiningFarmRoyaltiesInAcudos = new BigNumber(json.totalMiningFarmRoyaltiesInAcudos ?? entity.totalMiningFarmRoyaltiesInAcudos);
         entity.totalNftSold = parseInt(json.totalNftSold ?? entity.totalNftSold);
         entity.maintenanceFeeDepositedInBtc = new BigNumber(json.maintenanceFeeDepositedInBtc ?? entity.maintenanceFeeDepositedInBtc);

@@ -195,13 +195,13 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                         </Actions>
                     </StyledContainer>
                     <RowLayout className={'RoyaltyBoxesLayout'} numColumns = { 2 } gap = { 16 }>
-                        { renderBoxContainer('Global Royalties', settingsEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) }
+                        {/* { renderBoxContainer('Global Royalties', settingsEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) } */}
                         { renderBoxContainer('Global Fees', settingsEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) }
                         { renderBoxContainer('Resale Fees', settingsEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
                         { renderBoxContainer('Royalty Fee upon first sale of NFT', settingsEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
                     </RowLayout>
                 </RowLayout>
-                <StyledLayout
+                {/* <StyledLayout
                     title = { 'MegaWallet Activity' }
                     headerRight = {
                         <Select
@@ -225,7 +225,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                             tableState={superAdminMegaWalletPageStore.walletEventTableState}
                             rows={renderWalletActivityTableRows()} />
                     )}
-                </StyledLayout>
+                </StyledLayout> */}
             </ColumnLayout>
 
         </PageLayoutComponent>

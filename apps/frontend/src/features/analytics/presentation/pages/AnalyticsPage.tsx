@@ -56,7 +56,9 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
                             <ChartHeading
                                 leftContent = { (
                                     <>
-                                        <ChartInfo label = { 'Total Farm Sales'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.totalMiningFarmSalesInAcudos)} />
+                                        <ChartInfo label = { 'Total Farm Sales'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.getTotalMiningFarmSales())} />
+                                        <ChartInfo label = { 'Total Farm Sales from NFTs'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.totalMiningFarmNftSalesInAcudos)} />
+                                        <ChartInfo label = { 'Total Farm Sales from royalties'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.totalMiningFarmRoyaltiesInAcudos)} />
                                         <ChartInfo label = { 'Total NFTs Sold'} value = { miningFarmEarningsEntity.totalNftSold.toString() } />
                                     </>
                                 ) }
