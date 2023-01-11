@@ -13,7 +13,11 @@ export default class MiningFarmPerformanceEntity {
         this.miningFarmId = NOT_EXISTS_INT;
         this.volumePer24HoursInAcudos = new BigNumber(0);
         this.volumePer24HoursInUsd = new BigNumber(0);
-        this.floorPriceInAcudos = new BigNumber(0);
+        this.floorPriceInAcudos = null;
+    }
+
+    isFloorPriceSet(): boolean {
+        return this.floorPriceInAcudos !== null;
     }
 
     static newInstanceForMiningFarm(miningFarmId: number) {

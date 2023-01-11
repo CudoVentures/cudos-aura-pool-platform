@@ -12,7 +12,11 @@ export default class MiningFarmPerformanceEntity {
         this.miningFarmId = S.Strings.NOT_EXISTS;
         this.volumePer24HoursInAcudos = new BigNumber(0);
         this.volumePer24HoursInUsd = new BigNumber(0);
-        this.floorPriceInAcudos = new BigNumber(0);
+        this.floorPriceInAcudos = null;
+    }
+
+    ifFloorPriceSet(): boolean {
+        return this.floorPriceInAcudos !== null;
     }
 
     static toJson(entity: MiningFarmPerformanceEntity): any {

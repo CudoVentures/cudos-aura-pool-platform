@@ -34,6 +34,10 @@ export default class NftEntity {
         this.creatorId = NOT_EXISTS_INT;
     }
 
+    isListed(): boolean {
+        return this.isMinted() === true && this.hasPrice() === true;
+    }
+
     hasPrice(): boolean {
         return this.acudosPrice.gt(0);
     }

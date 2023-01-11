@@ -157,8 +157,8 @@ export class FarmService {
         const date = new Date();
         date.setDate(date.getDate() - 1);
         const nftEventFilterEntity = new NftEventFilterEntity();
-        nftEventFilterEntity.timestampFrom = Date.now();
-        nftEventFilterEntity.timestampTo = date.getTime();
+        nftEventFilterEntity.timestampFrom = date.getTime();
+        nftEventFilterEntity.timestampTo = Date.now();
         nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT, NftTransferHistoryEventType.SALE];
         const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
 
@@ -175,8 +175,14 @@ export class FarmService {
             const miningFarmId = collectionToMiningFarmIdsMap.get(nftEntity.collectionId);
             nftToMiningFarmIdsMap.set(nftEntity.id, miningFarmId);
 
+            // if nft is not listed, don't use it's price
+            // not listed nfts have price of 0
+            if (nftEntity.isListed() === false) {
+                return
+            }
+
             const miningFarmPerformanceEntity = miningFarmIdToPerformanceEntitiesMap.get(miningFarmId);
-            if (miningFarmPerformanceEntity.floorPriceInAcudos.gt(nftEntity.acudosPrice) === true) {
+            if (miningFarmPerformanceEntity.isFloorPriceSet() === false || miningFarmPerformanceEntity.floorPriceInAcudos.gt(nftEntity.acudosPrice) === true) {
                 miningFarmPerformanceEntity.floorPriceInAcudos = nftEntity.acudosPrice;
             }
         });

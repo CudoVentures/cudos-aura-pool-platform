@@ -72,11 +72,11 @@ export class MiningFarmRepo extends Model {
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
-        cudosMintNftRoyaltiesPercent: number;
+        cudosMintNftRoyaltiesPercent: string;
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
-        cudosResaleNftRoyaltiesPercent: number;
+        cudosResaleNftRoyaltiesPercent: string;
 
     @AllowNull(false)
     @Column({ type: DataType.STRING })
@@ -100,7 +100,7 @@ export class MiningFarmRepo extends Model {
 
     @AllowNull(true)
     @Column({ type: DataType.DECIMAL })
-        totalFarmHashrate: number;
+        totalFarmHashrate: string;
 
     @AllowNull(true)
     @Column({ type: DataType.ARRAY(DataType.STRING) })

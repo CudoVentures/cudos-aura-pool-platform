@@ -20,6 +20,25 @@ import { MinerRepo } from './repos/miner.repo';
 import { ManufacturerRepo } from './repos/manufacturer.repo';
 import { getGraphQlmarketplaceCollections, getGraphQlMarketplaceNftEvents } from '../../test/data/nft-events.data';
 import { StatisticsModule } from '../statistics/statistics.module';
+import { energySourceEntities, manufacturerEntities, minerEntities, miningFarmEntities } from '../../test/data/farm.data';
+import ManufacturerEntity from './entities/manufacturer.entity';
+import EnergySourceEntity from './entities/energy-source.entity';
+import MinerEntity from './entities/miner.entity';
+import MiningFarmEntity from './entities/mining-farm.entity';
+import VisitorRepo from '../visitor/repo/visitor.repo';
+import { visitorEntities } from '../../test/data/visitor.data';
+import VisitorEntity from '../visitor/entities/visitor.entity';
+import MiningFarmFilterModel, { MiningFarmOrderBy } from './dto/farm-filter.model';
+import { FarmStatus } from './farm.types';
+import { CollectionRepo } from '../collection/repos/collection.repo';
+import { collectionEntities } from '../../test/data/collections.data';
+import { CollectionEntity } from '../collection/entities/collection.entity';
+import { NftRepo } from '../nft/repos/nft.repo';
+import nftTestEntitities from '../../test/data/nft.data';
+import { getGraphQlNftNftEvents, getZeroDatePlusDaysTimestamp } from '../statistics/utils/test.utils';
+import NftEntity from '../nft/entities/nft.entity';
+import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
+import BigNumber from 'bignumber.js';
 
 describe('FarmService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -92,10 +111,8 @@ describe('FarmService', () => {
         service = module.get<FarmService>(FarmService);
         graphQlService = module.get<GraphqlService>(GraphqlService);
 
-        jest.spyOn(graphQlService, 'fetchMarketplaceCollectionsByDenomIds').mockImplementation(async (denomIds) => getGraphQlmarketplaceCollections().filter((entity) => denomIds.includes(entity.denomId)));
-        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
-        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlMarketplaceNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
         jest.spyOn(graphQlService, 'fetchMarketplacePlatformNftTradeHistory').mockImplementation(async () => getGraphQlMarketplaceNftEvents());
+        jest.spyOn(graphQlService, 'fetchNftPlatformTransferHistory').mockImplementation(async () => getGraphQlNftNftEvents());
 
     });
 
@@ -109,23 +126,78 @@ describe('FarmService', () => {
 
     beforeEach(async () => {
         try {
-            // await CollectionRepo.bulkCreate(collectionEntities.map((entity) => CollectionEntity.toRepo(entity).toJSON()));
-            // await NftRepo.bulkCreate(nftTestEntitities.map((entity) => NftEntity.toRepo(entity).toJSON()));
+            await ManufacturerRepo.bulkCreate(manufacturerEntities.map((entity) => ManufacturerEntity.toRepo(entity).toJSON()))
+            await EnergySourceRepo.bulkCreate(energySourceEntities.map((entity) => EnergySourceEntity.toRepo(entity).toJSON()))
+            await MinerRepo.bulkCreate(minerEntities.map((entity) => MinerEntity.toRepo(entity).toJSON()));
+            await MiningFarmRepo.bulkCreate(miningFarmEntities.map((entity) => MiningFarmEntity.toRepo(entity).toJSON()));
+            await VisitorRepo.bulkCreate(visitorEntities.map((entity) => VisitorEntity.toRepo(entity).toJSON()));
+            await CollectionRepo.bulkCreate(collectionEntities.map((entity) => CollectionEntity.toRepo(entity).toJSON()));
+            await NftRepo.bulkCreate(nftTestEntitities.map((entity) => NftEntity.toRepo(entity).toJSON()));
         } catch (e) {
             console.log(e);
         }
     })
 
     afterEach(async () => {
-        // await CollectionRepo.truncate({ cascade: true });
-        // await NftRepo.truncate({ cascade: true });
+        await ManufacturerRepo.truncate({ cascade: true });
+        await EnergySourceRepo.truncate({ cascade: true });
+        await MinerRepo.truncate({ cascade: true });
+        await MiningFarmRepo.truncate({ cascade: true });
+        await VisitorRepo.truncate({ cascade: true });
+        await CollectionRepo.truncate({ cascade: true });
+        await NftRepo.truncate({ cascade: true });
     })
 
     it('should be defined', async () => {
         expect(service).toBeDefined();
     });
 
-    it('should be defined', async () => {
-        expect(service).toBeDefined();
+    it('findByFilter: popular farms happy path', async () => {
+        // Arrange
+        const status = FarmStatus.APPROVED;
+        const popularFarmsExpected = miningFarmEntities
+            .filter((entity) => entity.status === status)
+            .sort((a, b) => b.id - a.id);
+
+        const expectedObject = {
+            miningFarmEntities: popularFarmsExpected,
+            total: 3,
+        }
+        // Act
+        const miningFarmFilterModel = new MiningFarmFilterModel();
+        miningFarmFilterModel.from = 0;
+        miningFarmFilterModel.count = 10;
+        miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
+        miningFarmFilterModel.status = [status];
+
+        const popularFarmsResult = await service.findByFilter(null, miningFarmFilterModel);
+
+        // Assert
+        expect(popularFarmsResult).toEqual(expectedObject);
+    });
+
+    // performance entities will be zeroed, since it checks for todays date. It should be tested separately
+    // doesn't include farms without any events
+    it('findBestPerformingMiningFarms: happy path', async () => {
+        // Arrange
+        const timestampFrom = getZeroDatePlusDaysTimestamp(0);
+        const timestampTo = getZeroDatePlusDaysTimestamp(5);
+
+        const miningFarmEntitiesExpected = miningFarmEntities.slice(0, 3);
+        const miningFarmPerformanceEntitiesExpected = miningFarmEntitiesExpected.map((entity) => MiningFarmPerformanceEntity.newInstanceForMiningFarm(entity.id))
+        miningFarmPerformanceEntitiesExpected[0].floorPriceInAcudos = new BigNumber('100');
+        miningFarmPerformanceEntitiesExpected[1].floorPriceInAcudos = new BigNumber('400');
+        miningFarmPerformanceEntitiesExpected[2].floorPriceInAcudos = new BigNumber('600');
+
+        const expectedObject = {
+            miningFarmEntities: miningFarmEntitiesExpected,
+            miningFarmPerformanceEntities: miningFarmPerformanceEntitiesExpected,
+        }
+
+        // Act
+        const bestPerformingFarmsResult = await service.findBestPerformingMiningFarms(timestampFrom, timestampTo);
+
+        // Assert
+        expect(bestPerformingFarmsResult).toEqual(expectedObject);
     });
 });

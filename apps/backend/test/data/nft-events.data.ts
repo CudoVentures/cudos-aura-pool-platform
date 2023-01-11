@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { v4 as uuidv4 } from 'uuid';
 import ChainMarketplaceCollectionEntity from '../../src/collection/entities/chain-marketplace-collection.entity';
 import NftMarketplaceTradeHistoryEntity from '../../src/graphql/entities/nft-marketplace-trade-history.entity';
-import { NftStatus } from '../../src/nft/nft.types';
 import { getZeroDatePlusDaysTimestamp } from '../../src/statistics/utils/test.utils';
 import { collectionEntities } from './collections.data';
 import nftTestEntitities from './nft.data';
