@@ -44,11 +44,15 @@ export default class ChainMarketplaceCollectionEntity {
         entity.mintRoyalties = JSON.parse(queryCollection.mint_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
         entity.resaleRoyalties = JSON.parse(queryCollection.resale_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
 
-        const dataJson = JSON.parse(queryCollection.nft_denom.data_text);
-        entity.farmId = dataJson.farm_id ?? entity.farmId;
-        entity.platformRoyaltiesAddress = dataJson.platform_royalties_address ?? entity.platformRoyaltiesAddress;
-        entity.farmMintRoyaltiesAddress = dataJson.farm_mint_royalties_address ?? entity.farmMintRoyaltiesAddress;
-        entity.farmResaleRoyaltiesAddress = dataJson.farm_resale_royalties_address ?? entity.farmResaleRoyaltiesAddress;
+        let dataJson = null;
+        try {
+            dataJson = JSON.parse(queryCollection.nft_denom.data_text);
+        } catch (ex) {
+        }
+        entity.farmId = dataJson?.farm_id ?? entity.farmId;
+        entity.platformRoyaltiesAddress = dataJson?.platform_royalties_address ?? entity.platformRoyaltiesAddress;
+        entity.farmMintRoyaltiesAddress = dataJson?.farm_mint_royalties_address ?? entity.farmMintRoyaltiesAddress;
+        entity.farmResaleRoyaltiesAddress = dataJson?.farm_resale_royalties_address ?? entity.farmResaleRoyaltiesAddress;
 
         return entity;
 

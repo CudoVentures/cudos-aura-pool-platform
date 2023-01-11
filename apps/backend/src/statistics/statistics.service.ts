@@ -448,7 +448,7 @@ export class StatisticsService {
 
         const miningFarmEarningsEntity = new MiningFarmEarningsEntity();
 
-        miningFarmEarningsEntity.totalMiningFarmSalesInAcudos = nftMintRoyaltiesSum;
+        miningFarmEarningsEntity.totalMiningFarmNftSalesInAcudos = nftMintRoyaltiesSum;
         miningFarmEarningsEntity.totalMiningFarmRoyaltiesInAcudos = nftResaleRoyaltiesSum;
         miningFarmEarningsEntity.totalNftSold = mintedNftsCount;
         miningFarmEarningsEntity.maintenanceFeeDepositedInBtc = new BigNumber(sumOfMaintenanceFees ?? 0);

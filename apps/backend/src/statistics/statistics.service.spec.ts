@@ -266,7 +266,7 @@ describe('StatisticsService', () => {
     it('fetchEarningsByMiningFarmId: Happy path', async () => {
         // Arrange
         const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmSalesInAcudos: '6',
+            totalMiningFarmNftSalesInAcudos: '6',
             totalMiningFarmRoyaltiesInAcudos: '0.6',
             totalNftSold: 3,
             maintenanceFeeDepositedInBtc: '6',
@@ -326,7 +326,7 @@ describe('StatisticsService', () => {
         });
 
         const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmSalesInAcudos: '6',
+            totalMiningFarmNftSalesInAcudos: '6',
             totalMiningFarmRoyaltiesInAcudos: '0.6',
             totalNftSold: 4,
             maintenanceFeeDepositedInBtc: '6',
@@ -345,7 +345,7 @@ describe('StatisticsService', () => {
     it('fetchEarningsByMiningFarmId: Non-existing farm should return zeroes', async () => {
         // Arrange
         const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmSalesInAcudos: '0',
+            totalMiningFarmNftSalesInAcudos: '0',
             totalMiningFarmRoyaltiesInAcudos: '0',
             totalNftSold: 0,
             maintenanceFeeDepositedInBtc: '0',
@@ -364,7 +364,7 @@ describe('StatisticsService', () => {
     it('fetchEarningsByMiningFarmId: No data for timeframe should return zeroes for statistics and correct for totals', async () => {
         // Arrange
         const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmSalesInAcudos: '6',
+            totalMiningFarmNftSalesInAcudos: '6',
             totalMiningFarmRoyaltiesInAcudos: '0.6',
             totalNftSold: 3,
             maintenanceFeeDepositedInBtc: '6',
