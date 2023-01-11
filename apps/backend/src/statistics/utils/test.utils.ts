@@ -203,6 +203,7 @@ for (let i = 1; i <= 5; i++) {
         tx_hash: `txhash${i}`,
         maintenance_fee: i,
         cudo_part_of_maintenance_fee: i,
+        cudo_part_of_reward: i * 0.02,
         createdAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
         updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
     });

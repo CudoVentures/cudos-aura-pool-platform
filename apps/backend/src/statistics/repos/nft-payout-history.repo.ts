@@ -12,6 +12,7 @@ export const enum NftPayoutHistoryRepoColumn {
     TX_HASH = 'tx_hash',
     MAINTENANCE_FEE = 'maintenance_fee',
     CUDO_PART_OF_MAINTENANCE_FEE = 'cudo_part_of_maintenance_fee',
+    CUDO_PART_OF_REWARD = 'cudo_part_of_reward',
     CREATED_AT = 'createdAt',
     UPDATED_AT = 'updatedAt',
 }
@@ -47,7 +48,7 @@ export class NftPayoutHistoryRepo extends Model {
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
-        reward: number;
+        reward: string;
 
     @AllowNull(false)
     @Column({ type: DataType.STRING })
@@ -55,11 +56,15 @@ export class NftPayoutHistoryRepo extends Model {
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
-        maintenance_fee: number;
+        maintenance_fee: string;
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
-        cudo_part_of_maintenance_fee: number
+        cudo_part_of_maintenance_fee: string
+
+    @AllowNull(false)
+    @Column({ type: DataType.DECIMAL })
+        cudo_part_of_reward: string
 
     @AllowNull(false)
     @Column({ type: DataType.DATE })
