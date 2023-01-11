@@ -114,7 +114,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 <div className={'H2 ExtraBold'}>Dashboard</div>
                 <RowLayout numColumns = { 2 }>
                     <ColumnLayout>
-                        <StyledLayout
+                        {/* <StyledLayout
                             bottomRightButtons = {
                                 <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAnalytics }>See All Analytics</Button>
                             } >
@@ -137,7 +137,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                                         data = { totalEarningsEntity.earningsPerDayInUsd } />
                                 </>
                             ) }
-                        </StyledLayout>
+                        </StyledLayout> */}
                         <StyledContainer className = { 'MegaWalletCnt' } containerPadding = { ContainerPadding.PADDING_24 }>
                             <div className = { 'MegaWalletBalanceTitle B1 SemiBold ColorNeutral070' } >MegaWallet Balance</div>
                             <MegaWalletBalance />

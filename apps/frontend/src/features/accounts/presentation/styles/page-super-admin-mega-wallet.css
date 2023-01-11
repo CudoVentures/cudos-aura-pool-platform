@@ -36,6 +36,10 @@
     margin-top: auto;
 }
 
+.PageSuperAdminMegaWallet .MainBoxContainer .RoyaltyBoxesLayout > *:first-child {
+    grid-column: span 2;
+}
+
 .PageSuperAdminMegaWallet .TableSort {
     width: 256px;
 }
