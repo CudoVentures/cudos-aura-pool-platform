@@ -183,7 +183,7 @@ describe('StatisticsService', () => {
             id: uuidv4(), name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '123412312490071992547409919007199254740991.90071992547409919007199254740991', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 'onchain_token', collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
         await NftPayoutHistoryRepo.create({
-            id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(9)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(9)),
+            id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, cudo_part_of_reward: 0.2, createdAt: new Date(getZeroDatePlusDaysTimestamp(9)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(9)),
         })
         await NftOwnersPayoutHistoryRepo.create({
             id: 10, time_owned_from: 10, time_owned_to: 10, total_time_owned: 10, percent_of_time_owned: 10, owner: 'testowner', payout_address: 'testpayout', reward: '90071992547409919007199254740991.90071992547409919007199254740991', nft_payout_history_id: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(9)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(9)), sent: true,
@@ -225,7 +225,7 @@ describe('StatisticsService', () => {
             id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.QUEUED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
         await NftPayoutHistoryRepo.create({
-            id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)),
+            id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, cudo_part_of_reward: 0.2, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)),
         })
         await NftOwnersPayoutHistoryRepo.create({
             id: 10, time_owned_from: 10, time_owned_to: 10, total_time_owned: 10, percent_of_time_owned: 10, owner: 'testowner', payout_address: 'testpayout', reward: '90071992547409919007199254740991.90071992547409919007199254740991', nft_payout_history_id: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)), sent: true,
@@ -246,7 +246,7 @@ describe('StatisticsService', () => {
             id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
         await NftPayoutHistoryRepo.create({
-            id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)),
+            id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, cudo_part_of_reward: 0.2, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)),
         })
         await NftOwnersPayoutHistoryRepo.create({
             id: 10, time_owned_from: 10, time_owned_to: 10, total_time_owned: 10, percent_of_time_owned: 10, owner: 'testowner', payout_address: 'testpayout', reward: '90071992547409919007199254740991.90071992547409919007199254740991', nft_payout_history_id: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)), sent: true,

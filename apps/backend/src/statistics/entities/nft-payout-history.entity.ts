@@ -13,6 +13,7 @@ export class NftPayoutHistoryEntity {
     txHash: string;
     maintenanceFee: BigNumber;
     cudoPartOfMaintenanceFee: BigNumber;
+    cudoPartOfReward: BigNumber;
     createdAt: number;
     updatedAt: number;
 
@@ -26,6 +27,7 @@ export class NftPayoutHistoryEntity {
         this.txHash = '';
         this.maintenanceFee = null;
         this.cudoPartOfMaintenanceFee = null;
+        this.cudoPartOfReward = null;
         this.createdAt = NOT_EXISTS_INT;
         this.updatedAt = NOT_EXISTS_INT;
     }
@@ -42,6 +44,7 @@ export class NftPayoutHistoryEntity {
         entity.txHash = json.txHash ?? entity.txHash;
         entity.maintenanceFee = new BigNumber(json.maintenanceFee ?? entity.maintenanceFee);
         entity.cudoPartOfMaintenanceFee = new BigNumber(json.cudoPartOfMaintenanceFee ?? entity.cudoPartOfMaintenanceFee);
+        entity.cudoPartOfReward = new BigNumber(json.cudoPartOfReward ?? entity.cudoPartOfReward);
         entity.createdAt = parseInt(json.createdAt ?? entity.createdAt);
         entity.updatedAt = parseInt(json.updatedAt ?? entity.updatedAt);
 
@@ -82,6 +85,7 @@ export class NftPayoutHistoryEntity {
         entity.txHash = repoJson.tx_hash ?? entity.txHash;
         entity.maintenanceFee = repoJson.maintenance_fee ? new BigNumber(repoJson.maintenance_fee) : entity.maintenanceFee;
         entity.cudoPartOfMaintenanceFee = repoJson.cudo_part_of_maintenance_fee ? new BigNumber(repoJson.cudo_part_of_maintenance_fee) : entity.cudoPartOfMaintenanceFee;
+        entity.cudoPartOfReward = repoJson.cudo_part_of_reward ? new BigNumber(repoJson.cudo_part_of_reward) : entity.cudoPartOfReward;
         entity.createdAt = repoJson.createdAt?.getTime() ?? entity.createdAt;
         entity.updatedAt = repoJson.updatedAt?.getTime() ?? entity.updatedAt;
 
