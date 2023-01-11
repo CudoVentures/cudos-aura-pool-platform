@@ -1,18 +1,19 @@
 import BigNumber from 'bignumber.js';
 import ChainMarketplaceCollectionEntity from '../../src/collection/entities/chain-marketplace-collection.entity';
 import NftMarketplaceTradeHistoryEntity from '../../src/graphql/entities/nft-marketplace-trade-history.entity';
+import NftModuleNftTransferEntity from '../../src/graphql/entities/nft-module-nft-transfer-history';
 import { getZeroDatePlusDaysTimestamp } from '../../src/statistics/utils/test.utils';
 import { collectionEntities } from './collections.data';
 import nftTestEntitities from './nft.data';
 
-const chainMarketplaceCollectionEntities = [];
+const chainMarketplaceNftTradeEventEntities = [];
 const chainNftTransferHistoryEntities = [];
 
 nftTestEntitities.forEach((nftEntity) => {
     const collectionEntity = collectionEntities.find((entity) => entity.id === nftEntity.collectionId);
 
     for (let i = 1; i <= parseInt(nftEntity.collectionId); i++) {
-        chainMarketplaceCollectionEntities.push({
+        chainMarketplaceNftTradeEventEntities.push({
             buyer: 'testbuyer',
             btcPrice: new BigNumber(i / 10000),
             denomId: collectionEntity.denomId,
@@ -21,9 +22,9 @@ nftTestEntitities.forEach((nftEntity) => {
             timestamp: getZeroDatePlusDaysTimestamp(i - 1),
             tokenId: nftEntity.tokenId,
             usdPrice: i,
-            transactionHash: 'sometxhash',
+            transactionHash: 'someminttxhash',
         });
-        chainMarketplaceCollectionEntities.push({
+        chainMarketplaceNftTradeEventEntities.push({
             buyer: 'testowner',
             btcPrice: new BigNumber(i / 10000),
             denomId: collectionEntity.denomId,
@@ -32,7 +33,7 @@ nftTestEntitities.forEach((nftEntity) => {
             timestamp: getZeroDatePlusDaysTimestamp(i),
             tokenId: nftEntity.tokenId,
             usdPrice: i,
-            transactionHash: 'sometxhash',
+            transactionHash: 'someresaletxhash',
         });
 
         chainNftTransferHistoryEntities.push({
@@ -43,30 +44,44 @@ nftTestEntitities.forEach((nftEntity) => {
             timestamp: getZeroDatePlusDaysTimestamp(i - 1),
             transactionHash: 'somehash',
         })
+
+        // add some fore today as well
+        chainMarketplaceNftTradeEventEntities.push({
+            buyer: 'testbuyer',
+            btcPrice: new BigNumber(i / 10000),
+            denomId: collectionEntity.denomId,
+            acudosPrice: new BigNumber(i),
+            seller: '0x0',
+            timestamp: Date.now() - 4000,
+            tokenId: nftEntity.tokenId,
+            usdPrice: i,
+            transactionHash: 'sometxhash',
+        });
+        chainMarketplaceNftTradeEventEntities.push({
+            buyer: 'testowner',
+            btcPrice: new BigNumber(i / 10000),
+            denomId: collectionEntity.denomId,
+            acudosPrice: new BigNumber(i),
+            seller: 'testbuyer',
+            timestamp: Date.now() - 3600,
+            tokenId: nftEntity.tokenId,
+            usdPrice: i,
+            transactionHash: 'sometxhash',
+        });
+
+        chainNftTransferHistoryEntities.push({
+            tokenId: nftEntity.tokenId,
+            denomId: collectionEntity.denomId,
+            newOwner: 'testowner',
+            oldOwner: 'testbuyer',
+            timestamp: Date.now() - 4000,
+            transactionHash: 'somehash',
+        })
     }
 });
 
-export function getGraphQlmarketplaceCollections(): ChainMarketplaceCollectionEntity[] {
-    return chainMarketplaceCollectionEntities.map((json) => {
-        const entity = new ChainMarketplaceCollectionEntity();
-
-        entity.creator = json.creator;
-        entity.denomId = json.denomId;
-        entity.farmId = json.farmId;
-        entity.farmMintRoyaltiesAddress = json.farmId;
-        entity.farmMintRoyaltiesAddress = json.farmMintRoyaltiesAddress;
-        entity.farmResaleRoyaltiesAddress = json.farmResaleRoyaltiesAddress;
-        entity.platformRoyaltiesAddress = json.platformRoyaltiesAddress;
-        entity.mintRoyalties = json.mintRoyalties;
-        entity.resaleRoyalties = json.resaleRoyalties;
-        entity.verified = json.verified;
-
-        return entity;
-    });
-}
-
 export function getGraphQlMarketplaceNftEvents(): NftMarketplaceTradeHistoryEntity[] {
-    return chainNftTransferHistoryEntities.map((json, index) => {
+    return chainMarketplaceNftTradeEventEntities.map((json, index) => {
         const entity = new NftMarketplaceTradeHistoryEntity();
 
         entity.buyer = json.buyer;
@@ -81,4 +96,19 @@ export function getGraphQlMarketplaceNftEvents(): NftMarketplaceTradeHistoryEnti
 
         return entity;
     });
+}
+
+export function getGraphQlNftNftEvents(): NftModuleNftTransferEntity[] {
+    return chainNftTransferHistoryEntities.map((json) => {
+        const entity = new NftModuleNftTransferEntity();
+
+        entity.denomId = json.denomId;
+        entity.newOwner = json.newOwner;
+        entity.oldOwner = json.oldOgetGraphQlNftNftEventswner;
+        entity.timestamp = json.timestamp;
+        entity.tokenId = json.tokenId;
+        entity.transactionHash = json.transactionHash;
+
+        return entity;
+    })
 }

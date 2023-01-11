@@ -18,7 +18,7 @@ import { MiningFarmRepo } from './repos/mining-farm.repo';
 import { EnergySourceRepo } from './repos/energy-source.repo';
 import { MinerRepo } from './repos/miner.repo';
 import { ManufacturerRepo } from './repos/manufacturer.repo';
-import { getGraphQlmarketplaceCollections, getGraphQlMarketplaceNftEvents } from '../../test/data/nft-events.data';
+import { getGraphQlMarketplaceNftEvents, getGraphQlNftNftEvents } from '../../test/data/nft-events.data';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { energySourceEntities, manufacturerEntities, minerEntities, miningFarmEntities } from '../../test/data/farm.data';
 import ManufacturerEntity from './entities/manufacturer.entity';
@@ -35,7 +35,7 @@ import { collectionEntities } from '../../test/data/collections.data';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import { NftRepo } from '../nft/repos/nft.repo';
 import nftTestEntitities from '../../test/data/nft.data';
-import { getGraphQlNftNftEvents, getZeroDatePlusDaysTimestamp } from '../statistics/utils/test.utils';
+import { getZeroDatePlusDaysTimestamp } from '../statistics/utils/test.utils';
 import NftEntity from '../nft/entities/nft.entity';
 import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
 import BigNumber from 'bignumber.js';
@@ -183,11 +183,17 @@ describe('FarmService', () => {
         const timestampFrom = getZeroDatePlusDaysTimestamp(0);
         const timestampTo = getZeroDatePlusDaysTimestamp(5);
 
-        const miningFarmEntitiesExpected = miningFarmEntities.slice(0, 3);
+        const miningFarmEntitiesExpected = miningFarmEntities.slice(0, 3).sort((a, b) => b.id - a.id);
         const miningFarmPerformanceEntitiesExpected = miningFarmEntitiesExpected.map((entity) => MiningFarmPerformanceEntity.newInstanceForMiningFarm(entity.id))
-        miningFarmPerformanceEntitiesExpected[0].floorPriceInAcudos = new BigNumber('100');
+        miningFarmPerformanceEntitiesExpected[0].floorPriceInAcudos = new BigNumber('600');
+        miningFarmPerformanceEntitiesExpected[0].volumePer24HoursInAcudos = new BigNumber('340');
+        miningFarmPerformanceEntitiesExpected[0].volumePer24HoursInUsd = 340;
         miningFarmPerformanceEntitiesExpected[1].floorPriceInAcudos = new BigNumber('400');
-        miningFarmPerformanceEntitiesExpected[2].floorPriceInAcudos = new BigNumber('600');
+        miningFarmPerformanceEntitiesExpected[1].volumePer24HoursInAcudos = new BigNumber('100');
+        miningFarmPerformanceEntitiesExpected[1].volumePer24HoursInUsd = 100;
+        miningFarmPerformanceEntitiesExpected[2].floorPriceInAcudos = new BigNumber('100');
+        miningFarmPerformanceEntitiesExpected[2].volumePer24HoursInAcudos = new BigNumber('40');
+        miningFarmPerformanceEntitiesExpected[2].volumePer24HoursInUsd = 40;
 
         const expectedObject = {
             miningFarmEntities: miningFarmEntitiesExpected,

@@ -189,6 +189,7 @@ export class FarmService {
 
         nftEventEntities.forEach((nftEventEntity) => {
             const miningFarmId = nftToMiningFarmIdsMap.get(nftEventEntity.nftId) ?? NOT_EXISTS_INT;
+
             if (selectedMiningFarmIds.has(miningFarmId) === false) {
                 return;
             }
@@ -199,8 +200,8 @@ export class FarmService {
                 miningFarmIdToPerformanceEntitiesMap.set(miningFarmId, miningFarmPerformanceEntity);
             }
 
-            miningFarmPerformanceEntity.volumePer24HoursInAcudos.plus(nftEventEntity.transferPriceInAcudos);
-            miningFarmPerformanceEntity.volumePer24HoursInUsd.plus(nftEventEntity.transferPriceInUsd);
+            miningFarmPerformanceEntity.volumePer24HoursInAcudos = miningFarmPerformanceEntity.volumePer24HoursInAcudos.plus(nftEventEntity.transferPriceInAcudos);
+            miningFarmPerformanceEntity.volumePer24HoursInUsd += nftEventEntity.transferPriceInUsd;
         });
 
         const miningFarmPerformanceEntities = [];

@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GraphqlModule } from '../graphql/graphql.module';
 import { NFTModule } from '../nft/nft.module';
-import { CollectionModule } from './collection.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
@@ -14,12 +13,10 @@ import { AccountModule } from '../account/account.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { forwardRef } from '@nestjs/common';
 import { NftRepo } from '../nft/repos/nft.repo';
-import { DataModule } from '../data/data.module';
-import { FarmModule } from '../farm/farm.module';
-import { emptyStatisticsTestData, fillStatisticsTestData, getGraphQlNftNftEvents, getZeroDatePlusDaysTimestamp } from '../statistics/utils/test.utils';
+import { getZeroDatePlusDaysTimestamp } from '../statistics/utils/test.utils';
 import { collectionEntities } from '../../test/data/collections.data';
 import { GraphqlService } from '../graphql/graphql.service';
-import { getGraphQlMarketplaceNftEvents } from '../../test/data/nft-events.data';
+import { getGraphQlMarketplaceNftEvents, getGraphQlNftNftEvents } from '../../test/data/nft-events.data';
 import nftTestEntitities from '../../test/data/nft.data';
 import { CollectionEntity } from './entities/collection.entity';
 import NftEntity from '../nft/entities/nft.entity';
@@ -89,10 +86,10 @@ describe('CollectionService', () => {
         service = module.get<CollectionService>(CollectionService);
         graphQlService = module.get<GraphqlService>(GraphqlService);
 
-        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
         jest.spyOn(graphQlService, 'fetchNftTransferHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlNftNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
-        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlMarketplaceNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
         jest.spyOn(graphQlService, 'fetchNftPlatformTransferHistory').mockImplementation(async () => getGraphQlNftNftEvents());
+        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
+        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlMarketplaceNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
         jest.spyOn(graphQlService, 'fetchMarketplacePlatformNftTradeHistory').mockImplementation(async () => getGraphQlMarketplaceNftEvents());
 
     });
@@ -148,7 +145,7 @@ describe('CollectionService', () => {
 
         const topCollectionsData = collectionEntities.sort((a, b) => {
             return b.id - a.id
-        }).slice(0, -4);
+        }).slice(0, -3);
 
         // Act
         const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo);

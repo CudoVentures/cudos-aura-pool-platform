@@ -124,7 +124,7 @@ export class MiningFarmPerformanceJsonValidator {
         volumePer24HoursInAcudos: string;
 
     @IsString()
-        volumePer24HoursInUsd: string;
+        volumePer24HoursInUsd: number;
 
     @IsString()
         floorPriceInAcudos: string;
