@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import sequelize, { Transaction } from 'sequelize';
+import AppRepo from '../common/repo/app.repo';
 import { SqlFetchCounts } from './dto/sql.dto';
 import VisitorEntity from './entities/visitor.entity';
 import VisitorRepo, { VisitorRepoColumn } from './repo/visitor.repo'
@@ -67,7 +68,7 @@ export class VisitorService {
     private async credit(visitorEntity: VisitorEntity, tx: Transaction = undefined) {
         const visitorRepo = VisitorEntity.toRepo(visitorEntity);
         await this.visitorRepo.findOrCreate({
-            where: visitorRepo.toJSON(),
+            where: AppRepo.toJsonWhere(visitorRepo),
             transaction: tx,
         });
     }
