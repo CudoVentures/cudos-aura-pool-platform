@@ -110,8 +110,8 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                 <div className={'H2 Bold'}>Success!</div>
                 <div className={'H3 Info'}>Transaction was successfully executed.</div>
                 <div className={'FlexRow TransactionView H3'}>
-                    Transaction details
                     <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                        Transaction details
                         <Svg svg={LaunchIcon} />
                     </a>
                 </div>
@@ -132,8 +132,8 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                 <div className={'H2 Bold'}>Error</div>
                 <div className={'H3 Info'}>Transaction was not successful. Check your network or token balance.</div>
                 <div className={'FlexRow TransactionView H3'}>
-                    Transaction details
                     <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                        Transaction details
                         <Svg svg={LaunchIcon} />
                     </a>
                 </div>
