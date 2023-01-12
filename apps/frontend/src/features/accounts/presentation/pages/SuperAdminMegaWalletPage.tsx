@@ -34,6 +34,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import '../styles/page-super-admin-mega-wallet.css'
 import { NftEventType } from '../../../analytics/entities/NftEventEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
+import TextWithTooltip from '../../../../core/presentation/components/TextWithTooltip';
 
 type Props = {
     superAdminMegaWalletPageStore?: SuperAdminMegaWalletPageStore;
@@ -196,7 +197,8 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                     </StyledContainer>
                     <RowLayout className={'RoyaltyBoxesLayout'} numColumns = { 2 } gap = { 16 }>
                         {/* { renderBoxContainer('Global Royalties', settingsEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) } */}
-                        { renderBoxContainer('Global Fees', settingsEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) }
+                        {/* { renderBoxContainer('Global Fees', settingsEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) } */}
+                        { renderBoxContainer(<TextWithTooltip text={'Global Fees'} tooltipText={'The value here is used only in rewards calculator. The actual value that the platform depends on is set in AuraPayService.'} />, settingsEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) }
                         { renderBoxContainer('Resale Fees', settingsEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
                         { renderBoxContainer('Royalty Fee upon first sale of NFT', settingsEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
                     </RowLayout>

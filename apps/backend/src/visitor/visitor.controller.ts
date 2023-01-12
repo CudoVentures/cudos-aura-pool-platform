@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
-import { NftJsonValidator } from '../nft/nft.types';
-import { ReqSignalVisitMiningFarm } from './dto/requests.dto';
+import NftEntity from '../nft/entities/nft.entity';
+import { ReqSignalVisitMiningFarm, ReqSignalVisitNft } from './dto/requests.dto';
 import { VisitorService } from './visitor.service';
 import { UUID_COOKIE_KEY } from './visitor.types';
 
@@ -33,13 +33,17 @@ export class VisitorController {
     @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitNft')
     @HttpCode(200)
-    async signalVisitNft(@Req() req: AppRequest, @Body() nftDto: NftJsonValidator): Promise < void > {
+    async signalVisitNft(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqSignalVisitNft: ReqSignalVisitNft,
+    ): Promise < void > {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {
             return;
         }
 
-        this.visitorService.signalVisitNft(nftDto.id, uuid, req.transaction);
+        const nftEntity = NftEntity.fromJson(reqSignalVisitNft.nftEntity);
+        this.visitorService.signalVisitNft(nftEntity.id, uuid, req.transaction);
     }
 
 }

@@ -150,6 +150,7 @@ describe('FarmService', () => {
 
     it('should be defined', async () => {
         expect(service).toBeDefined();
+        expect(graphQlService).toBeDefined();
     });
 
     it('findByFilter: popular farms happy path', async () => {
@@ -176,7 +177,6 @@ describe('FarmService', () => {
         expect(popularFarmsResult).toEqual(expectedObject);
     });
 
-    // performance entities will be zeroed, since it checks for todays date. It should be tested separately
     // doesn't include farms without any events
     it('findBestPerformingMiningFarms: happy path', async () => {
         // Arrange
