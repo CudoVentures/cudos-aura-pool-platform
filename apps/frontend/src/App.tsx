@@ -67,7 +67,6 @@ import GeneralStore from './general/presentation/stores/GeneralStore';
 const storageHelper = new StorageHelper();
 storageHelper.open();
 
-// const bitcoinRepo = new BitcoinStorageRepo(storageHelper);
 const bitcoinRepo = new BitcoinApiRepo();
 const cudosRepo = new CudosApiRepo();
 const miningFarmRepo = new MiningFarmApiRepo();
