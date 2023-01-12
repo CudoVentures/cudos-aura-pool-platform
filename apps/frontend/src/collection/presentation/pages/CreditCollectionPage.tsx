@@ -50,6 +50,10 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
     useEffect(() => {
         async function run() {
             await creditCollectionPageStore.init(collectionId);
+
+            if (creditCollectionPageStore.hasAccess() === false) {
+                navigate(AppRoutes.HOME);
+            }
         }
         run();
     }, []);

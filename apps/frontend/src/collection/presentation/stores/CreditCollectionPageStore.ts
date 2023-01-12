@@ -112,4 +112,18 @@ export default class CreditCollectionPageStore {
             console.log(e);
         }
     }
+
+    isOwner(): boolean {
+        return this.accountSessionStore.adminEntity?.accountId === this.miningFarmEntity?.accountId;
+    }
+
+    isShowable(): boolean {
+        return this.miningFarmEntity.isApproved() && this.collectionEntity.isStatusApproved();
+    }
+
+    hasAccess(): boolean {
+        return this.accountSessionStore.isSuperAdmin()
+            || this.isOwner()
+            || this.isShowable();
+    }
 }
