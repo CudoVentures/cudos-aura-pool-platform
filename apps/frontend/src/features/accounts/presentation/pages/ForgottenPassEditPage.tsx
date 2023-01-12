@@ -9,9 +9,9 @@ import ValidationState from '../../../../core/presentation/stores/ValidationStat
 
 import Input from '../../../../core/presentation/components/Input';
 import Button from '../../../../core/presentation/components/Button';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import CheckIcon from '@mui/icons-material/Check';
@@ -106,7 +106,7 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
     }
 
     return (
-        <PageLayoutComponent className = { 'PageForgottenPassEdit' }>
+        <PageLayout className = { 'PageForgottenPassEdit' }>
 
             <PageAdminHeader />
 
@@ -120,7 +120,7 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

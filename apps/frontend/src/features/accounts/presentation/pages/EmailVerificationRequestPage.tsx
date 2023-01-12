@@ -1,18 +1,16 @@
-import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
-import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
+import Svg from '../../../../core/presentation/components/Svg';
 import Button, { ButtonType } from '../../../../core/presentation/components/Button';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -41,7 +39,7 @@ function EmailVerificationRequestPage({ alertStore, accountSessionStore }: Props
     }
 
     return (
-        <PageLayoutComponent className = { 'PageEmailVerificationRequest' }>
+        <PageLayout className = { 'PageEmailVerificationRequest' }>
 
             <PageAdminHeader />
 
@@ -73,7 +71,7 @@ function EmailVerificationRequestPage({ alertStore, accountSessionStore }: Props
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

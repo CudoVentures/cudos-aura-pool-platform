@@ -3,8 +3,8 @@ import { inject, observer } from 'mobx-react'
 
 import SuperAdminCollectionsPageStore from '../stores/SuperAdminCollectionsPageStore';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
-import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader'
+import PageLayout from '../../../../core/presentation/components/PageLayout'
+import PageSuperAdminHeader from '../../../layout/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import QueuedCollections from '../components/QueuedCollections';
 import ViewCollectionModal from '../components/ViewCollectionModal';
@@ -23,7 +23,7 @@ type Props = {
 function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className={'PageSuperAdminCollections'}
             modals={
                 <>
@@ -51,7 +51,7 @@ function SuperAdminCollectionsPage({ superAdminCollectionsPageStore }: Props) {
                 {superAdminCollectionsPageStore.isSelectedTableRejected() && <RejectedCollections dashboardMode={false} />}
             </ColumnLayout>
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

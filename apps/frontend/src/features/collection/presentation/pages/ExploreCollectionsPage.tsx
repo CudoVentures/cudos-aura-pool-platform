@@ -1,27 +1,27 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
 import CollectionEntity from '../../entities/CollectionEntity';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import ExploreCollectionsPageStore from '../stores/ExploreCollectionsPageStore';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import Svg from '../../../../core/presentation/components/Svg';
-import PageHeader from '../../../header/presentation/components/PageHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import GridView from '../../../../core/presentation/components/GridView';
 import CollectionPreview from '../components/CollectionPreview';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import ExplorePageLayout from '../../../../core/presentation/components/ExplorePageLayout';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
-
-import '../styles/page-explore-collections-component.css';
-import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
-import { useNavigate } from 'react-router-dom';
+
+import '../styles/page-explore-collections.css';
 
 type Props = {
     appStore?: AppStore;
@@ -48,7 +48,7 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
     const collectionFilterModel = exploreCollectionsPageStore.collectionFilterModel;
 
     return (
-        <PageLayoutComponent className = { 'PageExploreCollections' } >
+        <PageLayout className = { 'PageExploreCollections' } >
 
             <PageHeader />
 
@@ -111,7 +111,7 @@ function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

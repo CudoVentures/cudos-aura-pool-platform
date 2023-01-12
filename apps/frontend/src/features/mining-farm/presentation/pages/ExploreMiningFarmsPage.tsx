@@ -8,9 +8,9 @@ import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import SearchIcon from '@mui/icons-material/Search';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageHeader from '../../../header/presentation/components/PageHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import Svg from '../../../../core/presentation/components/Svg';
@@ -21,7 +21,7 @@ import ExplorePageLayout from '../../../../core/presentation/components/ExploreP
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
 import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
 
-import '../styles/page-explore-mining-farms-component.css';
+import '../styles/page-explore-mining-farms.css';
 
 type Props = {
     appStore?: AppStore
@@ -49,7 +49,7 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
 
     const miningFarmEntities = exploreMiningFarmsPageStore.miningFarmEntities;
     return (
-        <PageLayoutComponent className = { 'PageExploreMiningFarms' } >
+        <PageLayout className = { 'PageExploreMiningFarms' } >
 
             <PageHeader />
 
@@ -112,7 +112,7 @@ function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

@@ -9,7 +9,7 @@ import AppStore from './core/presentation/stores/AppStore';
 import AppRouter from './features/app-routes/presentation/components/AppRouter';
 import AlertStore from './core/presentation/stores/AlertStore';
 import RewardsCalculatorStore from './features/rewards-calculator/presentation/stores/RewardsCalculatorStore';
-import MarketplaceStore from './features/collection/presentation/stores/MarketplaceStore';
+import MarketplacePageStore from './features/layout/presentation/stores/MarketplacePageStore';
 import ExampleModalStore from './features/ui-kit/presensation/stores/ExampleModalStore';
 import ViewNftPageStore from './features/nft/presentation/stores/ViewNftPageStore';
 import CreditCollectionPageStore from './features/collection/presentation/stores/CreditCollectionPageStore';
@@ -41,11 +41,11 @@ import ViewMiningFarmModalStore from './features/mining-farm/presentation/stores
 import BitcoinApiRepo from './features/bitcoin-data/data/repo/BitcoinApiRepo';
 import CudosApiRepo from './features/cudos-data/data/repo/CudosApiRepo';
 import ChangePasswordModalStore from './features/accounts/presentation/stores/ChangePasswordModalStore';
-import WalletSelectModalStore from './features/header/presentation/stores/WalletSelectModalStore';
+import WalletSelectModalStore from './features/layout/presentation/stores/WalletSelectModalStore';
 import VisitorApiRepo from './features/visitor/data/repos/VisitorApiRepo';
 import VisitorStore from './features/visitor/presentation/stores/VisitorStore';
 import StatisticsApiRepo from './features/analytics/data/repo/StatisticsApiRepo';
-import SuperAdminDashboardPageStore from './features/indices/presentation/stores/SuperAdminDashboardPageStore';
+import SuperAdminDashboardPageStore from './features/layout/presentation/stores/SuperAdminDashboardPageStore';
 import QueuedCollectionsStore from './features/collection/presentation/stores/QueuedCollectionsStore';
 import QueuedMiningFarmsStores from './features/mining-farm/presentation/stores/QueuedMiningFarmsStores';
 import SuperAdminMegaWalletPageStore from './features/accounts/presentation/stores/SuperAdminMegaWalletPageStore';
@@ -91,7 +91,7 @@ const cudosStore = new CudosStore(cudosRepo);
 const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, miningFarmRepo);
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, generalStore, miningFarmRepo);
-const marketplaceStore = new MarketplaceStore(collectionRepo, nftRepo, miningFarmRepo);
+const marketplacePageStore = new MarketplacePageStore(collectionRepo, nftRepo, miningFarmRepo);
 const superAdminDashboardPageStore = new SuperAdminDashboardPageStore(statisticsRepo, miningFarmRepo, collectionRepo, accountSessionStore, alertStore);
 const exploreCollectionsPageStore = new ExploreCollectionsPageStore(collectionRepo, miningFarmRepo);
 const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRepo);
@@ -179,7 +179,7 @@ const App = () => {
                 exploreCollectionsPageStore={exploreCollectionsPageStore}
                 exploreMiningFarmsPageStore={exploreMiningFarmsPageStore}
                 exploreNftsPageStore={exploreNftsPageStore}
-                marketplaceStore={marketplaceStore}
+                marketplacePageStore={marketplacePageStore}
                 viewNftPageStore={viewNftPageStore}
                 creditCollectionPageStore={creditCollectionPageStore}
                 creditMiningFarmPageStore={creditMiningFarmPageStore}

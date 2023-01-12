@@ -16,9 +16,9 @@ import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonColor, ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
@@ -28,7 +28,7 @@ import DataGridLayout from '../../../../core/presentation/components/DataGridLay
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import Input from '../../../../core/presentation/components/Input';
 import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
-import PageHeader from '../../../header/presentation/components/PageHeader';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
 import NoFarmView from '../components/NoFarmView';
 import NoCollectionView from '../../../collection/presentation/components/NoCollectionView';
 import StyledContainer from '../../../../core/presentation/components/StyledContainer';
@@ -233,7 +233,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             modals = {
                 <>
                     <EditMiningFarmModal />
@@ -356,7 +356,7 @@ function CreditMiningFarmPage({ appStore, creditMiningFarmPageStore, accountSess
                 </div>
             )}
             <PageFooter />
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

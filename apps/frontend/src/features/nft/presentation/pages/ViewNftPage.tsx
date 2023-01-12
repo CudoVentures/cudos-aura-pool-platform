@@ -20,10 +20,10 @@ import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/com
 import NftStats from '../components/NftStats';
 import Button from '../../../../core/presentation/components/Button';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 import Svg from '../../../../core/presentation/components/Svg';
-import PageHeader from '../../../header/presentation/components/PageHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import BuyNftModal from '../components/BuyNftModal';
 import ResellNftModal from '../components/ResellNftModal';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
@@ -152,7 +152,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className = { 'PageViewNft' }
             modals = {
                 <>
@@ -270,7 +270,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
             )}
 
             <PageFooter />
-        </PageLayoutComponent>
+        </PageLayout>
 
     )
 

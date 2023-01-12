@@ -1,15 +1,15 @@
 import React from 'react';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 
 import '../styles/not-found-page.css';
 
 export default function NotFoundPage() {
 
     return (
-        <PageLayoutComponent className = { 'NotFoundPage' } >
+        <PageLayout className = { 'NotFoundPage' } >
             <div className = { 'H1 FlexSingleCenter' } >Page not found</div>
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

@@ -11,9 +11,9 @@ import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageSuperAdminHeader from '../../../layout/presentation/components/PageSuperAdminHeader';
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import QueuedCollections from '../../../collection/presentation/components/QueuedCollections';
 import QueuedMiningFarms from '../../../mining-farm/presentation/components/QueuedMiningFarms';
@@ -99,7 +99,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className = { 'PageSuperAdminDashboard' }
             modals = { (
                 <>
@@ -172,7 +172,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 <QueuedCollections dashboardMode = { true } />
             </ColumnLayout>
             <PageFooter />
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

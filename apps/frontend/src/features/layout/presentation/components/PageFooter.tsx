@@ -1,9 +1,11 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import Svg from '../../../../core/presentation/components/Svg';
 import { TERMS_AND_CONDITIONS, PRIVACY_POLICY, WEBSITE, TELEGRAM, LINKEDIN, TWITTER, DISCORD, FACEBOOK, MEDIUM, SPOTIFY, YOUTUBE } from '../../../../core/utilities/Links';
 
 import SvgAuraPoolLogoLight from '../../../../public/assets/vectors/aura-pool-logo-light.svg'
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 // import SvgLinkedin from '../../../../public/assets/vectors/linkedin.svg';
 // import SvgTwitter from '../../../../public/assets/vectors/twitter.svg';
 // import SvgFacebook from '../../../../public/assets/vectors/facebook.svg';
@@ -15,6 +17,16 @@ import SvgAuraPoolLogoLight from '../../../../public/assets/vectors/aura-pool-lo
 import '../styles/page-footer.css'
 
 export default function PageFooter() {
+    const navigate = useNavigate();
+
+    function onClickExplore() {
+        navigate(AppRoutes.MARKETPLACE);
+    }
+
+    function onClickCalculator() {
+        navigate(AppRoutes.REWARDS_CALCULATOR);
+    }
+
     return (
         <footer className='FooterContainer'>
             <div className={'PageFooter FlexRow FlexSplit'}>
@@ -36,16 +48,16 @@ export default function PageFooter() {
                     </div>
                     <div className={ 'LinksColumn' }>
                         <div className='H3 Bold'>Marketplace</div>
-                        <a href={'#'} target={'_blank'} rel={'noreferrer'} >Explore</a>
-                        <a href={'#'} target={'_blank'} rel={'noreferrer'} >Calculator</a>
-                        <a href={'#'} target={'_blank'} rel={'noreferrer'} >What is AuraPool</a>
+                        <a className = { 'Clickable' } onClick = { onClickExplore } >Explore</a>
+                        <a className = { 'Clickable' } onClick = { onClickCalculator } >Calculator</a>
+                        {/* <a href={'#'} target={'_blank'} rel={'noreferrer'} >What is AuraPool</a> */}
                     </div>
-                    <div className={ 'LinksColumn' }>
+                    {/* <div className={ 'LinksColumn' }>
                         <div className='H3 Bold'>Link</div>
                         <a href={'#'} target={'_blank'} rel={'noreferrer'} >Documentation Link</a>
                         <a href={'#'} target={'_blank'} rel={'noreferrer'} >Documentation Link</a>
                         <a href={'#'} target={'_blank'} rel={'noreferrer'} >Documentation Link</a>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className={'FooterNav FlexRow TermsContainer'} >

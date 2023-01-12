@@ -13,10 +13,10 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ProfileHeader from '../components/ProfileHeader';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
-import PageHeader from '../../../header/presentation/components/PageHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonColor, ButtonPadding } from '../../../../core/presentation/components/Button';
@@ -80,7 +80,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
     }
 
     return (
-        <PageLayoutComponent className = { 'PageCreditCollection' }>
+        <PageLayout className = { 'PageCreditCollection' }>
             <PageHeader />
 
             { collectionEntity === null || miningFarmEntity === null || nftEntities === null ? (
@@ -192,7 +192,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                 </div>
             )}
             <PageFooter />
-        </PageLayoutComponent>
+        </PageLayout>
 
     )
 }

@@ -9,8 +9,8 @@ import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import { InputAdornment } from '@mui/material';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
-import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader'
+import PageLayout from '../../../../core/presentation/components/PageLayout'
+import PageSuperAdminHeader from '../../../layout/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import ChangePasswordModal from '../../../accounts/presentation/components/ChangePasswordModal';
 import ViewMiningFarmModal from '../components/ViewMiningFarmModal';
@@ -75,7 +75,7 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className = { 'PageSuperAdminMiningFarms' }
             modals = { (
                 <>
@@ -117,7 +117,7 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
                 </StyledLayout>
             </ColumnLayout>
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

@@ -7,9 +7,9 @@ import ValidationState from '../../../../core/presentation/stores/ValidationStat
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import Input from '../../../../core/presentation/components/Input';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
@@ -129,7 +129,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
     // const adminEntity = accountSessionStore.adminEntity;
 
     return (
-        <PageLayoutComponent className = { 'CreditAccountSettings' }>
+        <PageLayout className = { 'CreditAccountSettings' }>
 
             <PageAdminHeader />
 
@@ -267,7 +267,7 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

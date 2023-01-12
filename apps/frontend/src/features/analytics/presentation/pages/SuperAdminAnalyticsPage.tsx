@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react'
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
-import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader'
+import PageLayout from '../../../../core/presentation/components/PageLayout'
+import PageSuperAdminHeader from '../../../layout/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import ChangePasswordModal from '../../../accounts/presentation/components/ChangePasswordModal';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
@@ -34,7 +34,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, cudosStore }: P
     }, []);
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className = { 'PageSuperAdminAnalytics' }
             modals = { (
                 <>
@@ -93,7 +93,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, cudosStore }: P
                 ) }
             </ColumnLayout>
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

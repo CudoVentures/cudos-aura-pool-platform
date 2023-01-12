@@ -3,16 +3,16 @@ import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
-import MarketplaceStore from '../stores/MarketplaceStore';
+import MarketplacePageStore from '../stores/MarketplacePageStore';
 import NftEntity from '../../../nft/entities/NftEntity';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
-import TopCollections from '../components/TopCollections';
-import PageHeader from '../../../header/presentation/components/PageHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import TopCollections from '../../../collection/presentation/components/TopCollections';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import Slider from '../../../../core/presentation/components/Slider';
 import NftPreviewInPicture from '../../../nft/presentation/components/NftPreviewInPicture';
 import NftPreview from '../../../nft/presentation/components/NftPreview';
@@ -22,10 +22,10 @@ import DefaultIntervalPicker from '../../../analytics/presentation/components/De
 import '../styles/page-marketplace.css';
 
 type Props = {
-    marketplaceStore?: MarketplaceStore
+    marketplacePageStore?: MarketplacePageStore
 }
 
-function MarkedplacePage({ marketplaceStore }: Props) {
+function MarkedplacePage({ marketplacePageStore }: Props) {
 
     const navigate = useNavigate();
 
@@ -47,13 +47,13 @@ function MarkedplacePage({ marketplaceStore }: Props) {
 
     useEffect(() => {
         async function run() {
-            await marketplaceStore.init();
+            await marketplacePageStore.init();
         }
         run();
     }, []);
 
     return (
-        <PageLayoutComponent className = { 'PageMarketplace' } >
+        <PageLayout className = { 'PageMarketplace' } >
             <PageHeader />
             <div className={'PageContent AppContent'} >
 
@@ -87,16 +87,16 @@ function MarkedplacePage({ marketplaceStore }: Props) {
 
                 <div className = { 'SectionWrapper' } >
                     <div className={'H2 ExtraBold SectionHeadingCnt'}>Trending NFTs</div>
-                    { marketplaceStore.trendingNftEntities.length === 0 ? (
+                    { marketplacePageStore.trendingNftEntities.length === 0 ? (
                         <div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>
                     ) : (
                         <Slider>
-                            {marketplaceStore.trendingNftEntities.map((nftEntity: NftEntity, index: number) => {
+                            {marketplacePageStore.trendingNftEntities.map((nftEntity: NftEntity, index: number) => {
                                 return (
                                     <NftPreview
                                         key={index}
                                         nftEntity={nftEntity}
-                                        collectionName={marketplaceStore.getCollectionName(nftEntity.collectionId)} />
+                                        collectionName={marketplacePageStore.getCollectionName(nftEntity.collectionId)} />
                                 )
                             })}
                         </Slider>
@@ -124,16 +124,16 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                     </div>
 
                     <div className = { 'HashRateDropsCnt' }>
-                        { marketplaceStore.newNftDropsEntities.length === 0 ? (
+                        { marketplacePageStore.newNftDropsEntities.length === 0 ? (
                             <div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>
                         ) : (
                             <Slider itemsPerPage = { 3 } showDots = { false } navWithTransparency = { false } >
-                                { marketplaceStore.newNftDropsEntities.map((nftEntity: NftEntity, index: number) => {
+                                { marketplacePageStore.newNftDropsEntities.map((nftEntity: NftEntity, index: number) => {
                                     return (
                                         <NftPreviewInPicture
                                             key={index}
                                             nftEntity={nftEntity}
-                                            collectionEntity={marketplaceStore.getCollectionById(nftEntity.collectionId)} />
+                                            collectionEntity={marketplacePageStore.getCollectionById(nftEntity.collectionId)} />
                                     )
                                 }) }
                             </Slider>
@@ -145,12 +145,12 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                     <div className = { 'SectionHeadingCnt' } >
                         <div className={'H2 ExtraBold'}>Top Collections</div>
                         <div className = { 'CenterCnt FlexSingleCenter' } >
-                            <DefaultIntervalPicker defaultIntervalPickerState={marketplaceStore.defaultIntervalPickerState} />
+                            <DefaultIntervalPicker defaultIntervalPickerState={marketplacePageStore.defaultIntervalPickerState} />
                         </div>
                     </div>
                     <TopCollections
-                        topCollectionEntities={marketplaceStore.topCollectionEntities}
-                        collectionDetailsMap={marketplaceStore.collectionDetailsMap} />
+                        topCollectionEntities={marketplacePageStore.topCollectionEntities}
+                        collectionDetailsMap={marketplacePageStore.collectionDetailsMap} />
                     <Actions
                         className = { 'SectionActions' }
                         layout={ActionsLayout.LAYOUT_ROW_CENTER}
@@ -165,16 +165,16 @@ function MarkedplacePage({ marketplaceStore }: Props) {
 
                 <div className={'SectionWrapper'}>
                     <div className={'SectionHeadingCnt H2 ExtraBold'}>Popular Farms</div>
-                    { marketplaceStore.popularFarmsEntities.length === 0 ? (
+                    { marketplacePageStore.popularFarmsEntities.length === 0 ? (
                         <div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>
                     ) : (
                         <Slider itemsPerPage = { 3 } extendPaddingForShadow = { true } >
-                            { marketplaceStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
+                            { marketplacePageStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
                                 return (
                                     <MiningFarmPreview
                                         key={index}
                                         miningFarmEntity={miningFarmEntity}
-                                        miningFarmDetailsEntity = { marketplaceStore.getMiningFarmDetailsEntity(miningFarmEntity.id) } />
+                                        miningFarmDetailsEntity = { marketplacePageStore.getMiningFarmDetailsEntity(miningFarmEntity.id) } />
                                 )
                             }) }
                         </Slider>
@@ -193,7 +193,7 @@ function MarkedplacePage({ marketplaceStore }: Props) {
                 </div>
             </div>
             <PageFooter />
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

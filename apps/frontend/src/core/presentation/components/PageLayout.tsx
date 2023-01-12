@@ -4,13 +4,13 @@ import Dimmer from './Dimmer';
 import DisableActions from './DisableActions';
 import PageLoadingIndicator from './PageLoadingIndicator';
 import Alert from './Alert';
-import WalletSelectModal from '../../../features/header/presentation/components/WalletSelectModal';
+import WalletSelectModal from '../../../features/layout/presentation/components/WalletSelectModal';
 import Snack from './Snack';
 
 import '../styles/main.css';
 import '../styles/content.css';
 import '../styles/fonts.css';
-import '../styles/page-layout-component.css';
+import '../styles/page-layout.css';
 
 type Props = {
     className?: string;
@@ -19,7 +19,7 @@ type Props = {
     snack?: React.Component | null,
 }
 
-export default function PageLayoutComponent({ className, modals, alert, snack, children }: React.PropsWithChildren < Props >) {
+export default function PageLayout({ className, modals, alert, snack, children }: React.PropsWithChildren < Props >) {
     return (
         <div className = { `ReactBody ${className}` } >
 
@@ -42,7 +42,7 @@ export default function PageLayoutComponent({ className, modals, alert, snack, c
     )
 }
 
-PageLayoutComponent.defaultProps = {
+PageLayout.defaultProps = {
     className: '',
     modals: null,
     alert: <Alert />,

@@ -10,15 +10,15 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
-import WalletSelectModal from '../../../header/presentation/stores/WalletSelectModalStore';
+import WalletSelectModal from '../../../layout/presentation/stores/WalletSelectModalStore';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
 import Svg from '../../../../core/presentation/components/Svg';
 import Button, { ButtonType } from '../../../../core/presentation/components/Button';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
 import Checkbox from '../../../../core/presentation/components/Checkbox';
@@ -287,7 +287,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, 
     }
 
     return (
-        <PageLayoutComponent className = { 'PageRegister' }>
+        <PageLayout className = { 'PageRegister' }>
 
             <PageAdminHeader />
 
@@ -309,7 +309,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, 
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

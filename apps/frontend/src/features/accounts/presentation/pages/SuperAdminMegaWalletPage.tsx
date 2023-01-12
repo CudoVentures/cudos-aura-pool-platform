@@ -12,8 +12,8 @@ import MegaWalletTransferModalStore, { MegaWalletTransferType } from '../stores/
 import MegaWalletBalanceStore from '../stores/MegaWalletBalanceStore';
 
 import MenuItem from '@mui/material/MenuItem/MenuItem';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent'
-import PageSuperAdminHeader from '../../../header/presentation/components/PageSuperAdminHeader'
+import PageLayout from '../../../../core/presentation/components/PageLayout'
+import PageSuperAdminHeader from '../../../layout/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 import Svg from '../../../../core/presentation/components/Svg';
 import Button, { ButtonColor, ButtonPadding } from '../../../../core/presentation/components/Button';
@@ -149,7 +149,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className = { 'PageSuperAdminMegaWallet' }
             modals = { (
                 <>
@@ -230,7 +230,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                 </StyledLayout> */}
             </ColumnLayout>
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

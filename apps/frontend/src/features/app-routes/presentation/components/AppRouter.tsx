@@ -5,10 +5,10 @@ import { inject, observer } from 'mobx-react';
 import AppRoutes from '../../entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
-import NotFoundPage from '../../../not-found/presensation/components/NotFoundPage';
+import NotFoundPage from '../../../layout/presentation/pages/NotFoundPage';
 import UiKitPage from '../../../ui-kit/presensation/components/UiKitPage';
 import RewardsCalculatorPage from '../../../rewards-calculator/presentation/pages/RewardsCalculatorPage';
-import MarketplacePage from '../../../collection/presentation/pages/MarketplacePage';
+import MarketplacePage from '../../../layout/presentation/pages/MarketplacePage';
 import ExploreNftsPage from '../../../nft/presentation/pages/ExploreNftsPage';
 import ExploreCollectionsPage from '../../../collection/presentation/pages/ExploreCollectionsPage';
 import ExploreMiningFarmsPage from '../../../mining-farm/presentation/pages/ExploreMiningFarmsPage';
@@ -32,7 +32,7 @@ import SuperAdminCollectionsPage from '../../../collection/presentation/pages/Su
 import SuperAdminMiningFarmsPage from '../../../mining-farm/presentation/pages/SuperAdminMiningFarmsPage';
 import SuperAdminAnalyticsPage from '../../../analytics/presentation/pages/SuperAdminAnalyticsPage';
 import SuperAdminMegaWalletPage from '../../../accounts/presentation/pages/SuperAdminMegaWalletPage';
-import SuperAdminDashboardPage from '../../../indices/presentation/pages/SuperAdminDashboardPage';
+import SuperAdminDashboardPage from '../../../layout/presentation/pages/SuperAdminDashboardPage';
 
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 

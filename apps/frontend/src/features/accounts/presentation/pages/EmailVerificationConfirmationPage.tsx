@@ -7,9 +7,9 @@ import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 import Button from '../../../../core/presentation/components/Button';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -29,7 +29,7 @@ function EmailVerificationConfirmationPage({ alertStore, accountSessionStore }: 
     }
 
     return (
-        <PageLayoutComponent className = { 'PageEmailVerificationConfirmation' }>
+        <PageLayout className = { 'PageEmailVerificationConfirmation' }>
 
             <PageAdminHeader />
 
@@ -49,7 +49,7 @@ function EmailVerificationConfirmationPage({ alertStore, accountSessionStore }: 
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

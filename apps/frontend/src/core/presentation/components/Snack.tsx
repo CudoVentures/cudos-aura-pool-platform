@@ -11,7 +11,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import '../styles/snack.css';
 
 type Props = {
-    snackStore: SnackStore;
+    snackStore?: SnackStore;
 }
 
 function Snack({ snackStore }: Props) {

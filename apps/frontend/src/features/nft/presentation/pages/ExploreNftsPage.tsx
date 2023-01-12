@@ -1,28 +1,27 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
 import NftEntity from '../../entities/NftEntity';
 import ExploreNftsPageStore from '../stores/ExploreNftsPageStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import { InputAdornment, MenuItem } from '@mui/material';
+import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Input, { InputType } from '../../../../core/presentation/components/Input';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 import Svg from '../../../../core/presentation/components/Svg';
-import PageHeader from '../../../header/presentation/components/PageHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import Select from '../../../../core/presentation/components/Select';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import GridView from '../../../../core/presentation/components/GridView';
 import NftPreview from '../components/NftPreview';
 import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
 import ExplorePageLayout from '../../../../core/presentation/components/ExplorePageLayout';
 import DataGridLayout from '../../../../core/presentation/components/DataGridLayout';
-
-import '../styles/page-explore-nfts-component.css';
 import NavRowTabs, { createNavRowTab } from '../../../../core/presentation/components/NavRowTabs';
-import AppRoutes from '../../../app-routes/entities/AppRoutes';
-import { useNavigate } from 'react-router-dom';
+
+import '../styles/page-explore-nfts.css';
 
 type Props = {
     appStore?: AppStore;
@@ -49,7 +48,7 @@ function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
     }
 
     return (
-        <PageLayoutComponent className = { 'PageExploreNfts' } >
+        <PageLayout className = { 'PageExploreNfts' } >
 
             <PageHeader />
 
@@ -113,7 +112,7 @@ function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 
-import S from '../../../../core/utilities/Main';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button from '../../../../core/presentation/components/Button';
-import PageFooter from '../../../../features/footer/presentation/components/PageFooter';
-import PageHeader from '../../../header/presentation/components/PageHeader';
+import PageFooter from '../../../../features/layout/presentation/components/PageFooter';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 
@@ -17,7 +15,7 @@ import TextWithTooltip from '../../../../core/presentation/components/TextWithTo
 import { Slider, InputAdornment, MenuItem } from '@mui/material';
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import SouthEastIcon from '@mui/icons-material/SouthEast';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 import Select from '../../../../core/presentation/components/Select';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import RowLayout from '../../../../core/presentation/components/RowLayout';
@@ -59,7 +57,7 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
     }
 
     return (
-        <PageLayoutComponent className = { 'PageRewardsCalculator' }>
+        <PageLayout className = { 'PageRewardsCalculator' }>
 
             <PageHeader />
 
@@ -194,7 +192,7 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

@@ -4,17 +4,15 @@ import { inject, observer } from 'mobx-react';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../stores/AccountSessionStore';
-import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
 import Svg from '../../../../core/presentation/components/Svg';
 import Button, { ButtonType } from '../../../../core/presentation/components/Button';
-import LoadingIndicator from '../../../../core/presentation/components/LoadingIndicator';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -67,7 +65,7 @@ function LoginPage({ accountSessionStore }: Props) {
     }
 
     return (
-        <PageLayoutComponent className = { 'PageLogin' }>
+        <PageLayout className = { 'PageLogin' }>
 
             <PageAdminHeader />
 
@@ -124,7 +122,7 @@ function LoginPage({ accountSessionStore }: Props) {
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

@@ -1,15 +1,15 @@
 import { action, makeAutoObservable, runInAction } from 'mobx';
-import CollectionEntity from '../../entities/CollectionEntity';
-import CollectionRepo from '../repos/CollectionRepo';
+import CollectionEntity from '../../../collection/entities/CollectionEntity';
+import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
-import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
+import CollectionDetailsEntity from '../../../collection/entities/CollectionDetailsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 
-export default class MarketplaceStore {
+export default class MarketplacePageStore {
 
     collectionRepo: CollectionRepo;
     nftRepo: NftRepo;

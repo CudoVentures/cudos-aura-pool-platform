@@ -9,11 +9,11 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 import MenuItem from '@mui/material/MenuItem/MenuItem';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 import Select from '../../../../core/presentation/components/Select';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import ChartHeading from '../components/ChartHeading';
 import ChartInfo from '../components/ChartInfo';
 import DailyChart from '../components/DailyChart';
@@ -43,7 +43,7 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
     }, []);
 
     return (
-        <PageLayoutComponent className = { 'PageAnalytics' } >
+        <PageLayout className = { 'PageAnalytics' } >
             <PageAdminHeader />
             <div className={'PageContent AppContent FlexColumn'} >
                 <div className={'H2 Bold'}>Farm Analytics</div>
@@ -121,7 +121,7 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
 
             </div>
             <PageFooter />
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

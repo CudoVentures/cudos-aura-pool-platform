@@ -6,9 +6,9 @@ import CreditMiningFarmDetailsPageState from '../stores/CreditMiningFarmDetailsP
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import NavRow, { createNavStep, NavStep } from '../../../../core/presentation/components/NavRow';
 import StepFarmDetails from '../components/credit-farm/StepFarmDetails';
 import StepReview from '../components/credit-farm/StepReview';
@@ -61,7 +61,7 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStor
     }
 
     return (
-        <PageLayoutComponent className = { 'PageCreditMiningFarmDetails' }>
+        <PageLayout className = { 'PageCreditMiningFarmDetails' }>
 
             <PageAdminHeader />
 
@@ -120,7 +120,7 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStor
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

@@ -6,9 +6,9 @@ import CreditCollectionStore from '../stores/CreditCollectionStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import StyledContainer from '../../../../core/presentation/components/StyledContainer';
 import Breadcrumbs, { createBreadcrumb } from '../../../../core/presentation/components/Breadcrumbs';
 import CreditCollectionSuccessModal from '../components/credit-collection/CreditCollectionSuccessModal';
@@ -40,7 +40,7 @@ function CreditCollectionDetailsCreatePage({ appStore, creditCollectionStore }: 
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             modals = {
                 <>
                     <CreditCollectionSuccessModal />
@@ -74,7 +74,7 @@ function CreditCollectionDetailsCreatePage({ appStore, creditCollectionStore }: 
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

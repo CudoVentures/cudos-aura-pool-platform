@@ -11,9 +11,9 @@ import { InputAdornment } from '@mui/material';
 import Input from '../../../../core/presentation/components/Input';
 import Svg from '../../../../core/presentation/components/Svg';
 import Button, { ButtonType } from '../../../../core/presentation/components/Button';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
-import PageAdminHeader from '../../../header/presentation/components/PageAdminHeader';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
+import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
 
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -120,7 +120,7 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
     }
 
     return (
-        <PageLayoutComponent className = { 'PageForgottenPassRequest' }>
+        <PageLayout className = { 'PageForgottenPassRequest' }>
 
             <PageAdminHeader />
 
@@ -134,7 +134,7 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
 
             <PageFooter />
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 

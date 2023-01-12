@@ -8,7 +8,7 @@ import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AppStore from '../../../../core/presentation/stores/AppStore';
 import TableState from '../../../../core/presentation/stores/TableState';
 
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
 
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
@@ -120,7 +120,7 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className = { 'UiKitPage' }
             modals = {
                 <>
@@ -414,7 +414,7 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
 
             </div>
 
-        </PageLayoutComponent>
+        </PageLayout>
     )
 
 }

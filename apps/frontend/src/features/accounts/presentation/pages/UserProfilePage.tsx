@@ -9,9 +9,9 @@ import EditUserBtcModalStore from '../stores/EditUserBtcModalStore';
 import EditUserModalStore from '../stores/EditUserModalStore';
 
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
-import PageLayoutComponent from '../../../../core/presentation/components/PageLayoutComponent';
-import PageHeader from '../../../header/presentation/components/PageHeader';
-import PageFooter from '../../../footer/presentation/components/PageFooter';
+import PageLayout from '../../../../core/presentation/components/PageLayout';
+import PageHeader from '../../../layout/presentation/components/PageHeader';
+import PageFooter from '../../../layout/presentation/components/PageFooter';
 import AnimationContainer from '../../../../core/presentation/components/AnimationContainer';
 import MyEarningsTab from '../components/user-profile/MyEarningsTab';
 import MyHistoryTab from '../components/user-profile/MyHistoryTab';
@@ -55,7 +55,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
     }
 
     return (
-        <PageLayoutComponent
+        <PageLayout
             className = { 'PageUserProfile' }
             modals = {
                 <>
@@ -119,7 +119,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
             </div>
 
             <PageFooter />
-        </PageLayoutComponent>
+        </PageLayout>
     )
 }
 
