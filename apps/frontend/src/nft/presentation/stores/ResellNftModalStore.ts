@@ -117,7 +117,7 @@ export default class ResellNftModalStore extends ModalStore {
     }
 
     getTxLink(): string {
-        return `${CHAIN_DETAILS.EXPLORER_URL}/${this.txHash}`
+        return `${CHAIN_DETAILS.EXPLORER_URL}/transactions/${this.txHash}`
     }
 
     getResellpriceInCudosDisplay(): string {
