@@ -265,7 +265,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     </div>
 
                     <div className = { 'ModalWalletSubtitle' } >
-                        Sign a transaction in order to ensure that this wallet belongs to you. You WILL not be changed and no actual transaction will be executed on the chain.
+                        Sign a transaction in order to ensure that this wallet belongs to you. You WILL not be charged and no actual transaction will be executed on the chain.
                     </div>
 
                     <Input

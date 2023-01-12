@@ -90,7 +90,7 @@ export default class NftEntity {
     }
 
     formatHashPowerInTh(): string {
-        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`;
+        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`;
     }
 
     formatPriceInCudos(): string {

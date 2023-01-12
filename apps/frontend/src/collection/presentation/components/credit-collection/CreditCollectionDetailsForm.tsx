@@ -207,6 +207,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                     <Input
                         label={'Description (Optional)'}
                         placeholder={'Enter description...'}
+                        multiline = { true }
                         value={collectionEntity.description}
                         onChange={creditCollectionStore.onChangeCollectionDescription} />
                 }
@@ -222,11 +223,11 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         inputType = { InputType.REAL }
                         InputProps={{
                             endAdornment: (
-                                <InputAdornment position="end" >TH</InputAdornment>
+                                <InputAdornment position="end" >TH/s</InputAdornment>
                             ),
                         }} />
                 }
-                helperText = { `Available TH: ${creditCollectionStore.formatMiningFarmRemainingHashPower()}` } />
+                helperText = { `Available TH/s: ${creditCollectionStore.formatMiningFarmRemainingHashPower()}` } />
             <FieldColumnWrapper
                 field = {
                     <Input
@@ -283,7 +284,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         onChange={onChangeDefaultHashPowerPerNftInTh}
                         InputProps={{
                             endAdornment: (
-                                <InputAdornment position="end" >TH</InputAdornment>
+                                <InputAdornment position="end" >TH/s</InputAdornment>
                             ),
                         }} />
                     <Input

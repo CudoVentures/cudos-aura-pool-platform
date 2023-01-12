@@ -87,7 +87,7 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
                                 onChange = { rewardsCalculatorStore.onChangeHashPowerInInput }
                                 InputProps={{
                                     endAdornment: (
-                                        <InputAdornment position="end" >TH</InputAdornment>
+                                        <InputAdornment position="end" >TH/s</InputAdornment>
                                     ),
                                 }} />
                             <div>
@@ -159,8 +159,8 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
                                 <TextWithTooltip
                                     className={'DataRowHeading'}
                                     text={'Maintenance Fee'}
-                                    tooltipText={'The dollar amount per TH which will be subtracted from your BTC earnings for maintenance of farming machines.'} />
-                                <div className={'DataRowValue StartRight'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.getMaintenanceFeePerThInBtc())}/TH</div>
+                                    tooltipText={'The dollar amount per TH/s which will be subtracted from your BTC earnings for maintenance of farming machines.'} />
+                                <div className={'DataRowValue StartRight'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.getMaintenanceFeePerThInBtc())}/TH/s</div>
                             </div>
                             <div className={'DataRow FlexRow FlexSplit'}>
                                 <TextWithTooltip

@@ -126,7 +126,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         inputValidation={nftHashPowerValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
-                helperText = { `Available TH: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
+                helperText = { `Available TH/s: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
             </FieldColumnWrapper>
             <FieldColumnWrapper
                 field = {

@@ -103,7 +103,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         const generalDatapreviews = [];
 
         generalDatapreviews.push(createDataPreview('Listing Status', nftEntity.isStatusListed() === true ? 'Active' : 'Not Listed'));
-        generalDatapreviews.push(createDataPreview('Sining Farm', nftEntity.name));
+        generalDatapreviews.push(createDataPreview('Mining Farm', nftEntity.name));
         generalDatapreviews.push(createDataPreview('Collection', collectionEntity.name));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
 

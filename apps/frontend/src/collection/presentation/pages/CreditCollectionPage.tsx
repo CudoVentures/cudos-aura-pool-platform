@@ -114,7 +114,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                     </div>
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
-                            <div className={'Clickable'} onClick={onClickFarmLink}>Farm Owner:  <b className={ 'ColorPrimary060' }>{miningFarmEntity.name}</b></div>
+                            <div className={'Clickable'} onClick={onClickFarmLink}>Collection Owner:  <b className={ 'ColorPrimary060' }>{miningFarmEntity.name}</b></div>
                             <div className={'CollectionDescription'}>{collectionEntity.description}</div>
                         </div>
                         { collectionDetailsEntity !== null && (

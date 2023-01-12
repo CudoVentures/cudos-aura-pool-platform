@@ -34,7 +34,7 @@ function CreditCollectionFinish({ creditCollectionStore, creditCollectionSuccess
     return (
         <div className={'CreditCollectionFinish FlexColumn '}>
             <div className={'H2 ExtraBold CreditCollectionFinishTitle'}>Finalise</div>
-            <div className={'B1 CreditCollectionFinishSubtitle'}>Check all the iformation related to the collection.</div>
+            <div className={'B1 CreditCollectionFinishSubtitle'}>Check all the information related to the collection.</div>
             {creditCollectionStore.isAddNftsMode() === true && (
                 <DataPreviewLayout className = { 'CreditCollectionAddNftFinishDataPreview' } dataPreviews={dataPreviews}/>
             )}

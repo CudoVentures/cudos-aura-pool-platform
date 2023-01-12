@@ -110,7 +110,7 @@ export default class CollectionEntity {
     }
 
     formatHashPowerInTh(): string {
-        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH`;
+        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`;
     }
 
     formatStatusName(): string {
@@ -126,7 +126,7 @@ export default class CollectionEntity {
     }
 
     formatDefaultHashPowerPerNftInTh(): string {
-        return `${this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? this.defaultHashPowerPerNftInTh.toString() : '0.00'} TH`;
+        return `${this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? this.defaultHashPowerPerNftInTh.toString() : '0.00'} TH/s`;
     }
 
     static formatStatusName(status: CollectionStatus): string {

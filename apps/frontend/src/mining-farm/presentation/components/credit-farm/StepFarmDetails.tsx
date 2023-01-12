@@ -240,14 +240,14 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                     <div>
                         <Input
                             label={'Hashrate'}
-                            placeholder={'e.g 102.001 TH'}
+                            placeholder={'e.g 102.001 TH/s'}
                             value={hashPowerInTh}
                             onChange={ onChangeHashPowerInTh }
                             inputType = { InputType.INTEGER }
                             inputValidation={farmHashrateValidation}
                             InputProps={{
                                 endAdornment: (
-                                    <InputAdornment position="end" > TH </InputAdornment>
+                                    <InputAdornment position="end" > TH/s </InputAdornment>
                                 ),
                             }} />
                         <div className={'FlexRow HashPowerInfo B2 FullLine'}>

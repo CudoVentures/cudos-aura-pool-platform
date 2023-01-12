@@ -19,7 +19,7 @@ export default class MiningFarmDetailsEntity {
     }
 
     formatHashPowerInTh(): string {
-        return `${this.averageHashPowerInTh} TH`;
+        return `${this.averageHashPowerInTh} TH/s`;
     }
 
     static toJson(entity: MiningFarmDetailsEntity) {
