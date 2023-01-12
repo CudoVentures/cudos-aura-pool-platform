@@ -29,6 +29,11 @@
     margin-top: 24px;
 }
 
+.PageCreditCollection .ProfileInfo .DataPreviewAddressCnt {
+    max-width: 256px;
+    gap: 2px;
+}
+
 .PageCreditCollection .SectionDivider {
     height: 1px;
     margin: 110px 0 24px 0;

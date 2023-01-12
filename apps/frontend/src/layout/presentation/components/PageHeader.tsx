@@ -71,7 +71,7 @@ function PageHeader({ accountSessionStore, walletStore }: Props) {
                     <div
                         className={'NavButton B1 SemiBold Clickable'}
                         onClick={onClickAdminPortal}>
-                        Admin Portal
+                        Farm profile
                     </div>
                 ) }
 

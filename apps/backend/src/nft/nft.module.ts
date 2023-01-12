@@ -6,6 +6,7 @@ import { NftRepo } from './repos/nft.repo';
 import { GraphqlModule } from '../graphql/graphql.module';
 import { CollectionModule } from '../collection/collection.module';
 import { VisitorModule } from '../visitor/visitor.module';
+import { FarmModule } from '../farm/farm.module';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { VisitorModule } from '../visitor/visitor.module';
         VisitorModule,
         forwardRef(() => GraphqlModule),
         forwardRef(() => CollectionModule),
+        forwardRef(() => FarmModule),
     ],
     providers: [NFTService],
     controllers: [NFTController],

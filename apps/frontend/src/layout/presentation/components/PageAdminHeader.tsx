@@ -54,7 +54,7 @@ function PageAdminHeader({ accountSessionStore, walletStore }: Props) {
         <header className={'PageAdminHeader FlexRow'}>
             <div className={'LogoHeader FlexRow'}>
                 <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
-                <div className={'AdminPortalNav B2 SemiBold'}>Admin Portal</div>
+                <div className={'AdminPortalNav B2 SemiBold'}>Farm Portal</div>
             </div>
 
             <div className={'NavCnt FlexRow'}>

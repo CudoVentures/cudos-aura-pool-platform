@@ -45,10 +45,12 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                             <Svg svg={BorderColorIcon} />
                             Edit
                         </Button>
-                        <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE} color={ButtonColor.SCHEME_RED}>
-                            <Svg svg={DeleteForeverIcon} />
-                            Delete
-                        </Button>
+                        { creditCollectionStore.selectedNftEntity.id !== nftEntity.id && (
+                            <Button onClick={() => creditCollectionStore.onClickDeleteNft(nftEntity.id)} type={ButtonType.TEXT_INLINE} color={ButtonColor.SCHEME_RED}>
+                                <Svg svg={DeleteForeverIcon} />
+                                Delete
+                            </Button>
+                        ) }
                     </Actions>,
                 ),
             ];
