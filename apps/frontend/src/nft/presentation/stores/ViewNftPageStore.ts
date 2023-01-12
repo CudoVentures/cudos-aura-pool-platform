@@ -17,7 +17,6 @@ import TableState from '../../../core/presentation/stores/TableState';
 import NftEventEntity from '../../../analytics/entities/NftEventEntity';
 import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
 import BigNumber from 'bignumber.js';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import AdminEntity from '../../../accounts/entities/AdminEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';

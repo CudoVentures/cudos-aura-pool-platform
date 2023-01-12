@@ -59,7 +59,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
     }
 
     function onClickFarmLink() {
-        navigate(`${AppRoutes.CREDIT_MINING_FARM}/${miningFarmEntity.id}`)
+        navigate(ProjectUtils.makeUrlMiningFarm(miningFarmEntity.id));
     }
 
     function isCollectionEditable() {

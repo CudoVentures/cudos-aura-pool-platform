@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import AccountSessionStore from '../stores/AccountSessionStore';
 import UserProfilePageStore from '../stores/UserProfilePageStore';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
@@ -85,7 +86,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                     <div className={'AccountName H2 Bold'}>{accountEntity.name}</div>
                     <div className={'FlexRow'}>
                         <Svg svg = { SvgCudosLogo } />
-                        <div className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</div>
+                        <a href={ProjectUtils.makeUrlExplorer(userEntity.cudosWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</a>
                         <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div>
                     </div>
                 </div>

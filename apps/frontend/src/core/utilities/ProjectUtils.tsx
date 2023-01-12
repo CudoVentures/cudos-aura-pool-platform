@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js';
+import AppRoutes from '../../app-routes/entities/AppRoutes';
+import { CHAIN_DETAILS } from './Constants';
 import S from './Main';
 
 const QUERY_PATTERN = '?p=';
@@ -53,6 +55,18 @@ export default class ProjectUtils {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    }
+
+    static makeUrlExplorer(cudosWalletAddress: string) {
+        return `${CHAIN_DETAILS.EXPLORER_URL}/accounts/${cudosWalletAddress}`;
+    }
+
+    static makeUrlMiningFarm(miningFarmId: string) {
+        return `${AppRoutes.CREDIT_MINING_FARM}/${miningFarmId}`;
+    }
+
+    static makeUrlCollection(collectionId: string) {
+        return `${AppRoutes.CREDIT_COLLECTION}/${collectionId}`;
     }
 
     static makeUrl(page: string, keys: string | string[], values: string | string[], wipe = false) {
