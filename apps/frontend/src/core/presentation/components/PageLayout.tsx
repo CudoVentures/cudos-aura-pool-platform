@@ -4,7 +4,7 @@ import Dimmer from './Dimmer';
 import DisableActions from './DisableActions';
 import PageLoadingIndicator from './PageLoadingIndicator';
 import Alert from './Alert';
-import WalletSelectModal from '../../../features/layout/presentation/components/WalletSelectModal';
+import WalletSelectModal from '../../../layout/presentation/components/WalletSelectModal';
 import Snack from './Snack';
 
 import '../styles/main.css';

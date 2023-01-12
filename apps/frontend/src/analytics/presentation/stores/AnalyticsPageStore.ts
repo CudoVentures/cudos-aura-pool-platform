@@ -1,0 +1,96 @@
+import { action, makeAutoObservable, runInAction } from 'mobx';
+import TableState from '../../../core/presentation/stores/TableState';
+import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
+import StatisticsRepo from '../repos/StatisticsRepo';
+import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
+import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
+import NftEventFilterModel from '../../entities/NftEventFilterModel';
+import NftRepo from '../../../nft/presentation/repos/NftRepo';
+import NftEntity from '../../../nft/entities/NftEntity';
+import NftEventEntity, { NftEventType } from '../../entities/NftEventEntity';
+import DefaultIntervalPickerState from './DefaultIntervalPickerState';
+import S from '../../../core/utilities/Main';
+
+export default class AnalyticsPageStore {
+
+    statisticsRepo: StatisticsRepo;
+    nftRepo: NftRepo;
+    collectionRepo: CollectionRepo;
+    miningFarmRepo: MiningFarmRepo;
+
+    defaultIntervalPickerState: DefaultIntervalPickerState;
+    miningFarmEarningsEntity: MiningFarmEarningsEntity;
+
+    eventType: NftEventType;
+    nftEventFilterModel: NftEventFilterModel;
+    nftEventEntities: NftEventEntity[];
+    nftEntitiesMap: Map < string, NftEntity >;
+    analyticsTableState: TableState;
+
+    constructor(statisticsRepo: StatisticsRepo, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
+        this.statisticsRepo = statisticsRepo;
+        this.nftRepo = nftRepo;
+        this.collectionRepo = collectionRepo;
+        this.miningFarmRepo = miningFarmRepo;
+
+        this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchEarnings);
+        this.miningFarmEarningsEntity = null;
+
+        this.eventType = S.NOT_EXISTS;
+        this.nftEventFilterModel = new NftEventFilterModel();
+        this.nftEventEntities = null;
+        this.nftEntitiesMap = new Map();
+        this.analyticsTableState = new TableState(0, [], this.fetchNftEvents, 10);
+
+        makeAutoObservable(this, { nftEventFilterModel: false });
+    }
+
+    async init() {
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
+
+        runInAction(async () => {
+            this.nftEventFilterModel.miningFarmId = miningFarmEntity.id;
+
+            await this.fetchEarnings();
+            await this.fetchNftEvents();
+        })
+    }
+
+    fetchEarnings = async () => {
+        const defaultIntervalPickerState = this.defaultIntervalPickerState;
+        const miningFarmEarningsEntity = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.nftEventFilterModel.miningFarmId, defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+
+        runInAction(() => {
+            this.miningFarmEarningsEntity = miningFarmEarningsEntity;
+        });
+    }
+
+    fetchNftEvents = async () => {
+        if (this.eventType !== S.NOT_EXISTS) {
+            this.nftEventFilterModel.eventTypes = [this.eventType];
+        }
+
+        this.nftEventFilterModel.from = this.analyticsTableState.tableFilterState.from;
+        this.nftEventFilterModel.count = this.analyticsTableState.tableFilterState.itemsPerPage;
+        const { nftEventEntities, nftEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
+
+        const nftEntitiesMap = this.nftEntitiesMap;
+        nftEntities.forEach((nftEntity) => {
+            nftEntitiesMap.set(nftEntity.id, nftEntity);
+        });
+
+        runInAction(() => {
+            this.nftEntitiesMap = nftEntitiesMap;
+            this.nftEventEntities = nftEventEntities;
+            this.analyticsTableState.tableFilterState.total = total;
+        });
+    }
+
+    getNftById = (nftId: string): NftEntity => {
+        return this.nftEntitiesMap.get(nftId) ?? null;
+    }
+
+    onChangeTableFilter = action((value: number) => {
+        this.eventType = value;
+    })
+}
