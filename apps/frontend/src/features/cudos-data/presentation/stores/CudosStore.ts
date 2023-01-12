@@ -65,6 +65,10 @@ export default class CudosStore {
         return this.convertAcudosInUsd(acudosPrice).toFixed(4);
     }
 
+    convertUsdInAcudos(dollars: number): BigNumber {
+        return ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(dollars).dividedBy(this.cudosDataEntity?.priceInUsd ?? 0);
+    }
+
     static convertAcudosInCudos(acudosPrice: BigNumber): BigNumber {
         return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }

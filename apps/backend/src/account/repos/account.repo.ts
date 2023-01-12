@@ -46,7 +46,6 @@ export default class AccountRepo extends Model {
 
     @AllowNull(true)
     @Unique
-    @Validate({ isEmail: true })
     @Column({ type: DataType.STRING })
         email: string;
 

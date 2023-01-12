@@ -9,10 +9,11 @@ import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import TempIdGenerator from '../../../../core/utilities/TempIdGenerator';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
+import { CURRENCY_DECIMALS } from 'cudosjs';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 enum CreditCollectionDetailsSteps {
     COLLECTION_DETAILS = 1,
@@ -30,6 +31,7 @@ export default class CreditCollectionStore {
 
     creditStep: CreditCollectionDetailsSteps;
     creditMode: CreditCollectionMode;
+    cudosStore: CudosStore;
 
     accountSessionStore: AccountSessionStore;
     miningFarmRepo: MiningFarmRepo;
@@ -48,13 +50,14 @@ export default class CreditCollectionStore {
     defaultHashAndPriceValues: number;
     miningFarmRemainingHashPower: number;
     selectedNftHashingPowerInThInputValue: string;
-    selectedNftPriceInCudosInputValue: string;
+    selectedNftPriceInDollarsInputValue: string;
     // selectedNftMaintenanceFeeInBtcInputValue: string;
 
-    constructor(accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
+    constructor(cudosStore: CudosStore, accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
         this.creditMode = CreditCollectionMode.CREATE;
 
+        this.cudosStore = cudosStore;
         this.accountSessionStore = accountSessionStore;
         this.collectionRepo = collectionRepo;
         this.nftRepo = nftRepo;
@@ -72,7 +75,7 @@ export default class CreditCollectionStore {
         this.defaultHashAndPriceValues = S.INT_FALSE;
         this.miningFarmRemainingHashPower = 0;
         this.selectedNftHashingPowerInThInputValue = '';
-        this.selectedNftPriceInCudosInputValue = '';
+        this.selectedNftPriceInDollarsInputValue = '';
         // this.selectedNftMaintenanceFeeInBtcInputValue = '';
 
         makeAutoObservable(this);
@@ -102,6 +105,7 @@ export default class CreditCollectionStore {
     }
 
     async initAsAddNfts(collectionId: string) {
+        this.cudosStore.init();
         await this.fetchCollectionData(collectionId);
         await this.fetchMiningFarmDetails();
         this.initNewNftEntity();
@@ -246,9 +250,11 @@ export default class CreditCollectionStore {
         this.selectedNftEntity.hashPowerInTh = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
     })
 
-    onChangeSelectedNftPriceInCudos = action((inputValue: string) => {
-        this.selectedNftPriceInCudosInputValue = inputValue;
-        this.selectedNftEntity.priceInAcudos = inputValue !== '' ? ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(new BigNumber(inputValue)) : null;
+    onChangeSelectedNftPriceInDollars = action((inputValue: string) => {
+        this.selectedNftPriceInDollarsInputValue = inputValue;
+        this.selectedNftEntity.priceInAcudos = inputValue !== ''
+            ? this.cudosStore.convertUsdInAcudos(Number(inputValue))
+            : null;
     })
 
     // onChangeSelectedNftRoyalties = (inputValue: string) => {
@@ -277,8 +283,12 @@ export default class CreditCollectionStore {
     //     return this.selectedNftEntity.farmRoyalties.toString();
     // }
 
+    getSelectedNftPriceDisplayInCudos(): string {
+        return this.selectedNftEntity?.priceInAcudos?.shiftedBy(-CURRENCY_DECIMALS).toFixed(2) ?? '0';
+    }
+
     getCurrentNftIncomeForFarmFormatted(): string {
-        const nftPriceInCudos = new BigNumber(this.selectedNftPriceInCudosInputValue === '' ? 0 : this.selectedNftPriceInCudosInputValue);
+        const nftPriceInCudos = this.selectedNftEntity?.priceInAcudos?.shiftedBy(-CURRENCY_DECIMALS) ?? new BigNumber(0);
         return nftPriceInCudos.multipliedBy(1 - (this.miningFarmEntity.cudosMintNftRoyaltiesPercent / 100)).toFormat(2);
     }
 
@@ -296,8 +306,9 @@ export default class CreditCollectionStore {
         this.selectedNftEntity = nftEntity.cloneDeep();
 
         this.selectedNftHashingPowerInThInputValue = nftEntity.hashPowerInTh !== S.NOT_EXISTS ? nftEntity.hashPowerInTh.toString() : '';
-        this.selectedNftPriceInCudosInputValue = nftEntity.priceInAcudos !== null ? nftEntity.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toString() : ''
-        // this.selectedNftMaintenanceFeeInBtcInputValue = nftEntity.maintenanceFeeInBtc !== null ? nftEntity.maintenanceFeeInBtc.toString() : '';
+        this.selectedNftPriceInDollarsInputValue = nftEntity.priceInAcudos !== null
+            ? this.cudosStore.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2)
+            : ''
     }
 
     onClickSendForApproval = async () => {

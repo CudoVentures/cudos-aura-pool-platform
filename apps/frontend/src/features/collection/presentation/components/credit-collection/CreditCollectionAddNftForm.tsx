@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../../core/utilities/Main';
@@ -22,15 +22,21 @@ import FieldColumnWrapper from '../../../../../core/presentation/components/Fiel
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import '../../styles/credit-collection-add-nft-form.css';
+import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     alertStore?: AlertStore;
     creditCollectionStore?: CreditCollectionStore;
     bitcoinStore?: BitcoinStore;
+    cudosStore?: CudosStore;
 }
 
-function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoinStore }: Props) {
+function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoinStore, cudosStore }: Props) {
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
+
+    useEffect(() => {
+        cudosStore.init();
+    }, []);
 
     // const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
     // const [editMaintenanceFeeDisabled, setEditMaintenanceFeeDisabled] = useState(true);
@@ -129,16 +135,16 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         placeholder={'Enter price...'}
                         disabled = { selectedNftEntity === null }
                         inputType = { InputType.REAL }
-                        value={creditCollectionStore.selectedNftPriceInCudosInputValue}
+                        value={creditCollectionStore.selectedNftPriceInDollarsInputValue}
                         inputValidation={nftPriceValidation}
-                        onChange={creditCollectionStore.onChangeSelectedNftPriceInCudos}
+                        onChange={creditCollectionStore.onChangeSelectedNftPriceInDollars}
                         InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end" >CUDOS</InputAdornment>
+                            startAdornment: (
+                                <InputAdornment position="start" >$</InputAdornment>
                             ),
                         }} />
                 }
-                // helperText = { `${bitcoinStore.getBitcoinPriceInUsd()} based on Today’s BTC Price` }
+                helperText = { `${creditCollectionStore.getSelectedNftPriceDisplayInCudos()} CUDOS based on Today’s CUDOS Price` }
             />
             <InfoBlueBox text={<>You receive <b>{creditCollectionStore.getCurrentNftIncomeForFarmFormatted()} CUDOS</b> upon the sale and <b>{creditCollectionStore.collectionEntity.formatRoyaltiesInPercentage()}</b> of the price on <b>resale</b></>} />
             {/* <FieldColumnWrapper

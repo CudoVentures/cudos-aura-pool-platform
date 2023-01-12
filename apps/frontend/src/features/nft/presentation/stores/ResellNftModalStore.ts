@@ -20,8 +20,8 @@ export default class ResellNftModalStore extends ModalStore {
     walletStore: WalletStore;
 
     @observable nftEntity: NftEntity;
-    @observable cudosPrice: number;
-    price: BigNumber;
+    @observable cudosPriceUsd: number;
+    nftPriceInUsd: BigNumber;
     @observable priceDisplay: string;
     @observable collectionEntity: CollectionEntity;
     @observable modalStage: ModalStage;
@@ -43,8 +43,8 @@ export default class ResellNftModalStore extends ModalStore {
     resetValues() {
         this.nftEntity = null;
         this.collectionEntity = null;
-        this.cudosPrice = S.NOT_EXISTS;
-        this.price = new BigNumber(0);
+        this.cudosPriceUsd = S.NOT_EXISTS;
+        this.nftPriceInUsd = new BigNumber(0);
         this.priceDisplay = S.Strings.EMPTY;
         this.modalStage = ModalStage.PREVIEW;
         this.autoPay = S.INT_FALSE;
@@ -55,8 +55,8 @@ export default class ResellNftModalStore extends ModalStore {
     nullateValues() {
         this.nftEntity = null;
         this.collectionEntity = null;
-        this.cudosPrice = null;
-        this.price = null;
+        this.cudosPriceUsd = null;
+        this.nftPriceInUsd = null;
         this.priceDisplay = null;
         this.modalStage = null;
         this.autoPay = null;
@@ -65,10 +65,10 @@ export default class ResellNftModalStore extends ModalStore {
     }
 
     @action
-    showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
+    showSignal(nftEntity: NftEntity, cudosPriceUsd: number, collectionEntity: CollectionEntity) {
         this.resetValues();
         this.nftEntity = nftEntity;
-        this.cudosPrice = cudosPrice;
+        this.cudosPriceUsd = cudosPriceUsd;
         this.collectionEntity = collectionEntity;
         this.show();
     }
@@ -78,9 +78,9 @@ export default class ResellNftModalStore extends ModalStore {
         super.hide();
     })
 
-    setPrice = action((price: string) => {
-        this.priceDisplay = price;
-        this.price = new BigNumber(price);
+    setPrice = action((nftPriceInUsd: string) => {
+        this.priceDisplay = nftPriceInUsd;
+        this.nftPriceInUsd = new BigNumber(nftPriceInUsd);
     })
 
     toggleAutoPay = action(() => {
@@ -93,7 +93,7 @@ export default class ResellNftModalStore extends ModalStore {
 
     onClickSubmitForSell = action(async () => {
         this.modalStage = ModalStage.PROCESSING;
-        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.price, this.walletStore.ledger);
+        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.getResellPriceInCudos(), this.walletStore.ledger);
 
         runInAction(() => {
             this.modalStage = ModalStage.SUCCESS;
@@ -118,6 +118,14 @@ export default class ResellNftModalStore extends ModalStore {
 
     getTxLink(): string {
         return `${CHAIN_DETAILS.EXPLORER_URL}/${this.txHash}`
+    }
+
+    getResellpriceInCudosDisplay(): string {
+        return this.getResellPriceInCudos().toFixed(2);
+    }
+
+    getResellPriceInCudos(): BigNumber {
+        return this.nftPriceInUsd.dividedBy(this.cudosPriceUsd);
     }
 
 }

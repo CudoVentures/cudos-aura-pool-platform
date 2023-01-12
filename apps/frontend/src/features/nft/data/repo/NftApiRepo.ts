@@ -4,12 +4,11 @@ import NftEntity, { NftStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
-import { SigningStargateClient, GasPrice, Ledger, Ui64 } from 'cudosjs';
+import { SigningStargateClient, GasPrice, Ledger, Ui64, CURRENCY_DECIMALS } from 'cudosjs';
 import Long from 'long';
 import S from '../../../../core/utilities/Main';
 import BigNumber from 'bignumber.js';
 import { coin } from 'cudosjs/build/proto-signing';
-import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -115,13 +114,12 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string > {
+    async listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, priceInCudos: BigNumber, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
-
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
-            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(price.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(), 'acudos'), gasPrice);
+            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(priceInCudos.shiftedBy(CURRENCY_DECIMALS).toFixed(0), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;
 
             return txHash;

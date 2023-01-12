@@ -20,6 +20,7 @@ import '../styles/resell-nft-modal.css';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
+import InfoBlueBox from '../../../../core/presentation/components/InfoBlueBox';
 
 type Props = {
     walletStore?: WalletStore;
@@ -68,11 +69,13 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                     placeholder={'0'}
                     inputValidation={[nftPriceValidation, nftPriceValidationNotZero]}
                     InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end" > CUDOS </InputAdornment>
+                        startAdornment: (
+                            <InputAdornment position="start" > $ </InputAdornment>
                         ),
                     }}
                 />
+                <InfoBlueBox text={ `${resellNftModalStore.getResellpriceInCudosDisplay()} CUDOS based on Today’s CUDOS Price` } />
+
                 <div className={'CheckBoxText B2 SemiBold'}>Do you want to have immediate auto pay on sale or disperse as per the original payment schedule?</div>
                 <div className={'FlexRow CheckBoxRow'}>
                     <Checkbox
