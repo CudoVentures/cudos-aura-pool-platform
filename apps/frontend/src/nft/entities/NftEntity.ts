@@ -47,6 +47,10 @@ export default class NftEntity {
         return this.id === S.Strings.NOT_EXISTS;
     }
 
+    isMinted(): boolean {
+        return this.status === NftStatus.MINTED
+    }
+
     isStatusListed(): boolean {
         return this.priceInAcudos.gt(new BigNumber(0));
     }
@@ -99,6 +103,19 @@ export default class NftEntity {
         }
 
         return `${this.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0)} CUDOS`;
+    }
+
+    formatPricePlusMintFeeInCudos(): string {
+        if (this.priceInAcudos === null) {
+            return '0 CUDOS';
+        }
+
+        let previewPrice = this.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
+        if (this.isMinted() === false) {
+            previewPrice = previewPrice.plus(1);
+        }
+
+        return `${previewPrice.toFixed(0)} CUDOS`;
     }
 
     cloneDeep(): NftEntity {

@@ -18,6 +18,8 @@ import '../styles/buy-nft-modal.css';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import InfoBlueBox from '../../../core/presentation/components/InfoBlueBox';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 type Props = {
     cudosStore?: CudosStore,
@@ -69,8 +71,8 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
                                 <div className={'CollectionName B2 SemiBold Gray'}>{buyNftModalStore.collectionEntity.name}</div>
                                 <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                                 <div className={'Price FlexRow'}>
-                                    <div className={'H3 Bold'}>{nftEntity.formatPriceInCudos()}</div>
-                                    <div className={'B2 SemiBold Gray'}>{cudosStore.formatConvertedAcudosInUsd(nftEntity.priceInAcudos)}</div>
+                                    <div className={'H3 Bold'}>{nftEntity.formatPricePlusMintFeeInCudos() }</div>
+                                    <div className={'B2 SemiBold Gray'}>{cudosStore.formatConvertedAcudosInUsd(nftEntity.priceInAcudos.plus(ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(1)))}</div>
                                 </div>
                             </div>
                         </div>

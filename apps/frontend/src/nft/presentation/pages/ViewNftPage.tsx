@@ -148,6 +148,18 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
             </div>,
         ));
 
+        if (nftEntity.isMinted() === false) {
+            priceDatapreviews.push(createDataPreview(
+                'Mint Fee',
+                <div className={'DataValue NftPrice FlexRow'}>
+                    <Svg svg={SvgCudos}/>
+                    <div className={'H3 Bold'}>1 CUDOS</div>
+                    <div className={'SubPrice B2 SemiBold'}>${
+                        viewNftPageStore.cudosStore.convertCudosInUsd(new BigNumber(1)).toFixed(4)
+                    }</div>
+                </div>,
+            ));
+        }
         return priceDatapreviews;
     }
 
@@ -222,7 +234,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                     <>
                                         { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                <Button onClick={onClickBuyNft}>Buy now for {nftEntity.formatPriceInCudos()} </Button>
+                                                <Button onClick={onClickBuyNft}>Buy now for {nftEntity.formatPricePlusMintFeeInCudos()} </Button>
                                             </Actions>
                                         )}
                                         { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (
