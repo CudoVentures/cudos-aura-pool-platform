@@ -104,29 +104,29 @@ export default class WalletStore {
     }
 
     public async connectWallet(sessionStorageWalletOptions: SessionStorageWalletOptions): Promise < void > {
-        // switch (sessionStorageWalletOptions) {
-        //     case SessionStorageWalletOptions.KEPLR:
-        //         await this.connectKeplr();
-        //         break;
-        //     case SessionStorageWalletOptions.COSMOSTATION:
-        //         await this.connectCosmostation();
-        //         break;
-        //     default:
-        //         this.alertStore.show('Unknow alert Type');
-        //         throw Error('Unknown wallet type');
-        // }
+        switch (sessionStorageWalletOptions) {
+            case SessionStorageWalletOptions.KEPLR:
+                await this.connectKeplr();
+                break;
+            case SessionStorageWalletOptions.COSMOSTATION:
+                await this.connectCosmostation();
+                break;
+            default:
+                this.alertStore.show('Unknow alert Type');
+                throw Error('Unknown wallet type');
+        }
 
-        const magic = new Magic('pk_live_4C87C970F1258D0B', {
-            extensions: {
-                cosmos: new CosmosExtension({
-                    rpcUrl: CHAIN_DETAILS.RPC_ADDRESS,
-                }),
-            },
-        });
-        await magic.auth.loginWithMagicLink({ email: 'stavykov@gmail.com' });
-        await magic.cosmos.changeAddress('cudos')
-        const metadata = await magic.user.getMetadata();
-        console.log(metadata);
+        // const magic = new Magic('pk_live_4C87C970F1258D0B', {
+        //     extensions: {
+        //         cosmos: new CosmosExtension({
+        //             rpcUrl: CHAIN_DETAILS.RPC_ADDRESS,
+        //         }),
+        //     },
+        // });
+        // await magic.auth.loginWithMagicLink({ email: 'stavykov@gmail.com' });
+        // await magic.cosmos.changeAddress('cudos')
+        // const metadata = await magic.user.getMetadata();
+        // console.log(metadata);
     }
 
     public async tryConnect(): Promise < void > {
