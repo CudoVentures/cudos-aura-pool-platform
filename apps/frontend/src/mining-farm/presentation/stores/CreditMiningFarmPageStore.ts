@@ -48,7 +48,6 @@ export default class CreditMiningFarmPageStore {
         this.queuedCollectionsTableState = new TableState(S.NOT_EXISTS, [], this.fetchQueuedCollections, 5);
         this.approvedCollectionsTableState = new TableState(S.NOT_EXISTS, [], this.fetchApprovedCollections, 5);
         this.collectionFilterModel = new CollectionFilterModel();
-        this.collectionFilterModel.markApprovedCollectins();
 
         this.inited = false;
         this.miningFarmEntity = null;
@@ -79,9 +78,6 @@ export default class CreditMiningFarmPageStore {
             runInAction(async () => {
                 this.miningFarmEntity = miningFarmEntity;
                 this.collectionFilterModel.farmId = this.miningFarmEntity.id;
-                if (this.accountSessionStore.accountEntity?.accountId === this.miningFarmEntity.accountId) {
-                    this.collectionFilterModel.markAnyCollectins();
-                }
 
                 await this.fetchMiningFarmDetails();
                 await this.fetchApprovedCollections();
@@ -163,6 +159,11 @@ export default class CreditMiningFarmPageStore {
 
         this.collectionFilterModel.from = this.gridViewState.getFrom();
         this.collectionFilterModel.count = this.gridViewState.getItemsPerPage();
+        if (this.accountSessionStore.accountEntity?.accountId === this.miningFarmEntity.accountId) {
+            this.collectionFilterModel.markAnyCollectins();
+        } else {
+            this.collectionFilterModel.markApprovedCollectins();
+        }
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(this.collectionFilterModel);
         await this.fetchCollectionDetails(collectionEntities);
 

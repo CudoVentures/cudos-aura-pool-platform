@@ -122,8 +122,8 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
                             <div className={'H2 Bold'}>{nftEntity.name}</div>
                         </div>
                         <div className={'FlexRow TransactionView H3'}>
-                            Transaction details
                             <a className={'Clickable'} href={buyNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                                Transaction details
                                 <Svg svg={LaunchIcon} />
                             </a>
                         </div>
