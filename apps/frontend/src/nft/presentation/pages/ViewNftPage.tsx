@@ -54,6 +54,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
 
     const nftEntity = viewNftPageStore.nftEntity;
     const collectionEntity = viewNftPageStore.collectionEntity;
+    const miningFarmEntity = viewNftPageStore.miningFarmEntity;
     const creatorAdminEntity = viewNftPageStore.adminEntity;
 
     useEffect(() => {
@@ -66,6 +67,14 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
 
         run();
     }, []);
+
+    function onClickFarmLink() {
+        navigate(ProjectUtils.makeUrlMiningFarm(viewNftPageStore.collectionEntity.farmId));
+    }
+
+    function onClickCollectionLink() {
+        navigate(ProjectUtils.makeUrlCollection(viewNftPageStore.collectionEntity.id));
+    }
 
     function onClickNavigateMarketplace() {
         navigate(AppRoutes.MARKETPLACE);
@@ -103,8 +112,8 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         const generalDatapreviews = [];
 
         generalDatapreviews.push(createDataPreview('Listing Status', nftEntity.isStatusListed() === true ? 'Active' : 'Not Listed'));
-        generalDatapreviews.push(createDataPreview('Mining Farm', nftEntity.name));
-        generalDatapreviews.push(createDataPreview('Collection', collectionEntity.name));
+        generalDatapreviews.push(createDataPreview('Mining Farm', <span className = { 'Clickable' } onClick = { onClickFarmLink }>{miningFarmEntity.name}</span>));
+        generalDatapreviews.push(createDataPreview('Collection', <span className = { 'Clickable' } onClick = { onClickCollectionLink }>{collectionEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
 
         return generalDatapreviews;
@@ -211,14 +220,14 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                     <div className={'OwnerPicture'}></div>
                                     <div className={'OwnerInfo FlexColumn'}>
                                         <div className={'AddressName B1 SemiBold'}>Creator</div>
-                                        <div className={'Address ColorPrimary060'}>{ creatorAdminEntity ? ProjectUtils.shortenAddressString(creatorAdminEntity.cudosWalletAddress, 25) : ''}</div>
+                                        <a href={ProjectUtils.makeUrlExplorer(creatorAdminEntity ? creatorAdminEntity.cudosWalletAddress : '')} target = "_blank" rel = 'noreferrer' className={'Address ColorPrimary060'}>{ creatorAdminEntity ? ProjectUtils.shortenAddressString(creatorAdminEntity.cudosWalletAddress, 25) : ''}</a>
                                     </div>
                                 </div>
                                 <div className={'FlexRow OwnerBox'}>
                                     <div className={'OwnerPicture'}></div>
                                     <div className={'OwnerInfo FlexColumn'}>
                                         <div className={'AddressName B1 SemiBold'}>Current Owner</div>
-                                        <div className={'Address ColorPrimary060'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwner, 25)}</div>
+                                        <a href={ProjectUtils.makeUrlExplorer(nftEntity.currentOwner)} target = "_blank" rel = 'noreferrer' className={'Address ColorPrimary060'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwner, 25)}</a>
                                     </div>
                                 </div>
                             </div>
