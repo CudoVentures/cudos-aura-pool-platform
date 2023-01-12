@@ -63,6 +63,10 @@ export default class MiningFarmEntity {
         return this.id === NOT_EXISTS_INT;
     }
 
+    isApproved(): boolean {
+        return this.status === FarmStatus.APPROVED;
+    }
+
     static toRepo(entity: MiningFarmEntity): MiningFarmRepo {
         if (entity === null) {
             return null;

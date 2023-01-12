@@ -118,7 +118,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
             <FieldColumnWrapper
                 field = {
                     <Input
-                        label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'Hashing Power per NFT'} />}
+                        label={'Hashing Power per NFT'}
                         placeholder={'Enter hashing power...'}
                         disabled = { selectedNftEntity === null }
                         value={creditCollectionStore.selectedNftHashingPowerInThInputValue}

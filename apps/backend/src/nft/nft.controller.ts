@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -13,6 +13,7 @@ import { CollectionService } from '../collection/collection.service';
 import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../common/utils';
 import { ChainMarketplaceNftEntity } from '../graphql/entities/nft-marketplace.entity';
+import { FarmService } from '../farm/farm.service';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -22,6 +23,8 @@ export class NFTController {
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private graphqlService: GraphqlService,
+        @Inject(forwardRef(() => FarmService))
+        private miningFarmService: FarmService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -41,12 +44,18 @@ export class NFTController {
     @Get(':id')
     @HttpCode(200)
     async findOne(@Param('id') id: string): Promise<any> {
-        const nftFilterEntity = new NftFilterEntity();
-        nftFilterEntity.nftIds = [id];
+        const nftEntity = await this.nftService.findOne(id);
 
-        const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
-        const nftEntity = nftEntities[0];
         const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
+        if (collectionEntity === null || collectionEntity.isApproved() === false) {
+            throw new NotFoundException();
+        }
+
+        const miningFarmEntity = await this.miningFarmService.findMiningFarmById(collectionEntity.farmId);
+        if (miningFarmEntity === null || miningFarmEntity.isApproved() === false) {
+            throw new NotFoundException();
+        }
+
         return { ...NftEntity.toJson(nftEntity),
             denomId: collectionEntity.denomId,
             data: JSON.stringify({

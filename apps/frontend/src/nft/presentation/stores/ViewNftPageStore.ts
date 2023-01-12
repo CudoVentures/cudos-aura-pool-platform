@@ -20,6 +20,7 @@ import BigNumber from 'bignumber.js';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import AdminEntity from '../../../accounts/entities/AdminEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 
 enum StatsTabs {
     EARNINGS = 0,
@@ -32,6 +33,7 @@ export default class ViewNftPageStore {
     bitcoinStore: BitcoinStore;
     cudosStore: CudosStore;
     generalStore: GeneralStore;
+    accountSessionStore: AccountSessionStore;
 
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
@@ -57,10 +59,11 @@ export default class ViewNftPageStore {
     nftEventEntities: NftEventEntity[];
     historyTableState: TableState;
 
-    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, generalStore: GeneralStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
+    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, generalStore: GeneralStore, accountSessionStore: AccountSessionStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
         this.bitcoinStore = bitcoinStore;
         this.cudosStore = cudosStore;
         this.generalStore = generalStore;
+        this.accountSessionStore = accountSessionStore;
 
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
@@ -114,7 +117,18 @@ export default class ViewNftPageStore {
             await this.fetchEarnings();
             await this.fetchHistory();
         });
+    }
 
+    hasAccess(): boolean {
+        if (this.accountSessionStore.isSuperAdmin() === true) {
+            return true;
+        }
+
+        if (this.accountSessionStore.isAdmin() === true) {
+            return this.accountSessionStore.adminEntity.accountId === this.adminEntity.accountId;
+        }
+
+        return this.collectionEntity?.isStatusApproved() === true && this.miningFarmEntity?.isApproved() === true;
     }
 
     fetchNftsInTheCollection = async () => {

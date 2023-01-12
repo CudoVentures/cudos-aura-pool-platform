@@ -38,7 +38,7 @@ type Props = {
     accountSessionStore?: AccountSessionStore
 }
 
-function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, walletStore }: Props) {
+function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore }: Props) {
     const collectionEntity = creditCollectionPageStore.collectionEntity;
     const collectionDetailsEntity = creditCollectionPageStore.collectionDetailsEntity;
     const miningFarmEntity = creditCollectionPageStore.miningFarmEntity;
@@ -127,12 +127,10 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME),
                                 createDataPreview(
                                     'Address',
-                                    <div className={'FlexRow'}>
+                                    <a href = { ProjectUtils.makeUrlExplorer(collectionDetailsEntity.cudosAddress) } target = '_blank' rel = 'noreferrer' className={'DataPreviewAddressCnt FlexRow'}>
                                         <div className={'Dots ColorPrimary060'}>{collectionDetailsEntity.cudosAddress}</div>
-                                        <Svg svg={LaunchIcon}
-                                            className={'SVG Icon Clickable '}
-                                            onClick={() => ProjectUtils.copyText(collectionDetailsEntity.cudosAddress)} />
-                                    </div>,
+                                        <Svg svg={LaunchIcon}/>
+                                    </a>,
                                 ),
                             ]} >
                                 {collectionEntity.isStatusQueued() && accountSessionStore.isSuperAdmin() && (

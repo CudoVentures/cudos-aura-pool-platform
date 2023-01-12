@@ -60,6 +60,10 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
     useEffect(() => {
         async function run() {
             await viewNftPageStore.init(nftId);
+            if (viewNftPageStore.hasAccess() === false) {
+                navigate(AppRoutes.HOME);
+                return;
+            }
             if (nftId !== undefined) {
                 visitorStore.signalVisitNft(viewNftPageStore.nftEntity); // no need to wait for it
             }

@@ -44,6 +44,10 @@ export class CollectionEntity {
         return this.status === CollectionStatus.DELETED;
     }
 
+    isApproved(): boolean {
+        return this.status === CollectionStatus.APPROVED;
+    }
+
     static toRepo(entity: CollectionEntity): CollectionRepo {
         if (entity === null) {
             return null;
