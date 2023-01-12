@@ -97,7 +97,7 @@ export default class BuyNftModalStore extends ModalStore {
     })
 
     getTxLink(): string {
-        return `${CHAIN_DETAILS.EXPLORER_URL}/${this.txHash}`
+        return `${CHAIN_DETAILS.EXPLORER_URL}/transactions/${this.txHash}`
     }
 
     isStagePreview(): boolean {

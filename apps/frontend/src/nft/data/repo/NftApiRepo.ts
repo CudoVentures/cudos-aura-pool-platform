@@ -92,7 +92,7 @@ export default class NftApiRepo implements NftRepo {
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
             let txHash = S.Strings.EMPTY;
 
-            if (nftEntity.status === NftStatus.QUEUED) {
+            if (nftEntity.isMinted() === false) {
                 // TODO:get real tx estimation
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
