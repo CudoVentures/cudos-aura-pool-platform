@@ -35,7 +35,11 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
 
     useEffect(() => {
-        cudosStore.init();
+        async function run() {
+            await cudosStore.init();
+        }
+
+        run();
     }, []);
 
     // const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);

@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
 import CreditMiningFarmDetailsPageState from '../stores/CreditMiningFarmDetailsPageStore';
-import AppStore from '../../../core/presentation/stores/AppStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import PageLayout from '../../../core/presentation/components/PageLayout';
@@ -21,16 +20,17 @@ import '../styles/page-credit-mining-farm-details.css';
 
 type Props = {
     creditMiningFarmDetailsPageStore?: CreditMiningFarmDetailsPageState;
-    appStore?: AppStore;
 }
 
-function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore, appStore }: Props) {
+function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore }: Props) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        appStore.useLoading(() => {
+        async function run() {
             creditMiningFarmDetailsPageStore.init();
-        });
+        }
+
+        run();
     }, []);
 
     const navSteps: NavStep[] = [

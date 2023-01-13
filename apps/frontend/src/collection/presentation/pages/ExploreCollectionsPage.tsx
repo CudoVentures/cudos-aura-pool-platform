@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
 import CollectionEntity from '../../entities/CollectionEntity';
-import AppStore from '../../../core/presentation/stores/AppStore';
 import ExploreCollectionsPageStore from '../stores/ExploreCollectionsPageStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
@@ -24,17 +23,18 @@ import NavRowTabs, { createNavRowTab } from '../../../core/presentation/componen
 import '../styles/page-explore-collections.css';
 
 type Props = {
-    appStore?: AppStore;
     exploreCollectionsPageStore?: ExploreCollectionsPageStore;
 }
 
-function ExploreCollectionsPage({ appStore, exploreCollectionsPageStore }: Props) {
+function ExploreCollectionsPage({ exploreCollectionsPageStore }: Props) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        appStore.useLoading(async () => {
+        async function run() {
             await exploreCollectionsPageStore.init();
-        });
+        }
+
+        run();
     }, []);
 
     function onClickExploreNfts() {

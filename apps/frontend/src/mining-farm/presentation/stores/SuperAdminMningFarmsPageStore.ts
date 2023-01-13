@@ -14,7 +14,7 @@ export default class SuperAdminMningFarmsPageStore {
 
     tableState: TableState
     miningFarmEntities: MiningFarmEntity[];
-    topPerformingFarmsDetailsMap: Map<string, MiningFarmDetailsEntity>;
+    miningFarmDetailEntitiesMap: Map<string, MiningFarmDetailsEntity>;
 
     constructor(miningFarmRepo: MiningFarmRepo) {
         this.miningFarmRepo = miningFarmRepo;
@@ -23,7 +23,7 @@ export default class SuperAdminMningFarmsPageStore {
         this.miningFarmFilterModel = new MiningFarmFilterModel();
 
         this.miningFarmEntities = null;
-        this.topPerformingFarmsDetailsMap = null;
+        this.miningFarmDetailEntitiesMap = null;
 
         makeAutoObservable(this);
     }
@@ -41,16 +41,16 @@ export default class SuperAdminMningFarmsPageStore {
 
         const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilterModel)
         const miningFarmDetailsEntities = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id));
-        const topPerformingFarmsDetailsMap = new Map();
+        const miningFarmDetailEntitiesMap = new Map();
         miningFarmDetailsEntities.forEach((entity) => {
-            topPerformingFarmsDetailsMap.set(entity.miningFarmId, entity);
+            miningFarmDetailEntitiesMap.set(entity.miningFarmId, entity);
         })
 
         runInAction(() => {
             this.miningFarmFilterModel.from = this.tableState.tableFilterState.from;
             this.miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
             this.miningFarmEntities = miningFarmEntities;
-            this.topPerformingFarmsDetailsMap = topPerformingFarmsDetailsMap;
+            this.miningFarmDetailEntitiesMap = miningFarmDetailEntitiesMap;
             this.tableState.tableFilterState.total = total;
         });
     }
@@ -61,7 +61,7 @@ export default class SuperAdminMningFarmsPageStore {
     })
 
     getMiningFarmDetails(id: string): MiningFarmDetailsEntity {
-        return this.topPerformingFarmsDetailsMap.get(id) ?? null;
+        return this.miningFarmDetailEntitiesMap.get(id) ?? null;
     }
 
 }

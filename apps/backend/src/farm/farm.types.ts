@@ -113,6 +113,9 @@ export class MiningFarmDetailsJsonValidator {
     @IsNumber()
         remainingHashPowerInTH: number;
 
+    @IsString()
+        floorPriceInAcudos: string;
+
 }
 
 export class MiningFarmPerformanceJsonValidator {

@@ -24,12 +24,6 @@ export default class AppStore {
         --this.loadingPage;
     }
 
-    async useLoading(execute: () => void) {
-        this.incrementLoading();
-        await execute();
-        this.decrementLoading();
-    }
-
     hasLoading() {
         return this.loadingPage !== 0;
     }

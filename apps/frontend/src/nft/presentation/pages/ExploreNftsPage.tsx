@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 import NftEntity from '../../entities/NftEntity';
 import ExploreNftsPageStore from '../stores/ExploreNftsPageStore';
-import AppStore from '../../../core/presentation/stores/AppStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import { InputAdornment } from '@mui/material';
@@ -24,17 +23,18 @@ import NavRowTabs, { createNavRowTab } from '../../../core/presentation/componen
 import '../styles/page-explore-nfts.css';
 
 type Props = {
-    appStore?: AppStore;
     exploreNftsPageStore?: ExploreNftsPageStore;
 }
 
-function ExploreNftsPage({ appStore, exploreNftsPageStore }: Props) {
+function ExploreNftsPage({ exploreNftsPageStore }: Props) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        appStore.useLoading(async () => {
+        async function run() {
             exploreNftsPageStore.init();
-        });
+        }
+
+        run();
     }, [])
 
     const nftFilterModel = exploreNftsPageStore.nftFilterModel;

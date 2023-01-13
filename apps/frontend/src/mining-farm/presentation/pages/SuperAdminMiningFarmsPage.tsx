@@ -19,7 +19,7 @@ import StyledLayout from '../../../core/presentation/components/StyledLayout';
 import Input from '../../../core/presentation/components/Input';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 import Svg from '../../../core/presentation/components/Svg';
-import Table, { createTableCell, createTableRow } from '../../../core/presentation/components/Table';
+import Table, { createTableCell, createTableCellString, createTableRow } from '../../../core/presentation/components/Table';
 import { ALIGN_LEFT } from '../../../core/presentation/components/TableDesktop';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -44,34 +44,45 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
     }
 
     function renderAllFarmsRows() {
-        return miningFarmEntities.map((miningFarmEntity) => createTableRow([
-            createTableCell((
-                <div className = { 'FlexRow Bold' } >
-                    <div className = { 'MiningFarmImg ImgCoverNode' } style = { ProjectUtils.makeBgImgStyle(miningFarmEntity.coverImgUrl) } />
-                    { miningFarmEntity.name }
-                </div>
-            )),
-            createTableCell((
-                <div className = { 'Bold' } >
-                    <div className={'B2 Bold MiningFarmsCellTitle'}>3,4K CUDOS</div>
-                    <div className={'B3 FlexRow FarmVolumePriceRow'}>
-                        <div className={'SemiBold ColorNeutral060'}>$1.4M</div>
-                        <div className={'ColorSuccess060'}>+39.1%</div>
+        return miningFarmEntities.map((miningFarmEntity) => {
+            const miningFarmDetailsEntity = superAdminMiningFarmsPageStore.getMiningFarmDetails(miningFarmEntity.id);
+            return createTableRow([
+                createTableCell((
+                    <div className = { 'FlexRow Bold' } >
+                        <div className = { 'MiningFarmImg ImgCoverNode' } style = { ProjectUtils.makeBgImgStyle(miningFarmEntity.coverImgUrl) } />
+                        { miningFarmEntity.name }
                     </div>
-                </div>
-            )),
-            createTableCell((
-                <div className = { 'Bold' } >
-                    <div className={'B2 Bold MiningFarmsCellTitle'}>1K CUDOS</div>
-                    <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatConvertedAcudosInUsd(new BigNumber(10000000000000000000000))}</div>
-                </div>
-            )),
-            createTableCell((
-                <div className = { 'Bold' } >
-                    { miningFarmEntity.formatHashPowerInTh() }
-                </div>
-            )),
-        ]))
+                )),
+                // createTableCell((
+                //     <div className = { 'Bold' } >
+                //         <div className={'B2 Bold MiningFarmsCellTitle'}>3,4K CUDOS</div>
+                //         <div className={'B3 FlexRow FarmVolumePriceRow'}>
+                //             <div className={'SemiBold ColorNeutral060'}>$1.4M</div>
+                //             <div className={'ColorSuccess060'}>+39.1%</div>
+                //         </div>
+                //     </div>
+                // )),
+                createTableCellString(miningFarmDetailsEntity.totalNftsSold),
+                createTableCell((
+                    <div className = { 'Bold' } >
+                        { miningFarmDetailsEntity.hasFloorPrice() === true ? (
+                            <>
+                                <div className={'B2 Bold MiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudos(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
+                                <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatConvertedAcudosInUsd(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
+                            </>
+                        ) : (
+                            <div className={'B2 Bold MiningFarmsCellTitle'}>No listed NFTs for sale</div>
+                        ) }
+
+                    </div>
+                )),
+                createTableCell((
+                    <div className = { 'Bold' } >
+                        { miningFarmEntity.formatHashPowerInTh() }
+                    </div>
+                )),
+            ])
+        })
     }
 
     return (
@@ -107,7 +118,8 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
                     ) : (
                         <Table
                             className={'AllMiningFarmsTable'}
-                            legend={['Farm', '24H Volume', 'Floor Price', 'Total Hashrate']}
+                            // legend={['Farm', '24H Volume', 'Floor Price', 'Total Hashrate']}
+                            legend={['Farm', 'Total sold NFTs', 'Floor Price', 'Total Hashrate']}
                             widths={['40%', '20%', '20%', '20%']}
                             aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]}
                             tableState={tableState}

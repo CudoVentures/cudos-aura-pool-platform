@@ -386,6 +386,14 @@ export class FarmService {
         nftFilterEntity.collectionIds = collectionEntities.map((entity) => entity.id.toString());
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
         const soldNfts = nftEntities.filter((nft) => nft.tokenId !== '')
+        const floorPriceInAcudos: BigNumber = nftEntities.reduce((accu: BigNumber, nftEntity) => {
+            if (nftEntity.hasPrice() === true) {
+                accu ??= new BigNumber(`${Number.MAX_SAFE_INTEGER}000000000000000000`);
+                return nftEntity.acudosPrice.lt(accu) ? nftEntity.acudosPrice : accu;
+            }
+
+            return accu;
+        }, null);
 
         // Calculate remaining hash power of the farm
         const collectionsHashPowerSum = collectionEntities.reduce((prevVal, currVal) => prevVal + Number(currVal.hashingPower), 0)
@@ -400,6 +408,7 @@ export class FarmService {
         miningFarmDetailsEntity.nftsOwned = nftEntities.length;
         miningFarmDetailsEntity.totalNftsSold = soldNfts.length;
         miningFarmDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
+        miningFarmDetailsEntity.floorPriceInAcudos = floorPriceInAcudos;
 
         return miningFarmDetailsEntity;
     }
