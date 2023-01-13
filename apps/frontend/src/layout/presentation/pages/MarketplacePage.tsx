@@ -119,7 +119,7 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                         <div className = { 'H2 ExtraBold' } >New Hash Rate NFT Drops</div>
                         <div className = { 'B1' } >Powered by AuraPool Protocol</div>
                         <Actions className = { 'HashRateDropsInfoActions' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL } >
-                            <Button onClick = { onClickSeeAllFarms }>Explore NFTs</Button>
+                            <Button onClick = { onClickSeeAllNfts }>Explore NFTs</Button>
                         </Actions>
                     </div>
 
