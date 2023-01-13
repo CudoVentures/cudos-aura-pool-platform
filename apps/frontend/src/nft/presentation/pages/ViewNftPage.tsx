@@ -227,13 +227,14 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                         <a href={ProjectUtils.makeUrlExplorer(creatorAdminEntity ? creatorAdminEntity.cudosWalletAddress : '')} target = "_blank" rel = 'noreferrer' className={'Address ColorPrimary060'}>{ creatorAdminEntity ? ProjectUtils.shortenAddressString(creatorAdminEntity.cudosWalletAddress, 25) : ''}</a>
                                     </div>
                                 </div>
-                                <div className={'FlexRow OwnerBox'}>
-                                    <div className={'OwnerPicture'}></div>
-                                    <div className={'OwnerInfo FlexColumn'}>
-                                        <div className={'AddressName B1 SemiBold'}>Current Owner</div>
-                                        <a href={ProjectUtils.makeUrlExplorer(nftEntity.currentOwner)} target = "_blank" rel = 'noreferrer' className={'Address ColorPrimary060'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwner, 25)}</a>
-                                    </div>
-                                </div>
+                                {nftEntity.isMinted() === true && (
+                                    <div className={'FlexRow OwnerBox'}>
+                                        <div className={'OwnerPicture'}></div>
+                                        <div className={'OwnerInfo FlexColumn'}>
+                                            <div className={'AddressName B1 SemiBold'}>Current Owner</div>
+                                            <a href={ProjectUtils.makeUrlExplorer(nftEntity.currentOwner)} target = "_blank" rel = 'noreferrer' className={'Address ColorPrimary060'}>{ProjectUtils.shortenAddressString(nftEntity.currentOwner, 25)}</a>
+                                        </div>
+                                    </div>)}
                             </div>
                             <DataPreviewLayout dataPreviews={getProfitDataPreviews()}/>
                             <div className={'FlexRow CalculateRewardsNav'}>
