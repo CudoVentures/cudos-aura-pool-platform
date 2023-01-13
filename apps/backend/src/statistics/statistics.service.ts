@@ -540,6 +540,7 @@ export class StatisticsService {
 
     private static checkTimeframe(timestampFrom: number, timestampTo: number) {
         if (timestampFrom > timestampTo) {
+            console.error(`Invalid timeframe. TimestampFrom > TimestampTo. TimestampFrom: ${timestampFrom}, TimestampTo: ${timestampTo}`);
             throw new DataServiceError();
         }
     }

@@ -52,35 +52,52 @@ const accounts = [
 const superAdmins = [
     {
         cudos_royaltees_address: 'cudos154dfcmrrdmafmvftuvypsvgpl2qyvw7lh0x23t',
+    },
+]
+
+const settings = [
+    {
         first_sale_cudos_royalties_percent: 2.5,
         resale_cudos_royalties_percent: 2,
         global_cudos_fees_percent: 2,
         global_cudos_royalties_percent: 2,
+        created_at: '2022-11-11T14:10:18.473Z',
+        updated_at: '2022-11-11T14:10:18.473Z',
     },
 ]
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.bulkInsert('miners', miners);
-        await queryInterface.bulkInsert('energy_sources', energySources);
-        await queryInterface.bulkInsert('manufacturers', manufacturers);
+        const transaction = await queryInterface.sequelize.transaction();
+        try {
+            await queryInterface.bulkInsert('miners', miners, { transaction });
+            await queryInterface.bulkInsert('energy_sources', energySources, { transaction });
+            await queryInterface.bulkInsert('manufacturers', manufacturers, { transaction });
+            await queryInterface.bulkInsert('settings', settings, { transaction });
 
-        await queryInterface.bulkInsert('accounts', accounts, {});
+            await queryInterface.bulkInsert('accounts', accounts, { transaction });
 
-        const query = `SELECT account_id from accounts AS c WHERE c.email = '${accounts[0].email}';`;
+            const query = `SELECT account_id from accounts AS c WHERE c.email = '${accounts[0].email}';`;
 
-        const ids = await queryInterface.sequelize.query(query);
+            const ids = await queryInterface.sequelize.query(query);
 
-        superAdmins[0].account_id = ids[0][0].account_id;
+            superAdmins[0].account_id = ids[0][0].account_id;
 
-        await queryInterface.bulkInsert('accounts_super_admins', superAdmins, {});
+            await queryInterface.bulkInsert('accounts_super_admins', superAdmins, { transaction });
+            return transaction.commit();
+        } catch (error) {
+            await transaction.rollback();
+            throw error;
+        }
     },
 
     async down(queryInterface, Sequelize) {
         await queryInterface.bulkDelete('miners', null, {});
         await queryInterface.bulkDelete('energy_sources', null, {});
         await queryInterface.bulkDelete('manufacturers', null, {});
-        await queryInterface.bulkDelete('accounts_super_admins', null, {});
-        await queryInterface.bulkDelete('accounts', { email: accounts[0].email }, {});
+        await queryInterface.bulkDelete('manufacturers', null, {});
+        await queryInterface.bulkDelete('settings', null, {});
+        await queryInterface.bulkDelete('accounts', { email: accounts[0].email }, { cascade: true });
+        await queryInterface.bulkInsert('accounts_super_admins', null, {});
     },
 };
