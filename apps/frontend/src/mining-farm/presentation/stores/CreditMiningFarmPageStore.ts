@@ -114,6 +114,7 @@ export default class CreditMiningFarmPageStore {
 
         const collectionFilterModel = new CollectionFilterModel();
         collectionFilterModel.status = [CollectionStatus.QUEUED];
+        collectionFilterModel.farmId = this.miningFarmEntity.id;
         collectionFilterModel.from = this.queuedCollectionsTableState.tableFilterState.from;
         collectionFilterModel.count = this.queuedCollectionsTableState.tableFilterState.itemsPerPage;
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilterModel);
@@ -136,6 +137,7 @@ export default class CreditMiningFarmPageStore {
 
         const collectionFilterModel = new CollectionFilterModel();
         collectionFilterModel.status = [CollectionStatus.APPROVED];
+        collectionFilterModel.farmId = this.miningFarmEntity.id;
         collectionFilterModel.from = this.approvedCollectionsTableState.tableFilterState.from;
         collectionFilterModel.count = this.approvedCollectionsTableState.tableFilterState.itemsPerPage;
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilterModel);

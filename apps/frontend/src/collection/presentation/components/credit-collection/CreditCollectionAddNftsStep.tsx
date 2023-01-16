@@ -27,7 +27,7 @@ function CreditCollectionAddNftsStep({ alertStore, creditCollectionStore }: Prop
 
     function onClickPreviewAndSend() {
         if (creditCollectionStore.nftEntities.length === 0) {
-            alertStore.show('You must create at least one NFT');
+            alertStore.show('Farm must provide at least one NFT while creating a collection');
             return;
         }
 

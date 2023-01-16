@@ -9,11 +9,12 @@ import '../styles/input.css';
 import { action } from 'mobx';
 
 export enum InputType {
-    INTEGER,
-    POSITIVE_INTEGER,
-    REAL,
-    TEXT,
-    PHONE,
+    INTEGER = 1,
+    POSITIVE_INTEGER = 2,
+    REAL = 3,
+    POSITIVE_REAL = 4,
+    TEXT = 5,
+    PHONE = 6,
 }
 
 type Props = TextFieldProps & PropsWithChildren & {
@@ -72,6 +73,11 @@ const Input = React.forwardRef(({ children, className, inputType, decimalLength,
                 break;
             case InputType.REAL:
                 if (filterReal(event.target.value, decimalLength) === false) {
+                    return;
+                }
+                break;
+            case InputType.POSITIVE_REAL:
+                if (filterPositiveReal(event.target.value, decimalLength) === false) {
                     return;
                 }
                 break;
@@ -222,7 +228,40 @@ function filterReal(value: string, decimalLength: number) {
                 }
             }
             continue;
-        } if (c === '.') {
+        }
+        if (c === '.') {
+            if (delimiter === true) {
+                return false;
+            }
+            delimiter = true;
+            continue;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+function filterPositiveReal(value: string, decimalLength: number) {
+    if (value.length === 0) {
+        return true;
+    }
+
+    let delimiter = false;
+    let currentDecimalLength = 0;
+    for (let c, i = 0; i < value.length; ++i) {
+        c = value[i];
+        if (c >= '0' && c <= '9') {
+            if (delimiter === true) {
+                ++currentDecimalLength;
+                if (decimalLength < currentDecimalLength) {
+                    return false;
+                }
+            }
+            continue;
+        }
+        if (c === '.') {
             if (delimiter === true) {
                 return false;
             }

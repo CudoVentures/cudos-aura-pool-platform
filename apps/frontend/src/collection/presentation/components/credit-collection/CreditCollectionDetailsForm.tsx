@@ -47,6 +47,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     // const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString() : '')
     const [defaultPricePerNftInCudos, setDefaultPricePerNftInCudos] = useState(collectionEntity.defaultPricePerNftInCudos !== null ? collectionEntity.defaultPricePerNftInCudos.toString() : '');
     const [defaultHashPowerPerNftInTh, setDefaultHashPowerPerNftInTh] = useState(collectionEntity.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInCudos : '');
+    const [secondarySaleRoyalties, setSecondarySaleRoyalties] = useState(collectionEntity.royalties !== S.NOT_EXISTS ? collectionEntity.royalties.toString() : '');
 
     function onChangeHashPowerInTh(value) {
         setHashPowerInTh(value);
@@ -54,6 +55,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     }
 
     function onChangeRoyalties(value) {
+        setSecondarySaleRoyalties(value);
         if (value === '') {
             collectionEntity.royalties = S.NOT_EXISTS;
             return;
@@ -62,9 +64,11 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
         collectionEntity.royalties = parseFloat(value);
         if (collectionEntity.royalties < 0) {
             collectionEntity.royalties = 0;
+            setSecondarySaleRoyalties('0');
         }
         if (collectionEntity.royalties > 10) {
             collectionEntity.royalties = 10;
+            setSecondarySaleRoyalties('10');
         }
     }
 
@@ -233,8 +237,8 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                     <Input
                         label={<TextWithTooltip text={'Secondary Sale Royalties'} tooltipText={'Secondary Sale Royalties'} />}
                         placeholder={'Enter royalties...'}
-                        value={collectionEntity.royalties !== S.NOT_EXISTS ? collectionEntity.royalties : ''}
-                        inputType={InputType.POSITIVE_INTEGER}
+                        value={secondarySaleRoyalties}
+                        inputType={InputType.POSITIVE_REAL}
                         inputValidation={collectionRoyaltiesValidation}
                         onChange={onChangeRoyalties}
                         InputProps={{
@@ -244,7 +248,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         }} />
                 }
                 helperText = { 'Suggested: 0%, 1%, 2%, 6%. Maxium: 10%.' } />
-            {/* <InfoBlueBox text={'Farm admins receives 80% of first NFT sale proceeds. 10% are Aura Pool Fees and 10% will be held to a Cudo account as escrow.'} /> */}
+            {/* <InfoBlueBox text={'Farm admins receives 80% of first NFT sale proceeds. 10% are Aura Pool Fees and 10% will be held in a Cudo account as escrow.'} /> */}
             {/* <FieldColumnWrapper
                 field = {
                     <Input

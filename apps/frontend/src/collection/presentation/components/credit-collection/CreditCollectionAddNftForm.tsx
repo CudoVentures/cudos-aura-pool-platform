@@ -210,6 +210,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                 }
                 disabled = { selectedNftEntity === null }
                 selected = { creditCollectionStore.getSelectedNftExpirationDateInputValue() }
+                minDate = { new Date() }
                 onChange = { creditCollectionStore.onChangeSelectedNftExpirationDate } />
             <div className = { 'FlexSplit' }>
                 { creditCollectionStore.isCreateMode() === true && (
