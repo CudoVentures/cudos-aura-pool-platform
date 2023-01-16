@@ -5,10 +5,13 @@ import MiningFarmRepo from '../repos/MiningFarmRepo';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import TableState from '../../../core/presentation/stores/TableState';
 import S from '../../../core/utilities/Main';
+import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
+import MiningFarmEarningsEntity from '../../../analytics/entities/MiningFarmEarningsEntity';
 
 export default class SuperAdminMningFarmsPageStore {
 
     miningFarmRepo: MiningFarmRepo;
+    statisticsRepo: StatisticsRepo;
 
     miningFarmFilterModel: MiningFarmFilterModel;
 
@@ -16,8 +19,9 @@ export default class SuperAdminMningFarmsPageStore {
     miningFarmEntities: MiningFarmEntity[];
     miningFarmDetailEntitiesMap: Map<string, MiningFarmDetailsEntity>;
 
-    constructor(miningFarmRepo: MiningFarmRepo) {
+    constructor(miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo) {
         this.miningFarmRepo = miningFarmRepo;
+        this.statisticsRepo = statisticsRepo;
 
         this.tableState = new TableState(S.NOT_EXISTS, [], this.fetchMiningFarms, 10);
         this.miningFarmFilterModel = new MiningFarmFilterModel();
