@@ -221,7 +221,7 @@ export default class AccountSessionStore {
             if (this.walletStore.isConnected() === true) {
                 if (userEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
                     await this.walletStore.disconnect();
-                    return;
+                    // return;
                 }
             }
 
@@ -232,7 +232,7 @@ export default class AccountSessionStore {
             if (this.walletStore.isConnected() === true) {
                 if (adminEntity.cudosWalletAddress !== this.walletStore.getAddress()) {
                     await this.walletStore.disconnect();
-                    return;
+                    // return;
                 }
             }
 

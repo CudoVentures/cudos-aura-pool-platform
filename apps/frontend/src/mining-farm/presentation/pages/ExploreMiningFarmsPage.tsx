@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
-import AppStore from '../../../core/presentation/stores/AppStore';
 import ExploreMiningFarmsPageStore from '../stores/ExploreMiningFarmsPageStore';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
@@ -24,17 +23,18 @@ import NavRowTabs, { createNavRowTab } from '../../../core/presentation/componen
 import '../styles/page-explore-mining-farms.css';
 
 type Props = {
-    appStore?: AppStore
     exploreMiningFarmsPageStore?: ExploreMiningFarmsPageStore;
 }
 
-function ExploreMiningFarmsPage({ appStore, exploreMiningFarmsPageStore }: Props) {
+function ExploreMiningFarmsPage({ exploreMiningFarmsPageStore }: Props) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        appStore.useLoading(async () => {
+        async function run() {
             await exploreMiningFarmsPageStore.init();
-        });
+        }
+
+        run();
     }, []);
 
     const miningFarmFilterModel = exploreMiningFarmsPageStore.miningFarmFilterModel;

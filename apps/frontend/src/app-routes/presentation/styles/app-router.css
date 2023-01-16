@@ -9,6 +9,10 @@
 .AppRouter.PageTransitionOut {
     animation: 0.1s PageTransitionOut forwards;
 }
+
+.AppRouter .LoadingIndicatorLoadingAccounts {
+    height: 100%;
+}
   
 @keyframes PageTransitionIn {
     from {

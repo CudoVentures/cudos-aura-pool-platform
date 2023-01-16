@@ -17,7 +17,7 @@ export default class SuperAdminMningFarmsPageStore {
 
     tableState: TableState
     miningFarmEntities: MiningFarmEntity[];
-    topPerformingFarmsEarningsMap: Map<string, MiningFarmEarningsEntity>;
+    miningFarmDetailEntitiesMap: Map<string, MiningFarmDetailsEntity>;
 
     constructor(miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo) {
         this.miningFarmRepo = miningFarmRepo;
@@ -27,7 +27,7 @@ export default class SuperAdminMningFarmsPageStore {
         this.miningFarmFilterModel = new MiningFarmFilterModel();
 
         this.miningFarmEntities = null;
-        this.topPerformingFarmsEarningsMap = null;
+        this.miningFarmDetailEntitiesMap = null;
 
         makeAutoObservable(this);
     }
@@ -44,17 +44,17 @@ export default class SuperAdminMningFarmsPageStore {
         miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
 
         const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilterModel)
-        // const miningFarmDetailsEntities = await this.statisticsRepo.fetchNftEarningsByMiningFarmId(this.miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id));
-        const topPerformingFarmsEarningsMap = new Map();
-        // miningFarmDetailsEntities.forEach((entity) => {
-        //     topPerformingFarmsEarningsMap.set(entity.miningFarmId, entity);
-        // })
+        const miningFarmDetailsEntities = await this.miningFarmRepo.fetchMiningFarmsDetailsByIds(miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id));
+        const miningFarmDetailEntitiesMap = new Map();
+        miningFarmDetailsEntities.forEach((entity) => {
+            miningFarmDetailEntitiesMap.set(entity.miningFarmId, entity);
+        })
 
         runInAction(() => {
             this.miningFarmFilterModel.from = this.tableState.tableFilterState.from;
             this.miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
             this.miningFarmEntities = miningFarmEntities;
-            this.topPerformingFarmsEarningsMap = topPerformingFarmsEarningsMap;
+            this.miningFarmDetailEntitiesMap = miningFarmDetailEntitiesMap;
             this.tableState.tableFilterState.total = total;
         });
     }
@@ -65,7 +65,7 @@ export default class SuperAdminMningFarmsPageStore {
     })
 
     getMiningFarmDetails(id: string): MiningFarmDetailsEntity {
-        return this.topPerformingFarmsDetailsMap.get(id) ?? null;
+        return this.miningFarmDetailEntitiesMap.get(id) ?? null;
     }
 
 }

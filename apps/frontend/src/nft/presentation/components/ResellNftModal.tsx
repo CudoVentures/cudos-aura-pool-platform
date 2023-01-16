@@ -76,7 +76,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                 />
                 <InfoBlueBox text={ `${resellNftModalStore.getResellpriceInCudosDisplay()} CUDOS based on Today’s CUDOS Price` } />
 
-                <div className={'CheckBoxText B2 SemiBold'}>Do you want to have immediate auto pay on sale or disperse as per the original payment schedule?</div>
+                {/* <div className={'CheckBoxText B2 SemiBold'}>Do you want to have immediate auto pay on sale or disperse as per the original payment schedule?</div>
                 <div className={'FlexRow CheckBoxRow'}>
                     <Checkbox
                         label={'Auto pay'}
@@ -86,7 +86,7 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                         label={'Original Payment Schedule'}
                         value={resellNftModalStore.originalPaymentSchedule}
                         onChange={resellNftModalStore.toggleOriginalPaymentSchedule} />
-                </div>
+                </div> */}
                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                     <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
                 </Actions>

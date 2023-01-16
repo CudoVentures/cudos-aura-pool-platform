@@ -35,7 +35,11 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
 
     useEffect(() => {
-        cudosStore.init();
+        async function run() {
+            await cudosStore.init();
+        }
+
+        run();
     }, []);
 
     // const [editRoyaltiesDisabled, setEditRoyaltiesDisabled] = useState(true);
@@ -206,6 +210,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                 }
                 disabled = { selectedNftEntity === null }
                 selected = { creditCollectionStore.getSelectedNftExpirationDateInputValue() }
+                minDate = { new Date() }
                 onChange = { creditCollectionStore.onChangeSelectedNftExpirationDate } />
             <div className = { 'FlexSplit' }>
                 { creditCollectionStore.isCreateMode() === true && (

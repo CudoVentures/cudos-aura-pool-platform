@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import CreditCollectionStore from '../stores/CreditCollectionStore';
-import AppStore from '../../../core/presentation/stores/AppStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import PageLayout from '../../../core/presentation/components/PageLayout';
@@ -19,20 +18,21 @@ import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
 import '../styles/page-credit-collection-details-edit.css';
 
 type Props = {
-    appStore?: AppStore;
     creditCollectionStore?: CreditCollectionStore;
 }
 
-function CreditCollectionDetailsEditPage({ appStore, creditCollectionStore }: Props) {
+function CreditCollectionDetailsEditPage({ creditCollectionStore }: Props) {
     const { collectionId } = useParams();
 
     const navigate = useNavigate();
     const collectionEntity = creditCollectionStore.collectionEntity;
 
     useEffect(() => {
-        appStore.useLoading(async () => {
+        async function run() {
             await creditCollectionStore.initAsEdit(collectionId);
-        })
+        }
+
+        run();
     }, []);
 
     function onClickNavigateCreditMiningFarm() {

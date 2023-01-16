@@ -37,7 +37,7 @@ export class NftJsonValidator {
 
     @IsString()
     @IsNotEmpty()
-        price: string;
+        priceInAcudos: string;
 
     @IsNumber()
     @IsNotEmpty()

@@ -58,6 +58,7 @@ function AppRouter({ accountSessionStore }: Props) {
         if (transitionStage === 'PageTransitionOut') {
             setTransistionStage('PageTransitionIn');
             setDisplayLocation(location);
+            window.scrollTo(0, 0);
         }
     }
 
@@ -85,7 +86,7 @@ function AppRouter({ accountSessionStore }: Props) {
             onAnimationEnd = { onRouterTransitionEnd } >
 
             { accountSessionStore.isInited() === false && (
-                <LoadingIndicator />
+                <LoadingIndicator className = { 'LoadingIndicatorLoadingAccounts' } />
             ) }
 
             { accountSessionStore.isInited() === true && (

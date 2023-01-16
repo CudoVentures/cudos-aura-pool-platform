@@ -70,7 +70,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         }
 
         run();
-    }, []);
+    }, [nftId]);
 
     function onClickFarmLink() {
         navigate(ProjectUtils.makeUrlMiningFarm(viewNftPageStore.collectionEntity.farmId));

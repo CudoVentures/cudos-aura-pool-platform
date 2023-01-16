@@ -65,7 +65,7 @@ export default class NftEntity {
         entity.data = json.data ?? entity.data;
         entity.tokenId = json.tokenId ?? entity.tokenId;
         entity.hashingPower = json.hashingPower ?? entity.hashingPower;
-        entity.acudosPrice = new BigNumber(json.price ?? entity.acudosPrice);
+        entity.acudosPrice = new BigNumber(json.priceInAcudos ?? entity.acudosPrice);
         entity.expirationDateTimestamp = json.expirationDateTimestamp ?? entity.expirationDateTimestamp;
         entity.collectionId = parseInt(json.collectionId ?? entity.collectionId.toString());
         entity.marketplaceNftId = json.marketplaceNftId ?? entity.marketplaceNftId;
@@ -84,7 +84,7 @@ export default class NftEntity {
             'data': entity.data,
             'tokenId': entity.tokenId,
             'hashingPower': entity.hashingPower,
-            'price': entity.acudosPrice.toFixed(0),
+            'priceInAcudos': entity.acudosPrice.toFixed(0),
             'expirationDateTimestamp': entity.expirationDateTimestamp,
             'collectionId': entity.collectionId.toString(),
             'marketplaceNftId': entity.marketplaceNftId,

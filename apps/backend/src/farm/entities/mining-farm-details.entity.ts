@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { MiningFarmDetailsJsonValidator } from '../farm.types';
 
@@ -9,6 +10,7 @@ export default class MiningFarmDetailsEntity {
     nftsOwned: number;
     totalNftsSold: number;
     remainingHashPowerInTH: number;
+    floorPriceInAcudos: BigNumber;
 
     constructor() {
         this.miningFarmId = NOT_EXISTS_INT;
@@ -17,6 +19,7 @@ export default class MiningFarmDetailsEntity {
         this.nftsOwned = 0;
         this.totalNftsSold = 0;
         this.remainingHashPowerInTH = 0;
+        this.floorPriceInAcudos = null;
     }
 
     static toJson(entity: MiningFarmDetailsEntity): MiningFarmDetailsJsonValidator {
@@ -31,6 +34,7 @@ export default class MiningFarmDetailsEntity {
             'nftsOwned': entity.nftsOwned,
             'totalNftsSold': entity.totalNftsSold,
             'remainingHashPowerInTH': entity.remainingHashPowerInTH,
+            'floorPriceInAcudos': entity.floorPriceInAcudos.toString(),
         }
     }
 
@@ -47,6 +51,7 @@ export default class MiningFarmDetailsEntity {
         entity.nftsOwned = json.nftsOwned ?? entity.nftsOwned;
         entity.totalNftsSold = json.totalNftsSold ?? entity.totalNftsSold;
         entity.remainingHashPowerInTH = json.remainingHashPowerInTH ?? entity.remainingHashPowerInTH;
+        entity.floorPriceInAcudos = new BigNumber(json.floorPriceInAcudos ?? entity.floorPriceInAcudos);
 
         return entity;
     }
