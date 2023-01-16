@@ -1,7 +1,12 @@
+import { action, makeAutoObservable } from 'mobx';
 import { isValidAddress } from 'cudosjs';
-import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
+import { Network, validate } from 'bitcoin-address-validation';
+
 import S from '../../utilities/Main';
-import { validate } from 'bitcoin-address-validation';
+
+// CONFIGURATIONS
+declare let Config;
+const BTC_NETWORK = Config.APP_BTC_NETWORK === 'testnet' ? Network.testnet : Network.mainnet;
 
 export default class ValidationState {
 
@@ -201,7 +206,7 @@ export class InputValidation {
         const validation = new InputValidation();
 
         validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = action((value) => validate(value));
+        validation.checkValidInput = action((value) => validate(value, BTC_NETWORK));
 
         return validation;
     }
