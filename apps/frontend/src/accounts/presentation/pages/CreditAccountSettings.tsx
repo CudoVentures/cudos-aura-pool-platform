@@ -1,12 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
+import { runInAction } from 'mobx';
 
 import AccountSessionStore from '../stores/AccountSessionStore';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
+import { InputAdornment } from '@mui/material';
 import PageLayout from '../../../core/presentation/components/PageLayout';
 import PageFooter from '../../../layout/presentation/components/PageFooter';
 import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
@@ -17,9 +19,9 @@ import Button, { ButtonColor, ButtonType } from '../../../core/presentation/comp
 import Svg from '../../../core/presentation/components/Svg';
 import AnimationContainer from '../../../core/presentation/components/AnimationContainer';
 import StyledContainer, { ContainerBackground, ContainerPadding } from '../../../core/presentation/components/StyledContainer';
+import SvgPasswordRequirements from '../components/SvgPasswordRequirements';
 
 import '../styles/credit-account-settings.css';
-import { runInAction } from 'mobx';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -235,7 +237,12 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
                                         validationPass,
                                         validationFirstMatchPass,
                                     ]}
-                                    onChange = { setPass } />
+                                    onChange = { setPass }
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">
+                                            <SvgPasswordRequirements inputValidation={validationPass} />
+                                        </InputAdornment>,
+                                    }} />
                                 <Input
                                     label = { 'Confirm Password' }
                                     value = { confirmPass }
@@ -244,7 +251,12 @@ function CreditAccountSettings({ accountSessionStore, alertStore }: Props) {
                                         validationConfirmPass,
                                         validationSecondMatchPass,
                                     ]}
-                                    onChange = { setConfirmPass } />
+                                    onChange = { setConfirmPass }
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">
+                                            <SvgPasswordRequirements inputValidation={validationConfirmPass} />
+                                        </InputAdornment>,
+                                    }} />
                                 <Actions layout = { ActionsLayout.LAYOUT_ROW_RIGHT } >
                                     <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickCancelEditPass } >Discard Changes</Button>
                                     <Button onClick = { onClickChangePass } >Save Changes</Button>

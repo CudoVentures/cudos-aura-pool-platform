@@ -7,12 +7,14 @@ import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 
+import { InputAdornment } from '@mui/material';
 import Input from '../../../core/presentation/components/Input';
 import Button from '../../../core/presentation/components/Button';
 import PageLayout from '../../../core/presentation/components/PageLayout';
 import PageFooter from '../../../layout/presentation/components/PageFooter';
 import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
 import AuthBlockLayout from '../components/AuthBlockLayout';
+import SvgPasswordRequirements from '../components/SvgPasswordRequirements';
 
 import CheckIcon from '@mui/icons-material/Check';
 import '../styles/page-forgotten-pass-edit.css';
@@ -68,7 +70,12 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
                                 validationFirstMatchPass,
                             ]}
                             value={pass}
-                            onChange={setPass} />
+                            onChange={setPass}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">
+                                    <SvgPasswordRequirements inputValidation={validationPass} />
+                                </InputAdornment>,
+                            }} />
                         <Input
                             label={'Confirm Password'}
                             placeholder={'***************'}
@@ -78,7 +85,12 @@ function ForgottenPassEditPage({ accountSessionStore }: Props) {
                                 validationSecondMatchPass,
                             ]}
                             value={confirmPass}
-                            onChange={setConfirmPass} />
+                            onChange={setConfirmPass}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">
+                                    <SvgPasswordRequirements inputValidation={validationConfirmPass} />
+                                </InputAdornment>,
+                            }} />
                     </>
                 ) }
                 actions = { (

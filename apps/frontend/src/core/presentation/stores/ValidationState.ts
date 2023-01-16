@@ -164,7 +164,26 @@ export class InputValidation {
         const validation = new InputValidation();
 
         validation.setErrorMessage(errorMessage);
-        validation.checkValidInput = action((value) => value.length >= 6);
+        validation.checkValidInput = action((value) => {
+            if (value.length < 8) {
+                return false;
+            }
+
+            let hasSpecialChar = false;
+            let hasNumber = false;
+            let hasUpperCase = false;
+            let hasLowerCase = false;
+
+            const specialCharSet = new Set(['~', ':', '\'', '+', '[', '\\', '@', '^', '{', '%', '(', '-', '"', '*', '|', ',', '&', '<', '`', '}', '.', '_', '=', ']', '!', '>', ';', '?', '#', '$', ')', '/']);
+            for (let i = value.length; i-- > 0;) {
+                hasSpecialChar ||= specialCharSet.has(value[i]) === true;
+                hasNumber ||= value[i] >= '0' && value[i] <= '9';
+                hasLowerCase ||= value[i] === value[i].toLowerCase() && value[i] !== value[i].toUpperCase();
+                hasUpperCase ||= value[i] === value[i].toUpperCase() && value[i] !== value[i].toLowerCase();
+            }
+
+            return hasSpecialChar && hasNumber && hasLowerCase && hasUpperCase;
+        });
 
         return validation;
     }

@@ -5,10 +5,8 @@ import { StdSignature } from 'cudosjs';
 
 import S from '../../../core/utilities/Main';
 import AccountSessionStore from '../stores/AccountSessionStore';
-import AlertStore from '../../../core/presentation/stores/AlertStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
-import AppStore from '../../../core/presentation/stores/AppStore';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 import WalletSelectModal from '../../../layout/presentation/stores/WalletSelectModalStore';
 
@@ -31,6 +29,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import '../styles/page-register.css';
+import SvgPasswordRequirements from '../components/SvgPasswordRequirements';
 
 enum RegisterStep {
     ACCOUNT_DETAILS = 1,
@@ -39,14 +38,12 @@ enum RegisterStep {
 }
 
 type Props = {
-    appStore?: AppStore;
-    alertStore?: AlertStore;
     walletStore?: WalletStore;
     accountSessionStore?: AccountSessionStore;
     walletSelectModalStore?: WalletSelectModal;
 }
 
-function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, walletSelectModalStore }: Props) {
+function RegisterPage({ walletStore, accountSessionStore, walletSelectModalStore }: Props) {
     const navigate = useNavigate();
 
     const validationState = useRef(new ValidationState()).current;
@@ -168,6 +165,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, 
                             placeholder={'***************'}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end" >
+                                    <SvgPasswordRequirements inputValidation={validationPass} />
                                     <Svg className={'Clickable'} svg={showPassword === false ? VisibilityOffIcon : VisibilityIcon} onClick={onClickShowPassword}/>
                                 </InputAdornment>,
                             }}
@@ -183,6 +181,7 @@ function RegisterPage({ appStore, alertStore, walletStore, accountSessionStore, 
                             placeholder={'***************'}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">
+                                    <SvgPasswordRequirements inputValidation={validationConfirmPass} />
                                     <Svg className={'Clickable'} svg={showRepeatPassword === false ? VisibilityOffIcon : VisibilityIcon} onClick={onClickShowRepeatPassword}/>
                                 </InputAdornment>,
                             }}

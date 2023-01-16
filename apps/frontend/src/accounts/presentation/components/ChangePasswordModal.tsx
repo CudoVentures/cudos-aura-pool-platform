@@ -12,6 +12,7 @@ import Input from '../../../core/presentation/components/Input';
 import Svg from '../../../core/presentation/components/Svg';
 import Actions, { ActionsLayout } from '../../../core/presentation/components/Actions';
 import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
+import SvgPasswordRequirements from './SvgPasswordRequirements';
 
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -84,6 +85,7 @@ function ChangePasswordModal({ alertStore, changePasswordModalStore }: Props) {
                     placeholder={'***************'}
                     InputProps={{
                         endAdornment: <InputAdornment position="end" >
+                            <SvgPasswordRequirements inputValidation={validationPass} />
                             <Svg className={'Clickable'} svg={showPassword === false ? VisibilityOffIcon : VisibilityIcon} onClick={onClickShowPassword}/>
                         </InputAdornment>,
                     }}
@@ -99,6 +101,7 @@ function ChangePasswordModal({ alertStore, changePasswordModalStore }: Props) {
                     placeholder={'***************'}
                     InputProps={{
                         endAdornment: <InputAdornment position="end">
+                            <SvgPasswordRequirements inputValidation={validationConfirmPass} />
                             <Svg className={'Clickable'} svg={showRepeatPassword === false ? VisibilityOffIcon : VisibilityIcon} onClick={onClickShowRepeatPassword}/>
                         </InputAdornment>,
                     }}
