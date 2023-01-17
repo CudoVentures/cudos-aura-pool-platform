@@ -20,6 +20,7 @@ import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import InfoBlueBox from '../../../core/presentation/components/InfoBlueBox';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 type Props = {
     cudosStore?: CudosStore,
@@ -61,12 +62,7 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
                     <>
                         <div className={'H3 Bold'}>Buy NFT</div>
                         <div className={'BorderContainer FlexRow'}>
-                            <div
-                                className={'NftPicture'}
-                                style={{
-                                    backgroundImage: `url("${nftEntity.imageUrl}")`,
-                                }}
-                            />
+                            <div className={'NftPicture'} style = { ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
                             <div className={'NftInfo FlexColumnt'}>
                                 <div className={'CollectionName B2 SemiBold Gray'}>{buyNftModalStore.collectionEntity.name}</div>
                                 <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
@@ -76,13 +72,10 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
                                 </div>
                             </div>
                         </div>
-                        <Input inputType={InputType.TEXT}
-                            value={buyNftModalStore.recipient}
-                            onChange={buyNftModalStore.setRecipient}
-                            label={'Set Rewards Recepient Address'}
-                            inputValidation={rewardsRecipientAddress}
-                            readOnly={true}
-                            placeholder={'e.g bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'} />
+                        <div>
+                            <TextWithTooltip text={'Rewards Recepient Address'} tooltipText={'You can change this from Profile page'} />
+                            <div className = { 'ColorPrimary060 Bold' } >{buyNftModalStore.recipient}</div>
+                        </div>
                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                             <Button onClick={onClickPurchaseNft}>Complete Purchase</Button>
                         </Actions>

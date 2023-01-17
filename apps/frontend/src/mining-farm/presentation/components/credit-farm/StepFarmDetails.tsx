@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
+import { action, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 
 import S from '../../../../core/utilities/Main';
@@ -28,7 +29,6 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/step-farm-details.css';
-import { action, runInAction } from 'mobx';
 
 type Props = {
     alertStore?: AlertStore;
@@ -260,6 +260,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                             placeholder={'Maintenance fees...'}
                             value={maintenanceFeeInBtc}
                             inputType={InputType.REAL}
+                            decimalLength = { 7 }
                             inputValidation={farmMainteannceFeesValidation}
                             onChange={onChangeMaintenanceFees}
                             InputProps={{
@@ -277,7 +278,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                     </div>
                     <Input
                         label = {
-                            <TextWithTooltip text={'Cudos address to receive NFT resale royalties'} tooltipText={'Farm BTC address which will collect all maintenance fees.'} />
+                            <TextWithTooltip text={'Cudos address to receive NFT resale royalties'} tooltipText={'The CUDOS address, which will collect royalties upon resale of an NFT from your farm. This royalty amount can be adjusted in the "Update Farm Details" screen.'} />
                         }
                         placeholder={'cudos1...'}
                         value={miningFarmEntity.resaleFarmRoyaltiesCudosAddress}
@@ -285,7 +286,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         onChange={action((string) => { miningFarmEntity.resaleFarmRoyaltiesCudosAddress = string })} />
                     <Input
                         label = {
-                            <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The CUDOS address which will collect all sale proceeds from sold NFTs.'} />
+                            <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.rewardsFromPoolBtcAddress}
@@ -301,7 +302,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         onChange={action((string) => { miningFarmEntity.leftoverRewardsBtcAddress = string })} />
                     <Input
                         label = {
-                            <TextWithTooltip text={'BTC Address to receive maintenance fees'} tooltipText={'The CUDOS address, which will collect royalties upon resale of an NFT from your farm. This royalty amount can be adjusted in the "Update Farm Details" screen.'} />
+                            <TextWithTooltip text={'BTC Address to receive maintenance fees'} tooltipText={'Farm BTC address which will collect all maintenance fees.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.maintenanceFeePayoutBtcAddress}

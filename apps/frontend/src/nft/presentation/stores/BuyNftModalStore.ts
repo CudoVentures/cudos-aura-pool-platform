@@ -82,9 +82,9 @@ export default class BuyNftModalStore extends ModalStore {
         super.hide();
     })
 
-    setRecipient = action((recipient: string) => {
-        this.recipient = recipient;
-    })
+    // setRecipient = action((recipient: string) => {
+    //     this.recipient = recipient;
+    // })
 
     buyNft = action(async () => {
         this.modalStage = ModalStage.PROCESSING;
