@@ -43,6 +43,7 @@ export default class SuperAdminAnalyticsPageStore {
 
     fetchEarnings = async () => {
         const defaultIntervalPickerState = this.defaultIntervalPickerState;
+        console.log(defaultIntervalPickerState.earningsTimestampFrom)
         const totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
 
         runInAction(() => {
@@ -77,5 +78,6 @@ export default class SuperAdminAnalyticsPageStore {
 
     onChangeTableFilter = (value: number) => {
         this.eventType = value;
+        this.fetchNftEvents()
     }
 }
