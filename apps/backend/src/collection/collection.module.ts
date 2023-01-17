@@ -21,6 +21,7 @@ import { DataModule } from '../data/data.module';
         GraphqlModule,
         AccountModule,
         DataModule,
+        GraphqlModule,
         forwardRef(() => FarmModule),
         forwardRef(() => StatisticsModule),
     ],

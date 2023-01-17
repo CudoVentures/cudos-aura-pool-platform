@@ -40,7 +40,7 @@ export default class TxFindWorker {
             await this.checkMarketplaceTransactions(heightFilter);
             await this.checkNftTransactions(heightFilter);
 
-            await this.cudosAuraPoolServiceApi.updateLastCheckedheight(lastBlock);
+            await this.cudosAuraPoolServiceApi.updateLastCheckedHeight(lastBlock);
         } catch (e) {
             console.log(e);
         }

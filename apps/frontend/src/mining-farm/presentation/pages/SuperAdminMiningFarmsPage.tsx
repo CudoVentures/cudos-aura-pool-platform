@@ -62,7 +62,7 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
                 //         </div>
                 //     </div>
                 // )),
-                createTableCellString(miningFarmDetailsEntity.totalNftsSold),
+                createTableCellString(miningFarmDetailsEntity.totalNftsSold.toString()),
                 createTableCell((
                     <div className = { 'Bold' } >
                         { miningFarmDetailsEntity.hasFloorPrice() === true ? (

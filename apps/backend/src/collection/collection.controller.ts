@@ -29,6 +29,7 @@ import NftEntity from '../nft/entities/nft.entity';
 import { ResFetchCollectionsByFilter, ResCreditCollection, ResFetchCollectionDetails, ResEditCollection, ResFetchTopCollections } from './dto/responses.dto';
 import CollectionFilterEntity from './entities/collection-filter.entity';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
+import { GraphqlService } from '../graphql/graphql.service';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -38,6 +39,7 @@ export class CollectionController {
         private collectionService: CollectionService,
         private nftService: NFTService,
         private dataService: DataService,
+        private graphqlService: GraphqlService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -240,14 +242,19 @@ export class CollectionController {
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,
     ): Promise<void> {
-        const denomIds = reqUpdateCollectionChainData.denomIds;
-        const module = reqUpdateCollectionChainData.module;
+        const { denomIds, module, height } = reqUpdateCollectionChainData;
+
+        const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
+
+        if (height > bdJunoParsedHeight) {
+            throw new Error(`BDJuno not yet on block:  ${height}`);
+        }
 
         if (module === ModuleName.MARKETPLACE) {
             const chainMarketplaceCollectionEntitiess = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
 
             if (chainMarketplaceCollectionEntitiess.length !== denomIds.length) {
-                throw new Error('Collections not yet found in BDJuno');
+                throw new Error('BDJuno is updated but marketpalce collections are missing');
             }
 
             for (let i = 0; i < chainMarketplaceCollectionEntitiess.length; i++) {
@@ -255,6 +262,9 @@ export class CollectionController {
                 const denomId = chainMarketplaceCollectionEntity.denomId;
 
                 const collectionEntity = await this.collectionService.findOneByDenomId(denomId);
+                if (!collectionEntity) {
+                    return;
+                }
 
                 // TODO: those shouldnt be changeable?
                 // updateCollectionDto.denom_id = denomId;
@@ -268,7 +278,7 @@ export class CollectionController {
             const chainNftCollectionEntities = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);
 
             if (chainNftCollectionEntities.length !== denomIds.length) {
-                throw new Error('Collections not yet found in BDJuno');
+                throw new Error('BDJuno is updated but nft collection entities are missing');
             }
 
             for (let i = 0; i < chainNftCollectionEntities.length; i++) {

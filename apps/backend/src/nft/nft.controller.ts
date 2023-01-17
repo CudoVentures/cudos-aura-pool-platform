@@ -96,7 +96,7 @@ export class NFTController {
         nftFilterEntity.nftIds = chainMarketplaceNftEntities.map((entity) => entity.uid);
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
 
-        for (let i = 0; i < chainMarketplaceNftEntities.length; i++) {
+        for (let i = 0; i < nftEntities.length; i++) {
             const nftEntity = nftEntities[i];
             const chainMarketplaceNftEntity = chainMarketplaceNftEntities.find((dto) => dto.uid === nftEntity.id);
 

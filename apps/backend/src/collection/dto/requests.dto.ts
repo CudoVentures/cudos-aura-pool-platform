@@ -42,6 +42,9 @@ export class ReqUpdateCollectionChainData {
     @IsNotEmpty()
     @ApiProperty({ required: true, example: ['denom_id1', 'denom_id2'] })
         denomIds: string[];
+
+    @IsNumber()
+        height: number;
 }
 
 export class ReqFetchCollectionsByFilter {

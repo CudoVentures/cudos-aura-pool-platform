@@ -21,7 +21,7 @@ export default class ApiMock implements CudosAuraPoolServiceRepo {
     async triggerUpdateNfts(tokenIds: string[]): Promise<void> {
     }
 
-    async updateLastCheckedheight(height: number): Promise<void> {
+    async updateLastCheckedHeight(height: number): Promise<void> {
     }
 
 }

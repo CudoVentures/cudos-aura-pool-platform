@@ -2,7 +2,7 @@ export default interface CudosAuraPoolServiceRepo {
 
     fetchHeartbeat(): Promise< void >;
     fetchLastCheckedBlock(): Promise < number >;
-    updateLastCheckedheight(height: number): Promise < void >;
+    updateLastCheckedHeight(height: number): Promise < void >;
     triggerUpdateMarketplaceModuleCollections(denomIds: string[], height: number): Promise < void >;
     triggerUpdateMarketplaceModuleNfts(nftDtos: {tokenId: string, denomId: string}[], height: number): Promise < void >;
     triggerUpdateNftModuleCollections(denomIds: string[], height: number): Promise < void >;

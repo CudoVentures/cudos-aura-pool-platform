@@ -27,7 +27,7 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
         return data.height
     }
 
-    async updateLastCheckedheight(height: number): Promise < void > {
+    async updateLastCheckedHeight(height: number): Promise < void > {
         const res = await axios.put(`${this.api_url}${LAST_BLOCK_ENDPOINT}`, { height });
     }
 
