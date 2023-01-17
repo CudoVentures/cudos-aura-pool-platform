@@ -73,7 +73,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 )),
                 createTableCell((
                     <div className = { 'Bold' } >
-                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudos(miningFarmPerformanceEntity.volumePer24HoursInAcudos)}</div>
+                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudosWithPrecision(miningFarmPerformanceEntity.volumePer24HoursInAcudos, 4)}</div>
                         <div className={'B3 FlexRow FarmVolumePriceRow'}>
                             <div className={'SemiBold ColorNeutral060'}>{numeral(miningFarmPerformanceEntity.volumePer24HoursInUsd).format(ProjectUtils.NUMERAL_USD)}</div>
                             {/* <div className={'ColorSuccess060'}>+39.1%</div> */}
@@ -89,8 +89,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                         }</div>
                         <div className={'B3 SemiBold Gray ColorNeutral060'}>{
                             miningFarmPerformanceEntity.ifFloorPriceSet() === true
-                                ? cudosStore.formatConvertedAcudosInUsd(miningFarmPerformanceEntity.floorPriceInAcudos)
-                                : 'No listed NFTs'
+                                && (cudosStore.formatConvertedAcudosInUsd(miningFarmPerformanceEntity.floorPriceInAcudos))
                         }</div>
                     </div>
                 )),

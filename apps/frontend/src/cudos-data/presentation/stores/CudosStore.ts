@@ -88,4 +88,8 @@ export default class CudosStore {
     static formatAcudosInCudos(acudosPrice: BigNumber): string {
         return `${CudosStore.convertAcudosInCudos(acudosPrice)} CUDOS`;
     }
+
+    static formatAcudosInCudosWithPrecision(acudosPrice: BigNumber, decimals: number): string {
+        return `${CudosStore.convertAcudosInCudos(acudosPrice).toFixed(decimals)} CUDOS`;
+    }
 }

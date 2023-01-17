@@ -18,7 +18,7 @@ export default function DailyChart({ className, timestampFrom, timestampTo, data
         return data.map((number, i) => {
             const date = new Date(timestampFrom);
             date.setDate(date.getDate() + i);
-            return moment().format(ProjectUtils.MOMENT_FORMAT_DATE);
+            return moment(date).format(ProjectUtils.MOMENT_FORMAT_DATE);
         });
     }
 

@@ -42,7 +42,7 @@ export default class MiningFarmPerformanceEntity {
         entity.miningFarmId = (json.miningFarmId ?? entity.miningFarmId).toString();
         entity.volumePer24HoursInAcudos = new BigNumber(json.volumePer24HoursInAcudos ?? entity.volumePer24HoursInAcudos);
         entity.volumePer24HoursInUsd = Number(json.volumePer24HoursInUsd ?? entity.volumePer24HoursInUsd);
-        entity.floorPriceInAcudos = new BigNumber(json.floorPriceInAcudos ?? entity.floorPriceInAcudos);
+        entity.floorPriceInAcudos = json.floorPriceInAcudos ? new BigNumber(json.floorPriceInAcudos) : entity.floorPriceInAcudos;
 
         return entity;
     }
