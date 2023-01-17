@@ -13,6 +13,16 @@ type GraphQlCollection = {
     },
 }
 
+export enum RoyaltiesType {
+    MINT = 'mint',
+    RESALE = 'resale',
+}
+
+export enum RoyaltiesReceiver {
+    PLATFORM = 'platform',
+    FARM = 'farm'
+}
+
 export default class ChainMarketplaceCollectionEntity {
     mintRoyalties: Royalty[];
     resaleRoyalties: Royalty[];
@@ -34,6 +44,16 @@ export default class ChainMarketplaceCollectionEntity {
         this.platformRoyaltiesAddress = '';
         this.farmMintRoyaltiesAddress = '';
         this.farmResaleRoyaltiesAddress = '';
+    }
+
+    getMintRoyaltiesPercent(address: string): number {
+        const percentString = this.mintRoyalties.find((royalty: Royalty) => royalty.address === address)?.percent;
+        return Number(percentString ?? 0);
+    }
+
+    getResaleRoyaltiesPercent(address: string): number {
+        const percentString = this.resaleRoyalties.find((royalty: Royalty) => royalty.address === address)?.percent;
+        return Number(percentString ?? 0);
     }
 
     static fromGraphQl(queryCollection: GraphQlCollection): ChainMarketplaceCollectionEntity {

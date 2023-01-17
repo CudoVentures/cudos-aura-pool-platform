@@ -6,7 +6,7 @@ import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/
 import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
-import ChainMarketplaceCollectionEntity from '../collection/entities/chain-marketplace-collection.entity';
+import ChainMarketplaceCollectionEntity, { RoyaltiesReceiver, RoyaltiesType } from '../collection/entities/chain-marketplace-collection.entity';
 import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import { DataServiceError } from '../common/errors/errors';
@@ -19,6 +19,7 @@ import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
+import EarningsPerDayFilterEntity from './entities/earnings-per-day-filter.entity';
 import EarningsPerDayEntity, { EarningWithTimestampEntity } from './entities/earnings-per-day.entity';
 import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
 import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
@@ -28,6 +29,7 @@ import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import NftEventEntity from './entities/nft-event.entity';
 import { NftOwnersPayoutHistoryEntity } from './entities/nft-owners-payout-history.entity';
 import { NftPayoutHistoryEntity } from './entities/nft-payout-history.entity';
+import EarningsEntity from './entities/platform-earnings.entity';
 import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
 
@@ -494,6 +496,117 @@ export class StatisticsService {
         return totalEarningsEntity;
     }
 
+    async fetchEarningsPerDay(earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise < EarningsEntity > {
+        const timestampFrom = earningsPerDayFilterEntity.timestampFrom;
+        const timestampTo = earningsPerDayFilterEntity.timestampTo;
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
+
+        const collectionFilterModel = new CollectionFilterEntity();
+
+        if (earningsPerDayFilterEntity.isFarmIdSet() === true) {
+            collectionFilterModel.farmId = earningsPerDayFilterEntity.farmId;
+        }
+
+        if (earningsPerDayFilterEntity.isCollectionIdSet() === true) {
+            collectionFilterModel.collectionIds = earningsPerDayFilterEntity.collectionIds
+        }
+
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterModel);
+        const collectionIdEntityMap = new Map<number, CollectionEntity>();
+        collectionEntities.forEach((entity) => {
+            collectionIdEntityMap.set(entity.id, entity)
+        })
+        const nftEntities = await this.nftService.findByCollectionIds(collectionEntities.map((entity) => entity.id));
+
+        let cudosEarningsPerDay = [];
+        if (earningsPerDayFilterEntity.shouldFetchCudosEarnings() === true) {
+            cudosEarningsPerDay = await this.fetchCudosEarningsForNfts(collectionEntities, earningsPerDayFilterEntity)
+        }
+
+        let btcEarningsPerDay = [];
+        if (earningsPerDayFilterEntity.shouldFetchCudosEarnings() === true) {
+            btcEarningsPerDay = await this.fetchBtcEarningsForNfts(nftEntities, collectionIdEntityMap, earningsPerDayFilterEntity)
+        }
+
+        const earningsEntity = new EarningsEntity();
+        earningsEntity.cudosEarningsPerDay = cudosEarningsPerDay;
+        earningsEntity.btcEarningsPerDay = btcEarningsPerDay;
+
+        return earningsEntity
+    }
+
+    private async fetchCudosEarningsForNfts(collectionEntities: CollectionEntity[], earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise< BigNumber[] > {
+        const denomIds = collectionEntities.map((collectionEntity) => collectionEntity.denomId);
+
+        // fetch marketplace collections for the royalties data
+        const marketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
+        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionEntity>();
+        marketplaceCollectionEntities.forEach((collectionEntity) => {
+            denomIdMarketplaceCollectionEntityMap.set(collectionEntity.denomId, collectionEntity);
+        })
+
+        // fetch all events for those nfts
+        const nftMarketplaceEventEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(denomIds);
+        const nftEventEntities = nftMarketplaceEventEntities.map((nftMarketplaceTradeHistoryEventEntity) => NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEventEntity));
+
+        // filter events by minted and by resale
+        const nftMintEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isMintEvent() === true);
+        const nftSaleEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isSaleEvent() === true);
+
+        const timestampEarningEntities: EarningWithTimestampEntity[] = [];
+
+        // calculate minted royalties and resale royalties
+        nftMintEventEntities.map((nftEventEntity) => {
+            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+            if (!marketplaceCollectionEntity) {
+                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
+            }
+
+            const royaltiesAddress = earningsPerDayFilterEntity.isEarningsReceiverPlatform() ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmMintRoyaltiesAddress;
+            const royaltiesPercent = marketplaceCollectionEntity.getMintRoyaltiesPercent(royaltiesAddress);
+            if (!royaltiesPercent) {
+                throw Error('Missing royalties percent,');
+            }
+
+            const mintPrice = nftEventEntity.transferPriceInAcudos;
+            timestampEarningEntities.push(new EarningWithTimestampEntity(nftEventEntity.timestamp, mintPrice.multipliedBy(royaltiesPercent / 100)));
+        });
+
+        nftSaleEventEntities.map((nftEventEntity) => {
+            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+            if (!marketplaceCollectionEntity) {
+                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
+            }
+
+            const royaltiesAddress = earningsPerDayFilterEntity.isEarningsReceiverPlatform() ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmResaleRoyaltiesAddress;
+            const royaltiesPercent = marketplaceCollectionEntity.getResaleRoyaltiesPercent(royaltiesAddress);
+            if (!royaltiesPercent) {
+                throw Error('Missing royalties percent,');
+            }
+
+            const earningFromResale = nftEventEntity.transferPriceInAcudos.multipliedBy(royaltiesPercent / 100);
+            timestampEarningEntities.push(new EarningWithTimestampEntity(nftEventEntity.timestamp, earningFromResale));
+        });
+
+        // calculate earnings per day in acudos
+        const earningsPerDayEntity = new EarningsPerDayEntity(earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+        earningsPerDayEntity.calculateEarningsByTimestampEarningEntities(timestampEarningEntities);
+
+        return earningsPerDayEntity.earningsPerDay
+    }
+
+    // TODO
+    private async fetchBtcEarningsForNfts(nftEntities, collectionIdEntityMap, earningsPerDayFilterEntity): Promise < BigNumber[] > {
+        const payoutHistoryForPeriod = await this.fetchPayoutHistoryByTokenIdsAndTimestamp(nftEntities.map((entity) => entity.id), earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+        const earningsPerDayEntity = new EarningsPerDayEntity(earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+        earningsPerDayEntity.calculateEarningsByTimestampEarningEntities(payoutHistoryForPeriod.map((nftPayoutHistoryEntity) => {
+            const earnings = earningsPerDayFilterEntitynftPayoutHistoryEntity.cudoPartOfReward
+            return new EarningWithTimestampEntity(nftPayoutHistoryEntity.createdAt, nftPayoutHistoryEntity)
+        }));
+    }
+
     private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
@@ -523,6 +636,22 @@ export class StatisticsService {
         });
         return nftOwnersPayoutHistoryRepos.map((nftOwnersPayoutHistoryRepo) => {
             return NftOwnersPayoutHistoryEntity.fromRepo(nftOwnersPayoutHistoryRepo);
+        });
+    }
+
+    private async fetchPayoutHistoryByTokenIdsAndTimestamp(tokenIds: number[], timestampFrom: number, timestampTo: number): Promise < NftPayoutHistoryEntity[] > {
+        const nftPayoutHistoryRepos = await this.nftPayoutHistoryRepo.findAll({
+            where: {
+                [NftPayoutHistoryRepoColumn.TOKEN_ID]: tokenIds,
+                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
+                    [Op.gte]: new Date(timestampFrom),
+                    [Op.lte]: new Date(timestampTo),
+                },
+                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
+            },
+        });
+        return nftPayoutHistoryRepos.map((nftPayoutHistoryRepo) => {
+            return NftPayoutHistoryEntity.fromRepo(nftPayoutHistoryRepo);
         });
     }
 
