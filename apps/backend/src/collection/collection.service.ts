@@ -286,14 +286,16 @@ export class CollectionService {
 
         const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
 
-        const soldNfts = await this.graphqlService.fetchNftsByDenomId([collection.denomId]) // Sold NFTs
-
-        const uniqueOwnersArray = [...new Set(soldNfts.map((nft) => nft.owner))] // Unique owners of all the NFTs in the collection
+        const nftOwnersSet = new Set(nftEntities.filter((nft) => nft.hasOwner()).map((nft) => nft.currentOwner)); // Unique owners of all the NFTs in the collection
 
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
-        const sortedByPriceSoldNfts = soldNfts.sort((a, b) => a.acudosPrice.comparedTo(b.acudosPrice)).filter((nft) => nft.hasPrice()) // Sorting by price and filtering out nfts with price "null" (price "null" means they're not listed for sale)
-        const cheapestNfts = [approvedNfts[0], sortedByPriceSoldNfts[0]].filter((entity) => entity?.hasPrice()).sort((a, b) => a.acudosPrice.comparedTo(b.acudosPrice)) // filtering out "undefined" price since both approved and sold NFTs arrays could be empty
-        const floorPriceInAcudos = cheapestNfts[0].acudosPrice || new BigNumber(0); // Price of the cheapest NFT
+        const floorPriceInAcudos = approvedNfts.reduce((cheapestNftSoFar, nftEntity) => {
+            if (nftEntity.hasPrice() === false) {
+                return cheapestNftSoFar;
+            }
+            cheapestNftSoFar ??= nftEntity;
+            return nftEntity.acudosPrice.lt(cheapestNftSoFar.acudosPrice) ? nftEntity : cheapestNftSoFar;
+        }, null)?.acudosPrice ?? new BigNumber(0);
 
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
         const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])
@@ -309,7 +311,7 @@ export class CollectionService {
         collectionDetailsEntity.id = collectionId;
         collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString();
         collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString() || '0';
-        collectionDetailsEntity.owners = uniqueOwnersArray.length;
+        collectionDetailsEntity.owners = nftOwnersSet.size;
         collectionDetailsEntity.cudosAddress = adminEntity?.cudosWalletAddress ?? '';
         collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
 
