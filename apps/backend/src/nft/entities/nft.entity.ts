@@ -42,6 +42,10 @@ export default class NftEntity {
         return this.acudosPrice.gt(0);
     }
 
+    hasOwner(): boolean {
+        return this.currentOwner !== '';
+    }
+
     isNew(): boolean {
         const idAsNumber = parseInt(this.id);
         return Number.isNaN(idAsNumber) === false && idAsNumber < 0;

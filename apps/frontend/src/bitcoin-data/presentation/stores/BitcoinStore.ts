@@ -63,12 +63,24 @@ export default class BitcoinStore {
         return (priceChangeInUsd / priceInUsd) * 100;
     }
 
-    formatBtcInUsd(btcPrice: BigNumber): string {
-        return numeral(btcPrice.multipliedBy(this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0)).format(ProjectUtils.NUMERAL_USD);
+    convertBtcInUsd(btc: BigNumber): BigNumber {
+        return btc.multipliedBy(this.getBitcoinPriceInUsd());
+    }
+
+    formatBtcInUsd(btc: BigNumber): string {
+        return numeral(btc.multipliedBy(this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0)).format(ProjectUtils.NUMERAL_USD);
     }
 
     formatBitcoinPriceChangeInPercentage(): string {
         return `${this.getBitcoinPriceChangeInPercentage().toFixed(2)} %`;
+    }
+
+    static formatBtc(btc: BigNumber): string {
+        return `${btc} BTC`;
+    }
+
+    static formatBtcWithPrecision(btc: BigNumber, decimals: number): string {
+        return `${btc.toFixed(decimals)} BTC`;
     }
 
     getNetworkDifficulty(): string {

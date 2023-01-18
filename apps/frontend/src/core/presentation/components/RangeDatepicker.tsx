@@ -32,7 +32,18 @@ export default function RangeDatepicker({ datepickerState, dateRangeFormat, empt
         const open = end === null;
 
         const startTime = isDateValid(start) ? start.getTime() : S.NOT_EXISTS;
-        const endTime = isDateValid(end) ? end.getTime() : S.NOT_EXISTS;
+        let endTime;
+        if (isDateValid(end) === true) {
+            if (props.showTimeInput !== true && props.showTimeSelect !== true && props.showTimeSelectOnly !== true) {
+                const date = new Date(end);
+                date.setDate(date.getDate() + 1);
+                endTime = date.getTime() - 1;
+            } else {
+                endTime = end.getTime();
+            }
+        } else {
+            endTime = S.NOT_EXISTS;
+        }
 
         onChange(startTime, endTime);
 

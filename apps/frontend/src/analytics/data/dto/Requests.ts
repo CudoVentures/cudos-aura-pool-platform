@@ -1,3 +1,4 @@
+import EarningsPerDayFilterEntity from '../../entities/EarningsPerDayFilterEntity';
 import MegaWalletEventFilterModel from '../../entities/MegaWalletEventFilterModel';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
 
@@ -65,6 +66,46 @@ export class ReqFetchTotalNftEarnings {
     constructor(timestampFrom: number, timestampTo: number) {
         this.timestampFrom = timestampFrom;
         this.timestampTo = timestampTo;
+    }
+
+}
+
+export class ReqFetchEarningsPerDay {
+
+    earningsPerDayFilterEntity: EarningsPerDayFilterEntity;
+
+    constructor(earningsPerDayFilterEntity: EarningsPerDayFilterEntity) {
+        this.earningsPerDayFilterEntity = EarningsPerDayFilterEntity.toJson(earningsPerDayFilterEntity);
+    }
+
+}
+
+export class ReqFetchMiningFarmMaintenanceFee {
+
+    miningFarmId: string;
+
+    constructor(miningFarmId: string) {
+        this.miningFarmId = miningFarmId;
+    }
+
+}
+
+export class ReqFetchMiningFarmTotalEarningsBtc {
+
+    miningFarmId: string;
+
+    constructor(miningFarmId: string) {
+        this.miningFarmId = miningFarmId;
+    }
+
+}
+
+export class ReqFetchMiningFarmTotalEarningsCudos {
+
+    miningFarmId: string;
+
+    constructor(miningFarmId: string) {
+        this.miningFarmId = miningFarmId;
     }
 
 }
