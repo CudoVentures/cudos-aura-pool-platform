@@ -30,7 +30,6 @@ export default class EarningsPerDayEntity {
         }
 
         const entity = new EarningsPerDayEntity();
-
         entity.cudosEarningsPerDay = (json.cudosEarningsPerDay ?? entity.cudosEarningsPerDay).map((j) => new BigNumber(j));
         entity.btcEarningsPerDay = (json.btcEarningsPerDay ?? entity.btcEarningsPerDay).map((j) => new BigNumber(j));
 
