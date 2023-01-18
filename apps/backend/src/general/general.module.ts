@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize/dist/sequelize.module';
 import { GeneralController } from './general.controller';
 import GeneralService from './general.service';

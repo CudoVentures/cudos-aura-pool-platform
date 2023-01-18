@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
 import { timeStamp } from 'console';
@@ -13,6 +14,7 @@ import { DataServiceError } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
 import { FarmService } from '../farm/farm.service';
+import GeneralService from '../general/general.service';
 import NftMarketplaceTradeHistoryEntity from '../graphql/entities/nft-marketplace-trade-history.entity';
 import NftModuleNftTransferEntity from '../graphql/entities/nft-module-nft-transfer-history';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -46,6 +48,8 @@ export class StatisticsService {
         private collectionService: CollectionService,
         @Inject(forwardRef(() => FarmService))
         private farmService: FarmService,
+        @Inject(forwardRef(() => ConfigService))
+        private configService: ConfigService,
         private graphqlService: GraphqlService,
         @InjectModel(NftPayoutHistoryRepo)
         private nftPayoutHistoryRepo: typeof NftPayoutHistoryRepo,
@@ -490,8 +494,8 @@ export class StatisticsService {
 
         const totalEarningsEntity = new TotalEarningsEntity();
 
-        totalEarningsEntity.totalSalesInAcudos = new BigNumber(3)
-        totalEarningsEntity.earningsPerDayInUsd = earningsPerDayInUsd;
+        // totalEarningsEntity.acudosEarningsPerDay = new BigNumber(3)
+        // totalEarningsEntity.earningsPerDayInUsd = earningsPerDayInUsd;
 
         return totalEarningsEntity;
     }
@@ -516,20 +520,19 @@ export class StatisticsService {
         collectionEntities.forEach((entity) => {
             collectionIdEntityMap.set(entity.id, entity)
         })
-        const nftEntities = await this.nftService.findByCollectionIds(collectionEntities.map((entity) => entity.id));
 
-        let cudosEarningsPerDay = [];
+        let acudosEarningsPerDay = [];
         if (earningsPerDayFilterEntity.shouldFetchCudosEarnings() === true) {
-            cudosEarningsPerDay = await this.fetchCudosEarningsForNfts(collectionEntities, earningsPerDayFilterEntity)
+            acudosEarningsPerDay = await this.fetchCudosEarningsForNfts(collectionEntities, earningsPerDayFilterEntity)
         }
 
         let btcEarningsPerDay = [];
-        if (earningsPerDayFilterEntity.shouldFetchCudosEarnings() === true) {
-            btcEarningsPerDay = await this.fetchBtcEarningsForNfts(nftEntities, collectionIdEntityMap, earningsPerDayFilterEntity)
+        if (earningsPerDayFilterEntity.shouldFetchBtcEarnings() === true) {
+            btcEarningsPerDay = await this.fetchBtcEarnings(earningsPerDayFilterEntity)
         }
 
         const earningsEntity = new EarningsEntity();
-        earningsEntity.cudosEarningsPerDay = cudosEarningsPerDay;
+        earningsEntity.acudosEarningsPerDay = acudosEarningsPerDay;
         earningsEntity.btcEarningsPerDay = btcEarningsPerDay;
 
         return earningsEntity
@@ -546,7 +549,8 @@ export class StatisticsService {
         })
 
         // fetch all events for those nfts
-        const nftMarketplaceEventEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(denomIds);
+        let nftMarketplaceEventEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(denomIds);
+        nftMarketplaceEventEntities = nftMarketplaceEventEntities.filter((eventEntity) => eventEntity.timestamp <= earningsPerDayFilterEntity.timestampTo && eventEntity.timestamp >= earningsPerDayFilterEntity.timestampFrom)
         const nftEventEntities = nftMarketplaceEventEntities.map((nftMarketplaceTradeHistoryEventEntity) => NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEventEntity));
 
         // filter events by minted and by resale
@@ -597,20 +601,55 @@ export class StatisticsService {
         return earningsPerDayEntity.earningsPerDay
     }
 
-    // TODO
-    private async fetchBtcEarningsForNfts(nftEntities, collectionIdEntityMap, earningsPerDayFilterEntity): Promise < BigNumber[] > {
-        const payoutHistoryForPeriod = await this.fetchPayoutHistoryByTokenIdsAndTimestamp(nftEntities.map((entity) => entity.id), earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+    private async fetchBtcEarnings(earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise < BigNumber[] > {
+        let address = null;
+
+        if (earningsPerDayFilterEntity.isEarningsReceiverFarm() === true) {
+            const farm = await this.farmService.findMiningFarmById(parseInt(earningsPerDayFilterEntity.farmId));
+
+            if (!farm) {
+                throw Error(`Farm not found by ID: ${earningsPerDayFilterEntity.farmId}`);
+            }
+
+            address = farm.leftoverRewardsBtcAddress;
+        }
+
+        if (earningsPerDayFilterEntity.isEarningsReceiverPlatform() === true) {
+            address = this.configService.getOrThrow('APP_CUDOS_BTC_FEE_PAYOUT_ADDRESS')
+        }
+
+        if (address === null) {
+            throw Error('Address not set.');
+        }
+
+        const ownersPayoutHistoryForPeriod = await this.fetchNftOwnersPayoutHistoryByPayoutAddress(address, earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
         const earningsPerDayEntity = new EarningsPerDayEntity(earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
-        earningsPerDayEntity.calculateEarningsByTimestampEarningEntities(payoutHistoryForPeriod.map((nftPayoutHistoryEntity) => {
-            const earnings = earningsPerDayFilterEntitynftPayoutHistoryEntity.cudoPartOfReward
-            return new EarningWithTimestampEntity(nftPayoutHistoryEntity.createdAt, nftPayoutHistoryEntity)
-        }));
+        earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(ownersPayoutHistoryForPeriod);
+
+        return earningsPerDayEntity.earningsPerDay;
     }
 
     private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
                 [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
+                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
+                    [Op.gte]: new Date(timestampFrom),
+                    [Op.lte]: new Date(timestampTo),
+                },
+                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
+            },
+        });
+
+        return nftOwnersPayoutHistoryRepos.map((nftOwnersPayoutHistoryRepo) => {
+            return NftOwnersPayoutHistoryEntity.fromRepo(nftOwnersPayoutHistoryRepo);
+        });
+    }
+
+    private async fetchNftOwnersPayoutHistoryByPayoutAddress(btcAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
+        const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
+            where: {
+                [NftOwnersPayoutHistoryRepoColumn.PAYOUT_ADDRESS]: btcAddress,
                 [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
                     [Op.gte]: new Date(timestampFrom),
                     [Op.lte]: new Date(timestampTo),
@@ -636,22 +675,6 @@ export class StatisticsService {
         });
         return nftOwnersPayoutHistoryRepos.map((nftOwnersPayoutHistoryRepo) => {
             return NftOwnersPayoutHistoryEntity.fromRepo(nftOwnersPayoutHistoryRepo);
-        });
-    }
-
-    private async fetchPayoutHistoryByTokenIdsAndTimestamp(tokenIds: number[], timestampFrom: number, timestampTo: number): Promise < NftPayoutHistoryEntity[] > {
-        const nftPayoutHistoryRepos = await this.nftPayoutHistoryRepo.findAll({
-            where: {
-                [NftPayoutHistoryRepoColumn.TOKEN_ID]: tokenIds,
-                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
-                    [Op.gte]: new Date(timestampFrom),
-                    [Op.lte]: new Date(timestampTo),
-                },
-                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
-            },
-        });
-        return nftPayoutHistoryRepos.map((nftPayoutHistoryRepo) => {
-            return NftPayoutHistoryEntity.fromRepo(nftPayoutHistoryRepo);
         });
     }
 

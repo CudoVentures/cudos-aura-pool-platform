@@ -1,4 +1,5 @@
-import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from "../../common/utils"
+import { NOT_EXISTS_INT, NOT_EXISTS_STRING } from '../../common/utils'
+import { EarningsPerDayFilterJsonValidator } from '../statistics.types'
 
 export enum EarningsPerDayCurrency {
     CUDOS = 'cudos',
@@ -33,14 +34,13 @@ export default class EarningsPerDayFilterEntity {
         return this.farmId !== NOT_EXISTS_STRING;
     }
 
-    isCollectionIdSet(): booelean {
+    isCollectionIdSet(): boolean {
         return this.collectionIds !== null;
     }
 
     shouldFetchCudosEarnings(): boolean {
         return this.currency === EarningsPerDayCurrency.CUDOS || this.currency === EarningsPerDayCurrency.USD;
     }
-
 
     shouldFetchBtcEarnings(): boolean {
         return this.currency === EarningsPerDayCurrency.BTC || this.currency === EarningsPerDayCurrency.USD;
@@ -49,10 +49,11 @@ export default class EarningsPerDayFilterEntity {
     static fromJson(json: EarningsPerDayFilterJsonValidator): EarningsPerDayFilterEntity {
         const entity = new EarningsPerDayFilterEntity();
 
-        entity.timestampFrom = parseInt(json.timestampFrom ?? entity.timestampFrom);
-        entity.timestampTo = parseInt(json.timestampTo ?? entity.timestampTo);
-        entity.currency = json.currency ? entity.currency;
-        
+        entity.timestampFrom = json.timestampFrom ?? entity.timestampFrom;
+        entity.timestampTo = json.timestampTo ?? entity.timestampTo;
+        entity.currency = json.currency ?? entity.currency;
+        entity.farmId = json.farmId ?? entity.farmId;
+        entity.collectionIds = null;
 
         return entity;
     }

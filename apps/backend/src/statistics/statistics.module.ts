@@ -8,6 +8,8 @@ import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
 import { FarmModule } from '../farm/farm.module';
 import { CollectionModule } from '../collection/collection.module';
 import { GraphqlModule } from '../graphql/graphql.module';
+import { GeneralModule } from '../general/general.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
@@ -19,6 +21,7 @@ import { GraphqlModule } from '../graphql/graphql.module';
         forwardRef(() => CollectionModule),
         forwardRef(() => FarmModule),
         forwardRef(() => GraphqlModule),
+        forwardRef(() => ConfigModule),
     ],
     controllers: [StatisticsController],
     providers: [StatisticsService],

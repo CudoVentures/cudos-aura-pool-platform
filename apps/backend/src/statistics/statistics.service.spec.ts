@@ -7,7 +7,7 @@ import { GraphqlModule } from '../graphql/graphql.module';
 import { NFTModule } from '../nft/nft.module';
 import { FarmModule } from '../farm/farm.module';
 import { CollectionModule } from '../collection/collection.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
 import { emptyStatisticsTestData, fillStatisticsTestData, getGraphQlmarketplaceCollections, getGraphQlMarketplaceNftEvents, getGraphQlNftNftEvents, getZeroDatePlusDaysTimestamp, nftTestEntitities } from './utils/test.utils';
@@ -29,12 +29,15 @@ import { CollectionRepo } from '../collection/repos/collection.repo';
 import { CollectionStatus } from '../collection/utils';
 import { DataServiceError } from '../common/errors/errors';
 import { collectionEntities } from '../../test/data/collections.data';
+import EarningsEntity from './entities/platform-earnings.entity';
+import EarningsPerDayFilterEntity, { EarningsPerDayCurrency } from './entities/earnings-per-day-filter.entity';
 
 describe('StatisticsService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
     let service: StatisticsService;
     let module: TestingModule;
     let graphQlService: GraphqlService;
+    let configService: ConfigService;
 
     jest.setTimeout(6000000);
 
@@ -94,6 +97,7 @@ describe('StatisticsService', () => {
 
         service = module.get<StatisticsService>(StatisticsService);
         graphQlService = module.get<GraphqlService>(GraphqlService);
+        configService = module.get<ConfigService>(ConfigService);
 
         jest.spyOn(graphQlService, 'fetchMarketplaceCollectionsByDenomIds').mockImplementation(async (denomIds) => getGraphQlmarketplaceCollections().filter((entity) => denomIds.includes(entity.denomId)));
         jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
@@ -101,7 +105,7 @@ describe('StatisticsService', () => {
         jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlMarketplaceNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
         jest.spyOn(graphQlService, 'fetchNftPlatformTransferHistory').mockImplementation(async () => getGraphQlNftNftEvents());
         jest.spyOn(graphQlService, 'fetchMarketplacePlatformNftTradeHistory').mockImplementation(async () => getGraphQlMarketplaceNftEvents());
-
+        jest.spyOn(configService, 'getOrThrow').mockImplementation(() => 'testpayout');
     });
 
     afterAll(async () => {
@@ -623,5 +627,92 @@ describe('StatisticsService', () => {
 
         // Assert
         expect(userEarningsEntity).toEqual(result);
+    });
+
+    it('fetchEarningsPerDay: cudos farm earnings Happy path', async () => {
+        // Arrange
+        const expectedUserEraningsEntity = EarningsEntity.fromJson({
+            acudosEarningsPerDay: [
+                '2.9', '0.3', '0',
+            ],
+            btcEarningsPerDay: [],
+        });
+
+        // Act
+        const earningsPerDayFilterEntity = new EarningsPerDayFilterEntity();
+        earningsPerDayFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(2);
+        earningsPerDayFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(4);
+        earningsPerDayFilterEntity.farmId = '1';
+        earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.CUDOS
+
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    it('fetchEarningsPerDay: BTC farm earnings Happy path', async () => {
+        // Arrange
+        const expectedUserEraningsEntity = EarningsEntity.fromJson({
+            acudosEarningsPerDay: [],
+            btcEarningsPerDay: [
+                '3', '4', '5',
+            ],
+        });
+
+        // Act
+        const earningsPerDayFilterEntity = new EarningsPerDayFilterEntity();
+        earningsPerDayFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(2);
+        earningsPerDayFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(4);
+        earningsPerDayFilterEntity.farmId = '1';
+        earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.BTC
+
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    it('fetchEarningsPerDay: cudos platform earnings Happy path', async () => {
+        // Arrange
+        const expectedUserEraningsEntity = EarningsEntity.fromJson({
+            acudosEarningsPerDay: [
+                '0.5', '0.7', '0.9',
+            ],
+            btcEarningsPerDay: [],
+        });
+
+        // Act
+        const earningsPerDayFilterEntity = new EarningsPerDayFilterEntity();
+        earningsPerDayFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(2);
+        earningsPerDayFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(4);
+        earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.CUDOS
+
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    it('fetchEarningsPerDay: BTC platform earnings Happy path', async () => {
+        // Arrange
+        const expectedUserEraningsEntity = EarningsEntity.fromJson({
+            acudosEarningsPerDay: [
+            ],
+            btcEarningsPerDay: [
+                '3', '4', '5',
+            ],
+        });
+
+        // Act
+        const earningsPerDayFilterEntity = new EarningsPerDayFilterEntity();
+        earningsPerDayFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(2);
+        earningsPerDayFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(4);
+        earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.BTC
+
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 });

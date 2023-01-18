@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
 
 export default class EarningsEntity {
-    cudosEarningsPerDay: BigNumber[];
+    acudosEarningsPerDay: BigNumber[];
     btcEarningsPerDay: BigNumber[];
 
     constructor() {
-        this.cudosEarningsPerDay = [];
+        this.acudosEarningsPerDay = [];
         this.btcEarningsPerDay = [];
     }
 
@@ -14,7 +14,7 @@ export default class EarningsEntity {
             return null;
         }
         return {
-            'cudosEarningsPerDay': entity.cudosEarningsPerDay.map((m) => m.toString()),
+            'acudosEarningsPerDay': entity.acudosEarningsPerDay.map((m) => m.toString()),
             'btcEarningsPerDay': entity.btcEarningsPerDay.map((m) => m.toString()),
         }
     }
@@ -25,7 +25,7 @@ export default class EarningsEntity {
         }
         const entity = new EarningsEntity();
 
-        entity.cudosEarningsPerDay = (json.cudosEarningsPerDay ?? entity.cudosEarningsPerDay).map((j) => new BigNumber(j));
+        entity.acudosEarningsPerDay = (json.acudosEarningsPerDay ?? entity.acudosEarningsPerDay).map((j) => new BigNumber(j));
         entity.btcEarningsPerDay = (json.btcEarningsPerDay ?? entity.btcEarningsPerDay).map((j) => new BigNumber(j));
 
         return entity;

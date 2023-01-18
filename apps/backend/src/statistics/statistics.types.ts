@@ -1,6 +1,30 @@
 import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { EarningsPerDayCurrency } from './entities/earnings-per-day-filter.entity';
 import { MegaWalletEventType } from './entities/mega-wallet-event.entity';
 import { NftTransferHistoryEventType } from './entities/nft-event.entity';
+
+export class EarningsPerDayFilterJsonValidator {
+    @IsNumber()
+    @IsOptional()
+        timestampFrom: number;
+
+    @IsNumber()
+    @IsOptional()
+        timestampTo: number;
+
+    @IsNumber()
+    @IsEnum(EarningsPerDayCurrency)
+        currency: EarningsPerDayCurrency;
+
+    @IsString()
+    @IsOptional()
+        farmId: string
+
+    @IsString({ each: true })
+    @IsOptional()
+    @IsArray()
+        collectionIds: string[]
+}
 
 export class NftEventFilterValidationJson {
 
