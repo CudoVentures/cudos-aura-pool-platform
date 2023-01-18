@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
-import { MegaWalletEventFilterValidationJson, NftEventFilterValidationJson } from '../statistics.types'
+import { EarningsPerDayFilterJsonValidator, MegaWalletEventFilterValidationJson, NftEventFilterValidationJson } from '../statistics.types'
 
 export class ReqNftEventsByFilter {
     @IsDefined()
@@ -64,4 +64,31 @@ export class ReqFetchTotalNftEarnings {
     @IsNumber()
         timestampTo: number;
 
+}
+
+export class ReqFetchEarningsPerDay {
+    @IsDefined()
+    @IsNotEmptyObject()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => EarningsPerDayFilterJsonValidator)
+        earningsPerDayFilterEntity: EarningsPerDayFilterJsonValidator;
+}
+
+export class ReqFetchMiningFarmMaintenanceFee {
+    @IsDefined()
+    @IsString()
+        miningFarmId: string;
+}
+
+export class ReqFetchFarmTotalBtcEarnings {
+    @IsDefined()
+    @IsString()
+        miningFarmId: string;
+}
+
+export class ReqFetchMiningFarmTotalEarningsCudos {
+    @IsDefined()
+    @IsString()
+        miningFarmId: string;
 }

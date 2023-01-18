@@ -62,70 +62,63 @@ export default class StatisticsApi {
 
     async fetchEarningsPerDay(earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise < EarningsPerDayEntity > {
         const req = new ReqFetchEarningsPerDay(earningsPerDayFilterEntity);
-        const res = new ResFetchEarningsPerDay({
-            'earningsPerDayEntity': {
-                'cudosEarningsPerDay': ['1', '2'],
-                'btcEarningsPerDay': ['3', '4'],
-            },
-        })
+
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchEarningsPerDay`, req)
+
+        const res = new ResFetchEarningsPerDay(data)
+
         return res.earningsPerDayEntity;
     }
 
     async fetchMiningFarmMaintenanceFee(miningFarmId: string): Promise < MiningFarmMaintenanceFeeEntity > {
         const req = new ReqFetchMiningFarmMaintenanceFee(miningFarmId);
-        const res = new ResFetchMiningFarmMaintenanceFee({
-            'miningFarmMaintenanceFeeEntity': {
-                'maintenanceFeeInBtc': '1',
-            },
-        });
+
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchFarmMaintenanceFee`, req)
+
+        const res = new ResFetchMiningFarmMaintenanceFee(data);
         return res.miningFarmMaintenanceFeeEntity;
     }
 
     async fetchMiningFarmTotalEarningsBtc(miningFarmId: string): Promise < MiningFarmTotalEarningsBtcEntity > {
         const req = new ReqFetchMiningFarmTotalEarningsBtc(miningFarmId);
-        const res = new ResFetchMiningFarmTotalEarningsBtc({
-            'miningFarmTotalEarningsBtcEntity': {
-                'unsoftNftsTotalEarningsInBtc': '2',
-            },
-        });
+
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchFarmTotalBtcEarnings`, req)
+
+        const res = new ResFetchMiningFarmTotalEarningsBtc(data);
+
         return res.miningFarmTotalEarningsBtcEntity;
     }
 
     async fetchMiningFarmTotalEarningsCudos(miningFarmId: string): Promise < MiningFarmTotalEarningsCudosEntity > {
         const req = new ReqFetchMiningFarmTotalEarningsCudos(miningFarmId);
-        const res = new ResFetchMiningFarmTotalEarningsCudos({
-            'miningFarmTotalEarningsCudosEntity': {
-                'resaleRoyaltiesTotalEarningsInAcudos': '3',
-                'soldNftsTotalEarningsInAcudos': '4',
-            },
-        });
+
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchFarmTotalCudosEarnings`, req)
+
+        const res = new ResFetchMiningFarmTotalEarningsCudos(data);
+
         return res.miningFarmTotalEarningsCudosEntity;
     }
 
     async fetchPlatformMaintenanceFee(): Promise < PlatformMaintenanceFeeEntity > {
-        const res = new ResFetchPlatformMaintenanceFee({
-            'platformMaintenanceFeeEntity': {
-                'maintenanceFeeInBtc': '5',
-            },
-        })
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchPlatformMaintenanceFees`)
+
+        const res = new ResFetchPlatformMaintenanceFee(data)
+
         return res.platformMaintenanceFeeEntity;
     }
 
     async fetchPlatformTotalEarningsBtc(): Promise < PlatformTotalEarningsBtcEntity > {
-        const res = new ResFetchPlatformTotalEarningsBtc({
-            'platformTotalEarningsBtcEntity': {
-                'nftFeesTotalEarningsInBtc': '6',
-            },
-        })
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchPlatformTotalBtcEarnings`)
+
+        const res = new ResFetchPlatformTotalEarningsBtc(data)
         return res.platformTotalEarningsBtcEntity;
     }
 
     async fetchPlatformTotalEarningsCudos(): Promise < PlatformTotalEarningsCudosEntity > {
-        const res = new ResFetchPlatformTotalEarningsCudos({
-            'platformTotalEarningsCudosEntity': {
-                'resaleRoyaltiesTotalEarningsInAcudos': '7',
-            },
-        })
+        const { data } = await axios.post(`${STATISTICS_URL}/fetchPlatformTotalCudosEarnings`)
+
+        const res = new ResFetchPlatformTotalEarningsCudos(data);
+
         return res.platformTotalEarningsCudosEntity;
     }
 

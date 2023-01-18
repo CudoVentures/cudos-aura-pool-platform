@@ -26,6 +26,7 @@ import EarningsPerDayEntity, { EarningWithTimestampEntity } from './entities/ear
 import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
 import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
 import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
+import MiningFarmMaintenanceFeeEntity from './entities/mining-farm-maintenance-fees.entity';
 import NftEarningsEntity from './entities/nft-earnings.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import NftEventEntity from './entities/nft-event.entity';
@@ -38,6 +39,11 @@ import UserEarningsEntity from './entities/user-earnings.entity';
 import { NftOwnersPayoutHistoryRepo, NftOwnersPayoutHistoryRepoColumn } from './repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo, NftPayoutHistoryRepoColumn } from './repos/nft-payout-history.repo';
 import { dayInMs, getDays } from './statistics.types';
+
+export enum BtcEarningsType {
+    MAINTENANCE_FEE = 'maintenanceFee',
+    EARNINGS = 'earnings'
+}
 
 @Injectable()
 export class StatisticsService {
@@ -629,6 +635,112 @@ export class StatisticsService {
         return earningsPerDayEntity.earningsPerDay;
     }
 
+    async fetchFarmTotalBtcReceived(farmId: number, type: BtcEarningsType): Promise < BigNumber > {
+        const miningFarm = await this.farmService.findMiningFarmById(farmId);
+
+        if (!miningFarm) {
+            throw Error(`Farm not found with ID: ${farmId}`);
+        }
+
+        const address = type === BtcEarningsType.MAINTENANCE_FEE
+            ? miningFarm.maintenanceFeePayoutBtcAddress
+            : miningFarm.leftoverRewardsBtcAddress
+
+        const ownersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByPayoutAddress(address, 0, Number.MAX_SAFE_INTEGER);
+
+        const total = ownersPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.reward), new BigNumber(0));
+
+        return total
+    }
+
+    async fetchPlatformTotalBtcReceived(type: BtcEarningsType): Promise < BigNumber > {
+        const nftPayoutEntitites = await this.fetchAllPayoutHistory();
+        const totalCudosMaintenanceFees = nftPayoutEntitites.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoPartOfMaintenanceFee), new BigNumber(0));
+
+        const address = this.configService.getOrThrow('APP_CUDOS_BTC_FEE_PAYOUT_ADDRESS');
+        const ownersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByPayoutAddress(address, 0, Number.MAX_SAFE_INTEGER);
+        const totalBtcReceived = ownersPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.reward), new BigNumber(0));
+
+        if (type === BtcEarningsType.MAINTENANCE_FEE) {
+            return totalCudosMaintenanceFees;
+        }
+
+        // the general fees and maintenance fees for CUDOS are sent to the same address
+        return totalBtcReceived.minus(totalCudosMaintenanceFees);
+    }
+
+    async fetchTotalCudosRoyalties(farmId: string | null): Promise< { mintRoyalties: BigNumber, resaleRoyalties: BigNumber } > {
+        const isForPlatform = farmId === null;
+
+        const collectionFilterEntity = new CollectionFilterEntity();
+        if (isForPlatform === false) {
+            collectionFilterEntity.farmId = farmId;
+        }
+
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity);
+
+        const denomIds = collectionEntities.map((collectionEntity) => collectionEntity.denomId);
+
+        // fetch marketplace collections for the royalties data
+        const marketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
+        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionEntity>();
+        marketplaceCollectionEntities.forEach((collectionEntity) => {
+            denomIdMarketplaceCollectionEntityMap.set(collectionEntity.denomId, collectionEntity);
+        })
+
+        // fetch all events for those nfts
+        const nftMarketplaceEventEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(denomIds);
+        const nftEventEntities = nftMarketplaceEventEntities.map((nftMarketplaceTradeHistoryEventEntity) => NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEventEntity));
+
+        // filter events by minted and by resale
+        const nftMintEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isMintEvent() === true);
+        const nftSaleEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isSaleEvent() === true);
+
+        const mintRoyaltiEntries: BigNumber[] = [];
+
+        // calculate minted royalties and resale royalties
+        nftMintEventEntities.map((nftEventEntity) => {
+            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+            if (!marketplaceCollectionEntity) {
+                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
+            }
+
+            const royaltiesAddress = isForPlatform === true ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmMintRoyaltiesAddress;
+            const royaltiesPercent = marketplaceCollectionEntity.getMintRoyaltiesPercent(royaltiesAddress);
+
+            if (!royaltiesPercent) {
+                throw Error('Missing royalties percent,');
+            }
+
+            const earningsFromMint = nftEventEntity.transferPriceInAcudos.multipliedBy(royaltiesPercent / 100);
+            mintRoyaltiEntries.push(earningsFromMint);
+        });
+
+        const resaleRoyaltiEntries: BigNumber[] = [];
+        nftSaleEventEntities.map((nftEventEntity) => {
+            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+            if (!marketplaceCollectionEntity) {
+                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
+            }
+
+            const royaltiesAddress = isForPlatform === true ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmResaleRoyaltiesAddress;
+            const royaltiesPercent = marketplaceCollectionEntity.getResaleRoyaltiesPercent(royaltiesAddress);
+            if (!royaltiesPercent) {
+                throw Error('Missing royalties percent,');
+            }
+
+            const earningFromResale = nftEventEntity.transferPriceInAcudos.multipliedBy(royaltiesPercent / 100);
+            resaleRoyaltiEntries.push(earningFromResale);
+        });
+
+        const mintRoyalties = mintRoyaltiEntries.reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
+        const resaleRoyalties = resaleRoyaltiEntries.reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
+
+        return { mintRoyalties, resaleRoyalties };
+    }
+
     private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
@@ -689,6 +801,12 @@ export class StatisticsService {
         });
     }
 
+    private async fetchAllPayoutHistory(): Promise < NftPayoutHistoryEntity[] > {
+        const nftPayoutHistoryRepos = await this.nftPayoutHistoryRepo.findAll();
+        return nftPayoutHistoryRepos.map((nftPayoutHistoryRepo) => {
+            return NftPayoutHistoryEntity.fromRepo(nftPayoutHistoryRepo);
+        });
+    }
     private static checkTimeframe(timestampFrom: number, timestampTo: number) {
         if (timestampFrom > timestampTo) {
             console.error(`Invalid timeframe. TimestampFrom > TimestampTo. TimestampFrom: ${timestampFrom}, TimestampTo: ${timestampTo}`);

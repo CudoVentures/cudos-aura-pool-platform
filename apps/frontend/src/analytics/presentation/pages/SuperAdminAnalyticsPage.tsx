@@ -98,7 +98,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
             if (earningsPerDayFilterEntity.isBtc() === true) {
                 const miningFarmTotalEarningsBtcEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsBtc();
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0))} />
+                    <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0))} />
                 )
             }
 
@@ -116,11 +116,11 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const miningFarmTotalEarningsBtcEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsBtc();
                 const miningFarmTotalEarningsCudosEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsCudos();
 
-                const unsoftNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc || new BigNumber(0);
+                const unsoldNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc || new BigNumber(0);
                 const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos || new BigNumber(0);
                 const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos || new BigNumber(0);
 
-                const unsoftNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(unsoftNftsTotalEarningsInBtc);
+                const unsoftNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(unsoldNftsTotalEarningsInBtc);
                 const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertCudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
                 const soldNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(soldNftsTotalEarningsInAcudos);
                 const totalInUsd = unsoftNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
