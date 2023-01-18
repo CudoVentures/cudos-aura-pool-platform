@@ -79,6 +79,16 @@ export default class CollectionApiRepo implements CollectionRepo {
         return collectionEntities.length === 1 ? collectionEntities[0] : null;
     }
 
+    async fetchCollectionsByMiningFarmId(miningFarmId: string, status?: CollectionStatus): Promise < CollectionEntity[] > {
+        const collectionFilterModel = new CollectionFilterModel();
+        collectionFilterModel.farmId = miningFarmId;
+        if (status) {
+            collectionFilterModel.status = [status];
+        }
+        const { collectionEntities } = await this.fetchCollectionsByFilter(collectionFilterModel);
+        return collectionEntities;
+    }
+
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         try {
             this.disableActions?.();

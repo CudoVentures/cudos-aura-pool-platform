@@ -42,7 +42,7 @@ export default class TxFindWorker {
 
             await this.cudosAuraPoolServiceApi.updateLastCheckedHeight(lastBlock);
         } catch (e) {
-            console.log(e);
+            console.log(e.message);
         }
     }
 

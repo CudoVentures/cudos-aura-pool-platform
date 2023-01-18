@@ -1,10 +1,18 @@
 import NftEntity from '../../../nft/entities/NftEntity';
+import EarningsPerDayEntity from '../../entities/EarningsPerDayEntity';
+import EarningsPerDayFilterEntity from '../../entities/EarningsPerDayFilterEntity';
 import MegaWalletEventEntity from '../../entities/MegaWalletEventEntity';
 import MegaWalletEventFilterModel from '../../entities/MegaWalletEventFilterModel';
 import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
+import MiningFarmMaintenanceFeeEntity from '../../entities/MiningFarmMaintenanceFeeEntity';
+import MiningFarmTotalEarningsBtcEntity from '../../entities/MiningFarmTotalEarningsBtcEntity';
+import MiningFarmTotalEarningsCudosEntity from '../../entities/MiningFarmTotalEarningsCudosEntity';
 import NftEarningsEntity from '../../entities/NftEarningsEntity';
 import NftEventEntity from '../../entities/NftEventEntity';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
+import PlatformMaintenanceFeeEntity from '../../entities/PlatformMaintenanceFeeEntity';
+import PlatformTotalEarningsBtcEntity from '../../entities/PlatformTotalEarningsBtcEntity';
+import PlatformTotalEarningsCudosEntity from '../../entities/PlatformTotalEarningsCudosEntity';
 import TotalEarningsEntity from '../../entities/TotalEarningsEntity';
 import UserEarningsEntity from '../../entities/UserEarningsEntity';
 import StatisticsRepo from '../../presentation/repos/StatisticsRepo';
@@ -82,6 +90,69 @@ export default class StatisticsApiRepo implements StatisticsRepo {
         try {
             this.disableActions?.();
             return await this.statisticsApi.fetchTotalNftEarnings(timestampFrom, timestampTo);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchEarningsPerDay(earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise < EarningsPerDayEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchEarningsPerDay(earningsPerDayFilterEntity);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchMiningFarmMaintenanceFee(miningFarmId: string): Promise < MiningFarmMaintenanceFeeEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchMiningFarmMaintenanceFee(miningFarmId);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchMiningFarmTotalEarningsBtc(miningFarmId: string): Promise < MiningFarmTotalEarningsBtcEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchMiningFarmTotalEarningsBtc(miningFarmId);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchMiningFarmTotalEarningsCudos(miningFarmId: string): Promise < MiningFarmTotalEarningsCudosEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchMiningFarmTotalEarningsCudos(miningFarmId);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchPlatformMaintenanceFee(): Promise < PlatformMaintenanceFeeEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchPlatformMaintenanceFee();
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchPlatformTotalEarningsBtc(): Promise < PlatformTotalEarningsBtcEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchPlatformTotalEarningsBtc();
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async fetchPlatformTotalEarningsCudos(): Promise < PlatformTotalEarningsCudosEntity > {
+        try {
+            this.disableActions?.();
+            return await this.statisticsApi.fetchPlatformTotalEarningsCudos();
         } finally {
             this.enableActions?.();
         }

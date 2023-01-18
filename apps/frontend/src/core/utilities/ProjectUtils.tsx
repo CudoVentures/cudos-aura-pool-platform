@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import AppRoutes from '../../app-routes/entities/AppRoutes';
 import { CHAIN_DETAILS } from './Constants';
 import S from './Main';
@@ -208,6 +209,10 @@ export default class ProjectUtils {
         const timestampFrom = date.getTime() + 1;
 
         return { timestampFrom, timestampTo };
+    }
+
+    static formatUsd(usd: BigNumber): string {
+        return numeral(usd).format(ProjectUtils.NUMERAL_USD);
     }
 
 }
