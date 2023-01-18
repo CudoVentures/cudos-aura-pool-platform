@@ -26,6 +26,7 @@ import RangeDatepicker, { RangeDatepickerState } from '../../../core/presentatio
 import RowLayout from '../../../core/presentation/components/RowLayout';
 
 import '../styles/page-super-admin-analytics.css'
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 type Props = {
     superAdminAnalyticsPageStore?: SuperAdminAnalyticsPageStore;
@@ -68,14 +69,18 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
             if (earningsPerDayFilterEntity.isBtc() === true) {
                 const platformTotalEarningsBtcEntity = superAdminAnalyticsPageStore.platformTotalEarningsBtcEntity;
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0))} />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Total Platform NFT fees'} tooltipText={'Platform fee'} /> }
+                        value = { BitcoinStore.formatBtc(platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0))} />
                 )
             }
 
             if (earningsPerDayFilterEntity.isCudos() === true) {
                 const platformTotalEarningsCudosEntity = superAdminAnalyticsPageStore.platformTotalEarningsCudosEntity;
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudos(platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Resale royalties'} tooltipText={'NFTs resale royalties'} /> }
+                        value = { CudosStore.formatAcudosInCudos(platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
                 )
             }
 
@@ -83,22 +88,26 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const platformTotalEarningsBtcEntity = superAdminAnalyticsPageStore.platformTotalEarningsBtcEntity;
                 const platformTotalEarningsCudosEntity = superAdminAnalyticsPageStore.platformTotalEarningsCudosEntity;
 
-                const nftFeesTotalEarningsInBtc = platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc || new BigNumber(0);
-                const resaleRoyaltiesTotalEarningsInAcudos = platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos || new BigNumber(0);
+                const nftFeesTotalEarningsInBtc = platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0);
+                const resaleRoyaltiesTotalEarningsInAcudos = platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
 
                 const nftFeesTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(nftFeesTotalEarningsInBtc);
                 const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
                 const totalInUsd = nftFeesTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd);
 
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { ProjectUtils.formatUsd(totalInUsd) } />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Total Platform Sales'} tooltipText={'Platform fee + NFTs resale royalties converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
+                        value = { ProjectUtils.formatUsd(totalInUsd) } />
                 )
             }
         } else {
             if (earningsPerDayFilterEntity.isBtc() === true) {
                 const miningFarmTotalEarningsBtcEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsBtc();
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0))} />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Unsold NFT earnings'} tooltipText={'Earnings from unsold NFTs'} /> }
+                        value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0))} />
                 )
             }
 
@@ -106,8 +115,12 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const miningFarmTotalEarningsCudosEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsCudos();
                 return (
                     <>
-                        <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
-                        <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0))} />
+                        <ChartInfo
+                            label = { <TextWithTooltip text={'Resale royalties'} tooltipText={'NFTs resale royalties'} /> }
+                            value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
+                        <ChartInfo
+                            label = { <TextWithTooltip text={'NFT sales'} tooltipText={'Funds from initial NFTs sales'} /> }
+                            value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0))} />
                     </>
                 )
             }
@@ -116,17 +129,19 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const miningFarmTotalEarningsBtcEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsBtc();
                 const miningFarmTotalEarningsCudosEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsCudos();
 
-                const unsoftNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc || new BigNumber(0);
-                const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos || new BigNumber(0);
-                const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos || new BigNumber(0);
+                const unsoftNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0);
+                const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
+                const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0);
 
-                const unsoftNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(unsoftNftsTotalEarningsInBtc);
+                const unsoftNftsTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(unsoftNftsTotalEarningsInBtc);
                 const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertCudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
                 const soldNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(soldNftsTotalEarningsInAcudos);
                 const totalInUsd = unsoftNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
 
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { ProjectUtils.formatUsd(totalInUsd) } />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Total Farm Sales'} tooltipText={'Unsold NFTs earnings + NFTs resale royalties + initial NFTs sales converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
+                        value = { ProjectUtils.formatUsd(totalInUsd) } />
                 )
             }
         }
