@@ -23,6 +23,11 @@
     transition: border-color var(--transition-duration);
 }
 
+.Select.SelectGray .MuiInputBase-root {
+    border-color: var(--color-input-gray-out);
+    background: var(--color-input-gray-out);
+}
+
 .Select .MuiInputBase-root:before, .Select .MuiInputBase-root:after {
     display: none; /* hide border */
 }

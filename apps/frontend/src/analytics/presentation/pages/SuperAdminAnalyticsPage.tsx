@@ -24,9 +24,9 @@ import NftEventTable from '../components/NftEventTable';
 import Select from '../../../core/presentation/components/Select';
 import RangeDatepicker, { RangeDatepickerState } from '../../../core/presentation/components/RangeDatepicker';
 import RowLayout from '../../../core/presentation/components/RowLayout';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 import '../styles/page-super-admin-analytics.css'
-import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 type Props = {
     superAdminAnalyticsPageStore?: SuperAdminAnalyticsPageStore;
@@ -159,12 +159,14 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
             ) } >
 
             <PageSuperAdminHeader />
-            <ColumnLayout className={'PageContent AppContent'} >
+            <ColumnLayout className={'PageContent PageContentDefaultPadding AppContent'} >
                 <div className = { 'FlexSplit' } >
                     <div className={'H2 Bold'}>Analytics</div>
-                    <RowLayout className = { 'StartRight' } numColumns = { 3 }>
+                    <RowLayout className = { 'StartRight' } numColumns = { filterCollectionEntities !== null ? 3 : 2 }>
                         <Select
+                            className = { 'FilterInput' }
                             label={'Farm/Platform'}
+                            gray= { true }
                             onChange = { onChangeMiningFarm }
                             value = { earningsPerDayFilterEntity.farmId }>
                             <MenuItem value = { S.Strings.NOT_EXISTS }>Platform</MenuItem>
@@ -176,7 +178,9 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                         </Select>
                         { filterCollectionEntities !== null && (
                             <Select
+                                className = { 'FilterInput' }
                                 label={'Collection'}
+                                gray= { true }
                                 onChange = { onChangeCollection }
                                 value = { earningsPerDayFilterEntity.getSelectedCollection() }>
                                 <MenuItem value = { S.Strings.NOT_EXISTS }>All collections</MenuItem>
@@ -188,7 +192,9 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                             </Select>
                         ) }
                         <Select
+                            className = { 'FilterInput' }
                             label={'Currency'}
+                            gray= { true }
                             onChange = { onChangeCurrency }
                             value = { earningsPerDayFilterEntity.currency }>
                             <MenuItem value = { EarningsPerDayCurrency.USD }>USD</MenuItem>
@@ -203,6 +209,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                         leftContent = { renderEarningsTableLeftContent() }
                         rightContent = { (
                             <RangeDatepicker
+                                gray = { true }
                                 datepickerState = { superAdminAnalyticsPageStore.earningRangeState }
                                 onChange = { onChangeEarningsRange } />
                         ) } />
