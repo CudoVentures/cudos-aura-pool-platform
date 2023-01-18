@@ -41,6 +41,7 @@
 
 .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
     color: var(--color-datepicker-foreground);
+    margin-top: 3px;
 }
 
 .react-datepicker__month-container {
