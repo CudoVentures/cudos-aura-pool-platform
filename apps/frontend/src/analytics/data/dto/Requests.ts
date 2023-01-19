@@ -83,9 +83,11 @@ export class ReqFetchEarningsPerDay {
 export class ReqFetchMiningFarmMaintenanceFee {
 
     miningFarmId: string;
+    collectionId: string;
 
-    constructor(miningFarmId: string) {
+    constructor(miningFarmId: string, collectionId: string) {
         this.miningFarmId = miningFarmId;
+        this.collectionId = collectionId;
     }
 
 }
@@ -93,9 +95,11 @@ export class ReqFetchMiningFarmMaintenanceFee {
 export class ReqFetchMiningFarmTotalEarningsBtc {
 
     miningFarmId: string;
+    collectionId: string;
 
-    constructor(miningFarmId: string) {
+    constructor(miningFarmId: string, collectionId: string) {
         this.miningFarmId = miningFarmId;
+        this.collectionId = collectionId;
     }
 
 }
@@ -103,9 +107,11 @@ export class ReqFetchMiningFarmTotalEarningsBtc {
 export class ReqFetchMiningFarmTotalEarningsCudos {
 
     miningFarmId: string;
+    collectionId: string;
 
-    constructor(miningFarmId: string) {
+    constructor(miningFarmId: string, collectionId: string) {
         this.miningFarmId = miningFarmId;
+        this.collectionId = collectionId;
     }
 
 }

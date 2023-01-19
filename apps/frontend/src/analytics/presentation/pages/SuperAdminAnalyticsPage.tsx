@@ -140,7 +140,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
 
                 return (
                     <ChartInfo
-                        label = { <TextWithTooltip text={'Total Farm Sales'} tooltipText={'Unsold NFTs earnings + NFTs resale royalties + initial NFTs sales converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
+                        label = { <TextWithTooltip text={'Total Sales'} tooltipText={'Unsold NFTs earnings + NFTs resale royalties + initial NFTs sales converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
                         value = { ProjectUtils.formatUsd(totalInUsd) } />
                 )
             }
@@ -230,7 +230,11 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                     <StyledContainer className={'FlexColumn'} containerPadding={ContainerPadding.PADDING_24}>
                         <div className={'B1 SemiBold'}>
                             Maintenance Fee collected
-                            { earningsPerDayFilterEntity.isPlatform() === true ? ' for Cudo' : ' by Farm' }
+                            { earningsPerDayFilterEntity.isPlatform() === true ? ' for Cudos' : (
+                                <>
+                                    { earningsPerDayFilterEntity.isCollection() === true ? ' by Collection' : ' by Farm' }
+                                </>
+                            ) }
                         </div>
                         <div className={'FlexColumn'}>
                             <div>

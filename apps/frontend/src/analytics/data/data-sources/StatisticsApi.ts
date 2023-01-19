@@ -71,8 +71,8 @@ export default class StatisticsApi {
         return res.earningsPerDayEntity;
     }
 
-    async fetchMiningFarmMaintenanceFee(miningFarmId: string): Promise < MiningFarmMaintenanceFeeEntity > {
-        const req = new ReqFetchMiningFarmMaintenanceFee(miningFarmId);
+    async fetchMiningFarmMaintenanceFee(miningFarmId: string, collectionId: string): Promise < MiningFarmMaintenanceFeeEntity > {
+        const req = new ReqFetchMiningFarmMaintenanceFee(miningFarmId, collectionId);
         const res = new ResFetchMiningFarmMaintenanceFee({
             'miningFarmMaintenanceFeeEntity': {
                 'maintenanceFeeInBtc': '1',
@@ -81,8 +81,8 @@ export default class StatisticsApi {
         return res.miningFarmMaintenanceFeeEntity;
     }
 
-    async fetchMiningFarmTotalEarningsBtc(miningFarmId: string): Promise < MiningFarmTotalEarningsBtcEntity > {
-        const req = new ReqFetchMiningFarmTotalEarningsBtc(miningFarmId);
+    async fetchMiningFarmTotalEarningsBtc(miningFarmId: string, collectionId: string): Promise < MiningFarmTotalEarningsBtcEntity > {
+        const req = new ReqFetchMiningFarmTotalEarningsBtc(miningFarmId, collectionId);
         const res = new ResFetchMiningFarmTotalEarningsBtc({
             'miningFarmTotalEarningsBtcEntity': {
                 'unsoftNftsTotalEarningsInBtc': '2',
@@ -91,8 +91,8 @@ export default class StatisticsApi {
         return res.miningFarmTotalEarningsBtcEntity;
     }
 
-    async fetchMiningFarmTotalEarningsCudos(miningFarmId: string): Promise < MiningFarmTotalEarningsCudosEntity > {
-        const req = new ReqFetchMiningFarmTotalEarningsCudos(miningFarmId);
+    async fetchMiningFarmTotalEarningsCudos(miningFarmId: string, collectionId: string): Promise < MiningFarmTotalEarningsCudosEntity > {
+        const req = new ReqFetchMiningFarmTotalEarningsCudos(miningFarmId, collectionId);
         const res = new ResFetchMiningFarmTotalEarningsCudos({
             'miningFarmTotalEarningsCudosEntity': {
                 'resaleRoyaltiesTotalEarningsInAcudos': '3',
