@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-export default class EarningsEntity {
+export default class EarningsPerDayEntity {
     acudosEarningsPerDay: BigNumber[];
     btcEarningsPerDay: BigNumber[];
 
@@ -9,7 +9,7 @@ export default class EarningsEntity {
         this.btcEarningsPerDay = [];
     }
 
-    static toJson(entity: EarningsEntity) {
+    static toJson(entity: EarningsPerDayEntity) {
         if (entity === null) {
             return null;
         }
@@ -19,11 +19,11 @@ export default class EarningsEntity {
         }
     }
 
-    static fromJson(json: any): EarningsEntity {
+    static fromJson(json: any): EarningsPerDayEntity {
         if (json === null) {
             return null;
         }
-        const entity = new EarningsEntity();
+        const entity = new EarningsPerDayEntity();
 
         entity.acudosEarningsPerDay = (json.acudosEarningsPerDay ?? entity.acudosEarningsPerDay).map((j) => new BigNumber(j));
         entity.btcEarningsPerDay = (json.btcEarningsPerDay ?? entity.btcEarningsPerDay).map((j) => new BigNumber(j));

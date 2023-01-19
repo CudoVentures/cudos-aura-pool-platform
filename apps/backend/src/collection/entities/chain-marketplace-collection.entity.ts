@@ -10,6 +10,12 @@ type GraphQlCollection = {
     transaction_hash: string,
     nft_denom: {
         data_text?: string
+        data_json?: {
+            farm_id: string,
+            platform_royalties_address: string,
+            farm_mint_royalties_address: string,
+            farm_resale_royalties_address: string
+        }
     },
 }
 
@@ -64,11 +70,8 @@ export default class ChainMarketplaceCollectionEntity {
         entity.mintRoyalties = JSON.parse(queryCollection.mint_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
         entity.resaleRoyalties = JSON.parse(queryCollection.resale_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
 
-        let dataJson = null;
-        try {
-            dataJson = JSON.parse(queryCollection.nft_denom.data_text);
-        } catch (ex) {
-        }
+        const dataJson = queryCollection.nft_denom.data_json;
+
         entity.farmId = dataJson?.farm_id ?? entity.farmId;
         entity.platformRoyaltiesAddress = dataJson?.platform_royalties_address ?? entity.platformRoyaltiesAddress;
         entity.farmMintRoyaltiesAddress = dataJson?.farm_mint_royalties_address ?? entity.farmMintRoyaltiesAddress;

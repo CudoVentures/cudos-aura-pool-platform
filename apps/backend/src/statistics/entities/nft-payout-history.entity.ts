@@ -85,7 +85,6 @@ export class NftPayoutHistoryEntity {
         entity.txHash = repoJson.tx_hash ?? entity.txHash;
         entity.maintenanceFee = repoJson.maintenance_fee ? new BigNumber(repoJson.maintenance_fee) : entity.maintenanceFee;
         entity.cudoPartOfMaintenanceFee = repoJson.cudo_part_of_maintenance_fee ? new BigNumber(repoJson.cudo_part_of_maintenance_fee) : entity.cudoPartOfMaintenanceFee;
-        entity.cudoPartOfReward = repoJson.cudo_part_of_reward ? new BigNumber(repoJson.cudo_part_of_reward) : entity.cudoPartOfReward;
         entity.createdAt = repoJson.createdAt?.getTime() ?? entity.createdAt;
         entity.updatedAt = repoJson.updatedAt?.getTime() ?? entity.updatedAt;
 

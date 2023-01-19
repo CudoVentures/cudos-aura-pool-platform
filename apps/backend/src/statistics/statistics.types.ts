@@ -12,7 +12,6 @@ export class EarningsPerDayFilterJsonValidator {
     @IsOptional()
         timestampTo: number;
 
-    @IsNumber()
     @IsEnum(EarningsPerDayCurrency)
         currency: EarningsPerDayCurrency;
 

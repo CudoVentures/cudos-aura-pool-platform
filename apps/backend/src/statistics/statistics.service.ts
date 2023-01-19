@@ -573,6 +573,8 @@ export class StatisticsService {
                 throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
             }
 
+            console.log(marketplaceCollectionEntity);
+            console.log('----------------------------------------------')
             const royaltiesAddress = earningsPerDayFilterEntity.isEarningsReceiverPlatform() ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmMintRoyaltiesAddress;
             const royaltiesPercent = marketplaceCollectionEntity.getMintRoyaltiesPercent(royaltiesAddress);
             if (!royaltiesPercent) {

@@ -80,6 +80,8 @@ export class GraphqlService {
             throw new DataServiceError();
         }
 
+        console.log(res.data.data.marketplace_collection);
+
         const chainMarketplaceCollectionEntitiess = res.data.data.marketplace_collection.map((queryCollection) => ChainMarketplaceCollectionEntity.fromGraphQl(queryCollection));
 
         return chainMarketplaceCollectionEntitiess;

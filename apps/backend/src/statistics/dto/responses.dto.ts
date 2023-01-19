@@ -3,9 +3,8 @@ import MiningFarmEarningsEntity from '../entities/mining-farm-earnings.entity';
 import NftEarningsEntity from '../entities/nft-earnings.entity';
 import UserEarningsEntity from '../entities/user-earnings.entity';
 import NftEntity from '../../nft/entities/nft.entity';
-import TotalEarningsEntity from '../entities/platform-earnings.entity';
+import EarningsPerDayEntity from '../entities/platform-earnings.entity';
 import MegaWalletEventEntity from '../entities/mega-wallet-event.entity';
-import EarningsEntity from '../entities/platform-earnings.entity';
 import MiningFarmMaintenanceFeeEntity from '../entities/mining-farm-maintenance-fees.entity';
 import MiningFarmTotalEarningsBtcEntity from '../entities/mining-farm-btc-earnings.entity';
 import PlatformMaintenanceFeeEntity from '../entities/platform-maintenance-fee.entity';
@@ -71,18 +70,18 @@ export class ResFetchTotalNftEarnings {
 
     totalEarningsEntity: any;
 
-    constructor(totalEarningsEntity: TotalEarningsEntity) {
-        this.totalEarningsEntity = TotalEarningsEntity.toJson(totalEarningsEntity);
+    constructor(totalEarningsEntity: EarningsPerDayEntity) {
+        this.totalEarningsEntity = EarningsPerDayEntity.toJson(totalEarningsEntity);
     }
 
 }
 
 export class ResFetchEarningsPerDay {
 
-    earningsEntity: any;
+    earningsPerDayEntity: any;
 
-    constructor(earningsEntity: EarningsEntity) {
-        this.earningsEntity = EarningsEntity.toJson(earningsEntity);
+    constructor(earningsPerDayEntity: EarningsPerDayEntity) {
+        this.earningsPerDayEntity = EarningsPerDayEntity.toJson(earningsPerDayEntity);
     }
 }
 

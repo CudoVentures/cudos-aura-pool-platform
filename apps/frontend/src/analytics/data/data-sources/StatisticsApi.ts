@@ -65,6 +65,7 @@ export default class StatisticsApi {
 
         const { data } = await axios.post(`${STATISTICS_URL}/fetchEarningsPerDay`, req)
 
+        console.log(data);
         const res = new ResFetchEarningsPerDay(data)
 
         return res.earningsPerDayEntity;
