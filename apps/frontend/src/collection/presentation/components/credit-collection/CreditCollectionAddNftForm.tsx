@@ -138,7 +138,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         label={'Price per NFT'}
                         placeholder={'Enter price...'}
                         disabled = { selectedNftEntity === null }
-                        inputType = { InputType.REAL }
+                        inputType = { InputType.POSITIVE_INTEGER }
                         value={creditCollectionStore.selectedNftPriceInDollarsInputValue}
                         inputValidation={nftPriceValidation}
                         onChange={creditCollectionStore.onChangeSelectedNftPriceInDollars}
