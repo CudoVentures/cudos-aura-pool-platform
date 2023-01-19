@@ -41,7 +41,7 @@ export default class GeneralStore {
     }
 
     getPercentRemainderAfterCudosFee(): BigNumber {
-        return new BigNumber(1 - this.settingsEntity.globalCudosFeesPercent);
+        return new BigNumber(1 - (this.settingsEntity.globalCudosFeesPercent / 100));
     }
 
 }
