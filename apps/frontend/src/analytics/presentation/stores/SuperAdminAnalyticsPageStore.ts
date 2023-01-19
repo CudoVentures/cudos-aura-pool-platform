@@ -221,7 +221,7 @@ export default class SuperAdminAnalyticsPageStore {
             const btcToUsd = this.bitcoinStore.convertBtcInUsd(btcValue);
             const acudosToUsd = this.cudosStore.convertCudosInUsd(acudosValue);
             return btcToUsd.plus(acudosToUsd).toNumber();
-        });
+        }) ?? [];
     }
 
     getMiningFarmMaintenanceFee(): MiningFarmMaintenanceFeeEntity {

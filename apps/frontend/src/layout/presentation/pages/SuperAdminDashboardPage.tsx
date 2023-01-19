@@ -31,6 +31,7 @@ import DailyChart from '../../../analytics/presentation/components/DailyChart';
 import ChartInfo from '../../../analytics/presentation/components/ChartInfo';
 
 import '../styles/page-super-admin-dashboard.css';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 type Props = {
     superAdminDashboardPageStore?: SuperAdminDashboardPageStore
@@ -38,8 +39,7 @@ type Props = {
 }
 
 function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: Props) {
-    const bestPerformingMiningFarms = superAdminDashboardPageStore.bestPerformingMiningFarms;
-    const { totalEarningsEntity, earningsDefaultIntervalPickerState, farmsDefaultIntervalPickerState } = superAdminDashboardPageStore;
+    const { farmsDefaultIntervalPickerState, bestPerformingMiningFarms, earningsPerDayFilterEntity } = superAdminDashboardPageStore;
 
     const navigate = useNavigate();
 
@@ -113,30 +113,23 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 <div className={'H2 ExtraBold'}>Dashboard</div>
                 <RowLayout numColumns = { 2 }>
                     <ColumnLayout>
-                        {/* <StyledLayout
+                        <StyledLayout
                             bottomRightButtons = {
                                 <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAnalytics }>See All Analytics</Button>
                             } >
-                            { totalEarningsEntity === null ? (
-                                <LoadingIndicator />
-                            ) : (
-                                <>
-                                    <ChartHeading
-                                        leftContent = { (
-                                            <>
-                                                <ChartInfo label = { 'Total Platform Sales'} value = { cudosStore.formatConvertedAcudosInUsd(totalEarningsEntity.totalSalesInAcudos)} />
-                                            </>
-                                        ) }
-                                        rightContent = { (
-                                            <DefaultIntervalPicker defaultIntervalPickerState = { earningsDefaultIntervalPickerState } />
-                                        ) } />
-                                    <DailyChart
-                                        timestampFrom = { earningsDefaultIntervalPickerState.earningsTimestampFrom }
-                                        timestampTo = { earningsDefaultIntervalPickerState.earningsTimestampTo }
-                                        data = { totalEarningsEntity.earningsPerDayInUsd } />
-                                </>
-                            ) }
-                        </StyledLayout> */}
+                            <ChartHeading
+                                leftContent = { (
+                                    <>
+                                        <ChartInfo
+                                            label = { <TextWithTooltip text={'Total Platform Sales'} tooltipText={'Platform fee + NFTs resale royalties converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
+                                            value = { ProjectUtils.formatUsd(superAdminDashboardPageStore.getTotalSalesInUsd()) } />
+                                    </>
+                                ) } />
+                            <DailyChart
+                                timestampFrom = { earningsPerDayFilterEntity.timestampFrom }
+                                timestampTo = { earningsPerDayFilterEntity.timestampTo }
+                                data = { superAdminDashboardPageStore.getEarnings() } />
+                        </StyledLayout>
                         <StyledContainer className = { 'MegaWalletCnt' } containerPadding = { ContainerPadding.PADDING_24 }>
                             <div className = { 'MegaWalletBalanceTitle B1 SemiBold ColorNeutral070' } >MegaWallet Balance</div>
                             <MegaWalletBalance />
