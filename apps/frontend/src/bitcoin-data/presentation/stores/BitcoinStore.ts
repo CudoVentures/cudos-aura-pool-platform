@@ -68,7 +68,7 @@ export default class BitcoinStore {
     }
 
     formatBtcInUsd(btc: BigNumber): string {
-        return numeral(btc.multipliedBy(this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0)).format(ProjectUtils.NUMERAL_USD);
+        return numeral(btc.multipliedBy(this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0).toString()).format(ProjectUtils.NUMERAL_USD);
     }
 
     formatBitcoinPriceChangeInPercentage(): string {
@@ -76,7 +76,7 @@ export default class BitcoinStore {
     }
 
     static formatBtc(btc: BigNumber): string {
-        return `${btc} BTC`;
+        return `${btc.toString(10)} BTC`;
     }
 
     static formatBtcWithPrecision(btc: BigNumber, decimals: number): string {

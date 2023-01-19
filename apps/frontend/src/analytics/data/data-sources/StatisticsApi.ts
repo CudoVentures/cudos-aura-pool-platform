@@ -95,8 +95,6 @@ export default class StatisticsApi {
         const { data } = await axios.post(`${STATISTICS_URL}/fetchFarmTotalCudosEarnings`, req)
 
         const res = new ResFetchMiningFarmTotalEarningsCudos(data);
-
-        return res.miningFarmTotalEarningsCudosEntity;
     }
 
     async fetchPlatformMaintenanceFee(): Promise < PlatformMaintenanceFeeEntity > {

@@ -212,7 +212,7 @@ export default class ProjectUtils {
     }
 
     static formatUsd(usd: BigNumber): string {
-        return numeral(usd).format(ProjectUtils.NUMERAL_USD);
+        return numeral(usd.toString()).format(ProjectUtils.NUMERAL_USD);
     }
 
 }

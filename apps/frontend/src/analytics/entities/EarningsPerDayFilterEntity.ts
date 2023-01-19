@@ -30,6 +30,14 @@ export default class EarningsPerDayFilterEntity {
         return this.farmId === S.Strings.NOT_EXISTS;
     }
 
+    isFarm(): boolean {
+        return this.farmId !== S.Strings.NOT_EXISTS;
+    }
+
+    isCollection(): boolean {
+        return this.collectionIds !== null;
+    }
+
     isBtc(): boolean {
         return this.currency === EarningsPerDayCurrency.BTC;
     }

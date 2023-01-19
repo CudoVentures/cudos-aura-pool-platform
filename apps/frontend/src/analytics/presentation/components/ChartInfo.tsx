@@ -3,7 +3,7 @@ import React from 'react';
 import '../styles/chart-info.css';
 
 type Props = {
-    label: string;
+    label: string | React.ReactNode;
     value: string;
 }
 

@@ -104,28 +104,28 @@ export default class StatisticsApiRepo implements StatisticsRepo {
         }
     }
 
-    async fetchMiningFarmMaintenanceFee(miningFarmId: string): Promise < MiningFarmMaintenanceFeeEntity > {
+    async fetchMiningFarmMaintenanceFee(miningFarmId: string, collectionId: string): Promise < MiningFarmMaintenanceFeeEntity > {
         try {
             this.disableActions?.();
-            return await this.statisticsApi.fetchMiningFarmMaintenanceFee(miningFarmId);
+            return await this.statisticsApi.fetchMiningFarmMaintenanceFee(miningFarmId, collectionId);
         } finally {
             this.enableActions?.();
         }
     }
 
-    async fetchMiningFarmTotalEarningsBtc(miningFarmId: string): Promise < MiningFarmTotalEarningsBtcEntity > {
+    async fetchMiningFarmTotalEarningsBtc(miningFarmId: string, collectionId: string): Promise < MiningFarmTotalEarningsBtcEntity > {
         try {
             this.disableActions?.();
-            return await this.statisticsApi.fetchMiningFarmTotalEarningsBtc(miningFarmId);
+            return await this.statisticsApi.fetchMiningFarmTotalEarningsBtc(miningFarmId, collectionId);
         } finally {
             this.enableActions?.();
         }
     }
 
-    async fetchMiningFarmTotalEarningsCudos(miningFarmId: string): Promise < MiningFarmTotalEarningsCudosEntity > {
+    async fetchMiningFarmTotalEarningsCudos(miningFarmId: string, collectionId: string): Promise < MiningFarmTotalEarningsCudosEntity > {
         try {
             this.disableActions?.();
-            return await this.statisticsApi.fetchMiningFarmTotalEarningsCudos(miningFarmId);
+            return await this.statisticsApi.fetchMiningFarmTotalEarningsCudos(miningFarmId, collectionId);
         } finally {
             this.enableActions?.();
         }

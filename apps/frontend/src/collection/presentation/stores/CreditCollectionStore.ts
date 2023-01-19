@@ -45,13 +45,11 @@ export default class CreditCollectionStore {
     selectedNftEntity: NftEntity;
     miningFarmEntity: MiningFarmEntity;
     miningFarmDetailsEntity: MiningFarmDetailsEntity;
-    collectionDetailsEntity: CollectionDetailsEntity;
 
     defaultHashAndPriceValues: number;
     miningFarmRemainingHashPower: number;
     selectedNftHashingPowerInThInputValue: string;
     selectedNftPriceInDollarsInputValue: string;
-    // selectedNftMaintenanceFeeInBtcInputValue: string;
 
     constructor(cudosStore: CudosStore, accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -66,7 +64,6 @@ export default class CreditCollectionStore {
         this.tempIdGenerator = new TempIdGenerator();
 
         this.initCreditValues();
-        // this.selectedNftMaintenanceFeeInBtcInputValue = '';
 
         makeAutoObservable(this);
     }
@@ -75,7 +72,6 @@ export default class CreditCollectionStore {
         this.miningFarmEntity = null;
         this.miningFarmDetailsEntity = null;
         this.collectionEntity = null;
-        this.collectionDetailsEntity = null;
         this.nftEntities = [];
         this.selectedNftEntity = null;
 
@@ -127,42 +123,66 @@ export default class CreditCollectionStore {
         });
     }
 
-    async fetchCollectionData(collectionId: string) {
-        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+    fetchCollectionData(collectionId: string) {
+        return new Promise < void >((resolve, reject) => {
+            const run = async () => {
+                const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
 
-        const nftFilter = new NftFilterModel();
-        nftFilter.collectionIds = [collectionId];
-        nftFilter.count = Number.MAX_SAFE_INTEGER;
-        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+                const nftFilter = new NftFilterModel();
+                nftFilter.collectionIds = [collectionId];
+                nftFilter.count = Number.MAX_SAFE_INTEGER;
+                const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
 
-        runInAction(() => {
-            this.nftEntities = nftEntities;
-            this.collectionEntity = collectionEntity;
-        })
-    }
+                runInAction(() => {
+                    this.nftEntities = nftEntities;
+                    this.collectionEntity = collectionEntity;
+                    resolve();
+                })
+            }
 
-    async fetchMiningFarm() {
-        const miningFarmEntity = (await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED));
-
-        runInAction(() => {
-            this.miningFarmEntity = miningFarmEntity;
+            run();
         });
     }
 
-    async fetchMiningFarmDetails() {
-        try {
-            const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.collectionEntity.farmId);
+    fetchMiningFarm() {
+        return new Promise < void >((resolve, reject) => {
+            const run = async () => {
+                const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED);
 
-            runInAction(() => {
-                this.miningFarmDetailsEntity = miningFarmDetailsEntity;
-                this.miningFarmRemainingHashPower = miningFarmDetailsEntity.remainingHashPowerInTH;
-                if (this.collectionEntity.isNew() === false) {
-                    this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
+                runInAction(() => {
+                    this.miningFarmEntity = miningFarmEntity;
+                    resolve();
+                });
+            }
+
+            run();
+        });
+
+    }
+
+    async fetchMiningFarmDetails() {
+        return new Promise < void >((resolve, reject) => {
+            const run = async () => {
+                try {
+                    const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
+
+                    runInAction(() => {
+                        this.miningFarmDetailsEntity = miningFarmDetailsEntity;
+                        this.miningFarmRemainingHashPower = miningFarmDetailsEntity.remainingHashPowerInTH;
+                        if (this.collectionEntity?.isNew() === false) {
+                            this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
+                        }
+                        resolve();
+                    })
+                } catch (e) {
+                    console.log(e);
+                    resolve();
                 }
-            })
-        } catch (e) {
-            console.log(e);
-        }
+            }
+
+            run();
+        });
+
     }
 
     moveToStepDetails = action(() => {

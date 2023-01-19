@@ -7,53 +7,83 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import MiningFarmPerformanceEntity from '../../../mining-farm/entities/MiningFarmPerformanceEntity';
-import TotalEarningsEntity from '../../../analytics/entities/TotalEarningsEntity';
 import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
+import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import EarningsPerDayEntity from '../../../analytics/entities/EarningsPerDayEntity';
+import PlatformTotalEarningsBtcEntity from '../../../analytics/entities/PlatformTotalEarningsBtcEntity';
+import PlatformTotalEarningsCudosEntity from '../../../analytics/entities/PlatformTotalEarningsCudosEntity';
+import EarningsPerDayFilterEntity from '../../../analytics/entities/EarningsPerDayFilterEntity';
+import BigNumber from 'bignumber.js';
 
 export default class SuperAdminDashboardPageStore {
-    miningFarmRepo: MiningFarmRepo;
-    collectionRepo: CollectionRepo;
-    statisticsRepo: StatisticsRepo;
+
+    bitcoinStore: BitcoinStore;
+    cudosStore: CudosStore;
     accountSessionStore: AccountSessionStore;
     alertStore: AlertStore;
 
-    topFarmsTableState: TableState;
-    earningsDefaultIntervalPickerState: DefaultIntervalPickerState;
-    farmsDefaultIntervalPickerState: DefaultIntervalPickerState;
+    miningFarmRepo: MiningFarmRepo;
+    collectionRepo: CollectionRepo;
+    statisticsRepo: StatisticsRepo;
 
+    earningsPerDayFilterEntity: EarningsPerDayFilterEntity;
+    earningsPerDayEntity: EarningsPerDayEntity;
+    platformTotalEarningsBtcEntity: PlatformTotalEarningsBtcEntity;
+    platformTotalEarningsCudosEntity: PlatformTotalEarningsCudosEntity;
+
+    topFarmsTableState: TableState;
+    farmsDefaultIntervalPickerState: DefaultIntervalPickerState;
     bestPerformingMiningFarms: MiningFarmEntity[];
     miningFarmPerformanceEntitiesMap: Map < string, MiningFarmPerformanceEntity >;
-    totalEarningsEntity: TotalEarningsEntity;
 
-    constructor(statisticsRepo: StatisticsRepo, miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, accountSessionStore: AccountSessionStore, alertStore: AlertStore) {
-        this.miningFarmRepo = miningFarmRepo;
-        this.collectionRepo = collectionRepo;
-        this.statisticsRepo = statisticsRepo;
+    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, accountSessionStore: AccountSessionStore, alertStore: AlertStore, statisticsRepo: StatisticsRepo, miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo) {
+        this.bitcoinStore = bitcoinStore;
+        this.cudosStore = cudosStore;
         this.accountSessionStore = accountSessionStore;
         this.alertStore = alertStore;
 
-        this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, Number.MAX_SAFE_INTEGER);
-        this.earningsDefaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTotalEarnngsEntity);
-        this.farmsDefaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
+        this.miningFarmRepo = miningFarmRepo;
+        this.collectionRepo = collectionRepo;
+        this.statisticsRepo = statisticsRepo;
 
+        this.earningsPerDayFilterEntity = new EarningsPerDayFilterEntity();
+        this.earningsPerDayEntity = null;
+        this.platformTotalEarningsBtcEntity = null;
+        this.platformTotalEarningsCudosEntity = null;
+
+        this.topFarmsTableState = new TableState(0, [], this.fetchTopPerformingFarmEntities, Number.MAX_SAFE_INTEGER);
+        this.farmsDefaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopPerformingFarmEntities);
         this.bestPerformingMiningFarms = null;
         this.miningFarmPerformanceEntitiesMap = new Map();
-        this.totalEarningsEntity = null;
 
         makeAutoObservable(this);
     }
 
-    init(): void {
-        this.fetchTotalEarnngsEntity();
+    async init(): Promise < void > {
+        await this.bitcoinStore.init();
+        await this.cudosStore.init();
+
+        this.fetchEarnings();
         this.fetchTopPerformingFarmEntities();
+        this.fetchAggregatedStatistics();
     }
 
-    fetchTotalEarnngsEntity = async (): Promise<void> => {
-        const totalEarningsEntity = await this.statisticsRepo.fetchTotalNftEarnings(this.earningsDefaultIntervalPickerState.earningsTimestampFrom, this.earningsDefaultIntervalPickerState.earningsTimestampTo);
+    private async fetchEarnings() {
+        const earningsPerDayEntity = await this.statisticsRepo.fetchEarningsPerDay(this.earningsPerDayFilterEntity);
 
         runInAction(() => {
-            this.totalEarningsEntity = totalEarningsEntity;
+            this.earningsPerDayEntity = earningsPerDayEntity;
         })
+    }
+
+    private async fetchAggregatedStatistics() {
+        const platformTotalEarningsBtcEntity = await this.statisticsRepo.fetchPlatformTotalEarningsBtc();
+        const platformTotalEarningsCudosEntity = await this.statisticsRepo.fetchPlatformTotalEarningsCudos();
+        runInAction(() => {
+            this.platformTotalEarningsBtcEntity = platformTotalEarningsBtcEntity;
+            this.platformTotalEarningsCudosEntity = platformTotalEarningsCudosEntity;
+        });
     }
 
     fetchTopPerformingFarmEntities = async (): Promise<void> => {
@@ -72,5 +102,24 @@ export default class SuperAdminDashboardPageStore {
 
     getMiningFarmPerformanceEntity(miningFarmId: string): MiningFarmPerformanceEntity {
         return this.miningFarmPerformanceEntitiesMap.get(miningFarmId) ?? null;
+    }
+
+    getTotalSalesInUsd() {
+        const nftFeesTotalEarningsInBtc = this.platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0);
+        const resaleRoyaltiesTotalEarningsInAcudos = this.platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
+
+        const nftFeesTotalEarningsInUsd = this.bitcoinStore.convertBtcInUsd(nftFeesTotalEarningsInBtc);
+        const resaleRoyaltiesTotalEarningsInUsd = this.cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
+        return nftFeesTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd);
+    }
+
+    getEarnings(): number[] {
+        return this.earningsPerDayEntity?.btcEarningsPerDay.map((btcValue, i) => {
+            const acudosValue = this.earningsPerDayEntity.cudosEarningsPerDay[i];
+
+            const btcToUsd = this.bitcoinStore.convertBtcInUsd(btcValue);
+            const acudosToUsd = this.cudosStore.convertCudosInUsd(acudosValue);
+            return btcToUsd.plus(acudosToUsd).toNumber();
+        }) ?? [];
     }
 }

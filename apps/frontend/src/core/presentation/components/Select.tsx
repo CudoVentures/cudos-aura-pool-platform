@@ -13,10 +13,11 @@ type Props = SelectProps & {
     innerLabel?: string;
     readOnly?: boolean;
     error?: boolean;
+    gray?: boolean;
     inputValidation?: InputValidation | InputValidation[],
 }
 
-function Select({ className, margin, onChange, innerLabel, label, readOnly, error, inputValidation, ...props }: Props) {
+function Select({ className, margin, onChange, innerLabel, label, readOnly, error, gray, inputValidation, ...props }: Props) {
 
     const [open, setOpen] = useState(false);
 
@@ -134,8 +135,9 @@ function Select({ className, margin, onChange, innerLabel, label, readOnly, erro
         return false;
     }
 
+    const cssClassGray = S.CSS.getClassName(gray, 'SelectGray');
     return (
-        <div className = { `Select ${className}` }>
+        <div className = { `Select ${cssClassGray} ${className}` }>
             <FormControl variant = 'standard' margin = { 'dense' }>
                 { label !== undefined && (
                     <InputLabel
@@ -173,6 +175,7 @@ Select.defaultProps = {
     onChange: undefined,
     readOnly: false,
     error: false,
+    gray: false,
     inputValidation: null,
 }
 

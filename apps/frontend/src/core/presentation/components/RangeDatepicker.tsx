@@ -16,10 +16,12 @@ type Props = ReactDatePickerProps & {
     emptyDateString?: string;
     onChange: any;
     label?: string;
+    gray?: boolean;
+    hasClear?: boolean;
     className?: string;
 }
 
-export default function RangeDatepicker({ datepickerState, dateRangeFormat, emptyDateString, onChange, label, className, ...props }: Props) {
+export default function RangeDatepicker({ datepickerState, dateRangeFormat, emptyDateString, onChange, label, hasClear, className, gray, ...props }: Props) {
 
     const [datepickerOpen, setDatepickerOpen] = useState(datepickerState.open);
 
@@ -74,6 +76,7 @@ export default function RangeDatepicker({ datepickerState, dateRangeFormat, empt
         e.stopPropagation();
     }
 
+    const cssClassGray = S.CSS.getClassName(gray, 'DatePickerInputGray');
     return (
         <Datepicker
             {...props}
@@ -87,20 +90,21 @@ export default function RangeDatepicker({ datepickerState, dateRangeFormat, empt
             endDate = {isDateValid(datepickerState.endDate) ? new Date(datepickerState.endDate) : null}
             onChange = {onChangeHandler}
             customInput = {
-                <fieldset className={'DatePickerInput FlexRow FlexSplit'}>
+                <fieldset className={`DatePickerInput FlexRow FlexSplit ${cssClassGray}`}>
                     { label !== S.Strings.EMPTY && (
                         <>
                             <legend className = {'DatePickerFieldLabel'}>{ label }</legend>
                         </>
                     )}
-                    <div className={'DatePickerSmallLetters'}>от</div>
+                    <div className={'DatePickerSmallLetters'}>From</div>
                     <div className={'DatePickerInputText'}> { formatDate(datepickerState.startDate) } </div>
-                    <div className={'DatePickerSmallLetters'}>до</div>
+                    <div className={'DatePickerSmallLetters'}>To</div>
                     <div className={'DatePickerInputText'}> { formatDate(datepickerState.endDate) } </div>
-                    {isDateValid(datepickerState.startDate)
-                        ? <div onClick={onClickClearDates} className={'DateClearButton StartRight SVG Clickable'}>
+                    { hasClear === false && isDateValid(datepickerState.startDate) === true && (
+                        <div onClick={onClickClearDates} className={'DateClearButton StartRight SVG Clickable'}>
                             <Svg svg={SvgClose} />
-                        </div> : ''}
+                        </div>
+                    ) }
                 </fieldset>
             } />
     )
@@ -111,6 +115,8 @@ RangeDatepicker.defaultProps = {
     emptyDateString: S.Strings.EMPTY,
     dateRangeFormat: 'DD.MM.YYYY',
     label: S.Strings.EMPTY,
+    hasClear: true,
+    gray: false,
     className: S.Strings.EMPTY,
 };
 

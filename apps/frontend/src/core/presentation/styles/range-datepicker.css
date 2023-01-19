@@ -16,6 +16,11 @@
     margin: 24px 0 0 0;
 }
 
+.RangeDatepickerWrapper .DatePickerInput.DatePickerInputGray {
+    border-color: var(--color-input-gray-out);
+    background: var(--color-input-gray-out);
+}
+
 .RangeDatepickerWrapper .DatePickerInput .DatePickerFieldLabel {
     position: absolute;
     left: -1px; top: -24px;
@@ -29,6 +34,7 @@
 }
 
 .RangeDatepickerWrapper .DatePickerInput .DatePickerSmallLetters {
+    color: var(--color-neutral-050);
     flex: 0 0 auto;
     font-size: 10px;
     margin-right: 4px;

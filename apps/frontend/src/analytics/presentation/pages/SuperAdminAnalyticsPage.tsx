@@ -24,6 +24,7 @@ import NftEventTable from '../components/NftEventTable';
 import Select from '../../../core/presentation/components/Select';
 import RangeDatepicker, { RangeDatepickerState } from '../../../core/presentation/components/RangeDatepicker';
 import RowLayout from '../../../core/presentation/components/RowLayout';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 import '../styles/page-super-admin-analytics.css'
 
@@ -68,7 +69,9 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
             if (earningsPerDayFilterEntity.isBtc() === true) {
                 const platformTotalEarningsBtcEntity = superAdminAnalyticsPageStore.platformTotalEarningsBtcEntity;
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0))} />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Total Platform NFT fees'} tooltipText={'Platform fee'} /> }
+                        value = { BitcoinStore.formatBtc(platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0))} />
                 )
             }
 
@@ -83,22 +86,26 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const platformTotalEarningsBtcEntity = superAdminAnalyticsPageStore.platformTotalEarningsBtcEntity;
                 const platformTotalEarningsCudosEntity = superAdminAnalyticsPageStore.platformTotalEarningsCudosEntity;
 
-                const nftFeesTotalEarningsInBtc = platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc || new BigNumber(0);
-                const resaleRoyaltiesTotalEarningsInAcudos = platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos || new BigNumber(0);
+                const nftFeesTotalEarningsInBtc = platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0);
+                const resaleRoyaltiesTotalEarningsInAcudos = platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
 
                 const nftFeesTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(nftFeesTotalEarningsInBtc);
                 const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
                 const totalInUsd = nftFeesTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd);
 
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { ProjectUtils.formatUsd(totalInUsd) } />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Total Platform Sales'} tooltipText={'Platform fee + NFTs resale royalties converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
+                        value = { ProjectUtils.formatUsd(totalInUsd) } />
                 )
             }
         } else {
             if (earningsPerDayFilterEntity.isBtc() === true) {
                 const miningFarmTotalEarningsBtcEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsBtc();
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0))} />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Unsold NFT earnings'} tooltipText={'Earnings from unsold NFTs'} /> }
+                        value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0))} />
                 )
             }
 
@@ -106,8 +113,12 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const miningFarmTotalEarningsCudosEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsCudos();
                 return (
                     <>
-                        <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
-                        <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
+                        <ChartInfo
+                            label = { <TextWithTooltip text={'Resale royalties'} tooltipText={'NFTs resale royalties'} /> }
+                            value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
+                        <ChartInfo
+                            label = { <TextWithTooltip text={'NFT sales'} tooltipText={'Funds from initial NFTs sales'} /> }
+                            value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
                     </>
                 )
             }
@@ -116,17 +127,19 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const miningFarmTotalEarningsBtcEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsBtc();
                 const miningFarmTotalEarningsCudosEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsCudos();
 
-                const unsoldNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc || new BigNumber(0);
-                const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos || new BigNumber(0);
-                const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos || new BigNumber(0);
+                const unsoftNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0);
+                const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
+                const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0);
 
-                const unsoftNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(unsoldNftsTotalEarningsInBtc);
+                const unsoftNftsTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(unsoftNftsTotalEarningsInBtc);
                 const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
                 const soldNftsTotalEarningsInUsd = cudosStore.convertAcudosInUsd(soldNftsTotalEarningsInAcudos);
                 const totalInUsd = unsoftNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
 
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { ProjectUtils.formatUsd(totalInUsd) } />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Total Sales'} tooltipText={'Unsold NFTs earnings + NFTs resale royalties + initial NFTs sales converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
+                        value = { ProjectUtils.formatUsd(totalInUsd) } />
                 )
             }
         }
@@ -144,12 +157,14 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
             ) } >
 
             <PageSuperAdminHeader />
-            <ColumnLayout className={'PageContent AppContent'} >
+            <ColumnLayout className={'PageContent PageContentDefaultPadding AppContent'} >
                 <div className = { 'FlexSplit' } >
                     <div className={'H2 Bold'}>Analytics</div>
-                    <RowLayout className = { 'StartRight' } numColumns = { 3 }>
+                    <RowLayout className = { 'StartRight' } numColumns = { filterCollectionEntities !== null ? 3 : 2 }>
                         <Select
+                            className = { 'FilterInput' }
                             label={'Farm/Platform'}
+                            gray= { true }
                             onChange = { onChangeMiningFarm }
                             value = { earningsPerDayFilterEntity.farmId }>
                             <MenuItem value = { S.Strings.NOT_EXISTS }>Platform</MenuItem>
@@ -161,7 +176,9 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                         </Select>
                         { filterCollectionEntities !== null && (
                             <Select
+                                className = { 'FilterInput' }
                                 label={'Collection'}
+                                gray= { true }
                                 onChange = { onChangeCollection }
                                 value = { earningsPerDayFilterEntity.getSelectedCollection() }>
                                 <MenuItem value = { S.Strings.NOT_EXISTS }>All collections</MenuItem>
@@ -173,7 +190,9 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                             </Select>
                         ) }
                         <Select
+                            className = { 'FilterInput' }
                             label={'Currency'}
+                            gray= { true }
                             onChange = { onChangeCurrency }
                             value = { earningsPerDayFilterEntity.currency }>
                             <MenuItem value = { EarningsPerDayCurrency.USD }>USD</MenuItem>
@@ -188,6 +207,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                         leftContent = { renderEarningsTableLeftContent() }
                         rightContent = { (
                             <RangeDatepicker
+                                gray = { true }
                                 datepickerState = { superAdminAnalyticsPageStore.earningRangeState }
                                 onChange = { onChangeEarningsRange } />
                         ) } />
@@ -208,7 +228,11 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                     <StyledContainer className={'FlexColumn'} containerPadding={ContainerPadding.PADDING_24}>
                         <div className={'B1 SemiBold'}>
                             Maintenance Fee collected
-                            { earningsPerDayFilterEntity.isPlatform() === true ? ' for Cudo' : ' by Farm' }
+                            { earningsPerDayFilterEntity.isPlatform() === true ? ' for Cudos' : (
+                                <>
+                                    { earningsPerDayFilterEntity.isCollection() === true ? ' by Collection' : ' by Farm' }
+                                </>
+                            ) }
                         </div>
                         <div className={'FlexColumn'}>
                             <div>
