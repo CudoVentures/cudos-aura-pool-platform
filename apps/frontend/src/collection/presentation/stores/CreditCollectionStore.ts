@@ -45,13 +45,11 @@ export default class CreditCollectionStore {
     selectedNftEntity: NftEntity;
     miningFarmEntity: MiningFarmEntity;
     miningFarmDetailsEntity: MiningFarmDetailsEntity;
-    collectionDetailsEntity: CollectionDetailsEntity;
 
     defaultHashAndPriceValues: number;
     miningFarmRemainingHashPower: number;
     selectedNftHashingPowerInThInputValue: string;
     selectedNftPriceInDollarsInputValue: string;
-    // selectedNftMaintenanceFeeInBtcInputValue: string;
 
     constructor(cudosStore: CudosStore, accountSessionStore: AccountSessionStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -66,7 +64,6 @@ export default class CreditCollectionStore {
         this.tempIdGenerator = new TempIdGenerator();
 
         this.initCreditValues();
-        // this.selectedNftMaintenanceFeeInBtcInputValue = '';
 
         makeAutoObservable(this);
     }
@@ -75,7 +72,6 @@ export default class CreditCollectionStore {
         this.miningFarmEntity = null;
         this.miningFarmDetailsEntity = null;
         this.collectionEntity = null;
-        this.collectionDetailsEntity = null;
         this.nftEntities = [];
         this.selectedNftEntity = null;
 
@@ -168,12 +164,12 @@ export default class CreditCollectionStore {
         return new Promise < void >((resolve, reject) => {
             const run = async () => {
                 try {
-                    const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.collectionEntity.farmId);
+                    const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
 
                     runInAction(() => {
                         this.miningFarmDetailsEntity = miningFarmDetailsEntity;
                         this.miningFarmRemainingHashPower = miningFarmDetailsEntity.remainingHashPowerInTH;
-                        if (this.collectionEntity.isNew() === false) {
+                        if (this.collectionEntity?.isNew() === false) {
                             this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
                         }
                         resolve();
