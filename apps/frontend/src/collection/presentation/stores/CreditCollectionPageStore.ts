@@ -48,18 +48,24 @@ export default class CreditCollectionPageStore {
         makeAutoObservable(this);
     }
 
-    async init(collectionId: string) {
-        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+    init(collectionId: string): Promise < void > {
+        return new Promise < void >((resolve, reject) => {
+            const run = async () => {
+                const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+                const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
-        runInAction(async () => {
-            this.nftFilterModel.collectionIds = [collectionId];
-            this.collectionEntity = collectionEntity;
-            this.miningFarmEntity = miningFarmEntity;
+                runInAction(async () => {
+                    this.nftFilterModel.collectionIds = [collectionId];
+                    this.collectionEntity = collectionEntity;
+                    this.miningFarmEntity = miningFarmEntity;
 
-            await this.fetchCollectionDetails();
-            await this.fetchNfts();
-        })
+                    await this.fetchCollectionDetails();
+                    await this.fetchNfts();
+                    resolve();
+                });
+            }
+            run();
+        });
     }
 
     async fetchCollectionDetails() {

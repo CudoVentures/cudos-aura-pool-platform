@@ -92,30 +92,36 @@ export default class ViewNftPageStore {
         makeAutoObservable(this);
     }
 
-    async init(nftId: string) {
-        await this.bitcoinStore.init();
-        await this.cudosStore.init();
-        await this.generalStore.init();
+    init(nftId: string): Promise < void > {
+        return new Promise < void >((resolve, reject) => {
+            const run = async () => {
+                await this.bitcoinStore.init();
+                await this.cudosStore.init();
+                await this.generalStore.init();
 
-        const cudosPrice = this.cudosStore.getCudosPriceInUsd();
-        const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
-        const nftEntity = await this.nftRepo.fetchNftById(nftId);
-        const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
-        const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+                const cudosPrice = this.cudosStore.getCudosPriceInUsd();
+                const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
+                const nftEntity = await this.nftRepo.fetchNftById(nftId);
+                const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
+                const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
+                const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
-        runInAction(async () => {
-            this.cudosPrice = cudosPrice
-            this.bitcoinPrice = bitcoinPrice
-            this.nftEntity = nftEntity
-            this.adminEntity = adminEntity;
-            this.collectionEntity = collectionEntity;
-            this.miningFarmEntity = miningFarmEntity;
-            this.nftEventFilterModel.nftId = this.nftEntity.id;
+                runInAction(async () => {
+                    this.cudosPrice = cudosPrice
+                    this.bitcoinPrice = bitcoinPrice
+                    this.nftEntity = nftEntity
+                    this.adminEntity = adminEntity;
+                    this.collectionEntity = collectionEntity;
+                    this.miningFarmEntity = miningFarmEntity;
+                    this.nftEventFilterModel.nftId = this.nftEntity.id;
 
-            await this.fetchNftsInTheCollection();
-            await this.fetchEarnings();
-            await this.fetchHistory();
+                    await this.fetchNftsInTheCollection();
+                    await this.fetchEarnings();
+                    await this.fetchHistory();
+                    resolve();
+                });
+            }
+            run();
         });
     }
 
