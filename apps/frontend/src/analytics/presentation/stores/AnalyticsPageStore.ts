@@ -211,7 +211,7 @@ export default class AnalyticsPageStore {
     }
 
     changeFilterCollection(collectionId: string) {
-        this.earningsPerDayFilterEntity.collectionIds = [collectionId];
+        this.earningsPerDayFilterEntity.collectionIds = collectionId === S.Strings.NOT_EXISTS ? null : [collectionId];
         this.fetchEarnings();
         this.fetchAggregatedStatistics();
     }
