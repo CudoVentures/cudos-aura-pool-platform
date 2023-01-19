@@ -2,7 +2,6 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
-import { timeStamp } from 'console';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import sequelize, { Op } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
@@ -14,19 +13,18 @@ import { DataServiceError } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
 import { FarmService } from '../farm/farm.service';
-import GeneralService from '../general/general.service';
 import NftMarketplaceTradeHistoryEntity from '../graphql/entities/nft-marketplace-trade-history.entity';
 import NftModuleNftTransferEntity from '../graphql/entities/nft-module-nft-transfer-history';
 import { GraphqlService } from '../graphql/graphql.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
+import { AddressPayoutHistoryEntity } from './entities/address-payout-history.entity';
 import EarningsPerDayFilterEntity from './entities/earnings-per-day-filter.entity';
 import EarningsPerDayEntity, { EarningWithTimestampEntity } from './entities/earnings-per-day.entity';
 import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
 import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
 import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
-import MiningFarmMaintenanceFeeEntity from './entities/mining-farm-maintenance-fees.entity';
 import NftEarningsEntity from './entities/nft-earnings.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import NftEventEntity from './entities/nft-event.entity';
@@ -35,6 +33,7 @@ import { NftPayoutHistoryEntity } from './entities/nft-payout-history.entity';
 import EarningsEntity from './entities/platform-earnings.entity';
 import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
+import { AddressesPayoutHistoryRepo, AddressesPayoutHistoryRepoColumn } from './repos/addresses-payout-history.repo';
 
 import { NftOwnersPayoutHistoryRepo, NftOwnersPayoutHistoryRepoColumn } from './repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo, NftPayoutHistoryRepoColumn } from './repos/nft-payout-history.repo';
@@ -61,6 +60,8 @@ export class StatisticsService {
         private nftPayoutHistoryRepo: typeof NftPayoutHistoryRepo,
         @InjectModel(NftOwnersPayoutHistoryRepo)
         private nftOwnersPayoutHistoryRepo: typeof NftOwnersPayoutHistoryRepo,
+        @InjectModel(AddressesPayoutHistoryRepo)
+        private addressesPayoutHistoryRepo: typeof AddressesPayoutHistoryRepo,
     ) {}
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
@@ -540,7 +541,6 @@ export class StatisticsService {
         const earningsEntity = new EarningsEntity();
         earningsEntity.acudosEarningsPerDay = acudosEarningsPerDay;
         earningsEntity.btcEarningsPerDay = btcEarningsPerDay;
-
         return earningsEntity
     }
 
@@ -573,8 +573,6 @@ export class StatisticsService {
                 throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
             }
 
-            console.log(marketplaceCollectionEntity);
-            console.log('----------------------------------------------')
             const royaltiesAddress = earningsPerDayFilterEntity.isEarningsReceiverPlatform() ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmMintRoyaltiesAddress;
             const royaltiesPercent = marketplaceCollectionEntity.getMintRoyaltiesPercent(royaltiesAddress);
             if (!royaltiesPercent) {
@@ -630,9 +628,10 @@ export class StatisticsService {
             throw Error('Address not set.');
         }
 
-        const ownersPayoutHistoryForPeriod = await this.fetchNftOwnersPayoutHistoryByPayoutAddress(address, earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+        const addressPayoutHistoryForPeriod = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+
         const earningsPerDayEntity = new EarningsPerDayEntity(earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
-        earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(ownersPayoutHistoryForPeriod);
+        earningsPerDayEntity.calculateEarningsByAddressPayoutHistory(addressPayoutHistoryForPeriod);
 
         return earningsPerDayEntity.earningsPerDay;
     }
@@ -648,9 +647,9 @@ export class StatisticsService {
             ? miningFarm.maintenanceFeePayoutBtcAddress
             : miningFarm.leftoverRewardsBtcAddress
 
-        const ownersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByPayoutAddress(address, 0, Number.MAX_SAFE_INTEGER);
+        const addressPayoutHistoryEntities = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, 0, Number.MAX_SAFE_INTEGER);
 
-        const total = ownersPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.reward), new BigNumber(0));
+        const total = addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.amountBtc), new BigNumber(0));
 
         return total
     }
@@ -660,8 +659,9 @@ export class StatisticsService {
         const totalCudosMaintenanceFees = nftPayoutEntitites.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoPartOfMaintenanceFee), new BigNumber(0));
 
         const address = this.configService.getOrThrow('APP_CUDOS_BTC_FEE_PAYOUT_ADDRESS');
-        const ownersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByPayoutAddress(address, 0, Number.MAX_SAFE_INTEGER);
-        const totalBtcReceived = ownersPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.reward), new BigNumber(0));
+        const addressPayoutHistoryEntities = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, 0, Date.now());
+
+        const totalBtcReceived = addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.amountBtc), new BigNumber(0));
 
         if (type === BtcEarningsType.MAINTENANCE_FEE) {
             return totalCudosMaintenanceFees;
@@ -760,20 +760,20 @@ export class StatisticsService {
         });
     }
 
-    private async fetchNftOwnersPayoutHistoryByPayoutAddress(btcAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
-        const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
+    private async fetchAddressesPayoutHistoryByPayoutAddress(btcAddress: string, timestampFrom: number, timestampTo: number): Promise < AddressPayoutHistoryEntity[] > {
+        const addressesPayoutHistoryRepos = await this.addressesPayoutHistoryRepo.findAll({
             where: {
-                [NftOwnersPayoutHistoryRepoColumn.PAYOUT_ADDRESS]: btcAddress,
-                [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
-                    [Op.gte]: new Date(timestampFrom),
-                    [Op.lte]: new Date(timestampTo),
+                [AddressesPayoutHistoryRepoColumn.ADDRESS]: btcAddress,
+                [AddressesPayoutHistoryRepoColumn.PAYOUT_TIME]: {
+                    [Op.gte]: timestampFrom / 1000,
+                    [Op.lte]: timestampTo / 1000,
                 },
-                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
+                [AddressesPayoutHistoryRepoColumn.THRESHOLD_REACHED]: true,
             },
         });
 
-        return nftOwnersPayoutHistoryRepos.map((nftOwnersPayoutHistoryRepo) => {
-            return NftOwnersPayoutHistoryEntity.fromRepo(nftOwnersPayoutHistoryRepo);
+        return addressesPayoutHistoryRepos.map((adressPayoutHistoryRepo) => {
+            return AddressPayoutHistoryEntity.fromRepo(adressPayoutHistoryRepo);
         });
     }
 
@@ -783,6 +783,7 @@ export class StatisticsService {
                 [NftOwnersPayoutHistoryRepoColumn.NFT_PAYOUT_HISTORY_ID]: nftPayoutHistoryIds,
                 [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
                     [Op.gte]: new Date(timestampFrom),
+                    [Op.gte]: new Date(timestampTo),
                 },
                 [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
             },

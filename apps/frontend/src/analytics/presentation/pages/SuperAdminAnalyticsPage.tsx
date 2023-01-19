@@ -75,7 +75,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
             if (earningsPerDayFilterEntity.isCudos() === true) {
                 const platformTotalEarningsCudosEntity = superAdminAnalyticsPageStore.platformTotalEarningsCudosEntity;
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudos(platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
+                    <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudosWithPrecision(platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
                 )
             }
 
@@ -106,8 +106,8 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const miningFarmTotalEarningsCudosEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsCudos();
                 return (
                     <>
-                        <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
-                        <ChartInfo label = { 'Total Platform Sales'} value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0))} />
+                        <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
+                        <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
                     </>
                 )
             }
@@ -121,8 +121,8 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos || new BigNumber(0);
 
                 const unsoftNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(unsoldNftsTotalEarningsInBtc);
-                const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertCudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
-                const soldNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(soldNftsTotalEarningsInAcudos);
+                const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
+                const soldNftsTotalEarningsInUsd = cudosStore.convertAcudosInUsd(soldNftsTotalEarningsInAcudos);
                 const totalInUsd = unsoftNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
 
                 return (

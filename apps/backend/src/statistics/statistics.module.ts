@@ -10,12 +10,14 @@ import { CollectionModule } from '../collection/collection.module';
 import { GraphqlModule } from '../graphql/graphql.module';
 import { GeneralModule } from '../general/general.module';
 import { ConfigModule } from '@nestjs/config';
+import { AddressesPayoutHistoryRepo } from './repos/addresses-payout-history.repo';
 
 @Module({
     imports: [
         SequelizeModule.forFeature([
             NftOwnersPayoutHistoryRepo,
             NftPayoutHistoryRepo,
+            AddressesPayoutHistoryRepo,
         ]),
         forwardRef(() => NFTModule),
         forwardRef(() => CollectionModule),

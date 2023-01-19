@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
+import { AddressPayoutHistoryEntity } from './address-payout-history.entity';
 import { NftOwnersPayoutHistoryEntity } from './nft-owners-payout-history.entity';
 
 export default class EarningsPerDayEntity {
@@ -18,6 +19,15 @@ export default class EarningsPerDayEntity {
 
         this.days = days;
         this.earningsPerDay = this.days.map(() => new BigNumber(0));
+    }
+
+    calculateEarningsByAddressPayoutHistory(addressPayoutHistoryEntities: AddressPayoutHistoryEntity[]) {
+        addressPayoutHistoryEntities.forEach((nftOwnersPayoutHistoryEntity) => {
+            const dayIndex = EarningsPerDayEntity.findIndexInDays(this.days, nftOwnersPayoutHistoryEntity.payoutTime * 1000);
+            if (dayIndex !== NOT_EXISTS_INT) {
+                this.earningsPerDay[dayIndex] = this.earningsPerDay[dayIndex].plus(nftOwnersPayoutHistoryEntity.amountBtc);
+            }
+        });
     }
 
     calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities: NftOwnersPayoutHistoryEntity[]) {

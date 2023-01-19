@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js';
+import { CURRENCY_DECIMALS } from 'cudosjs';
 import { makeAutoObservable } from 'mobx';
+import { CHAIN_DETAILS } from '../../core/utilities/Constants';
 
 export default class EarningsPerDayEntity {
 
@@ -30,7 +32,10 @@ export default class EarningsPerDayEntity {
         }
 
         const entity = new EarningsPerDayEntity();
-        entity.cudosEarningsPerDay = (json.cudosEarningsPerDay ?? entity.cudosEarningsPerDay).map((j) => new BigNumber(j));
+
+        entity.cudosEarningsPerDay = json.acudosEarningsPerDay
+            ? json.acudosEarningsPerDay.map((j) => (new BigNumber(j).shiftedBy(-CURRENCY_DECIMALS)))
+            : entity.btcEarningsPerDay;
         entity.btcEarningsPerDay = (json.btcEarningsPerDay ?? entity.btcEarningsPerDay).map((j) => new BigNumber(j));
 
         return entity;

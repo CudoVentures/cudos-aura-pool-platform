@@ -22,6 +22,7 @@ import PlatformTotalEarningsCudosEntity from '../../entities/PlatformTotalEarnin
 import MiningFarmMaintenanceFeeEntity from '../../entities/MiningFarmMaintenanceFeeEntity';
 import MiningFarmTotalEarningsBtcEntity from '../../entities/MiningFarmTotalEarningsBtcEntity';
 import MiningFarmTotalEarningsCudosEntity from '../../entities/MiningFarmTotalEarningsCudosEntity';
+import BigNumber from 'bignumber.js';
 
 export default class SuperAdminAnalyticsPageStore {
 
@@ -117,7 +118,6 @@ export default class SuperAdminAnalyticsPageStore {
         this.earningsPerDayFilterEntity.timestampTo = this.earningRangeState.endDate;
 
         const earningsPerDayEntity = await this.statisticsRepo.fetchEarningsPerDay(this.earningsPerDayFilterEntity);
-
         runInAction(() => {
             this.earningsPerDayEntity = earningsPerDayEntity;
         })
@@ -218,10 +218,9 @@ export default class SuperAdminAnalyticsPageStore {
         }
 
         return this.earningsPerDayEntity?.btcEarningsPerDay.map((btcValue, i) => {
-            const acudosValue = this.earningsPerDayEntity.cudosEarningsPerDay[i];
-
+            const cudosValue = this.earningsPerDayEntity.cudosEarningsPerDay.length > i ? this.earningsPerDayEntity.cudosEarningsPerDay[i] : new BigNumber(0);
             const btcToUsd = this.bitcoinStore.convertBtcInUsd(btcValue);
-            const acudosToUsd = this.cudosStore.convertCudosInUsd(acudosValue);
+            const acudosToUsd = this.cudosStore.convertCudosInUsd(cudosValue);
             return btcToUsd.plus(acudosToUsd).toNumber();
         });
     }
