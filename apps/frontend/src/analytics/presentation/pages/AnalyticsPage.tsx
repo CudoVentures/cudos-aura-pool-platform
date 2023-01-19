@@ -17,11 +17,16 @@ import PageAdminHeader from '../../../layout/presentation/components/PageAdminHe
 import ChartHeading from '../components/ChartHeading';
 import ChartInfo from '../components/ChartInfo';
 import DailyChart from '../components/DailyChart';
-import DefaultIntervalPicker from '../components/DefaultIntervalPicker';
 import NftEventTable from '../components/NftEventTable';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/analytics-page.css';
+import RangeDatepicker, { RangeDatepickerState } from '../../../core/presentation/components/RangeDatepicker';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
+import BigNumber from 'bignumber.js';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import RowLayout from '../../../core/presentation/components/RowLayout';
+import { EarningsPerDayCurrency } from '../../entities/EarningsPerDayFilterEntity';
 
 type Props = {
     analyticsPageStore?: AnalyticsPageStore,
@@ -31,7 +36,8 @@ type Props = {
 }
 
 function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletStore }: Props) {
-    const { miningFarmEarningsEntity, defaultIntervalPickerState } = analyticsPageStore;
+    const { filterCollectionEntities, earningsPerDayFilterEntity, earningsPerDayEntity } = analyticsPageStore;
+    const miningFarmMaintenanceFeeEntity = analyticsPageStore.getMiningFarmMaintenanceFee();
 
     useEffect(() => {
         async function run() {
@@ -42,58 +48,148 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
         run();
     }, []);
 
+    function onChangeEarningsRange(startTimestamp, endTimestamp) {
+        analyticsPageStore.earningRangeState = new RangeDatepickerState(startTimestamp, endTimestamp);
+    }
+
+    function onChangeCollection(value) {
+        analyticsPageStore.changeFilterCollection(value);
+    }
+
+    function onChangeCurrency(value) {
+        analyticsPageStore.changeCurrency(value);
+    }
+
+    function renderEarningsTableLeftContent() {
+        if (earningsPerDayFilterEntity.isBtc() === true) {
+            const miningFarmTotalEarningsBtcEntity = analyticsPageStore.getMiningFarmTotalEarningsBtc();
+            return (
+                <ChartInfo
+                    label = { <TextWithTooltip text={'Unsold NFT earnings'} tooltipText={'Earnings from unsold NFTs'} /> }
+                    value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0))} />
+            )
+        }
+
+        if (earningsPerDayFilterEntity.isCudos() === true) {
+            const miningFarmTotalEarningsCudosEntity = analyticsPageStore.getMiningFarmTotalEarningsCudos();
+            return (
+                <>
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'Resale royalties'} tooltipText={'NFTs resale royalties'} /> }
+                        value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
+                    <ChartInfo
+                        label = { <TextWithTooltip text={'NFT sales'} tooltipText={'Funds from initial NFTs sales'} /> }
+                        value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0))} />
+                </>
+            )
+        }
+
+        if (earningsPerDayFilterEntity.isUsd() === true) {
+            const miningFarmTotalEarningsBtcEntity = analyticsPageStore.getMiningFarmTotalEarningsBtc();
+            const miningFarmTotalEarningsCudosEntity = analyticsPageStore.getMiningFarmTotalEarningsCudos();
+
+            const unsoftNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0);
+            const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
+            const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0);
+
+            const unsoftNftsTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(unsoftNftsTotalEarningsInBtc);
+            const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertCudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
+            const soldNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(soldNftsTotalEarningsInAcudos);
+            const totalInUsd = unsoftNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
+
+            return (
+                <ChartInfo
+                    label = { <TextWithTooltip text={'Total Sales'} tooltipText={'Unsold NFTs earnings + NFTs resale royalties + initial NFTs sales converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
+                    value = { ProjectUtils.formatUsd(totalInUsd) } />
+            )
+        }
+
+        return null;
+    }
+
     return (
         <PageLayout className = { 'PageAnalytics' } >
             <PageAdminHeader />
             <div className={'PageContent AppContent FlexColumn'} >
-                <div className={'H2 Bold'}>Farm Analytics</div>
+                <div className = { 'FlexSplit' } >
+                    <div className={'H2 Bold'}>Farm Analytics</div>
+                    <RowLayout className = { 'StartRight' } numColumns = { 2 }>
+                        <Select
+                            className = { 'FilterInput' }
+                            label={'Collection'}
+                            gray= { true }
+                            onChange = { onChangeCollection }
+                            value = { earningsPerDayFilterEntity.getSelectedCollection() }>
+                            <MenuItem value = { S.Strings.NOT_EXISTS }>All collections</MenuItem>
+                            { filterCollectionEntities?.map((collectionEntity) => {
+                                return (
+                                    <MenuItem key = { collectionEntity.id } value = { collectionEntity.id } >{ collectionEntity.name }</MenuItem>
+                                )
+                            })}
+                        </Select>
+                        <Select
+                            className = { 'FilterInput' }
+                            label={'Currency'}
+                            gray= { true }
+                            onChange = { onChangeCurrency }
+                            value = { earningsPerDayFilterEntity.currency }>
+                            <MenuItem value = { EarningsPerDayCurrency.USD }>USD</MenuItem>
+                            <MenuItem value = { EarningsPerDayCurrency.BTC }>BTC</MenuItem>
+                            <MenuItem value = { EarningsPerDayCurrency.CUDOS }>CUDOS</MenuItem>
+                        </Select>
+                    </RowLayout>
+                </div>
 
-                { miningFarmEarningsEntity === null ? (
-                    <LoadingIndicator />
-                ) : (
-                    <>
-                        <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
-                            <ChartHeading
-                                leftContent = { (
-                                    <>
-                                        <ChartInfo label = { 'Total Farm Sales'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.getTotalMiningFarmSales())} />
-                                        <ChartInfo label = { 'Total Farm Sales from NFTs'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.totalMiningFarmNftSalesInAcudos)} />
-                                        <ChartInfo label = { 'Total Farm Sales from royalties'} value = { cudosStore.formatConvertedAcudosInUsd(miningFarmEarningsEntity.totalMiningFarmRoyaltiesInAcudos)} />
-                                        <ChartInfo label = { 'Total NFTs Sold'} value = { miningFarmEarningsEntity.totalNftSold.toString() } />
-                                    </>
-                                ) }
-                                rightContent = { (
-                                    <DefaultIntervalPicker defaultIntervalPickerState = { defaultIntervalPickerState } />
-                                ) } />
-                            <DailyChart
-                                timestampFrom = { defaultIntervalPickerState.earningsTimestampFrom }
-                                timestampTo = { defaultIntervalPickerState.earningsTimestampTo }
-                                data = { miningFarmEarningsEntity.formatEarningsPerDayToCudosNumbers() } />
-                        </StyledContainer>
-                        <div className={'Grid GridColumns2 BalancesDataContainer'}>
-                            <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
-                                <div className={'B1 SemiBold'}>Wallet Balance</div>
-                                <div className={'FlexColumn ValueColumn'}>
+                <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
+                    <ChartHeading
+                        leftContent = { renderEarningsTableLeftContent() }
+                        rightContent = { (
+                            <RangeDatepicker
+                                gray = { true }
+                                datepickerState = { analyticsPageStore.earningRangeState }
+                                onChange = { onChangeEarningsRange } />
+                        ) } />
+                    { earningsPerDayEntity === null ? (
+                        <LoadingIndicator />
+                    ) : (
+                        <DailyChart
+                            timestampFrom = { analyticsPageStore.earningRangeState.startDate }
+                            timestampTo = { analyticsPageStore.earningRangeState.endDate }
+                            data = { analyticsPageStore.getEarnings() } />
+                    ) }
+                </StyledContainer>
+
+                <div className={'Grid GridColumns2 BalancesDataContainer'}>
+                    <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
+                        <div className={'B1 SemiBold'}>Wallet Balance</div>
+                        <div className={'FlexColumn ValueColumn'}>
+                            <div>
+                                <span className={'H2 Bold'}>{walletStore.formatBalanceInCudosInt()}<span className={'ColorNeutral060'}>.{walletStore.formatBalanceInCudosFraction()}</span></span>
+                                <span className={'H3 ColorNeutral060'}> CUDOS</span>
+                            </div>
+                            <div className={'ColorPrimary060 H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.getBalanceSafe())}</div>
+                        </div>
+                    </StyledContainer>
+                    <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
+                        <div className={'B1 SemiBold'}>
+                            Maintenance Fee Deposited
+                            { earningsPerDayFilterEntity.isCollection() === true ? ' by Collection' : ' by Farm' }
+                        </div>
+                        <div className={'FlexColumn ValueColumn'}>
+                            { miningFarmMaintenanceFeeEntity === null ? (
+                                <LoadingIndicator />
+                            ) : (
+                                <>
                                     <div>
-                                        <span className={'H2 Bold'}>{walletStore.formatBalanceInCudosInt()}<span className={'ColorNeutral060'}>.{walletStore.formatBalanceInCudosFraction()}</span></span>
-                                        <span className={'H3 ColorNeutral060'}> CUDOS</span>
-                                    </div>
-                                    <div className={'ColorPrimary060 H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.getBalanceSafe())}</div>
-                                </div>
-                            </StyledContainer>
-                            <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>
-                                <div className={'B1 SemiBold'}>Maintenance Fee Deposited</div>
-                                <div className={'FlexColumn ValueColumn'}>
-                                    <div>
-                                        <span className={'H2 Bold'}>{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcInt()}<span className={'ColorNeutral060'}>.{miningFarmEarningsEntity.formatMaintenanceFeeDepositedInBtcFraction()}</span></span>
+                                        <span className={'H2 Bold'}>{miningFarmMaintenanceFeeEntity.formatMaintenanceFeeDepositedInBtcInt()}<span className={'ColorNeutral060'}>.{miningFarmMaintenanceFeeEntity.formatMaintenanceFeeDepositedInBtcFraction()}</span></span>
                                         <span className={'H3 ColorNeutral060'}> BTC</span>
                                     </div>
-                                    <div className={'ColorPrimary060 H3 Bold'}>{bitcoinStore.formatBtcInUsd(miningFarmEarningsEntity.maintenanceFeeDepositedInBtc)}</div>
-                                </div>
-                            </StyledContainer>
+                                    <div className={'ColorPrimary060 H3 Bold'}>{bitcoinStore.formatBtcInUsd(miningFarmMaintenanceFeeEntity.maintenanceFeeInBtc)}</div>
+                                </>
+                            ) }
                         </div>
-                    </>
-                ) }
+                    </StyledContainer>
+                </div>
 
                 { analyticsPageStore.nftEventEntities === null ? (
                     <LoadingIndicator />
