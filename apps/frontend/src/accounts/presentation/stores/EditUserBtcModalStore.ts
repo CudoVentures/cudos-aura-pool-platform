@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { action, makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable, runInAction } from 'mobx';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
@@ -33,12 +33,20 @@ export default class EditUserBtcModalStore extends ModalStore {
     }
 
     @action
-    showSignal(userEntity: UserEntity, onFinish: () => void) {
-        this.userEntity = userEntity;
-        this.bitcoinPayoutWalletAddress = userEntity.bitcoinPayoutWalletAddress;
-        this.onFinish = onFinish;
+    async showSignal(userEntity: UserEntity, onFinish: () => void) {
+        const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
 
-        this.show();
+        runInAction(() => {
+            if (recipient !== userEntity.bitcoinPayoutWalletAddress) {
+                userEntity.bitcoinPayoutWalletAddress = '' // in order to force user to enter the BTC address
+            }
+
+            this.userEntity = userEntity;
+            this.bitcoinPayoutWalletAddress = userEntity.bitcoinPayoutWalletAddress;
+            this.onFinish = onFinish;
+
+            this.show();
+        });
     }
 
     @action
