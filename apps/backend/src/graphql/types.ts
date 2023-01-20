@@ -16955,6 +16955,13 @@ export type MarketplaceCollectionsByDenomIdsQueryVariables = Exact<{
 
 export type MarketplaceCollectionsByDenomIdsQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string, nft_denom: { __typename?: 'nft_denom', data_text?: string | null } }> };
 
+export type MarketplaceCollectionsByIdsQueryVariables = Exact<{
+  ids?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
+}>;
+
+
+export type MarketplaceCollectionsByIdsQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string, nft_denom: { __typename?: 'nft_denom', data_text?: string | null } }> };
+
 export type MarketplaceNftPriceSumByDenomIdQueryVariables = Exact<{
   denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
@@ -17042,6 +17049,22 @@ export const LastParsedHeightDocument = gql`
 export const MarketplaceCollectionsByDenomIdsDocument = gql`
     query MarketplaceCollectionsByDenomIds($denomIds: [String!]) {
   marketplace_collection(where: {denom_id: {_in: $denomIds}}) {
+    mint_royalties
+    resale_royalties
+    verified
+    creator
+    denom_id
+    id
+    transaction_hash
+    nft_denom {
+      data_text
+    }
+  }
+}
+    `;
+export const MarketplaceCollectionsByIdsDocument = gql`
+    query MarketplaceCollectionsByIds($ids: [bigint!]) {
+  marketplace_collection(where: {id: {_in: $ids}}) {
     mint_royalties
     resale_royalties
     verified
@@ -17243,6 +17266,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     MarketplaceCollectionsByDenomIds(variables?: MarketplaceCollectionsByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceCollectionsByDenomIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceCollectionsByDenomIdsQuery>(MarketplaceCollectionsByDenomIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceCollectionsByDenomIds', 'query');
+    },
+    MarketplaceCollectionsByIds(variables?: MarketplaceCollectionsByIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceCollectionsByIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceCollectionsByIdsQuery>(MarketplaceCollectionsByIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceCollectionsByIds', 'query');
     },
     MarketplaceNftPriceSumByDenomId(variables?: MarketplaceNftPriceSumByDenomIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftPriceSumByDenomIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftPriceSumByDenomIdQuery>(MarketplaceNftPriceSumByDenomIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftPriceSumByDenomId', 'query');

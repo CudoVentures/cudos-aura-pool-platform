@@ -13,6 +13,21 @@ query MarketplaceCollectionsByDenomIds($denomIds: [String!]) {
   }
 }
 
+query MarketplaceCollectionsByIds($ids: [bigint!]) {
+  marketplace_collection(where: {id: {_in: $ids}}) {
+    mint_royalties
+    resale_royalties
+    verified
+    creator
+    denom_id
+    id
+    transaction_hash
+    nft_denom {
+      data_text
+    }
+  }
+}
+
 query MarketplaceNftPriceSumByDenomId($denomIds: [String!]) {
   marketplace_nft_buy_history_aggregate(where: {denom_id: {_in: $denomIds}}) {
     aggregate {

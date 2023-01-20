@@ -28,6 +28,8 @@ import {
     MarketplaceCollectionsByDenomIdsQuery,
     MarketplaceNftTradeHistoryByDenomIdsQuery,
     MarketplaceNftTradeHistoryByDenomIdsDocument,
+    MarketplaceCollectionsByIdsQuery,
+    MarketplaceCollectionsByIdsDocument,
 } from './types';
 import NftModuleNftTransferHistoryEntity from './entities/nft-module-nft-transfer-history';
 import NftMarketplaceTradeHistoryEntity from './entities/nft-marketplace-trade-history.entity';
@@ -74,6 +76,21 @@ export class GraphqlService {
         const res: AxiosResponse<{ data: MarketplaceCollectionsByDenomIdsQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceCollectionsByDenomIdsDocument),
             variables: { denomIds },
+        });
+
+        if (!res.data?.data?.marketplace_collection) {
+            throw new DataServiceError();
+        }
+
+        const chainMarketplaceCollectionEntitiess = res.data.data.marketplace_collection.map((queryCollection) => ChainMarketplaceCollectionEntity.fromGraphQl(queryCollection));
+
+        return chainMarketplaceCollectionEntitiess;
+    }
+
+    async fetchMarketplaceCollectionsByIds(ids: number[]): Promise< ChainMarketplaceCollectionEntity[] > {
+        const res: AxiosResponse<{ data: MarketplaceCollectionsByIdsQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceCollectionsByIdsDocument),
+            variables: { ids },
         });
 
         if (!res.data?.data?.marketplace_collection) {
