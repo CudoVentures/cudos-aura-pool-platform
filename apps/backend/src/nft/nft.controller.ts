@@ -14,6 +14,7 @@ import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../common/utils';
 import { ChainMarketplaceNftEntity } from '../graphql/entities/nft-marketplace.entity';
 import { FarmService } from '../farm/farm.service';
+import { validate } from 'uuid';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -93,7 +94,7 @@ export class NFTController {
 
         // fetch nfts
         const nftFilterEntity = new NftFilterEntity();
-        nftFilterEntity.nftIds = chainMarketplaceNftEntities.map((entity) => entity.uid);
+        nftFilterEntity.nftIds = chainMarketplaceNftEntities.filter((entity) => validate(entity.uid)).map((entity) => entity.uid);
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
 
         for (let i = 0; i < nftEntities.length; i++) {
