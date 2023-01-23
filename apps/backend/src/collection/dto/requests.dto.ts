@@ -35,13 +35,15 @@ export enum ModuleName {
 export class ReqUpdateCollectionChainData {
     @IsString()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: 'marketplace' })
         module: string;
 
     @IsArray()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: ['denom_id1', 'denom_id2'] })
         denomIds: string[];
+
+    @IsArray()
+    @IsNotEmpty()
+        collectionIds: number[];
 
     @IsNumber()
         height: number;

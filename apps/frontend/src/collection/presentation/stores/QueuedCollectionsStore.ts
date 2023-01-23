@@ -116,6 +116,10 @@ export default class QueuedCollectionsStore {
             await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
             collectionEntity.copy(clonedCollectionEntity);
         } catch (e) {
+            if (e.message.indexOf('is not admin') !== -1) {
+                this.alertStore.show('The connected wallet is not a marketplace admin wallet');
+                return;
+            }
             this.alertStore.show(e.message);
         }
     }

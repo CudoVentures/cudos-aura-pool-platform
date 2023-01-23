@@ -31,12 +31,13 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
         const res = await axios.put(`${this.api_url}${LAST_BLOCK_ENDPOINT}`, { height });
     }
 
-    async triggerUpdateMarketplaceModuleCollections(denomIds: string[], height: number): Promise < void > {
+    async triggerUpdateMarketplaceModuleCollections(denomIds: string[], collectionIds: string[], height: number): Promise < void > {
         const res = await axios.put(
             `${this.api_url}${TRIGGER_COLLECTION_UPDATES}`,
             {
                 module: MARKETPLACE_MODULE,
                 denomIds,
+                collectionIds,
                 height,
             },
         );
@@ -59,6 +60,7 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
             {
                 module: NFT_MODULE,
                 denomIds,
+                collectionIds: [],
                 height,
             },
         );

@@ -104,6 +104,10 @@ export default class CreditCollectionPageStore {
             await this.collectionRepo.approveCollection(collectionClone, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
             this.collectionEntity.copy(collectionClone);
         } catch (e) {
+            if (e.message.indexOf('is not admin') !== -1) {
+                this.alertStore.show('The connected wallet is not a marketplace admin wallet');
+                return;
+            }
             this.alertStore.show(e.message);
         }
     }

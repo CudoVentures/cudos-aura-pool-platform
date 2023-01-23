@@ -100,10 +100,11 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                         <UploaderComponent
                             id = { this }
                             params = { {
-                                'maxSize': 73400320, // 70MB
+                                'maxSize': 2 * (1 << 20), // 2MB
                                 'position': 'static',
+                                'fileExt': '.svg, .gif, .jpg, .jpeg, .png',
                                 'onExceedLimit': () => {
-                                    this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
+                                    this.props.alertStore.show('', 'Максималният размер на файловете е 2MB!');
                                 },
                                 onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
                                     selectedNftEntity.imageUrl = base64File;
