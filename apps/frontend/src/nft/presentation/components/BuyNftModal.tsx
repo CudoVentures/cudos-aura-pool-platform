@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import S from '../../../core/utilities/Main';
 import BuyNftModalStore from '../stores/BuyNftModalStore';
 import ResellNftModalStore from '../stores/ResellNftModalStore';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
-import Input, { InputType } from '../../../core/presentation/components/Input';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
@@ -15,24 +13,20 @@ import AnimationContainer from '../../../core/presentation/components/AnimationC
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
 import '../styles/buy-nft-modal.css';
-import ValidationState from '../../../core/presentation/stores/ValidationState';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import InfoBlueBox from '../../../core/presentation/components/InfoBlueBox';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 type Props = {
     cudosStore?: CudosStore,
-    walletStore?: WalletStore,
+    alertStore?: AlertStore,
     resellNftModalStore?: ResellNftModalStore;
     buyNftModalStore?: BuyNftModalStore;
 }
 
-function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, walletStore }: Props) {
+function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalStore }: Props) {
     const nftEntity = buyNftModalStore.nftEntity;
-    const validationState = useRef(new ValidationState()).current;
-    const rewardsRecipientAddress = useRef(validationState.addBitcoinAddressValidation('Invalid address')).current;
 
     useEffect(() => {
         cudosStore.init();
@@ -44,8 +38,8 @@ function BuyNftModal({ cudosStore, resellNftModalStore, buyNftModalStore, wallet
     }
 
     function onClickPurchaseNft() {
-        if (validationState.getIsErrorPresent() === true) {
-            validationState.setShowErrors(true);
+        if (buyNftModalStore.recipient === '') {
+            alertStore.show('You must specify BTC reward adress in your profile');
             return;
         }
 

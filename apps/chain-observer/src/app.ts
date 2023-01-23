@@ -36,7 +36,7 @@ export default class App {
             try {
                 return await StargateClient.connect(Config.RPC_ENDPOINT)
             } catch (e) {
-                console.log('Failed to get a chain client. Retrying...');
+                console.log(`Failed to get a chain client using ${Config.RPC_ENDPOINT}. Retrying...`);
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }

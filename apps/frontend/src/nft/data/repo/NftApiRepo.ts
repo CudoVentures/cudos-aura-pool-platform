@@ -93,7 +93,6 @@ export default class NftApiRepo implements NftRepo {
             let txHash = S.Strings.EMPTY;
 
             if (nftEntity.isMinted() === false) {
-                // TODO:get real tx estimation
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntity.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(), 'acudos')
