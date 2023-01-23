@@ -148,7 +148,7 @@ export default class NftEntity {
             'name': entity.name,
             'tokenId': entity.tokenId,
             'hashingPower': entity.hashPowerInTh,
-            'priceInAcudos': entity.priceInAcudos.toString(),
+            'priceInAcudos': entity.priceInAcudos.toString(10),
             'uri': entity.imageUrl,
             'status': entity.status,
             'expirationDateTimestamp': entity.expirationDateTimestamp,

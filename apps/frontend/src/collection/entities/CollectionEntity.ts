@@ -169,7 +169,7 @@ export default class CollectionEntity {
             'bannerImage': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
-            'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString() ?? null,
+            'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString(10) ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
             'timestampDeletedAt': entity.timestampDeletedAt,
         }

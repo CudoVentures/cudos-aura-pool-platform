@@ -80,7 +80,7 @@ export default class MegaWalletEventEntity {
             'nftId': entity.nftId,
             'fromAddress': entity.fromAddress,
             'eventType': entity.eventType,
-            'transferPriceInAcudos': entity.transferPriceInAcudos.toString(),
+            'transferPriceInAcudos': entity.transferPriceInAcudos.toString(10),
             'transferPriceInUsd': entity.transferPriceInUsd,
             'timestamp': entity.timestamp,
         }

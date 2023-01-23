@@ -56,7 +56,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
     const farmMainteannceFeesAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
 
     const [hashPowerInTh, setHashPowerInTh] = useState(miningFarmEntity.hashPowerInTh !== S.NOT_EXISTS ? miningFarmEntity.hashPowerInTh : '');
-    const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(miningFarmEntity.maintenanceFeeInBtc !== null ? miningFarmEntity.maintenanceFeeInBtc.toString() : '')
+    const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(miningFarmEntity.maintenanceFeeInBtc !== null ? miningFarmEntity.maintenanceFeeInBtc.toString(10) : '')
 
     function onChangeManufacturers(values) {
         runInAction(() => {

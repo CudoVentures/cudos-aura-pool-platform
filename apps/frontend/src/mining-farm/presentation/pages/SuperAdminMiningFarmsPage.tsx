@@ -53,21 +53,12 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
                         { miningFarmEntity.name }
                     </div>
                 )),
-                // createTableCell((
-                //     <div className = { 'Bold' } >
-                //         <div className={'B2 Bold MiningFarmsCellTitle'}>3,4K CUDOS</div>
-                //         <div className={'B3 FlexRow FarmVolumePriceRow'}>
-                //             <div className={'SemiBold ColorNeutral060'}>$1.4M</div>
-                //             <div className={'ColorSuccess060'}>+39.1%</div>
-                //         </div>
-                //     </div>
-                // )),
                 createTableCellString(miningFarmDetailsEntity.totalNftsSold.toString()),
                 createTableCell((
                     <div className = { 'Bold' } >
                         { miningFarmDetailsEntity.hasFloorPrice() === true ? (
                             <>
-                                <div className={'B2 Bold MiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudos(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
+                                <div className={'B2 Bold MiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudosWithPrecision(miningFarmDetailsEntity.floorPriceInAcudos, 2)}</div>
                                 <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatConvertedAcudosInUsd(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
                             </>
                         ) : (

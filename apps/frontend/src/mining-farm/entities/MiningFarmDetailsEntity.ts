@@ -41,7 +41,7 @@ export default class MiningFarmDetailsEntity {
             'nftsOwned': entity.nftsOwned,
             'totalNftsSold': entity.totalNftsSold,
             'remainingHashPowerInTH': entity.remainingHashPowerInTH,
-            'floorPriceInAcudos': entity.floorPriceInAcudos === null ? null : entity.floorPriceInAcudos.toString(),
+            'floorPriceInAcudos': entity.floorPriceInAcudos === null ? null : entity.floorPriceInAcudos.toString(10),
         }
     }
 

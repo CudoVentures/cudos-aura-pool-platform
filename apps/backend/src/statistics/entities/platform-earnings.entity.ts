@@ -1,37 +1,33 @@
 import BigNumber from 'bignumber.js';
 
-export default class TotalEarningsEntity {
-
-    totalSalesInAcudos: BigNumber;
-    earningsPerDayInUsd: number[];
+export default class EarningsPerDayEntity {
+    acudosEarningsPerDay: BigNumber[];
+    btcEarningsPerDay: BigNumber[];
 
     constructor() {
-        this.totalSalesInAcudos = new BigNumber(0);
-        this.earningsPerDayInUsd = [];
+        this.acudosEarningsPerDay = [];
+        this.btcEarningsPerDay = [];
     }
 
-    static toJson(entity: TotalEarningsEntity) {
+    static toJson(entity: EarningsPerDayEntity) {
         if (entity === null) {
             return null;
         }
-
         return {
-            'totalSalesInAcudos': entity.totalSalesInAcudos.toString(),
-            'earningsPerDayInUsd': entity.earningsPerDayInUsd,
+            'acudosEarningsPerDay': entity.acudosEarningsPerDay.map((m) => m.toString(10)),
+            'btcEarningsPerDay': entity.btcEarningsPerDay.map((m) => m.toString(10)),
         }
     }
 
-    static fromJson(json: any): TotalEarningsEntity {
+    static fromJson(json: any): EarningsPerDayEntity {
         if (json === null) {
             return null;
         }
+        const entity = new EarningsPerDayEntity();
 
-        const entity = new TotalEarningsEntity();
-
-        entity.totalSalesInAcudos = new BigNumber(json.totalSalesInAcudos ?? entity.totalSalesInAcudos);
-        entity.earningsPerDayInUsd = (json.earningsPerDayInUsd ?? entity.earningsPerDayInUsd).map((j) => parseInt(j));
+        entity.acudosEarningsPerDay = (json.acudosEarningsPerDay ?? entity.acudosEarningsPerDay).map((j) => new BigNumber(j));
+        entity.btcEarningsPerDay = (json.btcEarningsPerDay ?? entity.btcEarningsPerDay).map((j) => new BigNumber(j));
 
         return entity;
     }
-
 }

@@ -8,17 +8,24 @@ import { NftPayoutHistoryRepo } from './repos/nft-payout-history.repo';
 import { FarmModule } from '../farm/farm.module';
 import { CollectionModule } from '../collection/collection.module';
 import { GraphqlModule } from '../graphql/graphql.module';
+import { GeneralModule } from '../general/general.module';
+import { ConfigModule } from '@nestjs/config';
+import { AddressesPayoutHistoryRepo } from './repos/addresses-payout-history.repo';
+import { CollectionPaymentAllocationRepo } from './repos/collection-payment-allocation.repo';
 
 @Module({
     imports: [
         SequelizeModule.forFeature([
             NftOwnersPayoutHistoryRepo,
             NftPayoutHistoryRepo,
+            AddressesPayoutHistoryRepo,
+            CollectionPaymentAllocationRepo,
         ]),
         forwardRef(() => NFTModule),
         forwardRef(() => CollectionModule),
         forwardRef(() => FarmModule),
         forwardRef(() => GraphqlModule),
+        forwardRef(() => ConfigModule),
     ],
     controllers: [StatisticsController],
     providers: [StatisticsService],

@@ -16953,7 +16953,7 @@ export type MarketplaceCollectionsByDenomIdsQueryVariables = Exact<{
 }>;
 
 
-export type MarketplaceCollectionsByDenomIdsQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string, nft_denom: { __typename?: 'nft_denom', data_text?: string | null } }> };
+export type MarketplaceCollectionsByDenomIdsQuery = { __typename?: 'query_root', marketplace_collection: Array<{ __typename?: 'marketplace_collection', mint_royalties: string, resale_royalties: string, verified: boolean, creator: string, denom_id: string, id: any, transaction_hash: string, nft_denom: { __typename?: 'nft_denom', data_text?: string | null, data_json: any } }> };
 
 export type MarketplaceCollectionsByIdsQueryVariables = Exact<{
   ids?: InputMaybe<Array<Scalars['bigint']> | Scalars['bigint']>;
@@ -17058,6 +17058,7 @@ export const MarketplaceCollectionsByDenomIdsDocument = gql`
     transaction_hash
     nft_denom {
       data_text
+      data_json
     }
   }
 }

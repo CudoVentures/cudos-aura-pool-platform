@@ -3,7 +3,6 @@ import EarningsPerDayEntity from '../../entities/EarningsPerDayEntity';
 import EarningsPerDayFilterEntity from '../../entities/EarningsPerDayFilterEntity';
 import MegaWalletEventEntity from '../../entities/MegaWalletEventEntity';
 import MegaWalletEventFilterModel from '../../entities/MegaWalletEventFilterModel';
-import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import MiningFarmMaintenanceFeeEntity from '../../entities/MiningFarmMaintenanceFeeEntity';
 import MiningFarmTotalEarningsBtcEntity from '../../entities/MiningFarmTotalEarningsBtcEntity';
 import MiningFarmTotalEarningsCudosEntity from '../../entities/MiningFarmTotalEarningsCudosEntity';
@@ -13,7 +12,6 @@ import NftEventFilterModel from '../../entities/NftEventFilterModel';
 import PlatformMaintenanceFeeEntity from '../../entities/PlatformMaintenanceFeeEntity';
 import PlatformTotalEarningsBtcEntity from '../../entities/PlatformTotalEarningsBtcEntity';
 import PlatformTotalEarningsCudosEntity from '../../entities/PlatformTotalEarningsCudosEntity';
-import TotalEarningsEntity from '../../entities/TotalEarningsEntity';
 import UserEarningsEntity from '../../entities/UserEarningsEntity';
 import StatisticsRepo from '../../presentation/repos/StatisticsRepo';
 import StatisticsApi from '../data-sources/StatisticsApi';
@@ -72,24 +70,6 @@ export default class StatisticsApiRepo implements StatisticsRepo {
         try {
             this.disableActions?.();
             return await this.statisticsApi.fetchNftEarningsByNftId(nftId, timestampFrom, timestampTo);
-        } finally {
-            this.enableActions?.();
-        }
-    }
-
-    async fetchNftEarningsByMiningFarmId(miningFarmId: string, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
-        try {
-            this.disableActions?.();
-            return await this.statisticsApi.fetchNftEarningsByMiningFarmId(miningFarmId, timestampFrom, timestampTo);
-        } finally {
-            this.enableActions?.();
-        }
-    }
-
-    async fetchTotalNftEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
-        try {
-            this.disableActions?.();
-            return await this.statisticsApi.fetchTotalNftEarnings(timestampFrom, timestampTo);
         } finally {
             this.enableActions?.();
         }

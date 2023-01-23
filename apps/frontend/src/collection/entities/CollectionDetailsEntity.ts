@@ -35,8 +35,8 @@ export default class CollectionDetailsEntity {
 
         return {
             'id': parseInt(entity.collectionId),
-            'floorPriceInAcudos': entity.floorPriceInAcudos.toString(),
-            'volumeInAcudos': entity.volumeInAcudos.toString(),
+            'floorPriceInAcudos': entity.floorPriceInAcudos.toString(10),
+            'volumeInAcudos': entity.volumeInAcudos.toString(10),
             'owners': entity.owners,
             'cudosAddress': entity.cudosAddress,
             'remainingHashPowerInTH': entity.remainingHashPowerInTH,

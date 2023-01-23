@@ -313,8 +313,8 @@ export class CollectionService {
         const { adminEntity } = await this.accountService.findAccounts(collection.creatorId);
 
         collectionDetailsEntity.id = collectionId;
-        collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString();
-        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString() || '0';
+        collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString(10);
+        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString(10) || '0';
         collectionDetailsEntity.owners = nftOwnersSet.size;
         collectionDetailsEntity.cudosAddress = adminEntity?.cudosWalletAddress ?? '';
         collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;

@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
-import { MegaWalletEventFilterValidationJson, NftEventFilterValidationJson } from '../statistics.types'
+import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { EarningsPerDayFilterJsonValidator, MegaWalletEventFilterValidationJson, NftEventFilterValidationJson } from '../statistics.types'
 
 export class ReqNftEventsByFilter {
     @IsDefined()
@@ -43,25 +43,44 @@ export class ReqFetchNftEarningsByNftId {
 
 }
 
-export class ReqFetchNftEarningsByMiningFarmId {
+export class ReqFetchEarningsPerDay {
+    @IsDefined()
+    @IsNotEmptyObject()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => EarningsPerDayFilterJsonValidator)
+        earningsPerDayFilterEntity: EarningsPerDayFilterJsonValidator;
+}
 
+export class ReqFetchMiningFarmMaintenanceFee {
+    @IsDefined()
     @IsString()
         miningFarmId: string;
 
-    @IsNumber()
-        timestampFrom: number;
-
-    @IsNumber()
-        timestampTo: number;
-
+    @IsDefined()
+    @IsString()
+    @IsOptional()
+        collectionId: string;
 }
 
-export class ReqFetchTotalNftEarnings {
+export class ReqFetchFarmTotalBtcEarnings {
+    @IsDefined()
+    @IsString()
+        miningFarmId: string;
 
-    @IsNumber()
-        timestampFrom: number;
+    @IsDefined()
+    @IsString()
+    @IsOptional()
+        collectionId: string;
+}
 
-    @IsNumber()
-        timestampTo: number;
+export class ReqFetchMiningFarmTotalEarningsCudos {
+    @IsDefined()
+    @IsString()
+        miningFarmId: string;
 
+    @IsDefined()
+    @IsString()
+    @IsOptional()
+        collectionId: string;
 }
