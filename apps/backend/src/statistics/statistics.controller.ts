@@ -11,7 +11,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { BtcEarningsType, StatisticsService } from './statistics.service';
+import { StatisticsService } from './statistics.service';
 import { AppRequest } from '../common/commont.types';
 import { ReqFetchEarningsPerDay, ReqFetchFarmTotalBtcEarnings, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqFetchTotalNftEarnings, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
 import { ResFetchEarningsPerDay, ResFetchFarmTotalBtcEarnings, ResFetchMiningFarmMaintenanceFee, ResFetchMiningFarmTotalEarningsCudos, ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchPlatformMaintenanceFee, ResFetchPlatformTotalEarningsBtc, ResFetchPlatformTotalEarningsCudos, ResFetchTotalNftEarnings, ResMegaWalletEventsByFilter, ResNftEventsByFilter } from './dto/responses.dto';
@@ -26,6 +26,8 @@ import PlatformTotalEarningsBtcEntity from './entities/platform-total-earnings-b
 import PlatformMaintenanceFeeEntity from './entities/platform-maintenance-fee.entity';
 import MiningFarmTotalEarningsCudosEntity from './entities/mining-farm-cudos-earnings.entity';
 import PlatformTotalEarningsCudosEntity from './entities/platform-total-earnings-cudos.entity';
+import CollectionPaymentAllocationStatisticsFilter, { BtcEarningsType } from './entities/collection-payment-allocation-statistics-filter.entity';
+import { NOT_EXISTS_INT } from '../common/utils';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -122,9 +124,20 @@ export class StatisticsController {
     async fetchFarmMaintenanceFee(
         @Body(new ValidationPipe({ transform: true })) reqFetchEarningsPerDay: ReqFetchMiningFarmMaintenanceFee,
     ): Promise <ResFetchMiningFarmMaintenanceFee> {
-        const farmid = parseInt(reqFetchEarningsPerDay.miningFarmId);
+        const farmId = parseInt(reqFetchEarningsPerDay.miningFarmId);
+        const collectionId = parseInt(reqFetchEarningsPerDay.collectionId);
 
-        const totalFees = await this.statisticsService.fetchFarmTotalBtcReceived(farmid, BtcEarningsType.MAINTENANCE_FEE);
+        const collectionPaymentAllocationStatisticsFilter = new CollectionPaymentAllocationStatisticsFilter();
+        if (farmId !== NOT_EXISTS_INT) {
+            collectionPaymentAllocationStatisticsFilter.farmId = farmId;
+        }
+
+        if (collectionId !== NOT_EXISTS_INT) {
+            collectionPaymentAllocationStatisticsFilter.collectionId = collectionId;
+        }
+        collectionPaymentAllocationStatisticsFilter.type = BtcEarningsType.MAINTENANCE_FEE;
+        const totalFees = await this.statisticsService.fetchTotalBtcEarned(collectionPaymentAllocationStatisticsFilter);
+
         const miningFarmMaintenanceFeeEntity = new MiningFarmMaintenanceFeeEntity();
         miningFarmMaintenanceFeeEntity.maintenanceFeeInBtc = totalFees;
 
@@ -138,9 +151,20 @@ export class StatisticsController {
     async fetchFarmTotalBtcEarnings(
         @Body(new ValidationPipe({ transform: true })) reqFetchFarmTotalBtcEarnings: ReqFetchFarmTotalBtcEarnings,
     ): Promise <ResFetchFarmTotalBtcEarnings> {
-        const farmid = parseInt(reqFetchFarmTotalBtcEarnings.miningFarmId);
+        const farmId = parseInt(reqFetchFarmTotalBtcEarnings.miningFarmId);
+        const collectionId = parseInt(reqFetchFarmTotalBtcEarnings.collectionId);
 
-        const totalFees = await this.statisticsService.fetchFarmTotalBtcReceived(farmid, BtcEarningsType.EARNINGS);
+        const collectionPaymentAllocationStatisticsFilter = new CollectionPaymentAllocationStatisticsFilter();
+        if (farmId) {
+            collectionPaymentAllocationStatisticsFilter.farmId = farmId;
+        }
+
+        if (collectionId) {
+            collectionPaymentAllocationStatisticsFilter.collectionId = collectionId;
+        }
+        collectionPaymentAllocationStatisticsFilter.type = BtcEarningsType.EARNINGS;
+        const totalFees = await this.statisticsService.fetchTotalBtcEarned(collectionPaymentAllocationStatisticsFilter);
+
         const miningFarmMaintenanceFeeEntity = new MiningFarmTotalEarningsBtcEntity();
         miningFarmMaintenanceFeeEntity.unsoldNftsTotalEarningsInBtc = totalFees;
 
@@ -155,8 +179,9 @@ export class StatisticsController {
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmTotalEarningsCudos: ReqFetchMiningFarmTotalEarningsCudos,
     ): Promise <ResFetchMiningFarmTotalEarningsCudos> {
         const farmid = reqFetchMiningFarmTotalEarningsCudos.miningFarmId;
+        const collectionId = reqFetchMiningFarmTotalEarningsCudos.collectionId;
 
-        const { mintRoyalties, resaleRoyalties } = await this.statisticsService.fetchTotalCudosRoyalties(farmid);
+        const { mintRoyalties, resaleRoyalties } = await this.statisticsService.fetchTotalCudosRoyalties(farmid, collectionId);
 
         const miningFarmMaintenanceFeeEntity = new MiningFarmTotalEarningsCudosEntity();
         miningFarmMaintenanceFeeEntity.soldNftsTotalEarningsInAcudos = mintRoyalties;
@@ -170,7 +195,11 @@ export class StatisticsController {
     @HttpCode(200)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     async fetchPlatformTotalBtcEarnings(): Promise <ResFetchPlatformTotalEarningsBtc> {
-        const totalFees = await this.statisticsService.fetchPlatformTotalBtcReceived(BtcEarningsType.EARNINGS);
+        const collectionPaymentAllocationStatisticsFilter = new CollectionPaymentAllocationStatisticsFilter();
+
+        collectionPaymentAllocationStatisticsFilter.type = BtcEarningsType.EARNINGS;
+        const totalFees = await this.statisticsService.fetchTotalBtcEarned(collectionPaymentAllocationStatisticsFilter);
+
         const platformEarningsBtcEntity = new PlatformTotalEarningsBtcEntity();
         platformEarningsBtcEntity.nftFeesTotalEarningsInBtc = totalFees;
 
@@ -182,7 +211,11 @@ export class StatisticsController {
     @HttpCode(200)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     async fetchPlatformMaintenanceFees(): Promise <ResFetchPlatformMaintenanceFee> {
-        const totalFees = await this.statisticsService.fetchPlatformTotalBtcReceived(BtcEarningsType.MAINTENANCE_FEE);
+        const collectionPaymentAllocationStatisticsFilter = new CollectionPaymentAllocationStatisticsFilter();
+
+        collectionPaymentAllocationStatisticsFilter.type = BtcEarningsType.MAINTENANCE_FEE;
+        const totalFees = await this.statisticsService.fetchTotalBtcEarned(collectionPaymentAllocationStatisticsFilter);
+
         const platformMaintenanceFees = new PlatformMaintenanceFeeEntity();
         platformMaintenanceFees.maintenanceFeeInBtc = totalFees;
 
@@ -194,7 +227,7 @@ export class StatisticsController {
     @HttpCode(200)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     async fetchPlatformTotalCudosEarnings(): Promise <ResFetchPlatformTotalEarningsCudos> {
-        const { mintRoyalties, resaleRoyalties } = await this.statisticsService.fetchTotalCudosRoyalties(null);
+        const { mintRoyalties, resaleRoyalties } = await this.statisticsService.fetchTotalCudosRoyalties(null, null);
 
         const platformTotalEarningsCudosEntity = new PlatformTotalEarningsCudosEntity();
         platformTotalEarningsCudosEntity.soldNftsTotalEarningsInAcudos = mintRoyalties;

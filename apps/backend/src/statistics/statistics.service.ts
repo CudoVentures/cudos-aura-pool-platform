@@ -10,7 +10,7 @@ import ChainMarketplaceCollectionEntity, { RoyaltiesReceiver, RoyaltiesType } fr
 import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import { DataServiceError } from '../common/errors/errors';
-import { IntBoolValue } from '../common/utils';
+import { IntBoolValue, NOT_EXISTS_STRING } from '../common/utils';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
 import { FarmService } from '../farm/farm.service';
 import NftMarketplaceTradeHistoryEntity from '../graphql/entities/nft-marketplace-trade-history.entity';
@@ -20,6 +20,8 @@ import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
 import { AddressPayoutHistoryEntity } from './entities/address-payout-history.entity';
+import CollectionPaymentAllocationStatisticsFilter from './entities/collection-payment-allocation-statistics-filter.entity';
+import { CollectionPaymentAllocationEntity } from './entities/collection-payment-allocation.entity';
 import EarningsPerDayFilterEntity from './entities/earnings-per-day-filter.entity';
 import EarningsPerDayEntity, { EarningWithTimestampEntity } from './entities/earnings-per-day.entity';
 import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
@@ -34,15 +36,11 @@ import EarningsEntity from './entities/platform-earnings.entity';
 import TotalEarningsEntity from './entities/platform-earnings.entity';
 import UserEarningsEntity from './entities/user-earnings.entity';
 import { AddressesPayoutHistoryRepo, AddressesPayoutHistoryRepoColumn } from './repos/addresses-payout-history.repo';
+import { CollectionPaymentAllocationRepo, CollectionPaymentAllocationRepoColumn } from './repos/collection-payment-allocation.repo';
 
 import { NftOwnersPayoutHistoryRepo, NftOwnersPayoutHistoryRepoColumn } from './repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo, NftPayoutHistoryRepoColumn } from './repos/nft-payout-history.repo';
 import { dayInMs, getDays } from './statistics.types';
-
-export enum BtcEarningsType {
-    MAINTENANCE_FEE = 'maintenanceFee',
-    EARNINGS = 'earnings'
-}
 
 @Injectable()
 export class StatisticsService {
@@ -62,6 +60,8 @@ export class StatisticsService {
         private nftOwnersPayoutHistoryRepo: typeof NftOwnersPayoutHistoryRepo,
         @InjectModel(AddressesPayoutHistoryRepo)
         private addressesPayoutHistoryRepo: typeof AddressesPayoutHistoryRepo,
+        @InjectModel(CollectionPaymentAllocationRepo)
+        private collectionPaymentAllocationRepo: typeof CollectionPaymentAllocationRepo,
     ) {}
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
@@ -636,47 +636,38 @@ export class StatisticsService {
         return earningsPerDayEntity.earningsPerDay;
     }
 
-    async fetchFarmTotalBtcReceived(farmId: number, type: BtcEarningsType): Promise < BigNumber > {
-        const miningFarm = await this.farmService.findMiningFarmById(farmId);
+    async fetchTotalBtcEarned(collectionPaymentStatisticsFilter: CollectionPaymentAllocationStatisticsFilter): Promise < BigNumber > {
+        const addressPayoutHistoryEntities = await this.fetchCollectionPaymentStatistics(collectionPaymentStatisticsFilter);
 
-        if (!miningFarm) {
-            throw Error(`Farm not found with ID: ${farmId}`);
+        if (collectionPaymentStatisticsFilter.isForPlatform()) {
+            if (collectionPaymentStatisticsFilter.isTypeEarnings()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoGeneralFeeBtc), new BigNumber(0));
+            }
+
+            if (collectionPaymentStatisticsFilter.isTypeMaintenanceFee()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoMaintenanceFeeBtc), new BigNumber(0));
+            }
+        } else {
+            if (collectionPaymentStatisticsFilter.isTypeEarnings()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.farmUnsoldLeftoverFeeBtc), new BigNumber(0));
+            }
+
+            if (collectionPaymentStatisticsFilter.isTypeMaintenanceFee()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.farmMaintenanceFeeBtc), new BigNumber(0));
+            }
         }
 
-        const address = type === BtcEarningsType.MAINTENANCE_FEE
-            ? miningFarm.maintenanceFeePayoutBtcAddress
-            : miningFarm.leftoverRewardsBtcAddress
-
-        const addressPayoutHistoryEntities = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, 0, Number.MAX_SAFE_INTEGER);
-
-        const total = addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.amountBtc), new BigNumber(0));
-
-        return total
+        throw Error('Didn\'t enter any type of fetch case.');
     }
 
-    async fetchPlatformTotalBtcReceived(type: BtcEarningsType): Promise < BigNumber > {
-        const nftPayoutEntitites = await this.fetchAllPayoutHistory();
-        const totalCudosMaintenanceFees = nftPayoutEntitites.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoPartOfMaintenanceFee), new BigNumber(0));
-
-        const address = this.configService.getOrThrow('APP_CUDOS_BTC_FEE_PAYOUT_ADDRESS');
-        const addressPayoutHistoryEntities = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, 0, Date.now());
-
-        const totalBtcReceived = addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.amountBtc), new BigNumber(0));
-
-        if (type === BtcEarningsType.MAINTENANCE_FEE) {
-            return totalCudosMaintenanceFees;
-        }
-
-        // the general fees and maintenance fees for CUDOS are sent to the same address
-        return totalBtcReceived.minus(totalCudosMaintenanceFees);
-    }
-
-    async fetchTotalCudosRoyalties(farmId: string | null): Promise< { mintRoyalties: BigNumber, resaleRoyalties: BigNumber } > {
+    async fetchTotalCudosRoyalties(farmId: string | null, collectionId: string | null): Promise< { mintRoyalties: BigNumber, resaleRoyalties: BigNumber } > {
         const isForPlatform = farmId === null;
-
         const collectionFilterEntity = new CollectionFilterEntity();
         if (isForPlatform === false) {
             collectionFilterEntity.farmId = farmId;
+            if (collectionId !== NOT_EXISTS_STRING) {
+                collectionFilterEntity.collectionIds = [collectionId];
+            }
         }
 
         const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity);
@@ -741,6 +732,33 @@ export class StatisticsService {
         const resaleRoyalties = resaleRoyaltiEntries.reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
 
         return { mintRoyalties, resaleRoyalties };
+    }
+
+    private async fetchCollectionPaymentStatistics(collectionPaymentStatisticsFilter: CollectionPaymentAllocationStatisticsFilter): Promise < CollectionPaymentAllocationEntity[] > {
+        const whereClause: any = {};
+
+        if (collectionPaymentStatisticsFilter.isFarmIdSet()) {
+            whereClause[CollectionPaymentAllocationRepoColumn.FARM_ID] = collectionPaymentStatisticsFilter.farmId;
+        }
+
+        if (collectionPaymentStatisticsFilter.isCollectionIdSet()) {
+            whereClause[CollectionPaymentAllocationRepoColumn.COLLECTION_ID] = collectionPaymentStatisticsFilter.collectionId;
+        }
+
+        if (collectionPaymentStatisticsFilter.isTimestampSet()) {
+            whereClause[CollectionPaymentAllocationRepoColumn.CREATED_AT] = {
+                [Op.gte]: new Date(collectionPaymentStatisticsFilter.timestampFrom),
+                [Op.lte]: new Date(collectionPaymentStatisticsFilter.timestampTo),
+            }
+        }
+
+        const collectionPaymentAllocationRepos = await this.collectionPaymentAllocationRepo.findAll({
+            where: whereClause,
+        });
+
+        return collectionPaymentAllocationRepos.map((collectionPaymentAllocationRepo) => {
+            return CollectionPaymentAllocationEntity.fromRepo(collectionPaymentAllocationRepo);
+        });
     }
 
     private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {

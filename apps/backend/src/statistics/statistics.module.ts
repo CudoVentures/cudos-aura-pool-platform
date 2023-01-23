@@ -11,6 +11,7 @@ import { GraphqlModule } from '../graphql/graphql.module';
 import { GeneralModule } from '../general/general.module';
 import { ConfigModule } from '@nestjs/config';
 import { AddressesPayoutHistoryRepo } from './repos/addresses-payout-history.repo';
+import { CollectionPaymentAllocationRepo } from './repos/collection-payment-allocation.repo';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { AddressesPayoutHistoryRepo } from './repos/addresses-payout-history.rep
             NftOwnersPayoutHistoryRepo,
             NftPayoutHistoryRepo,
             AddressesPayoutHistoryRepo,
+            CollectionPaymentAllocationRepo,
         ]),
         forwardRef(() => NFTModule),
         forwardRef(() => CollectionModule),

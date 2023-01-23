@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
+import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { EarningsPerDayFilterJsonValidator, MegaWalletEventFilterValidationJson, NftEventFilterValidationJson } from '../statistics.types'
 
 export class ReqNftEventsByFilter {
@@ -79,16 +79,31 @@ export class ReqFetchMiningFarmMaintenanceFee {
     @IsDefined()
     @IsString()
         miningFarmId: string;
+
+    @IsDefined()
+    @IsString()
+    @IsOptional()
+        collectionId: string;
 }
 
 export class ReqFetchFarmTotalBtcEarnings {
     @IsDefined()
     @IsString()
         miningFarmId: string;
+
+    @IsDefined()
+    @IsString()
+    @IsOptional()
+        collectionId: string;
 }
 
 export class ReqFetchMiningFarmTotalEarningsCudos {
     @IsDefined()
     @IsString()
         miningFarmId: string;
+
+    @IsDefined()
+    @IsString()
+    @IsOptional()
+        collectionId: string;
 }
