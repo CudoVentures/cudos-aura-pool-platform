@@ -3,24 +3,21 @@ import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
-
-export enum MegaWalletEventType {
-    FEE = 1,
-}
+import { NftTransferHistoryEventType } from '../../../../backend/src/statistics/entities/nft-event.entity';
 
 export default class MegaWalletEventEntity {
 
     nftId: string;
     fromAddress: string;
     timestamp: number;
-    eventType: MegaWalletEventType;
+    eventType: NftTransferHistoryEventType;
     transferPriceInUsd: number;
     transferPriceInAcudos: BigNumber;
 
     constructor() {
         this.nftId = S.Strings.NOT_EXISTS;
         this.fromAddress = '';
-        this.eventType = MegaWalletEventType.FEE;
+        this.eventType = NftTransferHistoryEventType.MINT;
         this.transferPriceInAcudos = new BigNumber(S.NOT_EXISTS);
         this.transferPriceInUsd = S.NOT_EXISTS;
         this.timestamp = S.NOT_EXISTS;
@@ -64,8 +61,12 @@ export default class MegaWalletEventEntity {
 
     getEventActivityDisplayName(): string {
         switch (this.eventType) {
-            case MegaWalletEventType.FEE:
-                return 'Fee';
+            case NftTransferHistoryEventType.MINT:
+                return 'Mint';
+            case NftTransferHistoryEventType.SALE:
+                return 'Sale';
+            case NftTransferHistoryEventType.TRANSFER:
+                return 'Transfer';
             default:
                 return '';
         }

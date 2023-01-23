@@ -134,7 +134,9 @@ export class StatisticsService {
 
         // filter for event type
         megaWalletEventEntities = megaWalletEventFilterEntity.isEventFilterSet()
-            ? megaWalletEventEntities.filter((entity) => megaWalletEventFilterEntity.eventTypes.includes(entity.eventType))
+            ? megaWalletEventEntities.filter((entity) => {
+                return megaWalletEventFilterEntity.eventTypes.includes(entity.eventType)
+            })
             : megaWalletEventEntities;
 
         // filter for period

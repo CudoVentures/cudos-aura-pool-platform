@@ -1,9 +1,9 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { MegaWalletEventFilterValidationJson } from '../statistics.types';
-import { MegaWalletEventType } from './mega-wallet-event.entity';
+import { NftTransferHistoryEventType } from './nft-event.entity';
 
 export default class MegaWalletEventFilterEntity {
-    eventTypes: MegaWalletEventType[];
+    eventTypes: NftTransferHistoryEventType[];
     timestampFrom: number;
     timestampTo: number;
     from: number;

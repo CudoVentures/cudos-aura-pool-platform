@@ -1,6 +1,5 @@
 import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EarningsPerDayCurrency } from './entities/earnings-per-day-filter.entity';
-import { MegaWalletEventType } from './entities/mega-wallet-event.entity';
 import { NftTransferHistoryEventType } from './entities/nft-event.entity';
 
 export class EarningsPerDayFilterJsonValidator {
@@ -64,9 +63,9 @@ export class NftEventFilterValidationJson {
 export class MegaWalletEventFilterValidationJson {
 
     @IsArray()
-    @IsEnum(MegaWalletEventType, { each: true })
+    @IsEnum(NftTransferHistoryEventType, { each: true })
     @IsOptional()
-        eventTypes: MegaWalletEventType[];
+        eventTypes: NftTransferHistoryEventType[];
 
     @IsNumber()
     @IsOptional()

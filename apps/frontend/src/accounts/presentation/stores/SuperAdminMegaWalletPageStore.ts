@@ -43,6 +43,7 @@ export default class SuperAdminMegaWalletPageStore {
             megaWalletEventFilterModel.eventTypes = [this.eventType];
         }
 
+        console.log(megaWalletEventFilterModel.eventTypes)
         const { megaWalletEventEntities, nftEntities, total } = await this.statisticsRepo.fetchMegaWalletEventEntities(megaWalletEventFilterModel);
 
         runInAction(() => {

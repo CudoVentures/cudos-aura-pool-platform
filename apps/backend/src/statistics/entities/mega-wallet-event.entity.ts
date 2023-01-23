@@ -2,24 +2,20 @@ import BigNumber from 'bignumber.js';
 import ChainMarketplaceCollectionEntity from '../../collection/entities/chain-marketplace-collection.entity';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
-import NftEventEntity from './nft-event.entity';
-
-export enum MegaWalletEventType {
-    FEE = 1,
-}
+import NftEventEntity, { NftTransferHistoryEventType } from './nft-event.entity';
 
 export default class MegaWalletEventEntity {
     nftId: string;
     fromAddress: string;
     timestamp: number;
-    eventType: MegaWalletEventType;
+    eventType: NftTransferHistoryEventType;
     transferPriceInUsd: number;
     transferPriceInAcudos: BigNumber;
 
     constructor() {
         this.fromAddress = '';
         this.timestamp = NOT_EXISTS_INT
-        this.eventType = MegaWalletEventType.FEE;
+        this.eventType = NftTransferHistoryEventType.MINT;
         this.transferPriceInUsd = NOT_EXISTS_INT;
         this.transferPriceInAcudos = new BigNumber(NOT_EXISTS_INT);
     }
@@ -29,7 +25,7 @@ export default class MegaWalletEventEntity {
 
         megaWalletEventEntity.nftId = nftEventEntity.nftId ?? megaWalletEventEntity.nftId;
         megaWalletEventEntity.timestamp = nftEventEntity.timestamp ?? megaWalletEventEntity.timestamp;
-
+        megaWalletEventEntity.eventType = nftEventEntity.eventType
         // mega walelt receives the fee from the nft buyer, which is "toAddress" in the nft event entity
         megaWalletEventEntity.fromAddress = nftEventEntity.toAddress ?? megaWalletEventEntity.fromAddress;
 
