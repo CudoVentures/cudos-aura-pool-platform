@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import { GasPrice, checkValidNftDenomId } from 'cudosjs';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
-import e from 'express';
 import { runInAction } from 'mobx';
 import { BackendErrorType, parseBackendErrorType } from '../../../core/utilities/AxiosWrapper';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';

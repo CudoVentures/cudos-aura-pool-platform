@@ -44,32 +44,6 @@ export class ReqFetchNftEarningsByNftId {
 
 }
 
-export class ReqFetchNftEarningsByMiningFarmId {
-
-    miningFarmId: string;
-    timestampFrom: number;
-    timestampTo: number
-
-    constructor(miningFarmId: string, timestampFrom: number, timestampTo: number) {
-        this.miningFarmId = miningFarmId;
-        this.timestampFrom = timestampFrom;
-        this.timestampTo = timestampTo;
-    }
-
-}
-
-export class ReqFetchTotalNftEarnings {
-
-    timestampFrom: number;
-    timestampTo: number
-
-    constructor(timestampFrom: number, timestampTo: number) {
-        this.timestampFrom = timestampFrom;
-        this.timestampTo = timestampTo;
-    }
-
-}
-
 export class ReqFetchEarningsPerDay {
 
     earningsPerDayFilterEntity: EarningsPerDayFilterEntity;

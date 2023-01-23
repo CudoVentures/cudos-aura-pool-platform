@@ -2,10 +2,10 @@ import BigNumber from 'bignumber.js';
 
 export default class MiningFarmTotalEarningsBtcEntity {
 
-    unsoftNftsTotalEarningsInBtc: BigNumber;
+    unsoldNftsTotalEarningsInBtc: BigNumber;
 
     constructor() {
-        this.unsoftNftsTotalEarningsInBtc = new BigNumber(0);
+        this.unsoldNftsTotalEarningsInBtc = new BigNumber(0);
     }
 
     static fromJson(json: any): MiningFarmTotalEarningsBtcEntity {
@@ -15,7 +15,7 @@ export default class MiningFarmTotalEarningsBtcEntity {
 
         const entity = new MiningFarmTotalEarningsBtcEntity();
 
-        entity.unsoftNftsTotalEarningsInBtc = new BigNumber(json.unsoftNftsTotalEarningsInBtc ?? entity.unsoftNftsTotalEarningsInBtc);
+        entity.unsoldNftsTotalEarningsInBtc = new BigNumber(json.unsoldNftsTotalEarningsInBtc ?? entity.unsoldNftsTotalEarningsInBtc);
 
         return entity;
     }

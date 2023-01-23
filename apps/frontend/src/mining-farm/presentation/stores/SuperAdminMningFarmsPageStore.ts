@@ -6,7 +6,6 @@ import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import TableState from '../../../core/presentation/stores/TableState';
 import S from '../../../core/utilities/Main';
 import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
-import MiningFarmEarningsEntity from '../../../analytics/entities/MiningFarmEarningsEntity';
 
 export default class SuperAdminMningFarmsPageStore {
 

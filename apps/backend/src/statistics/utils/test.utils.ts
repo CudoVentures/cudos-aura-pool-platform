@@ -12,6 +12,36 @@ import BigNumber from 'bignumber.js';
 import NftModuleNftTransferEntity from '../../graphql/entities/nft-module-nft-transfer-history';
 import { collectionEntities } from '../../../test/data/collections.data';
 import { CollectionEntity } from '../../collection/entities/collection.entity';
+import { FarmStatus } from '../../farm/farm.types';
+import { MiningFarmRepo } from '../../farm/repos/mining-farm.repo';
+import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
+
+export const miningFarmTestEntities = [MiningFarmEntity.fromJson({
+    id: '1',
+    accountId: '1',
+    name: 'testFarmName',
+    legalName: 'testFarmNameLtd',
+    primaryAccountOwnerName: 'Test Testov',
+    primaryAccountOwnerEmail: 'test@test.com',
+    description: 'string',
+    manufacturerIds: ['1'],
+    minerIds: ['1'],
+    energySourceIds: ['1'],
+    hashPowerInTh: 123123,
+    machinesLocation: 'test location',
+    profileImgUrl: 'some test url',
+    coverImgUrl: 'some test url',
+    farmPhotoUrls: ['some test url'],
+    status: FarmStatus.APPROVED,
+    maintenanceFeeInBtc: '1',
+    cudosMintNftRoyaltiesPercent: 10,
+    cudosResaleNftRoyaltiesPercent: 2,
+    resaleFarmRoyaltiesCudosAddress: 'testCudosAddress',
+    rewardsFromPoolBtcAddress: 'leftoversTestAddress',
+    leftoverRewardsBtcAddress: 'testpayout',
+    maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress',
+}),
+];
 
 export const nftTestEntitities = [];
 const nftPayoutHistoryEntities = [];
@@ -203,7 +233,6 @@ for (let i = 1; i <= 5; i++) {
         tx_hash: `txhash${i}`,
         maintenance_fee: i,
         cudo_part_of_maintenance_fee: i,
-        cudo_part_of_reward: i * 0.02,
         createdAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
         updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
     });
@@ -226,6 +255,7 @@ for (let i = 1; i <= 5; i++) {
 
 export async function fillStatisticsTestData() {
     try {
+        await MiningFarmRepo.bulkCreate(miningFarmTestEntities.map((entity) => MiningFarmEntity.toRepo(entity).toJSON()))
         await CollectionRepo.bulkCreate(collectionEntities.map((entity) => CollectionEntity.toRepo(entity).toJSON()));
         await NftRepo.bulkCreate(nftTestEntitities);
         await NftPayoutHistoryRepo.bulkCreate(nftPayoutHistoryEntities);
@@ -236,6 +266,7 @@ export async function fillStatisticsTestData() {
 }
 
 export async function emptyStatisticsTestData() {
+    await MiningFarmRepo.truncate({ cascade: true });
     await CollectionRepo.truncate({ cascade: true });
     await NftRepo.truncate({ cascade: true });
     await NftPayoutHistoryRepo.truncate({ cascade: true });
