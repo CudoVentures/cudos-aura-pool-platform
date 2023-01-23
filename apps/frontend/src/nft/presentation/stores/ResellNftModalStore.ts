@@ -93,11 +93,18 @@ export default class ResellNftModalStore extends ModalStore {
 
     onClickSubmitForSell = action(async () => {
         this.modalStage = ModalStage.PROCESSING;
-        this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.getResellPriceInCudos(), this.walletStore.ledger);
 
-        runInAction(() => {
-            this.modalStage = ModalStage.SUCCESS;
-        })
+        try {
+            this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.getResellPriceInCudos(), this.walletStore.ledger);
+
+            runInAction(() => {
+                this.modalStage = ModalStage.SUCCESS;
+            });
+        } catch (ex) {
+            runInAction(() => {
+                this.modalStage = ModalStage.FAIL;
+            });
+        }
     })
 
     isStagePreview(): boolean {

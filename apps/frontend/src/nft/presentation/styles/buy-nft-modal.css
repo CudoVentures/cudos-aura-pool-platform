@@ -28,7 +28,7 @@
     color: var(--color-neutral-060);
 }
 
-.BuyNftPopup .Stage.Processing {
+.BuyNftPopup .Stage.Processing, .BuyNftPopup .Stage.Success, .BuyNftPopup .Stage.Fail {
     align-items: center;
 }
 
@@ -38,7 +38,6 @@
 }
 
 .BuyNftPopup .Stage.Success {
-    align-items: center;
     gap: 14px;
 }
 
@@ -59,4 +58,8 @@
 .BuyNftPopup .Stage.Success .TransactionView {
     gap: 10px;
     color: var(--color-primary-060);
+}
+
+.BuyNftPopup .Stage.Fail .BigSvg {
+    width: 70px; height: 70px;
 }

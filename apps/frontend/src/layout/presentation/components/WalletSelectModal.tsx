@@ -105,7 +105,11 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
         switch (walletSelectModalStore.progressStep) {
             case ProgressSteps.CONNECT_WALLET:
                 if (walletSelectModalStore.isModeUser() === true) {
-                    walletSelectModalStore.moveToProgressStepSign();
+                    if (accountSessionStore.isLoggedIn() === false) {
+                        walletSelectModalStore.moveToProgressStepSign();
+                    } else {
+                        walletSelectModalStore.hide();
+                    }
                 } else if (walletSelectModalStore.isModeAdmin() === true) {
                     if (accountSessionStore.isLoggedIn() === false) {
                         walletSelectModalStore.moveToProgressStepSign();
@@ -151,11 +155,14 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
     function renderNavSteps(): NavStep[] {
         if (walletSelectModalStore.isModeUser() === true) {
-            return [
-                createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false),
-                createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
-                createNavStep(3, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
-            ]
+            let steps = [createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
+            if (accountSessionStore.isUser() === false) {
+                steps = steps.concat([
+                    createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
+                    createNavStep(3, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
+                ]);
+            }
+            return steps;
         }
 
         if (walletSelectModalStore.isModeAdmin() === true) {
