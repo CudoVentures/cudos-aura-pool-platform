@@ -165,59 +165,64 @@ export default class CollectionApiRepo implements CollectionRepo {
     }
 
     async approveCollection(collectionEntity: CollectionEntity, superAdminEntity: SuperAdminEntity, creatorCudosAddress: string, signingClient: CudosSigningStargateClient): Promise < string > {
+        try {
+            this.disableActions?.();
 
-        checkValidNftDenomId(collectionEntity.denomId)
-        const filter = new MiningFarmFilterModel()
-        filter.miningFarmIds = [collectionEntity.farmId];
-        const miningFarmEntities = (await this.miningFarmApi.fetchMiningFarmsByFilter(filter)).miningFarmEntities;
-        const miningFarmEntity = miningFarmEntities[0];
+            checkValidNftDenomId(collectionEntity.denomId)
+            const filter = new MiningFarmFilterModel()
+            filter.miningFarmIds = [collectionEntity.farmId];
+            const miningFarmEntities = (await this.miningFarmApi.fetchMiningFarmsByFilter(filter)).miningFarmEntities;
+            const miningFarmEntity = miningFarmEntities[0];
 
-        const farmOwnerAdminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
+            const farmOwnerAdminEntity = await this.accountApi.fetchFarmOwnerAccount(miningFarmEntity.accountId);
 
-        const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
 
-        const decimals = (new BigNumber(10)).pow(18);
-        const cudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;
+            const decimals = (new BigNumber(10)).pow(18);
+            const cudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;
 
-        const innitialOwnerRoyalty = (new BigNumber(100 - cudosMintRoyalties)).multipliedBy(decimals);
-        const innitialCudosRoyalty = (new BigNumber(cudosMintRoyalties)).multipliedBy(decimals);
+            const innitialOwnerRoyalty = (new BigNumber(100 - cudosMintRoyalties)).multipliedBy(decimals);
+            const innitialCudosRoyalty = (new BigNumber(cudosMintRoyalties)).multipliedBy(decimals);
 
-        const secondaryFarmOwnerRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
-        const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
+            const secondaryFarmOwnerRoyalty = (new BigNumber(collectionEntity.royalties)).multipliedBy(decimals);
+            const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
 
-        const data = `{
+            const data = `{
             "farm_id":"${collectionEntity.farmId}",
             "platform_royalties_address": "${superAdminEntity.cudosRoyalteesAddress}",
             "farm_mint_royalties_address": "${farmOwnerAdminEntity.cudosWalletAddress}",
             "farm_resale_royalties_address": "${miningFarmEntity.resaleFarmRoyaltiesCudosAddress}"
         }`;
 
-        const tx = await signingClient.marketplaceCreateCollection(
-            creatorCudosAddress,
-            collectionEntity.denomId,
-            collectionEntity.name,
-            'CudosAuraPoolSchema',
-            collectionEntity.name,
-            'NotEditable',
-            '',
-            CHAIN_DETAILS.MINTING_SERVICE_ADDRESS,
-            data,
-            [
-                Royalty.fromPartial({ address: farmOwnerAdminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
-                Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
-            ],
-            [
-                Royalty.fromPartial({ address: miningFarmEntity.resaleFarmRoyaltiesCudosAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
-                Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
-            ],
-            true,
-            gasPrice,
-            undefined,
-            `Minted by Cudos Aura Pool Service, approved by Super Admin: ${creatorCudosAddress}`,
-        )
+            const tx = await signingClient.marketplaceCreateCollection(
+                creatorCudosAddress,
+                collectionEntity.denomId,
+                collectionEntity.name,
+                'CudosAuraPoolSchema',
+                collectionEntity.name,
+                'NotEditable',
+                '',
+                CHAIN_DETAILS.MINTING_SERVICE_ADDRESS,
+                data,
+                [
+                    Royalty.fromPartial({ address: farmOwnerAdminEntity.cudosWalletAddress, percent: innitialOwnerRoyalty.toFixed(0) }),
+                    Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: innitialCudosRoyalty.toFixed(0) }),
+                ],
+                [
+                    Royalty.fromPartial({ address: miningFarmEntity.resaleFarmRoyaltiesCudosAddress, percent: secondaryFarmOwnerRoyalty.toFixed(0) }),
+                    Royalty.fromPartial({ address: superAdminEntity.cudosRoyalteesAddress, percent: secondaryCudosRoyalty.toFixed(0) }),
+                ],
+                true,
+                gasPrice,
+                undefined,
+                `Minted by Cudos Aura Pool Service, approved by Super Admin: ${creatorCudosAddress}`,
+            )
 
-        this.showAlert('You have approved the collection and now it is been processed by the chain and aura pool. Once the processing is finished then the collection\'s status will be changed to APPROVED.');
+            this.showAlert('You have approved the collection and now it is been processed by the chain and aura pool. Once the processing is finished then the collection\'s status will be changed to APPROVED.');
 
-        return tx.transactionHash;
+            return tx.transactionHash;
+        } finally {
+            this.enableActions?.();
+        }
     }
 }

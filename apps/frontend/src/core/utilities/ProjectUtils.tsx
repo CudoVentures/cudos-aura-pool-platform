@@ -210,6 +210,13 @@ export default class ProjectUtils {
         return { timestampFrom, timestampTo };
     }
 
+    static getEndOfTodaysTimestamp() {
+        const date = new Date();
+        date.clearTime();
+        date.setDate(date.getDate() + 1);
+        return date.getTime() - 1;
+    }
+
 }
 
 function getQueryArray() {
