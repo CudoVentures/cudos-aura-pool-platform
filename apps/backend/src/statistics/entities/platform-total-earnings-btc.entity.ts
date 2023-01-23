@@ -12,7 +12,7 @@ export default class PlatformTotalEarningsBtcEntity {
             return null;
         }
         return {
-            'nftFeesTotalEarningsInBtc': entity.nftFeesTotalEarningsInBtc.toString(),
+            'nftFeesTotalEarningsInBtc': entity.nftFeesTotalEarningsInBtc.toString(10),
         }
     }
 }

@@ -31,7 +31,7 @@ export default class MegaWalletBalanceStore {
     }
 
     formatSuperAdminBalance(): string {
-        return numeral(CudosStore.convertAcudosInCudos(this.getSuperAdminBalanceInAcudos()).toString()).format('0,0.000000');
+        return numeral(CudosStore.convertAcudosInCudos(this.getSuperAdminBalanceInAcudos()).toString(10)).format('0,0.000000');
     }
 
 }

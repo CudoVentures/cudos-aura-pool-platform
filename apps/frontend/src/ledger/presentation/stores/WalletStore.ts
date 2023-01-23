@@ -59,7 +59,7 @@ export default class WalletStore {
             RPC: CHAIN_DETAILS.RPC_ADDRESS,
             API: CHAIN_DETAILS.API_ADDRESS,
             STAKING: CHAIN_DETAILS.STAKING_URL,
-            GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(),
+            GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(10),
         });
         await this.connectLedger(SessionStorageWalletOptions.COSMOSTATION);
     }

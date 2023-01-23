@@ -14,8 +14,8 @@ export default class PlatformTotalEarningsCudosEntity {
             return null;
         }
         return {
-            'resaleRoyaltiesTotalEarningsInAcudos': entity.resaleRoyaltiesTotalEarningsInAcudos.toString(),
-            'soldNftsTotalEarningsInAcudos': entity.soldNftsTotalEarningsInAcudos.toString(),
+            'resaleRoyaltiesTotalEarningsInAcudos': entity.resaleRoyaltiesTotalEarningsInAcudos.toString(10),
+            'soldNftsTotalEarningsInAcudos': entity.soldNftsTotalEarningsInAcudos.toString(10),
         }
     }
 }

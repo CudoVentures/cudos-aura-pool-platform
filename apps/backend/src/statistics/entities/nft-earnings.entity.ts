@@ -14,7 +14,7 @@ export default class NftEarningsEntity {
         }
 
         return {
-            'earningsPerDayInBtc': entity.earningsPerDayInBtc.map((n) => n.toString()),
+            'earningsPerDayInBtc': entity.earningsPerDayInBtc.map((n) => n.toString(10)),
         }
     }
 

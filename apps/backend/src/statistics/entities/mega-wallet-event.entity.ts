@@ -55,7 +55,7 @@ export default class MegaWalletEventEntity {
             'timestamp': entity.timestamp,
             'eventType': entity.eventType,
             'transferPriceInUsd': entity.transferPriceInUsd,
-            'transferPriceInAcudos': entity.transferPriceInAcudos.toString(),
+            'transferPriceInAcudos': entity.transferPriceInAcudos.toString(10),
         }
     }
 }

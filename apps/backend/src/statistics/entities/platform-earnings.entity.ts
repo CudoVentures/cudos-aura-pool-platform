@@ -14,8 +14,8 @@ export default class EarningsPerDayEntity {
             return null;
         }
         return {
-            'acudosEarningsPerDay': entity.acudosEarningsPerDay.map((m) => m.toString()),
-            'btcEarningsPerDay': entity.btcEarningsPerDay.map((m) => m.toString()),
+            'acudosEarningsPerDay': entity.acudosEarningsPerDay.map((m) => m.toString(10)),
+            'btcEarningsPerDay': entity.btcEarningsPerDay.map((m) => m.toString(10)),
         }
     }
 
