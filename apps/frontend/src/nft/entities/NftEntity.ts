@@ -67,6 +67,10 @@ export default class NftEntity {
         return this.imageUrl !== '';
     }
 
+    markAsExpiringToday() {
+        this.expirationDateTimestamp = ProjectUtils.getEndOfTodaysTimestamp();
+    }
+
     formatExpiryDate(): string {
         const periodMilis = this.expirationDateTimestamp - Date.now();
 

@@ -267,6 +267,10 @@ export class CollectionService {
         return this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
     }
 
+    async getChainMarketplaceCollectionsByIds(ids: number[]): Promise < ChainMarketplaceCollectionEntity[] > {
+        return this.graphqlService.fetchMarketplaceCollectionsByIds(ids);
+    }
+
     async getChainNftCollectionsByDenomIds(denomIds: string[]): Promise < ChainNftCollectionEntity[] > {
         return this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
     }

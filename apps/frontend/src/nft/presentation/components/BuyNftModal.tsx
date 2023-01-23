@@ -12,6 +12,7 @@ import AnimationContainer from '../../../core/presentation/components/AnimationC
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
+import ReportIcon from '@mui/icons-material/Report';
 import '../styles/buy-nft-modal.css';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
@@ -48,11 +49,12 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
     return (
         <ModalWindow
             className = { 'BuyNftPopup' }
-            modalStore = { buyNftModalStore } >
+            modalStore = { buyNftModalStore }
+            hasClose = { buyNftModalStore.isStageProcessing() === false } >
 
             <AnimationContainer className = { 'Stage Preview FlexColumn' } active = { buyNftModalStore.isStagePreview() } >
 
-                {buyNftModalStore.isStagePreview() && (
+                {buyNftModalStore.isStagePreview() === true && (
                     <>
                         <div className={'H3 Bold'}>Buy NFT</div>
                         <div className={'BorderContainer FlexRow'}>
@@ -80,7 +82,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
             <AnimationContainer className = { 'Stage Processing FlexColumn' } active = { buyNftModalStore.isStageProcessing() } >
 
-                { buyNftModalStore.isStageProcessing() && (
+                { buyNftModalStore.isStageProcessing() === true && (
                     <>
                         <div className={'H2 Bold'}>Processing...</div>
                         <div className={'Info'}>
@@ -94,7 +96,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
             <AnimationContainer className = { 'Stage Success FlexColumn' } active = { buyNftModalStore.isStageSuccess() } >
 
-                { buyNftModalStore.isStageSuccess() && (
+                { buyNftModalStore.isStageSuccess() === true && (
                     <>
                         <Svg className={'SuccessSvg'} svg={CheckCircleIcon} size={SvgSize.CUSTOM}/>
                         <div className={'H2 Bold'}>Success!</div>
@@ -102,9 +104,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
                         <div className={'BorderContainer FlexColumn'}>
                             <div
                                 className={'NftPicture'}
-                                style={{
-                                    backgroundImage: `url("${nftEntity.imageUrl}")`,
-                                }} />
+                                style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
                             <div className={'B2 SemiBold Gray'}>{buyNftModalStore.collectionEntity.name}</div>
                             <div className={'H2 Bold'}>{nftEntity.name}</div>
                         </div>
@@ -120,6 +120,26 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
                             </Button>
                             <Button onClick={buyNftModalStore.hide}>
                                 View Item
+                            </Button>
+                        </Actions>
+                    </>
+                ) }
+
+            </AnimationContainer>
+
+            <AnimationContainer className = { 'Stage Fail FlexColumn' } active = { buyNftModalStore.isStageFail() } >
+
+                { buyNftModalStore.isStageFail() === true && (
+                    <>
+                        <Svg className={'BigSvg'} svg={ReportIcon} size={SvgSize.CUSTOM}/>
+                        <div className={'H2 Bold'}>Error</div>
+                        <div className={'H3 Info'}>Transaction was not successful. Check your network or token balance.</div>
+                        <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
+                            <Button onClick={buyNftModalStore.hide}>
+                                Close
+                            </Button>
+                            <Button onClick={onClickPurchaseNft}>
+                                Try Again
                             </Button>
                         </Actions>
                     </>

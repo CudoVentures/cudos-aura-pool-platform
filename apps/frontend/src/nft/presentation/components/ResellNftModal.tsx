@@ -21,6 +21,7 @@ import ValidationState from '../../../core/presentation/stores/ValidationState';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
 import InfoBlueBox from '../../../core/presentation/components/InfoBlueBox';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 type Props = {
     walletStore?: WalletStore;
@@ -42,134 +43,112 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
         resellNftModalStore.onClickSubmitForSell();
     }
 
-    function PreviewContent() {
-        return nftEntity !== null ? (
-            <>
-                <div className={'H3 Bold'}>Resell NFT</div>
-                <div className={'BorderContainer FlexRow'}>
-                    <div
-                        className={'NftPicture'}
-                        style={{
-                            backgroundImage: `url("${nftEntity.imageUrl}")`,
-                        }}
-                    />
-                    <div className={'NftInfo FlexColumnt'}>
-                        <div className={'CollectionName B2 SemiBold Gray'}>{resellNftModalStore.collectionEntity.name}</div>
-                        <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
-                        <div className={'Address FlexColumn'}>
-                            <div className={'B2 SemiBold Gray'}>Current Rewards Recipient</div>
-                            <div className={'H3 Bold Dots'}>{nftEntity.currentOwner}</div>
-                        </div>
-                    </div>
-                </div>
-                <Input inputType={InputType.REAL}
-                    value={resellNftModalStore.priceDisplay}
-                    onChange={resellNftModalStore.setPrice}
-                    label={'Set NFT Price'}
-                    placeholder={'0'}
-                    inputValidation={[nftPriceValidation, nftPriceValidationNotZero]}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start" > $ </InputAdornment>
-                        ),
-                    }}
-                />
-                <InfoBlueBox text={ `${resellNftModalStore.getResellpriceInCudosDisplay()} CUDOS based on Today’s CUDOS Price` } />
-
-                {/* <div className={'CheckBoxText B2 SemiBold'}>Do you want to have immediate auto pay on sale or disperse as per the original payment schedule?</div>
-                <div className={'FlexRow CheckBoxRow'}>
-                    <Checkbox
-                        label={'Auto pay'}
-                        value={resellNftModalStore.autoPay}
-                        onChange={resellNftModalStore.toggleAutoPay} />
-                    <Checkbox
-                        label={'Original Payment Schedule'}
-                        value={resellNftModalStore.originalPaymentSchedule}
-                        onChange={resellNftModalStore.toggleOriginalPaymentSchedule} />
-                </div> */}
-                <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                    <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
-                </Actions>
-            </>
-        ) : '';
-    }
-
-    function ProcessingContent() {
-        return (
-            <>
-                <div className={'H2 Bold'}>Processing...</div>
-                <div className={'H3 Info'}>Check your wallet for detailed information.</div>
-            </>
-        )
-    }
-
-    function SuccessContent() {
-        return (
-            <>
-                <Svg className={'BigSvg'} svg={CheckCircleIcon} size={SvgSize.CUSTOM}/>
-                <div className={'H2 Bold'}>Success!</div>
-                <div className={'H3 Info'}>Transaction was successfully executed.</div>
-                <div className={'FlexRow TransactionView H3'}>
-                    <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
-                        Transaction details
-                        <Svg svg={LaunchIcon} />
-                    </a>
-                </div>
-                <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                    <Button
-                        onClick={resellNftModalStore.hide}>
-                        Close Now
-                    </Button>
-                </Actions>
-            </>
-        )
-    }
-
-    function FailContent() {
-        return (
-            <>
-                <Svg className={'BigSvg'} svg={ReportIcon} size={SvgSize.CUSTOM}/>
-                <div className={'H2 Bold'}>Error</div>
-                <div className={'H3 Info'}>Transaction was not successful. Check your network or token balance.</div>
-                <div className={'FlexRow TransactionView H3'}>
-                    <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
-                        Transaction details
-                        <Svg svg={LaunchIcon} />
-                    </a>
-                </div>
-                <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                    <Button
-                        onClick={resellNftModalStore.hide}>
-                        Close
-                    </Button>
-                    <Button
-                        onClick={resellNftModalStore.onClickSubmitForSell}>
-                        Try Again
-                    </Button>
-                </Actions>
-            </>
-        )
-    }
-
     return (
         <ModalWindow
             className = { 'ResellNftPopup' }
-            modalStore = { resellNftModalStore } >
+            modalStore = { resellNftModalStore }
+            hasClose = { resellNftModalStore.isStageProcessing() === false } >
 
             <AnimationContainer className = { 'Stage Preview FlexColumn' } active = { resellNftModalStore.isStagePreview() } >
-                { resellNftModalStore.isStagePreview() === true && PreviewContent() }
+                { resellNftModalStore.isStagePreview() === true && nftEntity !== null && (
+                    <>
+                        <div className={'H3 Bold'}>Resell NFT</div>
+                        <div className={'BorderContainer FlexRow'}>
+                            <div className={'NftPicture'} style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
+                            <div className={'NftInfo FlexColumnt'}>
+                                <div className={'CollectionName B2 SemiBold Gray'}>{resellNftModalStore.collectionEntity.name}</div>
+                                <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
+                                <div className={'Address FlexColumn'}>
+                                    <div className={'B2 SemiBold Gray'}>Current Rewards Recipient</div>
+                                    <div className={'H3 Bold Dots'}>{nftEntity.currentOwner}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <Input inputType={InputType.REAL}
+                            value={resellNftModalStore.priceDisplay}
+                            onChange={resellNftModalStore.setPrice}
+                            label={'Set NFT Price'}
+                            placeholder={'0'}
+                            inputValidation={[nftPriceValidation, nftPriceValidationNotZero]}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start" > $ </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <InfoBlueBox text={ `${resellNftModalStore.getResellpriceInCudosDisplay()} CUDOS based on Today’s CUDOS Price` } />
+
+                        {/* <div className={'CheckBoxText B2 SemiBold'}>Do you want to have immediate auto pay on sale or disperse as per the original payment schedule?</div>
+                    <div className={'FlexRow CheckBoxRow'}>
+                        <Checkbox
+                            label={'Auto pay'}
+                            value={resellNftModalStore.autoPay}
+                            onChange={resellNftModalStore.toggleAutoPay} />
+                        <Checkbox
+                            label={'Original Payment Schedule'}
+                            value={resellNftModalStore.originalPaymentSchedule}
+                            onChange={resellNftModalStore.toggleOriginalPaymentSchedule} />
+                    </div> */}
+                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                            <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
+                        </Actions>
+                    </>
+                ) }
             </AnimationContainer>
 
             <AnimationContainer className = { 'Stage Processing FlexColumn' } active = { resellNftModalStore.isStageProcessing() } >
-                {resellNftModalStore.isStageProcessing() === true && ProcessingContent() }
+                {resellNftModalStore.isStageProcessing() === true && (
+                    <>
+                        <div className={'H2 Bold'}>Processing...</div>
+                        <div className={'H3 Info'}>Check your wallet for detailed information.</div>
+                    </>
+                ) }
             </AnimationContainer>
 
             <AnimationContainer className = { 'Stage Success FlexColumn' } active = { resellNftModalStore.isStageSuccess() } >
-                {resellNftModalStore.isStageSuccess() === true && SuccessContent() }
+                {resellNftModalStore.isStageSuccess() === true && (
+                    <>
+                        <Svg className={'BigSvg'} svg={CheckCircleIcon} size={SvgSize.CUSTOM}/>
+                        <div className={'H2 Bold'}>Success!</div>
+                        <div className={'H3 Info'}>Transaction was successfully executed.</div>
+                        <div className={'FlexRow TransactionView H3'}>
+                            <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                            Transaction details
+                                <Svg svg={LaunchIcon} />
+                            </a>
+                        </div>
+                        <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
+                            <Button
+                                onClick={resellNftModalStore.hide}>
+                            Close Now
+                            </Button>
+                        </Actions>
+                    </>
+                ) }
             </AnimationContainer>
 
             <AnimationContainer className = { 'Stage Fail FlexColumn' } active = { resellNftModalStore.isStageFail() } >
-                {resellNftModalStore.isStageFail() === true && FailContent() }
+                {resellNftModalStore.isStageFail() === true && (
+                    <>
+                        <Svg className={'BigSvg'} svg={ReportIcon} size={SvgSize.CUSTOM}/>
+                        <div className={'H2 Bold'}>Error</div>
+                        <div className={'H3 Info'}>Transaction was not successful. Check your network or token balance.</div>
+                        {/* <div className={'FlexRow TransactionView H3'}>
+                        <a className={'Clickable'} href={resellNftModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                            Transaction details
+                            <Svg svg={LaunchIcon} />
+                        </a>
+                    </div> */}
+                        <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
+                            <Button onClick={resellNftModalStore.hide}>
+                                Close
+                            </Button>
+                            <Button onClick={resellNftModalStore.onClickSubmitForSell}>
+                                Try Again
+                            </Button>
+                        </Actions>
+                    </>
+                ) }
             </AnimationContainer>
 
         </ModalWindow>

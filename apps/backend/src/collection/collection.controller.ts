@@ -242,7 +242,7 @@ export class CollectionController {
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,
     ): Promise<void> {
-        const { denomIds, module, height } = reqUpdateCollectionChainData;
+        const { denomIds, collectionIds, module, height } = reqUpdateCollectionChainData;
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
 
@@ -251,14 +251,30 @@ export class CollectionController {
         }
 
         if (module === ModuleName.MARKETPLACE) {
-            const chainMarketplaceCollectionEntitiess = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
+            const chainMarketplaceCollectionEntitiesByDenoms = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
+            const chainMarketplaceCollectionEntitiesByIds = await this.collectionService.getChainMarketplaceCollectionsByIds(collectionIds);
 
-            if (chainMarketplaceCollectionEntitiess.length !== denomIds.length) {
+            if (chainMarketplaceCollectionEntitiesByDenoms.length !== denomIds.length) {
+                throw new Error('BDJuno is updated but marketpalce collections are missing');
+            }
+            if (chainMarketplaceCollectionEntitiesByIds.length !== collectionIds.length) {
                 throw new Error('BDJuno is updated but marketpalce collections are missing');
             }
 
-            for (let i = 0; i < chainMarketplaceCollectionEntitiess.length; i++) {
-                const chainMarketplaceCollectionEntity = chainMarketplaceCollectionEntitiess[i];
+            const chainMarketplaceCollectionEntitiesMap = new Map();
+            const chainMarketplaceCollectionEntities = [];
+            chainMarketplaceCollectionEntitiesByDenoms.forEach((chainMarketplaceCollectionEntity) => {
+                chainMarketplaceCollectionEntitiesMap.set(chainMarketplaceCollectionEntity.denomId, chainMarketplaceCollectionEntity);
+            });
+            chainMarketplaceCollectionEntitiesByIds.forEach((chainMarketplaceCollectionEntity) => {
+                chainMarketplaceCollectionEntitiesMap.set(chainMarketplaceCollectionEntity.denomId, chainMarketplaceCollectionEntity);
+            });
+            chainMarketplaceCollectionEntitiesMap.forEach((chainMarketplaceCollectionEntity) => {
+                chainMarketplaceCollectionEntities.push(chainMarketplaceCollectionEntity);
+            });
+
+            for (let i = 0; i < chainMarketplaceCollectionEntities.length; i++) {
+                const chainMarketplaceCollectionEntity = chainMarketplaceCollectionEntities[i];
                 const denomId = chainMarketplaceCollectionEntity.denomId;
 
                 const collectionEntity = await this.collectionService.findOneByDenomId(denomId);

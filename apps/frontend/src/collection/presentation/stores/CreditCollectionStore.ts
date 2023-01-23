@@ -229,6 +229,7 @@ export default class CreditCollectionStore {
             nftEntity.priceInAcudos = this.collectionEntity.getDefaultPricePerNftInAcudos();
             nftEntity.hashPowerInTh = this.collectionEntity.defaultHashPowerPerNftInTh;
         }
+        nftEntity.markAsExpiringToday();
         // nftEntity.farmRoyalties = this.collectionEntity.royalties;
         // nftEntity.maintenanceFeeInBtc = new BigNumber(this.collectionEntity.maintenanceFeeInBtc);
 
@@ -305,7 +306,11 @@ export default class CreditCollectionStore {
     // }
 
     onChangeSelectedNftExpirationDate = action((expirationDateTimestamp: Date) => {
-        this.selectedNftEntity.expirationDateTimestamp = expirationDateTimestamp !== null ? expirationDateTimestamp.getTime() : S.NOT_EXISTS;
+        if (expirationDateTimestamp !== null) {
+            this.selectedNftEntity.expirationDateTimestamp = expirationDateTimestamp.getTime();
+        } else {
+            this.selectedNftEntity.markAsExpiringToday();
+        }
     })
 
     // nft get input value
@@ -332,7 +337,7 @@ export default class CreditCollectionStore {
     }
 
     getSelectedNftExpirationDateInputValue(): Date {
-        if (this.selectedNftEntity === null || this.selectedNftEntity.expirationDateTimestamp === S.NOT_EXISTS) {
+        if (this.selectedNftEntity === null) {
             return new Date();
         }
 
@@ -345,9 +350,7 @@ export default class CreditCollectionStore {
         this.selectedNftEntity = nftEntity.cloneDeep();
 
         this.selectedNftHashingPowerInThInputValue = nftEntity.hashPowerInTh !== S.NOT_EXISTS ? nftEntity.hashPowerInTh.toString() : '';
-        this.selectedNftPriceInDollarsInputValue = nftEntity.priceInAcudos !== null
-            ? this.cudosStore.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2)
-            : ''
+        this.selectedNftPriceInDollarsInputValue = nftEntity.priceInAcudos !== null ? this.cudosStore.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2) : '';
     }
 
     onClickSendForApproval = async () => {

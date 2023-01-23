@@ -21,7 +21,7 @@ export default class TxFindWorker {
 
     async run() {
         try {
-        // get last checked block
+            // get last checked block
             const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedBlock();
             console.log('last checked block: ', lastCheckedBlock);
             // get last block
@@ -54,11 +54,20 @@ export default class TxFindWorker {
         const marketplaceModuleCollectionEvents = marketplaceEvents.filter((event) => MarketplaceCollectionEventTypes.includes(event.type));
 
         if (marketplaceModuleCollectionEvents.length > 0) {
+            const denomIds = marketplaceModuleCollectionEvents.map((event) => {
+                return event.attributes.find((attribute) => attribute.key === 'denom_id')?.value ?? -1;
+            }).filter((denomId) => denomId !== -1);
             const collectionIds = marketplaceModuleCollectionEvents.map((event) => {
-                const collectionId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
-                return collectionId;
-            }).filter((value, index, self) => self.indexOf(value) === index);
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(collectionIds, heightFilter.maxHeight);
+                return event.attributes.find((attribute) => attribute.key === 'collection_id')?.value ?? -1;
+            }).filter((collectionId) => collectionId !== -1);
+
+            const denomIdsSet = new Set(denomIds);
+            const uniqueDenomIds = Array.from(denomIdsSet);
+
+            const collectionIdsSet = new Set(collectionIds);
+            const uniqueCollectionIds = Array.from(collectionIdsSet);
+
+            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(uniqueDenomIds, uniqueCollectionIds, heightFilter.maxHeight);
         }
 
         if (marketplaceModuleNftEvents.length > 0) {
