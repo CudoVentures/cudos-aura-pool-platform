@@ -3,7 +3,6 @@ import { NftRepo } from '../../nft/repos/nft.repo';
 import { NftOwnersPayoutHistoryRepo } from '../repos/nft-owners-payout-history.repo';
 import { NftPayoutHistoryRepo } from '../repos/nft-payout-history.repo';
 import { v4 as uuidv4 } from 'uuid';
-import { CollectionStatus } from '../../collection/utils';
 import { CollectionRepo } from '../../collection/repos/collection.repo';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
 import ChainMarketplaceCollectionEntity from '../../collection/entities/chain-marketplace-collection.entity';
@@ -15,9 +14,35 @@ import { CollectionEntity } from '../../collection/entities/collection.entity';
 import { FarmStatus } from '../../farm/farm.types';
 import { MiningFarmRepo } from '../../farm/repos/mining-farm.repo';
 import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
+import { AddressesPayoutHistoryRepo } from '../repos/addresses-payout-history.repo';
 
 export const miningFarmTestEntities = [MiningFarmEntity.fromJson({
     id: '1',
+    accountId: '1',
+    name: 'testFarmName',
+    legalName: 'testFarmNameLtd',
+    primaryAccountOwnerName: 'Test Testov',
+    primaryAccountOwnerEmail: 'test@test.com',
+    description: 'string',
+    manufacturerIds: ['1'],
+    minerIds: ['1'],
+    energySourceIds: ['1'],
+    hashPowerInTh: 123123,
+    machinesLocation: 'test location',
+    profileImgUrl: 'some test url',
+    coverImgUrl: 'some test url',
+    farmPhotoUrls: ['some test url'],
+    status: FarmStatus.APPROVED,
+    maintenanceFeeInBtc: '1',
+    cudosMintNftRoyaltiesPercent: 10,
+    cudosResaleNftRoyaltiesPercent: 2,
+    resaleFarmRoyaltiesCudosAddress: 'testCudosAddress',
+    rewardsFromPoolBtcAddress: 'leftoversTestAddress',
+    leftoverRewardsBtcAddress: 'testpayout',
+    maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress',
+}),
+MiningFarmEntity.fromJson({
+    id: '2',
     accountId: '1',
     name: 'testFarmName',
     legalName: 'testFarmNameLtd',
@@ -46,6 +71,7 @@ export const miningFarmTestEntities = [MiningFarmEntity.fromJson({
 export const nftTestEntitities = [];
 const nftPayoutHistoryEntities = [];
 const nftOwnersPayoutHistoryEntities = [];
+const addressesPayoutHistoryEntities = [];
 
 export const chainMarketplaceTradeHistoryEntities = []
 export const chainNftTransferHistoryEntities = []
@@ -251,6 +277,18 @@ for (let i = 1; i <= 5; i++) {
         updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
         sent: true,
     })
+
+    addressesPayoutHistoryEntities.push({
+        id: i,
+        address: 'testpayout',
+        amount_btc: i,
+        tx_hash: 'txHash',
+        farm_id: 1,
+        createdAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
+        updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
+        payout_time: getZeroDatePlusDaysTimestamp(i - 1) / 1000,
+        threshold_reached: true,
+    })
 }
 
 export async function fillStatisticsTestData() {
@@ -260,6 +298,7 @@ export async function fillStatisticsTestData() {
         await NftRepo.bulkCreate(nftTestEntitities);
         await NftPayoutHistoryRepo.bulkCreate(nftPayoutHistoryEntities);
         await NftOwnersPayoutHistoryRepo.bulkCreate(nftOwnersPayoutHistoryEntities);
+        await AddressesPayoutHistoryRepo.bulkCreate(addressesPayoutHistoryEntities);
     } catch (e) {
         console.log(e);
     }
@@ -271,6 +310,7 @@ export async function emptyStatisticsTestData() {
     await NftRepo.truncate({ cascade: true });
     await NftPayoutHistoryRepo.truncate({ cascade: true });
     await NftOwnersPayoutHistoryRepo.truncate({ cascade: true });
+    await AddressesPayoutHistoryRepo.truncate({ cascade: true });
 }
 
 export function getZeroDatePlusDaysTimestamp(numberOfDaysToAdd: number): number {

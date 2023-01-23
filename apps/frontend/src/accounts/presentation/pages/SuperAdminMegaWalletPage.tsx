@@ -203,7 +203,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                         { renderBoxContainer('Royalty Fee upon first sale of NFT', settingsEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
                     </RowLayout>
                 </RowLayout>
-                {/* <StyledLayout
+                <StyledLayout
                     title = { 'MegaWallet Activity' }
                     headerRight = {
                         <Select
@@ -227,7 +227,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                             tableState={superAdminMegaWalletPageStore.walletEventTableState}
                             rows={renderWalletActivityTableRows()} />
                     )}
-                </StyledLayout> */}
+                </StyledLayout>
             </ColumnLayout>
 
         </PageLayout>

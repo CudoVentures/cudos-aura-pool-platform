@@ -110,15 +110,15 @@ export class StatisticsService {
         })
 
         const collectionEntities = await this.collectionService.findByDenomIds(denomIds);
-        const farmIdCollectionEntityMap = new Map<number, CollectionEntity>();
-        collectionEntities.forEach((collectionEntity) => {
-            farmIdCollectionEntityMap.set(collectionEntity.farmId, collectionEntity);
+        const farmEntities = await this.farmService.findMiningFarmByIds(collectionEntities.map((collectionEntity) => collectionEntity.farmId));
+        const farmIdFarmMap = new Map();
+        farmEntities.forEach((farmEntity) => {
+            farmIdFarmMap.set(farmEntity.id, farmEntity);
         })
 
-        const farmEntities = await this.farmService.findMiningFarmByIds(collectionEntities.map((collectionEntity) => collectionEntity.farmId));
         const denomIdFarmMap = new Map<string, MiningFarmEntity>();
-        farmEntities.forEach((farmEntity) => {
-            const collectionEntity = farmIdCollectionEntityMap.get(farmEntity.id)
+        collectionEntities.forEach((collectionEntity) => {
+            const farmEntity = farmIdFarmMap.get(collectionEntity.farmId);
             denomIdFarmMap.set(collectionEntity.denomId, farmEntity);
         })
 
@@ -150,7 +150,7 @@ export class StatisticsService {
         return {
             megaWalletEventEntities,
             nftEntities,
-            total: nftEventEntities.length,
+            total: filteredNftEntities.length,
         }
     }
 
@@ -487,7 +487,6 @@ export class StatisticsService {
         }
 
         const addressPayoutHistoryForPeriod = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
-
         const earningsPerDayEntity = new EarningsPerDayEntity(earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
         earningsPerDayEntity.calculateEarningsByAddressPayoutHistory(addressPayoutHistoryForPeriod);
 
@@ -659,7 +658,7 @@ export class StatisticsService {
                 [NftOwnersPayoutHistoryRepoColumn.NFT_PAYOUT_HISTORY_ID]: nftPayoutHistoryIds,
                 [NftOwnersPayoutHistoryRepoColumn.CREATED_AT]: {
                     [Op.gte]: new Date(timestampFrom),
-                    [Op.gte]: new Date(timestampTo),
+                    [Op.lte]: new Date(timestampTo),
                 },
                 [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
             },

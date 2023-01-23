@@ -28,6 +28,13 @@ import { DataServiceError } from '../common/errors/errors';
 import { collectionEntities } from '../../test/data/collections.data';
 import EarningsEntity from './entities/platform-earnings.entity';
 import EarningsPerDayFilterEntity, { EarningsPerDayCurrency } from './entities/earnings-per-day-filter.entity';
+import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
+import { AddressesPayoutHistoryRepo } from './repos/addresses-payout-history.repo';
+import { CollectionPaymentAllocationRepo } from './repos/collection-payment-allocation.repo';
+import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
+import { miningFarmEntities } from '../../test/data/farm.data';
+import MiningFarmEntity from '../farm/entities/mining-farm.entity';
+import { CollectionEntity } from '../collection/entities/collection.entity';
 
 describe('StatisticsService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -79,6 +86,8 @@ describe('StatisticsService', () => {
                 SequelizeModule.forFeature([
                     NftOwnersPayoutHistoryRepo,
                     NftPayoutHistoryRepo,
+                    AddressesPayoutHistoryRepo,
+                    CollectionPaymentAllocationRepo,
                 ]),
                 NFTModule,
                 CollectionModule,
@@ -595,5 +604,76 @@ describe('StatisticsService', () => {
 
         // Assert
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
+    });
+
+    it('fetchMegaWalletEventsByFilter: happy path', async () => {
+        // Arrange
+        const megaWalletEventFilter = new MegaWalletEventFilterEntity();
+        megaWalletEventFilter.timestampFrom = getZeroDatePlusDaysTimestamp(2);
+        megaWalletEventFilter.timestampTo = getZeroDatePlusDaysTimestamp(4);
+
+        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+        const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
+            const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
+            return `${entity.tokenId}@${collection.denomId}`;
+        });
+
+        const denomIdMarketplaceCollectionEntityMap = new Map();
+        getGraphQlmarketplaceCollections().forEach((entity) => {
+            denomIdMarketplaceCollectionEntityMap.set(entity.denomId, entity);
+        })
+
+        const denomIdCollectionMap = new Map<string, CollectionEntity>();
+        collectionEntities.forEach((collectionEntity) => {
+            denomIdCollectionMap.set(collectionEntity.denomId, collectionEntity);
+        })
+
+        const farmIdFarmMap = new Map<number, MiningFarmEntity>();
+        miningFarmEntities.forEach((farmEntity) => {
+            farmIdFarmMap.set(farmEntity.id, farmEntity);
+        })
+
+        const nftEventEntities = getGraphQlMarketplaceNftEvents()
+            .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
+            .map((entity) => {
+                const nftEventEntity = NftEventEntity.fromNftMarketplaceTradeHistory(entity);
+                const collection = collectionEntities.find((collectionEntity) => collectionEntity.denomId === nftEventEntity.denomId)
+                const nft = nftEntities.find((nftEntity) => nftEntity.tokenId === nftEventEntity.tokenId && nftEntity.collectionId === collection.id);
+
+                nftEventEntity.nftId = nft.id;
+                return nftEventEntity;
+            })
+            .filter((entity) => {
+                return entity.hasPrice();
+            });
+
+        const megaWalletEventEntities = nftEventEntities.map((eventEntity) => {
+            const chainCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(eventEntity.denomId);
+            const collectionEntity = denomIdCollectionMap.get(chainCollectionEntity.denomId);
+            const farmEntity = farmIdFarmMap.get(collectionEntity.farmId);
+            return MegaWalletEventEntity.fromNftEventEntity(eventEntity, chainCollectionEntity, farmEntity)
+        })
+            .filter((entity) => {
+                return entity.timestamp <= megaWalletEventFilter.timestampTo && entity.timestamp >= megaWalletEventFilter.timestampFrom;
+            });
+
+        megaWalletEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+
+        const nftEventMap = new Map<string, MegaWalletEventEntity>();
+        megaWalletEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
+
+        nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
+
+        const result = {
+            megaWalletEventEntities,
+            nftEntities: megaWalletEventEntities.map((megaWalletEventEntity) => nftEntities.find((nftEntity) => nftEntity.id === megaWalletEventEntity.nftId)),
+            total: nftEventEntities.length,
+        }
+
+        // Act
+        const userEarningsEntity = await service.fetchMegaWalletEventsByFilter(megaWalletEventFilter);
+
+        // Assert
+        expect(userEarningsEntity).toEqual(result);
     });
 });
