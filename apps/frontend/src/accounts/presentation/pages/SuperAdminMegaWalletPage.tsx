@@ -212,7 +212,6 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                             value={superAdminMegaWalletPageStore.eventType} >
                             <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
                             <MenuItem value = { NftEventType.MINT }> Mint </MenuItem>
-                            <MenuItem value = { NftEventType.TRANSFER }> Transfer </MenuItem>
                             <MenuItem value = { NftEventType.SALE }> Sale </MenuItem>
                         </Select>
                     } >
@@ -221,7 +220,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                     ) : (
                         <Table
                             className={'WalletEventTable'}
-                            legend={['Activity Type', 'Item', 'Price', 'From', 'Time']}
+                            legend={['Activity Type', 'Item', 'Royalties', 'From', 'Time']}
                             widths={['15%', '30%', '30%', '15%', '10%']}
                             aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]}
                             tableState={superAdminMegaWalletPageStore.walletEventTableState}
