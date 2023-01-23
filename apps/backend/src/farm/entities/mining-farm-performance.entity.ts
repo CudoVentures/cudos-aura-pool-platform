@@ -35,9 +35,9 @@ export default class MiningFarmPerformanceEntity {
 
         return {
             'miningFarmId': entity.miningFarmId.toString(),
-            'volumePer24HoursInAcudos': entity.volumePer24HoursInAcudos.toString(),
+            'volumePer24HoursInAcudos': entity.volumePer24HoursInAcudos.toString(10),
             'volumePer24HoursInUsd': entity.volumePer24HoursInUsd,
-            'floorPriceInAcudos': entity.floorPriceInAcudos ? entity.floorPriceInAcudos.toString() : null,
+            'floorPriceInAcudos': entity.floorPriceInAcudos ? entity.floorPriceInAcudos.toString(10) : null,
         }
     }
 

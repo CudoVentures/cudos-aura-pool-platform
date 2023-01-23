@@ -20,7 +20,7 @@ export default class UserEarningsEntity {
     }
 
     formatBtcEarnedInBtc(): string {
-        return this.btcEarnedInBtc.toString();
+        return this.btcEarnedInBtc.toString(10);
     }
 
     getEarningsPerDayInBtcAsNumber(): number[] {
@@ -35,11 +35,11 @@ export default class UserEarningsEntity {
         }
 
         return {
-            'totalEarningInBtc': entity.totalEarningInBtc.toString(),
+            'totalEarningInBtc': entity.totalEarningInBtc.toString(10),
             'totalNftBought': entity.totalNftBought,
             'totalContractHashPowerInTh': entity.totalContractHashPowerInTh,
-            'earningsPerDayInBtc': entity.earningsPerDayInBtc.map((bn) => bn.toString()),
-            'btcEarnedInBtc': entity.btcEarnedInBtc.toString(),
+            'earningsPerDayInBtc': entity.earningsPerDayInBtc.map((bn) => bn.toString(10)),
+            'btcEarnedInBtc': entity.btcEarnedInBtc.toString(10),
         }
     }
 

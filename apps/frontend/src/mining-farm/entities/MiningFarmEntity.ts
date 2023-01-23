@@ -152,7 +152,7 @@ export default class MiningFarmEntity {
             'coverImgUrl': entity.coverImgUrl,
             'farmPhotoUrls': entity.farmPhotoUrls,
             'status': entity.status,
-            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
+            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(10),
             'cudosMintNftRoyaltiesPercent': entity.cudosMintNftRoyaltiesPercent,
             'cudosResaleNftRoyaltiesPercent': entity.cudosResaleNftRoyaltiesPercent,
             'resaleFarmRoyaltiesCudosAddress': entity.resaleFarmRoyaltiesCudosAddress,

@@ -71,7 +71,7 @@ export default class RewardsCalculatorStore {
     }
 
     getNetworkDifficultyInputValue(): string {
-        return this.networkDifficultyEdit !== null ? this.networkDifficultyEdit.toString() : this.bitcoinStore.getNetworkDifficulty();
+        return this.networkDifficultyEdit !== null ? this.networkDifficultyEdit.toString(10) : this.bitcoinStore.getNetworkDifficulty();
     }
 
     getHashPowerInTh(): number {

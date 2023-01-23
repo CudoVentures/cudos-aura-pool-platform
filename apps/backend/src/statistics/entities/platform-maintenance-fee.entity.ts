@@ -12,7 +12,7 @@ export default class PlatformMaintenanceFeeEntity {
             return null;
         }
         return {
-            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(),
+            'maintenanceFeeInBtc': entity.maintenanceFeeInBtc.toString(10),
         }
     }
 }

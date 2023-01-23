@@ -185,7 +185,7 @@ export class GraphqlService {
         return nftMarketplaceTradeHistoryEntity || [];
     }
 
-    async fetchCollectionTotalSales(denomIds: string[]): Promise<{ salesInAcudos: number, salesInBtc: number, salesInUsd: number }> {
+    async fetchCollectionTotalSales(denomIds: string[]): Promise<{ salesInAcudos: BigNumber, salesInBtc: BigNumber, salesInUsd: number }> {
         const res: AxiosResponse<{ data: MarketplaceNftPriceSumByDenomIdQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceNftPriceSumByDenomIdDocument),
             variables: { denomIds },
@@ -196,8 +196,8 @@ export class GraphqlService {
         }
 
         return {
-            salesInAcudos: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.price,
-            salesInBtc: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.btc_price,
+            salesInAcudos: new BigNumber(res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.price),
+            salesInBtc: new BigNumber(res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.btc_price),
             salesInUsd: res.data.data.marketplace_nft_buy_history_aggregate.aggregate.sum.usd_price,
         };
     }

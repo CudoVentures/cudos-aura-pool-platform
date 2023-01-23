@@ -90,7 +90,7 @@ export default class MegaWalletTransferModalStore extends ModalStore {
     }
 
     onClickSetMax = action(() => {
-        this.amount = this.balance?.toString() ?? '0';
+        this.amount = this.balance?.toString(10) ?? '0';
     })
 
     onAddressChange = action((input) => {

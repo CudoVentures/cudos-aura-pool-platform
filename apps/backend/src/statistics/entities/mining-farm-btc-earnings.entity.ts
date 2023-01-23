@@ -12,7 +12,7 @@ export default class MiningFarmTotalEarningsBtcEntity {
             return null;
         }
         return {
-            'unsoldNftsTotalEarningsInBtc': entity.unsoldNftsTotalEarningsInBtc.toString(),
+            'unsoldNftsTotalEarningsInBtc': entity.unsoldNftsTotalEarningsInBtc.toString(10),
         }
     }
 }

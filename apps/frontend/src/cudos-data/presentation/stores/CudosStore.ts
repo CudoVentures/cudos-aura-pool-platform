@@ -82,7 +82,7 @@ export default class CudosStore {
     }
 
     formatConvertedCudosInUsd(cudosPrice: BigNumber): string {
-        return numeral(this.convertCudosInUsd(cudosPrice).toString()).format(ProjectUtils.NUMERAL_USD);
+        return numeral(this.convertCudosInUsd(cudosPrice).toString(10)).format(ProjectUtils.NUMERAL_USD);
     }
 
     static formatAcudosInCudos(acudosPrice: BigNumber): string {

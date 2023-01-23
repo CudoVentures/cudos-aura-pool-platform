@@ -90,8 +90,8 @@ export default class NftEventEntity {
             'timestamp': entity.timestamp,
             'eventType': entity.eventType,
             'transferPriceInUsd': entity.transferPriceInUsd,
-            'transferPriceInBtc': entity.transferPriceInBtc.toString(),
-            'transferPriceInAcudos': entity.transferPriceInAcudos.toString(),
+            'transferPriceInBtc': entity.transferPriceInBtc.toString(10),
+            'transferPriceInAcudos': entity.transferPriceInAcudos.toString(10),
         }
     }
 }

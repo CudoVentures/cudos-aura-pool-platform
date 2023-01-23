@@ -89,7 +89,7 @@ export default class MiningFarmEntity {
         repoJson.addressForReceivingRewardsFromPool = entity.rewardsFromPoolBtcAddress;
         repoJson.leftoverRewardPayoutAddress = entity.leftoverRewardsBtcAddress;
         repoJson.maintenanceFeePayoutAddress = entity.maintenanceFeePayoutBtcAddress;
-        repoJson.maintenanceFeeInBtc = entity.maintenanceFeeInBtc?.toString() ?? '';
+        repoJson.maintenanceFeeInBtc = entity.maintenanceFeeInBtc?.toString(10) ?? '';
         repoJson.totalFarmHashrate = entity.hashPowerInTh.toString();
         repoJson.manufacturers = entity.manufacturerIds;
         repoJson.minerTypes = entity.minerIds;
