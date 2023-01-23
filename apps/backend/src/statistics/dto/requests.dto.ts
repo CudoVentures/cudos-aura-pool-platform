@@ -43,29 +43,6 @@ export class ReqFetchNftEarningsByNftId {
 
 }
 
-export class ReqFetchNftEarningsByMiningFarmId {
-
-    @IsString()
-        miningFarmId: string;
-
-    @IsNumber()
-        timestampFrom: number;
-
-    @IsNumber()
-        timestampTo: number;
-
-}
-
-export class ReqFetchTotalNftEarnings {
-
-    @IsNumber()
-        timestampFrom: number;
-
-    @IsNumber()
-        timestampTo: number;
-
-}
-
 export class ReqFetchEarningsPerDay {
     @IsDefined()
     @IsNotEmptyObject()

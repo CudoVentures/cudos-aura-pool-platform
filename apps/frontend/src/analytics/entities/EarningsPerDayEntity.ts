@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { makeAutoObservable } from 'mobx';
-import { CHAIN_DETAILS } from '../../core/utilities/Constants';
 
 export default class EarningsPerDayEntity {
 

@@ -2,7 +2,6 @@ import axios from '../../../core/utilities/AxiosWrapper';
 import EarningsPerDayEntity from '../../entities/EarningsPerDayEntity';
 import EarningsPerDayFilterEntity from '../../entities/EarningsPerDayFilterEntity';
 import MegaWalletEventFilterModel from '../../entities/MegaWalletEventFilterModel';
-import MiningFarmEarningsEntity from '../../entities/MiningFarmEarningsEntity';
 import MiningFarmMaintenanceFeeEntity from '../../entities/MiningFarmMaintenanceFeeEntity';
 import MiningFarmTotalEarningsBtcEntity from '../../entities/MiningFarmTotalEarningsBtcEntity';
 import MiningFarmTotalEarningsCudosEntity from '../../entities/MiningFarmTotalEarningsCudosEntity';
@@ -11,10 +10,9 @@ import NftEventFilterModel from '../../entities/NftEventFilterModel';
 import PlatformMaintenanceFeeEntity from '../../entities/PlatformMaintenanceFeeEntity';
 import PlatformTotalEarningsBtcEntity from '../../entities/PlatformTotalEarningsBtcEntity';
 import PlatformTotalEarningsCudosEntity from '../../entities/PlatformTotalEarningsCudosEntity';
-import TotalEarningsEntity from '../../entities/TotalEarningsEntity';
 import UserEarningsEntity from '../../entities/UserEarningsEntity';
-import { ReqFetchEarningsPerDay, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsBtc, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqFetchTotalNftEarnings, ReqMegaWalletEventEntitiesByFilter, ReqNftEventEntitiesByFilter } from '../dto/Requests';
-import { ResFetchEarningsPerDay, ResFetchMiningFarmMaintenanceFee, ResFetchMiningFarmTotalEarningsBtc, ResFetchMiningFarmTotalEarningsCudos, ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchPlatformMaintenanceFee, ResFetchPlatformTotalEarningsBtc, ResFetchPlatformTotalEarningsCudos, ResFetchTotalNftEarnings, ResMegaWalletEventEntitiesByFilter, ResNftEventEntitiesByFilter } from '../dto/Responses';
+import { ReqFetchEarningsPerDay, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsBtc, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqMegaWalletEventEntitiesByFilter, ReqNftEventEntitiesByFilter } from '../dto/Requests';
+import { ResFetchEarningsPerDay, ResFetchMiningFarmMaintenanceFee, ResFetchMiningFarmTotalEarningsBtc, ResFetchMiningFarmTotalEarningsCudos, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchPlatformMaintenanceFee, ResFetchPlatformTotalEarningsBtc, ResFetchPlatformTotalEarningsCudos, ResMegaWalletEventEntitiesByFilter, ResNftEventEntitiesByFilter } from '../dto/Responses';
 
 const STATISTICS_URL = '/api/v1/statistics';
 
@@ -46,18 +44,6 @@ export default class StatisticsApi {
         const { data } = await axios.post(`${STATISTICS_URL}/fetchNftEarningsByNftId`, new ReqFetchNftEarningsByNftId(nftId, timestampFrom, timestampTo))
         const res = new ResFetchNftEarningsByNftId(data);
         return res.nftEarningsEntity;
-    }
-
-    async fetchNftEarningsByMiningFarmId(miningFarmId: string, timestampFrom: number, timestampTo: number): Promise < MiningFarmEarningsEntity > {
-        const { data } = await axios.post(`${STATISTICS_URL}/fetchNftEarningsByMiningFarmId`, new ReqFetchNftEarningsByMiningFarmId(miningFarmId, timestampFrom, timestampTo))
-        const res = new ResFetchNftEarningsByMiningFarmId(data);
-        return res.miningFarmEarningsEntity;
-    }
-
-    async fetchTotalNftEarnings(timestampFrom: number, timestampTo: number): Promise < TotalEarningsEntity > {
-        const { data } = await axios.post(`${STATISTICS_URL}/fetchPlatformEarnings`, new ReqFetchTotalNftEarnings(timestampFrom, timestampTo))
-        const res = new ResFetchTotalNftEarnings(data);
-        return res.totalEarningsEntity;
     }
 
     async fetchEarningsPerDay(earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise < EarningsPerDayEntity > {

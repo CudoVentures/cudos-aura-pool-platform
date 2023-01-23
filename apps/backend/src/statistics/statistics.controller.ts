@@ -1,5 +1,4 @@
 import {
-    Get,
     Controller,
     Req,
     Post,
@@ -13,8 +12,8 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { AppRequest } from '../common/commont.types';
-import { ReqFetchEarningsPerDay, ReqFetchFarmTotalBtcEarnings, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByMiningFarmId, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqFetchTotalNftEarnings, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
-import { ResFetchEarningsPerDay, ResFetchFarmTotalBtcEarnings, ResFetchMiningFarmMaintenanceFee, ResFetchMiningFarmTotalEarningsCudos, ResFetchNftEarningsByMiningFarmId, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchPlatformMaintenanceFee, ResFetchPlatformTotalEarningsBtc, ResFetchPlatformTotalEarningsCudos, ResFetchTotalNftEarnings, ResMegaWalletEventsByFilter, ResNftEventsByFilter } from './dto/responses.dto';
+import { ReqFetchEarningsPerDay, ReqFetchFarmTotalBtcEarnings, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
+import { ResFetchEarningsPerDay, ResFetchFarmTotalBtcEarnings, ResFetchMiningFarmMaintenanceFee, ResFetchMiningFarmTotalEarningsCudos, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchPlatformMaintenanceFee, ResFetchPlatformTotalEarningsBtc, ResFetchPlatformTotalEarningsCudos, ResMegaWalletEventsByFilter, ResNftEventsByFilter } from './dto/responses.dto';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
@@ -81,26 +80,6 @@ export class StatisticsController {
     ): Promise < ResFetchNftEarningsByNftId > {
         const nftEarningsEntity = await this.statisticsService.fetchEarningsByNftId(reqFetchNftEarningsByNftId.nftId, reqFetchNftEarningsByNftId.timestampFrom, reqFetchNftEarningsByNftId.timestampTo);
         return new ResFetchNftEarningsByNftId(nftEarningsEntity);
-    }
-
-    @Post('fetchNftEarningsByMiningFarmId')
-    @HttpCode(200)
-    async fetchNftEarningsByMiningFarmId(
-        @Body(new ValidationPipe({ transform: true })) reqFetchNftEarningsByNftId: ReqFetchNftEarningsByMiningFarmId,
-    ): Promise < ResFetchNftEarningsByMiningFarmId > {
-        const miningFarmEarningsEntity = await this.statisticsService.fetchEarningsByMiningFarmId(parseInt(reqFetchNftEarningsByNftId.miningFarmId), reqFetchNftEarningsByNftId.timestampFrom, reqFetchNftEarningsByNftId.timestampTo);
-        return new ResFetchNftEarningsByMiningFarmId(miningFarmEarningsEntity);
-    }
-
-    @ApiBearerAuth('access-token')
-    @Post('fetchPlatformEarnings')
-    @HttpCode(200)
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
-    async fetchPlatformEarnings(
-        @Body(new ValidationPipe({ transform: true })) reqFetchTotalNftEarnings: ReqFetchTotalNftEarnings,
-    ): Promise <ResFetchTotalNftEarnings> {
-        const totalEarningsEntity = await this.statisticsService.fetchPlatformEarnings(reqFetchTotalNftEarnings.timestampFrom, reqFetchTotalNftEarnings.timestampTo);
-        return new ResFetchTotalNftEarnings(totalEarningsEntity);
     }
 
     @ApiBearerAuth('access-token')

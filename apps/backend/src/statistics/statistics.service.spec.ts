@@ -15,7 +15,6 @@ import compose from 'docker-compose';
 import Path from 'path';
 import UserEarningsEntity from './entities/user-earnings.entity';
 import NftEarningsEntity from './entities/nft-earnings.entity';
-import MiningFarmEarningsEntity from './entities/mining-farm-earnings.entity';
 import { GraphqlService } from '../graphql/graphql.service';
 import UserEntity from '../account/entities/user.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
@@ -25,8 +24,6 @@ import { NftRepo } from '../nft/repos/nft.repo';
 import { v4 as uuidv4 } from 'uuid';
 import { NftStatus } from '../nft/nft.types';
 import NftEntity from '../nft/entities/nft.entity';
-import { CollectionRepo } from '../collection/repos/collection.repo';
-import { CollectionStatus } from '../collection/utils';
 import { DataServiceError } from '../common/errors/errors';
 import { collectionEntities } from '../../test/data/collections.data';
 import EarningsEntity from './entities/platform-earnings.entity';
@@ -138,7 +135,6 @@ describe('StatisticsService', () => {
         nftEventFilterEntity.timestampTo = timestampTo;
 
         // Assert
-        expect(() => service.fetchEarningsByMiningFarmId(1, timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
         expect(() => service.fetchEarningsByCudosAddress('testowner', timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
         expect(() => service.fetchEarningsByNftId(uuidv4(), timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
         expect(() => service.fetchNftEventsByFilter(null, nftEventFilterEntity)).rejects.toThrow(DataServiceError);
@@ -265,121 +261,6 @@ describe('StatisticsService', () => {
 
         // Assert
         expect(nftEarningsEntity).toEqual(expectedUserEraningsEntity);
-    });
-
-    it('fetchEarningsByMiningFarmId: Happy path', async () => {
-        // Arrange
-        const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmNftSalesInAcudos: '6',
-            totalMiningFarmRoyaltiesInAcudos: '0.6',
-            totalNftSold: 3,
-            maintenanceFeeDepositedInBtc: '6',
-            earningsPerDayInAcudos: [
-                '2.9', '0.3', '0',
-            ],
-        });
-
-        // Act
-        const userEarningsEntity = await service.fetchEarningsByMiningFarmId(1, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
-
-        // Assert
-        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
-    });
-
-    // should not include any data that:
-    // - is for collection that is not for that farm
-    // - is outside the timeframe borders
-    // - is for not minted nfts
-    it('fetchEarningsByMiningFarmId: NFTs, collections, events not for a farm', async () => {
-        // Arrange
-        const id = uuidv4();
-        const id2 = uuidv4();
-        const id3 = uuidv4();
-        const id4 = uuidv4();
-        const id5 = uuidv4();
-        const id6 = uuidv4();
-
-        await CollectionRepo.create({ // collection in different farm
-            id: 123, name: 'string', description: 'string', denomId: 'string', hashingPower: 4, royalties: 5, mainImage: 'string', bannerImage: 'string', status: CollectionStatus.APPROVED, farmId: 999, creatorId: 23, deletedAt: null,
-        });
-
-        await CollectionRepo.create({ // collection in farm but not approved
-            id: 124, name: 'string2', description: 'string2', denomId: 'string2', hashingPower: 4, royalties: 5, mainImage: 'string', bannerImage: 'string', status: CollectionStatus.QUEUED, farmId: 1, creatorId: 23, deletedAt: null,
-        });
-
-        await NftRepo.create({ // nft in first collection not for this farm
-            id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 10, collectionId: 123, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
-        });
-
-        await NftRepo.create({ // nft in second collection
-            id: id2, name: 'nftX2', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.QUEUED, tokenId: 11, collectionId: 124, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 11,
-        });
-
-        // collection is queued but nft minted. For now it will be included in statistics
-        await NftRepo.create({ // nft in second collection but not minted
-            id: id3, name: 'nftX3', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 12, collectionId: 124, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 12,
-        });
-        await NftRepo.create({ // nft in second collection but removed
-            id: id4, name: 'nftX4', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 13, collectionId: 124, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 13,
-        });
-        await NftRepo.create({ // nft in correct collection and farm, but not minted
-            id: id5, name: 'nftX5', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.QUEUED, tokenId: 14, collectionId: 3, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 14,
-        });
-        await NftRepo.create({ // nft in correct collection and farm, but removed
-            id: id6, name: 'nftX6', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 15, collectionId: 3, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 15,
-        });
-
-        const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmNftSalesInAcudos: '6',
-            totalMiningFarmRoyaltiesInAcudos: '0.6',
-            totalNftSold: 4,
-            maintenanceFeeDepositedInBtc: '6',
-            earningsPerDayInAcudos: [
-                '2.9', '0.3', '0',
-            ],
-        });
-
-        // Act
-        const userEarningsEntity = await service.fetchEarningsByMiningFarmId(1, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
-
-        // Assert
-        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
-    });
-
-    it('fetchEarningsByMiningFarmId: Non-existing farm should return zeroes', async () => {
-        // Arrange
-        const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmNftSalesInAcudos: '0',
-            totalMiningFarmRoyaltiesInAcudos: '0',
-            totalNftSold: 0,
-            maintenanceFeeDepositedInBtc: '0',
-            earningsPerDayInAcudos: [
-                '0', '0', '0',
-            ],
-        });
-
-        // Act
-        const userEarningsEntity = await service.fetchEarningsByMiningFarmId(9999, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
-
-        // Assert
-        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
-    });
-
-    it('fetchEarningsByMiningFarmId: No data for timeframe should return zeroes for statistics and correct for totals', async () => {
-        // Arrange
-        const expectedUserEraningsEntity = MiningFarmEarningsEntity.fromJson({
-            totalMiningFarmNftSalesInAcudos: '6',
-            totalMiningFarmRoyaltiesInAcudos: '0.6',
-            totalNftSold: 3,
-            maintenanceFeeDepositedInBtc: '6',
-            earningsPerDayInAcudos: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-        });
-
-        // Act
-        const userEarningsEntity = await service.fetchEarningsByMiningFarmId(1, getZeroDatePlusDaysTimestamp(20), getZeroDatePlusDaysTimestamp(29));
-
-        // Assert
-        expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
     it('fetchNftEventsByFilter: Minted by session account', async () => {
