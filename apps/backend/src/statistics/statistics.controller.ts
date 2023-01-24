@@ -12,7 +12,7 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { AppRequest } from '../common/commont.types';
-import { ReqFetchEarningsPerDay, ReqFetchFarmTotalBtcEarnings, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
+import { ReqFetchEarningsPerDay, ReqFetchMiningFarmTotalBtcEarnings, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
 import { ResFetchEarningsPerDay, ResFetchFarmTotalBtcEarnings, ResFetchMiningFarmMaintenanceFee, ResFetchMiningFarmTotalEarningsCudos, ResFetchNftEarningsByNftId, ResFetchNftEarningsBySessionAccount, ResFetchPlatformMaintenanceFee, ResFetchPlatformTotalEarningsBtc, ResFetchPlatformTotalEarningsCudos, ResMegaWalletEventsByFilter, ResNftEventsByFilter } from './dto/responses.dto';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import { AccountType } from '../account/account.types';
@@ -27,6 +27,8 @@ import MiningFarmTotalEarningsCudosEntity from './entities/mining-farm-cudos-ear
 import PlatformTotalEarningsCudosEntity from './entities/platform-total-earnings-cudos.entity';
 import CollectionPaymentAllocationStatisticsFilter, { BtcEarningsType } from './entities/collection-payment-allocation-statistics-filter.entity';
 import { NOT_EXISTS_INT } from '../common/utils';
+import { MiningFarmAggregatedStatisticsGuard } from './guards/mining-farm-aggregated-statistics.guard';
+import { EarningsPerDayGuard } from './guards/earnings-per-day.guard';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -50,6 +52,7 @@ export class StatisticsController {
 
     @Post('events/mega-wallet')
     @HttpCode(200)
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     async getMegaWalletEvents(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqMegaWalletEventsByFilter: ReqMegaWalletEventsByFilter,
@@ -85,7 +88,7 @@ export class StatisticsController {
     @ApiBearerAuth('access-token')
     @Post('fetchEarningsPerDay')
     @HttpCode(200)
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), EarningsPerDayGuard)
     async fetchEarningsPerDay(
         @Body(new ValidationPipe({ transform: true })) reqFetchEarningsPerDay: ReqFetchEarningsPerDay,
     ): Promise <ResFetchEarningsPerDay> {
@@ -99,7 +102,7 @@ export class StatisticsController {
     @ApiBearerAuth('access-token')
     @Post('fetchFarmMaintenanceFee')
     @HttpCode(200)
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), MiningFarmAggregatedStatisticsGuard)
     async fetchFarmMaintenanceFee(
         @Body(new ValidationPipe({ transform: true })) reqFetchEarningsPerDay: ReqFetchMiningFarmMaintenanceFee,
     ): Promise <ResFetchMiningFarmMaintenanceFee> {
@@ -126,9 +129,9 @@ export class StatisticsController {
     @ApiBearerAuth('access-token')
     @Post('fetchFarmTotalBtcEarnings')
     @HttpCode(200)
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), MiningFarmAggregatedStatisticsGuard)
     async fetchFarmTotalBtcEarnings(
-        @Body(new ValidationPipe({ transform: true })) reqFetchFarmTotalBtcEarnings: ReqFetchFarmTotalBtcEarnings,
+        @Body(new ValidationPipe({ transform: true })) reqFetchFarmTotalBtcEarnings: ReqFetchMiningFarmTotalBtcEarnings,
     ): Promise <ResFetchFarmTotalBtcEarnings> {
         const farmId = parseInt(reqFetchFarmTotalBtcEarnings.miningFarmId);
         const collectionId = parseInt(reqFetchFarmTotalBtcEarnings.collectionId);
@@ -153,7 +156,7 @@ export class StatisticsController {
     @ApiBearerAuth('access-token')
     @Post('fetchFarmTotalCudosEarnings')
     @HttpCode(200)
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), MiningFarmAggregatedStatisticsGuard)
     async fetchFarmTotalCudosEarnings(
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmTotalEarningsCudos: ReqFetchMiningFarmTotalEarningsCudos,
     ): Promise <ResFetchMiningFarmTotalEarningsCudos> {

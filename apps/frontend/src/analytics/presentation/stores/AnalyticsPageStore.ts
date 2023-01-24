@@ -187,6 +187,10 @@ export default class AnalyticsPageStore {
             return this.earningsPerDayEntity?.cudosEarningsPerDay.map((bn) => bn.toNumber()) ?? [];
         }
 
+        if (this.earningsPerDayEntity?.btcEarningsPerDay.length !== this.earningsPerDayEntity?.cudosEarningsPerDay.length) {
+            return [];
+        }
+
         return this.earningsPerDayEntity?.btcEarningsPerDay.map((btcValue, i) => {
             const acudosValue = this.earningsPerDayEntity.cudosEarningsPerDay[i];
 

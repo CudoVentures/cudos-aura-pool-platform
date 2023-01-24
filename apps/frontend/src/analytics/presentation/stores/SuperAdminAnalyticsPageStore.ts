@@ -247,6 +247,10 @@ export default class SuperAdminAnalyticsPageStore {
             return this.earningsPerDayEntity?.cudosEarningsPerDay.map((bn) => bn.toNumber()) ?? [];
         }
 
+        if (this.earningsPerDayEntity?.btcEarningsPerDay.length !== this.earningsPerDayEntity?.cudosEarningsPerDay.length) {
+            return [];
+        }
+
         return this.earningsPerDayEntity?.btcEarningsPerDay.map((btcValue, i) => {
             const cudosValue = this.earningsPerDayEntity.cudosEarningsPerDay.length > i ? this.earningsPerDayEntity.cudosEarningsPerDay[i] : new BigNumber(0);
             const btcToUsd = this.bitcoinStore.convertBtcInUsd(btcValue);
