@@ -51,9 +51,9 @@ export default class QueuedMiningFarmsStores {
 
     fetchMiningFarms = async (): Promise<void> => {
         const miningFarmFilter = new MiningFarmFilterModel();
+        miningFarmFilter.markQueuedMiningFarms();
         miningFarmFilter.from = this.miningFarmsTableState.tableFilterState.from;
         miningFarmFilter.count = this.miningFarmsTableState.tableFilterState.itemsPerPage;
-        miningFarmFilter.status = [MiningFarmStatus.QUEUED];
 
         const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter);
 
