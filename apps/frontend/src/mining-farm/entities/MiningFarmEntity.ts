@@ -70,6 +70,7 @@ export default class MiningFarmEntity {
         entity.primaryAccountOwnerEmail = primaryAccountOwnerEmail;
         return entity;
     }
+
     isCudosMintNftRoyaltiesPercentSet(): boolean {
         return this.cudosMintNftRoyaltiesPercent !== S.NOT_EXISTS;
     }
@@ -92,6 +93,10 @@ export default class MiningFarmEntity {
 
     isRejected(): boolean {
         return this.status === MiningFarmStatus.REJECTED;
+    }
+
+    areBtcPayoutAddressesUnique(): boolean {
+        return this.rewardsFromPoolBtcAddress !== this.leftoverRewardsBtcAddress && this.rewardsFromPoolBtcAddress !== this.maintenanceFeePayoutBtcAddress && this.leftoverRewardsBtcAddress !== this.maintenanceFeePayoutBtcAddress;
     }
 
     hasPhotos(): boolean {

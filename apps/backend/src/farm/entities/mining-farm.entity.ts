@@ -67,6 +67,10 @@ export default class MiningFarmEntity {
         return this.status === FarmStatus.APPROVED;
     }
 
+    areBtcPayoutAddressesUnique(): boolean {
+        return this.rewardsFromPoolBtcAddress !== this.leftoverRewardsBtcAddress && this.rewardsFromPoolBtcAddress !== this.maintenanceFeePayoutBtcAddress && this.leftoverRewardsBtcAddress !== this.maintenanceFeePayoutBtcAddress;
+    }
+
     static toRepo(entity: MiningFarmEntity): MiningFarmRepo {
         if (entity === null) {
             return null;

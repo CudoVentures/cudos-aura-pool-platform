@@ -125,6 +125,11 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
             return;
         }
 
+        if (miningFarmEntity.areBtcPayoutAddressesUnique() === false) {
+            alertStore.show('The three BTC payout address must be unique therefore a single address could not have multiple purposes');
+            return;
+        }
+
         creditMiningFarmDetailsPageStore.setStepReview();
     }
 

@@ -25,6 +25,7 @@ import { FarmStatus } from './farm.types';
 import EnergySourceEntity from './entities/energy-source.entity';
 import MinerEntity from './entities/miner.entity';
 import ManufacturerEntity from './entities/manufacturer.entity';
+import { FarmCreationError } from '../common/errors/errors';
 
 @ApiTags('Farm')
 @Controller('farm')
@@ -78,6 +79,10 @@ export class FarmController {
         if (req.sessionAccountEntity.isAdmin() === true) {
             miningFarmEntity.accountId = req.sessionAccountEntity.accountId;
             miningFarmEntity.status = FarmStatus.QUEUED;
+        }
+
+        if (miningFarmEntity.areBtcPayoutAddressesUnique() === false) {
+            throw new FarmCreationError();
         }
 
         miningFarmEntity = await this.miningFarmService.creditMiningFarm(miningFarmEntity, req.sessionAccountEntity !== null, req.transaction);
