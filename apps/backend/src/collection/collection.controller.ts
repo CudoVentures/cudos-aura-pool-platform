@@ -118,6 +118,8 @@ export class CollectionController {
             newUris.push(nftEntity.uri);
         });
 
+        collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(/ /g, '');
+
         let collectionEntityResult: CollectionEntity, nftEntityResults: NftEntity[] = [], nftsToDelete: NftEntity[] = [];
         try {
             if (collectionEntity.isNew()) {

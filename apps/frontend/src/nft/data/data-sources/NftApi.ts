@@ -1,15 +1,18 @@
+import BigNumber from 'bignumber.js';
 import axios from '../../../core/utilities/AxiosWrapper';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
-import { ReqFetchNftsByFilter } from '../dto/Requests';
-import { ResFetchNftsByFilter } from '../dto/Responses';
+import { ReqFetchNftsByFilter, ReqUpdateNftCudosPrice } from '../dto/Requests';
+import { ResFetchNftsByFilter, ResUpdateNftCudosPrice } from '../dto/Responses';
 
 export default class NftApi {
+
+    static nftModuleUrl = '/api/v1/nft';
 
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
         const req = new ReqFetchNftsByFilter(nftFilterModel);
 
-        const { data } = await axios.post('/api/v1/nft', req);
+        const { data } = await axios.post(NftApi.nftModuleUrl, req);
 
         const res = new ResFetchNftsByFilter(data);
 
@@ -17,6 +20,15 @@ export default class NftApi {
             nftEntities: res.nftEntities,
             total: res.total,
         }
+    }
+
+    async updateNftCudosPrice(id: string): Promise< BigNumber > {
+        const req = new ReqUpdateNftCudosPrice(id);
+        const { data } = await axios.post(`${NftApi.nftModuleUrl}/updatePrice`, req);
+
+        const res = new ResUpdateNftCudosPrice(data);
+
+        return res.acudosPrice;
     }
 
 }

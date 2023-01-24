@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 import S from '../../../core/utilities/Main';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
@@ -10,16 +10,22 @@ import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/nft-preview.css';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
+    cudosStore?: CudosStore;
     className?: string;
     nftEntity: NftEntity,
     collectionName: string
     disabled?: boolean
 }
 
-function NftPreview({ className, nftEntity, collectionName, disabled }: Props) {
+function NftPreview({ cudosStore, className, nftEntity, collectionName, disabled }: Props) {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        cudosStore.init();
+    }, []);
 
     const onClickNft = () => {
         navigate(`${AppRoutes.VIEW_NFT}/${nftEntity.id}`);
@@ -44,7 +50,7 @@ function NftPreview({ className, nftEntity, collectionName, disabled }: Props) {
             <div className={'Priceheading'}>Price</div>
             <div className={'PriceRow FlexRow Dots'}>
                 <Svg className = { 'SvgCudosLogo' } svg={SvgCudosLogo} />
-                <div className={'Price H4 Bold Dots'}>{nftEntity.formatPriceInCudos()}</div>
+                <div className={'Price H4 Bold Dots'}>{cudosStore.formatPriceInCudosForNft(nftEntity)}</div>
             </div>
         </div>
     );
@@ -55,4 +61,4 @@ NftPreview.defaultProps = {
     disabled: false,
 }
 
-export default observer(NftPreview);
+export default inject((stores) => stores)(observer(NftPreview));

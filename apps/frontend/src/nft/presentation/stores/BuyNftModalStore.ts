@@ -9,6 +9,7 @@ import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 export enum ModalStage {
     PREVIEW,
@@ -18,6 +19,8 @@ export enum ModalStage {
 }
 
 export default class BuyNftModalStore extends ModalStore {
+    cudosStore: CudosStore;
+
     nftRepo: NftRepo;
     accountRepo: AccountRepo;
     cudosRepo: CudosRepo;
@@ -30,9 +33,10 @@ export default class BuyNftModalStore extends ModalStore {
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
-    constructor(nftRepo: NftRepo, walletStore: WalletStore, accountRepo: AccountRepo, cudosRepo: CudosRepo) {
+    constructor(cudosStore: CudosStore, nftRepo: NftRepo, walletStore: WalletStore, accountRepo: AccountRepo, cudosRepo: CudosRepo) {
         super();
 
+        this.cudosStore = cudosStore;
         this.nftRepo = nftRepo;
         this.accountRepo = accountRepo;
         this.cudosRepo = cudosRepo;
@@ -66,6 +70,7 @@ export default class BuyNftModalStore extends ModalStore {
 
     async showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
         const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
+        this.cudosStore.init();
 
         runInAction(() => {
             this.nftEntity = nftEntity;
@@ -84,10 +89,6 @@ export default class BuyNftModalStore extends ModalStore {
         this.nullateValues();
         super.hide();
     })
-
-    // setRecipient = action((recipient: string) => {
-    //     this.recipient = recipient;
-    // })
 
     buyNft = action(async () => {
         this.modalStage = ModalStage.PROCESSING;
@@ -123,5 +124,17 @@ export default class BuyNftModalStore extends ModalStore {
 
     isStageFail(): boolean {
         return this.modalStage === ModalStage.FAIL;
+    }
+
+    formatPricePlusMintFeeInCudos(): string {
+        const price = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
+
+        return `${price.toFixed(2)} CUDOS`;
+    }
+
+    formatPricePlusMintFeeInUsd(): string {
+        const priceCudos = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
+
+        return this.cudosStore.formatConvertedCudosInUsd(priceCudos);
     }
 }

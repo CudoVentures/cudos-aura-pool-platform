@@ -96,4 +96,10 @@ export class NftRepo extends Model {
 
     @Column({ type: DataType.INTEGER })
         marketplaceNftId: number;
+
+    @Column({ type: DataType.DECIMAL })
+        priceUsd: string;
+
+    @Column({ type: DataType.BIGINT })
+        priceAcudosValidUntil: string;
 }

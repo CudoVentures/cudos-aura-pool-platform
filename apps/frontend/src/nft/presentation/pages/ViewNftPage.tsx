@@ -156,7 +156,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
             'Price',
             <div className={'DataValue NftPrice FlexRow'}>
                 <Svg svg={SvgCudos}/>
-                <div className={'H3 Bold'}>{nftEntity.formatPriceInCudos()}</div>
+                <div className={'H3 Bold'}>{viewNftPageStore.formatPriceInCudos()}</div>
                 <div className={'SubPrice B2 SemiBold'}>{viewNftPageStore.getNftPriceText()}</div>
             </div>,
         ));
@@ -248,7 +248,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                     <>
                                         { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                <Button onClick={onClickBuyNft}>Buy now for {nftEntity.formatPricePlusMintFeeInCudos()} </Button>
+                                                <Button onClick={onClickBuyNft}>Buy now for {viewNftPageStore.formatPricePlusMintFeeInCudos()} </Button>
                                             </Actions>
                                         )}
                                         { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (

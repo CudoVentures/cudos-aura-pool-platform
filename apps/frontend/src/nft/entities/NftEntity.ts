@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
+import { NOT_EXISTS_INT } from '../../../../backend/src/common/utils';
 import S from '../../core/utilities/Main';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
 
@@ -24,6 +25,8 @@ export default class NftEntity {
     expirationDateTimestamp: number;
     currentOwner: string;
     data: string;
+    priceUsd: number;
+    priceAcudosValidUntil: number;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -39,6 +42,8 @@ export default class NftEntity {
         this.expirationDateTimestamp = S.NOT_EXISTS;
         this.currentOwner = ''
         this.data = ''
+        this.priceUsd = S.NOT_EXISTS;
+        this.priceAcudosValidUntil = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -52,11 +57,12 @@ export default class NftEntity {
     }
 
     isStatusListed(): boolean {
-        return this.priceInAcudos.gt(new BigNumber(0));
+        return (this.isMinted() && this.priceInAcudos.gt(new BigNumber(0)))
+            || (this.isMinted() === false && this.priceUsd !== NOT_EXISTS_INT);
     }
 
     isStatusNotListed(): boolean {
-        return this.priceInAcudos.eq(new BigNumber(0));
+        return !this.isStatusListed();
     }
 
     isOwnedByAddress(cudosWalletAddress: string): boolean {
@@ -139,7 +145,6 @@ export default class NftEntity {
         if (entity === null) {
             return null;
         }
-
         return {
             'id': entity.id,
             'collectionId': entity.collectionId,
@@ -148,12 +153,14 @@ export default class NftEntity {
             'name': entity.name,
             'tokenId': entity.tokenId,
             'hashingPower': entity.hashPowerInTh,
-            'priceInAcudos': entity.priceInAcudos.toString(10),
+            'priceInAcudos': entity.priceInAcudos?.toString(10) ?? '0',
             'uri': entity.imageUrl,
             'status': entity.status,
             'expirationDateTimestamp': entity.expirationDateTimestamp,
             'currentOwner': entity.currentOwner,
             'data': entity.data,
+            'priceUsd': entity.priceUsd,
+            'priceAcudosValidUntil': entity.priceAcudosValidUntil,
         }
     }
 
@@ -177,6 +184,8 @@ export default class NftEntity {
         model.creatorId = json.creatorId ?? model.creatorId;
         model.currentOwner = json.currentOwner ?? model.currentOwner;
         model.data = json.data ?? model.data;
+        model.priceUsd = json.priceUsd ?? model.priceUsd;
+        model.priceAcudosValidUntil = json.priceAcudosValidUntil ?? model.priceAcudosValidUntil;
 
         return model;
     }

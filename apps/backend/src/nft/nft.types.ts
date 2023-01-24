@@ -59,6 +59,12 @@ export class NftJsonValidator {
 
     @IsString()
         creatorId: string;
+
+    @IsNumber()
+        priceUsd: number;
+
+    @IsNumber()
+        priceAcudosValidUntil: number;
 }
 
 export enum NftOrderBy {

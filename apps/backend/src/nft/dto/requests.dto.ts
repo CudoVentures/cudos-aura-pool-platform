@@ -31,3 +31,9 @@ export class ReqUpdateNftChainData {
     @IsNumber()
         height: number;
 }
+
+export class ReqUpdateNftCudosPrice {
+    @IsString()
+    @IsNotEmpty()
+        id: string;
+}
