@@ -29,6 +29,14 @@ export default class MiningFarmFilterModel {
         makeAutoObservable(this);
     }
 
+    markApprovedMiningFarms() {
+        this.status = [MiningFarmStatus.APPROVED];
+    }
+
+    markQueuedMiningFarms() {
+        this.status = [MiningFarmStatus.QUEUED];
+    }
+
     clone(): MiningFarmFilterModel {
         const model = new MiningFarmFilterModel();
 

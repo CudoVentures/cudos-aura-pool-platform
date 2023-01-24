@@ -20,6 +20,7 @@ export default class ExploreMiningFarmsPageStore {
 
         this.gridViewState = new GridViewState(this.fetch, 3, 4, 6);
         this.miningFarmFilterModel = new MiningFarmFilterModel();
+        this.miningFarmFilterModel.markApprovedMiningFarms();
 
         this.miningFarmEntities = [];
         this.miningFarmDetailsEntities = [];
