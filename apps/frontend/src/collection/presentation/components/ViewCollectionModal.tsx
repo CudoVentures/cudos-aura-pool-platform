@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
@@ -8,14 +8,19 @@ import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../core/presentation/components/DataPreviewLayout';
 
 import '../styles/view-collection-modal.css';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     viewCollectionModalStore?: ViewCollectionModalStore;
+    cudosStore: CudosStore;
 }
 
-function ViewCollectionModal({ viewCollectionModalStore }: Props) {
-
+function ViewCollectionModal({ cudosStore, viewCollectionModalStore }: Props) {
     const { collectionEntity, nftEntities, creatorAdminEntity } = viewCollectionModalStore;
+
+    useEffect(() => {
+        cudosStore.init();
+    }, []);
 
     return (
         <ModalWindow
@@ -43,7 +48,7 @@ function ViewCollectionModal({ viewCollectionModalStore }: Props) {
                                     dataPreviews = { [
                                         createDataPreview('NFT Name', nftEntity.name),
                                         createDataPreview('Hash power', nftEntity.formatHashPowerInTh()),
-                                        createDataPreview('Price', nftEntity.formatPriceInCudos()),
+                                        createDataPreview('Price', viewCollectionModalStore.formatPriceInCudos(nftEntity)),
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
                                         createDataPreview('Creator address', creatorAdminEntity.cudosWalletAddress),
                                         createDataPreview('Current owner', nftEntity.currentOwner),

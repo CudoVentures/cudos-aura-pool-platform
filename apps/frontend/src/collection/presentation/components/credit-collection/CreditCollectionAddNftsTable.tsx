@@ -15,12 +15,14 @@ import ColumnLayout from '../../../../core/presentation/components/ColumnLayout'
 
 import SvgGridNoContent from '../../../../public/assets/vectors/no-data-small.svg';
 import '../../styles/credit-collection-add-nfts-table.css';
+import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     creditCollectionStore?: CreditCollectionStore;
+    cudosStore: CudosStore
 }
 
-function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
+function CreditCollectionAddNftsTable({ cudosStore, creditCollectionStore }: Props) {
     const collectionName = creditCollectionStore.collectionEntity.name;
     const nftEntities = creditCollectionStore.nftEntities;
 
@@ -37,7 +39,7 @@ function CreditCollectionAddNftsTable({ creditCollectionStore }: Props) {
                 createTableCell(nftEntity.name),
                 createTableCell(collectionName),
                 createTableCell(nftEntity.formatHashPowerInTh()),
-                createTableCell(nftEntity.formatPriceInCudos()),
+                createTableCell(cudosStore.formatPriceInCudosForNft(nftEntity)),
                 // createTableCell(nftEntity.formatMaintenanceFeeInBtc()),
                 createTableCell(
                     <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT}>

@@ -8,3 +8,11 @@ export class ReqFetchNftsByFilter {
     }
 
 }
+
+export class ReqUpdateNftCudosPrice {
+    id: string;
+
+    constructor(id: string) {
+        this.id = id;
+    }
+}

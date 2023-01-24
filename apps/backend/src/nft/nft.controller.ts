@@ -5,9 +5,9 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { NftStatus } from './nft.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { ReqNftsByFilter, ReqUpdateNftChainData } from './dto/requests.dto';
+import { ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
 import NftFilterEntity from './entities/nft-filter.entity';
-import { ResFetchNftsByFilter } from './dto/responses.dto';
+import { ResFetchNftsByFilter, ResUpdateNftCudosPrice } from './dto/responses.dto';
 import NftEntity from './entities/nft.entity';
 import { CollectionService } from '../collection/collection.service';
 import BigNumber from 'bignumber.js';
@@ -112,5 +112,13 @@ export class NFTController {
 
             await this.nftService.updateOneWithStatus(nftEntity.id, nftEntity, req.transaction);
         }
+    }
+
+    @Post('updatePrice')
+    @HttpCode(200)
+    async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {
+        const acudosPrice = await this.nftService.updateNftCudosPrice(req.id);
+
+        return new ResUpdateNftCudosPrice(acudosPrice);
     }
 }

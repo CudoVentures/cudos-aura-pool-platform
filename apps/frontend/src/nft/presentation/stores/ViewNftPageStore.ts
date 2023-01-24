@@ -21,6 +21,7 @@ import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import AdminEntity from '../../../accounts/entities/AdminEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import { CURRENCY_DECIMALS } from 'cudosjs';
 
 enum StatsTabs {
     EARNINGS = 0,
@@ -191,6 +192,20 @@ export default class ViewNftPageStore {
     onChangeTabHistory = action(() => {
         this.statsTab = StatsTabs.HISTORY;
     })
+
+    getNftCudosPrice(): BigNumber {
+        return this.nftEntity.isMinted()
+            ? this.nftEntity.priceInAcudos.shiftedBy(-CURRENCY_DECIMALS)
+            : this.cudosStore.convertUsdInCudos(this.nftEntity.priceUsd);
+    }
+
+    formatPriceInCudos(): string {
+        return `${this.getNftCudosPrice().toFixed(2)} CUDOS`;
+    }
+
+    formatPricePlusMintFeeInCudos(): string {
+        return `${this.getNftCudosPrice().plus(1).toFixed(2)} CUDOS`;
+    }
 
     getNftPriceText() {
         if (this.nftEntity.isStatusListed() === false) {

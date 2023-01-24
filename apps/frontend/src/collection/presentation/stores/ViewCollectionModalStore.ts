@@ -41,6 +41,7 @@ export default class ViewCollectionModalStore extends ModalStore {
     }
 
     async showSignal(collectionEntity: CollectionEntity) {
+
         const nftFilterModel = new NftFilterModel();
         nftFilterModel.collectionIds = [collectionEntity.id];
 
@@ -78,5 +79,4 @@ export default class ViewCollectionModalStore extends ModalStore {
         // this.collectionEntity.royalties = this.editedRoyalties;
         await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
     }
-
 }

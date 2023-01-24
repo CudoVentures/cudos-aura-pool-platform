@@ -17,6 +17,8 @@ export default class NftEntity {
     status: NftStatus;
     currentOwner: string;
     creatorId: number;
+    priceUsd: number;
+    priceAcudosValidUntil: number
 
     constructor() {
         this.id = '';
@@ -32,6 +34,8 @@ export default class NftEntity {
         this.status = NftStatus.QUEUED;
         this.currentOwner = '';
         this.creatorId = NOT_EXISTS_INT;
+        this.priceUsd = NOT_EXISTS_INT;
+        this.priceAcudosValidUntil = NOT_EXISTS_INT;
     }
 
     isListed(): boolean {
@@ -76,6 +80,8 @@ export default class NftEntity {
         entity.status = json.status ?? entity.status;
         entity.currentOwner = json.currentOwner ?? entity.currentOwner;
         entity.creatorId = parseInt(json.creatorId ?? entity.creatorId.toString());
+        entity.priceUsd = json.priceUsd ?? entity.priceUsd;
+        entity.priceAcudosValidUntil = json.priceAcudosValidUntil ?? entity.priceAcudosValidUntil;
 
         return entity;
     }
@@ -95,6 +101,8 @@ export default class NftEntity {
             'status': entity.status,
             'currentOwner': entity.currentOwner,
             'creatorId': entity.creatorId.toString(),
+            'priceUsd': entity.priceUsd,
+            'priceAcudosValidUntil': entity.priceAcudosValidUntil,
         }
     }
 
@@ -119,6 +127,8 @@ export default class NftEntity {
         entity.status = repoJson.status ?? entity.status;
         entity.currentOwner = repoJson.currentOwner ?? entity.currentOwner;
         entity.creatorId = repoJson.creatorId ?? entity.creatorId;
+        entity.priceUsd = Number(repoJson.priceUsd ?? entity.priceUsd.toString());
+        entity.priceAcudosValidUntil = parseInt(repoJson.priceAcudosValidUntil ?? entity.priceAcudosValidUntil.toString());
 
         return entity;
     }
@@ -146,6 +156,8 @@ export default class NftEntity {
         repoJson.status = entity.status;
         repoJson.currentOwner = entity.currentOwner;
         repoJson.creatorId = entity.creatorId;
+        repoJson.priceUsd = entity.priceUsd.toString();
+        repoJson.priceAcudosValidUntil = entity.priceAcudosValidUntil.toString();
 
         return repoJson;
     }

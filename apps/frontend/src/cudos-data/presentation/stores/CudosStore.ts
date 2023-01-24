@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js';
+import { CURRENCY_DECIMALS } from 'cudosjs';
 import { makeAutoObservable, runInAction } from 'mobx';
 import numeral from 'numeral';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import NftEntity from '../../../nft/entities/NftEntity';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../repos/CudosRepo';
 
@@ -69,6 +71,10 @@ export default class CudosStore {
         return ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(dollars).dividedBy(this.cudosDataEntity?.priceInUsd ?? 0);
     }
 
+    convertUsdInCudos(dollars: number): BigNumber {
+        return this.convertUsdInAcudos(dollars).shiftedBy(-CURRENCY_DECIMALS);
+    }
+
     static convertAcudosInCudos(acudosPrice: BigNumber): BigNumber {
         return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }
@@ -83,6 +89,16 @@ export default class CudosStore {
 
     formatConvertedCudosInUsd(cudosPrice: BigNumber): string {
         return numeral(this.convertCudosInUsd(cudosPrice).toString(10)).format(ProjectUtils.NUMERAL_USD);
+    }
+
+    getNftCudosPriceForNft(nftEntity: NftEntity): BigNumber {
+        return nftEntity.isMinted()
+            ? nftEntity.priceInAcudos.shiftedBy(-CURRENCY_DECIMALS)
+            : this.convertUsdInCudos(nftEntity.priceUsd);
+    }
+
+    formatPriceInCudosForNft(nftEntity: NftEntity): string {
+        return `${this.getNftCudosPriceForNft(nftEntity).toFixed(2)} CUDOS`;
     }
 
     static formatAcudosInCudos(acudosPrice: BigNumber): string {

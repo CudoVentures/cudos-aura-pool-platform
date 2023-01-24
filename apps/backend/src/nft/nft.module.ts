@@ -7,6 +7,7 @@ import { GraphqlModule } from '../graphql/graphql.module';
 import { CollectionModule } from '../collection/collection.module';
 import { VisitorModule } from '../visitor/visitor.module';
 import { FarmModule } from '../farm/farm.module';
+import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { FarmModule } from '../farm/farm.module';
         forwardRef(() => GraphqlModule),
         forwardRef(() => CollectionModule),
         forwardRef(() => FarmModule),
+        CoinGeckoModule,
     ],
     providers: [NFTService],
     controllers: [NFTController],

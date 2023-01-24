@@ -206,7 +206,6 @@ export class CollectionService {
         tx: Transaction = undefined,
     ): Promise<CollectionEntity> {
 
-        collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(/ /g, '');
         try {
             checkValidNftDenomId(collectionEntity.denomId);
         } catch (e) {

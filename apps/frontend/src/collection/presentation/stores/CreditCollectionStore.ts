@@ -291,9 +291,9 @@ export default class CreditCollectionStore {
 
     onChangeSelectedNftPriceInDollars = action((inputValue: string) => {
         this.selectedNftPriceInDollarsInputValue = inputValue;
-        this.selectedNftEntity.priceInAcudos = inputValue !== ''
-            ? this.cudosStore.convertUsdInAcudos(Number(inputValue))
-            : null;
+        this.selectedNftEntity.priceUsd = inputValue !== ''
+            ? Number(inputValue)
+            : S.NOT_EXISTS;
     })
 
     // onChangeSelectedNftRoyalties = (inputValue: string) => {
@@ -327,7 +327,8 @@ export default class CreditCollectionStore {
     // }
 
     getSelectedNftPriceDisplayInCudos(): string {
-        return this.selectedNftEntity?.priceInAcudos?.shiftedBy(-CURRENCY_DECIMALS).toFixed(2) ?? '0';
+        const cudosPrice = this.cudosStore.convertUsdInAcudos(this.selectedNftEntity?.priceUsd);
+        return this.selectedNftPriceInDollarsInputValue !== '' ? cudosPrice.shiftedBy(-CURRENCY_DECIMALS).toFixed(2) : '0';
     }
 
     getCurrentNftIncomeForFarmFormatted(): string {

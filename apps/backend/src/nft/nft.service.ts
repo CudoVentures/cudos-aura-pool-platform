@@ -10,6 +10,9 @@ import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
 import AppRepo from '../common/repo/app.repo';
+import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import BigNumber from 'bignumber.js';
+import { CURRENCY_DECIMALS } from 'cudosjs';
 
 @Injectable()
 export class NFTService {
@@ -19,6 +22,7 @@ export class NFTService {
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private visitorService: VisitorService,
+        private coinGeckoService: CoinGeckoService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -163,6 +167,24 @@ export class NFTService {
         return nftRepos.map((nftRepo) => {
             return NftEntity.fromRepo(nftRepo);
         });
+    }
+
+    async updateNftCudosPrice(id: string): Promise<BigNumber> {
+        const nftEntity = await this.findOne(id);
+        if (nftEntity === null) {
+            throw new NotFoundException();
+        }
+
+        const usdPerCudos = await this.coinGeckoService.fetchCudosPrice();
+        const acudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(usdPerCudos).shiftedBy(CURRENCY_DECIMALS)
+        nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
+
+        const FifteenMinutesInMilis = 15 * 60 * 1000;
+        nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;
+
+        await this.updateOne(id, nftEntity);
+
+        return nftEntity.acudosPrice;
     }
 
     async findOne(id: string): Promise < NftEntity > {
