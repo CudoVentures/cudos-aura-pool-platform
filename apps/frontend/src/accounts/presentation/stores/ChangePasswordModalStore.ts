@@ -47,7 +47,7 @@ export default class ChangePasswordModalStore extends ModalStore {
     })
 
     @action
-    async showSignal(changeInitialPass: boolean) {
+    showSignal(changeInitialPass: boolean) {
         this.changeInitialPass = changeInitialPass;
         this.show();
     }

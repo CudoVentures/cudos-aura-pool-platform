@@ -1,10 +1,11 @@
 import GridViewState from '../../../core/presentation/stores/GridViewState';
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import NftRepo from '../repos/NftRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class ExploreNftsPageStore {
 
@@ -34,7 +35,7 @@ export default class ExploreNftsPageStore {
         await this.fetch();
     }
 
-    fetch = action(async () => {
+    fetch = async () => {
         this.gridViewState.setIsLoading(true);
 
         this.nftFilterModel.from = this.gridViewState.getFrom();
@@ -50,21 +51,21 @@ export default class ExploreNftsPageStore {
             collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.collectionEntitiesMap = collectionEntitiesMap;
             this.nftEntities = nftEntities;
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
         });
-    })
+    }
 
     getCollectioName(collectionId: string): string {
         return this.collectionEntitiesMap.get(collectionId)?.name ?? '';
     }
 
-    onChangeSearchWord = action((value) => {
+    onChangeSearchWord = async (value) => {
         this.nftFilterModel.searchString = value;
-        this.fetch();
-    })
+        await this.fetch();
+    }
 
 }

@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import AccountSessionStore from './AccountSessionStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class MegaWalletBalanceStore {
 
@@ -21,7 +22,7 @@ export default class MegaWalletBalanceStore {
     async fetchWalletBalance() {
         const superAdminWalletBalanceInAcudos = await this.cudosRepo.fetchAcudosBalance(this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.superAdminWalletBalanceInAcudos = superAdminWalletBalanceInAcudos
         })
     }

@@ -1,5 +1,5 @@
 import S from '../../../core/utilities/Main';
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
@@ -7,6 +7,7 @@ import NftRepo from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export enum ModalStage {
     PREVIEW,
@@ -40,6 +41,7 @@ export default class ResellNftModalStore extends ModalStore {
         makeObservable(this);
     }
 
+    @action
     resetValues() {
         this.nftEntity = null;
         this.collectionEntity = null;
@@ -52,6 +54,7 @@ export default class ResellNftModalStore extends ModalStore {
         this.txHash = S.Strings.EMPTY;
     }
 
+    @action
     nullateValues() {
         this.nftEntity = null;
         this.collectionEntity = null;
@@ -97,11 +100,11 @@ export default class ResellNftModalStore extends ModalStore {
         try {
             this.txHash = await this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.getResellPriceInCudos(), this.walletStore.ledger);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.modalStage = ModalStage.SUCCESS;
             });
         } catch (ex) {
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.modalStage = ModalStage.FAIL;
             });
         }

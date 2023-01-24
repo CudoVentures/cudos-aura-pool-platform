@@ -1,4 +1,4 @@
-import { action, makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 
 export enum SuperAdminCollectionsTableType {
     APPROVED = 1,
@@ -16,17 +16,17 @@ export default class SuperAdminCollectionsPageStore {
         makeAutoObservable(this);
     }
 
-    onClickShowApproved = action(() => {
+    onClickShowApproved = () => {
         this.selectedTableType = SuperAdminCollectionsTableType.APPROVED;
-    })
+    }
 
-    onClickShowQueued = action(() => {
+    onClickShowQueued = () => {
         this.selectedTableType = SuperAdminCollectionsTableType.QUEUED;
-    })
+    }
 
-    onClickShowRejected = action(() => {
+    onClickShowRejected = () => {
         this.selectedTableType = SuperAdminCollectionsTableType.REJECTED;
-    })
+    }
 
     isSelectedTableApproved() {
         return this.selectedTableType === SuperAdminCollectionsTableType.APPROVED;

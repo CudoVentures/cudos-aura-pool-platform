@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { runInAction } from 'mobx';
 import numeral from 'numeral';
 import AppRoutes from '../../app-routes/entities/AppRoutes';
 import { CHAIN_DETAILS } from './Constants';
@@ -222,6 +223,15 @@ export default class ProjectUtils {
         return date.getTime() - 1;
     }
 
+}
+
+export async function runInActionAsync(callback: () => void) {
+    return new Promise < void >((resolve) => {
+        runInAction(() => {
+            callback();
+            resolve();
+        });
+    });
 }
 
 function getQueryArray() {

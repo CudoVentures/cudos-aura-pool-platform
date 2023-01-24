@@ -23,6 +23,7 @@ import FieldColumnWrapper from '../../../../core/presentation/components/FieldCo
 
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import '../../styles/credit-collection-details-form.css';
+import { runInAction } from 'mobx';
 
 type Props = {
     alertStore?: AlertStore;
@@ -50,26 +51,30 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const [secondarySaleRoyalties, setSecondarySaleRoyalties] = useState(collectionEntity.royalties !== S.NOT_EXISTS ? collectionEntity.royalties.toString() : '');
 
     function onChangeHashPowerInTh(value) {
-        setHashPowerInTh(value);
-        collectionEntity.hashPowerInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+        runInAction(() => {
+            setHashPowerInTh(value);
+            collectionEntity.hashPowerInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+        })
     }
 
     function onChangeRoyalties(value) {
-        setSecondarySaleRoyalties(value);
-        if (value === '') {
-            collectionEntity.royalties = S.NOT_EXISTS;
-            return;
-        }
+        runInAction(() => {
+            setSecondarySaleRoyalties(value);
+            if (value === '') {
+                collectionEntity.royalties = S.NOT_EXISTS;
+                return;
+            }
 
-        collectionEntity.royalties = parseFloat(value);
-        if (collectionEntity.royalties < 0) {
-            collectionEntity.royalties = 0;
-            setSecondarySaleRoyalties('0');
-        }
-        if (collectionEntity.royalties > 10) {
-            collectionEntity.royalties = 10;
-            setSecondarySaleRoyalties('10');
-        }
+            collectionEntity.royalties = parseFloat(value);
+            if (collectionEntity.royalties < 0) {
+                collectionEntity.royalties = 0;
+                setSecondarySaleRoyalties('0');
+            }
+            if (collectionEntity.royalties > 10) {
+                collectionEntity.royalties = 10;
+                setSecondarySaleRoyalties('10');
+            }
+        })
     }
 
     // function onChangeMaintenanceFees(value) {
@@ -78,21 +83,27 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     // }
 
     function onChangeDefaultPricePerNftInCudos(value) {
-        setDefaultPricePerNftInCudos(value);
-        collectionEntity.defaultPricePerNftInCudos = value !== '' ? new BigNumber(value) : null;
+        runInAction(() => {
+            setDefaultPricePerNftInCudos(value);
+            collectionEntity.defaultPricePerNftInCudos = value !== '' ? new BigNumber(value) : null;
+        });
     }
 
     function onChangeDefaultHashPowerPerNftInTh(value) {
-        setDefaultHashPowerPerNftInTh(value);
-        collectionEntity.defaultHashPowerPerNftInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+        runInAction(() => {
+            setDefaultHashPowerPerNftInTh(value);
+            collectionEntity.defaultHashPowerPerNftInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+        });
     }
 
     function onChangeAcceptDefaultHashPowerCheckboxValue() {
-        creditCollectionStore.defaultHashAndPriceValues ^= 1;
-        if (creditCollectionStore.defaultHashAndPriceValues === S.INT_FALSE) {
-            onChangeDefaultPricePerNftInCudos('');
-            onChangeDefaultHashPowerPerNftInTh('');
-        }
+        runInAction(() => {
+            creditCollectionStore.defaultHashAndPriceValues ^= 1;
+            if (creditCollectionStore.defaultHashAndPriceValues === S.INT_FALSE) {
+                onChangeDefaultPricePerNftInCudos('');
+                onChangeDefaultHashPowerPerNftInTh('');
+            }
+        });
     }
 
     async function onClickSave() {

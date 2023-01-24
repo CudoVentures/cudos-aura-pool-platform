@@ -6,6 +6,7 @@ import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import TableState from '../../../core/presentation/stores/TableState';
 import S from '../../../core/utilities/Main';
 import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class SuperAdminMningFarmsPageStore {
 
@@ -31,7 +32,6 @@ export default class SuperAdminMningFarmsPageStore {
         makeAutoObservable(this);
     }
 
-    @action
     async init() {
         this.miningFarmFilterModel = new MiningFarmFilterModel();
         await this.fetchMiningFarms();
@@ -49,7 +49,7 @@ export default class SuperAdminMningFarmsPageStore {
             miningFarmDetailEntitiesMap.set(entity.miningFarmId, entity);
         })
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.miningFarmFilterModel.from = this.tableState.tableFilterState.from;
             this.miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
             this.miningFarmEntities = miningFarmEntities;
@@ -58,10 +58,10 @@ export default class SuperAdminMningFarmsPageStore {
         });
     }
 
-    onChangeSearchWord = action((value) => {
+    onChangeSearchWord = async (value) => {
         this.miningFarmFilterModel.searchString = value;
-        this.fetchMiningFarms();
-    })
+        await this.fetchMiningFarms();
+    }
 
     getMiningFarmDetails(id: string): MiningFarmDetailsEntity {
         return this.miningFarmDetailEntitiesMap.get(id) ?? null;

@@ -1,10 +1,11 @@
 import GridViewState from '../../../core/presentation/stores/GridViewState';
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionRepo from '../repos/CollectionRepo';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class ExploreCollectionsPageStore {
 
@@ -53,7 +54,7 @@ export default class ExploreCollectionsPageStore {
             miningFarmEntitiesMap.set(miningFarmEntity.id, miningFarmEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.miningFarmEntitiesMap = miningFarmEntitiesMap;
             this.collectionEntities = collectionEntities;
             this.gridViewState.setTotalItems(total);
@@ -65,9 +66,9 @@ export default class ExploreCollectionsPageStore {
         return this.miningFarmEntitiesMap.get(miningFarmId)?.name ?? '';
     }
 
-    onChangeSearchWord = action((value) => {
+    onChangeSearchWord = async (value) => {
         this.collectionFilterModel.searchString = value;
-        this.fetch();
-    })
+        await this.fetch();
+    }
 
 }

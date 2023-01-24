@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import numeral from 'numeral';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../repos/CudosRepo';
 
@@ -28,7 +28,7 @@ export default class CudosStore {
 
         const cudosDataEntity = await this.cudosRepo.fetchCudosData();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.inited = true;
             this.cudosDataEntity = cudosDataEntity;
         })

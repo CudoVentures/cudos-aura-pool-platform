@@ -8,6 +8,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export enum ModalStage {
     PREVIEW,
@@ -43,6 +44,7 @@ export default class BuyNftModalStore extends ModalStore {
         makeObservable(this);
     }
 
+    @action
     resetValues() {
         this.nftEntity = null;
         this.collectionEntity = null;
@@ -52,6 +54,7 @@ export default class BuyNftModalStore extends ModalStore {
         this.txHash = S.Strings.EMPTY;
     }
 
+    @action
     nullateValues() {
         this.nftEntity = null;
         this.collectionEntity = null;
@@ -92,11 +95,11 @@ export default class BuyNftModalStore extends ModalStore {
         try {
             this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.modalStage = ModalStage.SUCCESS;
             });
         } catch (ex) {
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.modalStage = ModalStage.FAIL;
             });
         }

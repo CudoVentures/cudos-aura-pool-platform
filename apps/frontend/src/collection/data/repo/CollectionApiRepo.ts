@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import { GasPrice, checkValidNftDenomId } from 'cudosjs';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import { Royalty } from 'cudosjs/build/stargate/modules/marketplace/proto-types/royalty';
-import { runInAction } from 'mobx';
 import { BackendErrorType, parseBackendErrorType } from '../../../core/utilities/AxiosWrapper';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import AccountApi from '../../../accounts/data/data-sources/AccountApi';
@@ -16,6 +15,7 @@ import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEnt
 import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class CollectionApiRepo implements CollectionRepo {
     accountApi: AccountApi;
@@ -116,7 +116,7 @@ export default class CollectionApiRepo implements CollectionRepo {
             this.disableActions?.();
             const result = await this.collectionApi.creditCollection(collectionEntity, nftEntities);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 Object.assign(collectionEntity, result.collectionEntity);
                 result.nftEntities.forEach((nftEntity, i) => {
                     Object.assign(nftEntities[i], nftEntity);

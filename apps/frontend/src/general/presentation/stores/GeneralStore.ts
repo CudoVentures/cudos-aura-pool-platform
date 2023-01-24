@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import SettingsEntity from '../../entities/SettingsEntity';
 import SettingsRepo from '../repos/SettingsRepo';
 
@@ -26,7 +27,7 @@ export default class GeneralStore {
 
         const settingsEntity = await this.settingsRepo.fetchSettings();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.inited = true;
             this.settingsEntity = settingsEntity;
         });
@@ -35,7 +36,7 @@ export default class GeneralStore {
     async creditSettings(settingsEntity: SettingsEntity) {
         await this.settingsRepo.creditSettings(settingsEntity);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.settingsEntity.copy(settingsEntity);
         });
     }

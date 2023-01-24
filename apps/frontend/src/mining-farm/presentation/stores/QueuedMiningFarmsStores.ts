@@ -5,9 +5,10 @@ import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
-import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
+import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class QueuedMiningFarmsStores {
 
@@ -36,7 +37,6 @@ export default class QueuedMiningFarmsStores {
         makeAutoObservable(this);
     }
 
-    @action
     async init(itemsPerPage: number): Promise < void > {
         this.miningFarmsTableState.tableFilterState.from = 0;
         this.miningFarmsTableState.tableFilterState.itemsPerPage = itemsPerPage;
@@ -46,10 +46,10 @@ export default class QueuedMiningFarmsStores {
         await this.fetchEnergySources();
         await this.generalStore.init();
 
-        this.fetchMiningFarms();
+        await this.fetchMiningFarms();
     }
 
-    fetchMiningFarms = async (): Promise<void> => {
+    fetchMiningFarms = async () => {
         const miningFarmFilter = new MiningFarmFilterModel();
         miningFarmFilter.markQueuedMiningFarms();
         miningFarmFilter.from = this.miningFarmsTableState.tableFilterState.from;
@@ -57,7 +57,7 @@ export default class QueuedMiningFarmsStores {
 
         const { miningFarmEntities, total } = await this.miningFarmRepo.fetchMiningFarmsByFilter(miningFarmFilter);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.miningFarmEntities = miningFarmEntities;
             this.miningFarmsTableState.tableFilterState.total = total;
         });
@@ -75,7 +75,7 @@ export default class QueuedMiningFarmsStores {
             manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.manufacturerEntitiesMap = manufacturerEntitiesMap;
         })
     }
@@ -91,7 +91,7 @@ export default class QueuedMiningFarmsStores {
             minerEntitiesMap.set(minerEntity.minerId, minerEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.minerEntitiesMap = minerEntitiesMap;
         });
     }
@@ -107,7 +107,7 @@ export default class QueuedMiningFarmsStores {
             energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.energySourceEntitiesMap = energySourceEntitiesMap;
         });
     }

@@ -12,6 +12,7 @@ import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionRepo from '../repos/CollectionRepo';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class QueuedCollectionsStore {
 
@@ -45,13 +46,12 @@ export default class QueuedCollectionsStore {
         makeAutoObservable(this);
     }
 
-    @action
     async init(itemsPerPage: number) {
         this.collectionsTableState.tableFilterState.from = 0;
         this.collectionsTableState.tableFilterState.itemsPerPage = itemsPerPage;
         this.farmEntitiesMap = new Map<string, MiningFarmEntity>();
         await this.fetchCollections();
-        this.fetchMiningFarms();
+        await this.fetchMiningFarms();
     }
 
     async fetchCollections() {
@@ -76,7 +76,7 @@ export default class QueuedCollectionsStore {
             collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.collectionEntities = collectionEntities;
             this.collectionDetailsMap = collectionDetailsMap;
             this.collectionsTableState.tableFilterState.total = total;
@@ -86,7 +86,7 @@ export default class QueuedCollectionsStore {
     async fetchMiningFarms() {
         const miningFarmEntities = await this.miningFarmRepo.fetchMiningFarmsByIds(this.collectionEntities.map((entity) => entity.farmId));
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             const cache = this.farmEntitiesMap;
             this.farmEntitiesMap = null;
 

@@ -89,22 +89,18 @@ export default class CollectionEntity {
         return this.status === CollectionStatus.REJECTED;
     }
 
-    @action
     markQueued() {
         this.status = CollectionStatus.QUEUED;
     }
 
-    @action
     markApproved() {
         this.status = CollectionStatus.APPROVED;
     }
 
-    @action
     markRejected() {
         this.status = CollectionStatus.REJECTED;
     }
 
-    @action
     markDeleted() {
         this.status = CollectionStatus.DELETED;
     }

@@ -5,9 +5,9 @@ import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 import BigNumber from 'bignumber.js';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import BitcoinBlockchainInfoEntity from '../../../bitcoin-data/entities/BitcoinBlockchainInfoEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class RewardsCalculatorStore {
 
@@ -61,7 +61,7 @@ export default class RewardsCalculatorStore {
         await this.generalStore.init();
         const miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.miningFarmsEntities = miningFarmsEntities
         })
     }
@@ -78,15 +78,15 @@ export default class RewardsCalculatorStore {
         return parseFloat(this.hashPowerInThInputValue);
     }
 
-    onChangeMiningFarm = action((selectedMiningFarmId: string) => {
+    onChangeMiningFarm = (selectedMiningFarmId: string) => {
         this.selectedMiningFarmEntity = this.miningFarmsEntities.find((entity) => {
             return entity.id === selectedMiningFarmId;
         });
 
         this.hashPowerInThInputValue = this.selectedMiningFarmEntity.hashPowerInTh.toString();
-    })
+    }
 
-    onChangeHashPowerInInput = action((value: string) => {
+    onChangeHashPowerInInput = (value: string) => {
         if (value === '') {
             this.hashPowerInThInputValue = '0';
             return;
@@ -105,15 +105,15 @@ export default class RewardsCalculatorStore {
         }
 
         this.hashPowerInThInputValue = value;
-    })
+    }
 
-    onChangeHashPowerInThSlider = action((event: MouseEvent, value: number) => {
+    onChangeHashPowerInThSlider = (event: MouseEvent, value: number) => {
         this.hashPowerInThInputValue = value.toString();
-    })
+    }
 
-    onChangeNetworkDifficulty = action((input: string) => {
+    onChangeNetworkDifficulty = (input: string) => {
         this.networkDifficultyEdit = new BigNumber(input !== '' ? input : 1);
-    })
+    }
 
     getMaintenanceFeePerThInBtc(): BigNumber {
         if (this.selectedMiningFarmEntity === null) {
@@ -144,7 +144,6 @@ export default class RewardsCalculatorStore {
         return this.bitcoinStore.calculateRewardsPerMonth(this.getHashPowerInTh(), bitcoinHashPower);
     }
 
-    @computed
     calculateNetRewardPetMonth(): BigNumber {
         if (this.selectedMiningFarmEntity === null) {
             return new BigNumber(0);

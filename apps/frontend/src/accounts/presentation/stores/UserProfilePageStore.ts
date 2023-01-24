@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import GridViewState from '../../../core/presentation/stores/GridViewState';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import S from '../../../core/utilities/Main';
@@ -13,6 +13,7 @@ import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel
 import NftEventEntity from '../../../analytics/entities/NftEventEntity';
 import UserEarningsEntity from '../../../analytics/entities/UserEarningsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export enum ProfilePages {
     NFTS = 1,
@@ -58,7 +59,6 @@ export default class UserProfilePageStore {
         });
     }
 
-    @action
     initVariables() {
         this.profilePage = ProfilePages.NFTS;
         this.gridViewState = new GridViewState(this.fetchMyNfts, 3, 4, 6)
@@ -107,7 +107,7 @@ export default class UserProfilePageStore {
             });
         }
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.collectionEntitiesMap = null;
             this.collectionEntitiesMap = collectionEntitiesMap;
             this.nftEntities = fetchedNftEntities.nftEntities;
@@ -116,9 +116,13 @@ export default class UserProfilePageStore {
         });
     }
 
-    fetchEarnings = async (): Promise < void > => {
+    fetchEarnings = async () => {
         const defaultIntervalPickerState = this.defaultIntervalPickerState;
-        this.userEarningsEntity = await this.statisticsRepo.fetchNftEarningsBySessionAccount(defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+        const userEarningsEntity = await this.statisticsRepo.fetchNftEarningsBySessionAccount(defaultIntervalPickerState.earningsTimestampFrom, defaultIntervalPickerState.earningsTimestampTo);
+
+        await runInActionAsync(() => {
+            this.userEarningsEntity = userEarningsEntity;
+        });
     }
 
     fetchHistory = async () => {
@@ -142,7 +146,7 @@ export default class UserProfilePageStore {
             });
         }
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.nftEntitiesMap = null;
             this.nftEntitiesMap = nftEntitiesMap;
 

@@ -1,5 +1,5 @@
 import { isValidAddress } from 'cudosjs';
-import { action, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
@@ -27,7 +27,6 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
         this.accountSessionStore = accountSessionStore;
         this.generalStore = generalStore;
 
-        // this.superAdminEntity = null;
         this.value = null;
         this.settingType = null;
 
@@ -36,8 +35,6 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
 
     @action
     showSignal(settingType: MegaWalletSettings) {
-        // this.superAdminEntity = superAdminEntity;
-
         if (this.isSettingTypeAddress()) {
             this.value = this.accountSessionStore.superAdminEntity.cudosRoyalteesAddress;
         }
@@ -52,7 +49,6 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
     hide = action(() => {
         this.value = null;
         this.settingType = null;
-        // this.superAdminEntity = null;
 
         super.hide();
     })

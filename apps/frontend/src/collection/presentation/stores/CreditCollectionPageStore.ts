@@ -11,6 +11,7 @@ import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class CreditCollectionPageStore {
 
@@ -48,47 +49,41 @@ export default class CreditCollectionPageStore {
         makeAutoObservable(this);
     }
 
-    init(collectionId: string): Promise < void > {
-        return new Promise < void >((resolve, reject) => {
-            const run = async () => {
-                const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
-                const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+    async init(collectionId: string) {
+        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
-                runInAction(async () => {
-                    this.nftFilterModel.collectionIds = [collectionId];
-                    this.collectionEntity = collectionEntity;
-                    this.miningFarmEntity = miningFarmEntity;
+        await runInActionAsync(() => {
+            this.nftFilterModel.collectionIds = [collectionId];
+            this.collectionEntity = collectionEntity;
+            this.miningFarmEntity = miningFarmEntity;
+        })
 
-                    await this.fetchCollectionDetails();
-                    await this.fetchNfts();
-                    resolve();
-                });
-            }
-            run();
-        });
+        await this.fetchCollectionDetails();
+        await this.fetchNfts();
     }
 
     async fetchCollectionDetails() {
         const collectionDetailsEntity = await this.collectionRepo.fetchCollectionDetailsById(this.collectionEntity.id);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.collectionDetailsEntity = collectionDetailsEntity;
         })
     }
 
-    fetchNfts = action(async () => {
+    fetchNfts = async () => {
         this.gridViewState.setIsLoading(true);
         this.nftFilterModel.from = this.gridViewState.getFrom();
         this.nftFilterModel.count = this.gridViewState.getItemsPerPage();
 
         const { nftEntities, total } = await this.nftRepo.fetchNftsByFilter(this.nftFilterModel);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.nftEntities = nftEntities;
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
         });
-    })
+    }
 
     approveCollection = async () => {
         if (this.walletStore.isConnected() === false) {

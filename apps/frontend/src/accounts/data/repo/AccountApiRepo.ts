@@ -6,7 +6,7 @@ import AccountRepo from '../../presentation/repos/AccountRepo';
 import AccountApi from '../data-sources/AccountApi';
 import { StdSignature } from 'cudosjs';
 import { BackendErrorType, parseBackendErrorType } from '../../../core/utilities/AxiosWrapper';
-import { runInAction } from 'mobx';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class AccountApiRepo implements AccountRepo {
 
@@ -94,7 +94,7 @@ export default class AccountApiRepo implements AccountRepo {
             this.disableActions?.();
             const resultAccountEntity = await this.accountApi.editSessionAccount(accountEntity);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 Object.assign(accountEntity, resultAccountEntity);
             })
         } finally {
@@ -106,7 +106,7 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
             const resultUserEntity = await this.accountApi.editSessionUser(userEntity);
-            runInAction(() => {
+            await runInActionAsync(() => {
                 Object.assign(userEntity, resultUserEntity);
             });
         } finally {
@@ -118,7 +118,7 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
             const resultSuperAdminEntity = await this.accountApi.editSessionSuperAdmin(superAdminEntity);
-            runInAction(() => {
+            await runInActionAsync(() => {
                 Object.assign(superAdminEntity, resultSuperAdminEntity);
             });
         } finally {
