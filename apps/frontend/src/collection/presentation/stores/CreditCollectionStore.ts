@@ -1,5 +1,5 @@
 import S from '../../../core/utilities/Main';
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
@@ -10,10 +10,10 @@ import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import TempIdGenerator from '../../../core/utilities/TempIdGenerator';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
-import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entities/MiningFarmEntity';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 enum CreditCollectionDetailsSteps {
     COLLECTION_DETAILS = 1,
@@ -87,7 +87,7 @@ export default class CreditCollectionStore {
         await this.fetchMiningFarm();
         await this.fetchMiningFarmDetails();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
             this.creditMode = CreditCollectionMode.CREATE;
             this.collectionEntity = new CollectionEntity();
@@ -102,7 +102,7 @@ export default class CreditCollectionStore {
         await this.fetchMiningFarm();
         await this.fetchMiningFarmDetails();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
             this.creditMode = CreditCollectionMode.EDIT;
         });
@@ -116,87 +116,63 @@ export default class CreditCollectionStore {
         await this.fetchMiningFarm();
         await this.fetchMiningFarmDetails();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.initNewNftEntity();
             this.creditStep = CreditCollectionDetailsSteps.ADD_NFTS;
             this.creditMode = CreditCollectionMode.ADD_NFTS;
         });
     }
 
-    fetchCollectionData(collectionId: string) {
-        return new Promise < void >((resolve, reject) => {
-            const run = async () => {
-                const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+    async fetchCollectionData(collectionId: string) {
+        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
 
-                const nftFilter = new NftFilterModel();
-                nftFilter.collectionIds = [collectionId];
-                nftFilter.count = Number.MAX_SAFE_INTEGER;
-                const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+        const nftFilter = new NftFilterModel();
+        nftFilter.collectionIds = [collectionId];
+        nftFilter.count = Number.MAX_SAFE_INTEGER;
+        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
 
-                runInAction(() => {
-                    this.nftEntities = nftEntities;
-                    this.collectionEntity = collectionEntity;
-                    resolve();
-                })
-            }
-
-            run();
+        await runInActionAsync(() => {
+            this.nftEntities = nftEntities;
+            this.collectionEntity = collectionEntity;
         });
     }
 
-    fetchMiningFarm() {
-        return new Promise < void >((resolve, reject) => {
-            const run = async () => {
-                const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED);
+    async fetchMiningFarm() {
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED);
 
-                runInAction(() => {
-                    this.miningFarmEntity = miningFarmEntity;
-                    resolve();
-                });
-            }
-
-            run();
+        await runInActionAsync(() => {
+            this.miningFarmEntity = miningFarmEntity;
         });
-
     }
 
     async fetchMiningFarmDetails() {
-        return new Promise < void >((resolve, reject) => {
-            const run = async () => {
-                try {
-                    const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
+        try {
+            const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
 
-                    runInAction(() => {
-                        this.miningFarmDetailsEntity = miningFarmDetailsEntity;
-                        this.miningFarmRemainingHashPower = miningFarmDetailsEntity.remainingHashPowerInTH;
-                        if (this.collectionEntity?.isNew() === false) {
-                            this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
-                        }
-                        resolve();
-                    })
-                } catch (e) {
-                    console.log(e);
-                    resolve();
+            await runInActionAsync(() => {
+                this.miningFarmDetailsEntity = miningFarmDetailsEntity;
+                this.miningFarmRemainingHashPower = miningFarmDetailsEntity.remainingHashPowerInTH;
+                if (this.collectionEntity?.isNew() === false) {
+                    this.miningFarmRemainingHashPower += this.collectionEntity.hashPowerInTh;
                 }
-            }
-
-            run();
-        });
-
+            })
+        } catch (e) {
+            console.log(e);
+        }
     }
 
-    moveToStepDetails = action(() => {
+    moveToStepDetails = () => {
         this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
-    })
+    }
 
-    moveToStepAddNfts = action(() => {
+    moveToStepAddNfts = () => {
         this.initNewNftEntity();
         this.creditStep = CreditCollectionDetailsSteps.ADD_NFTS;
-    })
+    }
 
-    moveToStepFinish = action(() => {
+    moveToStepFinish = () => {
         this.creditStep = CreditCollectionDetailsSteps.FINISH
-    })
+    }
 
     isStepDetails(): boolean {
         return this.creditStep === CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -267,64 +243,41 @@ export default class CreditCollectionStore {
     }
 
     // on change collection
-    onChangeCollectionName = action((inputValue: string) => {
+    onChangeCollectionName = (inputValue: string) => {
         this.collectionEntity.name = inputValue;
-    })
+    }
 
-    onChangeCollectionDescription = action((inputValue: string) => {
+    onChangeCollectionDescription = (inputValue: string) => {
         this.collectionEntity.description = inputValue;
-    })
-
-    // onChangeCollectionPayoutAddress = (inputValue: string) => {
-    //     this.collectionEntity.payoutAddress = inputValue;
-    // }
+    }
 
     // on change nft
-    onChangeSelectedNftName = action((nftName: string) => {
+    onChangeSelectedNftName = (nftName: string) => {
         this.selectedNftEntity.name = nftName;
-    })
+    }
 
-    onChangeSelectedNftHashPowerInTh = action((inputValue: string) => {
+    onChangeSelectedNftHashPowerInTh = (inputValue: string) => {
         this.selectedNftHashingPowerInThInputValue = inputValue;
         this.selectedNftEntity.hashPowerInTh = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
-    })
+    }
 
-    onChangeSelectedNftPriceInDollars = action((inputValue: string) => {
+    onChangeSelectedNftPriceInDollars = (inputValue: string) => {
         this.selectedNftPriceInDollarsInputValue = inputValue;
-        this.selectedNftEntity.priceUsd = inputValue !== ''
-            ? Number(inputValue)
-            : S.NOT_EXISTS;
-    })
+        this.selectedNftEntity.priceUsd = inputValue !== '' ? Number(inputValue) : S.NOT_EXISTS;
+    }
 
-    // onChangeSelectedNftRoyalties = (inputValue: string) => {
-    //     this.selectedNftEntity.farmRoyalties = inputValue !== '' ? parseInt(inputValue) : S.NOT_EXISTS;
-    // }
-
-    // onChangeSelectedNftMaintenanceFeeInBtc = (inputValue: string) => {
-    //     this.selectedNftMaintenanceFeeInBtcInputValue = inputValue;
-    //     this.selectedNftEntity.maintenanceFeeInBtc = inputValue !== '' ? new BigNumber(inputValue) : null;
-    // }
-
-    onChangeSelectedNftExpirationDate = action((expirationDateTimestamp: Date) => {
+    onChangeSelectedNftExpirationDate = (expirationDateTimestamp: Date) => {
         if (expirationDateTimestamp !== null) {
             this.selectedNftEntity.expirationDateTimestamp = expirationDateTimestamp.getTime();
         } else {
             this.selectedNftEntity.markAsExpiringToday();
         }
-    })
+    }
 
     // nft get input value
     getSelectedNftName() {
         return this.selectedNftEntity?.name ?? '';
     }
-
-    // getSelectedNftRoyaltiesInputValue() {
-    //     if (this.selectedNftEntity === null || this.selectedNftEntity.farmRoyalties === S.NOT_EXISTS) {
-    //         return '';
-    //     }
-
-    //     return this.selectedNftEntity.farmRoyalties.toString();
-    // }
 
     getSelectedNftPriceDisplayInCudos(): string {
         const cudosPrice = this.cudosStore.convertUsdInAcudos(this.selectedNftEntity?.priceUsd);
@@ -346,7 +299,6 @@ export default class CreditCollectionStore {
     }
 
     // nft controls
-    @action
     onClickEditNft(nftEntity: NftEntity) {
         this.selectedNftEntity = nftEntity.cloneDeep();
 
@@ -357,7 +309,7 @@ export default class CreditCollectionStore {
     onClickSendForApproval = async () => {
         await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.collectionEntity.markQueued();
         })
     }
@@ -366,11 +318,11 @@ export default class CreditCollectionStore {
         await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
     }
 
-    onClickDeleteNft = action((nftEntityId: string) => {
+    onClickDeleteNft = (nftEntityId: string) => {
         this.nftEntities = this.nftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
-    })
+    }
 
-    onClickAddToCollection = action(() => {
+    onClickAddToCollection = () => {
         if (this.selectedNftEntity.isNew() === false) {
             const existingNftEntity = this.nftEntities.find((nftEntity: NftEntity) => nftEntity.id === this.selectedNftEntity.id)
             existingNftEntity.copyDeepFrom(this.selectedNftEntity);
@@ -380,6 +332,6 @@ export default class CreditCollectionStore {
         }
 
         this.initNewNftEntity();
-    })
+    }
 
 }

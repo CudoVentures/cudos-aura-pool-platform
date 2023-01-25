@@ -18,7 +18,6 @@ export default class ValidationState {
         makeAutoObservable(this);
     }
 
-    @action
     addValidation(errorMessage, checkValidInput: (value) => boolean): InputValidation {
         const inputValidation = new InputValidation();
         inputValidation.errorMessage = errorMessage;
@@ -29,7 +28,6 @@ export default class ValidationState {
         return inputValidation;
     }
 
-    @action
     addEmptyValidation(errorMessage?: string): InputValidation {
         const inputValidation = InputValidation.emptyValidation(errorMessage);
 
@@ -38,7 +36,6 @@ export default class ValidationState {
         return inputValidation;
     }
 
-    @action
     addMatchStringsValidation(errorMessage?: string): InputValidation[] {
         let firstValue = '', secondValue = '';
 
@@ -64,7 +61,6 @@ export default class ValidationState {
         return [firstInputValidation, secondInputValidation];
     }
 
-    @action
     addEmailValidation(errorMessage?: string) {
         const inputValidation = InputValidation.emailValidation(errorMessage);
 
@@ -73,7 +69,6 @@ export default class ValidationState {
         return inputValidation;
     }
 
-    @action
     addPasswordValidation(errorMessage?: string) {
         const inputValidation = InputValidation.passwordValidation(errorMessage);
 
@@ -82,7 +77,6 @@ export default class ValidationState {
         return inputValidation;
     }
 
-    @action
     addCudosAddressValidation(errorMessage?: string) {
         const inputValidation = InputValidation.cudosAddressValidation(errorMessage);
 
@@ -91,7 +85,6 @@ export default class ValidationState {
         return inputValidation;
     }
 
-    @action
     addBitcoinAddressValidation(errorMessage?: string) {
         const inputValidation = InputValidation.bitcoinAddressValidation(errorMessage);
 
@@ -108,11 +101,11 @@ export default class ValidationState {
         return validation !== undefined;
     }
 
-    setShowErrors = action((showErrors: boolean) => {
+    setShowErrors = (showErrors: boolean) => {
         this.inputValidations.forEach((element) => {
             element.showError = showErrors;
         })
-    })
+    }
 }
 
 export class InputValidation {
@@ -131,11 +124,10 @@ export class InputValidation {
         makeAutoObservable(this);
     }
 
-    onChange = action((value: any) => {
+    onChange = (value: any) => {
         this.isError = this.checkValidInput(value) === false;
-    })
+    }
 
-    @action
     setErrorMessage(errorMessage?: string) {
         if (errorMessage !== undefined) {
             this.errorMessage = errorMessage;

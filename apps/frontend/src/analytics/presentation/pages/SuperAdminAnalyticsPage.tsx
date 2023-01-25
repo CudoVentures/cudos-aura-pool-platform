@@ -127,14 +127,14 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const miningFarmTotalEarningsBtcEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsBtc();
                 const miningFarmTotalEarningsCudosEntity = superAdminAnalyticsPageStore.getMiningFarmTotalEarningsCudos();
 
-                const unsoftNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0);
+                const unsoldNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0);
                 const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
                 const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0);
 
-                const unsoftNftsTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(unsoftNftsTotalEarningsInBtc);
+                const unsoldNftsTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(unsoldNftsTotalEarningsInBtc);
                 const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
                 const soldNftsTotalEarningsInUsd = cudosStore.convertAcudosInUsd(soldNftsTotalEarningsInAcudos);
-                const totalInUsd = unsoftNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
+                const totalInUsd = unsoldNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
 
                 return (
                     <ChartInfo

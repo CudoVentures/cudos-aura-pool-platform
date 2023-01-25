@@ -1,5 +1,5 @@
 import S from '../../../core/utilities/Main';
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import ImageEntity, { PictureType } from '../../../upload-file/entities/ImageEntity';

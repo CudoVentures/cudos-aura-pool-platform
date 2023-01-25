@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import TableState from '../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
@@ -7,6 +7,7 @@ import CollectionDetailsEntity from '../../entities/CollectionDetailsEntity';
 import CollectionEntity, { CollectionStatus } from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionRepo from '../repos/CollectionRepo';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class RejectedCollectionsStore {
 
@@ -34,11 +35,10 @@ export default class RejectedCollectionsStore {
         makeAutoObservable(this);
     }
 
-    @action
-    init(itemsPerPage: number) {
+    async init(itemsPerPage: number) {
         this.collectionsTableState.tableFilterState.from = 0;
         this.collectionsTableState.tableFilterState.itemsPerPage = itemsPerPage;
-        this.fetchCollections();
+        await this.fetchCollections();
     }
 
     async fetchCollections() {
@@ -63,7 +63,7 @@ export default class RejectedCollectionsStore {
             collectionDetailsMap.set(collectionDetailsEntity.collectionId, collectionDetailsEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.collectionEntities = collectionEntities;
             this.collectionDetailsMap = collectionDetailsMap;
             this.collectionsTableState.tableFilterState.total = total;

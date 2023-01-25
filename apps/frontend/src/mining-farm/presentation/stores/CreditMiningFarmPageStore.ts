@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
@@ -13,6 +13,7 @@ import AccountSessionStore from '../../../accounts/presentation/stores/AccountSe
 import CollectionDetailsEntity from '../../../collection/entities/CollectionDetailsEntity';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class CreditMiningFarmPageStore {
 
@@ -60,7 +61,6 @@ export default class CreditMiningFarmPageStore {
         makeAutoObservable(this);
     }
 
-    @action
     async init(farmId = S.Strings.NOT_EXISTS) {
         this.inited = false;
         this.miningFarmEntity = null;
@@ -75,18 +75,17 @@ export default class CreditMiningFarmPageStore {
         }
 
         if (miningFarmEntity !== null) {
-            runInAction(async () => {
+            await runInActionAsync(() => {
                 this.miningFarmEntity = miningFarmEntity;
                 this.collectionFilterModel.farmId = this.miningFarmEntity.id;
-
-                await this.fetchMiningFarmDetails();
-                await this.fetchApprovedCollections();
-                await this.fetchAnyCollections();
-                await this.fetchQueuedCollections();
             });
+            await this.fetchMiningFarmDetails();
+            await this.fetchApprovedCollections();
+            await this.fetchAnyCollections();
+            await this.fetchQueuedCollections();
         }
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.inited = true;
         });
     }
@@ -95,7 +94,7 @@ export default class CreditMiningFarmPageStore {
         try {
             const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.miningFarmDetailsEntity = miningFarmDetailsEntity;
             })
         } catch (e) {
@@ -105,7 +104,7 @@ export default class CreditMiningFarmPageStore {
 
     fetchQueuedCollections = async () => {
         if (this.accountSessionStore.isSuperAdmin() === false) {
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.queuedCollectionEntities = [];
             })
 
@@ -120,7 +119,7 @@ export default class CreditMiningFarmPageStore {
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilterModel);
         await this.fetchCollectionDetails(collectionEntities);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.queuedCollectionEntities = collectionEntities;
             this.queuedCollectionsTableState.tableFilterState.total = total;
         });
@@ -128,7 +127,7 @@ export default class CreditMiningFarmPageStore {
 
     fetchApprovedCollections = async () => {
         if (this.accountSessionStore.isSuperAdmin() === false) {
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.approvedCollectionEntities = [];
             });
 
@@ -143,7 +142,7 @@ export default class CreditMiningFarmPageStore {
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(collectionFilterModel);
         await this.fetchCollectionDetails(collectionEntities);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.approvedCollectionEntities = collectionEntities;
             this.approvedCollectionsTableState.tableFilterState.total = total;
         });
@@ -151,7 +150,7 @@ export default class CreditMiningFarmPageStore {
 
     fetchAnyCollections = async () => {
         if (this.accountSessionStore.isSuperAdmin() === true) {
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.collectionEntities = [];
             });
             return;
@@ -169,7 +168,7 @@ export default class CreditMiningFarmPageStore {
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(this.collectionFilterModel);
         await this.fetchCollectionDetails(collectionEntities);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.collectionEntities = collectionEntities;
             this.gridViewState.setTotalItems(total);
             this.gridViewState.setIsLoading(false);
@@ -180,7 +179,7 @@ export default class CreditMiningFarmPageStore {
         const collectionIds = collectionEntities.map((entity) => entity.id);
         const collectionDetails = await this.collectionRepo.fetchCollectionsDetailsByIds(collectionIds);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             const collectionDetailsMap = this.collectionDetailsMap;
             this.collectionDetailsMap = null;
 
@@ -239,7 +238,7 @@ export default class CreditMiningFarmPageStore {
             clonedFarm.status = MiningFarmStatus.REJECTED;
             await this.miningFarmRepo.creditMiningFarm(clonedFarm);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.miningFarmEntity.status = clonedFarm.status;
             })
         } catch (e) {
@@ -253,7 +252,7 @@ export default class CreditMiningFarmPageStore {
             clonedFarm.status = MiningFarmStatus.APPROVED;
             await this.miningFarmRepo.creditMiningFarm(clonedFarm);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.miningFarmEntity.status = clonedFarm.status;
             });
         } catch (e) {

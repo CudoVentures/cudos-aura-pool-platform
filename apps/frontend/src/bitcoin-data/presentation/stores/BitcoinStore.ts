@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
 import BitcoinRepo from '../repos/BitcoinRepo';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
 
 export const BLOCKS_PER_DAY = 6 * 24
@@ -37,7 +37,7 @@ export default class BitcoinStore {
         const bitcoinCoinGeckoEntity = await this.bitcoinRepo.fetchBitcoinCoinGecko();
         const bitcoinBlockchainInfoEntity = await this.bitcoinRepo.fetchBitcoinBlockchainInfo();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.inited = true;
             this.bitcoinCoinGeckoEntity = bitcoinCoinGeckoEntity;
             this.bitcoinBlockchainInfoEntity = bitcoinBlockchainInfoEntity;

@@ -1,4 +1,5 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
+import { runInActionAsync } from '../../utilities/ProjectUtils';
 
 enum StatPeriod {
     TODAY = 1,
@@ -20,7 +21,6 @@ export default class ExtendedChartState {
         makeAutoObservable(this);
     }
 
-    @action
     async init() {
         this.statPeriod = StatPeriod.TODAY;
         this.statistics = [];
@@ -48,7 +48,7 @@ export default class ExtendedChartState {
 
         const statistics = await this.callback(timestamp);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.statistics = statistics;
         })
     }
@@ -65,18 +65,18 @@ export default class ExtendedChartState {
         return this.statPeriod === StatPeriod.MONTH;
     }
 
-    setStatsToday = action(() => {
+    setStatsToday = () => {
         this.statPeriod = StatPeriod.TODAY;
         this.fetch();
-    })
+    }
 
-    setStatsWeek = action(() => {
+    setStatsWeek = () => {
         this.statPeriod = StatPeriod.WEEK;
         this.fetch();
-    })
+    }
 
-    setStatsMonth = action(() => {
+    setStatsMonth = () => {
         this.statPeriod = StatPeriod.MONTH;
         this.fetch();
-    })
+    }
 }

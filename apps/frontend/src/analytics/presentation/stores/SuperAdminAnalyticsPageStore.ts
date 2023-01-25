@@ -21,6 +21,7 @@ import MiningFarmMaintenanceFeeEntity from '../../entities/MiningFarmMaintenance
 import MiningFarmTotalEarningsBtcEntity from '../../entities/MiningFarmTotalEarningsBtcEntity';
 import MiningFarmTotalEarningsCudosEntity from '../../entities/MiningFarmTotalEarningsCudosEntity';
 import BigNumber from 'bignumber.js';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class SuperAdminAnalyticsPageStore {
 
@@ -92,7 +93,7 @@ export default class SuperAdminAnalyticsPageStore {
 
     async fetchFilterMiningFarms() {
         const miningFarmEntities = await this.miningFarmRepo.fetchAllMiningFarms();
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.filterMiningFarmEntities = miningFarmEntities;
         })
     }
@@ -106,7 +107,7 @@ export default class SuperAdminAnalyticsPageStore {
 
         const collectionEntities = await this.collectionRepo.fetchCollectionsByMiningFarmId(this.earningsPerDayFilterEntity.farmId);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.filterCollectionEntities = collectionEntities;
         });
     }
@@ -116,7 +117,7 @@ export default class SuperAdminAnalyticsPageStore {
         this.earningsPerDayFilterEntity.timestampTo = this.earningRangeState.endDate;
 
         const earningsPerDayEntity = await this.statisticsRepo.fetchEarningsPerDay(this.earningsPerDayFilterEntity);
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.earningsPerDayEntity = earningsPerDayEntity;
         })
     }
@@ -128,7 +129,7 @@ export default class SuperAdminAnalyticsPageStore {
             if (earningsPerDayFilterEntity.isBtc() === true || earningsPerDayFilterEntity.isUsd() === true) {
                 if (this.platformTotalEarningsBtcEntity === null) {
                     const platformTotalEarningsBtcEntity = await this.statisticsRepo.fetchPlatformTotalEarningsBtc();
-                    runInAction(() => {
+                    await runInActionAsync(() => {
                         this.platformTotalEarningsBtcEntity = platformTotalEarningsBtcEntity;
                     });
                 }
@@ -137,7 +138,7 @@ export default class SuperAdminAnalyticsPageStore {
             if (earningsPerDayFilterEntity.isCudos() === true || earningsPerDayFilterEntity.isUsd() === true) {
                 if (this.platformTotalEarningsCudosEntity === null) {
                     const platformTotalEarningsCudosEntity = await this.statisticsRepo.fetchPlatformTotalEarningsCudos();
-                    runInAction(() => {
+                    await runInActionAsync(() => {
                         this.platformTotalEarningsCudosEntity = platformTotalEarningsCudosEntity;
                     })
                 }
@@ -145,7 +146,7 @@ export default class SuperAdminAnalyticsPageStore {
 
             if (this.platformMaintenanceFeeEntity === null) {
                 const platformMaintenanceFeeEntity = await this.statisticsRepo.fetchPlatformMaintenanceFee();
-                runInAction(() => {
+                await runInActionAsync(() => {
                     this.platformMaintenanceFeeEntity = platformMaintenanceFeeEntity;
                 });
             }
@@ -156,7 +157,7 @@ export default class SuperAdminAnalyticsPageStore {
                 let miningFarmTotalEarningsBtcEntity = this.getMiningFarmTotalEarningsBtc();
                 if (miningFarmTotalEarningsBtcEntity === null) {
                     miningFarmTotalEarningsBtcEntity = await this.statisticsRepo.fetchMiningFarmTotalEarningsBtc(miningFarmId, collectionId);
-                    runInAction(() => {
+                    await runInActionAsync(() => {
                         const cacheMap = this.miningFarmTotalEarningsBtcEntitiesMap;
                         this.miningFarmTotalEarningsBtcEntitiesMap = null;
 
@@ -176,7 +177,7 @@ export default class SuperAdminAnalyticsPageStore {
                 let miningFarmTotalEarningsCudosEntity = this.getMiningFarmTotalEarningsCudos();
                 if (miningFarmTotalEarningsCudosEntity === null) {
                     miningFarmTotalEarningsCudosEntity = await this.statisticsRepo.fetchMiningFarmTotalEarningsCudos(miningFarmId, collectionId);
-                    runInAction(() => {
+                    await runInActionAsync(() => {
                         const cacheMap = this.miningFarmTotalEarningsCudosEntitiesMap;
                         this.miningFarmTotalEarningsCudosEntitiesMap = null;
 
@@ -195,7 +196,7 @@ export default class SuperAdminAnalyticsPageStore {
             let miningFarmMaintenanceFeeEntity = this.getMiningFarmMaintenanceFee();
             if (miningFarmMaintenanceFeeEntity === null) {
                 miningFarmMaintenanceFeeEntity = await this.statisticsRepo.fetchMiningFarmMaintenanceFee(miningFarmId, collectionId);
-                runInAction(() => {
+                await runInActionAsync(() => {
                     const cacheMap = this.miningFarmMaintenanceFeeEntitiesMap;
                     this.miningFarmMaintenanceFeeEntitiesMap = null;
 
@@ -226,7 +227,7 @@ export default class SuperAdminAnalyticsPageStore {
             nftEntitiesMap.set(nftEntity.id, nftEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.nftEntitiesMap = nftEntitiesMap;
             this.nftEventEntities = nftEventEntities;
             this.analyticsTableState.tableFilterState.total = total;
@@ -244,6 +245,10 @@ export default class SuperAdminAnalyticsPageStore {
 
         if (this.earningsPerDayFilterEntity.isCudos() === true) {
             return this.earningsPerDayEntity?.cudosEarningsPerDay.map((bn) => bn.toNumber()) ?? [];
+        }
+
+        if (this.earningsPerDayEntity?.btcEarningsPerDay.length !== this.earningsPerDayEntity?.cudosEarningsPerDay.length) {
+            return [];
         }
 
         return this.earningsPerDayEntity?.btcEarningsPerDay.map((btcValue, i) => {

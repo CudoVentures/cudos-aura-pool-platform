@@ -1,5 +1,5 @@
 import S from '../../../core/utilities/Main';
-import { action, computed, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import NftEntity from '../../entities/NftEntity';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
@@ -21,6 +21,7 @@ import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import AdminEntity from '../../../accounts/entities/AdminEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 
 enum StatsTabs {
@@ -93,37 +94,30 @@ export default class ViewNftPageStore {
         makeAutoObservable(this);
     }
 
-    init(nftId: string): Promise < void > {
-        return new Promise < void >((resolve, reject) => {
-            const run = async () => {
-                await this.bitcoinStore.init();
-                await this.cudosStore.init();
-                await this.generalStore.init();
+    async init(nftId: string) {
+        await this.bitcoinStore.init();
+        await this.cudosStore.init();
+        await this.generalStore.init();
 
-                const cudosPrice = this.cudosStore.getCudosPriceInUsd();
-                const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
-                const nftEntity = await this.nftRepo.fetchNftById(nftId);
-                const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
-                const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
-                const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+        const cudosPrice = this.cudosStore.getCudosPriceInUsd();
+        const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
+        const nftEntity = await this.nftRepo.fetchNftById(nftId);
+        const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
+        const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
-                runInAction(async () => {
-                    this.cudosPrice = cudosPrice
-                    this.bitcoinPrice = bitcoinPrice
-                    this.nftEntity = nftEntity
-                    this.adminEntity = adminEntity;
-                    this.collectionEntity = collectionEntity;
-                    this.miningFarmEntity = miningFarmEntity;
-                    this.nftEventFilterModel.nftId = this.nftEntity.id;
-
-                    await this.fetchNftsInTheCollection();
-                    await this.fetchEarnings();
-                    await this.fetchHistory();
-                    resolve();
-                });
-            }
-            run();
+        await runInActionAsync(() => {
+            this.cudosPrice = cudosPrice
+            this.bitcoinPrice = bitcoinPrice
+            this.nftEntity = nftEntity
+            this.adminEntity = adminEntity;
+            this.collectionEntity = collectionEntity;
+            this.miningFarmEntity = miningFarmEntity;
+            this.nftEventFilterModel.nftId = this.nftEntity.id;
         });
+        await this.fetchNftsInTheCollection();
+        await this.fetchEarnings();
+        await this.fetchHistory();
     }
 
     hasAccess(): boolean {
@@ -145,7 +139,7 @@ export default class ViewNftPageStore {
         nftFilterModel.count = this.gridViewState.getItemsPerPage();
         const { nftEntities, total } = (await this.nftRepo.fetchNftsByFilter(nftFilterModel));
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.nftEntities = nftEntities;
             this.gridViewState.setTotalItems(total);
         });
@@ -153,21 +147,21 @@ export default class ViewNftPageStore {
 
     fetchEarnings = async () => {
         const nftEarningsEntity = await this.statisticsRepo.fetchNftEarningsByNftId(this.nftEntity.id, this.defaultIntervalPickerState.earningsTimestampFrom, this.defaultIntervalPickerState.earningsTimestampTo);
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.nftEarningsEntity = nftEarningsEntity;
         });
     }
 
-    fetchHistory = action(async () => {
+    fetchHistory = async () => {
         this.nftEventFilterModel.from = this.historyTableState.tableFilterState.from;
         this.nftEventFilterModel.count = this.historyTableState.tableFilterState.itemsPerPage;
         const { nftEventEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.nftEventEntities = nftEventEntities;
             this.historyTableState.tableFilterState.total = total;
         });
-    })
+    }
 
     isTabEarnings(): boolean {
         return this.statsTab === StatsTabs.EARNINGS;
@@ -181,17 +175,17 @@ export default class ViewNftPageStore {
         return this.statsTab === StatsTabs.HISTORY;
     }
 
-    onChangeTabEarnings = action(() => {
+    onChangeTabEarnings = () => {
         this.statsTab = StatsTabs.EARNINGS;
-    })
+    }
 
-    onChangeTabInfo = action(() => {
+    onChangeTabInfo = () => {
         this.statsTab = StatsTabs.INFO;
-    })
+    }
 
-    onChangeTabHistory = action(() => {
+    onChangeTabHistory = () => {
         this.statsTab = StatsTabs.HISTORY;
-    })
+    }
 
     getNftCudosPrice(): BigNumber {
         return this.cudosStore.getNftCudosPriceForNft(this.nftEntity);
@@ -222,7 +216,6 @@ export default class ViewNftPageStore {
         return this.miningFarmEntity.maintenanceFeeInBtc.multipliedBy(k);
     }
 
-    @computed
     calculateGrossProfitPerDay(): BigNumber {
         if (this.nftEntity === null || this.collectionEntity === null || this.miningFarmEntity === null) {
             return new BigNumber(0);
@@ -231,7 +224,6 @@ export default class ViewNftPageStore {
         return this.bitcoinStore.calculateRewardsPerDay(this.nftEntity.hashPowerInTh);
     }
 
-    @computed
     calculateGrossProfitPerWeek(): BigNumber {
         if (this.nftEntity === null || this.collectionEntity === null || this.miningFarmEntity === null) {
             return new BigNumber(0);
@@ -240,7 +232,6 @@ export default class ViewNftPageStore {
         return this.bitcoinStore.calculateRewardsPerWeek(this.nftEntity.hashPowerInTh);
     }
 
-    @computed
     calculateGrossProfitPerMonth(): BigNumber {
         if (this.nftEntity === null || this.collectionEntity === null || this.miningFarmEntity === null) {
             return new BigNumber(0);
@@ -249,7 +240,6 @@ export default class ViewNftPageStore {
         return this.bitcoinStore.calculateRewardsPerMonth(this.nftEntity.hashPowerInTh);
     }
 
-    @computed
     calculateGrossProfitPerYear(): BigNumber {
         if (this.nftEntity === null || this.collectionEntity === null || this.miningFarmEntity === null) {
             return new BigNumber(0);
@@ -258,7 +248,6 @@ export default class ViewNftPageStore {
         return this.bitcoinStore.calculateRewardsPerYear(this.nftEntity.hashPowerInTh);
     }
 
-    @computed
     calculateNetProfitPerDay(): BigNumber {
         if (this.miningFarmEntity === null) {
             return new BigNumber(0);
@@ -269,7 +258,6 @@ export default class ViewNftPageStore {
         return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
     }
 
-    @computed
     calculateNetProfitPerWeek(): BigNumber {
         if (this.miningFarmEntity === null) {
             return new BigNumber(0);
@@ -280,7 +268,6 @@ export default class ViewNftPageStore {
         return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
     }
 
-    @computed
     calculateNetProfitPerMonth(): BigNumber {
         if (this.miningFarmEntity === null) {
             return new BigNumber(0);
@@ -291,7 +278,6 @@ export default class ViewNftPageStore {
         return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
     }
 
-    @computed
     calculateNetProfitPerYear(): BigNumber {
         if (this.miningFarmEntity === null) {
             return new BigNumber(0);

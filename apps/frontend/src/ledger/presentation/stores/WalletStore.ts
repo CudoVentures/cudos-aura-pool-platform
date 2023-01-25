@@ -8,6 +8,7 @@ import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signing
 import WalletRepo from '../repos/WalletRepo';
 import { Magic } from 'magic-sdk';
 import { CosmosExtension } from '@magic-ext/cosmos';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
@@ -37,7 +38,6 @@ export default class WalletStore {
         makeAutoObservable(this);
     }
 
-    @action
     public async connectKeplr(): Promise<void> {
         this.ledger = new KeplrWallet({
             CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
@@ -51,7 +51,6 @@ export default class WalletStore {
         await this.connectLedger(SessionStorageWalletOptions.KEPLR);
     }
 
-    @action
     public async connectCosmostation(): Promise < void > {
         this.ledger = new CosmostationWallet({
             CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
@@ -61,6 +60,7 @@ export default class WalletStore {
             STAKING: CHAIN_DETAILS.STAKING_URL,
             GAS_PRICE: CHAIN_DETAILS.GAS_PRICE.toString(10),
         });
+
         await this.connectLedger(SessionStorageWalletOptions.COSMOSTATION);
     }
 
@@ -79,7 +79,7 @@ export default class WalletStore {
 
             const name = await this.ledger.getName();
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.name = name;
                 this.address = this.ledger.accountAddress;
                 this.loadBalance(); // to not wait for it
@@ -151,11 +151,11 @@ export default class WalletStore {
         try {
             const balance = await this.ledger?.getBalance() ?? new BigNumber(0);
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.balance = balance;
             })
         } catch (ex) {
-            runInAction(() => {
+            await runInActionAsync(() => {
                 this.balance = new BigNumber(0);
             });
         }

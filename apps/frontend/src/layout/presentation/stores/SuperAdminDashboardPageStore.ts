@@ -1,5 +1,5 @@
 import TableState from '../../../core/presentation/stores/TableState';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
@@ -15,6 +15,7 @@ import PlatformTotalEarningsBtcEntity from '../../../analytics/entities/Platform
 import PlatformTotalEarningsCudosEntity from '../../../analytics/entities/PlatformTotalEarningsCudosEntity';
 import EarningsPerDayFilterEntity from '../../../analytics/entities/EarningsPerDayFilterEntity';
 import BigNumber from 'bignumber.js';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class SuperAdminDashboardPageStore {
 
@@ -72,7 +73,7 @@ export default class SuperAdminDashboardPageStore {
     private async fetchEarnings() {
         const earningsPerDayEntity = await this.statisticsRepo.fetchEarningsPerDay(this.earningsPerDayFilterEntity);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.earningsPerDayEntity = earningsPerDayEntity;
         })
     }
@@ -80,7 +81,7 @@ export default class SuperAdminDashboardPageStore {
     private async fetchAggregatedStatistics() {
         const platformTotalEarningsBtcEntity = await this.statisticsRepo.fetchPlatformTotalEarningsBtc();
         const platformTotalEarningsCudosEntity = await this.statisticsRepo.fetchPlatformTotalEarningsCudos();
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.platformTotalEarningsBtcEntity = platformTotalEarningsBtcEntity;
             this.platformTotalEarningsCudosEntity = platformTotalEarningsCudosEntity;
         });
@@ -93,7 +94,7 @@ export default class SuperAdminDashboardPageStore {
             miningFarmPerformanceEntitiesMap.set(miningFarmPerformanceEntity.miningFarmId, miningFarmPerformanceEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.bestPerformingMiningFarms = miningFarmEntities;
             this.miningFarmPerformanceEntitiesMap = miningFarmPerformanceEntitiesMap;
             this.topFarmsTableState.tableFilterState.total = miningFarmEntities.length; // no paging here

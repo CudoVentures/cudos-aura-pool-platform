@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import S from '../../../core/utilities/Main';
 import { StdSignature } from 'cudosjs';
 
@@ -9,6 +9,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../repos/AccountRepo';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class AccountSessionStore {
 
@@ -172,7 +173,7 @@ export default class AccountSessionStore {
         await this.walletStore.disconnect();
         await this.accountRepo.logout();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.accountEntity = null;
             this.userEntity = null;
             this.adminEntity = null;
@@ -199,7 +200,7 @@ export default class AccountSessionStore {
     async editSessionAccount(accountEntity: AccountEntity): Promise < void > {
         await this.accountRepo.editSessionAccount(accountEntity);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             Object.assign(this.accountEntity, accountEntity);
         });
     }
@@ -207,7 +208,7 @@ export default class AccountSessionStore {
     async editSessionSuperAdmin(superAdminEntity: SuperAdminEntity) {
         await this.accountRepo.editSessionSuperAdmin(superAdminEntity)
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             Object.assign(this.superAdminEntity, superAdminEntity);
         });
     }
@@ -252,7 +253,7 @@ export default class AccountSessionStore {
             console.log('Logged as super => wallet:', this.walletStore.isConnected())
         }
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.accountEntity = accountEntity;
             this.userEntity = userEntity;
             this.adminEntity = adminEntity;
@@ -265,7 +266,7 @@ export default class AccountSessionStore {
     async loadAdminMiningFarmApproval(): Promise < void > {
         const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.approvedMiningFarm = miningFarmEntity?.isApproved() ?? false;
         })
     }

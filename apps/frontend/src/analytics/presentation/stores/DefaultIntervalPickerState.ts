@@ -1,4 +1,4 @@
-import { action, makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 export enum DefaultIntervalType {
@@ -24,23 +24,23 @@ export default class DefaultIntervalPickerState {
         makeAutoObservable(this);
     }
 
-    onChangeToday = action(() => {
+    onChangeToday = () => {
         this.defaultIntervalType = DefaultIntervalType.TODAY
         this.markEarningsTimestampToday();
         this.onChangeCallback();
-    })
+    }
 
-    onChangeWeek = action(() => {
+    onChangeWeek = () => {
         this.defaultIntervalType = DefaultIntervalType.WEEK
         this.markEarningsTimestampWeek();
         this.onChangeCallback();
-    })
+    }
 
-    onChangeMonth = action(() => {
+    onChangeMonth = () => {
         this.defaultIntervalType = DefaultIntervalType.MONTH
         this.markEarningsTimestampMonth();
         this.onChangeCallback();
-    })
+    }
 
     isActiveToday() {
         return this.defaultIntervalType === DefaultIntervalType.TODAY;
@@ -54,21 +54,18 @@ export default class DefaultIntervalPickerState {
         return this.defaultIntervalType === DefaultIntervalType.MONTH;
     }
 
-    @action
     markEarningsTimestampToday() {
         const { timestampFrom, timestampTo } = ProjectUtils.makeTimestampsToday();
         this.earningsTimestampFrom = timestampFrom;
         this.earningsTimestampTo = timestampTo;
     }
 
-    @action
     markEarningsTimestampWeek() {
         const { timestampFrom, timestampTo } = ProjectUtils.makeTimestampsWeek();
         this.earningsTimestampFrom = timestampFrom;
         this.earningsTimestampTo = timestampTo;
     }
 
-    @action
     markEarningsTimestampMonth() {
         const { timestampFrom, timestampTo } = ProjectUtils.makeTimestampsMonth();
         this.earningsTimestampFrom = timestampFrom;

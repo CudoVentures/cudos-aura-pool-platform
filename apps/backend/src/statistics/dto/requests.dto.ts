@@ -52,33 +52,27 @@ export class ReqFetchEarningsPerDay {
         earningsPerDayFilterEntity: EarningsPerDayFilterJsonValidator;
 }
 
-export class ReqFetchMiningFarmMaintenanceFee {
+export class ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
         miningFarmId: string;
+}
 
+export class ReqFetchMiningFarmMaintenanceFee extends ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
     @IsOptional()
         collectionId: string;
 }
 
-export class ReqFetchFarmTotalBtcEarnings {
-    @IsDefined()
-    @IsString()
-        miningFarmId: string;
-
+export class ReqFetchMiningFarmTotalBtcEarnings extends ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
     @IsOptional()
         collectionId: string;
 }
 
-export class ReqFetchMiningFarmTotalEarningsCudos {
-    @IsDefined()
-    @IsString()
-        miningFarmId: string;
-
+export class ReqFetchMiningFarmTotalEarningsCudos extends ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
     @IsOptional()

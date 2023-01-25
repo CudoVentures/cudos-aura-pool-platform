@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
@@ -8,6 +8,7 @@ import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRe
 import CollectionDetailsEntity from '../../../collection/entities/CollectionDetailsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class MarketplacePageStore {
 
@@ -64,7 +65,7 @@ export default class MarketplacePageStore {
 
         this.addCollectionsToMap(topCollectionEntities);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.topCollectionEntities = topCollectionEntities;
             this.collectionDetailsMap = collectionDetailsMap;
         });
@@ -74,7 +75,7 @@ export default class MarketplacePageStore {
         const newNftDropsEntities = await this.nftRepo.fetchNewNftDrops();
         this.fetchCollectionsForEntities(newNftDropsEntities);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.newNftDropsEntities = newNftDropsEntities;
         })
     }
@@ -83,7 +84,7 @@ export default class MarketplacePageStore {
         const trendingNftEntities = await this.nftRepo.fetchTrendingNfts();
         this.fetchCollectionsForEntities(trendingNftEntities);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.trendingNftEntities = trendingNftEntities;
         });
     }
@@ -99,7 +100,7 @@ export default class MarketplacePageStore {
             miningFarmDetailsMap.set(miningFarmDetailsEntity.miningFarmId, miningFarmDetailsEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.popularFarmsEntities = popularFarmsEntities;
             this.miningFarmDetailsMap = miningFarmDetailsMap;
         });
@@ -115,7 +116,6 @@ export default class MarketplacePageStore {
         this.addCollectionsToMap(fetchedCollections);
     }
 
-    @action
     addCollectionsToMap(collectionEntities: CollectionEntity[]) {
         collectionEntities.forEach((collectionEntity: CollectionEntity) => {
             this.collectionMap.set(collectionEntity.id, collectionEntity);

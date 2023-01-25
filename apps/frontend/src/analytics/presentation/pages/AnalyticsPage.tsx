@@ -66,7 +66,7 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
             return (
                 <ChartInfo
                     label = { <TextWithTooltip text={'Unsold NFT earnings'} tooltipText={'Earnings from unsold NFTs'} /> }
-                    value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0))} />
+                    value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0))} />
             )
         }
 
@@ -76,10 +76,10 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
                 <>
                     <ChartInfo
                         label = { <TextWithTooltip text={'Resale royalties'} tooltipText={'NFTs resale royalties'} /> }
-                        value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0))} />
+                        value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
                     <ChartInfo
                         label = { <TextWithTooltip text={'NFT sales'} tooltipText={'Funds from initial NFTs sales'} /> }
-                        value = { BitcoinStore.formatBtc(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0))} />
+                        value = { CudosStore.formatAcudosInCudosWithPrecision(miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
                 </>
             )
         }
@@ -88,14 +88,14 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
             const miningFarmTotalEarningsBtcEntity = analyticsPageStore.getMiningFarmTotalEarningsBtc();
             const miningFarmTotalEarningsCudosEntity = analyticsPageStore.getMiningFarmTotalEarningsCudos();
 
-            const unsoftNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoftNftsTotalEarningsInBtc ?? new BigNumber(0);
+            const unsoldNftsTotalEarningsInBtc = miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0);
             const resaleRoyaltiesTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
             const soldNftsTotalEarningsInAcudos = miningFarmTotalEarningsCudosEntity?.soldNftsTotalEarningsInAcudos ?? new BigNumber(0);
 
-            const unsoftNftsTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(unsoftNftsTotalEarningsInBtc);
-            const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertCudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
-            const soldNftsTotalEarningsInUsd = cudosStore.convertCudosInUsd(soldNftsTotalEarningsInAcudos);
-            const totalInUsd = unsoftNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
+            const unsoldNftsTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(unsoldNftsTotalEarningsInBtc);
+            const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
+            const soldNftsTotalEarningsInUsd = cudosStore.convertAcudosInUsd(soldNftsTotalEarningsInAcudos);
+            const totalInUsd = unsoldNftsTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd).plus(soldNftsTotalEarningsInUsd);
 
             return (
                 <ChartInfo

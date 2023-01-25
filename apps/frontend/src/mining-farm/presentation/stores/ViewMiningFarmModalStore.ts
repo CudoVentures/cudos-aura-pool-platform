@@ -2,6 +2,7 @@ import { action, makeObservable, observable, runInAction } from 'mobx';
 
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import S from '../../../core/utilities/Main';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
@@ -86,7 +87,6 @@ export default class ViewMiningFarmModalStore extends ModalStore {
 
             this.show();
         });
-
     }
 
     hide = action(() => {
@@ -104,13 +104,15 @@ export default class ViewMiningFarmModalStore extends ModalStore {
     })
 
     areChangesMade(): boolean {
-        return this.editedCudosMintRoyalties !== this.miningFarmEntity.cudosMintNftRoyaltiesPercent
-            || this.editedCudosResaleRoyalties !== this.miningFarmEntity.cudosResaleNftRoyaltiesPercent;
+        return this.editedCudosMintRoyalties !== this.miningFarmEntity.cudosMintNftRoyaltiesPercent || this.editedCudosResaleRoyalties !== this.miningFarmEntity.cudosResaleNftRoyaltiesPercent;
     }
 
     saveChanges = async () => {
-        this.miningFarmEntity.cudosMintNftRoyaltiesPercent = this.editedCudosMintRoyalties;
-        this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.editedCudosResaleRoyalties;
+        await runInActionAsync(() => {
+            this.miningFarmEntity.cudosMintNftRoyaltiesPercent = this.editedCudosMintRoyalties;
+            this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.editedCudosResaleRoyalties;
+        });
+
         await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
         this.hide();
     }

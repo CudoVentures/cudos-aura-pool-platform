@@ -1,4 +1,4 @@
-import { action, makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import React from 'react';
 
 export const enum SnackType {
@@ -24,15 +24,14 @@ export default class SnackStore {
         this.show(msg, SnackType.ERROR);
     }
 
-    @action
     show(msg: string | React.ReactNode, type: SnackType) {
         this.msg = msg;
         this.type = type;
         this.visible = true;
     }
 
-    hide = action(() => {
+    hide = () => {
         this.visible = false;
-    })
+    }
 
 }

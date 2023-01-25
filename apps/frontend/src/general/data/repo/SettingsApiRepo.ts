@@ -1,7 +1,7 @@
-import { runInAction } from 'mobx';
 import SettingsRepo from '../../presentation/repos/SettingsRepo';
 import SettingsEntity from '../../entities/SettingsEntity';
 import GeneralApi from '../data-sources/GeneralApi';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class SettingsApiRepo implements SettingsRepo {
 
@@ -39,7 +39,7 @@ export default class SettingsApiRepo implements SettingsRepo {
         try {
             this.disableActions?.();
             const resultSettingsEntity = await this.generalApi.creditSettings(settingsEntity);
-            runInAction(() => {
+            await runInActionAsync(() => {
                 Object.assign(settingsEntity, resultSettingsEntity);
             });
         } finally {

@@ -17,6 +17,7 @@ import EarningsPerDayFilterEntity from '../../entities/EarningsPerDayFilterEntit
 import { RangeDatepickerState } from '../../../core/presentation/components/RangeDatepicker';
 import EarningsPerDayEntity from '../../entities/EarningsPerDayEntity';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class AnalyticsPageStore {
 
@@ -87,7 +88,7 @@ export default class AnalyticsPageStore {
     async fetchFilterCollections() {
         const collectionEntities = await this.collectionRepo.fetchCollectionsByMiningFarmId(this.earningsPerDayFilterEntity.farmId);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.filterCollectionEntities = collectionEntities;
         });
     }
@@ -98,7 +99,7 @@ export default class AnalyticsPageStore {
 
         const earningsPerDayEntity = await this.statisticsRepo.fetchEarningsPerDay(this.earningsPerDayFilterEntity);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.earningsPerDayEntity = earningsPerDayEntity;
         })
     }
@@ -112,7 +113,7 @@ export default class AnalyticsPageStore {
             let miningFarmTotalEarningsBtcEntity = this.getMiningFarmTotalEarningsBtc();
             if (miningFarmTotalEarningsBtcEntity === null) {
                 miningFarmTotalEarningsBtcEntity = await this.statisticsRepo.fetchMiningFarmTotalEarningsBtc(miningFarmId, collectionId);
-                runInAction(() => {
+                await runInActionAsync(() => {
                     const cacheMap = this.miningFarmTotalEarningsBtcEntitiesMap;
                     this.miningFarmTotalEarningsBtcEntitiesMap = null;
 
@@ -127,7 +128,7 @@ export default class AnalyticsPageStore {
             let miningFarmTotalEarningsCudosEntity = this.getMiningFarmTotalEarningsCudos();
             if (miningFarmTotalEarningsCudosEntity === null) {
                 miningFarmTotalEarningsCudosEntity = await this.statisticsRepo.fetchMiningFarmTotalEarningsCudos(miningFarmId, collectionId);
-                runInAction(() => {
+                await runInActionAsync(() => {
                     const cacheMap = this.miningFarmTotalEarningsCudosEntitiesMap;
                     this.miningFarmTotalEarningsCudosEntitiesMap = null;
 
@@ -141,7 +142,7 @@ export default class AnalyticsPageStore {
         let miningFarmMaintenanceFeeEntity = this.getMiningFarmMaintenanceFee();
         if (miningFarmMaintenanceFeeEntity === null) {
             miningFarmMaintenanceFeeEntity = await this.statisticsRepo.fetchMiningFarmMaintenanceFee(miningFarmId, collectionId);
-            runInAction(() => {
+            await runInActionAsync(() => {
                 const cacheMap = this.miningFarmMaintenanceFeeEntitiesMap;
                 this.miningFarmMaintenanceFeeEntitiesMap = null;
 
@@ -166,7 +167,7 @@ export default class AnalyticsPageStore {
             nftEntitiesMap.set(nftEntity.id, nftEntity);
         });
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.nftEntitiesMap = nftEntitiesMap;
             this.nftEventEntities = nftEventEntities;
             this.analyticsTableState.tableFilterState.total = total;
@@ -184,6 +185,10 @@ export default class AnalyticsPageStore {
 
         if (this.earningsPerDayFilterEntity.isCudos() === true) {
             return this.earningsPerDayEntity?.cudosEarningsPerDay.map((bn) => bn.toNumber()) ?? [];
+        }
+
+        if (this.earningsPerDayEntity?.btcEarningsPerDay.length !== this.earningsPerDayEntity?.cudosEarningsPerDay.length) {
+            return [];
         }
 
         return this.earningsPerDayEntity?.btcEarningsPerDay.map((btcValue, i) => {
@@ -222,7 +227,7 @@ export default class AnalyticsPageStore {
         this.fetchAggregatedStatistics();
     }
 
-    onChangeTableFilter = action((value: number) => {
+    onChangeTableFilter = (value: number) => {
         this.eventType = value;
-    })
+    }
 }

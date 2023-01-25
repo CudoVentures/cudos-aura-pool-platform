@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { action, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
@@ -73,6 +73,7 @@ export default class MegaWalletTransferModalStore extends ModalStore {
         return this.transferType === MegaWalletTransferType.DEPOSIT;
     }
 
+    @action
     fetchBalance() {
         this.balance = this.walletStore.getBalanceSafe();
     }

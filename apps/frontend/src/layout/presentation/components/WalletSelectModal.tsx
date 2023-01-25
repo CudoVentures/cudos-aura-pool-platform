@@ -144,6 +144,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     }
 
     function onClickLogin() {
+        walletSelectModalStore.hide();
         navigate(AppRoutes.LOGIN);
     }
 

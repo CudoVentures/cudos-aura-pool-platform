@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import TableState from '../../../core/presentation/stores/TableState';
 import S from '../../../core/utilities/Main';
 import MegaWalletEventEntity from '../../../analytics/entities/MegaWalletEventEntity';
@@ -8,6 +8,7 @@ import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
 import AccountSessionStore from './AccountSessionStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class SuperAdminMegaWalletPageStore {
     cudosRepo: CudosRepo;
@@ -43,10 +44,9 @@ export default class SuperAdminMegaWalletPageStore {
             megaWalletEventFilterModel.eventTypes = [this.eventType];
         }
 
-        console.log(megaWalletEventFilterModel.eventTypes)
         const { megaWalletEventEntities, nftEntities, total } = await this.statisticsRepo.fetchMegaWalletEventEntities(megaWalletEventFilterModel);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
             this.walletEventTableState.tableFilterState.total = total;
             this.megaWalletEventEntities = megaWalletEventEntities;
@@ -57,9 +57,8 @@ export default class SuperAdminMegaWalletPageStore {
         return this.nftEntitiesMap.get(id) || null;
     }
 
-    onChangeTableFilter = action((value) => {
+    onChangeTableFilter = async (value) => {
         this.eventType = value;
-
-        this.fetchMegaWalletActivity();
-    })
+        await this.fetchMegaWalletActivity();
+    }
 }

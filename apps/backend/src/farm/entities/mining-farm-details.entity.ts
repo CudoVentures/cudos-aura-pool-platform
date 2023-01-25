@@ -45,7 +45,7 @@ export default class MiningFarmDetailsEntity {
 
         const entity = new MiningFarmDetailsEntity();
 
-        entity.miningFarmId = parseInt(json.miningFarmId ?? entity.miningFarmId.toString(0));
+        entity.miningFarmId = parseInt(json.miningFarmId ?? entity.miningFarmId.toString());
         entity.averageHashPowerInTh = json.averageHashPowerInTh ?? entity.averageHashPowerInTh;
         entity.activeWorkers = json.activeWorkers ?? entity.activeWorkers;
         entity.nftsOwned = json.nftsOwned ?? entity.nftsOwned;

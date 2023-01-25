@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { CURRENCY_DECIMALS } from 'cudosjs';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import numeral from 'numeral';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import { CURRENCY_DECIMALS } from 'cudosjs';
+import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../repos/CudosRepo';
@@ -30,7 +30,7 @@ export default class CudosStore {
 
         const cudosDataEntity = await this.cudosRepo.fetchCudosData();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.inited = true;
             this.cudosDataEntity = cudosDataEntity;
         })

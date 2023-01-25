@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
@@ -7,6 +7,7 @@ import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import S from '../../../core/utilities/Main';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class CreditMiningFarmDetailsPageStore {
 
@@ -79,7 +80,7 @@ export default class CreditMiningFarmDetailsPageStore {
 
         const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.manufacturerEntities = manufacturerEntities;
             this.minerEntities = minerEntities;
             this.energySourceEntities = energySourceEntities;
@@ -91,17 +92,17 @@ export default class CreditMiningFarmDetailsPageStore {
         });
     }
 
-    setStepFarmDetails = action(() => {
+    setStepFarmDetails = () => {
         this.step = CreditMiningFarmDetailsPageStore.STEP_FARM_DETAILS;
-    })
+    }
 
-    setStepReview = action(() => {
+    setStepReview = () => {
         this.step = CreditMiningFarmDetailsPageStore.STEP_REVIEW;
-    })
+    }
 
-    setStepSuccess = action(() => {
+    setStepSuccess = () => {
         this.step = CreditMiningFarmDetailsPageStore.STEP_SUCCESS;
-    })
+    }
 
     isStepFarmDetails(): boolean {
         return this.step === CreditMiningFarmDetailsPageStore.STEP_FARM_DETAILS;
@@ -168,7 +169,7 @@ export default class CreditMiningFarmDetailsPageStore {
         const manufacturerEntity = ManufacturerEntity.newInstance(S.Strings.NOT_EXISTS, this.manufacturerInputValue);
         await this.miningFarmRepo.creditManufacturer(manufacturerEntity);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
             this.manufacturerEntities.push(manufacturerEntity);
             this.miningFarmEntity.manufacturerIds.push(manufacturerEntity.manufacturerId);
@@ -184,7 +185,7 @@ export default class CreditMiningFarmDetailsPageStore {
         const minerEntity = MinerEntity.newInstance(S.Strings.NOT_EXISTS, this.minerInputValue)
         await this.miningFarmRepo.creditMiner(minerEntity);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.minerEntitiesMap.set(minerEntity.minerId, minerEntity);
             this.minerEntities.push(minerEntity);
             this.miningFarmEntity.minerIds.push(minerEntity.minerId);
@@ -200,7 +201,7 @@ export default class CreditMiningFarmDetailsPageStore {
         const energySourceEntity = EnergySourceEntity.newInstance(S.Strings.NOT_EXISTS, this.energySourceInputValue);
         await this.miningFarmRepo.creditEnergySource(energySourceEntity);
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
             this.energySourceEntities.push(energySourceEntity);
             this.miningFarmEntity.energySourceIds.push(energySourceEntity.energySourceId);

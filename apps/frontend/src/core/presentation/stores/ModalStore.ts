@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable, runInAction } from 'mobx';
 
 export default class ModalStore {
 
@@ -13,9 +13,10 @@ export default class ModalStore {
         this.visible = true;
     })
 
-    @action
     hide() {
-        this.visible = false;
+        runInAction(() => {
+            this.visible = false;
+        });
     }
 
 }

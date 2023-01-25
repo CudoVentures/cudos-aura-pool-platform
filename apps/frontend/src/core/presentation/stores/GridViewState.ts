@@ -36,7 +36,6 @@ export default class GridViewState {
         makeAutoObservable(this);
     }
 
-    @action
     setGridSettingAndPreviewCount(setting: number) {
         this.gridSetting = setting;
         this.tableState.tableFilterState.itemsPerPage = this.calculateItemsPerPageByGridSettings();
@@ -74,12 +73,10 @@ export default class GridViewState {
         return this.gridSetting === setting;
     }
 
-    @action
     setIsLoading(isFetching: boolean) {
         this.isFetching = isFetching;
     }
 
-    @action
     setTotalItems(count: number) {
         this.tableState.tableFilterState.total = count;
     }
