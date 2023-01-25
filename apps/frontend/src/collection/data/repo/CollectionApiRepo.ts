@@ -248,12 +248,13 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     private checkCollectionsVersusSessionStorage(collectionEntities: CollectionEntity[]): CollectionEntity[] {
         const collectionsMap = this.collectionSessionStorage.getCollectionsMap();
-        return collectionEntities.map((collectionEntity: CollectionEntity) => {
+        return collectionEntities.map((collectionEntity) => {
             const storageCollection = collectionsMap.get(collectionEntity.id);
+            if (storageCollection !== undefined && collectionEntity.timestampUpdatedAt === storageCollection.timestampUpdatedAt) {
+                return storageCollection;
+            }
 
-            return storageCollection !== undefined && collectionEntity.timestampUpdatedAt === storageCollection.timestampUpdatedAt
-                ? storageCollection
-                : collectionEntity
-        })
+            return collectionEntity;
+        });
     }
 }
