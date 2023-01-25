@@ -25,6 +25,7 @@ export default class CollectionEntity {
     defaultPricePerNftInCudos: BigNumber;
     defaultHashPowerPerNftInTh: number;
     timestampDeletedAt: number;
+    timestampUpdatedAt: number;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -41,6 +42,7 @@ export default class CollectionEntity {
         this.defaultPricePerNftInCudos = null;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
         this.timestampDeletedAt = S.NOT_EXISTS;
+        this.timestampUpdatedAt = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -168,6 +170,7 @@ export default class CollectionEntity {
             'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString(10) ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
             'timestampDeletedAt': entity.timestampDeletedAt,
+            'timestampUpdatedAt': entity.timestampUpdatedAt,
         }
     }
 
@@ -192,6 +195,7 @@ export default class CollectionEntity {
         model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
         model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
         model.timestampDeletedAt = Number(json.timestampDeletedAt ?? model.timestampDeletedAt);
+        model.timestampUpdatedAt = Number(json.timestampUpdatedAt ?? model.timestampUpdatedAt);
 
         return model;
     }

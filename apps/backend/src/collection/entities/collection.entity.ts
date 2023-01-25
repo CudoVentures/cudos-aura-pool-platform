@@ -16,6 +16,7 @@ export class CollectionEntity {
     farmId: number;
     creatorId: number;
     timestampDeletedAt: number;
+    timestampUpdatedAt: number;
 
     constructor() {
         this.id = NOT_EXISTS_INT;
@@ -30,6 +31,7 @@ export class CollectionEntity {
         this.farmId = NOT_EXISTS_INT;
         this.creatorId = NOT_EXISTS_INT;
         this.timestampDeletedAt = NOT_EXISTS_INT;
+        this.timestampUpdatedAt = NOT_EXISTS_INT;
     }
 
     markQueued(): void {
@@ -70,6 +72,7 @@ export class CollectionEntity {
         repoJson.farmId = entity.farmId;
         repoJson.creatorId = entity.creatorId;
         repoJson.deletedAt = new Date(entity.timestampDeletedAt);
+        repoJson.updatedAt = new Date(entity.timestampUpdatedAt);
 
         return repoJson;
     }
@@ -93,6 +96,7 @@ export class CollectionEntity {
         entity.farmId = repoJson.farmId ?? entity.farmId;
         entity.creatorId = repoJson.creatorId ?? entity.creatorId;
         entity.timestampDeletedAt = repoJson.deletedAt?.getTime() ?? entity.timestampDeletedAt;
+        entity.timestampUpdatedAt = repoJson.updatedAt?.getTime() ?? entity.timestampUpdatedAt;
 
         return entity;
     }
@@ -115,6 +119,7 @@ export class CollectionEntity {
             'farmId': entity.farmId.toString(),
             'creatorId': entity.creatorId.toString(),
             'timestampDeletedAt': entity.timestampDeletedAt,
+            'timestampUpdatedAt': entity.timestampUpdatedAt,
         }
     }
 

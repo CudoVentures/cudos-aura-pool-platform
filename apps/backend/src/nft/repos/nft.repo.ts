@@ -90,6 +90,12 @@ export class NftRepo extends Model {
     @Column({ type: DataType.DATE })
         deletedAt: Date;
 
+    @Column({ type: DataType.DATE })
+        updatedAt: Date;
+
+    @Column({ type: DataType.DATE })
+        createdAt: Date;
+
     @AllowNull(false)
     @Column({ type: DataType.STRING, defaultValue: '' })
         currentOwner: string;

@@ -27,6 +27,9 @@ export default class NftEntity {
     data: string;
     priceUsd: number;
     priceAcudosValidUntil: number;
+    updatedAt: number;
+    deletedAt: number;
+    createdAt: number;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -44,6 +47,9 @@ export default class NftEntity {
         this.data = ''
         this.priceUsd = S.NOT_EXISTS;
         this.priceAcudosValidUntil = S.NOT_EXISTS;
+        this.updatedAt = S.NOT_EXISTS;
+        this.deletedAt = S.NOT_EXISTS;
+        this.createdAt = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -71,6 +77,15 @@ export default class NftEntity {
 
     hasImage(): boolean {
         return this.imageUrl !== '';
+    }
+
+    markAsMinted(): void {
+        this.status = NftStatus.MINTED;
+    }
+
+    setPricesZero(): void {
+        this.priceInAcudos = new BigNumber(0);
+        this.priceUsd = NOT_EXISTS_INT;
     }
 
     markAsExpiringToday() {
@@ -161,6 +176,9 @@ export default class NftEntity {
             'data': entity.data,
             'priceUsd': entity.priceUsd,
             'priceAcudosValidUntil': entity.priceAcudosValidUntil,
+            'updatedAt': entity.updatedAt,
+            'deletedAt': entity.deletedAt,
+            'createdAt': entity.createdAt,
         }
     }
 
@@ -186,6 +204,9 @@ export default class NftEntity {
         model.data = json.data ?? model.data;
         model.priceUsd = json.priceUsd ?? model.priceUsd;
         model.priceAcudosValidUntil = json.priceAcudosValidUntil ?? model.priceAcudosValidUntil;
+        model.updatedAt = new Date(json.updatedAt ?? model.updatedAt).getTime();
+        model.deletedAt = new Date(json.deletedAt ?? model.deletedAt).getTime();
+        model.createdAt = new Date(json.createdAt ?? model.createdAt).getTime();
 
         return model;
     }

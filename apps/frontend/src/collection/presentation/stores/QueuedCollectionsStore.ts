@@ -108,13 +108,9 @@ export default class QueuedCollectionsStore {
             return;
         }
 
-        const clonedCollectionEntity = collectionEntity.clone();
-        clonedCollectionEntity.markApproved();
-
         try {
             const signingClient = await this.walletStore.getSigningClient();
-            await this.collectionRepo.approveCollection(clonedCollectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
-            collectionEntity.copy(clonedCollectionEntity);
+            await this.collectionRepo.approveCollection(collectionEntity, this.accountSessionStore.superAdminEntity, this.walletStore.getAddress(), signingClient);
         } catch (e) {
             if (e.message.indexOf('is not admin') !== -1) {
                 this.alertStore.show('The connected wallet is not a marketplace admin wallet');

@@ -4,21 +4,26 @@ import NftEntity, { NftStatus } from '../../entities/NftEntity';
 import NftRepo from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
-import { SigningStargateClient, GasPrice, Ledger, Ui64, CURRENCY_DECIMALS } from 'cudosjs';
+import { SigningStargateClient, GasPrice, Ledger, CURRENCY_DECIMALS } from 'cudosjs';
 import Long from 'long';
 import S from '../../../core/utilities/Main';
 import BigNumber from 'bignumber.js';
 import { coin } from 'cudosjs/build/proto-signing';
+import NftSessionStorage from '../data-sources/NftSessionStorage';
 
 export default class NftApiRepo implements NftRepo {
 
     nftApi: NftApi;
+    nftSessioNStorage: NftSessionStorage;
+
     enableActions: () => void;
     disableActions: () => void;
     showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
 
     constructor() {
         this.nftApi = new NftApi();
+        this.nftSessioNStorage = new NftSessionStorage();
+
         this.enableActions = null;
         this.disableActions = null;
         this.showAlert = null;
@@ -36,7 +41,9 @@ export default class NftApiRepo implements NftRepo {
     async fetchNftById(nftId: string, status: CollectionStatus): Promise < NftEntity > {
         const nftEntities = await this.fetchNftByIds([nftId], status);
 
-        return nftEntities.length === 1 ? nftEntities[0] : null;
+        const checkedNfts = this.checkNftsVersusSessionStorage(nftEntities);
+
+        return checkedNfts.length === 1 ? checkedNfts[0] : null;
     }
 
     async fetchNftByIds(nftIds: string[], status: CollectionStatus): Promise < NftEntity[] > {
@@ -48,7 +55,8 @@ export default class NftApiRepo implements NftRepo {
         }
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
-        return nftEntities;
+
+        return this.checkNftsVersusSessionStorage(nftEntities);
     }
 
     async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
@@ -60,7 +68,7 @@ export default class NftApiRepo implements NftRepo {
         nftFilterModel.count = 10;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
-        return nftEntities;
+        return this.checkNftsVersusSessionStorage(nftEntities);
     }
 
     async fetchTrendingNfts(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
@@ -72,13 +80,19 @@ export default class NftApiRepo implements NftRepo {
         nftFilterModel.count = 10;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
-        return nftEntities;
+        return this.checkNftsVersusSessionStorage(nftEntities);
     }
 
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
         try {
             this.disableActions?.();
-            return await this.nftApi.fetchNftsByFilter(nftFilterModel);
+            const { nftEntities, total } = await this.nftApi.fetchNftsByFilter(nftFilterModel);
+            const checkedNfts = this.checkNftsVersusSessionStorage(nftEntities);
+
+            return {
+                nftEntities: checkedNfts,
+                total,
+            }
         } finally {
             this.enableActions?.();
         }
@@ -108,6 +122,10 @@ export default class NftApiRepo implements NftRepo {
                 txHash = tx.transactionHash;
             }
 
+            nftEntity.markAsMinted();
+            nftEntity.setPricesZero();
+            this.nftSessioNStorage.updateNftsMap([nftEntity]);
+
             return txHash;
         } finally {
             this.enableActions?.();
@@ -122,9 +140,22 @@ export default class NftApiRepo implements NftRepo {
             const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(priceInCudos.shiftedBy(CURRENCY_DECIMALS).toFixed(0), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;
 
+            nftEntity.priceInAcudos = priceInCudos;
+            this.nftSessioNStorage.updateNftsMap([nftEntity]);
             return txHash;
         } finally {
             this.enableActions?.();
         }
+    }
+
+    private checkNftsVersusSessionStorage(nftEntities: NftEntity[]): NftEntity[] {
+        const nftsMap = this.nftSessioNStorage.getNftsMap();
+        return nftEntities.map((nftEntity) => {
+            const storageNft = nftsMap.get(nftEntity.id);
+
+            return storageNft !== undefined && nftEntity.updatedAt === storageNft.updatedAt
+                ? storageNft
+                : nftEntity
+        })
     }
 }

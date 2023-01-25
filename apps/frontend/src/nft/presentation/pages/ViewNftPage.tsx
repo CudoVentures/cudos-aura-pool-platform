@@ -35,10 +35,12 @@ import { ContainerBackground } from '../../../core/presentation/components/Style
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
     walletStore?: WalletStore;
+    cudosStore?: CudosStore;
     bitcoinStore?: BitcoinStore;
     viewNftPageStore?: ViewNftPageStore;
     buyNftModalStore?: BuyNftModalStore;
@@ -47,7 +49,7 @@ type Props = {
     alertStore?: AlertStore;
 }
 
-function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
+function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -156,7 +158,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
             'Price',
             <div className={'DataValue NftPrice FlexRow'}>
                 <Svg svg={SvgCudos}/>
-                <div className={'H3 Bold'}>{viewNftPageStore.formatPriceInCudos()}</div>
+                <div className={'H3 Bold'}>{cudosStore.formatPriceInCudosForNft(nftEntity)}</div>
                 <div className={'SubPrice B2 SemiBold'}>{viewNftPageStore.getNftPriceText()}</div>
             </div>,
         ));
