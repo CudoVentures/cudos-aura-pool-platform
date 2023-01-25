@@ -205,7 +205,6 @@ export class CollectionService {
         collectionEntity: CollectionEntity,
         tx: Transaction = undefined,
     ): Promise<CollectionEntity> {
-
         try {
             checkValidNftDenomId(collectionEntity.denomId);
         } catch (e) {

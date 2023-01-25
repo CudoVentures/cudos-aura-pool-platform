@@ -50,7 +50,7 @@ function NftPreview({ cudosStore, className, nftEntity, collectionName, disabled
             <div className={'Priceheading'}>Price</div>
             <div className={'PriceRow FlexRow Dots'}>
                 <Svg className = { 'SvgCudosLogo' } svg={SvgCudosLogo} />
-                <div className={'Price H4 Bold Dots'}>{cudosStore.formatPriceInCudosForNft(nftEntity)}</div>
+                <div className={'Price H4 Bold Dots'}>{cudosStore.formatExistingPriceForNft(nftEntity)}</div>
             </div>
         </div>
     );

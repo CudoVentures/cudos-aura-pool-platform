@@ -93,13 +93,32 @@ export default class CudosStore {
     }
 
     getNftCudosPriceForNft(nftEntity: NftEntity): BigNumber {
-        return nftEntity.isMinted()
-            ? nftEntity.priceInAcudos.shiftedBy(-CURRENCY_DECIMALS)
-            : this.convertUsdInCudos(nftEntity.priceUsd);
+        if (nftEntity.isMinted() === true) {
+            if (nftEntity.priceInAcudos === null) {
+                return new BigNumber(0)
+            }
+
+            return nftEntity.priceInAcudos.shiftedBy(-CURRENCY_DECIMALS)
+        }
+
+        return this.convertUsdInCudos(nftEntity.priceUsd);
     }
 
     formatPriceInCudosForNft(nftEntity: NftEntity): string {
         return `${this.getNftCudosPriceForNft(nftEntity).toFixed(2)} CUDOS`;
+    }
+
+    formatPriceInUsdForNft(nftEntity: NftEntity): string {
+        const price = nftEntity.priceUsd === S.NOT_EXISTS ? 0 : nftEntity.priceUsd;
+        return `$ ${new BigNumber(price).toFixed(2)}`;
+    }
+
+    formatExistingPriceForNft(nftEntity: NftEntity): string {
+        if (nftEntity.isMinted() === true) {
+            return this.formatPriceInCudosForNft(nftEntity);
+        }
+
+        return this.formatPriceInUsdForNft(nftEntity);
     }
 
     static formatAcudosInCudos(acudosPrice: BigNumber): string {

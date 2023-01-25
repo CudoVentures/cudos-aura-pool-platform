@@ -22,7 +22,7 @@ export default class CollectionEntity {
     coverImgUrl: string;
     status: CollectionStatus;
     royalties: number;
-    defaultPricePerNftInCudos: BigNumber;
+    defaultPricePerNftInUsd: number;
     defaultHashPowerPerNftInTh: number;
     timestampDeletedAt: number;
     timestampUpdatedAt: number;
@@ -39,7 +39,7 @@ export default class CollectionEntity {
         this.coverImgUrl = '';
         this.status = CollectionStatus.QUEUED;
         this.royalties = S.NOT_EXISTS;
-        this.defaultPricePerNftInCudos = null;
+        this.defaultPricePerNftInUsd = S.NOT_EXISTS;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
         this.timestampDeletedAt = S.NOT_EXISTS;
         this.timestampUpdatedAt = S.NOT_EXISTS;
@@ -64,7 +64,7 @@ export default class CollectionEntity {
     }
 
     hasDefaultValuesPerNft(): boolean {
-        return this.defaultPricePerNftInCudos !== null && this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS;
+        return this.defaultPricePerNftInUsd !== S.NOT_EXISTS && this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS;
     }
 
     hasImages(): boolean {
@@ -73,10 +73,6 @@ export default class CollectionEntity {
 
     hasHashPowerInTh(): boolean {
         return this.hashPowerInTh !== S.NOT_EXISTS;
-    }
-
-    getDefaultPricePerNftInAcudos(): BigNumber {
-        return this.defaultPricePerNftInCudos.multipliedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }
 
     isStatusApproved(): boolean {
@@ -119,8 +115,8 @@ export default class CollectionEntity {
         return `${this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00'} %`;
     }
 
-    formatDefaultPricePerNftInCudos(): string {
-        return `${this.defaultPricePerNftInCudos !== null ? this.defaultPricePerNftInCudos.toFixed(2) : '0.00'} CUDOS`;
+    formatDefaultPricePerNftInUsd(): string {
+        return `$ ${this.defaultPricePerNftInUsd !== null ? this.defaultPricePerNftInUsd : '0.00'}`;
     }
 
     formatDefaultHashPowerPerNftInTh(): string {
@@ -167,7 +163,7 @@ export default class CollectionEntity {
             'bannerImage': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
-            'defaultPricePerNftInCudos': entity.defaultPricePerNftInCudos?.toString(10) ?? null,
+            'defaultPricePerNftInUsd': entity.defaultPricePerNftInUsd?.toString(10) ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
             'timestampDeletedAt': entity.timestampDeletedAt,
             'timestampUpdatedAt': entity.timestampUpdatedAt,
@@ -192,7 +188,7 @@ export default class CollectionEntity {
         model.coverImgUrl = json.bannerImage ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
-        model.defaultPricePerNftInCudos = json.defaultPricePerNftInCudos !== null ? new BigNumber(json.defaultPricePerNftInCudos ?? model.defaultPricePerNftInCudos) : null;
+        model.defaultPricePerNftInUsd = Number(json.defaultPricePerNftInUsd ?? model.defaultPricePerNftInUsd);
         model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
         model.timestampDeletedAt = Number(json.timestampDeletedAt ?? model.timestampDeletedAt);
         model.timestampUpdatedAt = Number(json.timestampUpdatedAt ?? model.timestampUpdatedAt);

@@ -46,8 +46,8 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
 
     const [hashPowerInTh, setHashPowerInTh] = useState(collectionEntity.hashPowerInTh !== S.NOT_EXISTS ? collectionEntity.hashPowerInTh : '');
     // const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString(10) : '')
-    const [defaultPricePerNftInCudos, setDefaultPricePerNftInCudos] = useState(collectionEntity.defaultPricePerNftInCudos !== null ? collectionEntity.defaultPricePerNftInCudos.toString(10) : '');
-    const [defaultHashPowerPerNftInTh, setDefaultHashPowerPerNftInTh] = useState(collectionEntity.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInCudos : '');
+    const [defaultPricePerNftInUsd, setDefaultPricePerNftInUsd] = useState(collectionEntity.defaultPricePerNftInUsd !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInUsd.toString() : '');
+    const [defaultHashPowerPerNftInTh, setDefaultHashPowerPerNftInTh] = useState(collectionEntity.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? collectionEntity.defaultHashPowerPerNftInTh : '');
     const [secondarySaleRoyalties, setSecondarySaleRoyalties] = useState(collectionEntity.royalties !== S.NOT_EXISTS ? collectionEntity.royalties.toString() : '');
 
     function onChangeHashPowerInTh(value) {
@@ -82,10 +82,10 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     //     collectionEntity.maintenanceFeeInBtc = value !== '' ? new BigNumber(value) : null;
     // }
 
-    function onChangeDefaultPricePerNftInCudos(value) {
+    function onChangeDefaultPricePerNftInUsd(value) {
         runInAction(() => {
-            setDefaultPricePerNftInCudos(value);
-            collectionEntity.defaultPricePerNftInCudos = value !== '' ? new BigNumber(value) : null;
+            setDefaultPricePerNftInUsd(value);
+            collectionEntity.defaultPricePerNftInUsd = value !== '' ? Number(value) : S.NOT_EXISTS;
         });
     }
 
@@ -100,7 +100,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
         runInAction(() => {
             creditCollectionStore.defaultHashAndPriceValues ^= 1;
             if (creditCollectionStore.defaultHashAndPriceValues === S.INT_FALSE) {
-                onChangeDefaultPricePerNftInCudos('');
+                onChangeDefaultPricePerNftInUsd('');
                 onChangeDefaultHashPowerPerNftInTh('');
             }
         });
@@ -308,12 +308,12 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         label={<TextWithTooltip text={'Price per NFT'} tooltipText={'The sale price for each indivudial NFT, fees and royalties included.'} />}
                         placeholder={'Enter price...'}
                         inputType = { InputType.REAL }
-                        value={defaultPricePerNftInCudos}
+                        value={defaultPricePerNftInUsd}
                         inputValidation={collectionPricePerNftValidation}
-                        onChange={onChangeDefaultPricePerNftInCudos}
+                        onChange={onChangeDefaultPricePerNftInUsd}
                         InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end" >CUDOS</InputAdornment>
+                            startAdornment: (
+                                <InputAdornment position="start" >$</InputAdornment>
                             ),
                         }} />
                 </>

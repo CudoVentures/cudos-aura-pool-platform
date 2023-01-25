@@ -393,6 +393,7 @@ export class FarmService {
             const miningFarmDetailsEntity = miningFarmIdToDetailsMap.get(miningFarmEntity.id);
             miningFarmDetailsEntity.remainingHashPowerInTH -= collectionEntity.hashingPower;
             ++miningFarmDetailsEntity.nftsOwned;
+            collectionEntity.hashingPower = 0;
             if (nftEntity.isSold() === true) {
                 ++miningFarmDetailsEntity.totalNftsSold;
             }
