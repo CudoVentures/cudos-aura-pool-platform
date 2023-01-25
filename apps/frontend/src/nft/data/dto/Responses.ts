@@ -18,3 +18,11 @@ export class ResUpdateNftCudosPrice {
         this.acudosPrice = new BigNumber(data.acudosPrice);
     }
 }
+
+export class ResBuyNftWithEth {
+    txhash: string;
+
+    constructor(data) {
+        this.txhash = data.txHash;
+    }
+}

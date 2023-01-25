@@ -55,6 +55,10 @@ export default class CudosStore {
         return (priceChangeInUsd / priceInUsd) * 100;
     }
 
+    convertCudosToEth(cudosAmount: BigNumber): BigNumber {
+        return cudosAmount.multipliedBy(this.cudosDataEntity.priceInEth);
+    }
+
     convertAcudosInUsd(acudosPrice: BigNumber): BigNumber {
         return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
     }
@@ -89,6 +93,10 @@ export default class CudosStore {
 
     formatConvertedCudosInUsd(cudosPrice: BigNumber): string {
         return numeral(this.convertCudosInUsd(cudosPrice).toString(10)).format(ProjectUtils.NUMERAL_USD);
+    }
+
+    getEthPriceForNft(nftEntity: NftEntity): BigNumber {
+        return this.convertCudosToEth(this.getNftCudosPriceForNft(nftEntity));
     }
 
     getNftCudosPriceForNft(nftEntity: NftEntity): BigNumber {

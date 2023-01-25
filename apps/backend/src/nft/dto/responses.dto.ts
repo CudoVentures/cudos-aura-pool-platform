@@ -19,3 +19,11 @@ export class ResUpdateNftCudosPrice {
         this.acudosPrice = acudosPrice.toString(10);
     }
 }
+
+export class ResBuyNftWithEth {
+    txhash: string;
+
+    constructor(txHash: string) {
+        this.txhash = txHash;
+    }
+}

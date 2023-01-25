@@ -249,9 +249,10 @@ export default class CollectionApiRepo implements CollectionRepo {
     private checkCollectionsVersusSessionStorage(collectionEntities: CollectionEntity[]): CollectionEntity[] {
         const collectionsMap = this.collectionSessionStorage.getCollectionsMap();
         return collectionEntities.map((collectionEntity: CollectionEntity) => {
-            const storageCollection = collectionsMap.get(collectionEntity.id);
 
-            return storageCollection !== undefined && collectionEntity.timestampUpdatedAt === storageCollection.timestampUpdatedAt
+            const storageCollection = collectionsMap.has(collectionEntity.id) ? CollectionEntity.fromJson(collectionsMap.get(collectionEntity.id)) : null;
+
+            return storageCollection && collectionEntity.timestampUpdatedAt === storageCollection.timestampUpdatedAt
                 ? storageCollection
                 : collectionEntity
         })

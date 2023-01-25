@@ -64,6 +64,15 @@ import ApprovedCollectionsStore from './collection/presentation/stores/ApprovedC
 import RejectedCollectionsStore from './collection/presentation/stores/RejectedCollectionsStore';
 import GeneralStore from './general/presentation/stores/GeneralStore';
 
+// @ts-ignore
+declare global {
+    // tslint:disable-next-line
+    interface Window {
+      web3: any;
+      ethereum: any;
+    }
+}
+
 const storageHelper = new StorageHelper();
 storageHelper.open();
 

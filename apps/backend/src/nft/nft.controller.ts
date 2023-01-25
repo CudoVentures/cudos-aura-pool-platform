@@ -5,9 +5,9 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { NftStatus } from './nft.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
+import { ReqBuyNftWithEth, ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
 import NftFilterEntity from './entities/nft-filter.entity';
-import { ResFetchNftsByFilter, ResUpdateNftCudosPrice } from './dto/responses.dto';
+import { ResBuyNftWithEth, ResFetchNftsByFilter, ResUpdateNftCudosPrice } from './dto/responses.dto';
 import NftEntity from './entities/nft.entity';
 import { CollectionService } from '../collection/collection.service';
 import BigNumber from 'bignumber.js';
@@ -120,5 +120,13 @@ export class NFTController {
         const acudosPrice = await this.nftService.updateNftCudosPrice(req.id);
 
         return new ResUpdateNftCudosPrice(acudosPrice);
+    }
+
+    @Post('buyNftWithEth')
+    @HttpCode(200)
+    async buyNftWithEth(@Body() req: ReqBuyNftWithEth): Promise<ResBuyNftWithEth> {
+        const txhash = await this.nftService.buyNftWithEth(req.id, req.signedTx);
+
+        return new ResBuyNftWithEth(txhash);
     }
 }

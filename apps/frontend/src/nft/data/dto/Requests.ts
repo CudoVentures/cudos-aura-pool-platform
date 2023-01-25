@@ -16,3 +16,13 @@ export class ReqUpdateNftCudosPrice {
         this.id = id;
     }
 }
+
+export class ReqBuyNftWithEth {
+    id: string;
+    signedTx: any;
+
+    constructor(id: string, signedTx: any) {
+        this.id = id;
+        this.signedTx = signedTx;
+    }
+}

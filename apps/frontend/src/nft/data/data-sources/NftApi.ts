@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js';
 import axios from '../../../core/utilities/AxiosWrapper';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
-import { ReqFetchNftsByFilter, ReqUpdateNftCudosPrice } from '../dto/Requests';
-import { ResFetchNftsByFilter, ResUpdateNftCudosPrice } from '../dto/Responses';
+import { ReqBuyNftWithEth, ReqFetchNftsByFilter, ReqUpdateNftCudosPrice } from '../dto/Requests';
+import { ResBuyNftWithEth, ResFetchNftsByFilter, ResUpdateNftCudosPrice } from '../dto/Responses';
 
 export default class NftApi {
 
@@ -29,6 +29,16 @@ export default class NftApi {
         const res = new ResUpdateNftCudosPrice(data);
 
         return res.acudosPrice;
+    }
+
+    async buyNftWithEth(id: string, signedTx: any): Promise< string > {
+        const req = new ReqBuyNftWithEth(id, signedTx);
+
+        const { data } = await axios.post(`${NftApi.nftModuleUrl}/buyNftWithEth`, req);
+
+        const res = new ResBuyNftWithEth(data);
+
+        return res.txhash;
     }
 
 }

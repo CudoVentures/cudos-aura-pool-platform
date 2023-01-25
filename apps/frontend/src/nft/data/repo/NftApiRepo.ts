@@ -1,7 +1,7 @@
-import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, ETH_CONSTS } from '../../../core/utilities/Constants';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity, { NftStatus } from '../../entities/NftEntity';
-import NftRepo from '../../presentation/repos/NftRepo';
+import NftRepo, { BuyingCurrency } from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
 import { SigningStargateClient, GasPrice, Ledger, CURRENCY_DECIMALS } from 'cudosjs';
@@ -10,6 +10,7 @@ import S from '../../../core/utilities/Main';
 import BigNumber from 'bignumber.js';
 import { coin } from 'cudosjs/build/proto-signing';
 import NftSessionStorage from '../data-sources/NftSessionStorage';
+import Web3 from 'web3';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -98,10 +99,9 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string > {
+    async buyNft(currency: BuyingCurrency, nftEntity: NftEntity, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
-
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
             let txHash = S.Strings.EMPTY;
@@ -113,11 +113,32 @@ export default class NftApiRepo implements NftRepo {
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
                 const memo = `{"uuid":"${nftEntity.id}"}`;
 
-                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
-                txHash = tx.transactionHash;
-            }
+                // sign transaction and send it to backend
+                if (currency === BuyingCurrency.ETH) {
+                    const web3 = new Web3(window.ethereum);
 
-            if (nftEntity.status === NftStatus.MINTED) {
+                    // Will open the MetaMask UI
+                    const transactionParameters = {
+                        nonce: '0x00', // ignored by MetaMask
+                        gasPrice: '0x09184e72a000', // customizable by user during MetaMask confirmation.
+                        gas: '0x2710', // customizable by user during MetaMask confirmation.
+                        to: ETH_CONSTS.ETH_CUDOS_ADDRESS, // Required except during contract publications.
+                        from: window.ethereum.selectedAddress, // must match user's active address.
+                        value: web3.utils.fromWei(amount.shiftedBy(18).toString(10)), // Only required to send ether to the recipient from the initiating external account.
+                        chainId: '0x3', // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+                    };
+
+                    const signedTx = await web3.eth.signTransaction(transactionParameters);
+                    console.log('333333333333')
+
+                    console.log(signedTx)
+                    // this.nftApi
+                    //     .txHash = tx.transactionHash;
+                } else if (currency === BuyingCurrency.CUDOS) {
+                    const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
+                    txHash = tx.transactionHash;
+                }
+            } else {
                 const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
             }

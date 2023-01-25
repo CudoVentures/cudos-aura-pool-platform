@@ -37,3 +37,13 @@ export class ReqUpdateNftCudosPrice {
     @IsNotEmpty()
         id: string;
 }
+
+export class ReqBuyNftWithEth {
+    @IsString()
+    @IsNotEmpty()
+        id: string;
+
+    @IsString()
+    @IsNotEmpty()
+        signedTx: string;
+}

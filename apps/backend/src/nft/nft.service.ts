@@ -187,6 +187,11 @@ export class NFTService {
         return nftEntity.acudosPrice;
     }
 
+    async buyNftWithEth(id: string, signedTx: string): Promise<string> {
+        console.log(signedTx)
+        return 'wefwef'
+    }
+
     async findOne(id: string): Promise < NftEntity > {
         const nftRepo = await this.nftRepo.findByPk(id);
 

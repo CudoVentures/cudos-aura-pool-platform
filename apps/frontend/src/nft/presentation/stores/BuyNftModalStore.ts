@@ -3,7 +3,7 @@ import { action, makeObservable, observable, runInAction } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
-import NftRepo from '../repos/NftRepo';
+import NftRepo, { BuyingCurrency } from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
@@ -26,6 +26,7 @@ export default class BuyNftModalStore extends ModalStore {
     cudosRepo: CudosRepo;
     walletStore: WalletStore;
 
+    @observable currency: BuyingCurrency;
     @observable nftEntity: NftEntity;
     @observable cudosPrice: number;
     @observable recipient: string;
@@ -50,6 +51,7 @@ export default class BuyNftModalStore extends ModalStore {
 
     @action
     resetValues() {
+        this.currency = BuyingCurrency.CUDOS;
         this.nftEntity = null;
         this.collectionEntity = null;
         this.cudosPrice = S.NOT_EXISTS;
@@ -60,6 +62,7 @@ export default class BuyNftModalStore extends ModalStore {
 
     @action
     nullateValues() {
+        this.currency = null;
         this.nftEntity = null;
         this.collectionEntity = null;
         this.cudosPrice = null;
@@ -68,9 +71,10 @@ export default class BuyNftModalStore extends ModalStore {
         this.txHash = null;
     }
 
-    async showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
+    async showSignal(currency: BuyingCurrency, nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
         const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
         this.cudosStore.init();
+        this.currency = currency;
 
         runInAction(() => {
             this.nftEntity = nftEntity;
@@ -94,7 +98,7 @@ export default class BuyNftModalStore extends ModalStore {
         this.modalStage = ModalStage.PROCESSING;
 
         try {
-            this.txHash = await this.nftRepo.buyNft(this.nftEntity, this.walletStore.ledger);
+            this.txHash = await this.nftRepo.buyNft(this.currency, this.nftEntity, this.walletStore.ledger);
 
             await runInActionAsync(() => {
                 this.modalStage = ModalStage.SUCCESS;

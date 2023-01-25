@@ -1,14 +1,14 @@
 import { action, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx';
 import { KeplrWallet, Ledger, CosmostationWallet, StdSignature } from 'cudosjs';
 import S from '../../../core/utilities/Main';
-import { CHAIN_DETAILS, SIGN_NONCE } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, ETH_CONSTS, SIGN_NONCE } from '../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import WalletRepo from '../repos/WalletRepo';
-import { Magic } from 'magic-sdk';
-import { CosmosExtension } from '@magic-ext/cosmos';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import detectEthereumProvider from '@metamask/detect-provider';
+import Web3 from 'web3';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
@@ -21,6 +21,8 @@ export default class WalletStore {
     alertStore: AlertStore;
     walletRepo: WalletRepo;
 
+    web3: Web3;
+
     ledger: Ledger;
     balance: BigNumber;
     address: string;
@@ -29,6 +31,8 @@ export default class WalletStore {
     constructor(alertStore: AlertStore, walletRepo: WalletRepo) {
         this.alertStore = alertStore;
         this.walletRepo = walletRepo;
+
+        this.ethProvider = null;
 
         this.ledger = null;
         this.balance = null;
@@ -213,5 +217,38 @@ export default class WalletStore {
 
     sendCudos(destiantionAddress: string, amount: BigNumber): Promise<string> {
         return this.walletRepo.sendCudos(destiantionAddress, amount, this.ledger);
+    }
+
+    async getEthProvider() {
+        // This function detects most providers injected at window.ethereum
+        const web3 = new Web3(window.ethereum);
+        if (!web3) {
+            throw Error('Metamask not installed.');
+        }
+
+        const chainId = await web3.eth.getChainId();
+        if (chainId !== ETH_CONSTS.ETH_CHAIN_ID) {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: web3.utils.toHex(Number(ETH_CONSTS.ETH_CHAIN_ID)) }],
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        this.web3 = web3;
+
+        await window.ethereum.enable();
+    }
+
+    async getEthBalance(): Promise< BigNumber > {
+        await this.getEthProvider();
+        const accounts = await this.web3.eth.getAccounts();
+        const balanceWei = await this.web3.eth.getBalance(accounts[0])
+        const balanceEth = this.web3.utils.fromWei(balanceWei);
+
+        return new BigNumber(balanceEth);
     }
 }
