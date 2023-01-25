@@ -303,7 +303,8 @@ export default class CreditCollectionStore {
         this.selectedNftEntity = nftEntity.cloneDeep();
 
         this.selectedNftHashingPowerInThInputValue = nftEntity.hashPowerInTh !== S.NOT_EXISTS ? nftEntity.hashPowerInTh.toString() : '';
-        this.selectedNftPriceInDollarsInputValue = nftEntity.priceInAcudos !== null ? this.cudosStore.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2) : '';
+        // this.selectedNftPriceInDollarsInputValue = nftEntity.priceInAcudos !== null ? this.cudosStore.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2) : '';
+        this.selectedNftPriceInDollarsInputValue = nftEntity.priceUsd !== S.NOT_EXISTS ? nftEntity.priceUsd.toString() : '';
     }
 
     onClickSendForApproval = async () => {

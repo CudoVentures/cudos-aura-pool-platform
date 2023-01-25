@@ -97,6 +97,7 @@ export class CollectionController {
                 nftEntities[i].uri = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, nftEntities[i].uri);
             }
         } catch (e) {
+            console.log(e);
             throw new DataServiceError();
         }
 
@@ -165,6 +166,7 @@ export class CollectionController {
 
             this.dataService.cleanUpOldUris(oldUris, newUris);
         } catch (ex) {
+            console.log(ex);
             this.dataService.cleanUpNewUris(oldUris, newUris);
             const errMessage = ex.response?.message;
             switch (errMessage) {

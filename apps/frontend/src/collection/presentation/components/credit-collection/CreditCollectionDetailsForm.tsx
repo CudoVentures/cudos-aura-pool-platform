@@ -170,7 +170,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                             'position': 'static',
                             'fileExt': '.svg, .gif, .jpg, .jpeg, .png',
                             'onExceedLimit': () => {
-                                this.props.alertStore.show('', 'Максималният размер на файловете е 2MB!');
+                                alertStore.show('Max file size is 2MB!');
                             },
                             'multi': true,
                             onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
@@ -203,7 +203,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                             'position': 'static',
                             'fileExt': '.svg, .gif, .jpg, .jpeg, .png',
                             'onExceedLimit': () => {
-                                this.props.alertStore.show('', 'Максималният размер на файловете е 2MB!');
+                                alertStore.show('Max file size is 2MB!');
                             },
                             'multi': true,
                             onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {

@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import S from '../../../../core/utilities/Main';
-import BitcoinStore from '../../../../bitcoin-data/presentation/stores/BitcoinStore';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
 import { InputAdornment } from '@mui/material';
-import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
+import Svg from '../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonType } from '../../../../core/presentation/components/Button';
 import UploaderComponent from '../../../../core/presentation/components/UploaderComponent';
@@ -27,11 +26,10 @@ import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
 type Props = {
     alertStore?: AlertStore;
     creditCollectionStore?: CreditCollectionStore;
-    bitcoinStore?: BitcoinStore;
     cudosStore?: CudosStore;
 }
 
-function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoinStore, cudosStore }: Props) {
+function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, cudosStore }: Props) {
     const selectedNftEntity = creditCollectionStore.selectedNftEntity;
 
     useEffect(() => {
@@ -104,7 +102,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, bitcoin
                                 'position': 'static',
                                 'fileExt': '.svg, .gif, .jpg, .jpeg, .png',
                                 'onExceedLimit': () => {
-                                    this.props.alertStore.show('', 'Максималният размер на файловете е 2MB!');
+                                    alertStore.show('Max file size is 2MB!');
                                 },
                                 onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
                                     selectedNftEntity.imageUrl = base64File;

@@ -55,7 +55,7 @@ import { EmailModule } from './email/email.module';
         }),
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', '..', 'data'),
-            serveRoot: DataService.URI_PREFIX,
+            serveRoot: DataService.LOCAL_URI_PREFIX,
         }),
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', 'frontend', 'src', 'public'),
@@ -82,8 +82,8 @@ import { EmailModule } from './email/email.module';
 
 export class AppModule implements NestModule {
 
-    constructor() {
-        DataService.prepareDataFolder();
+    constructor(private dataService: DataService) {
+        dataService.prepareDataFolder();
     }
 
     configure(consumer: MiddlewareConsumer) {

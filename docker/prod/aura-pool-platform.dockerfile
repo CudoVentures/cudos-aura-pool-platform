@@ -25,6 +25,8 @@ COPY --from=builder "/usr/src/cudos-aura-platform/package.json" ./
 
 COPY --from=builder "/usr/src/cudos-aura-platform/config/.env" ./config/.env
 
+COPY --from=builder "/usr/src/cudos-aura-platform/config/gcloud.json" ./config/gcloud.json
+
 RUN mkdir -p ${WORKING_DIR} && \
     chown -R node:node ${WORKING_DIR}
 

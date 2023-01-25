@@ -334,7 +334,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                                 'maxSize': 73400320, // 70MB
                                 'fileExt': '.svg, .jpg, .jpeg, .png',
                                 'onExceedLimit': () => {
-                                    this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
+                                    alertStore.show('Max file size is 70MB!');
                                 },
                                 'multi': true,
                                 onReadFileAsBase64: action((base64File, responseData, files: any[], i: number) => {
