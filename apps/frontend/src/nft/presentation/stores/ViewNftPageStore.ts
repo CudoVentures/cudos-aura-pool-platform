@@ -188,9 +188,7 @@ export default class ViewNftPageStore {
     }
 
     getNftCudosPrice(): BigNumber {
-        return this.nftEntity.isMinted()
-            ? this.nftEntity.priceInAcudos.shiftedBy(-CURRENCY_DECIMALS)
-            : this.cudosStore.convertUsdInCudos(this.nftEntity.priceUsd);
+        return this.cudosStore.getNftCudosPriceForNft(this.nftEntity);
     }
 
     formatPriceInCudos(): string {
