@@ -6,6 +6,7 @@ import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectU
 import NftEntity from '../../../nft/entities/NftEntity';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../repos/CudosRepo';
+import S from '../../../core/utilities/Main';
 
 export default class CudosStore {
 
@@ -76,7 +77,7 @@ export default class CudosStore {
     }
 
     convertUsdInCudos(dollars: number): BigNumber {
-        return this.convertUsdInAcudos(dollars).shiftedBy(-CURRENCY_DECIMALS);
+        return dollars === S.NOT_EXISTS ? new BigNumber(0) : this.convertUsdInAcudos(dollars).shiftedBy(-CURRENCY_DECIMALS);
     }
 
     static convertAcudosInCudos(acudosPrice: BigNumber): BigNumber {

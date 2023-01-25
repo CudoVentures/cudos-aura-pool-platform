@@ -1,7 +1,8 @@
 import NftEntity from '../../entities/NftEntity';
 
+const STORAGE_KEY = 'cudos_aura_service_storage_nfts'
+
 export default class NftSessionStorage {
-    static KEY = 'nfts'
 
     updateNftsMap(nfts: NftEntity[]): void {
         try {
@@ -11,20 +12,26 @@ export default class NftSessionStorage {
                 timestampMap.set(nftEntity.id, nftEntity);
             });
 
-            this.saveTimestampMap(timestampMap);
+            this.saveNftsMap(timestampMap);
         } catch (e) {
             console.log(e);
         }
     }
 
     getNftsMap(): Map<string, NftEntity> {
-        const mapJson = sessionStorage.getItem(NftSessionStorage.KEY);
+        const mapJson = sessionStorage.getItem(STORAGE_KEY);
         const map = new Map<string, NftEntity>(JSON.parse(mapJson));
+        map.forEach((jsonEntity, key) => {
+            map.set(key, jsonEntity);
+        });
 
         return map
     }
 
-    private saveTimestampMap(map: Map<string, NftEntity>) {
-        sessionStorage.setItem(NftSessionStorage.KEY, JSON.stringify(Array.from(map.entries())));
+    private saveNftsMap(map: Map<string, NftEntity>) {
+        const jsonEntities = Array.from(map.entries()).forEach((entry) => {
+            entry[1] = NftEntity.fromJson(entry[1]);
+        });
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
     }
 }

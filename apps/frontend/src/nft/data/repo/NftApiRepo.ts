@@ -42,9 +42,7 @@ export default class NftApiRepo implements NftRepo {
     async fetchNftById(nftId: string, status: CollectionStatus): Promise < NftEntity > {
         const nftEntities = await this.fetchNftByIds([nftId], status);
 
-        const checkedNfts = this.checkNftsVersusSessionStorage(nftEntities);
-
-        return checkedNfts.length === 1 ? checkedNfts[0] : null;
+        return nftEntities.length === 1 ? nftEntities[0] : null;
     }
 
     async fetchNftByIds(nftIds: string[], status: CollectionStatus): Promise < NftEntity[] > {
@@ -56,8 +54,7 @@ export default class NftApiRepo implements NftRepo {
         }
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
-
-        return this.checkNftsVersusSessionStorage(nftEntities);
+        return nftEntities;
     }
 
     async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
@@ -69,7 +66,7 @@ export default class NftApiRepo implements NftRepo {
         nftFilterModel.count = 10;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
-        return this.checkNftsVersusSessionStorage(nftEntities);
+        return nftEntities;
     }
 
     async fetchTrendingNfts(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
@@ -81,7 +78,7 @@ export default class NftApiRepo implements NftRepo {
         nftFilterModel.count = 10;
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
-        return this.checkNftsVersusSessionStorage(nftEntities);
+        return nftEntities;
     }
 
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
@@ -173,10 +170,11 @@ export default class NftApiRepo implements NftRepo {
         const nftsMap = this.nftSessioNStorage.getNftsMap();
         return nftEntities.map((nftEntity) => {
             const storageNft = nftsMap.get(nftEntity.id);
+            if (storageNft !== undefined && nftEntity.updatedAt === storageNft.updatedAt) {
+                return storageNft;
+            }
 
-            return storageNft !== undefined && nftEntity.updatedAt === storageNft.updatedAt
-                ? storageNft
-                : nftEntity
+            return nftEntity;
         })
     }
 }

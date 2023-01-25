@@ -1,7 +1,8 @@
 import CollectionEntity from '../../entities/CollectionEntity';
 
+const STORAGE_KEY = 'cudos_aura_service_storage_collections'
+
 export default class CollectionSessionStorage {
-    static KEY = 'collections'
 
     updateCollectionsMap(collections: CollectionEntity[]): void {
         try {
@@ -18,13 +19,20 @@ export default class CollectionSessionStorage {
     }
 
     getCollectionsMap(): Map<string, CollectionEntity> {
-        const mapJson = sessionStorage.getItem(CollectionSessionStorage.KEY);
+        const mapJson = sessionStorage.getItem(STORAGE_KEY);
         const map = new Map<string, CollectionEntity>(JSON.parse(mapJson));
+        map.forEach((jsonEntity, key) => {
+            map.set(key, CollectionEntity.fromJson(jsonEntity));
+        });
 
         return map
     }
 
     private saveCollectionsMap(map: Map<string, CollectionEntity>) {
-        sessionStorage.setItem(CollectionSessionStorage.KEY, JSON.stringify(Array.from(map.entries())));
+        const jsonEntities = Array.from(map.entries()).forEach((entry) => {
+            entry[1] = CollectionEntity.fromJson(entry[1]);
+        })
+
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
     }
 }

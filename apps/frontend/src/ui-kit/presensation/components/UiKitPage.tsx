@@ -196,7 +196,7 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
                             params = { {
                                 'maxSize': 73400320, // 70MB
                                 'onExceedLimit': () => {
-                                    this.props.alertStore.show('', 'Максималният размер на файловете е 70MB!');
+                                    alertStore.show('Max file size is 70MB!');
                                 },
                                 'multi': true,
                                 onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
