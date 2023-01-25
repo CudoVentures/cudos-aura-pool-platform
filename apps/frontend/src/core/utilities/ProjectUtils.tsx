@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { CURRENCY_DECIMALS } from 'cudosjs';
 import { runInAction } from 'mobx';
 import numeral from 'numeral';
 import AppRoutes from '../../app-routes/entities/AppRoutes';
@@ -15,7 +16,7 @@ export default class ProjectUtils {
     static DATEPICKER_FORMAT_DATE_AND_TIME = 'dd.MM.yyyy, HH:mm';
     static DATEPICKER_FORMAT_DATE = 'dd.MM.yyyy';
     static NUMERAL_USD = '$0,0.00';
-    static CUDOS_CURRENCY_DIVIDER = new BigNumber('1000000000000000000');
+    static CUDOS_CURRENCY_DIVIDER = new BigNumber(1).shiftedBy(CURRENCY_DECIMALS);
 
     static makeBgImgStyle(url: string) {
         return {
