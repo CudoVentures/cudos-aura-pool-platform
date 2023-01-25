@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { MiningFarmDetailsJsonValidator } from '../farm.types';
+import MiningFarmEntity from './mining-farm.entity';
 
 export default class MiningFarmDetailsEntity {
 
@@ -20,6 +21,13 @@ export default class MiningFarmDetailsEntity {
         this.totalNftsSold = 0;
         this.remainingHashPowerInTH = 0;
         this.floorPriceInAcudos = null;
+    }
+
+    static newInstanceByMiningFarm(miningFarmEntity: MiningFarmEntity) {
+        const entity = new MiningFarmDetailsEntity();
+        entity.miningFarmId = miningFarmEntity.id;
+        entity.remainingHashPowerInTH = miningFarmEntity.hashPowerInTh;
+        return entity;
     }
 
     static toJson(entity: MiningFarmDetailsEntity): MiningFarmDetailsJsonValidator {

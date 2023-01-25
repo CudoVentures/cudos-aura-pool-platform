@@ -25,7 +25,7 @@ import BigNumber from 'bignumber.js';
 export class CollectionService {
     constructor(
     @InjectModel(CollectionRepo)
-    private collectionModel: typeof CollectionRepo,
+    private collectionRepo: typeof CollectionRepo,
     @Inject(forwardRef(() => NFTService))
     private nftService: NFTService,
     private graphqlService: GraphqlService,
@@ -82,7 +82,7 @@ export class CollectionService {
             orderByClause[0].push(collectionFitlerEntity.orderBy > 0 ? 'ASC' : 'DESC');
         }
 
-        const collectionRepos = await this.collectionModel.findAll({
+        const collectionRepos = await this.collectionRepo.findAll({
             where: whereClause,
             order: orderByClause,
         });
@@ -124,7 +124,7 @@ export class CollectionService {
     }
 
     async findByCollectionIds(collectionIds: number[]): Promise < CollectionEntity[] > {
-        const collectionRepos = await this.collectionModel.findAll({
+        const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 [CollectionRepoColumn.ID]: collectionIds,
             },
@@ -135,7 +135,7 @@ export class CollectionService {
     }
 
     async findByDenomIds(denomIds: string[]): Promise < CollectionEntity[] > {
-        const collectionRepos = await this.collectionModel.findAll({
+        const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 [CollectionRepoColumn.DENOM_ID]: denomIds,
             },
@@ -147,7 +147,7 @@ export class CollectionService {
     }
 
     async findIdsByStatus(status: CollectionStatus[]): Promise < number[] > {
-        const collections = await this.collectionModel.findAll({
+        const collections = await this.collectionRepo.findAll({
             where: {
                 status: {
                     [Op.in]: status,
@@ -161,7 +161,7 @@ export class CollectionService {
     }
 
     async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<CollectionEntity> {
-        const collectionRepo = await this.collectionModel.findByPk(id, {
+        const collectionRepo = await this.collectionRepo.findByPk(id, {
             transaction: tx,
             lock,
         });
@@ -170,7 +170,7 @@ export class CollectionService {
     }
 
     async findOneByDenomId(denomId: string): Promise<CollectionEntity> {
-        const collectionRepo = await this.collectionModel.findOne({
+        const collectionRepo = await this.collectionRepo.findOne({
             where: {
                 denom_id: denomId,
             },
@@ -180,7 +180,7 @@ export class CollectionService {
     }
 
     async findByFarmId(id: number): Promise<CollectionEntity[]> {
-        const collectionRepos = await this.collectionModel.findAll({
+        const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 farm_id: id,
             },
@@ -190,7 +190,7 @@ export class CollectionService {
     }
 
     async findByMiningFarmIds(miningFarmIds: number[]): Promise < CollectionEntity[] > {
-        const collectionRepos = await this.collectionModel.findAll({
+        const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 [CollectionRepoColumn.FARM_ID]: miningFarmIds,
             },
@@ -217,7 +217,7 @@ export class CollectionService {
         }
 
         const collectionRepo = CollectionEntity.toRepo(collectionEntity);
-        const collection = await this.collectionModel.create({
+        const collection = await this.collectionRepo.create({
             ...collectionRepo.toJSON(),
             status: CollectionStatus.QUEUED,
         }, {
@@ -233,7 +233,7 @@ export class CollectionService {
         tx: Transaction = undefined,
     ): Promise<CollectionEntity> {
 
-        const [count, [collection]] = await this.collectionModel.update(
+        const [count, [collection]] = await this.collectionRepo.update(
             CollectionEntity.toRepo(collectionEntity).toJSON(),
             {
                 where: { id },
@@ -250,7 +250,7 @@ export class CollectionService {
         collectionEntity: CollectionEntity,
         tx: Transaction = undefined,
     ): Promise<CollectionEntity> {
-        const [count, [collectionRepo]] = await this.collectionModel.update(
+        const [count, [collectionRepo]] = await this.collectionRepo.update(
             { ...CollectionEntity.toRepo(collectionEntity).toJSON() },
             {
                 where: { denom_id: denomId },
@@ -275,7 +275,7 @@ export class CollectionService {
     }
 
     async getDetails(collectionId: number): Promise <CollectionDetailsEntity> {
-        const collection = await this.collectionModel.findOne({ where: { id: collectionId } })
+        const collection = await this.findOne(collectionId);
 
         if (!collection) {
             throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
@@ -287,11 +287,8 @@ export class CollectionService {
         nftFilter.orderBy = NftOrderBy.PRICE_ASC
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilter);
 
-        const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-
-        const nftOwnersSet = new Set(nftEntities.filter((nft) => nft.hasOwner()).map((nft) => nft.currentOwner)); // Unique owners of all the NFTs in the collection
-
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
+        const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
         const floorPriceInAcudos = approvedNfts.reduce((cheapestNftSoFar, nftEntity) => {
             if (nftEntity.hasPrice() === false) {
                 return cheapestNftSoFar;
@@ -303,14 +300,15 @@ export class CollectionService {
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
         const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])
 
+        const nftOwnersSet = new Set(nftEntities.filter((nft) => nft.hasOwner()).map((nft) => nft.currentOwner)); // Unique owners of all the NFTs in the collection
+
+        const adminEntity = await this.accountService.findAdminByAccountId(collection.creatorId);
+
         // Get remaining hash power
         const nftsHashPowerSum = nftEntities.reduce((pervVal, currVal) => pervVal + Number(currVal.hashingPower), 0)
-        const remainingHashPowerInTH = Number(collection.hashingPower) - nftsHashPowerSum
+        const remainingHashPowerInTH = collection.hashingPower - nftsHashPowerSum
 
         const collectionDetailsEntity = new CollectionDetailsEntity();
-
-        const { adminEntity } = await this.accountService.findAccounts(collection.creatorId);
-
         collectionDetailsEntity.id = collectionId;
         collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString(10);
         collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString(10) || '0';
