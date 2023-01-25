@@ -61,8 +61,7 @@ export class FarmController {
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmDetails: ReqFetchMiningFarmDetails,
     ): Promise < ResFetchMiningFarmDetails > {
         const miningFarmIds = reqFetchMiningFarmDetails.getParsedIds();
-        const getMiningFarmDetailEntities = miningFarmIds.map((miningFarmId) => this.miningFarmService.getDetails(miningFarmId))
-        const miningFarmDetailEntities = await Promise.all(getMiningFarmDetailEntities);
+        const miningFarmDetailEntities = await this.miningFarmService.getMiningFarmDetails(miningFarmIds);
         return new ResFetchMiningFarmDetails(miningFarmDetailEntities);
     }
 

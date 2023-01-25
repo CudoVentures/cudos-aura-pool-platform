@@ -17,15 +17,12 @@ import { ManufacturerRepo } from './repos/manufacturer.repo';
 import MinerEntity from './entities/miner.entity';
 import ManufacturerEntity from './entities/manufacturer.entity';
 import { CollectionService } from '../collection/collection.service';
-import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
-import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import { NFTService } from '../nft/nft.service';
 import MiningFarmDetailsEntity from './entities/mining-farm-details.entity';
 import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity';
 import { StatisticsService } from '../statistics/statistics.service';
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
 import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
-import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../common/utils';
 
 @Injectable()
@@ -332,7 +329,6 @@ export class FarmService {
     async creditMiner(minerEntity: MinerEntity, tx: Transaction = undefined): Promise < MinerEntity > {
         let minerRepo = MinerEntity.toRepo(minerEntity);
         if (minerEntity.isNew() === true) {
-            console.log(2, minerRepo.toJSON());
             minerRepo = await this.minerRepo.create(minerRepo.toJSON(), {
                 returning: true,
                 transaction: tx,
@@ -372,45 +368,56 @@ export class FarmService {
         return ManufacturerEntity.fromRepo(manufacturerRepo);
     }
 
-    async getDetails(farmId: number): Promise < MiningFarmDetailsEntity > {
-        const miningFarmEntity = await this.findMiningFarmById(farmId)
-        if (miningFarmEntity === null) {
-            return null;
+    async getMiningFarmDetails(miningFarmIds: number[]): Promise < MiningFarmDetailsEntity[] > {
+        const miningFarmEntitiesMap = new Map();
+        const collectionEntitiesMap = new Map();
+        const miningFarmIdToDetailsMap = new Map();
+
+        const miningFarmEntities = await this.findMiningFarmByIds(miningFarmIds);
+        miningFarmEntities.forEach((miningFarmEntity) => {
+            miningFarmEntitiesMap.set(miningFarmEntity.id, miningFarmEntity);
+            miningFarmIdToDetailsMap.set(miningFarmEntity.id, MiningFarmDetailsEntity.newInstanceByMiningFarm(miningFarmEntity));
+        });
+
+        const collectionEntities = await this.collectionService.findByMiningFarmIds(miningFarmIds);
+        const collectionIds = [];
+        collectionEntities.forEach((collectionEntity) => {
+            collectionIds.push(collectionEntity.id);
+            collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
+        });
+
+        const nftEntities = await this.nftService.findByCollectionIds(collectionIds);
+        nftEntities.forEach((nftEntity) => {
+            const collectionEntity = collectionEntitiesMap.get(nftEntity.collectionId);
+            const miningFarmEntity = miningFarmEntitiesMap.get(collectionEntity.farmId);
+            const miningFarmDetailsEntity = miningFarmIdToDetailsMap.get(miningFarmEntity.id);
+            miningFarmDetailsEntity.remainingHashPowerInTH -= collectionEntity.hashingPower;
+            ++miningFarmDetailsEntity.nftsOwned;
+            if (nftEntity.isSold() === true) {
+                ++miningFarmDetailsEntity.totalNftsSold;
+            }
+            if (nftEntity.hasPrice() === true) {
+                if (miningFarmDetailsEntity.floorPriceInAcudos === null) {
+                    miningFarmDetailsEntity.floorPriceInAcudos = nftEntity.acudosPrice;
+                } else if (nftEntity.acudosPrice.lt(miningFarmDetailsEntity.floorPriceInAcudos)) {
+                    miningFarmDetailsEntity.floorPriceInAcudos = nftEntity.acudosPrice;
+                }
+            }
+        });
+
+        const miningFarmDetailsEntities = [];
+        miningFarmIdToDetailsMap.forEach((miningFarmDetailsEntity) => {
+            miningFarmDetailsEntities.push(miningFarmDetailsEntity);
+        });
+        for (let i = miningFarmDetailsEntities.length; i-- > 0;) {
+            const miningFarmDetailsEntity = miningFarmDetailsEntities[i];
+            const miningFarmEntity = miningFarmEntitiesMap.get(miningFarmDetailsEntity.miningFarmId);
+            const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.legalName);
+            miningFarmDetailsEntity.averageHashPowerInTh = averageHashRateH1;
+            miningFarmDetailsEntity.activeWorkers = activeWorkersCount;
         }
 
-        const collectionFilterEntity = new CollectionFilterEntity();
-        collectionFilterEntity.farmId = farmId.toString();
-        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity);
-        // Get number of total and sold NFTs
-        const nftFilterEntity = new NftFilterEntity();
-        nftFilterEntity.collectionIds = collectionEntities.map((entity) => entity.id.toString());
-        const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
-        const soldNfts = nftEntities.filter((nft) => nft.tokenId !== '')
-        const floorPriceInAcudos: BigNumber = nftEntities.reduce((accu: BigNumber, nftEntity) => {
-            if (nftEntity.hasPrice() === true) {
-                accu ??= new BigNumber(`${Number.MAX_SAFE_INTEGER}000000000000000000`);
-                return nftEntity.acudosPrice.lt(accu) ? nftEntity.acudosPrice : accu;
-            }
-
-            return accu;
-        }, null);
-
-        // Calculate remaining hash power of the farm
-        const collectionsHashPowerSum = collectionEntities.reduce((prevVal, currVal) => prevVal + Number(currVal.hashingPower), 0)
-        const remainingHashPowerInTH = miningFarmEntity.hashPowerInTh - collectionsHashPowerSum;
-
-        const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.legalName);
-
-        const miningFarmDetailsEntity = new MiningFarmDetailsEntity();
-        miningFarmDetailsEntity.miningFarmId = miningFarmEntity.id;
-        miningFarmDetailsEntity.averageHashPowerInTh = averageHashRateH1;
-        miningFarmDetailsEntity.activeWorkers = activeWorkersCount;
-        miningFarmDetailsEntity.nftsOwned = nftEntities.length;
-        miningFarmDetailsEntity.totalNftsSold = soldNfts.length;
-        miningFarmDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
-        miningFarmDetailsEntity.floorPriceInAcudos = floorPriceInAcudos;
-
-        return miningFarmDetailsEntity;
+        return miningFarmDetailsEntities;
     }
 
     async getFoundryFarmWorkersDetails(subAccountName: string): Promise < { activeWorkersCount: number, averageHashRateH1: number } > {

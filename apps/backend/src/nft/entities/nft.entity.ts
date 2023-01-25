@@ -64,6 +64,10 @@ export default class NftEntity {
         return Number.isNaN(tokenIdAsInt) === true ? NOT_EXISTS_INT : tokenIdAsInt;
     }
 
+    isSold(): boolean {
+        return this.tokenId !== '';
+    }
+
     static fromJson(json: NftJsonValidator): NftEntity {
         const entity = new NftEntity();
 
