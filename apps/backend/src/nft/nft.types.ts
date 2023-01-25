@@ -65,6 +65,18 @@ export class NftJsonValidator {
 
     @IsNumber()
         priceAcudosValidUntil: number;
+
+    @IsNumber()
+    @IsNotEmpty()
+        createdAt: number;
+
+    @IsNumber()
+    @IsNotEmpty()
+        updatedAt: number;
+
+    @IsNumber()
+    @IsNotEmpty()
+        deletedAt: number;
 }
 
 export enum NftOrderBy {

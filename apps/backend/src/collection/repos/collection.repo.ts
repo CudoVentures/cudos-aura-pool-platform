@@ -85,4 +85,7 @@ export class CollectionRepo extends Model {
 
     @Column({ type: DataType.DATE })
         deletedAt: Date;
+
+    @Column({ type: DataType.DATE })
+        updatedAt: Date;
 }

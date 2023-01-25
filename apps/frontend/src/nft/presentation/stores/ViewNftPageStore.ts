@@ -187,16 +187,8 @@ export default class ViewNftPageStore {
         this.statsTab = StatsTabs.HISTORY;
     }
 
-    getNftCudosPrice(): BigNumber {
-        return this.cudosStore.getNftCudosPriceForNft(this.nftEntity);
-    }
-
-    formatPriceInCudos(): string {
-        return `${this.getNftCudosPrice().toFixed(2)} CUDOS`;
-    }
-
     formatPricePlusMintFeeInCudos(): string {
-        return `${this.getNftCudosPrice().plus(1).toFixed(2)} CUDOS`;
+        return `${this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1).toFixed(2)} CUDOS`;
     }
 
     getNftPriceText() {

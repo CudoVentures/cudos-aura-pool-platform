@@ -61,6 +61,10 @@ export class CollectionJsonValidator {
     @IsNumber()
     @ApiProperty({ required: true, example: 2 })
         timestampDeletedAt: number;
+
+    @IsNumber()
+    @ApiProperty({ required: true, example: 2 })
+        timestampUpdatedAt: number;
 }
 
 export enum CollectionOrderBy {

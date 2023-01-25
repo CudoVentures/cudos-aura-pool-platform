@@ -16,10 +16,12 @@ import CollectionRepo from '../../presentation/repos/CollectionRepo';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import CollectionSessionStorage from '../data-sources/CollectionSessionStorage';
 
 export default class CollectionApiRepo implements CollectionRepo {
     accountApi: AccountApi;
     collectionApi: CollectionApi;
+    collectionSessionStorage: CollectionSessionStorage;
     miningFarmApi: MiningFarmApi;
 
     enableActions: () => void;
@@ -28,6 +30,7 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     constructor() {
         this.collectionApi = new CollectionApi();
+        this.collectionSessionStorage = new CollectionSessionStorage();
         this.accountApi = new AccountApi();
         this.miningFarmApi = new MiningFarmApi();
 
@@ -91,7 +94,13 @@ export default class CollectionApiRepo implements CollectionRepo {
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         try {
             this.disableActions?.();
-            return await this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
+            const { collectionEntities, total } = await this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
+            const checkedCollectionEntities = this.checkCollectionsVersusSessionStorage(collectionEntities);
+
+            return {
+                collectionEntities: checkedCollectionEntities,
+                total,
+            }
         } finally {
             this.enableActions?.();
         }
@@ -229,9 +238,22 @@ export default class CollectionApiRepo implements CollectionRepo {
 
             this.showAlert('You have approved the collection and now it is been processed by the chain and aura pool. Once the processing is finished then the collection\'s status will be changed to APPROVED.');
 
+            collectionEntity.markApproved();
+            this.collectionSessionStorage.updateCollectionsMap([collectionEntity]);
             return tx.transactionHash;
         } finally {
             this.enableActions?.();
         }
+    }
+
+    private checkCollectionsVersusSessionStorage(collectionEntities: CollectionEntity[]): CollectionEntity[] {
+        const collectionsMap = this.collectionSessionStorage.getCollectionsMap();
+        return collectionEntities.map((collectionEntity: CollectionEntity) => {
+            const storageCollection = collectionsMap.get(collectionEntity.id);
+
+            return storageCollection !== undefined && collectionEntity.timestampUpdatedAt === storageCollection.timestampUpdatedAt
+                ? storageCollection
+                : collectionEntity
+        })
     }
 }
