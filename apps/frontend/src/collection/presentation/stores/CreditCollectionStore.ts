@@ -315,10 +315,6 @@ export default class CreditCollectionStore {
         })
     }
 
-    onClickSave = async () => {
-        await this.collectionRepo.creditCollection(this.collectionEntity, this.nftEntities);
-    }
-
     onClickDeleteNft = (nftEntityId: string) => {
         this.nftEntities = this.nftEntities.filter((nftEntity: NftEntity) => nftEntity.id !== nftEntityId);
     }

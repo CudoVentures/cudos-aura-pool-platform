@@ -131,7 +131,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
         }
 
         if (creditCollectionStore.isEditMode() === true) {
-            await creditCollectionStore.onClickSave();
+            await creditCollectionStore.onClickSendForApproval();
             alertStore.show('Your collection has been updated', () => {
                 navigate(AppRoutes.CREDIT_MINING_FARM);
             });
@@ -174,7 +174,9 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                             },
                             'multi': true,
                             onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                                collectionEntity.profileImgUrl = base64File;
+                                runInAction(() => {
+                                    collectionEntity.profileImgUrl = base64File;
+                                });
                             },
                         } } />
                 </Button>
@@ -207,7 +209,9 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                             },
                             'multi': true,
                             onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                                collectionEntity.coverImgUrl = base64File;
+                                runInAction(() => {
+                                    collectionEntity.coverImgUrl = base64File;
+                                });
                             },
                         } } />
                 </Button>

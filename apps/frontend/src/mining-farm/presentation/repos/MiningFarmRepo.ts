@@ -10,6 +10,7 @@ export default interface MiningFarmRepo {
 
     setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
     setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
+    setProgressCallbacks(onProgress: (title: string, progress: number) => void);
 
     fetchAllMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
     fetchPopularMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;

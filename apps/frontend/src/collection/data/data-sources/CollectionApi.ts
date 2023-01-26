@@ -6,6 +6,7 @@ import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import axios from '../../../core/utilities/AxiosWrapper';
 import { ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter, ReqFetchTopCollections } from '../dto/Requests';
 import { ResCreditCollection, ResEditCollection, ResFetchCollectionDetails, ResFetchCollectionsByFilter, ResFetchTopCollections } from '../dto/Responses';
+import { AxiosProgressEvent } from 'axios';
 
 const COLLECTION_URL = '/api/v1/collection';
 
@@ -29,10 +30,12 @@ export default class CollectionApi {
         }
     }
 
-    async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
+    async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[], onUploadProgress: (progressEvent: AxiosProgressEvent) => void = null): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
         const req = new ReqCreditCollection(collectionEntity, nftEntities);
 
-        const { data } = await axios.put(COLLECTION_URL, req)
+        const { data } = await axios.put(COLLECTION_URL, req, {
+            onUploadProgress,
+        })
 
         const res = new ResCreditCollection(data);
 

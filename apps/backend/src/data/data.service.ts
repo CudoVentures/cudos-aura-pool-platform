@@ -13,7 +13,7 @@ export default class DataService {
 
     dataFolder = '';
     absolutePathToGcloudConfig = '';
-    gCloudUriPrefix = ''
+    gCloudUriPrefix = 'https://storage.googleapis.com/'
 
     storage: Storage;
     bucketName: string;
@@ -25,8 +25,9 @@ export default class DataService {
 
         try {
             const gcloudProjectId = this.configService.getOrThrow < string >('APP_GCLOUD_PROJECT_ID');
-
             this.bucketName = this.configService.getOrThrow < string >('APP_GCLOUD_BUCKET_NAME');
+            this.gCloudUriPrefix = `https://storage.googleapis.com/${this.bucketName}/`;
+
             if (Fs.existsSync(this.absolutePathToGcloudConfig) === false) {
                 throw new Error('gCloud config is missing');
             }
@@ -35,7 +36,6 @@ export default class DataService {
                 keyFilename: this.absolutePathToGcloudConfig,
             })
             this.bucket = this.storage.bucket(this.bucketName);
-            this.gCloudUriPrefix = `https://storage.googleapis.com/${this.bucketName}/`;
         } catch (ex) {
             this.storage = null;
         }
