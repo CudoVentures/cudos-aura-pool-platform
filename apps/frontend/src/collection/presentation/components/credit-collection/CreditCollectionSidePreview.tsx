@@ -2,7 +2,6 @@ import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import '../../styles/credit-collection-side-preview.css';
 import S from '../../../../core/utilities/Main';
 import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
@@ -27,7 +26,7 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
 
         previews.push(createDataPreview('Hashing Power', collectionEntity.formatHashPowerInTh()));
         if (collectionEntity.hasDefaultValuesPerNft() === true) {
-            previews.push(createDataPreview('Hashing Power per NFT', collectionEntity.formatDefaultPricePerNftInCudos()));
+            previews.push(createDataPreview('Hashing Power per NFT', collectionEntity.formatDefaultPricePerNftInUsd()));
             previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerPerNftInTh()));
         }
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));

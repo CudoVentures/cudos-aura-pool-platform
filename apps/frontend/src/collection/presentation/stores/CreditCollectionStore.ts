@@ -202,7 +202,7 @@ export default class CreditCollectionStore {
         const nftEntity = new NftEntity();
 
         if (this.collectionEntity.hasDefaultValuesPerNft() === true) {
-            nftEntity.priceInAcudos = this.collectionEntity.getDefaultPricePerNftInAcudos();
+            nftEntity.priceUsd = this.collectionEntity.defaultPricePerNftInUsd;
             nftEntity.hashPowerInTh = this.collectionEntity.defaultHashPowerPerNftInTh;
         }
         nftEntity.markAsExpiringToday();
