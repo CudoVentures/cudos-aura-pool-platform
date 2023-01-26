@@ -48,7 +48,7 @@ function Alert({ alertStore }: Props) {
 
     return (
         <AnimationContainer className = { 'AlertWrapper' } active = { alertStore.isVisible() } >
-            <div className = { 'Alert ShadowDark' } >
+            <div className = { 'Alert' } >
                 <div className = { 'Msg ScrollView' } >{alertStore.msg}</div>
 
                 <div className = { 'FlexSplit' } >

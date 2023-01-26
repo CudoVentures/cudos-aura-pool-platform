@@ -16,12 +16,7 @@
     font-weight:400;
     padding:16px;
     border-radius:4px;
-    opacity:0;
     background:#fff;
-}
-
-.AlertWrapper.Active > .Alert {
-    opacity:1;
 }
 
 .Alert > .Msg {

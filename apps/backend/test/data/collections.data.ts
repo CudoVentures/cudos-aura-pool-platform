@@ -15,6 +15,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '1',
     creatorId: '1',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 }), CollectionEntity.fromJson({
     id: '2',
     name: 'testcollection2',
@@ -28,6 +29,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '1',
     creatorId: '1',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 }), CollectionEntity.fromJson({
     id: '3',
     name: 'testcollection3',
@@ -41,6 +43,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '1',
     creatorId: '1',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 }), CollectionEntity.fromJson({
     id: '4',
     name: 'testcollection4',
@@ -54,6 +57,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '2',
     creatorId: '2',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 }), CollectionEntity.fromJson({
     id: '5',
     name: 'testcollection5',
@@ -67,6 +71,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '2',
     creatorId: '2',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 }), CollectionEntity.fromJson({
     id: '6',
     name: 'testcollection6',
@@ -80,6 +85,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '3',
     creatorId: '2',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 }), CollectionEntity.fromJson({
     id: '7',
     name: 'testcollection7',
@@ -93,6 +99,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '3',
     creatorId: '2',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 }), CollectionEntity.fromJson({
     id: '8',
     name: 'testcollection8',
@@ -106,4 +113,5 @@ export const collectionEntities = [CollectionEntity.fromJson({
     farmId: '3',
     creatorId: '2',
     timestampDeletedAt: NOT_EXISTS_INT,
+    timestampUpdatedAt: NOT_EXISTS_INT,
 })];
