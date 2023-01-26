@@ -80,7 +80,6 @@ module.exports = {
             const query = `SELECT account_id from accounts AS c WHERE c.email = '${accounts[0].email}';`;
 
             const ids = await queryInterface.sequelize.query(query);
-
             superAdmins[0].account_id = ids[0][0].account_id;
 
             await queryInterface.bulkInsert('accounts_super_admins', superAdmins, { transaction });
