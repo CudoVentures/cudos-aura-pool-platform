@@ -151,12 +151,6 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         }
     }
 
-    async creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
-        for (let i = miningFarmEntities.length; i-- > 0;) {
-            await this.creditMiningFarm(miningFarmEntities[i]);
-        }
-    }
-
     async fetchManufacturers(): Promise < ManufacturerEntity[] > {
         try {
             this.disableActions?.();

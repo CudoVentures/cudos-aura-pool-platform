@@ -130,23 +130,23 @@ export default class QueuedMiningFarmsStores {
         }).join(', ');
     }
 
-    async approveMiningFarm(miningFarmEntity: MiningFarmEntity) {
-        const clonedMiningFarm = miningFarmEntity.clone();
-        clonedMiningFarm.markApproved();
+    // async approveMiningFarm(miningFarmEntity: MiningFarmEntity) {
+    //     const clonedMiningFarm = miningFarmEntity.clone();
+    //     clonedMiningFarm.markApproved();
 
-        // if royalties not custom set for this farm, set the super admin standard onss
-        if (clonedMiningFarm.isCudosMintNftRoyaltiesPercentSet() === false) {
-            clonedMiningFarm.cudosMintNftRoyaltiesPercent = this.generalStore.settingsEntity.firstSaleCudosRoyaltiesPercent;
-        }
+    //     // if royalties not custom set for this farm, set the super admin standard onss
+    //     if (clonedMiningFarm.isCudosMintNftRoyaltiesPercentSet() === false) {
+    //         clonedMiningFarm.cudosMintNftRoyaltiesPercent = this.generalStore.settingsEntity.firstSaleCudosRoyaltiesPercent;
+    //     }
 
-        if (clonedMiningFarm.isCudosResaleNftRoyaltiesPercentSet() === false) {
-            clonedMiningFarm.cudosResaleNftRoyaltiesPercent = this.generalStore.settingsEntity.resaleCudosRoyaltiesPercent;
-        }
+    //     if (clonedMiningFarm.isCudosResaleNftRoyaltiesPercentSet() === false) {
+    //         clonedMiningFarm.cudosResaleNftRoyaltiesPercent = this.generalStore.settingsEntity.resaleCudosRoyaltiesPercent;
+    //     }
 
-        await this.miningFarmRepo.creditMiningFarm(clonedMiningFarm);
+    //     await this.miningFarmRepo.creditMiningFarm(clonedMiningFarm);
 
-        this.fetchMiningFarms();
-    }
+    //     this.fetchMiningFarms();
+    // }
 
     async rejectMiningfarm(miningFarmEntity: MiningFarmEntity) {
         const clonedMiningFarm = miningFarmEntity.clone();

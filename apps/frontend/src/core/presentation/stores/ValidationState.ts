@@ -36,6 +36,14 @@ export default class ValidationState {
         return inputValidation;
     }
 
+    addNoSpaceValidation(errorMessage?: string): InputValidation {
+        const inputValidation = InputValidation.noSpaceValidation(errorMessage);
+
+        this.inputValidations.push(inputValidation);
+
+        return inputValidation;
+    }
+
     addMatchStringsValidation(errorMessage?: string): InputValidation[] {
         let firstValue = '', secondValue = '';
 
@@ -139,6 +147,15 @@ export class InputValidation {
 
         validation.setErrorMessage(errorMessage);
         validation.checkValidInput = action((value) => value !== null && value !== undefined && value !== S.Strings.EMPTY);
+
+        return validation;
+    }
+
+    static noSpaceValidation(errorMessage?: string): InputValidation {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = action((value) => value !== null && value !== undefined && value.indexOf(' ') === -1);
 
         return validation;
     }

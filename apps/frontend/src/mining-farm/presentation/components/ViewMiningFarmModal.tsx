@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
@@ -12,14 +12,64 @@ import Input, { InputType } from '../../../core/presentation/components/Input';
 import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import Actions, { ActionsLayout } from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
+import { runInAction } from 'mobx';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
+import ValidationState from '../../../core/presentation/stores/ValidationState';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
+import S from '../../../core/utilities/Main';
 
 type Props = {
+    alertStore?: AlertStore;
     viewMiningFarmModalStore?: ViewMiningFarmModalStore;
 }
 
-function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
+function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
 
     const miningFarmEntity = viewMiningFarmModalStore.miningFarmEntity;
+
+    const validationState = useRef(new ValidationState()).current;
+    const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
+    const mintRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const resaleRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+
+    const [areChangesMade, setAreChangesMade] = useState(false);
+
+    function setEditedCudosMintRoyalties(value) {
+        runInAction(() => {
+            viewMiningFarmModalStore.editedCudosMintRoyalties = value;
+            miningFarmEntity.cudosMintNftRoyaltiesPercent = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+            setAreChangesMade(true);
+        });
+    }
+
+    function setEditedCudosResaleRoyalties(value) {
+        runInAction(() => {
+            viewMiningFarmModalStore.editedCudosResaleRoyalties = value;
+            miningFarmEntity.cudosResaleNftRoyaltiesPercent = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+            setAreChangesMade(true);
+        });
+    }
+
+    function onChangeRewardsFromPoolBtcAddress(value) {
+        runInAction(() => {
+            miningFarmEntity.rewardsFromPoolBtcAddress = value;
+            setAreChangesMade(true);
+        })
+    }
+
+    function onSave() {
+        if (validationState.getIsErrorPresent() === true) {
+            validationState.setShowErrors(true);
+            return
+        }
+
+        if (miningFarmEntity.areBtcPayoutAddressesUnique() === false) {
+            alertStore.show('The three BTC payout address must be unique therefore a single address could not have multiple purposes');
+            return;
+        }
+
+        viewMiningFarmModalStore.saveChanges();
+    }
 
     return (
         <ModalWindow
@@ -41,7 +91,19 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                             createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
                             createDataPreview('Hashrate', miningFarmEntity.formatHashPowerInTh()),
                             createDataPreview('Resale royalties address', miningFarmEntity.cudosResaleNftRoyaltiesPercent),
-                            createDataPreview('Pool rewards address', miningFarmEntity.rewardsFromPoolBtcAddress),
+                            createDataPreview(
+                                'Pool rewards Address',
+                                <Input
+                                    label = {
+                                        <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />
+                                    }
+                                    placeholder={'bc1qxy...'}
+                                    className={'FlexRow'}
+                                    value = { miningFarmEntity.rewardsFromPoolBtcAddress }
+                                    inputValidation={farmPayoutAddressValidation}
+                                    onChange = { onChangeRewardsFromPoolBtcAddress }
+                                />,
+                            ),
                             createDataPreview('Leftover rewards address', miningFarmEntity.leftoverRewardsBtcAddress),
                             createDataPreview('Maintenance fee address', miningFarmEntity.maintenanceFeePayoutBtcAddress),
                             createDataPreview(
@@ -49,8 +111,9 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                                 <Input
                                     className={'FlexRow RoyaliesInput'}
                                     value = { viewMiningFarmModalStore.editedCudosMintRoyalties }
-                                    onChange = { viewMiningFarmModalStore.setEditedCudosMintRoyalties }
+                                    onChange = { setEditedCudosMintRoyalties }
                                     inputType = {InputType.REAL}
+                                    inputValidation={mintRoyaltiesValidation}
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end" >
                                             %
@@ -63,8 +126,9 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                                 <Input
                                     className={'FlexRow RoyaliesInput'}
                                     value = { viewMiningFarmModalStore.editedCudosResaleRoyalties }
-                                    onChange = { viewMiningFarmModalStore.setEditedCudosResaleRoyalties }
+                                    onChange = { setEditedCudosResaleRoyalties }
                                     inputType = {InputType.REAL}
+                                    inputValidation={resaleRoyaltiesValidation}
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end" >
                                             %
@@ -87,8 +151,8 @@ function ViewMiningFarmModal({ viewMiningFarmModalStore }: Props) {
                     </div>
                     <Actions className = { 'ViewMiningFarmsActions' } layout = { ActionsLayout.LAYOUT_COLUMN_CENTER } >
                         <Button
-                            disabled = { !viewMiningFarmModalStore.areChangesMade() }
-                            onClick = { viewMiningFarmModalStore.saveChanges } >
+                            disabled = { areChangesMade === false }
+                            onClick = { onSave } >
                             Save Changes
                         </Button>
                     </Actions>

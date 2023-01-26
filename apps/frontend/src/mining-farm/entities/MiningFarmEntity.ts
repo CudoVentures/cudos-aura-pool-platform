@@ -99,6 +99,10 @@ export default class MiningFarmEntity {
         return this.rewardsFromPoolBtcAddress !== this.leftoverRewardsBtcAddress && this.rewardsFromPoolBtcAddress !== this.maintenanceFeePayoutBtcAddress && this.leftoverRewardsBtcAddress !== this.maintenanceFeePayoutBtcAddress;
     }
 
+    areFarmOwnerBtcPayoutAddressUnique(): boolean {
+        return this.leftoverRewardsBtcAddress !== this.maintenanceFeePayoutBtcAddress;
+    }
+
     hasPhotos(): boolean {
         return this.farmPhotoUrls.length > 0;
     }
