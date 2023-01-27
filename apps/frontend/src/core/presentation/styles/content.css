@@ -121,7 +121,7 @@
 html {
 	color: var(--color-neutral-100);
     font-family:Poppins, OpenSans, sans-serif; font-weight:400; font-size:14px;
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
 }
 
 body {
