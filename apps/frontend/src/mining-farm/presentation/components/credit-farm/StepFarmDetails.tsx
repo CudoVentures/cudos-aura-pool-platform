@@ -41,7 +41,8 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
 
     const validationState = useRef(new ValidationState()).current;
     const farmNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
-    const farmLegalNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const farmLegalNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const farmLegalNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
     const farmOwnerNameValidation = useRef(validationState.addEmptyValidation('Invalid name')).current;
     const farmOwnerEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
     const farmManufacturersValidation = useRef(validationState.addEmptyValidation('Empty manufacturers')).current;
@@ -51,7 +52,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
     const farmMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
     const resaleFarmRoyaltiesCudosAddressValidation = useRef(validationState.addCudosAddressValidation('Invalid cudos address')).current;
-    const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
+    // const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const farmLeftoversAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const farmMainteannceFeesAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
 
@@ -125,8 +126,8 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
             return;
         }
 
-        if (miningFarmEntity.areBtcPayoutAddressesUnique() === false) {
-            alertStore.show('The three BTC payout address must be unique therefore a single address could not have multiple purposes');
+        if (miningFarmEntity.areFarmOwnerBtcPayoutAddressUnique() === false) {
+            alertStore.show('The two BTC payout address must be unique therefore a single address could not have multiple purposes');
             return;
         }
 
@@ -155,7 +156,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         label={'Legal Entity Name'}
                         placeholder={'e.g Cool Farm Inc.'}
                         value={miningFarmEntity.legalName}
-                        inputValidation={farmLegalNameValidation}
+                        inputValidation={[farmLegalNameValidationNoEmpty, farmLegalNameValidationNoSpace]}
                         onChange={action((string) => { miningFarmEntity.legalName = string })} />
                     <Autocomplete
                         label={'Manufacturers'}
@@ -289,14 +290,14 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         value={miningFarmEntity.resaleFarmRoyaltiesCudosAddress}
                         inputValidation={resaleFarmRoyaltiesCudosAddressValidation}
                         onChange={action((string) => { miningFarmEntity.resaleFarmRoyaltiesCudosAddress = string })} />
-                    <Input
+                    {/* <Input
                         label = {
                             <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.rewardsFromPoolBtcAddress}
                         inputValidation={farmPayoutAddressValidation}
-                        onChange={action((string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string })} />
+                        onChange={action((string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string })} /> */}
                     <Input
                         label = {
                             <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on Aura Pool.'} />

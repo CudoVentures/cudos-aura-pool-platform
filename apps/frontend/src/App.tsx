@@ -119,7 +119,7 @@ const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore(
 const buyNftModalStore = new BuyNftModalStore(cudosStore, nftRepo, walletStore, accountRepo, cudosRepo);
 const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo, accountRepo, miningFarmRepo);
-const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
+const viewMiningFarmModalStore = new ViewMiningFarmModalStore(generalStore, miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
 const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
 const valueChangeModalStore = new ValueChangeModalStore();
@@ -151,6 +151,7 @@ walletRepo.setPresentationAlertCallbacks(alertStore.show);
 settingsRepo.setPresentationAlertCallbacks(alertStore.show);
 
 collectionRepo.setProgressCallbacks(progressStore.onProgress);
+miningFarmRepo.setProgressCallbacks(progressStore.onProgress);
 
 const App = () => {
 

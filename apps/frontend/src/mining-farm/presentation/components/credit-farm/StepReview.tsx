@@ -41,7 +41,7 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
                         createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
                         createDataPreview('Primary Account Owner', miningFarmEntity.primaryAccountOwnerName),
                         createDataPreview('Primary Account Owner Email', miningFarmEntity.primaryAccountOwnerEmail),
-                        createDataPreview('BTC Address to receive awards', miningFarmEntity.rewardsFromPoolBtcAddress),
+                        // createDataPreview('BTC Address to receive awards', miningFarmEntity.rewardsFromPoolBtcAddress),
                         createDataPreview('BTC Address to receive awards leftovers', miningFarmEntity.leftoverRewardsBtcAddress),
                         createDataPreview('BTC Address to receive maintenance fees', miningFarmEntity.maintenanceFeePayoutBtcAddress),
                         createDataPreview('Manufacturers', creditMiningFarmDetailsPageStore.getSelectedManufacturersNames()),
