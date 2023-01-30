@@ -21,6 +21,7 @@ export const ADDRESSBOOK_NETWORK = 'aurapool';
 export const ETH_CONSTS = {
     ETH_CUDOS_ADDRESS: Config.APP_ETH_CUDOS_ADDRESS ?? '',
     ETH_CHAIN_ID: Config.APP_ETH_CHAIN_ID ?? '',
+    AURA_POOL_CONTRACT_ADDRESS: Config.AURA_POOL_CONTRACT_ADDRESS ?? '',
 }
 
 export const CHAIN_DETAILS = {
