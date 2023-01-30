@@ -26,7 +26,6 @@ type Props = {
 function ChangePasswordModal({ alertStore, changePasswordModalStore }: Props) {
     const validationState = useRef(new ValidationState()).current;
 
-    const validationOldPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
     const validationPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
     const validationConfirmPass = useRef(validationState.addPasswordValidation('Invalid password')).current;
     const [validationFirstMatchPass, validationSecondMatchPass] = useRef(validationState.addMatchStringsValidation('Passwords don\'t match.')).current;
@@ -75,9 +74,6 @@ function ChangePasswordModal({ alertStore, changePasswordModalStore }: Props) {
                         </InputAdornment>,
                     }}
                     value={changePasswordModalStore.oldPassword}
-                    inputValidation={[
-                        validationOldPass,
-                    ]}
                     onChange={changePasswordModalStore.setOldPassword}
                     type={showOldPassword === false ? 'password' : 'text'} />
                 <Input
