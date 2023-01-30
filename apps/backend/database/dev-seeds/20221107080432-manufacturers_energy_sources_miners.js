@@ -35,7 +35,7 @@ const manufacturers = [
 
 const accounts = [
     {
-        id: 1,
+        account_id: 1,
         type: 3,
         active: 1,
         email_verified: 1,
