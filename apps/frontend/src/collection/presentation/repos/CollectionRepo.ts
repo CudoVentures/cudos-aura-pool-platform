@@ -10,6 +10,7 @@ export default interface CollectionRepo {
 
     setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
     setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
+    setProgressCallbacks(onProgress: (title: string, progress: number) => void);
 
     fetchCategories(): Promise < CategoryEntity[] >;
     fetchTopCollections(timestampFrom: number, timestampTo: number, status?: CollectionStatus): Promise < CollectionEntity[] >;

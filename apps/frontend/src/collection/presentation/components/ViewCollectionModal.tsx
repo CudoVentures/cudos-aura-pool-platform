@@ -48,7 +48,7 @@ function ViewCollectionModal({ cudosStore, viewCollectionModalStore }: Props) {
                                     dataPreviews = { [
                                         createDataPreview('NFT Name', nftEntity.name),
                                         createDataPreview('Hash power', nftEntity.formatHashPowerInTh()),
-                                        createDataPreview('Price', viewCollectionModalStore.formatPriceInCudos(nftEntity)),
+                                        createDataPreview('Price', cudosStore.formatPriceInCudosForNft(nftEntity)),
                                         createDataPreview('Expirity Date', nftEntity.formatExpiryDate()),
                                         createDataPreview('Creator address', creatorAdminEntity.cudosWalletAddress),
                                         createDataPreview('Current owner', nftEntity.currentOwner),

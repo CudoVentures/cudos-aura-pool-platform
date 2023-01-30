@@ -10,6 +10,7 @@ import S from '../../../core/utilities/Main';
 import { BackendErrorType, parseBackendErrorType } from '../../../core/utilities/AxiosWrapper';
 import MiningFarmPerformanceEntity from '../../entities/MiningFarmPerformanceEntity';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import DefaultProgressHandler from '../../../core/utilities/DefaultProgressHandler';
 
 export default class MiningFarmApiRepo implements MiningFarmRepo {
 
@@ -17,6 +18,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     enableActions: () => void;
     disableActions: () => void;
     showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
+    onProgress: (title: string, progress: number) => void;
 
     constructor() {
         this.miningFarmApi = new MiningFarmApi();
@@ -32,6 +34,10 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
 
     setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void) {
         this.showAlert = showAlert;
+    }
+
+    setProgressCallbacks(onProgress: (title: string, progress: number) => void) {
+        this.onProgress = onProgress;
     }
 
     async fetchAllMiningFarms(status: MiningFarmStatus = MiningFarmStatus.APPROVED): Promise < MiningFarmEntity[] > {
@@ -120,7 +126,10 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void > {
         try {
             this.disableActions?.();
-            const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity);
+
+            const progressHandler = new DefaultProgressHandler('Uploading farm...', 'Processing farm...', this.onProgress);
+            const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity, progressHandler.onProgress);
+            progressHandler.finish();
 
             await runInActionAsync(() => {
                 Object.assign(miningFarmEntity, resultMiningFarmEntity);
@@ -139,12 +148,6 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
             }
         } finally {
             this.enableActions?.();
-        }
-    }
-
-    async creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void > {
-        for (let i = miningFarmEntities.length; i-- > 0;) {
-            await this.creditMiningFarm(miningFarmEntities[i]);
         }
     }
 

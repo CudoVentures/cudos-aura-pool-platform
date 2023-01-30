@@ -171,7 +171,7 @@ export default class NftEntity {
         repoJson.price = entity.acudosPrice.toString(10);
         repoJson.expirationDate = new Date(entity.expirationDateTimestamp);
         repoJson.collectionId = entity.collectionId;
-        repoJson.marketplaceNftId = entity.marketplaceNftId === '' ? NOT_EXISTS_INT : parseInt(entity.marketplaceNftId);
+        repoJson.marketplaceNftId = entity.marketplaceNftId === '' ? null : parseInt(entity.marketplaceNftId);
         repoJson.status = entity.status;
         repoJson.currentOwner = entity.currentOwner;
         repoJson.creatorId = entity.creatorId;

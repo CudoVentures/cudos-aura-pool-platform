@@ -322,12 +322,12 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                                                     <Svg svg={HighlightOffIcon}/>
                                                     Reject Farm
                                                 </Button>
-                                                <Button
+                                                {/* <Button
                                                     padding={ButtonPadding.PADDING_48}
                                                     onClick={creditMiningFarmPageStore.approveMiningFarm} >
                                                     <Svg svg={CheckCircleOutlineIcon}/>
                                                     Approve Farm
-                                                </Button>
+                                                </Button> */}
                                             </Actions>
                                         ) }
                                     </DataPreviewLayout>

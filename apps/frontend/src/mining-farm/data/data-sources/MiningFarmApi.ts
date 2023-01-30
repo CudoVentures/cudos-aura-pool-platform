@@ -8,6 +8,7 @@ import axios from '../../../core/utilities/AxiosWrapper';
 import { ReqCreditEnergySource, ReqCreditManufacturer, ReqCreditMiner, ReqCreditMiningFarm, ReqFetchBestPerformingMiningFarms, ReqFetchMiningFarmDetails } from '../dto/Requests';
 import { ResCreditEnergySource, ResCreditManufacturer, ResCreditMiner, ResCreditMiningFarm, ResFetchBestPerformingMiningFarms, ResFetchEnergySources, ResFetchManufacturers, ResFetchMiners, ResFetchMiningFarmDetails } from '../dto/Responses';
 import MiningFarmPerformanceEntity from '../../entities/MiningFarmPerformanceEntity';
+import { AxiosProgressEvent } from 'axios';
 
 export default class MiningFarmApi {
 
@@ -35,8 +36,10 @@ export default class MiningFarmApi {
         return res.miningFarmDetailsEntities;
     }
 
-    async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < MiningFarmEntity > {
-        const { data } = await axios.put('/api/v1/farm', new ReqCreditMiningFarm(miningFarmEntity));
+    async creditMiningFarm(miningFarmEntity: MiningFarmEntity, onUploadProgress: (progressEvent: AxiosProgressEvent) => void = null): Promise < MiningFarmEntity > {
+        const { data } = await axios.put('/api/v1/farm', new ReqCreditMiningFarm(miningFarmEntity), {
+            onUploadProgress,
+        });
         const res = new ResCreditMiningFarm(data);
         return res.miningFarmEntity;
     }

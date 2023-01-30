@@ -235,28 +235,29 @@ export default class CreditMiningFarmPageStore {
     rejectMiningFarm = async () => {
         try {
             const clonedFarm = this.miningFarmEntity.clone();
-            clonedFarm.status = MiningFarmStatus.REJECTED;
+            clonedFarm.marKRejected();
             await this.miningFarmRepo.creditMiningFarm(clonedFarm);
 
             await runInActionAsync(() => {
-                this.miningFarmEntity.status = clonedFarm.status;
+                this.miningFarmEntity.copy(clonedFarm);
             })
         } catch (e) {
             console.log(e);
         }
     }
 
-    approveMiningFarm = async () => {
-        try {
-            const clonedFarm = this.miningFarmEntity.clone();
-            clonedFarm.status = MiningFarmStatus.APPROVED;
-            await this.miningFarmRepo.creditMiningFarm(clonedFarm);
+    // this method does not exists because the super admin MUST set some params before approval
+    // approveMiningFarm = async () => {
+    //     try {
+    //         const clonedFarm = this.miningFarmEntity.clone();
+    //         clonedFarm.markApproved();
+    //         await this.miningFarmRepo.creditMiningFarm(clonedFarm);
 
-            await runInActionAsync(() => {
-                this.miningFarmEntity.status = clonedFarm.status;
-            });
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    //         await runInActionAsync(() => {
+    //             this.miningFarmEntity.copy(clonedFarm);
+    //         });
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
 }

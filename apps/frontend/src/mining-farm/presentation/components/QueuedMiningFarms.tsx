@@ -6,6 +6,7 @@ import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import QueuedMiningFarmsStores from '../stores/QueuedMiningFarmsStores'
 import ViewMiningFarmModalStore from '../stores/ViewMiningFarmModalStore';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 import StyledLayout from '../../../core/presentation/components/StyledLayout';
@@ -20,12 +21,13 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import '../styles/queued-mining-farms.css';
 
 type Props = {
+    alertStore?: AlertStore;
     queuedMiningFarmsStore?: QueuedMiningFarmsStores;
     viewMiningFarmModalStore?: ViewMiningFarmModalStore;
     dashboardMode: boolean;
 };
 
-function QueuedMiningFarms({ queuedMiningFarmsStore, viewMiningFarmModalStore, dashboardMode }: Props) {
+function QueuedMiningFarms({ alertStore, queuedMiningFarmsStore, viewMiningFarmModalStore, dashboardMode }: Props) {
     const navigate = useNavigate();
     const miningFarmEntities = queuedMiningFarmsStore.miningFarmEntities;
 
@@ -33,18 +35,22 @@ function QueuedMiningFarms({ queuedMiningFarmsStore, viewMiningFarmModalStore, d
         queuedMiningFarmsStore.init(dashboardMode === true ? 8 : 12);
     }, [dashboardMode]);
 
-    function onClickApprove(miningFarmEntity: MiningFarmEntity, e) {
-        e.stopPropagation();
-        queuedMiningFarmsStore.approveMiningFarm(miningFarmEntity);
-    }
+    // this method does not exists because the super admin MUST set some params before approval
+    // function onClickApprove(miningFarmEntity: MiningFarmEntity, e) {
+    //     // queuedMiningFarmsStore.approveMiningFarm(miningFarmEntity);
+    // }
 
     function onClickReject(miningFarmEntity: MiningFarmEntity, e) {
         e.stopPropagation();
-        queuedMiningFarmsStore.rejectMiningfarm(miningFarmEntity);
+        alertStore.show('You are about to reject a farm. Do you wish to continue', () => {
+            queuedMiningFarmsStore.rejectMiningfarm(miningFarmEntity);
+        }, () => {});
     }
 
     function onClickMiningFarmRow(i: number) {
-        viewMiningFarmModalStore.showSignal(miningFarmEntities[i]);
+        viewMiningFarmModalStore.showSignal(miningFarmEntities[i].clone(), () => {
+            queuedMiningFarmsStore.fetchMiningFarms();
+        });
     }
 
     function onClickSeeAllMiningFarms() {
@@ -62,7 +68,7 @@ function QueuedMiningFarms({ queuedMiningFarmsStore, viewMiningFarmModalStore, d
                 createTableCellString(miningFarmEntity.formatHashPowerInTh()),
                 createTableCell((
                     <Actions height = { ActionsHeight.HEIGHT_32 }>
-                        <Button color = { ButtonColor.SCHEME_GREEN } type = { ButtonType.TEXT_INLINE } onClick = { onClickApprove.bind(null, miningFarmEntity) }>
+                        <Button color = { ButtonColor.SCHEME_GREEN } type = { ButtonType.TEXT_INLINE } >
                             <Svg svg = { CheckCircleOutlineIcon } />
                             Approve
                         </Button>

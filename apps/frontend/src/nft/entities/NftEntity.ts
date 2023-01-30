@@ -122,27 +122,6 @@ export default class NftEntity {
         return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`;
     }
 
-    formatPriceInCudos(): string {
-        if (this.priceInAcudos === null) {
-            return '0 CUDOS';
-        }
-
-        return `${this.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0)} CUDOS`;
-    }
-
-    formatPricePlusMintFeeInCudos(): string {
-        if (this.priceInAcudos === null) {
-            return '0 CUDOS';
-        }
-
-        let previewPrice = this.priceInAcudos.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
-        if (this.isMinted() === false) {
-            previewPrice = previewPrice.plus(1);
-        }
-
-        return `${previewPrice.toFixed(0)} CUDOS`;
-    }
-
     cloneDeep(): NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 

@@ -10,6 +10,7 @@ export default interface MiningFarmRepo {
 
     setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
     setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
+    setProgressCallbacks(onProgress: (title: string, progress: number) => void);
 
     fetchAllMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
     fetchPopularMiningFarms(status?: MiningFarmStatus): Promise < MiningFarmEntity[] >;
@@ -21,7 +22,6 @@ export default interface MiningFarmRepo {
     fetchMiningFarmDetailsById(miningFarmId: string): Promise < MiningFarmDetailsEntity >;
     fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] >;
     creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void >;
-    creditMiningFarms(miningFarmEntities: MiningFarmEntity[]): Promise < void >;
     fetchManufacturers(): Promise < ManufacturerEntity[] >;
     fetchMiners(): Promise < MinerEntity[] >;
     fetchEnergySources(): Promise < EnergySourceEntity[] >;

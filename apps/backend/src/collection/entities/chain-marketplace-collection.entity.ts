@@ -67,8 +67,8 @@ export default class ChainMarketplaceCollectionEntity {
 
         entity.verified = queryCollection.verified ?? entity.verified;
         entity.denomId = queryCollection.denom_id ?? entity.denomId;
-        entity.mintRoyalties = JSON.parse(queryCollection.mint_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
-        entity.resaleRoyalties = JSON.parse(queryCollection.resale_royalties).map((royaltyJson) => Royalty.fromJSON(royaltyJson))
+        entity.mintRoyalties = JSON.parse(queryCollection.mint_royalties)?.map((royaltyJson) => Royalty.fromJSON(royaltyJson))
+        entity.resaleRoyalties = JSON.parse(queryCollection.resale_royalties)?.map((royaltyJson) => Royalty.fromJSON(royaltyJson))
 
         const dataJson = queryCollection.nft_denom.data_json;
 

@@ -19,7 +19,7 @@ import CudosStore from '../../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     creditCollectionStore?: CreditCollectionStore;
-    cudosStore: CudosStore
+    cudosStore?: CudosStore
 }
 
 function CreditCollectionAddNftsTable({ cudosStore, creditCollectionStore }: Props) {
@@ -39,7 +39,7 @@ function CreditCollectionAddNftsTable({ cudosStore, creditCollectionStore }: Pro
                 createTableCell(nftEntity.name),
                 createTableCell(collectionName),
                 createTableCell(nftEntity.formatHashPowerInTh()),
-                createTableCell(cudosStore.formatPriceInCudosForNft(nftEntity)),
+                createTableCell(cudosStore.formatExistingPriceForNft(nftEntity)),
                 // createTableCell(nftEntity.formatMaintenanceFeeInBtc()),
                 createTableCell(
                     <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT}>

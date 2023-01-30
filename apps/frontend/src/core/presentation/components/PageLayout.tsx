@@ -11,6 +11,7 @@ import '../styles/main.css';
 import '../styles/content.css';
 import '../styles/fonts.css';
 import '../styles/page-layout.css';
+import Progress from './Progress';
 
 type Props = {
     className?: string;
@@ -36,6 +37,7 @@ export default function PageLayout({ className, modals, alert, snack, children }
             }
             { alert }
             { snack }
+            <Progress />
             <DisableActions />
             <PageLoadingIndicator />
         </div>

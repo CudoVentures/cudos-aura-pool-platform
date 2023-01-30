@@ -20,7 +20,13 @@ export default class NftSessionStorage {
 
     getNftsMap(): Map<string, NftEntity> {
         const mapJson = sessionStorage.getItem(STORAGE_KEY);
-        const map = new Map<string, NftEntity>(JSON.parse(mapJson));
+
+        if (!mapJson) {
+            return new Map<string, NftEntity>();
+        }
+
+        const parsedMap = JSON.parse(mapJson);
+        const map = new Map<string, NftEntity>(parsedMap);
         map.forEach((jsonEntity, key) => {
             map.set(key, jsonEntity);
         });
@@ -29,9 +35,12 @@ export default class NftSessionStorage {
     }
 
     private saveNftsMap(map: Map<string, NftEntity>) {
-        const jsonEntities = Array.from(map.entries()).forEach((entry) => {
+        const jsonEntities = Array.from(map.entries());
+
+        jsonEntities.forEach((entry) => {
             entry[1] = NftEntity.fromJson(entry[1]);
         });
+
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
     }
 }

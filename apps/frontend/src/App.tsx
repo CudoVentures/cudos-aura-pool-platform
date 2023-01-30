@@ -63,6 +63,7 @@ import SuperAdminAnalyticsPageStore from './analytics/presentation/stores/SuperA
 import ApprovedCollectionsStore from './collection/presentation/stores/ApprovedCollectionsStore';
 import RejectedCollectionsStore from './collection/presentation/stores/RejectedCollectionsStore';
 import GeneralStore from './general/presentation/stores/GeneralStore';
+import ProgressStore from './core/presentation/stores/ProgressStore';
 
 // @ts-ignore
 declare global {
@@ -90,6 +91,7 @@ const settingsRepo = new SettingsApiRepo();
 const appStore = new AppStore();
 const alertStore = new AlertStore();
 const snackStore = new SnackStore();
+const progressStore = new ProgressStore();
 const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore(alertStore, walletRepo);
 const generalStore = new GeneralStore(settingsRepo);
@@ -126,7 +128,7 @@ const creditCollectionSuccessModalStore = new CreditCollectionSuccessModalStore(
 const buyNftModalStore = new BuyNftModalStore(cudosStore, nftRepo, walletStore, accountRepo, cudosRepo);
 const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo, accountRepo, miningFarmRepo);
-const viewMiningFarmModalStore = new ViewMiningFarmModalStore(miningFarmRepo);
+const viewMiningFarmModalStore = new ViewMiningFarmModalStore(generalStore, miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
 const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
 const valueChangeModalStore = new ValueChangeModalStore();
@@ -157,6 +159,9 @@ accountRepo.setPresentationAlertCallbacks(alertStore.show);
 walletRepo.setPresentationAlertCallbacks(alertStore.show);
 settingsRepo.setPresentationAlertCallbacks(alertStore.show);
 
+collectionRepo.setProgressCallbacks(progressStore.onProgress);
+miningFarmRepo.setProgressCallbacks(progressStore.onProgress);
+
 const App = () => {
 
     useEffect(() => {
@@ -176,6 +181,7 @@ const App = () => {
                 appStore={appStore}
                 alertStore={alertStore}
                 snackStore={snackStore}
+                progressStore={progressStore}
                 walletStore={walletStore}
                 generalStore={generalStore}
                 bitcoinStore={bitcoinStore}

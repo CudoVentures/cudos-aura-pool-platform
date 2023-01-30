@@ -95,6 +95,19 @@ export default class ViewNftPageStore {
     }
 
     async init(nftId: string) {
+        await runInActionAsync(() => {
+            this.cudosPrice = S.NOT_EXISTS;
+            this.bitcoinPrice = S.NOT_EXISTS;
+            this.nftEntity = null;
+            this.collectionEntity = null;
+            this.miningFarmEntity = null;
+            this.adminEntity = null;
+            this.nftEntities = null;
+            this.nftEarningsEntity = null;
+            this.nftEventEntities = null;
+            this.nftEventFilterModel.nftId = S.Strings.NOT_EXISTS;
+        });
+
         await this.bitcoinStore.init();
         await this.cudosStore.init();
         await this.generalStore.init();
@@ -254,7 +267,13 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(1 / 30));
         const grossProfit = this.calculateGrossProfitPerDay()
-        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+        let profit = grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+
+        if (profit.lt(new BigNumber(0)) === true) {
+            profit = new BigNumber(0);
+        }
+
+        return profit;
     }
 
     calculateNetProfitPerWeek(): BigNumber {
@@ -264,7 +283,13 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(7 * 1 / 30));
         const grossProfit = this.calculateGrossProfitPerWeek();
-        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+        let profit = grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+
+        if (profit.lt(new BigNumber(0)) === true) {
+            profit = new BigNumber(0);
+        }
+
+        return profit;
     }
 
     calculateNetProfitPerMonth(): BigNumber {
@@ -274,7 +299,13 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee();
         const grossProfit = this.calculateGrossProfitPerMonth();
-        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+        let profit = grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+
+        if (profit.lt(new BigNumber(0)) === true) {
+            profit = new BigNumber(0);
+        }
+
+        return profit;
     }
 
     calculateNetProfitPerYear(): BigNumber {
@@ -284,7 +315,13 @@ export default class ViewNftPageStore {
 
         const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(12));
         const grossProfit = this.calculateGrossProfitPerYear();
-        return grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+        let profit = grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
+
+        if (profit.lt(new BigNumber(0)) === true) {
+            profit = new BigNumber(0);
+        }
+
+        return profit;
     }
 
     formatNetProfitPerDay(): string {

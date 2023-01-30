@@ -3,6 +3,7 @@ import { action, makeObservable, observable, runInAction } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import S from '../../../core/utilities/Main';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
 import MinerEntity from '../../entities/MinerEntity';
@@ -11,19 +12,22 @@ import MiningFarmRepo from '../repos/MiningFarmRepo';
 
 export default class ViewMiningFarmModalStore extends ModalStore {
 
+    generalStore: GeneralStore;
     miningFarmRepo: MiningFarmRepo;
 
     manufacturerEntitiesMap: Map < string, ManufacturerEntity >;
     minerEntitiesMap: Map < string, MinerEntity >;
     energySourceEntitiesMap: Map < string, EnergySourceEntity >;
 
+    @observable onSave: () => void;
     @observable miningFarmEntity: MiningFarmEntity;
-    @observable editedCudosMintRoyalties: number;
-    @observable editedCudosResaleRoyalties: number;
+    @observable editedCudosMintRoyalties: string;
+    @observable editedCudosResaleRoyalties: string;
 
-    constructor(miningFarmRepo: MiningFarmRepo) {
+    constructor(generalStore: GeneralStore, miningFarmRepo: MiningFarmRepo) {
         super();
 
+        this.generalStore = generalStore;
         this.miningFarmRepo = miningFarmRepo;
 
         this.manufacturerEntitiesMap = null;
@@ -31,8 +35,8 @@ export default class ViewMiningFarmModalStore extends ModalStore {
         this.energySourceEntitiesMap = null;
 
         this.miningFarmEntity = null;
-        this.editedCudosMintRoyalties = S.NOT_EXISTS;
-        this.editedCudosResaleRoyalties = S.NOT_EXISTS;
+        this.editedCudosMintRoyalties = '';
+        this.editedCudosResaleRoyalties = '';
 
         makeObservable(this);
     }
@@ -56,8 +60,11 @@ export default class ViewMiningFarmModalStore extends ModalStore {
     }
 
     @action
-    async showSignal(miningFarmEntity: MiningFarmEntity) {
+    async showSignal(miningFarmEntity: MiningFarmEntity, onSave: () => void) {
+        await this.generalStore.init();
+
         this.miningFarmEntity = miningFarmEntity;
+        this.onSave = onSave;
 
         const manufacturerEntities = await this.miningFarmRepo.fetchManufacturers();
         const manufacturerEntitiesMap = new Map();
@@ -82,8 +89,16 @@ export default class ViewMiningFarmModalStore extends ModalStore {
             this.minerEntitiesMap = minerEntitiesMap;
             this.energySourceEntitiesMap = energySourceEntitiesMap;
 
-            this.editedCudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent;
-            this.editedCudosResaleRoyalties = miningFarmEntity.cudosResaleNftRoyaltiesPercent;
+            if (miningFarmEntity.isCudosMintNftRoyaltiesPercentSet() === false) {
+                miningFarmEntity.cudosMintNftRoyaltiesPercent = this.generalStore.settingsEntity.firstSaleCudosRoyaltiesPercent;
+            }
+
+            if (miningFarmEntity.isCudosResaleNftRoyaltiesPercentSet() === false) {
+                miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.generalStore.settingsEntity.resaleCudosRoyaltiesPercent;
+            }
+
+            this.editedCudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent.toString();
+            this.editedCudosResaleRoyalties = miningFarmEntity.cudosResaleNftRoyaltiesPercent.toString();
 
             this.show();
         });
@@ -91,29 +106,18 @@ export default class ViewMiningFarmModalStore extends ModalStore {
 
     hide = action(() => {
         this.miningFarmEntity = null;
+        this.onSave = null;
 
         super.hide();
     })
 
-    setEditedCudosMintRoyalties = action((value) => {
-        this.editedCudosMintRoyalties = Number(value);
-    })
+    async saveChanges() {
+        const onSave = this.onSave;
 
-    setEditedCudosResaleRoyalties = action((value) => {
-        this.editedCudosResaleRoyalties = Number(value);
-    })
-
-    areChangesMade(): boolean {
-        return this.editedCudosMintRoyalties !== this.miningFarmEntity.cudosMintNftRoyaltiesPercent || this.editedCudosResaleRoyalties !== this.miningFarmEntity.cudosResaleNftRoyaltiesPercent;
-    }
-
-    saveChanges = async () => {
-        await runInActionAsync(() => {
-            this.miningFarmEntity.cudosMintNftRoyaltiesPercent = this.editedCudosMintRoyalties;
-            this.miningFarmEntity.cudosResaleNftRoyaltiesPercent = this.editedCudosResaleRoyalties;
-        });
-
+        this.miningFarmEntity.markApproved();
         await this.miningFarmRepo.creditMiningFarm(this.miningFarmEntity);
+
         this.hide();
+        onSave();
     }
 }

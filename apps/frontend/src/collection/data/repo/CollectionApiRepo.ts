@@ -17,6 +17,7 @@ import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionApi from '../data-sources/CollectionApi';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import CollectionSessionStorage from '../data-sources/CollectionSessionStorage';
+import DefaultProgressHandler from '../../../core/utilities/DefaultProgressHandler';
 
 export default class CollectionApiRepo implements CollectionRepo {
     accountApi: AccountApi;
@@ -27,6 +28,7 @@ export default class CollectionApiRepo implements CollectionRepo {
     enableActions: () => void;
     disableActions: () => void;
     showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void;
+    onProgress: (title: string, progress: number) => void;
 
     constructor() {
         this.collectionApi = new CollectionApi();
@@ -46,6 +48,10 @@ export default class CollectionApiRepo implements CollectionRepo {
 
     setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener?: null | (() => boolean | void), negativeListener?: null | (() => boolean | void)) => void) {
         this.showAlert = showAlert;
+    }
+
+    setProgressCallbacks(onProgress: (title: string, progress: number) => void) {
+        this.onProgress = onProgress;
     }
 
     async fetchCategories(): Promise < CategoryEntity [] > {
@@ -123,7 +129,10 @@ export default class CollectionApiRepo implements CollectionRepo {
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]) {
         try {
             this.disableActions?.();
-            const result = await this.collectionApi.creditCollection(collectionEntity, nftEntities);
+
+            const progressHandler = new DefaultProgressHandler('Uploading collection...', 'Processing collection...', this.onProgress);
+            const result = await this.collectionApi.creditCollection(collectionEntity, nftEntities, progressHandler.onProgress);
+            progressHandler.finish();
 
             await runInActionAsync(() => {
                 Object.assign(collectionEntity, result.collectionEntity);

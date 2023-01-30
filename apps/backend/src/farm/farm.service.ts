@@ -394,6 +394,7 @@ export class FarmService {
             collectionEntity.hashingPower = 0;
 
             ++miningFarmDetailsEntity.nftsOwned;
+            collectionEntity.hashingPower = 0;
             if (nftEntity.isSold() === true) {
                 ++miningFarmDetailsEntity.totalNftsSold;
             }
