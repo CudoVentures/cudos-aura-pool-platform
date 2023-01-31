@@ -15,6 +15,7 @@ import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../core/presentation/components/Breadcrumbs';
 import NftStats from '../components/NftStats';
@@ -35,7 +36,6 @@ import { ContainerBackground } from '../../../core/presentation/components/Style
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -101,7 +101,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             return;
         }
 
-        const balance = walletStore.getBalanceSafe().multipliedBy((new BigNumber(10).pow(18)));
+        const balance = walletStore.getBalanceSafeInAcudos();
         if (balance.lt(nftEntity.priceInAcudos)) {
             alertStore.show('Your balance is not enough to buy this.');
             return;
@@ -163,9 +163,9 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             </div>,
         ));
 
-        if (nftEntity.isMinted() === false) {
+        if (nftEntity.hasPriceInAcudos() === true) {
             priceDatapreviews.push(createDataPreview(
-                'Mint Fee',
+                'Fee',
                 <div className={'DataValue NftPrice FlexRow'}>
                     <Svg svg={SvgCudos}/>
                     <div className={'H3 Bold'}>1 CUDOS</div>

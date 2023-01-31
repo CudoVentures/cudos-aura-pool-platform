@@ -1,13 +1,11 @@
 import { action, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx';
-import { KeplrWallet, Ledger, CosmostationWallet, StdSignature } from 'cudosjs';
+import { KeplrWallet, Ledger, CosmostationWallet, StdSignature, CURRENCY_DECIMALS } from 'cudosjs';
 import S from '../../../core/utilities/Main';
 import { CHAIN_DETAILS, SIGN_NONCE } from '../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import WalletRepo from '../repos/WalletRepo';
-import { Magic } from 'magic-sdk';
-import { CosmosExtension } from '@magic-ext/cosmos';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
@@ -189,6 +187,10 @@ export default class WalletStore {
 
     getBalanceSafe(): BigNumber {
         return this.balance ?? new BigNumber(0);
+    }
+
+    getBalanceSafeInAcudos(): BigNumber {
+        return this.getBalanceSafe().shiftedBy(CURRENCY_DECIMALS);
     }
 
     getAddress(): string {

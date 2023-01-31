@@ -103,6 +103,7 @@ const SettingLayout = inject((stores) => stores)(observer(({
         <Input
             label={`New ${label}`}
             inputType={inputType}
+            decimalLength={2}
             inputValidation={inputValidation}
             value={megaWalletSettingsModalStore.value}
             onChange={megaWalletSettingsModalStore.onInputChange}

@@ -7,6 +7,7 @@ import SuperAdminMningFarmsPageStore from '../stores/SuperAdminMningFarmsPageSto
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import ViewMiningFarmModalStore from '../stores/ViewMiningFarmModalStore';
 
 import { InputAdornment } from '@mui/material';
 import PageLayout from '../../../core/presentation/components/PageLayout'
@@ -28,9 +29,10 @@ import '../styles/page-super-admin-mining-farms.css'
 type Props = {
     superAdminMiningFarmsPageStore?: SuperAdminMningFarmsPageStore;
     cudosStore?: CudosStore;
+    viewMiningFarmModalStore?: ViewMiningFarmModalStore;
 }
 
-function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore }: Props) {
+function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, viewMiningFarmModalStore, cudosStore }: Props) {
     useEffect(() => {
         superAdminMiningFarmsPageStore.init();
     }, []);
@@ -40,7 +42,10 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, cudosStore 
 
     function onClickTopFarmRow(i: number) {
         const miningFarmEntity = miningFarmEntities[i];
-        navigate(`${AppRoutes.CREDIT_MINING_FARM}/${miningFarmEntity.id}`);
+        // navigate(`${AppRoutes.CREDIT_MINING_FARM}/${miningFarmEntity.id}`);
+        viewMiningFarmModalStore.showSignal(miningFarmEntity.clone(), () => {
+            superAdminMiningFarmsPageStore.fetchMiningFarms();
+        });
     }
 
     function renderAllFarmsRows() {

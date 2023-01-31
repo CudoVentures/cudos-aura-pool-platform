@@ -177,9 +177,9 @@ export default class NftEntity {
         repoJson.creatorId = entity.creatorId;
         repoJson.priceUsd = entity.priceUsd.toString();
         repoJson.priceAcudosValidUntil = entity.priceAcudosValidUntil.toString();
-        repoJson.updatedAt = new Date(entity.updatedAt);
-        repoJson.deletedAt = new Date(entity.deletedAt);
-        repoJson.createdAt = new Date(entity.createdAt);
+        // repoJson.updatedAt = new Date(entity.updatedAt);
+        // repoJson.deletedAt = new Date(entity.deletedAt);
+        // repoJson.createdAt = new Date(entity.createdAt);
 
         return repoJson;
     }

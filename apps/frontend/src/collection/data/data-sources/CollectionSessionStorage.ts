@@ -31,7 +31,7 @@ export default class CollectionSessionStorage {
     private saveCollectionsMap(map: Map<string, CollectionEntity>) {
         const jsonEntities = Array.from(map.entries())
         jsonEntities.forEach((entry) => {
-            entry[1] = CollectionEntity.fromJson(entry[1]);
+            entry[1] = CollectionEntity.toJson(entry[1]);
         })
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
     }
