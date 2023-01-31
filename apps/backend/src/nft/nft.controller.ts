@@ -117,9 +117,9 @@ export class NFTController {
     @Post('updatePrice')
     @HttpCode(200)
     async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {
-        const acudosPrice = await this.nftService.updateNftCudosPrice(req.id);
+        const { acudosPrice, ethPrice } = await this.nftService.updateNftCudosPrice(req.id);
 
-        return new ResUpdateNftCudosPrice(acudosPrice);
+        return new ResUpdateNftCudosPrice(acudosPrice, ethPrice);
     }
 
     @Post('buyNftWithEth')

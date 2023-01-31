@@ -39,6 +39,9 @@ export class NftJsonValidator {
     @IsNotEmpty()
         priceInAcudos: string;
 
+    @IsString()
+        priceInEth: string;
+
     @IsNumber()
     @IsNotEmpty()
         expirationDateTimestamp: number;

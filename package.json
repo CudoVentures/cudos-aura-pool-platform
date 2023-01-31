@@ -17,6 +17,8 @@
     "start:backend:prod": "npm run build:backend:prod && node dist/apps/backend/main",
     "start:chain-observer:dev": "nest build chain-observer --webpack --webpackPath webpack-hmr.config.js --watch",
     "start:chain-observer:prod": "npm run build:chain-observer:prod && node dist/apps/chain-observer/main",
+    "start:eth-payments-relayer:dev": "nest build eth-payments-relayer --webpack --webpackPath webpack-hmr.config.js --watch",
+    "start:eth-payments-relayer:prod": "npm run build:eth-payments-relayer:prod && node dist/apps/eth-payments-relayer/main",
     "start:built:chain-observer": "node ./apps/chain-observer/main.js",
     "start:built:platform": "npm run migrate && node ./apps/backend/main.js",
     "seed": "npx sequelize db:seed:all --config=./apps/backend/database/config/config.js --seeders-path=./apps/backend/database/seeders",
@@ -29,6 +31,7 @@
     "test:e2e": "jest --config ./apps/cudos-aura-pool-service/test/jest-e2e.json"
   },
   "dependencies": {
+    "@google-cloud/storage": "^6.9.1",
     "@keplr-wallet/cosmos": "^0.11.23",
     "@magic-ext/cosmos": "^6.0.0",
     "@metamask/detect-provider": "^2.0.0",

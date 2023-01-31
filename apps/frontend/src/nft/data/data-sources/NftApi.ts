@@ -22,13 +22,16 @@ export default class NftApi {
         }
     }
 
-    async updateNftCudosPrice(id: string): Promise< BigNumber > {
+    async updateNftCudosPrice(id: string): Promise< { acudosPrice: BigNumber, ethPrice: BigNumber } > {
         const req = new ReqUpdateNftCudosPrice(id);
         const { data } = await axios.post(`${NftApi.nftModuleUrl}/updatePrice`, req);
 
         const res = new ResUpdateNftCudosPrice(data);
 
-        return res.acudosPrice;
+        return {
+            acudosPrice: res.acudosPrice,
+            ethPrice: res.ethPrice,
+        };
     }
 
     async buyNftWithEth(id: string, signedTx: any): Promise< string > {

@@ -169,22 +169,27 @@ export class NFTService {
         });
     }
 
-    async updateNftCudosPrice(id: string): Promise<BigNumber> {
+    async updateNftCudosPrice(id: string): Promise<{acudosPrice: BigNumber, ethPrice: BigNumber }> {
         const nftEntity = await this.findOne(id);
         if (nftEntity === null) {
             throw new NotFoundException();
         }
 
-        const usdPerCudos = await this.coinGeckoService.fetchCudosPrice();
-        const acudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(usdPerCudos).shiftedBy(CURRENCY_DECIMALS)
+        const { usdPrice, ethPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(usdPrice);
+        const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
         nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
+        nftEntity.ethPrice = new BigNumber(cudosPrice.multipliedBy(ethPrice).toFixed(18));
 
         const FifteenMinutesInMilis = 15 * 60 * 1000;
         nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;
 
         await this.updateOne(id, nftEntity);
 
-        return nftEntity.acudosPrice;
+        return {
+            acudosPrice: nftEntity.acudosPrice,
+            ethPrice: nftEntity.ethPrice,
+        };
     }
 
     async buyNftWithEth(id: string, signedTx: string): Promise<string> {

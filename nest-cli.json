@@ -35,6 +35,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/chain-observer/tsconfig.app.json"
       }
+    },
+    "eth-payments-relayer": {
+      "type": "application",
+      "root": "apps/eth-payments-relayer",
+      "entryFile": "main",
+      "sourceRoot": "apps/eth-payments-relayer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/eth-payments-relayer/tsconfig.app.json"
+      }
     }
   }
 }

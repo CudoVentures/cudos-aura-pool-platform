@@ -13,9 +13,11 @@ export class ResFetchNftsByFilter {
 
 export class ResUpdateNftCudosPrice {
     acudosPrice: BigNumber;
+    ethPrice: BigNumber;
 
     constructor(data) {
         this.acudosPrice = new BigNumber(data.acudosPrice);
+        this.ethPrice = new BigNumber(data.ethPrice);
     }
 }
 

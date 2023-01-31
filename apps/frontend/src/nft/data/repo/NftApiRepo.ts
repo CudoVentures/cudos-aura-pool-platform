@@ -105,7 +105,7 @@ export default class NftApiRepo implements NftRepo {
             let txHash = S.Strings.EMPTY;
 
             if (nftEntity.isMinted() === false) {
-                const acudosPrice = await this.nftApi.updateNftCudosPrice(nftEntity.id);
+                const { acudosPrice, ethPrice } = await this.nftApi.updateNftCudosPrice(nftEntity.id);
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = acudosPrice.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
@@ -115,16 +115,26 @@ export default class NftApiRepo implements NftRepo {
                 if (currency === BuyingCurrency.ETH) {
                     const web3 = new Web3(window.ethereum);
 
+                    const addresses = await web3.eth.getAccounts();
+
                     const contract = new web3.eth.Contract(
-                        contractABI,
+                        contractABI.abi,
                         ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS,
+                        {
+                            from: addresses[0],
+                        },
                     );
 
-                    const tx = await contract.sendPayment(nftEntity.id, ledger.accountAddress, { value: amount });
-                    console.log(tx)
-                    console.log(tx.txHash)
-                    // this.nftApi
-                    //     .txHash = tx.transactionHash;
+                    const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(nftEntity.id), web3.utils.asciiToHex(ledger.accountAddress))
+                        .send({
+                            value: ethPrice.shiftedBy(18).toFixed(0),
+                        });
+
+                    if (!tx.transactionHash) {
+                        throw Error(tx.message);
+                    }
+
+                    txHash = tx.transactionHash;
                 } else if (currency === BuyingCurrency.CUDOS) {
                     const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
                     txHash = tx.transactionHash;

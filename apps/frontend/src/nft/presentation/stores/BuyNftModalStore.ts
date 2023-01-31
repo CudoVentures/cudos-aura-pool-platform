@@ -2,7 +2,7 @@ import S from '../../../core/utilities/Main';
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
-import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, getEthChainEtherscanLink } from '../../../core/utilities/Constants';
 import NftRepo, { BuyingCurrency } from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
@@ -111,7 +111,15 @@ export default class BuyNftModalStore extends ModalStore {
     })
 
     getTxLink(): string {
-        return `${CHAIN_DETAILS.EXPLORER_URL}/transactions/${this.txHash}`
+        if (this.currency === BuyingCurrency.CUDOS) {
+            return `${CHAIN_DETAILS.EXPLORER_URL}/transactions/${this.txHash}`;
+        }
+
+        if (this.currency === BuyingCurrency.ETH) {
+            return `https://${getEthChainEtherscanLink()}tx/${this.txHash}`;
+        }
+
+        return '';
     }
 
     isStagePreview(): boolean {
