@@ -10,6 +10,7 @@ import S from '../../../core/utilities/Main';
 import BigNumber from 'bignumber.js';
 import { coin } from 'cudosjs/build/proto-signing';
 import NftSessionStorage from '../data-sources/NftSessionStorage';
+import MintMemo from '../../entities/MintMemo';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -110,7 +111,8 @@ export default class NftApiRepo implements NftRepo {
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntityResult.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
-                const memo = `{"uuid":"${nftEntity.id}"}`;
+                // const memo = `{"uuid":"${nftEntity.id}"}`;
+                const memo = new MintMemo(nftEntity.id, ledger.accountAddress).toJsonString();
 
                 const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
                 txHash = tx.transactionHash;
