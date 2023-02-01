@@ -1,6 +1,7 @@
 import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
 import AuraContractRepo from './repos/AuraContractRepo';
 import CudosChainRepo from './repos/CudosChainRepo';
+import Logger from '../../config/Logger';
 
 export default class ContractEventWorker {
     static WORKER_NAME = 'CONTRACT_EVENT_WORKER';
@@ -9,8 +10,9 @@ export default class ContractEventWorker {
     contractRepo: AuraContractRepo;
     cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
 
-    constructor(cudosChainRepo: CudosChainRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
+    constructor(cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
         this.cudosChainRepo = cudosChainRepo;
+        this.contractRepo = contractRepo;
         this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
     }
 
@@ -21,14 +23,30 @@ export default class ContractEventWorker {
             const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedEthereumBlock();
             ContractEventWorker.log('Last checked block: ', lastCheckedBlock);
 
+            if (!lastCheckedBlock || lastCheckedBlock < 1) {
+                throw Error(`Invalid last checked block height: ${lastCheckedBlock}`);
+            }
+
             ContractEventWorker.log('Fetching current Ethereum block height...');
             const currentEthereumBlock = await this.contractRepo.fetchCurrentBlockHeight();
             ContractEventWorker.log('Current Ethereum block height: ', currentEthereumBlock);
 
+            if (!currentEthereumBlock || currentEthereumBlock < 1) {
+                throw Error(`Invalid current Ethereum block height: ${currentEthereumBlock}`);
+            }
+
+            if (lastCheckedBlock > currentEthereumBlock) {
+                throw Error(`Invalid state: Last checked block higher than current Ethereum block.\n\tLast checked block: ${lastCheckedBlock}\n\tCurrent Ethereum block: ${currentEthereumBlock}`);
+            }
+
+            if (lastCheckedBlock > currentEthereumBlock) {
+                ContractEventWorker.log('No new block yet. Skipping this check.');
+                return;
+            }
+
             // get all payments events since that block
-            // const paymentEvents = await this.contract.queryFilter('NftMinted', lastCheckedBlock);
             ContractEventWorker.log('Fetching paymentEventEntities from contract...');
-            const paymentEventEntities = await this.contractRepo.fetchEventsAfterBlock(lastCheckedBlock);
+            const paymentEventEntities = await this.contractRepo.fetchEvents(lastCheckedBlock, currentEthereumBlock);
             const paymentNftIds = paymentEventEntities.map((entity) => entity.nftId);
             ContractEventWorker.log(`Fetched ${paymentNftIds.length} events with the following nft ids: `, paymentNftIds);
 
@@ -79,8 +97,8 @@ export default class ContractEventWorker {
 
                     // - is the given adress in addressbook with BTC address?
                     ContractEventWorker.log('\tGetting addressbook entry for payment cudos address...');
-                    const addressbookEntry = this.cudosChainRepo.fetchAddressbookEntry(paymentEventEntity.cudosAddress);
-                    if (addressbookEntry === null) {
+                    const addressbookEntry = await this.cudosChainRepo.fetchAddressbookEntry(paymentEventEntity.cudosAddress);
+                    if (addressbookEntry.isValid() === false) {
                         ContractEventWorker.warn(`\tAddressbook entry not found for payment nft id.\n\t\tNftId: ${nftId}\n\t\tPayment cudos address: ${paymentEventEntity.cudosAddress}`);
                         shouldRefund = true;
                     }
@@ -108,19 +126,19 @@ export default class ContractEventWorker {
             this.cudosAuraPoolServiceApi.updateLastCheckedEthereumBlock(lastCheckedBlock);
             ContractEventWorker.log('Run finished.');
         } catch (e) {
-            console.error(e.message);
+            ContractEventWorker.error(e.message);
         }
     }
 
     static log(...msg) {
-        ContractEventWorker.log(`${ContractEventWorker.WORKER_NAME}: ${msg}`);
+        Logger.info(`${ContractEventWorker.WORKER_NAME}: ${msg}`);
     }
 
     static warn(...msg) {
-        console.warn(`${ContractEventWorker.WORKER_NAME}: ${msg}`);
+        Logger.warn(`${ContractEventWorker.WORKER_NAME}: ${msg}`);
     }
 
     static error(...msg) {
-        console.error(`${ContractEventWorker.WORKER_NAME}: ${msg}`);
+        Logger.error(`${ContractEventWorker.WORKER_NAME}: ${msg}`);
     }
 }

@@ -20,11 +20,3 @@ export class ResUpdateNftCudosPrice {
         this.ethPrice = new BigNumber(data.ethPrice);
     }
 }
-
-export class ResBuyNftWithEth {
-    txhash: string;
-
-    constructor(data) {
-        this.txhash = data.txHash;
-    }
-}

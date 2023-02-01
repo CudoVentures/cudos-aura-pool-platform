@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsDefined, IsEnum, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { NftFilterJsonValidation, UpdateNftJsonValidations } from '../nft.types';
@@ -36,14 +35,4 @@ export class ReqUpdateNftCudosPrice {
     @IsString()
     @IsNotEmpty()
         id: string;
-}
-
-export class ReqBuyNftWithEth {
-    @IsString()
-    @IsNotEmpty()
-        id: string;
-
-    @IsString()
-    @IsNotEmpty()
-        signedTx: string;
 }

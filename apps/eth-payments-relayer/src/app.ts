@@ -1,39 +1,48 @@
-import Config from '../config/Config';
-import { StargateClient } from 'cudosjs';
-import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApi';
-import TxFindWorker from './workers/ContractEventWorker';
+import Config, { initConfig } from '../config/Config';
+import { DirectSecp256k1HdWallet, SigningStargateClient, StargateClient } from 'cudosjs';
+import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApiRepo';
 import { ethers } from 'ethers';
-import AuraPoolContract from '../../..'
+import AuraPoolContract from '../contracts/CudosAuraPool.sol/CudosAuraPool.json'
+import CudosChainRpcRepo from './data/CudosChainRpcRepo';
+import ContractEventWorker from './workers/ContractEventWorker';
+import AuraContractRpcRepo from './data/AuraContractRpcRepo';
+import CudosRefundWorker from './workers/CudosRefundWorker';
+import Logger from '../config/Logger';
 
 export default class App {
+    // eslint-disable-next-line no-undef
     p: NodeJS.Timeout;
     running: boolean;
 
     async start() {
         this.running = true;
 
-        console.log('Getting a chain client connection...');
-        const cudosClient = await this.getCudosChainClient();
-        console.log('Connection to chain client established.');
+        await initConfig();
 
-        console.log('Getting a ETH contract connection...');
+        Logger.info('Getting a chain client connection...');
+        const { stargateClient, signingStargateClient } = await this.getCudosChainClient();
+        const chainApiRepo = new CudosChainRpcRepo(stargateClient, signingStargateClient);
+        Logger.info('Connection to chain client established.');
+
+        Logger.info('Getting an ETH contract connection...');
         const contract = await this.getEthContract();
-        console.log('Connection to ETH contract established.');
+        const contractRpcRepo = new AuraContractRpcRepo(contract);
+        Logger.info('Connection to ETH contract established.');
 
-        console.log('Testing AuraPoolService connection...');
+        Logger.info('Testing AuraPoolService connection...');
         const api = await this.getAuraPoolServiceApi();
-        console.log('Connection to AuraPoolService established.');
+        Logger.info('Connection to AuraPoolService established.');
 
-        const contractEventWorker = new ContractEventWorker(cudosClient, contract, api);
-        const cudosRefundWorker = new CudosRefuntdWorker(cudosClient, contract, api);
+        const contractEventWorker = new ContractEventWorker(chainApiRepo, contractRpcRepo, api);
+        const cudosRefundWorker = new CudosRefundWorker(chainApiRepo, contractRpcRepo, api);
 
         this.p = setInterval(async () => {
-            console.log('New run...');
+            Logger.info('New run...');
 
             await contractEventWorker.run();
             await cudosRefundWorker.run();
 
-            console.log('-----------------------------');
+            console.log('-------------------------------------------------------------------------------');
         }, Config.LOOP_INTERVAL_MILIS);
     }
 
@@ -46,9 +55,15 @@ export default class App {
     async getCudosChainClient() {
         while (this.running) {
             try {
-                return await StargateClient.connect(Config.RPC_ENDPOINT)
+                const stargateClient = await StargateClient.connect(Config.RPC_ENDPOINT);
+                const wallet = await DirectSecp256k1HdWallet.fromMnemonic(Config.CUDOS_SIGNER_MNEMONIC);
+
+                const signingStargateClient = await SigningStargateClient.connectWithSigner(Config.RPC_ENDPOINT, wallet);
+
+                return { stargateClient, signingStargateClient }
+
             } catch (e) {
-                console.log(`Failed to get a chain client using ${Config.RPC_ENDPOINT}. Retrying...`);
+                Logger.error(`Failed to get a chain client using ${Config.RPC_ENDPOINT}. Retrying...`);
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }
@@ -64,7 +79,7 @@ export default class App {
                 const contract = ethers.ContractFactory.getContract(Config.AURA_POOL_CONTRACT_ADDRESS || '', AuraPoolContract.abi, wallet);
                 return await contract.deployed();
             } catch (e) {
-                console.log(`Failed to get a chain client using ${Config.RPC_ENDPOINT}. Retrying...`);
+                Logger.error(`Failed to get a chain client using ${Config.RPC_ENDPOINT}. Retrying...`);
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }
@@ -81,7 +96,7 @@ export default class App {
 
                 return cudosAuraPoolApi;
             } catch (e) {
-                console.log('Failed to get a heartbeat from AuraPoolService. Retrying...');
+                Logger.error('Failed to get a heartbeat from AuraPoolService. Retrying...');
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }

@@ -1,31 +1,101 @@
-import { StargateClient } from '@cosmjs/stargate';
-import Config from '../../config/Config';
-import ethers from 'ethers';
-
 import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
+import CudosChainRepo from './repos/CudosChainRepo';
+import AuraContractRepo from './repos/AuraContractRepo';
+import Logger from '../../config/Logger';
 
-// TODO:
 export default class CudosRefundWorker {
-    chainClient: StargateClient;
-    contract: ethers.Contract;
+    static WORKER_NAME = 'CUDOS_REFUND_WORKER';
+
+    cudosChainRepo: CudosChainRepo;
+    contractRepo: AuraContractRepo;
     cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
 
-    constructor(chainClient: StargateClient, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
-        this.chainClient = chainClient;
+    constructor(cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
+        this.cudosChainRepo = cudosChainRepo;
+        this.contractRepo = contractRepo;
         this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
     }
 
     async run() {
         try {
-            console.log('TODOOOOOOOO');
+            // get last checked eth block
+            CudosRefundWorker.log('Fetching last checked block height...');
+            const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedPaymentRelayerCudosBlock();
+            CudosRefundWorker.log('Last checked block: ', lastCheckedBlock);
 
-            // get last checked block
+            if (!lastCheckedBlock || lastCheckedBlock < 1) {
+                throw Error(`Invalid last checked block height: ${lastCheckedBlock}`);
+            }
+
+            // get current block
+            CudosRefundWorker.log('Fetching current Cudos block height...');
+            const currentCudosBlock = await this.cudosChainRepo.fetchCurrentBlockHeight();
+            CudosRefundWorker.log('Current Cudos block height: ', currentCudosBlock);
+
+            if (!currentCudosBlock || currentCudosBlock < 1) {
+                throw Error(`Invalid current Cudos block height: ${currentCudosBlock}`);
+            }
+
+            if (lastCheckedBlock > currentCudosBlock) {
+                throw Error(`Invalid state: Last checked block higher than current Cudos block.\n\tLast checked block: ${lastCheckedBlock}\n\tCurrent Cudos block: ${currentCudosBlock}`);
+            }
+
+            if (lastCheckedBlock > currentCudosBlock) {
+                CudosRefundWorker.log('No new block yet. Skipping this check.');
+                return;
+            }
+
             // get all refund transactions from on demand minting address
-            // get payment id from memo
-            // unlock payment
+            CudosRefundWorker.log('Fetching refund transactions...');
+            const refundTransactionEntities = await this.cudosChainRepo.fetchRefundTransactions(lastCheckedBlock, currentCudosBlock);
+            refundTransactionEntities.forEach((entity) => {
+                if (entity.isValid() === false) {
+                    throw Error(`Invalid transaction parsed: ${entity}`);
+                }
+            })
+            CudosRefundWorker.log(`Fetched ${refundTransactionEntities.length} refund transactions.`);
+
+            if (refundTransactionEntities.length !== 0) {
+                CudosRefundWorker.log('Marking payments on the contract as withdrawable...');
+                // for each tx
+                for (let i = 0; i < refundTransactionEntities.length; i++) {
+                    const refundTransactionEntity = refundTransactionEntities[i];
+
+                    // get original payment transactions by txHash in the refund transactions
+                    CudosRefundWorker.log('Fetching original payment transaction...');
+                    const paymentTxHash = refundTransactionEntity.refundedTxHash;
+                    const paymentTransactionEntity = await this.cudosChainRepo.fetchPaymentTransactionByTxhash(paymentTxHash);
+                    if (!paymentTransactionEntity || paymentTransactionEntity.isValid() === false) {
+                        throw Error(`Invalid transaction parsed:\n\tTxHash: ${paymentTxHash}\n\tParsed entity: ${paymentTransactionEntity}`);
+                    }
+
+                    // unlock payment
+                    CudosRefundWorker.log(`Processing payment for nftId: ${paymentTransactionEntity.nftId}`);
+                    const txHash = this.contractRepo.markPaymentWithdrawable(paymentTransactionEntity.nftId);
+                    CudosRefundWorker.log(`Payment unlocked. Txhash: ${txHash}`);
+                }
+            } else {
+                CudosRefundWorker.log('No events found until curren block. Block number: ', currentCudosBlock);
+            }
+
             // save last checked block
+            CudosRefundWorker.log('Saving last checked cudos block: ', currentCudosBlock);
+            this.cudosAuraPoolServiceApi.updateLastCheckedCudosRefundBlock(lastCheckedBlock);
+            CudosRefundWorker.log('Run finished.');
         } catch (e) {
-            console.log(e.message);
+            CudosRefundWorker.error(e.message);
         }
+    }
+
+    static log(...msg) {
+        Logger.info(`${CudosRefundWorker.WORKER_NAME}: ${msg}`);
+    }
+
+    static warn(...msg) {
+        Logger.warn(`${CudosRefundWorker.WORKER_NAME}: ${msg}`);
+    }
+
+    static error(...msg) {
+        Logger.error(`${CudosRefundWorker.WORKER_NAME}: ${msg}`);
     }
 }

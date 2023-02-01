@@ -1,14 +1,6 @@
 import BigNumber from 'bignumber.js';
 import ethers from 'ethers';
 
-type ContractEvent = {
-    amount: string,
-    cudosAddress: string,
-    id: string,
-    payee: string,
-    status: string
-}
-
 export enum PaymentStatus {
     LOCKED = '0',
     WITHDRAWABLE = '1',
@@ -35,6 +27,7 @@ function parsePaymentStatus(status: string): PaymentStatus {
 }
 
 export default class PaymentEventEntity {
+    id: number;
     nftId: string;
     cudosAddress: string;
     amount: BigNumber;
@@ -42,6 +35,7 @@ export default class PaymentEventEntity {
     status: PaymentStatus;
 
     constructor() {
+        this.id = null;
         this.nftId = '';
         this.cudosAddress = '';
         this.amount = null;
@@ -49,10 +43,20 @@ export default class PaymentEventEntity {
         this.status = null;
     }
 
-    static fromContractEvent(event: ContractEvent): PaymentEventEntity {
+    isValid(): boolean {
+        return this.id !== null
+            && this.nftId !== ''
+            && this.cudosAddress !== ''
+            && this.amount !== null
+            && this.payee !== ''
+            && this.status !== null
+    }
+
+    static fromContractEvent(event: any): PaymentEventEntity {
         const entity = new PaymentEventEntity();
 
-        entity.nftId = event.id ? ethers.utils.toUtf8String(event.id) : entity.nftId;
+        entity.id = event.id ? parseInt(event.id) : entity.id;
+        entity.nftId = event.nftId ? ethers.utils.toUtf8String(event.nftId) : entity.nftId;
         entity.cudosAddress = event.cudosAddress ? ethers.utils.toUtf8String(event.cudosAddress) : entity.cudosAddress;
         entity.amount = event.amount ? new BigNumber(event.amount) : entity.amount;
         entity.payee = event.payee ? ethers.utils.toUtf8String(event.payee) : entity.payee;

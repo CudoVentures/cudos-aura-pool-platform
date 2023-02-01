@@ -21,11 +21,3 @@ export class ResUpdateNftCudosPrice {
         this.ethPrice = ethprice.toString(10);
     }
 }
-
-export class ResBuyNftWithEth {
-    txhash: string;
-
-    constructor(txHash: string) {
-        this.txhash = txHash;
-    }
-}
