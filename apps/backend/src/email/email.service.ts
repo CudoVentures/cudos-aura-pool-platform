@@ -11,10 +11,8 @@ import GeneralService from '../general/general.service';
 @Injectable()
 export default class EmailService {
 
-    static EMAIL_FROM = 'k.stoykov@razorlabs.com';
-    static EMAIL_REPLY_TO = 'k.stoykov@razorlabs.com';
-
     appPublicUrl: string;
+    emailFrom: string;
     transport: any;
 
     constructor(
@@ -23,6 +21,7 @@ export default class EmailService {
         private generalService: GeneralService,
     ) {
         this.appPublicUrl = this.configService.get < string >('APP_PUBLIC_URL') ?? '';
+        this.emailFrom = this.configService.get < string >('APP_EMAIL_FROM') ?? '';
 
         if (this.generalService.isProduction() === true) {
             sgMail.setApiKey(this.configService.get < string >('APP_SENDGRID_API_KEY') ?? '');
@@ -43,7 +42,7 @@ export default class EmailService {
             const emailTemplateEntity = new EmailTemplateEntity(`Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email.`, 'Verify', `${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`);
 
             const verificationEmail = {
-                from: EmailService.EMAIL_FROM,
+                from: this.emailFrom,
                 to: accountEntity.email,
                 subject: 'Email Verification',
                 html: emailTemplateEntity.build(),
@@ -62,7 +61,7 @@ export default class EmailService {
             const emailTemplateEntity = new EmailTemplateEntity('You have requested a password change. Please follow the link below.', 'Reset password', `${this.appPublicUrl}/forgotten-pass-edit/${verificationToken}`);
 
             const verificationEmail = {
-                from: EmailService.EMAIL_FROM,
+                from: this.emailFrom,
                 to: accountEntity.email,
                 subject: 'Forgotten password',
                 html: emailTemplateEntity.build(),
@@ -74,14 +73,18 @@ export default class EmailService {
         }
     }
 
-    private async sendEmail(htmlEmail) {
+    private async sendEmail(emailObj) {
         try {
+            if (this.emailFrom === '') {
+                throw Error('Service email is not configured');
+            }
+
             if (this.generalService.isProduction() === true) {
-                await sgMail.send(htmlEmail);
+                await sgMail.send(emailObj);
             }
 
             if (this.generalService.isDev() === true) {
-                await this.transport.sendMail(htmlEmail);
+                await this.transport.sendMail(emailObj);
             }
         } catch (ex) {
             console.log(ex);

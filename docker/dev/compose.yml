@@ -69,7 +69,6 @@ services:
       dockerfile: docker/dev/chain-observer.dockerfile
       context: ../../
       args:
-        args:
         USER_ID: "$USER_ID"
         USER_NAME: "$USER_NAME"
         GROUP_ID: "$GROUP_ID"
@@ -100,7 +99,6 @@ services:
       dockerfile: CudosAuraPoolService/docker/dev/on-demand-minting-service.dockerfile
       context: ../../../
       args:
-        args:
         USER_ID: "$USER_ID"
         USER_NAME: "$USER_NAME"
         GROUP_ID: "$GROUP_ID"
