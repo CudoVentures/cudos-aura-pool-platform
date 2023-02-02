@@ -31,7 +31,6 @@ ENV PORT=${MINTER_PORT}
 ENV CHAIN_ID=${CHAIN_ID}
 ENV CHAIN_RPC=${CHAIN_RPC}
 ENV CHAIN_GRPC=${CHAIN_GRPC}
-ENV PRETTY_LOGGING=1
 
 WORKDIR ${WORKING_DIR}
 
@@ -52,7 +51,8 @@ RUN echo "WALLET_MNEMONIC=\"${MINTER_WALLET_MNEMONIC}\"" > .env && \
     echo "RELAY_INTERVAL=${MINTER_RELAY_INTERVAL}" >> .env && \
     echo "PAYMENT_DENOM=${MINTER_PAYMENT_DENOM}" >> .env && \
     echo "PORT=${MINTER_PORT} " >> .env && \
-    echo "PRETTY_LOGGING=${PRETTY_LOGGING} " >> .env && \
+    echo "PRETTY_LOGGING=1" >> .env && \
+    echo "SENDGRID_API_KEY='' " >> .env && \
     echo "EMAIL_FROM='' " >> .env && \
     echo "SERVICE_EMAIL='' " >> .env
 
