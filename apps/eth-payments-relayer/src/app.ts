@@ -1,5 +1,5 @@
 import Config, { initConfig } from '../config/Config';
-import { DirectSecp256k1HdWallet, SigningStargateClient, StargateClient } from 'cudosjs';
+import { DirectSecp256k1HdWallet, GasPrice, SigningStargateClient, StargateClient } from 'cudosjs';
 import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApiRepo';
 import { ethers } from 'ethers';
 import AuraPoolContract from '../contracts/CudosAuraPool.sol/CudosAuraPool.json'
@@ -36,20 +36,29 @@ export default class App {
         const contractEventWorker = new ContractEventWorker(chainApiRepo, contractRpcRepo, api);
         const cudosRefundWorker = new CudosRefundWorker(chainApiRepo, contractRpcRepo, api);
 
-        this.p = setInterval(async () => {
+        const run = async () => {
             Logger.info('New run...');
 
             await contractEventWorker.run();
             await cudosRefundWorker.run();
 
             console.log('-------------------------------------------------------------------------------');
-        }, Config.LOOP_INTERVAL_MILIS);
+
+            loop();
+        }
+
+        const loop = () => {
+            if (this.running === true) {
+                this.p = setTimeout(run, Config.LOOP_INTERVAL_MILIS);
+            }
+        }
+
+        loop();
     }
 
     stop() {
         this.running = false;
-
-        clearInterval(this.p);
+        clearTimeout(this.p);
     }
 
     async getCudosChainClient() {
@@ -57,12 +66,14 @@ export default class App {
             try {
                 const stargateClient = await StargateClient.connect(Config.RPC_ENDPOINT);
                 const wallet = await DirectSecp256k1HdWallet.fromMnemonic(Config.CUDOS_SIGNER_MNEMONIC);
-
-                const signingStargateClient = await SigningStargateClient.connectWithSigner(Config.RPC_ENDPOINT, wallet);
+                const signingStargateClient = await SigningStargateClient.connectWithSigner(Config.RPC_ENDPOINT, wallet, {
+                    gasPrice: GasPrice.fromString(`${Config.CUDOS_GAS_PRICE}acudos`),
+                });
 
                 return { stargateClient, signingStargateClient }
 
             } catch (e) {
+                Logger.error(e)
                 Logger.error(`Failed to get a chain client using ${Config.RPC_ENDPOINT}. Retrying...`);
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }

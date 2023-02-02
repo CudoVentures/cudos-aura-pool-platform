@@ -2,12 +2,13 @@ import axios from 'axios';
 import Config from '../../config/Config';
 import NftEntity from '../entities/NftEntity';
 import CudosAuraPoolServiceRepo from '../workers/repos/CudosAuraPoolServiceRepo';
-import { ReqFetchNftsByIds, ReqUpdateLastCheckedBlocks } from './dto/Requests';
+import { ReqFetchNftsByIds, ReqUpdateLastCheckedBlocks, ReqUpdateNftPrice } from './dto/Requests';
 import { ResFetchLastCheckedBlocks, ResFetchNftsByIds } from './dto/Responses';
 
 const HEARTBEAT_ENDPOINT = '/api/v1/general/heartbeat';
 const LAST_BLOCK_ENDPOINT = '/api/v1/general/last-checked-payment-relayer-blocks';
 const FETCH_NFTS_BY_IDS_ENDPOINT = '/api/v1/nft';
+const UPDATE_NFT_PRICE = '/api/v1/nft/updatePrice';
 
 export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolServiceRepo {
     api_url: string;
@@ -55,5 +56,10 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {
         const req = new ReqUpdateLastCheckedBlocks(null, lastCheckedCudosBlock);
         await axios.put(`${this.api_url}${LAST_BLOCK_ENDPOINT}`, req);
+    }
+
+    async updateNftPrice(id: string): Promise < void > {
+        const req = new ReqUpdateNftPrice(id);
+        await axios.post(`${this.api_url}${UPDATE_NFT_PRICE}`, req);
     }
 }

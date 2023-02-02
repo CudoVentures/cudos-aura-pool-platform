@@ -6,7 +6,6 @@ import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import { ReqCreditSettings, ReqUpdateLastCheckedBlockRequest, ReqUpdateLastCheckedPaymentRelayerBlocksRequest } from './dto/requests.dto';
 import { ResCreditSettings, ResFetchLastCheckedPaymenrRelayerBlocks, ResFetchSettings } from './dto/responses.dto';
-import { UpdateLastCheckedBlockRequest } from './dto/update-last-checked-height-request.dto';
 import SettingsEntity from './entities/settings.entity';
 import GeneralService from './general.service';
 

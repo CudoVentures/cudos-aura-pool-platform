@@ -37,7 +37,10 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
 
         const indexedTxs = await this.chainClient.searchTx(BankSendMsgToOnDemandMintingServiceQuery, heightFilter)
 
-        return indexedTxs.map((indexedTx) => RefundTransactionEntity.fromChainIndexedTx(indexedTx));
+        return indexedTxs.map((indexedTx) => RefundTransactionEntity.fromChainIndexedTx(indexedTx))
+            .filter((entity) => {
+                return entity.from === Config.MINTING_SERVICE_ADDRESS && Config.CUDOS_SIGNER_ADDRESS
+            });
     }
 
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> {

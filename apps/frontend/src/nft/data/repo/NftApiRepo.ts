@@ -131,7 +131,7 @@ export default class NftApiRepo implements NftRepo {
 
                     const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(nftEntity.id), web3.utils.asciiToHex(ledger.accountAddress))
                         .send({
-                            value: ethPrice.shiftedBy(18).toFixed(0),
+                            value: nftEntity.priceInEth.shiftedBy(18).toFixed(0),
                         });
 
                     if (!tx.transactionHash) {

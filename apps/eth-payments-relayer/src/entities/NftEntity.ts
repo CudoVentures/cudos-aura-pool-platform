@@ -41,8 +41,8 @@ export default class NftEntity {
         const entity = new NftEntity();
 
         entity.id = json.id ?? entity.id;
-        entity.priceInAcudos = json.priceInAcudos ?? entity.priceInAcudos;
-        entity.priceInEth = json.priceInEth ?? entity.priceInEth;
+        entity.priceInAcudos = json.priceInAcudos ? new BigNumber(json.priceInAcudos) : entity.priceInAcudos;
+        entity.priceInEth = json.priceInEth ? new BigNumber(json.priceInEth) : entity.priceInEth;
         entity.priceValidUntil = json.priceAcudosValidUntil ?? entity.priceValidUntil;
         entity.status = json.status ?? entity.status;
 

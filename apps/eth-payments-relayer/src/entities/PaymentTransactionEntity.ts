@@ -66,8 +66,8 @@ export default class PaymentTransactionEntity {
         }
 
         entity.txBody = txBody;
-        entity.from = bankSendMessage.toAddress;
-        entity.to = bankSendMessage.fromAddress;
+        entity.from = bankSendMessage.fromAddress;
+        entity.to = bankSendMessage.toAddress;
         entity.nftId = memoJson.uuid;
         entity.recipientAddress = memoJson.recipientAddress;
         entity.contractPaymentId = memoJson.contractPaymentId;

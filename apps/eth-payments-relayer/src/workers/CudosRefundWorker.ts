@@ -2,6 +2,7 @@ import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
 import CudosChainRepo from './repos/CudosChainRepo';
 import AuraContractRepo from './repos/AuraContractRepo';
 import Logger from '../../config/Logger';
+import { PaymentStatus } from '../entities/PaymentEventEntity';
 
 export default class CudosRefundWorker {
     static WORKER_NAME = 'CUDOS_REFUND_WORKER';
@@ -21,7 +22,7 @@ export default class CudosRefundWorker {
             // get last checked eth block
             CudosRefundWorker.log('Fetching last checked block height...');
             const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedPaymentRelayerCudosBlock();
-            CudosRefundWorker.log('Last checked block: ', lastCheckedBlock);
+            CudosRefundWorker.log(`Last checked block: ${lastCheckedBlock}`);
 
             if (!lastCheckedBlock || lastCheckedBlock < 1) {
                 throw Error(`Invalid last checked block height: ${lastCheckedBlock}`);
@@ -30,7 +31,7 @@ export default class CudosRefundWorker {
             // get current block
             CudosRefundWorker.log('Fetching current Cudos block height...');
             const currentCudosBlock = await this.cudosChainRepo.fetchCurrentBlockHeight();
-            CudosRefundWorker.log('Current Cudos block height: ', currentCudosBlock);
+            CudosRefundWorker.log(`Current Cudos block height: ${currentCudosBlock}`);
 
             if (!currentCudosBlock || currentCudosBlock < 1) {
                 throw Error(`Invalid current Cudos block height: ${currentCudosBlock}`);
@@ -50,7 +51,7 @@ export default class CudosRefundWorker {
             const refundTransactionEntities = await this.cudosChainRepo.fetchRefundTransactions(lastCheckedBlock, currentCudosBlock);
             refundTransactionEntities.forEach((entity) => {
                 if (entity.isValid() === false) {
-                    throw Error(`Invalid transaction parsed: ${entity}`);
+                    throw Error(`Invalid transaction parsed: ${JSON.stringify(entity)}`);
                 }
             })
             CudosRefundWorker.log(`Fetched ${refundTransactionEntities.length} refund transactions.`);
@@ -66,21 +67,26 @@ export default class CudosRefundWorker {
                     const paymentTxHash = refundTransactionEntity.refundedTxHash;
                     const paymentTransactionEntity = await this.cudosChainRepo.fetchPaymentTransactionByTxhash(paymentTxHash);
                     if (!paymentTransactionEntity || paymentTransactionEntity.isValid() === false) {
-                        throw Error(`Invalid transaction parsed:\n\tTxHash: ${paymentTxHash}\n\tParsed entity: ${paymentTransactionEntity}`);
+                        throw Error(`Invalid transaction parsed:\n\tTxHash: ${paymentTxHash}\n\tParsed entity: ${JSON.stringify(paymentTransactionEntity)}`);
                     }
 
                     // unlock payment
                     CudosRefundWorker.log(`Processing payment for nftId: ${paymentTransactionEntity.nftId}`);
-                    const txHash = this.contractRepo.markPaymentWithdrawable(paymentTransactionEntity.nftId);
-                    CudosRefundWorker.log(`Payment unlocked. Txhash: ${txHash}`);
+                    const status = await this.contractRepo.fetchPaymentStatus(paymentTransactionEntity.nftId);
+                    if (status === PaymentStatus.LOCKED) {
+                        const txHash = await this.contractRepo.markPaymentWithdrawable(paymentTransactionEntity.nftId);
+                        CudosRefundWorker.log(`Payment unlocked. Txhash: ${txHash}`);
+                    } else {
+                        CudosRefundWorker.log('Payment ALREADY unlocked.');
+                    }
                 }
             } else {
-                CudosRefundWorker.log('No events found until curren block. Block number: ', currentCudosBlock);
+                CudosRefundWorker.log(`No events found until curren block. Block number: ${currentCudosBlock}`);
             }
 
             // save last checked block
-            CudosRefundWorker.log('Saving last checked cudos block: ', currentCudosBlock);
-            this.cudosAuraPoolServiceApi.updateLastCheckedCudosRefundBlock(lastCheckedBlock);
+            CudosRefundWorker.log(`Saving last checked cudos block: ${currentCudosBlock}`);
+            this.cudosAuraPoolServiceApi.updateLastCheckedCudosRefundBlock(currentCudosBlock);
             CudosRefundWorker.log('Run finished.');
         } catch (e) {
             CudosRefundWorker.error(e.message);

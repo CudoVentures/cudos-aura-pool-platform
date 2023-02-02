@@ -1,6 +1,7 @@
-import PaymentEventEntity from '../entities/PaymentEventEntity';
+import PaymentEventEntity, { parsePaymentStatus, PaymentStatus } from '../entities/PaymentEventEntity';
 import AuraContractRepo from '../workers/repos/AuraContractRepo';
 import { ethers } from 'ethers';
+import Logger from '../../config/Logger';
 
 export default class AuraContractRpcRepo implements AuraContractRepo {
     contract: ethers.Contract;
@@ -19,13 +20,24 @@ export default class AuraContractRpcRepo implements AuraContractRepo {
         return this.contract.provider.getBlockNumber();
     }
 
-    markPaymentWithdrawable(nftId: string): Promise<string> {
-        const tx = this.contract.unlockPaymentWithdraw(ethers.utils.parseBytes32String(nftId));
-        if (!tx.transactionHash) {
-            throw Error(tx.message);
+    async fetchPaymentStatus(nftId: string): Promise < PaymentStatus > {
+        const statusString = await this.contract.getPaymentStatus(ethers.utils.toUtf8Bytes(nftId));
+        const status = parsePaymentStatus(statusString);
+
+        if (status === null) {
+            throw Error(`Invalid status: ${status}`);
+        }
+        return status;
+    }
+
+    async markPaymentWithdrawable(nftId: string): Promise<string> {
+        const tx = await this.contract.unlockPaymentWithdraw(ethers.utils.toUtf8Bytes(nftId));
+        const transactionReceipt = await tx.wait();
+        if (transactionReceipt.status !== 1) {
+            throw Error(transactionReceipt);
         }
 
-        return tx.transactionHash;
+        return tx.hash;
     }
 
 }

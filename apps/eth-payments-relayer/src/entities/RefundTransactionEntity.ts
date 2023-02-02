@@ -2,8 +2,6 @@ import { decodeTxRaw, IndexedTx } from 'cudosjs';
 import { TxBody } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
-import Config from '../../config/Config';
-
 export default class RefundTransactionEntity {
     txBody: TxBody;
     from: string;
@@ -20,8 +18,8 @@ export default class RefundTransactionEntity {
     isValid(): boolean {
         return this.txBody !== null
             && this.txBody.messages.length === 1
-            && this.from === Config.MINTING_SERVICE_ADDRESS
-            && this.to === Config.CUDOS_SIGNER_ADDRESS
+            && this.from !== ''
+            && this.to !== ''
             && this.refundedTxHash !== '';
     }
 
@@ -43,8 +41,8 @@ export default class RefundTransactionEntity {
         }
 
         entity.txBody = txBody;
-        entity.from = bankSendMessage.toAddress;
-        entity.to = bankSendMessage.fromAddress;
+        entity.from = bankSendMessage.fromAddress;
+        entity.to = bankSendMessage.toAddress;
         entity.refundedTxHash = txBody.memo;
 
         return entity;
