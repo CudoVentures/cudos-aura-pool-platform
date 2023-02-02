@@ -51,7 +51,10 @@ RUN echo "WALLET_MNEMONIC=\"${MINTER_WALLET_MNEMONIC}\"" > .env && \
     echo "RETRY_INTERVAL=${MINTER_RETRY_INTERVAL}" >> .env && \
     echo "RELAY_INTERVAL=${MINTER_RELAY_INTERVAL}" >> .env && \
     echo "PAYMENT_DENOM=${MINTER_PAYMENT_DENOM}" >> .env && \
-    echo "PORT=${MINTER_PORT} " >> .env
+    echo "PORT=${MINTER_PORT} " >> .env && \
+    echo "PRETTY_LOGGING=${PRETTY_LOGGING} " >> .env && \
+    echo "EMAIL_FROM='' " >> .env && \
+    echo "SERVICE_EMAIL='' " >> .env
 
 # CMD ["sleep", "infinity"]
 CMD ["/bin/bash", "-c", "./cudos-ondemand-minting-service"]
