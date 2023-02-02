@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { GeneralModule } from '../general/general.module';
 import EmailService from './email.service';
 
 @Module({
-    imports: [JwtModule],
+    imports: [JwtModule, GeneralModule],
     providers: [EmailService],
     exports: [EmailService],
 })
