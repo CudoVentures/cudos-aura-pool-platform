@@ -68,7 +68,8 @@
     "sequelize-cli": "^6.5.2",
     "sequelize-typescript": "^2.1.5",
     "@google-cloud/storage": "^6.9.1",
-    "@sendgrid/mail": "^7.7.0"
+    "@sendgrid/mail": "^7.7.0",
+    "@onfido/api": "^2.6.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",

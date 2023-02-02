@@ -49,7 +49,7 @@ import { EmailModule } from './email/email.module';
                     password: config.get('APP_DATABASE_PASS'),
                     database: config.get('APP_DATABASE_DB_NAME'),
                     autoLoadModels: true,
-                    synchronize: true,
+                    synchronize: false,
                 }
             },
         }),
