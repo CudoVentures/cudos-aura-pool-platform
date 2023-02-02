@@ -73,7 +73,8 @@
     "sequelize-cli": "^6.5.2",
     "sequelize-typescript": "^2.1.5",
     "web3": "^1.8.1",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "@sendgrid/mail": "^7.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",

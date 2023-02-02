@@ -5,16 +5,24 @@ import SettingsEntity from './entities/settings.entity';
 import { Transaction } from 'sequelize';
 import SettingsRepo, { SETTINGS_REPO_PK } from './repos/settings.repo';
 import AppRepo from '../common/repo/app.repo';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export default class GeneralService {
+
+    dev: boolean;
+    production: boolean;
 
     constructor(
         @InjectModel(GeneralRepo)
         private generalRepo: typeof GeneralRepo,
         @InjectModel(SettingsRepo)
         private settingsRepo: typeof SettingsRepo,
-    ) {}
+        private configService: ConfigService,
+    ) {
+        this.dev = (this.configService.get < string >('APP_ENV') ?? 'dev') === 'dev';
+        this.production = (this.configService.get < string >('APP_ENV') ?? 'dev') === 'production';
+    }
 
     async getLastCheckedPaymentRelayerBlocks(): Promise < {lastCheckedEthBlock: number, lastCheckedCudosBlock: number} > {
         const data = await this.generalRepo.findOne();
@@ -66,5 +74,13 @@ export default class GeneralService {
         settingsRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
 
         return SettingsEntity.fromRepo(settingsRepo);
+    }
+
+    isDev() {
+        return this.dev;
+    }
+
+    isProduction() {
+        return this.production;
     }
 }

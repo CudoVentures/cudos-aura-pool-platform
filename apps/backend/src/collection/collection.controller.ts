@@ -259,10 +259,10 @@ export class CollectionController {
             const chainMarketplaceCollectionEntitiesByIds = await this.collectionService.getChainMarketplaceCollectionsByIds(collectionIds);
 
             if (chainMarketplaceCollectionEntitiesByDenoms.length !== denomIds.length) {
-                throw new Error('BDJuno is updated but marketpalce collections are missing');
+                throw new Error('BDJuno is updated but marketpalce collections are missing (fetch by denomIds)');
             }
             if (chainMarketplaceCollectionEntitiesByIds.length !== collectionIds.length) {
-                throw new Error('BDJuno is updated but marketpalce collections are missing');
+                throw new Error('BDJuno is updated but marketpalce collections are missing (fetch by collectionIds)');
             }
 
             const chainMarketplaceCollectionEntitiesMap = new Map();

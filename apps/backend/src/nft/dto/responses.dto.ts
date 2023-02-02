@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import NftEntity from '../entities/nft.entity';
 import { NftJsonValidator } from '../nft.types';
 
@@ -13,11 +12,9 @@ export class ResFetchNftsByFilter {
 }
 
 export class ResUpdateNftCudosPrice {
-    acudosPrice: string;
-    ethPrice: string;
+    nftEntity: NftJsonValidator;
 
-    constructor(acudosPrice: BigNumber, ethprice: BigNumber) {
-        this.acudosPrice = acudosPrice.toString(10);
-        this.ethPrice = ethprice.toString(10);
+    constructor(nftEntity: NftEntity) {
+        this.nftEntity = NftEntity.toJson(nftEntity);
     }
 }

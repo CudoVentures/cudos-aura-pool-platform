@@ -1,6 +1,6 @@
 import { CHAIN_DETAILS, ETH_CONSTS } from '../../../core/utilities/Constants';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
-import NftEntity, { NftStatus } from '../../entities/NftEntity';
+import NftEntity from '../../entities/NftEntity';
 import NftRepo, { BuyingCurrency } from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
@@ -12,6 +12,7 @@ import { coin } from 'cudosjs/build/proto-signing';
 import NftSessionStorage from '../data-sources/NftSessionStorage';
 import Web3 from 'web3';
 import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAuraPool.json';
+import MintMemo from '../../entities/MintMemo';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -105,11 +106,14 @@ export default class NftApiRepo implements NftRepo {
             let txHash = S.Strings.EMPTY;
 
             if (nftEntity.isMinted() === false) {
-                const { acudosPrice, ethPrice } = await this.nftApi.updateNftCudosPrice(nftEntity.id);
+                const nftEntityResult = await this.nftApi.updateNftCudosPrice(nftEntity.id);
+                nftEntity.copyDeepFrom(nftEntityResult);
+
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
-                const amount = acudosPrice.plus(mintFee);
+                const amount = nftEntityResult.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
-                const memo = `{"uuid":"${nftEntity.id}"}`;
+                // const memo = `{"uuid":"${nftEntity.id}"}`;
+                const memo = new MintMemo(nftEntity.id, ledger.accountAddress).toJsonString();
 
                 // sign transaction and send it to backend
                 if (currency === BuyingCurrency.ETH) {

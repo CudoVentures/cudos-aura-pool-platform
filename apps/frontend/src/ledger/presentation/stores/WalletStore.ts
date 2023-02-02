@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx';
-import { KeplrWallet, Ledger, CosmostationWallet, StdSignature } from 'cudosjs';
+import { KeplrWallet, Ledger, CosmostationWallet, StdSignature, CURRENCY_DECIMALS } from 'cudosjs';
 import S from '../../../core/utilities/Main';
 import { CHAIN_DETAILS, ETH_CONSTS, SIGN_NONCE } from '../../../core/utilities/Constants';
 import BigNumber from 'bignumber.js';
@@ -193,6 +193,10 @@ export default class WalletStore {
 
     getBalanceSafe(): BigNumber {
         return this.balance ?? new BigNumber(0);
+    }
+
+    getBalanceSafeInAcudos(): BigNumber {
+        return this.getBalanceSafe().shiftedBy(CURRENCY_DECIMALS);
     }
 
     getAddress(): string {

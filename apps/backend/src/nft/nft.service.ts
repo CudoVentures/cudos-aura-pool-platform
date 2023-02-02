@@ -169,7 +169,7 @@ export class NFTService {
         });
     }
 
-    async updateNftCudosPrice(id: string): Promise<{acudosPrice: BigNumber, ethPrice: BigNumber }> {
+    async updateNftCudosPrice(id: string): Promise<NftEntity> {
         const nftEntity = await this.findOne(id);
         if (nftEntity === null) {
             throw new NotFoundException();
@@ -184,17 +184,7 @@ export class NFTService {
         const FifteenMinutesInMilis = 15 * 60 * 1000;
         nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;
 
-        await this.updateOne(id, nftEntity);
-
-        return {
-            acudosPrice: nftEntity.acudosPrice,
-            ethPrice: nftEntity.ethPrice,
-        };
-    }
-
-    async buyNftWithEth(id: string, signedTx: string): Promise<string> {
-        console.log(signedTx)
-        return 'wefwef'
+        return this.updateOne(id, nftEntity);
     }
 
     async findOne(id: string): Promise < NftEntity > {

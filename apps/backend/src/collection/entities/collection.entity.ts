@@ -71,8 +71,8 @@ export class CollectionEntity {
         repoJson.status = entity.status;
         repoJson.farmId = entity.farmId;
         repoJson.creatorId = entity.creatorId;
-        repoJson.deletedAt = new Date(entity.timestampDeletedAt);
-        repoJson.updatedAt = new Date(entity.timestampUpdatedAt);
+        // repoJson.deletedAt = new Date(entity.timestampDeletedAt);
+        // repoJson.updatedAt = new Date(entity.timestampUpdatedAt);
 
         return repoJson;
     }

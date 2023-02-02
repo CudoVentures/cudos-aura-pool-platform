@@ -124,12 +124,11 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     }
 
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void > {
+        const progressHandler = new DefaultProgressHandler('Uploading farm...', 'Processing farm...', this.onProgress);
         try {
             this.disableActions?.();
 
-            const progressHandler = new DefaultProgressHandler('Uploading farm...', 'Processing farm...', this.onProgress);
             const resultMiningFarmEntity = await this.miningFarmApi.creditMiningFarm(miningFarmEntity, progressHandler.onProgress);
-            progressHandler.finish();
 
             await runInActionAsync(() => {
                 Object.assign(miningFarmEntity, resultMiningFarmEntity);
@@ -148,6 +147,7 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
             }
         } finally {
             this.enableActions?.();
+            progressHandler.finish();
         }
     }
 

@@ -65,8 +65,7 @@ export default class NftEntity {
     }
 
     isStatusListed(): boolean {
-        return (this.isMinted() && this.priceInAcudos.gt(new BigNumber(0)))
-            || (this.isMinted() === false && this.priceUsd !== NOT_EXISTS_INT);
+        return (this.isMinted() && this.priceInAcudos.gt(new BigNumber(0))) || (this.isMinted() === false && this.priceUsd !== NOT_EXISTS_INT);
     }
 
     isStatusNotListed(): boolean {
@@ -79,6 +78,10 @@ export default class NftEntity {
 
     hasImage(): boolean {
         return this.imageUrl !== '';
+    }
+
+    hasPriceInAcudos(): boolean {
+        return this.priceInAcudos.gt(new BigNumber(0));
     }
 
     markAsMinted(): void {

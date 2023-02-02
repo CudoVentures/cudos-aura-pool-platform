@@ -15,6 +15,10 @@ export default class SettingsEntity {
         this.globalCudosRoyaltiesPercent = 0;
     }
 
+    hasValidRoyaltiesPrecision() {
+        return hasValidPrecision(this.firstSaleCudosRoyaltiesPercent) && hasValidPrecision(this.resaleCudosRoyaltiesPercent) && hasValidPrecision(this.globalCudosFeesPercent) && hasValidPrecision(this.globalCudosRoyaltiesPercent);
+    }
+
     static toRepo(entity: SettingsEntity): any {
         if (entity === null) {
             return null;
@@ -74,4 +78,8 @@ export default class SettingsEntity {
         return model;
     }
 
+}
+
+function hasValidPrecision(value) {
+    return (value * 100).toFixed(0) === (value * 100).toString();
 }

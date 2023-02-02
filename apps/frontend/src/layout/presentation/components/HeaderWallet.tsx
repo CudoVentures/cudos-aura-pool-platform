@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { inject, observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import WalletSelectModalStore from '../stores/WalletSelectModalStore';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import Svg from '../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
@@ -26,6 +28,7 @@ type Props = {
 
 function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore }: Props) {
 
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     function onClickCopyAddress() {
@@ -38,7 +41,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
 
     async function onClickDisconnect() {
         await accountSessionStore.logout();
-        setAnchorEl(null);
+        navigate(AppRoutes.HOME);
     }
 
     function handleClose() {

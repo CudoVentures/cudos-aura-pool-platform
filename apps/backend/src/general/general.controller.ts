@@ -74,6 +74,10 @@ export class GeneralController {
         @Body(new ValidationPipe({ transform: true })) reqCreditSettings: ReqCreditSettings,
     ): Promise < ResCreditSettings > {
         let settingsEntity = SettingsEntity.fromJson(reqCreditSettings.settingsEntity);
+        if (settingsEntity.hasValidRoyaltiesPrecision() === false) {
+            throw new Error('Max 2 decimal numbers');
+        }
+
         settingsEntity = await this.generalService.creditSettings(settingsEntity, req.transaction);
         return new ResCreditSettings(settingsEntity);
     }
