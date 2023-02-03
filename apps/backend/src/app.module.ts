@@ -20,6 +20,7 @@ import DataService from './data/data.service';
 import { GeneralModule } from './general/general.module';
 import { AccountModule } from './account/account.module';
 import { EmailModule } from './email/email.module';
+import { KycModule } from './kyc/kyc.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { EmailModule } from './email/email.module';
         VisitorModule,
         DataModule,
         EmailModule,
+        KycModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },

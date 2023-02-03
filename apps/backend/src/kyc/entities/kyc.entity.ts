@@ -1,18 +1,27 @@
-import { NOT_EXISTS_INT, IntBoolValue } from '../../common/utils';
+import { NOT_EXISTS_INT } from '../../common/utils';
+import { KycJsonValidator } from '../kyc.types';
 import KycRepo from '../repo/kyc.repo';
 
 export default class KycEntity {
 
     kycId: number;
     accountId: number;
+    firstName: string;
+    lastName: string;
     applicantId: string;
-    onfidoPassed1000Check: IntBoolValue;
+    reports: string[][];
+    checkIds: string[];
+    checkResults: string[];
 
     constructor() {
         this.kycId = NOT_EXISTS_INT;
         this.accountId = NOT_EXISTS_INT;
+        this.firstName = '';
+        this.lastName = '';
         this.applicantId = '';
-        this.onfidoPassed1000Check = IntBoolValue.FALSE;
+        this.reports = [];
+        this.checkIds = [];
+        this.checkResults = [];
     }
 
     static newInstance(accountId: number) {
@@ -27,6 +36,22 @@ export default class KycEntity {
         return this.kycId === NOT_EXISTS_INT;
     }
 
+    hasDocumentReport(): boolean {
+        const report = this.reports.find((reportNames) => {
+            return reportNames.length === 1 && reportNames[0] === 'document';
+        });
+
+        return report !== undefined;
+    }
+
+    // isVerified(): boolean {
+    //     return this.onfidoPassed1000UsdCheck === IntBoolValue.TRUE;
+    // }
+
+    hasRegisteredApplicant(): boolean {
+        return this.applicantId !== '';
+    }
+
     static toRepo(entity: KycEntity): KycRepo {
         if (entity === null) {
             return null;
@@ -38,8 +63,12 @@ export default class KycEntity {
             repoJson.kycId = entity.kycId;
         }
         repoJson.accountId = entity.accountId ?? repoJson.accountId;
+        repoJson.firstName = entity.firstName ?? repoJson.firstName;
+        repoJson.lastName = entity.lastName ?? repoJson.lastName;
         repoJson.applicantId = entity.applicantId ?? repoJson.applicantId;
-        repoJson.onfidoPassed1000Check = entity.onfidoPassed1000Check ?? repoJson.onfidoPassed1000Check;
+        repoJson.reports = entity.reports ?? repoJson.reports;
+        repoJson.checkIds = entity.checkIds ?? repoJson.checkIds;
+        repoJson.checkResults = entity.checkResults ?? repoJson.checkResults;
 
         return repoJson;
     }
@@ -54,8 +83,48 @@ export default class KycEntity {
         repoJson = repoJson.toJSON();
         entity.kycId = repoJson.kycId ?? entity.kycId;
         entity.accountId = repoJson.accountId ?? entity.accountId;
+        entity.firstName = repoJson.firstName ?? entity.firstName;
+        entity.lastName = repoJson.lastName ?? entity.lastName;
         entity.applicantId = repoJson.applicantId ?? entity.applicantId;
-        entity.onfidoPassed1000Check = repoJson.onfidoPassed1000Check ?? entity.onfidoPassed1000Check;
+        entity.reports = repoJson.reports ?? entity.reports;
+        entity.checkIds = repoJson.checkIds ?? entity.checkIds;
+        entity.checkResults = repoJson.checkResults ?? entity.checkResults;
+
+        return entity;
+    }
+
+    static toJson(entity: KycEntity): KycJsonValidator {
+        if (entity === null) {
+            return null;
+        }
+
+        return {
+            'kycId': entity.kycId.toString(),
+            'accountId': entity.accountId.toString(),
+            'applicantId': entity.applicantId,
+            'firstName': entity.firstName,
+            'lastName': entity.lastName,
+            'reports': entity.reports,
+            'checkIds': entity.checkIds,
+            'checkResults': entity.checkResults,
+        }
+    }
+
+    static fromJson(json: KycJsonValidator): KycEntity {
+        if (json === null) {
+            return null;
+        }
+
+        const entity = new KycEntity();
+
+        entity.kycId = parseInt(json.kycId ?? entity.kycId.toString());
+        entity.accountId = parseInt(json.accountId ?? entity.accountId.toString());
+        entity.applicantId = (json.applicantId ?? entity.applicantId).toString();
+        entity.firstName = (json.firstName ?? entity.firstName).toString();
+        entity.lastName = (json.lastName ?? entity.lastName).toString();
+        entity.reports = json.reports ?? entity.reports;
+        entity.checkIds = json.checkIds ?? entity.checkIds;
+        entity.checkResults = json.checkResults ?? entity.checkResults;
 
         return entity;
     }

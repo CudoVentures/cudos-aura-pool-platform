@@ -134,6 +134,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 break;
             case ProgressSteps.KYC:
                 walletSelectModalStore.hide();
+                navigate(AppRoutes.KYC);
                 break;
             default:
         }
@@ -155,35 +156,52 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     }
 
     function renderNavSteps(): NavStep[] {
-        if (walletSelectModalStore.isModeUser() === true) {
-            let steps = [createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
-            if (accountSessionStore.isUser() === false) {
-                steps = steps.concat([
-                    createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
-                    createNavStep(3, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
-                ]);
+        let stepsCounter = 0;
+        return walletSelectModalStore.progressSteps.map((progressStep) => {
+            switch (progressStep) {
+                case ProgressSteps.CONNECT_WALLET:
+                    return createNavStep(++stepsCounter, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false);
+                case ProgressSteps.SIGN:
+                    return createNavStep(++stepsCounter, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc());
+                case ProgressSteps.KYC:
+                    return createNavStep(++stepsCounter, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false);
+                default:
+                    return null;
             }
-            return steps;
-        }
-
-        if (walletSelectModalStore.isModeAdmin() === true) {
-            const steps = [createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
-            if (accountSessionStore.isAdmin() === false) {
-                steps.push(
-                    createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, false),
-                )
-            }
-            return steps;
-        }
-
-        if (walletSelectModalStore.isModeSuperAdmin() === true) {
-            return [
-                createNavStep(1, 'Connect Wallet', true, false),
-            ]
-        }
-
-        return [];
+        })
     }
+
+    // function renderNavSteps(): NavStep[] {
+    //     if (walletSelectModalStore.isModeUser() === true) {
+    //         let stepsCounter = 0;
+    //         const steps = [createNavStep(++stepsCounter, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
+    //         if (accountSessionStore.isUser() === false) {
+    //             steps.push(createNavStep(++stepsCounter, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()))
+    //         }
+    //         if (kycStore.isVerified() === false) {
+    //             steps.push(createNavStep(++stepsCounter, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false))
+    //         }
+    //         return steps;
+    //     }
+
+    //     if (walletSelectModalStore.isModeAdmin() === true) {
+    //         const steps = [createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
+    //         if (accountSessionStore.isAdmin() === false) {
+    //             steps.push(
+    //                 createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, false),
+    //             )
+    //         }
+    //         return steps;
+    //     }
+
+    //     if (walletSelectModalStore.isModeSuperAdmin() === true) {
+    //         return [
+    //             createNavStep(1, 'Connect Wallet', true, false),
+    //         ]
+    //     }
+
+    //     return [];
+    // }
 
     function renderLoading(title, subtitle) {
         return (
@@ -311,12 +329,16 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                             <a className={'ColorPrimary060'} href = { '' }>Learn more about wallets</a>
                         </div>
                     ) : (
-                        <Actions>
-                            <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickBack }>
-                                <Svg svg = { ArrowBackIcon } />
-                                Back
-                            </Button>
-                        </Actions>
+                        <>
+                            { walletSelectModalStore.hasBackStep() === true && (
+                                <Actions>
+                                    <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickBack }>
+                                        <Svg svg = { ArrowBackIcon } />
+                                        Back
+                                    </Button>
+                                </Actions>
+                            ) }
+                        </>
                     ) }
                     <Actions className = { 'StartRight' } >
                         { walletSelectModalStore.hasNextStep() === true ? (

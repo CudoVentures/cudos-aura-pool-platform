@@ -4,8 +4,12 @@ import { KYC_TABLE_NAME } from '../kyc.types';
 export const enum KycRepoColumn {
     KYC_ID = 'kyc_id',
     ACCOUNT_ID = 'account_id',
+    FIRST_NAME = 'first_name',
+    LAST_NAME = 'last_name',
     APPLICANT_ID = 'applicant_Id',
-    ONFIDO_PASSED_1000_CHECK = 'onfido_passed_1000_check',
+    REPORTS = 'reports',
+    CHECK_IDS = 'check_ids',
+    CHECK_RESULTS = 'check_results',
 }
 
 @Table({
@@ -27,10 +31,25 @@ export default class KycRepo extends Model {
 
     @AllowNull(false)
     @Column({ type: DataType.STRING })
+        firstName: string;
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        lastName: string;
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
         applicantId: string;
 
     @AllowNull(false)
-    @Column({ type: DataType.TINYINT })
-        onfidoPassed1000Check: number
+    @Column({ type: DataType.ARRAY(DataType.ARRAY(DataType.STRING)) })
+        reports: string[][];
 
+    @AllowNull(false)
+    @Column({ type: DataType.ARRAY(DataType.STRING) })
+        checkIds: string[];
+
+    @AllowNull(false)
+    @Column({ type: DataType.ARRAY(DataType.STRING) })
+        checkResults: string[];
 }

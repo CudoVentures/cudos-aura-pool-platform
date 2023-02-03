@@ -37,12 +37,15 @@ import SuperAdminDashboardPage from '../../../layout/presentation/pages/SuperAdm
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/app-router.css';
+import KycPage from '../../../kyc/presentation/pages/KycPage';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
+    kycStore?: KycStore;
 }
 
-function AppRouter({ accountSessionStore }: Props) {
+function AppRouter({ accountSessionStore, kycStore }: Props) {
 
     const location = useLocation();
     const [displayLocation, setDisplayLocation] = useState(location);
@@ -80,16 +83,18 @@ function AppRouter({ accountSessionStore }: Props) {
         return <MarketplacePage />;
     }
 
+    function isInited() {
+        return accountSessionStore.isInited() === true && kycStore.isInited() === true;
+    }
+
     return (
         <div
             className={`AppRouter ${transitionStage}`}
             onAnimationEnd = { onRouterTransitionEnd } >
 
-            { accountSessionStore.isInited() === false && (
+            { isInited() === false ? (
                 <LoadingIndicator className = { 'LoadingIndicatorLoadingAccounts' } />
-            ) }
-
-            { accountSessionStore.isInited() === true && (
+            ) : (
                 <Routes location = { displayLocation } >
                     <Route index = { true } element = { getIndexPage() } />
                     <Route path = { '*' } element = { <NotFoundPage /> } />
@@ -113,7 +118,10 @@ function AppRouter({ accountSessionStore }: Props) {
 
                     {/* profile */}
                     { accountSessionStore.isUser() === true && (
-                        <Route path = { AppRoutes.USER_PROFILE } element = { <UserProfilePage /> } />
+                        <>
+                            <Route path = { AppRoutes.USER_PROFILE } element = { <UserProfilePage /> } />
+                            <Route path = { AppRoutes.KYC } element = { <KycPage /> } />
+                        </>
                     ) }
 
                     {/* admin */}

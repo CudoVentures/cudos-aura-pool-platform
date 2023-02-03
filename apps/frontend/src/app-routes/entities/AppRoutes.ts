@@ -23,6 +23,7 @@ export default class AppRoutes {
 
     // profile
     static USER_PROFILE = '/profile';
+    static KYC = '/kyc'
 
     // farm admin
     static CREDIT_ACCOUNT_SETTINGS = '/credit-account-settings';
