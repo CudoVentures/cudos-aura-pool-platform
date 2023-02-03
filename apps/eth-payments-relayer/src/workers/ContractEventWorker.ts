@@ -71,21 +71,24 @@ export default class ContractEventWorker {
                     ContractEventWorker.log(`Processing event with nft id: ${nftId}`);
                     const nftEntity = nftEntityMap.get(nftId);
 
-                    // checks for valid data
-                    if (!nftEntity) {
-                        throw Error(`Nft entity with id ${nftId} not fetched.`);
-                    }
-
-                    if (!nftEntity.isBasicValid()) {
-                        throw Error(`Nft entity with id ${nftId} has invalid data.\n ${nftEntity}`);
-                    }
-
                     // checks for refund
                     let shouldRefund = false;
 
+                    // checks for valid data
+                    if (!nftEntity) {
+                        ContractEventWorker.warn(`\tNft entity with id ${nftId} not fetched.`);
+                        shouldRefund = true;
+
+                    }
+
+                    if (shouldRefund === false && !nftEntity.isBasicValid()) {
+                        ContractEventWorker.warn(`\tNft entity with id ${nftId} has invalid data.\n ${nftEntity}`);
+                        shouldRefund = true;
+                    }
+
                     // - Is the price still valid by the price validity timestamp?
-                    if (nftEntity.isPriceValidNow() === false) {
-                        ContractEventWorker.warn(`Nft price validity expired.\n\t\tNftId: ${nftId}\n\t\tValidity timestamp: ${nftEntity.priceValidUntil}\n\t\tCurrent timestamp: ${Date.now()}`);
+                    if (shouldRefund === false && nftEntity.isPriceValidNow() === false) {
+                        ContractEventWorker.warn(`\tNft price validity expired.\n\t\tNftId: ${nftId}\n\t\tValidity timestamp: ${nftEntity.priceValidUntil}\n\t\tCurrent timestamp: ${Date.now()}`);
                         shouldRefund = true;
                     }
 
@@ -114,10 +117,10 @@ export default class ContractEventWorker {
                     // if check fails, unlock payment
                     if (shouldRefund === true) {
                         ContractEventWorker.warn('\tMarking payment for refunding...');
-                        const status = await this.contractRepo.fetchPaymentStatus(nftId);
+                        const status = await this.contractRepo.fetchPaymentStatus(paymentEventEntity.id);
                         if (status === PaymentStatus.LOCKED) {
-                            const txhash = await this.contractRepo.markPaymentWithdrawable(nftId);
-                            ContractEventWorker.log(`\tNftId ${nftId} marked as refunded. TxHash: ${txhash}`);
+                            const txhash = await this.contractRepo.markPaymentWithdrawable(paymentEventEntity.id);
+                            ContractEventWorker.log(`\PaymentId ${paymentEventEntity.id} marked as refunded. TxHash: ${txhash}`);
                             // just update the nft, so its udpatedAt field is new (for UI purposes)
                             ContractEventWorker.log('\tUpdating NFT status on Aura Pool Backend...');
                             await this.cudosAuraPoolServiceApi.updateNftPrice(nftId);

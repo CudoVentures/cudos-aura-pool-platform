@@ -20,8 +20,8 @@ export default class AuraContractRpcRepo implements AuraContractRepo {
         return this.contract.provider.getBlockNumber();
     }
 
-    async fetchPaymentStatus(nftId: string): Promise < PaymentStatus > {
-        const statusString = await this.contract.getPaymentStatus(ethers.utils.toUtf8Bytes(nftId));
+    async fetchPaymentStatus(paymentId: number): Promise < PaymentStatus > {
+        const statusString = await this.contract.getPaymentStatus(paymentId);
         const status = parsePaymentStatus(statusString);
 
         if (status === null) {
@@ -30,8 +30,8 @@ export default class AuraContractRpcRepo implements AuraContractRepo {
         return status;
     }
 
-    async markPaymentWithdrawable(nftId: string): Promise<string> {
-        const tx = await this.contract.unlockPaymentWithdraw(ethers.utils.toUtf8Bytes(nftId));
+    async markPaymentWithdrawable(paymentId: number): Promise<string> {
+        const tx = await this.contract.unlockPaymentWithdraw(paymentId);
         const transactionReceipt = await tx.wait();
         if (transactionReceipt.status !== 1) {
             throw Error(transactionReceipt);

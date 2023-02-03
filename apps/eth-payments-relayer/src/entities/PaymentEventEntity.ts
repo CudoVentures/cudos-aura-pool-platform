@@ -42,18 +42,18 @@ export default class PaymentEventEntity {
     }
 
     isValid(): boolean {
-        return this.nftId !== ''
+        return this.id !== null
+            && this.nftId !== ''
             && this.cudosAddress !== ''
             && this.amount !== null
             && this.payee !== ''
-            // && this.id !== null
     }
 
     static fromContractEvent(event: any): PaymentEventEntity {
         const entity = new PaymentEventEntity();
         const args = event.args;
 
-        // entity.id = args.id ? parseInt(args.paymentId) : entity.id;
+        entity.id = args.id ? parseInt(args.paymentId) : entity.id;
         entity.nftId = args.paymentId ? utils.toUtf8String(args.paymentId) : entity.nftId;
         entity.cudosAddress = args.cudosAddress ? utils.toUtf8String(args.cudosAddress) : entity.cudosAddress;
         entity.amount = args.amount ? new BigNumber(args.amount.toString()).shiftedBy(-18) : entity.amount;

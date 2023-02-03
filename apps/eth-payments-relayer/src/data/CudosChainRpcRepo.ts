@@ -60,7 +60,7 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
 
         const memo = `{
             "uuid":"${nftEntity.id}",
-            "contractPaymentId": "${paymentEventEntity.nftId}",
+            "contractPaymentId": "${paymentEventEntity.id}",
             "recipientAddress": "${paymentEventEntity.cudosAddress}"
         }`;
 

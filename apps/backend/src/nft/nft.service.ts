@@ -175,6 +175,10 @@ export class NFTService {
             throw new NotFoundException();
         }
 
+        if (nftEntity.isMinted()) {
+            throw new NotFoundException();
+        }
+
         const { usdPrice, ethPrice } = await this.coinGeckoService.fetchCudosPrice();
         const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(usdPrice);
         const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)

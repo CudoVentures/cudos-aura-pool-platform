@@ -71,10 +71,10 @@ export default class CudosRefundWorker {
                     }
 
                     // unlock payment
-                    CudosRefundWorker.log(`Processing payment for nftId: ${paymentTransactionEntity.nftId}`);
-                    const status = await this.contractRepo.fetchPaymentStatus(paymentTransactionEntity.nftId);
+                    CudosRefundWorker.log(`Processing payment for paymentId: ${paymentTransactionEntity.contractPaymentId}`);
+                    const status = await this.contractRepo.fetchPaymentStatus(paymentTransactionEntity.contractPaymentId);
                     if (status === PaymentStatus.LOCKED) {
-                        const txHash = await this.contractRepo.markPaymentWithdrawable(paymentTransactionEntity.nftId);
+                        const txHash = await this.contractRepo.markPaymentWithdrawable(paymentTransactionEntity.contractPaymentId);
                         CudosRefundWorker.log(`Payment unlocked. Txhash: ${txHash}`);
                     } else {
                         CudosRefundWorker.log('Payment ALREADY unlocked.');
