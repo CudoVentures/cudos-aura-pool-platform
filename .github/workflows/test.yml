@@ -4,34 +4,18 @@ on: [push]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ubuntu-latest]
         node-version: [14.x]
     steps:
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install
-      run: |
-        npm install
-    - name: Run Jest for Collections
-      uses: stefanoeb/jest-action@1.0.3
-      with:
-        jestArgs: collection
-    - name: Run Jest for farm
-      uses: stefanoeb/jest-action@1.0.3
-      with:
-        jestArgs: farm
-    - name: Run Jest for statistics
-      uses: stefanoeb/jest-action@1.0.3
-      with:
-        jestArgs: statistics
-    - name: Run Jest for eth-payment-relayer
-      uses: stefanoeb/jest-action@1.0.3
-      with:
-        jestArgs: eth-payment-relayer
-        
+      node-version: ${{ matrix.node-version }}
+    - run: npm test-collections
+    - run: npm test-farm
+    - run: npm test-statistics
+    - run: npm test-eth-payment-relayer
