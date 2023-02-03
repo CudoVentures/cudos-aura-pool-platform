@@ -1,0 +1,28 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run Jest for Collections
+      uses: stefanoeb/jest-action@1.0.3
+      with:
+        jestArgs: collection
+    - name: Run Jest for farm
+      uses: stefanoeb/jest-action@1.0.3
+      with:
+        jestArgs: farm
+    - name: Run Jest for statistics
+      uses: stefanoeb/jest-action@1.0.3
+      with:
+        jestArgs: statistics
+    - name: Run Jest for eth-payment-relayer
+      uses: stefanoeb/jest-action@1.0.3
+      with:
+        jestArgs: eth-payment-relayer
+        
