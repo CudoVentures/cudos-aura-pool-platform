@@ -15,7 +15,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm test-collections
-    - run: npm test-farm
-    - run: npm test-statistics
-    - run: npm test-eth-payment-relayer
+    - run: jest collections
+    - run: jest farm
+    - run: jest statistics
+    - run: jest eth-payment-relayer
