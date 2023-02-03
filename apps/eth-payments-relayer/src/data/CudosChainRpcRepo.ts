@@ -46,7 +46,7 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> {
         const indexedTx = await this.chainClient.getTx(txHash);
 
-        return PaymentTransactionEntity.fromChainIndexedTx(indexedTx);
+        return indexedTx ? PaymentTransactionEntity.fromChainIndexedTx(indexedTx) : null;
     }
 
     async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> {

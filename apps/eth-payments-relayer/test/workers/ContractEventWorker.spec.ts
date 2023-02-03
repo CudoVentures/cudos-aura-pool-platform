@@ -7,9 +7,10 @@ import { CudosChainRpcFailToMintMockRepo, CudosChainRpcHappyPathMockRepo, CudosC
 
 describe('ContractEventWorker (e2e)', () => {
     const logErrorSpy = jest.spyOn(ContractEventWorker, 'error');
-    const logErrorWarn = jest.spyOn(ContractEventWorker, 'warn');
+    const logWarn = jest.spyOn(ContractEventWorker, 'warn');
 
     beforeEach(async () => {
+        Logger.transports.forEach((t) => { t.silent = true });
     });
 
     it('Mint: HappyPath', async () => {
@@ -50,7 +51,7 @@ describe('ContractEventWorker (e2e)', () => {
 
         // Assert
         expect(logErrorSpy).not.toBeCalled();
-        expect(logErrorWarn).toHaveBeenCalledWith('\tPayed amount to contract is not equal to the expected.\n\t\tNftId: id1\n\t\tPayed amount: 0.0001\n\t\tExpected amount: 123');
+        expect(logWarn).toHaveBeenCalledWith('\tPayed amount to contract is not equal to the expected.\n\t\tNftId: id1\n\t\tPayed amount: 0.0001\n\t\tExpected amount: 123');
         expect(spyRefund).toBeCalledTimes(6);
         expect(spyMint).not.toBeCalled();
         expect(spyFinish).toBeCalled();
@@ -73,7 +74,7 @@ describe('ContractEventWorker (e2e)', () => {
 
         // Assert
         expect(logErrorSpy).not.toBeCalled();
-        expect(logErrorWarn).toHaveBeenCalledWith('\tNft entity with id id6 not fetched.');
+        expect(logWarn).toHaveBeenCalledWith('\tNft entity with id id6 not fetched.');
         expect(spyRefund).toBeCalledTimes(6);
         expect(spyMint).not.toBeCalled();
         expect(spyFinish).toBeCalled();
@@ -96,7 +97,7 @@ describe('ContractEventWorker (e2e)', () => {
 
         // Assert
         expect(logErrorSpy).not.toHaveBeenCalled();
-        expect(logErrorWarn).toHaveBeenCalledWith('\tAddressbook entry not found for payment nft id.\n\t\tNftId: id1\n\t\tPayment cudos address: address1');
+        expect(logWarn).toHaveBeenCalledWith('\tAddressbook entry not found for payment nft id.\n\t\tNftId: id1\n\t\tPayment cudos address: address1');
         expect(spyRefund).toBeCalledTimes(6);
         expect(spyMint).not.toBeCalled();
         expect(spyFinish).toBeCalled();
@@ -124,27 +125,27 @@ describe('ContractEventWorker (e2e)', () => {
         expect(spyFinish).toBeCalled();
     })
 
-    // it('Do Nothing: no new block', async () => {
-    //     // Arrange
-    //     const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-    //     const auraContractRepo = new AuraContractLowBlockHeightMockRepo();
-    //     const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
+    it('Do Nothing: no new block', async () => {
+        // Arrange
+        const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
+        const auraContractRepo = new AuraContractLowBlockHeightMockRepo();
+        const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
 
-    //     const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-    //     const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
-    //     const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+        const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
+        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
+        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-    //     const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
-    //     // Act
-    //     await expect(worker.run()).resolves.not.toThrowError();
+        // Act
+        await expect(worker.run()).resolves.not.toThrowError();
 
-    //     // Assert
-    //     expect(logErrorSpy).not.toHaveBeenCalled();
-    //     expect(spyRefund).not.toBeCalled();
-    //     expect(spyMint).not.toBeCalled();
-    //     expect(spyFinish).not.toBeCalled();
-    // })
+        // Assert
+        expect(logErrorSpy).not.toHaveBeenCalled();
+        expect(spyRefund).not.toBeCalled();
+        expect(spyMint).not.toBeCalled();
+        expect(spyFinish).not.toBeCalled();
+    })
 
     it('Error: failed to send minting tx', async () => {
         // Arrange
