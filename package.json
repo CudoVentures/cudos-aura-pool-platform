@@ -11,6 +11,7 @@
     "build:platform:prod": "npm run build:backend:prod; npm run build:frontend:prod",
     "build:backend:prod": "nest build backend --webpack",
     "build:chain-observer:prod": "nest build chain-observer --webpack",
+    "build:eth-payment-relayer:prod": "nest build eth-payment-relayer --webpack",
     "build:frontend:dev": "export NODE_ENV=development && npx webpack --config webpack-frontend.config.js --watch",
     "build:frontend:prod": "export NODE_ENV=production && npx webpack --config webpack-frontend.config.js",
     "start:backend:dev": "nest build backend --webpack --webpackPath webpack-hmr.config.js --watch",
