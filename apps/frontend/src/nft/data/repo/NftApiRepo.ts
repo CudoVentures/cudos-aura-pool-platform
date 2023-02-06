@@ -1,7 +1,7 @@
-import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, ETH_CONSTS } from '../../../core/utilities/Constants';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity from '../../entities/NftEntity';
-import NftRepo from '../../presentation/repos/NftRepo';
+import NftRepo, { BuyingCurrency } from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
 import { SigningStargateClient, GasPrice, Ledger, CURRENCY_DECIMALS } from 'cudosjs';
@@ -10,6 +10,8 @@ import S from '../../../core/utilities/Main';
 import BigNumber from 'bignumber.js';
 import { coin } from 'cudosjs/build/proto-signing';
 import NftSessionStorage from '../data-sources/NftSessionStorage';
+import Web3 from 'web3';
+import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAuraPool.json';
 import MintMemo from '../../entities/MintMemo';
 
 export default class NftApiRepo implements NftRepo {
@@ -96,10 +98,9 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string > {
+    async buyNft(currency: BuyingCurrency, nftEntity: NftEntity, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
-
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
             let txHash = S.Strings.EMPTY;
@@ -114,8 +115,34 @@ export default class NftApiRepo implements NftRepo {
                 // const memo = `{"uuid":"${nftEntity.id}"}`;
                 const memo = new MintMemo(nftEntity.id, ledger.accountAddress).toJsonString();
 
-                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
-                txHash = tx.transactionHash;
+                // sign transaction and send it to backend
+                if (currency === BuyingCurrency.ETH) {
+                    const web3 = new Web3(window.ethereum);
+
+                    const addresses = await web3.eth.getAccounts();
+
+                    const contract = new web3.eth.Contract(
+                        contractABI.abi,
+                        ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS,
+                        {
+                            from: addresses[0],
+                        },
+                    );
+
+                    const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(nftEntity.id), web3.utils.asciiToHex(ledger.accountAddress))
+                        .send({
+                            value: nftEntity.priceInEth.shiftedBy(18).toFixed(0),
+                        });
+
+                    if (!tx.transactionHash) {
+                        throw Error(tx.message);
+                    }
+
+                    txHash = tx.transactionHash;
+                } else if (currency === BuyingCurrency.CUDOS) {
+                    const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
+                    txHash = tx.transactionHash;
+                }
             } else {
                 const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;

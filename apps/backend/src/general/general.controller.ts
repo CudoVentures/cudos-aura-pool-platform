@@ -4,9 +4,8 @@ import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { ReqCreditSettings } from './dto/requests.dto';
-import { ResCreditSettings, ResFetchSettings } from './dto/responses.dto';
-import { UpdateLastCheckedBlockRequest } from './dto/update-last-checked-height-request.dto';
+import { ReqCreditSettings, ReqUpdateLastCheckedBlockRequest, ReqUpdateLastCheckedPaymentRelayerBlocksRequest } from './dto/requests.dto';
+import { ResCreditSettings, ResFetchLastCheckedPaymenrRelayerBlocks, ResFetchSettings } from './dto/responses.dto';
 import SettingsEntity from './entities/settings.entity';
 import GeneralService from './general.service';
 
@@ -33,9 +32,29 @@ export class GeneralController {
     @HttpCode(200)
     async updateLastCheckedBlock(
         @Req() req: AppRequest,
-        @Body() updateLastCheckedBlockRequest: UpdateLastCheckedBlockRequest,
+        @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedBlockRequest,
     ): Promise<any> {
-        return this.generalService.setLastCheckedBlock(updateLastCheckedBlockRequest.height);
+        return this.generalService.setLastCheckedBlock(reqUpdateLastCheckedBlockRequest.height);
+    }
+
+    @Get('last-checked-payment-relayer-blocks')
+    @HttpCode(200)
+    async getLastCheckedPaymentRelayerBlock(): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
+        const { lastCheckedEthBlock, lastCheckedCudosBlock } = await this.generalService.getLastCheckedPaymentRelayerBlocks();
+
+        const res = new ResFetchLastCheckedPaymenrRelayerBlocks(lastCheckedEthBlock, lastCheckedCudosBlock);
+
+        return res;
+    }
+
+    @UseInterceptors(TransactionInterceptor)
+    @Put('last-checked-payment-relayer-blocks')
+    @HttpCode(200)
+    async updateLastCheckedPaymentRelayerBlock(
+        @Req() req: AppRequest,
+        @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedPaymentRelayerBlocksRequest,
+    ): Promise<any> {
+        return this.generalService.setLastCheckedPaymentRelayerBlocks(reqUpdateLastCheckedBlockRequest.lastCheckedEthBlock, reqUpdateLastCheckedBlockRequest.lastCheckedCudosBlock);
     }
 
     @Get('fetchSettings')

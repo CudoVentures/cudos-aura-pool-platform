@@ -4,6 +4,11 @@ import CollectionEntity, { CollectionStatus } from '../../../collection/entities
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 
+export enum BuyingCurrency {
+    ETH,
+    CUDOS
+}
+
 export default interface NftRepo {
 
     setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
@@ -15,6 +20,6 @@ export default interface NftRepo {
     fetchTrendingNfts(status?: CollectionStatus): Promise < NftEntity[] >;
     fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } >;
 
-    buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string >;
+    buyNft(currency: BuyingCurrency, nftEntity: NftEntity, ledger: Ledger): Promise < string >;
     listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string >;
 }

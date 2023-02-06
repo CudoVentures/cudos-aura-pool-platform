@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { NftStatus } from './nft.types';
@@ -14,6 +14,9 @@ import BigNumber from 'bignumber.js';
 import { ChainMarketplaceNftEntity } from '../graphql/entities/nft-marketplace.entity';
 import { FarmService } from '../farm/farm.service';
 import { validate } from 'uuid';
+import RoleGuard from '../auth/guards/role.guard';
+import { AccountType } from '../account/account.types';
+import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -113,6 +116,8 @@ export class NFTController {
         }
     }
 
+    @ApiBearerAuth('access-token')
+    @UseGuards(RoleGuard([AccountType.USER]), IsCreatorOrSuperAdminGuard)
     @Post('updatePrice')
     @HttpCode(200)
     async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {

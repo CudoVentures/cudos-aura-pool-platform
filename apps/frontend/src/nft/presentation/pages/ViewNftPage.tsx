@@ -36,6 +36,7 @@ import { ContainerBackground } from '../../../core/presentation/components/Style
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
+import { BuyingCurrency } from '../repos/NftRepo';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -90,7 +91,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         navigate(AppRoutes.REWARDS_CALCULATOR)
     }
 
-    function onClickBuyNft() {
+    function buyNft(currency: BuyingCurrency) {
         if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
             alertStore.positiveLabel = 'Register';
             alertStore.positiveListener = () => {
@@ -101,13 +102,29 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             return;
         }
 
-        const balance = walletStore.getBalanceSafeInAcudos();
-        if (balance.lt(nftEntity.priceInAcudos)) {
+        buyNftModalStore.showSignal(currency, nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
+    }
+
+    function onClickBuyNft() {
+        const balance = walletStore.getBalanceSafe();
+        if (balance.lt(cudosStore.getNftCudosPriceForNft(nftEntity))) {
             alertStore.show('Your balance is not enough to buy this.');
             return;
         }
 
-        buyNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
+        buyNft(BuyingCurrency.CUDOS)
+    }
+
+    async function onClickBuyNftWithEth() {
+        const ethBalance = await walletStore.getEthBalance();
+        const nftPriceInEth = cudosStore.getEthPriceForNft(nftEntity);
+
+        if (ethBalance.lt(nftPriceInEth)) {
+            alertStore.show('Your balance is not enough to buy this.');
+            return;
+        }
+
+        buyNft(BuyingCurrency.ETH)
     }
 
     function onClickResellNft() {
@@ -251,6 +268,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                         { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                                                 <Button onClick={onClickBuyNft}>Buy now for {viewNftPageStore.formatPricePlusMintFeeInCudos()} </Button>
+                                                {nftEntity.isMinted() === false && (<Button onClick={onClickBuyNftWithEth}>Buy now with ETH for {viewNftPageStore.formatPricePlusMintFeeInEth()} </Button>)}
                                             </Actions>
                                         )}
                                         { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (

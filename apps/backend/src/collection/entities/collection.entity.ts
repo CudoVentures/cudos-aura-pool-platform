@@ -141,6 +141,8 @@ export class CollectionEntity {
         entity.bannerImage = json.bannerImage ?? entity.bannerImage;
         entity.farmId = parseInt(json.farmId ?? entity.farmId.toString());
         entity.creatorId = parseInt(json.creatorId ?? entity.creatorId.toString());
+        entity.timestampDeletedAt = json.timestampDeletedAt ?? entity.timestampDeletedAt;
+        entity.timestampUpdatedAt = json.timestampUpdatedAt ?? entity.timestampUpdatedAt;
 
         return entity;
     }

@@ -175,9 +175,15 @@ export class NFTService {
             throw new NotFoundException();
         }
 
-        const usdPerCudos = await this.coinGeckoService.fetchCudosPrice();
-        const acudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(usdPerCudos).shiftedBy(CURRENCY_DECIMALS)
+        if (nftEntity.isMinted()) {
+            throw new NotFoundException();
+        }
+
+        const { usdPrice, ethPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(usdPrice);
+        const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
         nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
+        nftEntity.ethPrice = new BigNumber(cudosPrice.multipliedBy(ethPrice).toFixed(18));
 
         const FifteenMinutesInMilis = 15 * 60 * 1000;
         nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;

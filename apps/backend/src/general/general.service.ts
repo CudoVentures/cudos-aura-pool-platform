@@ -24,10 +24,33 @@ export default class GeneralService {
         this.production = (this.configService.get < string >('APP_ENV') ?? 'dev') === 'production';
     }
 
+    async getLastCheckedPaymentRelayerBlocks(): Promise < {lastCheckedEthBlock: number, lastCheckedCudosBlock: number} > {
+        const data = await this.generalRepo.findOne();
+
+        return {
+            lastCheckedEthBlock: data.lastCheckedPaymentRelayerEthBlock,
+            lastCheckedCudosBlock: data.lastCheckedPaymentRelayerCudosBlock,
+        }
+    }
+
     async getLastCheckedBlock(): Promise < number > {
         const data = await this.generalRepo.findOne();
 
         return data.lastCheckedBlock;
+    }
+
+    async setLastCheckedPaymentRelayerBlocks(lastCheckedEthBlock: number, lastCheckedCudosBlock: number): Promise < void > {
+        const model = {}
+
+        if (lastCheckedEthBlock) {
+            model['lastCheckedPaymentRelayerEthBlock'] = lastCheckedEthBlock;
+        }
+
+        if (lastCheckedCudosBlock) {
+            model['lastCheckedPaymentRelayerCudosBlock'] = lastCheckedCudosBlock;
+        }
+
+        await this.generalRepo.update(model, { where: { } });
     }
 
     async setLastCheckedBlock(lastCheckedBlock: number): Promise < void > {

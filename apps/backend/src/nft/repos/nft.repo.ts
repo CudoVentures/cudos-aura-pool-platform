@@ -66,6 +66,10 @@ export class NftRepo extends Model {
         price: string;
 
     @AllowNull(false)
+    @Column
+        priceInEth: string
+
+    @AllowNull(false)
     @Column({ type: DataType.DATE })
         expirationDate: Date;
 

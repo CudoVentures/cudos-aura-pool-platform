@@ -18,3 +18,13 @@ export class ResCreditSettings {
         this.settingsEntity = SettingsEntity.toJson(settingsEntity);
     }
 }
+
+export class ResFetchLastCheckedPaymenrRelayerBlocks {
+    lastCheckedEthBlock: number;
+    lastCheckedCudosBlock: number;
+
+    constructor(lastCheckedEthBlock: number, lastCheckedCudosBlock: number) {
+        this.lastCheckedEthBlock = lastCheckedEthBlock;
+        this.lastCheckedCudosBlock = lastCheckedCudosBlock;
+    }
+}

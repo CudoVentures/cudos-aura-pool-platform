@@ -239,6 +239,7 @@ for (let i = 1; i <= 5; i++) {
         data: 'somestring',
         hashingPower: i,
         price: `${i}00`,
+        priceInEth: '100',
         expirationDate: new Date(2024, 10, 9),
         status: NftStatus.MINTED,
         tokenId: `${i}`,
@@ -247,6 +248,8 @@ for (let i = 1; i <= 5; i++) {
         deletedAt: null,
         currentOwner: 'testowner',
         marketplaceNftId: `${i}`,
+        createdAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
+        updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
     });
 
     nftPayoutHistoryEntities.push({

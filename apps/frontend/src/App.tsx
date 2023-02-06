@@ -65,6 +65,15 @@ import RejectedCollectionsStore from './collection/presentation/stores/RejectedC
 import GeneralStore from './general/presentation/stores/GeneralStore';
 import ProgressStore from './core/presentation/stores/ProgressStore';
 
+// @ts-ignore
+declare global {
+    // tslint:disable-next-line
+    interface Window {
+      web3: any;
+      ethereum: any;
+    }
+}
+
 const storageHelper = new StorageHelper();
 storageHelper.open();
 

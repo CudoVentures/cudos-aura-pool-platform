@@ -204,6 +204,13 @@ export default class ViewNftPageStore {
         return `${this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1).toFixed(2)} CUDOS`;
     }
 
+    formatPricePlusMintFeeInEth(): string {
+        const cudosPrice = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
+        const ethPrice = this.cudosStore.convertCudosToEth(cudosPrice);
+
+        return `${ethPrice.toFixed(6)} ETH`;
+    }
+
     getNftPriceText() {
         if (this.nftEntity.isStatusListed() === false) {
             return 'Not for sale';

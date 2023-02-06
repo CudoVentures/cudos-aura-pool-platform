@@ -35,6 +35,14 @@ export class GeneralRepo extends Model {
         lastCheckedBlock: number;
 
     @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
+        lastCheckedPaymentRelayerEthBlock: number;
+
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
+        lastCheckedPaymentRelayerCudosBlock: number;
+
+    @AllowNull(false)
     @Column({ type: DataType.DATE })
         updatedAt: Date;
 }

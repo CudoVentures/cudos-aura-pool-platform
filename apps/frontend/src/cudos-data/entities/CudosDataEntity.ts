@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import S from '../../core/utilities/Main';
 
 export default class CudosDataEntity {
@@ -6,12 +7,14 @@ export default class CudosDataEntity {
 
     modelVersion: number;
     priceInUsd: number;
+    priceInEth: BigNumber;
     priceChangeInUsd: number;
     timestampLastUpdate: number;
 
     constructor() {
         this.modelVersion = CudosDataEntity.MODEL_VERSION
         this.priceInUsd = S.NOT_EXISTS;
+        this.priceInEth = null;
         this.priceChangeInUsd = S.NOT_EXISTS;
         this.timestampLastUpdate = S.NOT_EXISTS;
     }
@@ -28,6 +31,7 @@ export default class CudosDataEntity {
         return {
             'modelVersion': entity.modelVersion,
             'priceInUsd': entity.priceInUsd,
+            'priceInEth': entity.priceInEth.toString(10),
             'priceChangeInUsd': entity.priceChangeInUsd,
             'timestampLastUpdate': entity.timestampLastUpdate,
         }
@@ -42,6 +46,7 @@ export default class CudosDataEntity {
 
         model.modelVersion = parseInt(json.modelVersion) ?? model.modelVersion;
         model.priceInUsd = Number(json.priceInUsd) ?? model.priceInUsd;
+        model.priceInEth = new BigNumber(json.priceInEth ?? model.priceInEth);
         model.priceChangeInUsd = Number(json.priceChangeInUsd) ?? model.priceChangeInUsd;
         model.timestampLastUpdate = parseInt(json.timestampLastUpdate ?? model.timestampLastUpdate);
 

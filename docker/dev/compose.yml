@@ -92,6 +92,37 @@ services:
     depends_on: 
       - cudos-aura-platform-dev
 
+  cudos-aura-platform-eth-payments-relayer:
+    image: cudos-aura-platform-eth-payments-relayer
+    container_name: cudos-aura-platform-eth-payments-relayer
+    build:
+      dockerfile: docker/dev/eth-payments-relayer.dockerfile
+      context: ../../
+      args:
+        args:
+        USER_ID: "$USER_ID"
+        USER_NAME: "$USER_NAME"
+        GROUP_ID: "$GROUP_ID"
+        GROUP_NAME: "$GROUP_NAME"
+        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
+        CHAIN_ID: "$CHAIN_ID"
+        CHAIN_RPC: "$CHAIN_RPC"
+        CHAIN_GRPC: "$CHAIN_GRPC"
+    restart: unless-stopped
+    volumes:
+      - '../../:/usr/cudos-aura-eth-payments-relayer'
+    networks:
+      - shared-cudos-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+        max-file: "1"
+    depends_on: 
+      - cudos-aura-platform-dev
+
   cudos-on-demand-minting-service-dev:
     image: cudos-on-demand-minting-service-dev
     container_name: cudos-on-demand-minting-service-dev
