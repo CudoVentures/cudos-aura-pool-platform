@@ -26,7 +26,7 @@ export class KycService {
 
     async fetchAndInvalidateKyc(accountEntity: AccountEntity, tx: Transaction = undefined): Promise < KycEntity > {
         let kycEntity = await this.fetchKycByAccount(accountEntity, tx);
-        if (kycEntity.hasRegisteredApplicant() === true) {
+        if (kycEntity.hasNotCompletedCheck() === true) {
             kycEntity = await this.invalidateOnfidoChecks(kycEntity, tx);
         }
         return kycEntity;

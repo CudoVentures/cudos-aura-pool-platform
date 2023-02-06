@@ -109,6 +109,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 if (walletSelectModalStore.isModeUser() === true) {
                     if (accountSessionStore.isLoggedIn() === false) {
                         walletSelectModalStore.moveToProgressStepSign();
+                    } else if (kycStore.isVerificationNotStarted() === true) {
+                        walletSelectModalStore.moveToProgressStepKyc();
                     } else {
                         walletSelectModalStore.hide();
                     }

@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
+import { IntBoolValue } from '../../common/utils';
 import { EnergySourceJsonValidator, ManufacturerJsonValidator, MinerJsonValidator, MiningFarmJsonValidator } from '../farm.types';
 
 export class ReqCreditMiningFarm {
@@ -29,8 +30,15 @@ export class ReqFetchMiningFarmDetails {
     @IsString({ each: true })
         miningFarmIds: string[];
 
+    @IsNumber()
+        includesExternalDetails: IntBoolValue;
+
     getParsedIds(): number[] {
         return this.miningFarmIds.map((s) => parseInt(s));
+    }
+
+    getIncludesExternalDetailsAsBoolean(): boolean {
+        return this.includesExternalDetails === IntBoolValue.TRUE;
     }
 
 }

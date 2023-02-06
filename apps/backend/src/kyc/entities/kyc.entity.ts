@@ -46,12 +46,16 @@ export default class KycEntity {
         return report !== undefined;
     }
 
-    // isVerified(): boolean {
-    //     return this.onfidoPassed1000UsdCheck === IntBoolValue.TRUE;
-    // }
-
     hasRegisteredApplicant(): boolean {
         return this.applicantId !== '';
+    }
+
+    hasNotCompletedCheck(): boolean {
+        const check = this.checkStatuses.find((status) => {
+            return status !== 'complete';
+        });
+
+        return check !== undefined;
     }
 
     static toRepo(entity: KycEntity): KycRepo {

@@ -52,6 +52,7 @@ import { KycModule } from './kyc/kyc.module';
                     database: config.get('APP_DATABASE_DB_NAME'),
                     autoLoadModels: true,
                     synchronize: false,
+                    logging: false,
                 }
             },
         }),

@@ -368,7 +368,7 @@ export class FarmService {
         return ManufacturerEntity.fromRepo(manufacturerRepo);
     }
 
-    async getMiningFarmDetails(miningFarmIds: number[]): Promise < MiningFarmDetailsEntity[] > {
+    async getMiningFarmDetails(miningFarmIds: number[], includesExternalDetails: boolean): Promise < MiningFarmDetailsEntity[] > {
         const miningFarmEntitiesMap = new Map();
         const collectionEntitiesMap = new Map();
         const miningFarmIdToDetailsMap = new Map();
@@ -410,12 +410,15 @@ export class FarmService {
         miningFarmIdToDetailsMap.forEach((miningFarmDetailsEntity) => {
             miningFarmDetailsEntities.push(miningFarmDetailsEntity);
         });
-        for (let i = miningFarmDetailsEntities.length; i-- > 0;) {
-            const miningFarmDetailsEntity = miningFarmDetailsEntities[i];
-            const miningFarmEntity = miningFarmEntitiesMap.get(miningFarmDetailsEntity.miningFarmId);
-            const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.legalName);
-            miningFarmDetailsEntity.averageHashPowerInTh = averageHashRateH1;
-            miningFarmDetailsEntity.activeWorkers = activeWorkersCount;
+
+        if (includesExternalDetails) {
+            for (let i = miningFarmDetailsEntities.length; i-- > 0;) {
+                const miningFarmDetailsEntity = miningFarmDetailsEntities[i];
+                const miningFarmEntity = miningFarmEntitiesMap.get(miningFarmDetailsEntity.miningFarmId);
+                const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.legalName);
+                miningFarmDetailsEntity.averageHashPowerInTh = averageHashRateH1;
+                miningFarmDetailsEntity.activeWorkers = activeWorkersCount;
+            }
         }
 
         return miningFarmDetailsEntities;
