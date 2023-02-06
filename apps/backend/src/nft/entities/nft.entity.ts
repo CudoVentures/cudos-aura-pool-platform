@@ -65,6 +65,14 @@ export default class NftEntity {
         return this.status === NftStatus.MINTED && this.tokenId !== '';
     }
 
+    isPriceInAcudosValidForMinting(): boolean {
+        return Date.now() < this.priceAcudosValidUntil;
+    }
+
+    isQueued(): boolean {
+        return this.status === NftStatus.QUEUED;
+    }
+
     getTokenIdAsInt(): number {
         const tokenIdAsInt = parseInt(this.tokenId);
         return Number.isNaN(tokenIdAsInt) === true ? NOT_EXISTS_INT : tokenIdAsInt;
