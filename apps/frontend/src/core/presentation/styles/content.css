@@ -218,6 +218,10 @@ html.OverflowHidden {
     font-size: 10px;
 }
 
+.ColorNeutral040 {
+    color: var(--color-neutral-040);
+}
+
 .ColorNeutral050 {
     color: var(--color-neutral-050);
 }

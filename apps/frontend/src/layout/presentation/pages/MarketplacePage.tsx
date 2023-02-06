@@ -231,7 +231,7 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                                         </RowLayout>
                                         <div className={ 'PhasePriceRow FlexRow' }>
                                             <div className={ 'PriceInfo FlexRow' }>
-                                                <div className={'B2 SemiBold ColorNeutral050'}>Ends in:</div>
+                                                <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
                                                 <div className={ 'PriceWithIcon FlexRow' }>
                                                     <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM}/>
                                                     <div className={'B2 SemiBold ColorNeutral100'}>{marketplacePageStore.getPresalePriceCudosFormatted()}</div>
@@ -239,7 +239,7 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                                                 <div className={ 'PriceWithIcon FlexRow' }>
                                                     <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM}/>
                                                     <div className={'B2 SemiBold ColorNeutral100'}>{marketplacePageStore.getPresalePriceEthFormatted()}</div>
-                                                    <div className={'B3 SemiBold ColorNeutral40'}>({marketplacePageStore.getPresalePriceUsdFormatted()})</div>
+                                                    <div className={'B3 SemiBold ColorNeutral040'}>({marketplacePageStore.getPresalePriceUsdFormatted()})</div>
                                                 </div>
                                             </div>
                                             <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{marketplacePageStore.getWhitelistedAmount()}</span></div>

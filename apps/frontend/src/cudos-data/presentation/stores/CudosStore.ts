@@ -57,7 +57,7 @@ export default class CudosStore {
     }
 
     convertCudosToEth(cudosAmount: BigNumber): BigNumber {
-        return cudosAmount.multipliedBy(this.cudosDataEntity.priceInEth);
+        return cudosAmount.multipliedBy(this.cudosDataEntity?.priceInEth);
     }
 
     convertAcudosInUsd(acudosPrice: BigNumber): BigNumber {
@@ -101,6 +101,10 @@ export default class CudosStore {
     }
 
     getNftCudosPriceForNft(nftEntity: NftEntity): BigNumber {
+        if (!nftEntity) {
+            return new BigNumber(0);
+        }
+
         if (nftEntity.isMinted() === true) {
             if (nftEntity.priceInAcudos === null) {
                 return new BigNumber(0)
@@ -117,7 +121,7 @@ export default class CudosStore {
     }
 
     formatPriceInUsdForNft(nftEntity: NftEntity): string {
-        const price = nftEntity.priceUsd === S.NOT_EXISTS ? 0 : nftEntity.priceUsd;
+        const price = !nftEntity || nftEntity.priceUsd === S.NOT_EXISTS ? 0 : nftEntity.priceUsd;
         return `$ ${new BigNumber(price).toFixed(2)}`;
     }
 

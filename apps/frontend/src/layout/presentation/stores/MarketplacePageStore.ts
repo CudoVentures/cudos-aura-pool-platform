@@ -26,6 +26,7 @@ export default class MarketplacePageStore {
     presaleCollectionEntity: CollectionEntity;
     presaleCollectionDetailsEntity: CollectionDetailsEntity;
     presaleNftEntities: NftEntity[];
+    presaleNftIndexSelected: number;
 
     collectionMap: Map < string, CollectionEntity >;
     collectionDetailsMap: Map < string, CollectionDetailsEntity >;
@@ -45,6 +46,7 @@ export default class MarketplacePageStore {
         this.presaleCollectionEntity = null;
         this.presaleCollectionDetailsEntity = null;
         this.presaleNftEntities = [];
+        this.presaleNftIndexSelected = 0;
 
         this.collectionMap = new Map();
         this.collectionDetailsMap = new Map();
@@ -60,6 +62,7 @@ export default class MarketplacePageStore {
     async init() {
 
         if (this.isPresaleOver() === false) {
+            this.cudosStore.init();
             this.fetchPresaleCollectionWithDetails();
         } else {
             await this.fetchTopCollections();
@@ -202,21 +205,22 @@ export default class MarketplacePageStore {
     }
 
     getPresaleMintedPercent(): number {
-        return (this.getPresaleMintedAmount() * 100) / this.getPresaleMintedAmount();
+        return (this.getPresaleMintedAmount() * 100) / this.getPresaleTotalAmount();
     }
 
     getWhitelistedAmount(): number {
         return 5000;
     }
 
-    getPresalePriceCudosFormatted() {
+    getPresalePriceCudosFormatted(): string {
         return this.cudosStore.formatPriceInCudosForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false));
     }
 
-    getPresalePriceEthFormatted() {
+    getPresalePriceEthFormatted(): string {
+        return `${this.cudosStore.getEthPriceForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false)).toFixed(5)} ETH`;
     }
 
-    getPresalePriceUsdFormatted() {
+    getPresalePriceUsdFormatted(): string {
         return this.cudosStore.formatPriceInUsdForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false));
     }
 
@@ -229,14 +233,14 @@ export default class MarketplacePageStore {
     }
 
     getPresaleNftPicture() {
-        return 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg';
+        return this.presaleNftEntities[this.presaleNftIndexSelected]?.imageUrl;
     }
 
-    onClickNextPresaleNftPicture() {
-
+    onClickNextPresaleNftPicture = () => {
+        this.presaleNftIndexSelected = this.presaleNftIndexSelected < this.presaleNftEntities.length - 1 ? this.presaleNftIndexSelected + 1 : 0;
     }
 
-    onClickPreviousPresaleNftPicture() {
-
+    onClickPreviousPresaleNftPicture = () => {
+        this.presaleNftIndexSelected = this.presaleNftIndexSelected === 0 ? this.presaleNftEntities.length - 1 : this.presaleNftIndexSelected - 1;
     }
 }
