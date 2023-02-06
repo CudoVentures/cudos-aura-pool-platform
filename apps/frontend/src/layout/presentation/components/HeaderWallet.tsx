@@ -42,6 +42,7 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
     async function onClickDisconnect() {
         await accountSessionStore.logout();
         navigate(AppRoutes.HOME);
+        handleClose();
     }
 
     function handleClose() {
@@ -72,52 +73,57 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
     }
 
     return (
-        <div className = { 'HeaderWallet FlexRow' } >
-            {accountSessionStore.isLoggedInAndWalletConnected() === true ? (
-                <>
-                    <div className={'FlexRow BalanceRow B2'}>
-                        <Svg svg={AccountBalanceWalletIcon} className={ 'Secondary' }/>
-                        <div className={'SemiBold'}>Balance:</div>
-                        <div className={'Bold PrimaryColor'}>{walletStore.formatBalance()}</div>
-                    </div>
-                    <div className={'FlexRow AddressRow'}>
-                        <div className={'Bold'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
-                        <Svg className={'Clickable'} onClick={onClickAddressMenu} svg={MoreVertIcon} />
-                    </div>
-
-                    <Popover
-                        open={anchorEl !== null}
-                        anchorEl={anchorEl}
-                        onClose={handleClose}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }} >
-                        <div className={'HeaderWalletAddressPopover FlexColumn'}>
-                            <div className={'Address B2'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
-                            <div className={'ButtonRow FlexRow'}>
-                                <Svg className={'Clickable'} svg={FileCopyIcon} onClick={onClickCopyAddress}/>
-                                <a href={`${CHAIN_DETAILS.EXPLORER_URL}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
-                            </div>
-                            <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
-                                <Button radius={ButtonRadius.RADIUS_16} onClick={onClickDisconnect}>Logout</Button>
-                            </Actions>
+        <>
+            { accountSessionStore.isLoggedIn() === true && (
+                <div className = { 'HeaderWalletSeparator' } />
+            ) }
+            <div className = { 'HeaderWallet FlexRow' } >
+                {accountSessionStore.isLoggedInAndWalletConnected() === true ? (
+                    <>
+                        <div className={'FlexRow BalanceRow B2'}>
+                            <Svg svg={AccountBalanceWalletIcon} className={ 'Secondary' }/>
+                            <div className={'SemiBold'}>Balance:</div>
+                            <div className={'Bold'}>{walletStore.formatBalance()}</div>
                         </div>
-                    </Popover>
-                </>
-            ) : (
-                <>
-                    <Actions height={ActionsHeight.HEIGHT_48}>
-                        <Button onClick={onClickConnectWallet}>Connect Wallet</Button>
-                    </Actions>
-                </>
-            )
-            }
-        </div>
+                        <div className={'FlexRow AddressRow'}>
+                            <div className={'Bold'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
+                            <Svg className={'Clickable'} onClick={onClickAddressMenu} svg={MoreVertIcon} />
+                        </div>
+
+                        <Popover
+                            open={anchorEl !== null}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }} >
+                            <div className={'HeaderWalletAddressPopover FlexColumn'}>
+                                <div className={'Address B2'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
+                                <div className={'ButtonRow FlexRow'}>
+                                    <Svg className={'Clickable'} svg={FileCopyIcon} onClick={onClickCopyAddress}/>
+                                    <a href={`${CHAIN_DETAILS.EXPLORER_URL}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
+                                </div>
+                                <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
+                                    <Button radius={ButtonRadius.RADIUS_16} onClick={onClickDisconnect}>Logout</Button>
+                                </Actions>
+                            </div>
+                        </Popover>
+                    </>
+                ) : (
+                    <>
+                        <Actions height={ActionsHeight.HEIGHT_48}>
+                            <Button onClick={onClickConnectWallet}>Connect Wallet</Button>
+                        </Actions>
+                    </>
+                )
+                }
+            </div>
+        </>
     )
 
 }

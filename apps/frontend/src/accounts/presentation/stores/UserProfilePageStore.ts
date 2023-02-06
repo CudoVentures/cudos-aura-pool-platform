@@ -99,7 +99,7 @@ export default class UserProfilePageStore {
             return nftEntity.collectionId;
         });
 
-        const collectionEntitiesMap = this.collectionEntitiesMap;
+        const collectionEntitiesMap = new Map(this.collectionEntitiesMap);
         if (collectionIds.length > 0) {
             const collectionEntities = await this.collectionRepo.fetchCollectionsByIds(collectionIds);
             collectionEntities.forEach((collectionEntity) => {
@@ -108,7 +108,6 @@ export default class UserProfilePageStore {
         }
 
         await runInActionAsync(() => {
-            this.collectionEntitiesMap = null;
             this.collectionEntitiesMap = collectionEntitiesMap;
             this.nftEntities = fetchedNftEntities.nftEntities;
             this.gridViewState.setTotalItems(fetchedNftEntities.total);

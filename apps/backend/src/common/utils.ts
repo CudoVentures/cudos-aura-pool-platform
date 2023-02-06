@@ -3,10 +3,14 @@ export enum IntBoolValue {
     FALSE = 0,
 }
 
-export function parseIntBoolValue(value: boolean | IntBoolValue): IntBoolValue {
+export function parseIntBoolValue(value: boolean | IntBoolValue | number): IntBoolValue {
 
     if (typeof value === 'boolean') {
         return value === true ? IntBoolValue.TRUE : IntBoolValue.FALSE;
+    }
+
+    if (typeof value === 'number') {
+        return value === 0 ? IntBoolValue.FALSE : IntBoolValue.TRUE;
     }
 
     return value;

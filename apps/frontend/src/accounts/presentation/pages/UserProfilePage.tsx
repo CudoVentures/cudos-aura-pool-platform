@@ -26,6 +26,7 @@ import EditUserModal from '../components/EditUserModal';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-user-profile.css';
+import KycBadge from '../../../core/presentation/components/KycBadge';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -83,7 +84,10 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                     </Button>
                 </Actions>
                 <div className={'ProfileHeaderDataRow'}>
-                    <div className={'AccountName H2 Bold'}>{accountEntity.name}</div>
+                    <div className = { 'AccountNameWrapper FlexRow' } >
+                        <div className={'H2 Bold'}> {accountEntity.name} </div>
+                        <KycBadge />
+                    </div>
                     <div className={'FlexRow'}>
                         <Svg svg = { SvgCudosLogo } />
                         <a href={ProjectUtils.makeUrlExplorer(userEntity.cudosWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</a>

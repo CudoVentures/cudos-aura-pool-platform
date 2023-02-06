@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import AppRoutes from '../../entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 import NotFoundPage from '../../../layout/presentation/pages/NotFoundPage';
 import UiKitPage from '../../../ui-kit/presensation/components/UiKitPage';
@@ -33,6 +34,7 @@ import SuperAdminMiningFarmsPage from '../../../mining-farm/presentation/pages/S
 import SuperAdminAnalyticsPage from '../../../analytics/presentation/pages/SuperAdminAnalyticsPage';
 import SuperAdminMegaWalletPage from '../../../accounts/presentation/pages/SuperAdminMegaWalletPage';
 import SuperAdminDashboardPage from '../../../layout/presentation/pages/SuperAdminDashboardPage';
+import KycPage from '../../../kyc/presentation/pages/KycPage';
 
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
@@ -40,9 +42,10 @@ import '../styles/app-router.css';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
+    kycStore?: KycStore;
 }
 
-function AppRouter({ accountSessionStore }: Props) {
+function AppRouter({ accountSessionStore, kycStore }: Props) {
 
     const location = useLocation();
     const [displayLocation, setDisplayLocation] = useState(location);
@@ -80,16 +83,18 @@ function AppRouter({ accountSessionStore }: Props) {
         return <MarketplacePage />;
     }
 
+    function isInited() {
+        return accountSessionStore.isInited() === true;
+    }
+
     return (
         <div
             className={`AppRouter ${transitionStage}`}
             onAnimationEnd = { onRouterTransitionEnd } >
 
-            { accountSessionStore.isInited() === false && (
+            { isInited() === false ? (
                 <LoadingIndicator className = { 'LoadingIndicatorLoadingAccounts' } />
-            ) }
-
-            { accountSessionStore.isInited() === true && (
+            ) : (
                 <Routes location = { displayLocation } >
                     <Route index = { true } element = { getIndexPage() } />
                     <Route path = { '*' } element = { <NotFoundPage /> } />
@@ -113,7 +118,10 @@ function AppRouter({ accountSessionStore }: Props) {
 
                     {/* profile */}
                     { accountSessionStore.isUser() === true && (
-                        <Route path = { AppRoutes.USER_PROFILE } element = { <UserProfilePage /> } />
+                        <>
+                            <Route path = { AppRoutes.USER_PROFILE } element = { <UserProfilePage /> } />
+                            <Route path = { AppRoutes.KYC } element = { <KycPage /> } />
+                        </>
                     ) }
 
                     {/* admin */}
