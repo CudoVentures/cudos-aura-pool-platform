@@ -9,10 +9,13 @@ import CollectionDetailsEntity from '../../../collection/entities/CollectionDeta
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 
 declare let Config;
 
 export default class MarketplacePageStore {
+    cudosStore: CudosStore;
 
     collectionRepo: CollectionRepo;
     nftRepo: NftRepo;
@@ -22,6 +25,7 @@ export default class MarketplacePageStore {
 
     presaleCollectionEntity: CollectionEntity;
     presaleCollectionDetailsEntity: CollectionDetailsEntity;
+    presaleNftEntities: NftEntity[];
 
     collectionMap: Map < string, CollectionEntity >;
     collectionDetailsMap: Map < string, CollectionDetailsEntity >;
@@ -31,12 +35,16 @@ export default class MarketplacePageStore {
     popularFarmsEntities: MiningFarmEntity[];
     miningFarmDetailsMap: Map < string, MiningFarmDetailsEntity >;
 
-    constructor(collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
+    constructor(cudosStore: CudosStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
         this.collectionRepo = collectionRepo;
         this.nftRepo = nftRepo;
         this.miningFarmRepo = miningFarmRepo;
-
+        this.cudosStore = cudosStore;
         this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopCollections);
+
+        this.presaleCollectionEntity = null;
+        this.presaleCollectionDetailsEntity = null;
+        this.presaleNftEntities = [];
 
         this.collectionMap = new Map();
         this.collectionDetailsMap = new Map();
@@ -50,6 +58,7 @@ export default class MarketplacePageStore {
     }
 
     async init() {
+
         if (this.isPresaleOver() === false) {
             this.fetchPresaleCollectionWithDetails();
         } else {
@@ -81,12 +90,17 @@ export default class MarketplacePageStore {
     }
 
     fetchPresaleCollectionWithDetails = async () => {
-        const collectionId = Config.APP_PRSALE_COLLECTION_ID;
+        const collectionId = Config.APP_PRESALE_COLLECTION_ID;
         const presaleCollection = await this.collectionRepo.fetchCollectionById(collectionId);
         const collectionDetails = await this.collectionRepo.fetchCollectionsDetailsByIds([collectionId]);
+
+        const nftFilter = new NftFilterModel();
+        nftFilter.collectionIds = [collectionId];
+        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
         await runInActionAsync(() => {
             this.presaleCollectionEntity = presaleCollection;
             this.presaleCollectionDetailsEntity = collectionDetails[0];
+            this.presaleNftEntities = nftEntities;
         })
     }
 
@@ -157,7 +171,7 @@ export default class MarketplacePageStore {
         return this.presaleTimeLeftMilis() < 0;
     }
 
-    getPresaleTimeLeft(): {presaleDaysLeft: number, presaleHoursLeft: number, presaleMinutesLeft: number, presaleSecondsleft: number } {
+    getPresaleTimeLeft(): {presaleDaysLeft: string, presaleHoursLeft: string, presaleMinutesLeft: string, presaleSecondsleft: string } {
         const ms = this.presaleTimeLeftMilis();
         const presaleDaysLeft = Math.floor(ms / (24 * 60 * 60 * 1000));
         const daysms = ms % (24 * 60 * 60 * 1000);
@@ -168,10 +182,10 @@ export default class MarketplacePageStore {
         const presaleSecondsleft = Math.floor(minutesms / 1000);
 
         return {
-            presaleDaysLeft,
-            presaleHoursLeft,
-            presaleMinutesLeft,
-            presaleSecondsleft,
+            presaleDaysLeft: presaleDaysLeft < 10 ? `0${presaleDaysLeft}` : `${presaleDaysLeft}`,
+            presaleHoursLeft: presaleHoursLeft < 10 ? `0${presaleHoursLeft}` : `${presaleHoursLeft}`,
+            presaleMinutesLeft: presaleMinutesLeft < 10 ? `0${presaleMinutesLeft}` : `${presaleMinutesLeft}`,
+            presaleSecondsleft: presaleSecondsleft < 10 ? `0${presaleSecondsleft}` : `${presaleSecondsleft}`,
         }
     }
 
@@ -179,4 +193,50 @@ export default class MarketplacePageStore {
         return parseInt(Config.APP_PRESALE_END_TIMESTAMP) - Date.now();
     }
 
+    getPresaleTotalAmount(): number {
+        return this.presaleNftEntities.length;
+    }
+
+    getPresaleMintedAmount(): number {
+        return this.presaleNftEntities.filter((entity) => entity.isMinted()).length;
+    }
+
+    getPresaleMintedPercent(): number {
+        return (this.getPresaleMintedAmount() * 100) / this.getPresaleMintedAmount();
+    }
+
+    getWhitelistedAmount(): number {
+        return 5000;
+    }
+
+    getPresalePriceCudosFormatted() {
+        return this.cudosStore.formatPriceInCudosForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false));
+    }
+
+    getPresalePriceEthFormatted() {
+    }
+
+    getPresalePriceUsdFormatted() {
+        return this.cudosStore.formatPriceInUsdForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false));
+    }
+
+    onClickBuyWithCudos = () => {
+        // TODO
+    }
+
+    onClickBuyWithEth = () => {
+        // TODO
+    }
+
+    getPresaleNftPicture() {
+        return 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg';
+    }
+
+    onClickNextPresaleNftPicture() {
+
+    }
+
+    onClickPreviousPresaleNftPicture() {
+
+    }
 }

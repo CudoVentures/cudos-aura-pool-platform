@@ -25,8 +25,9 @@ import '../styles/page-marketplace.css';
 import RowLayout from '../../../core/presentation/components/RowLayout';
 import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
 import StyledContainer, { ContainerPadding } from '../../../core/presentation/components/StyledContainer';
-import Svg from '../../../core/presentation/components/Svg';
+import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import Progressbar from '../../../core/presentation/components/StaticProgressBar';
+import PictureGallery from '../../../core/presentation/components/PictureGallery';
 
 type Props = {
     marketplacePageStore?: MarketplacePageStore
@@ -35,18 +36,6 @@ type Props = {
 function MarkedplacePage({ marketplacePageStore }: Props) {
     const {
         presaleCollectionEntity,
-        presaleCollectionDetailsEntity,
-        isPresaleOver,
-        getPresaleTimeLeft,
-        getPresaleTotalAmount,
-        getPresaleMintedAmount,
-        getPresaleMintedPercent,
-        getWhitelistedAmount,
-        getPresalePriceCudosFormatted,
-        getPresalePriceEthFormatted,
-        getPresalePriceUsdFormatted,
-        onClickBuyWithCudos,
-        onClickBuyWithEth,
     } = marketplacePageStore;
 
     const navigate = useNavigate();
@@ -74,7 +63,7 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
         run();
     }, []);
 
-    const presaleTimesLeft = getPresaleTimeLeft();
+    const presaleTimesLeft = marketplacePageStore.getPresaleTimeLeft();
 
     return (
         <PageLayout className = { 'PageMarketplace' } >
@@ -91,7 +80,7 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                             <label>Mine on real bitcoin</label>
                             <label>Simple process</label>
                         </div>
-                        {isPresaleOver() === true
+                        {marketplacePageStore.isPresaleOver() === true
                             && (<Actions>
                                 <Button onClick = { onClickExploreMarketplace }>Explore Marketplace</Button>
                             </Actions>)}
@@ -104,7 +93,7 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                         <img className = { 'HeroImg01' } src={'/assets/img/marketplace-hero-01.png'} />
                     </div>
                 </div>
-                {isPresaleOver() === true && (<>
+                {marketplacePageStore.isPresaleOver() === true && (<>
                     <div id = 'marketplace-heading' className={'MarketplaceHeading'}>
                         <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
                         <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
@@ -217,8 +206,8 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                         </Actions>
                     </div>
                 </>)}
-                {isPresaleOver() === true && (
-                    <RowLayout className={ 'PresaleContainer' } numColumns={2}>
+                {marketplacePageStore.isPresaleOver() === false && (
+                    <RowLayout className={ 'PresaleContainer' } numColumns={2} gap={100}>
                         <ColumnLayout className={ 'PresaleInfoColumn' } gap={24}>
                             <div className={ 'Primary60 B2 SemiBold' }>PRESALE COLLECTION</div>
                             <div className={ 'ColorNeutral100 B1 Bold'}>{presaleCollectionEntity?.name ?? ''}</div>
@@ -231,35 +220,35 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                                 >
                                     <ColumnLayout className={ 'PhaseInfoColumn' } gap={8}>
                                         <RowLayout className={ 'PhaseHeader' } numColumns={2}>
-                                            <div className={'PhaseName'}>Presale Phase</div>
-                                            <RowLayout className={ 'PhaseEta' } numColumns={5} gap={4}>
-                                                <div className={'B2 SemiBold ColorNeutral50'}>Ends in:</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleDaysLeft}</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleHoursLeft}</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleMinutesLeft}</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleSecondsleft}</div>
-                                            </RowLayout>
+                                            <div className={'PhaseName B3 SemiBold'}>Presale Phase</div>
+                                            <div className={ 'FlexRow PhaseEta B2 SemiBold' }>
+                                                <div className={'ColorNeutral050'}>Ends in:</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleDaysLeft}</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleHoursLeft}</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleMinutesLeft}</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleSecondsleft}</div>
+                                            </div>
                                         </RowLayout>
-                                        <RowLayout className={ 'PhasePriceRow' } numColumns={2}>
-                                            <RowLayout className={ 'PriceInfo' } numColumns={3} gap={6}>
-                                                <div className={'B2 SemiBold ColorNeutral50'}>Ends in:</div>
-                                                <RowLayout className={ 'PriceWithIcon' } numColumns={2} gap={4}>
-                                                    <Svg svg={SvgCudosLogo}/>
-                                                    <div className={'B2 SemiBold ColorNeutral100'}>{getPresalePriceCudosFormatted()}</div>
-                                                </RowLayout>
-                                                <RowLayout className={ 'PriceWithIcon' } numColumns={3} gap={4}>
-                                                    <Svg svg={SvgEthereumLogo}/>
-                                                    <div className={'B2 SemiBold ColorNeutral100'}>{getPresalePriceEthFormatted}</div>
-                                                    <div className={'B3 SemiBold ColorNeutral40'}>({getPresalePriceUsdFormatted()})</div>
-                                                </RowLayout>
-                                            </RowLayout>
-                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral60' }>Whitelisted: <span className={'ColorNeutral100'}>{getWhitelistedAmount()}</span></div>
-                                        </RowLayout>
-                                        <Progressbar fillPercent={getPresaleMintedPercent()} />
-                                        <RowLayout className={ 'AmountMintedRow' } numColumns={2}>
+                                        <div className={ 'PhasePriceRow FlexRow' }>
+                                            <div className={ 'PriceInfo FlexRow' }>
+                                                <div className={'B2 SemiBold ColorNeutral050'}>Ends in:</div>
+                                                <div className={ 'PriceWithIcon FlexRow' }>
+                                                    <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM}/>
+                                                    <div className={'B2 SemiBold ColorNeutral100'}>{marketplacePageStore.getPresalePriceCudosFormatted()}</div>
+                                                </div>
+                                                <div className={ 'PriceWithIcon FlexRow' }>
+                                                    <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM}/>
+                                                    <div className={'B2 SemiBold ColorNeutral100'}>{marketplacePageStore.getPresalePriceEthFormatted()}</div>
+                                                    <div className={'B3 SemiBold ColorNeutral40'}>({marketplacePageStore.getPresalePriceUsdFormatted()})</div>
+                                                </div>
+                                            </div>
+                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{marketplacePageStore.getWhitelistedAmount()}</span></div>
+                                        </div>
+                                        <Progressbar fillPercent={marketplacePageStore.getPresaleMintedPercent()} />
+                                        <div className={ 'AmountMintedRow FlexRow' }>
                                             <div className={'B3 ColorNeutral60'}>Minted so far</div>
-                                            <div className={'B3 ColorNeutral60'}>{getPresaleMintedPercent()}% ({getPresaleMintedAmount()}/{getPresaleTotalAmount()})</div>
-                                        </RowLayout>
+                                            <div className={'B3 ColorNeutral60'}>{marketplacePageStore.getPresaleMintedPercent()}% ({marketplacePageStore.getPresaleMintedAmount()}/{marketplacePageStore.getPresaleTotalAmount()})</div>
+                                        </div>
                                     </ColumnLayout>
                                 </StyledContainer>
                                 <StyledContainer
@@ -269,30 +258,30 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                                 >
                                     <ColumnLayout className={ 'PhaseInfoColumn' }>
                                         <RowLayout className={ 'PhaseHeader' } numColumns={2}>
-                                            <div className={'PhaseName'}>Public Stage</div>
-                                            <RowLayout className={ 'PhaseEta' } numColumns={5} gap={4}>
-                                                <div className={'B2 SemiBold ColorNeutral50'}>Starts in:</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleDaysLeft}</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleHoursLeft}</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleMinutesLeft}</div>
-                                                <div className={'TimeNumberBox'}>{presaleTimesLeft.presaleSecondsleft}</div>
-                                            </RowLayout>
+                                            <div className={'PhaseName B3 SemiBold'}>Public Stage</div>
+                                            <div className={ 'B2 SemiBold PhaseEta FlexRow' }>
+                                                <div className={'ColorNeutral050'}>Starts in:</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleDaysLeft}</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleHoursLeft}</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleMinutesLeft}</div>
+                                                <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleSecondsleft}</div>
+                                            </div>
                                         </RowLayout>
-                                        <div className={'B2 ColorNeutral50'}>Once the Public Phase starts the Aura Pool Platform will be open for everyone. This will allow whitelisted users to put their minted NFTs for resale.</div>
+                                        <div className={'B2 ColorNeutral050'}>Once the Public Phase starts the Aura Pool Platform will be open for everyone. This will allow whitelisted users to put their minted NFTs for resale.</div>
                                     </ColumnLayout>
                                 </StyledContainer>
                             </ColumnLayout>
                             <Actions height={ActionsHeight.HEIGHT_48}>
-                                <Button onCLick={onClickBuyWithCudos}>Buy now for {getPresalePriceCudosFormatted()}</Button>
-                                <Button onCLick={onClickBuyWithEth}>Buy now for {getPresalePriceEthFormatted()}</Button>
+                                <Button onClick={marketplacePageStore.onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()}</Button>
+                                <Button onClick={marketplacePageStore.onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()}</Button>
                             </Actions>
                         </ColumnLayout>
 
                         <PictureGallery
                             className={'PresaleNftPictureGallery'}
-                            pictures={getPresaleNftPictures()}
-                            onClickNext={onClickNextPresaleNftPicture}
-                            onClickPrevious={onClickPreviousPresaleNftPicture}
+                            picture={marketplacePageStore.getPresaleNftPicture()}
+                            onClickNext={marketplacePageStore.onClickNextPresaleNftPicture}
+                            onClickPrevious={marketplacePageStore.onClickPreviousPresaleNftPicture}
                         />
                     </RowLayout>
                 )}

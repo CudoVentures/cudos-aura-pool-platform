@@ -4,6 +4,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Svg from './Svg';
 
 import '../styles/picture-gallery.css';
+import ProjectUtils from '../../utilities/ProjectUtils';
 
 type Props = {
     picture: string;
@@ -13,9 +14,9 @@ type Props = {
 
 export default function PictureGallery({ picture, onClickPrevious, onClickNext }: Props) {
     return (
-        <div className={'PictureGallery'}>
-            <Svg svg={ArrowBackIcon} className={'PreviousButton'} />
-            <Svg svg={ArrowForwardIcon} className={'NextButton'} />
+        <div className={'PictureGallery FlexRow'} style={ProjectUtils.makeBgImgStyle(picture)}>
+            <Svg svg={ArrowBackIcon} onClick={onClickPrevious} className={'PreviousButton Clickable'} />
+            <Svg svg={ArrowForwardIcon} onClick={onClickNext} className={'NextButton Clickable'} />
         </div>
     )
 }
