@@ -10,6 +10,8 @@ import DefaultIntervalPickerState from '../../../analytics/presentation/stores/D
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
+declare let Config;
+
 export default class MarketplacePageStore {
 
     collectionRepo: CollectionRepo;
@@ -17,6 +19,9 @@ export default class MarketplacePageStore {
     miningFarmRepo: MiningFarmRepo;
 
     defaultIntervalPickerState: DefaultIntervalPickerState;
+
+    presaleCollectionEntity: CollectionEntity;
+    presaleCollectionDetailsEntity: CollectionDetailsEntity;
 
     collectionMap: Map < string, CollectionEntity >;
     collectionDetailsMap: Map < string, CollectionDetailsEntity >;
@@ -45,10 +50,14 @@ export default class MarketplacePageStore {
     }
 
     async init() {
-        await this.fetchTopCollections();
-        await this.fetchNewNftDrops();
-        this.fetchTrendingNfts();
-        this.fetchPopularFarms();
+        if (this.isPresaleOver() === false) {
+            this.fetchPresaleCollectionWithDetails();
+        } else {
+            await this.fetchTopCollections();
+            await this.fetchNewNftDrops();
+            this.fetchTrendingNfts();
+            this.fetchPopularFarms();
+        }
     }
 
     fetchTopCollections = async () => {
@@ -69,6 +78,16 @@ export default class MarketplacePageStore {
             this.topCollectionEntities = topCollectionEntities;
             this.collectionDetailsMap = collectionDetailsMap;
         });
+    }
+
+    fetchPresaleCollectionWithDetails = async () => {
+        const collectionId = Config.APP_PRSALE_COLLECTION_ID;
+        const presaleCollection = await this.collectionRepo.fetchCollectionById(collectionId);
+        const collectionDetails = await this.collectionRepo.fetchCollectionsDetailsByIds([collectionId]);
+        await runInActionAsync(() => {
+            this.presaleCollectionEntity = presaleCollection;
+            this.presaleCollectionDetailsEntity = collectionDetails[0];
+        })
     }
 
     async fetchNewNftDrops() {
@@ -132,6 +151,32 @@ export default class MarketplacePageStore {
 
     getMiningFarmDetailsEntity(miningFarmId: string): MiningFarmDetailsEntity {
         return this.miningFarmDetailsMap.get(miningFarmId) ?? null;
+    }
+
+    isPresaleOver(): boolean {
+        return this.presaleTimeLeftMilis() < 0;
+    }
+
+    getPresaleTimeLeft(): {presaleDaysLeft: number, presaleHoursLeft: number, presaleMinutesLeft: number, presaleSecondsleft: number } {
+        const ms = this.presaleTimeLeftMilis();
+        const presaleDaysLeft = Math.floor(ms / (24 * 60 * 60 * 1000));
+        const daysms = ms % (24 * 60 * 60 * 1000);
+        const presaleHoursLeft = Math.floor(daysms / (60 * 60 * 1000));
+        const hoursms = ms % (60 * 60 * 1000);
+        const presaleMinutesLeft = Math.floor(hoursms / (60 * 1000));
+        const minutesms = ms % (60 * 1000);
+        const presaleSecondsleft = Math.floor(minutesms / 1000);
+
+        return {
+            presaleDaysLeft,
+            presaleHoursLeft,
+            presaleMinutesLeft,
+            presaleSecondsleft,
+        }
+    }
+
+    private presaleTimeLeftMilis(): number {
+        return parseInt(Config.APP_PRESALE_END_TIMESTAMP) - Date.now();
     }
 
 }
