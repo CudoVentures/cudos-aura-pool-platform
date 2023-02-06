@@ -1,6 +1,13 @@
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 
+export enum KycStatus {
+    NOT_STARTED = 1,
+    IN_PROGRESS = 2,
+    COMPLETED_FAILED = 3,
+    COMPLETED_SUCCESS = 4,
+}
+
 export default class KycEntity {
 
     kycId: string;
@@ -11,6 +18,7 @@ export default class KycEntity {
     reports: string[][];
     checkIds: string[];
     checkResults: string[];
+    checkStatuses: string[];
 
     constructor() {
         this.kycId = S.Strings.NOT_EXISTS;
@@ -21,6 +29,7 @@ export default class KycEntity {
         this.reports = [];
         this.checkIds = [];
         this.checkResults = [];
+        this.checkStatuses = [];
 
         makeAutoObservable(this);
     }
@@ -29,14 +38,33 @@ export default class KycEntity {
         return this.kycId === S.Strings.NOT_EXISTS;
     }
 
-    isVerified(): boolean {
+    getKycStatus(): KycStatus {
         const lastCheckResult = this.checkResults.last();
-        return lastCheckResult !== null && lastCheckResult === 'clear';
+        const lastCheckStatus = this.checkStatuses.last();
+
+        if (lastCheckStatus === null) {
+            return KycStatus.NOT_STARTED;
+        }
+
+        if (lastCheckStatus === 'complete') {
+            return lastCheckResult === 'clear' ? KycStatus.COMPLETED_SUCCESS : KycStatus.COMPLETED_FAILED;
+        }
+
+        return KycStatus.IN_PROGRESS; // in progress includes in_progress, awaiting_applicant, withdrawn, paused, reopened
     }
 
-    isVerifycationInProgress(): boolean {
-        const lastCheckResult = this.checkResults.last();
-        return lastCheckResult !== null && lastCheckResult !== 'clear';
+    static getStatusName(status): string {
+        switch (status) {
+            case KycStatus.IN_PROGRESS:
+                return 'Verification in progress';
+            case KycStatus.COMPLETED_FAILED:
+                return 'Verification failed';
+            case KycStatus.COMPLETED_SUCCESS:
+                return 'Verified';
+            case KycStatus.NOT_STARTED:
+            default:
+                return 'Not verified';
+        }
     }
 
     hasRegisteredApplicant(): boolean {
@@ -57,6 +85,7 @@ export default class KycEntity {
             'reports': entity.reports,
             'checkIds': entity.checkIds,
             'checkResults': entity.checkResults,
+            'checkStatuses': entity.checkStatuses,
         }
     }
 
@@ -75,6 +104,7 @@ export default class KycEntity {
         entity.reports = json.reports ?? entity.reports;
         entity.checkIds = json.checkIds ?? entity.checkIds;
         entity.checkResults = json.checkResults ?? entity.checkResults;
+        entity.checkStatuses = json.checkStatuses ?? entity.checkStatuses;
 
         return entity;
     }

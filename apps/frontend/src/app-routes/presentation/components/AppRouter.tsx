@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import AppRoutes from '../../entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 import NotFoundPage from '../../../layout/presentation/pages/NotFoundPage';
 import UiKitPage from '../../../ui-kit/presensation/components/UiKitPage';
@@ -33,12 +34,11 @@ import SuperAdminMiningFarmsPage from '../../../mining-farm/presentation/pages/S
 import SuperAdminAnalyticsPage from '../../../analytics/presentation/pages/SuperAdminAnalyticsPage';
 import SuperAdminMegaWalletPage from '../../../accounts/presentation/pages/SuperAdminMegaWalletPage';
 import SuperAdminDashboardPage from '../../../layout/presentation/pages/SuperAdminDashboardPage';
+import KycPage from '../../../kyc/presentation/pages/KycPage';
 
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/app-router.css';
-import KycPage from '../../../kyc/presentation/pages/KycPage';
-import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
@@ -84,7 +84,7 @@ function AppRouter({ accountSessionStore, kycStore }: Props) {
     }
 
     function isInited() {
-        return accountSessionStore.isInited() === true && kycStore.isInited() === true;
+        return accountSessionStore.isInited() === true;
     }
 
     return (

@@ -1,18 +1,16 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import KycEntity from '../../entities/KycEntity';
+import KycEntity, { KycStatus } from '../../entities/KycEntity';
 import KycRepo from '../repos/KycRepo';
 
 export default class KycStore {
 
     kycRepo: KycRepo
 
-    inited: boolean;
     kycEntity: KycEntity;
 
     constructor(kycRepo: KycRepo) {
         this.kycRepo = kycRepo;
-        this.inited = false;
         this.kycEntity = null;
 
         makeAutoObservable(this, {
@@ -20,44 +18,44 @@ export default class KycStore {
         })
     }
 
-    async init(): Promise < void > {
-        if (this.inited === true) {
-            return;
-        }
+    async fetchKyc(): Promise < void > {
+        const kycEntity = await this.kycRepo.fetchKyc();
 
-        this.inited = true;
-        try {
-            const kycEntity = await this.kycRepo.fetchKyc();
-
-            await runInActionAsync(() => {
-                this.kycEntity = kycEntity;
-            });
-        } catch (e) {
-            runInAction(() => {
-                this.inited = false;
-            });
-            throw e;
-        }
+        await runInActionAsync(() => {
+            this.kycEntity = kycEntity;
+        });
     }
 
-    isVerified(): boolean {
-        return this.kycEntity?.isVerified() ?? false;
+    nullKycOnLogout() {
+        this.kycEntity = null;
     }
 
-    isVerifycationInProgress(): boolean {
-        return this.kycEntity?.isVerifycationInProgress() ?? false;
+    isVerificationNotStarted(): boolean {
+        return this.kycEntity?.getKycStatus() === KycStatus.NOT_STARTED ?? true;
     }
 
-    isInited(): boolean {
-        return this.inited;
+    isVerificationInProgress(): boolean {
+        return this.kycEntity?.getKycStatus() === KycStatus.IN_PROGRESS ?? false;
+    }
+
+    isVerificationFailed(): boolean {
+        return this.kycEntity?.getKycStatus() === KycStatus.COMPLETED_FAILED ?? false;
+    }
+
+    isVerificationSuccessful(): boolean {
+        return this.kycEntity?.getKycStatus() === KycStatus.COMPLETED_SUCCESS ?? false;
+    }
+
+    getStatusName(): string {
+        return KycEntity.getStatusName(this.kycEntity?.getKycStatus() ?? KycStatus.NOT_STARTED);
     }
 
     async creditKycAndGetToken(): Promise < string > {
         return this.kycRepo.creditKyc(this.kycEntity);
     }
 
-    async creditCheck(): Promise < void > {
-        return this.kycRepo.creditCheck(this.kycEntity);
+    async createCheck(): Promise < void > {
+        return this.kycRepo.createCheck(this.kycEntity);
     }
 
 }

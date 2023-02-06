@@ -7,6 +7,6 @@ export default interface KycRepo {
 
     fetchKyc(): Promise < KycEntity >;
     creditKyc(kycEntity: KycEntity): Promise < string >;
-    creditCheck(kycEntity: KycEntity): Promise < void >;
+    createCheck(kycEntity: KycEntity): Promise < void >;
 
 }

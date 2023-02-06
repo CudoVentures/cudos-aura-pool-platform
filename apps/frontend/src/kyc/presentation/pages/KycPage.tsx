@@ -1,47 +1,37 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import * as Onfido from 'onfido-sdk-ui';
+import { runInAction } from 'mobx';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
-import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import KycStore from '../stores/KycStore';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
-import { InputAdornment } from '@mui/material';
 import Input from '../../../core/presentation/components/Input';
-import Svg from '../../../core/presentation/components/Svg';
-import Button, { ButtonType } from '../../../core/presentation/components/Button';
+import Button from '../../../core/presentation/components/Button';
 import PageLayout from '../../../core/presentation/components/PageLayout';
 import PageFooter from '../../../layout/presentation/components/PageFooter';
-import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';
-
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import '../styles/page-kyc.css';
 import AuthBlockLayout from '../../../accounts/presentation/components/AuthBlockLayout';
-import { runInAction } from 'mobx';
 import PageHeader from '../../../layout/presentation/components/PageHeader';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
+import '../styles/page-kyc.css';
+
 type Props = {
-    accountSessionStore?: AccountSessionStore;
     kycStore?: KycStore;
+    alertStore?: AlertStore;
 }
 
-function KycPage({ accountSessionStore, kycStore }: Props) {
+function KycPage({ kycStore, alertStore }: Props) {
     const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
     const firstNameValidation = useRef(validationState.addEmptyValidation('Empty first name')).current;
     const lastNameValidation = useRef(validationState.addEmptyValidation('Empty last name')).current;
+    const onfidoMount = useRef(null);
 
     const kycEntity = kycStore.kycEntity;
-
-    useEffect(() => {
-        kycStore.inited = false;
-        kycStore.init();
-    }, []);
 
     function onChangeFirstName(value) {
         runInAction(() => {
@@ -73,35 +63,30 @@ function KycPage({ accountSessionStore, kycStore }: Props) {
 
         const token = await kycStore.creditKycAndGetToken();
         try {
-            if (kycEntity.hasRegisteredApplicant() === false) {
-                if (kycEntity.isVerified() === false) {
-                    Onfido.init({
-                        token,
-                        region: 'US',
-                        steps: ['welcome', 'document', 'complete'],
-                        onComplete: async (data) => {
-                            document.getElementById('onfido-mount').classList.remove('Active');
-                            console.log('Everything is complete', data);
-                            console.log('Everything is complete', data.data, data.poa);
-                            await kycStore.creditCheck();
-                        },
-                        onError: (e) => {
-                            console.log(e);
-                            document.getElementById('onfido-mount').classList.remove('Active');
-                        },
-                        onUserExit: () => {
-                            document.getElementById('onfido-mount').classList.remove('Active');
-                        },
-                    });
-                    document.getElementById('onfido-mount').classList.add('Active');
-                }
-            } else {
-                await kycStore.creditCheck();
+            if (kycStore.isVerificationNotStarted() === true || kycStore.isVerificationFailed() === true) {
+                Onfido.init({
+                    token,
+                    region: 'US',
+                    steps: ['welcome', 'document', 'complete'],
+                    onComplete: async (data) => {
+                        onfidoMount.current.classList.remove('Active');
+                        await kycStore.createCheck();
+                        alertStore.show('You have started your verification');
+                    },
+                    onError: (e) => {
+                        console.log(e);
+                        onfidoMount.current.classList.remove('Active');
+                        alertStore.show(`There was an error during your verification${e.message}`);
+                    },
+                    onUserExit: () => {
+                        onfidoMount.current.classList.remove('Active');
+                    },
+                });
+                onfidoMount.current.classList.add('Active');
             }
         } catch (e) {
             console.log(e);
         }
-
     }
 
     return (
@@ -111,7 +96,7 @@ function KycPage({ accountSessionStore, kycStore }: Props) {
 
             <div className = { 'PageContent AppContent' } >
 
-                { kycStore.isVerified() === true && (
+                { kycStore.isVerificationSuccessful() === true && (
                     <AuthBlockLayout
                         title = { 'KYC' }
                         subtitle = { 'You are verified' }
@@ -128,7 +113,7 @@ function KycPage({ accountSessionStore, kycStore }: Props) {
                         ) } />
                 ) }
 
-                { kycStore.isVerifycationInProgress() === true && (
+                { kycStore.isVerificationInProgress() === true && (
                     <AuthBlockLayout
                         title = { 'KYC' }
                         subtitle = { 'You are being verified' }
@@ -145,7 +130,24 @@ function KycPage({ accountSessionStore, kycStore }: Props) {
                         ) } />
                 ) }
 
-                { kycStore.isVerified() === false && kycStore.isVerifycationInProgress() === false && (
+                { kycStore.isVerificationFailed() === true && (
+                    <AuthBlockLayout
+                        title = { 'KYC' }
+                        subtitle = { 'Your verification has failed' }
+                        content = { (
+                            <>
+                            </>
+                        ) }
+                        actions = { (
+                            <>
+                                <Button onClick={ onClickMarketplace } >
+                                    Marketplace
+                                </Button>
+                            </>
+                        ) } />
+                ) }
+
+                { kycStore.isVerificationNotStarted() === true && (
                     <AuthBlockLayout
                         title = { 'KYC' }
                         subtitle = { '' }
@@ -186,7 +188,7 @@ function KycPage({ accountSessionStore, kycStore }: Props) {
 
             <PageFooter />
 
-            <div id="onfido-mount" className = { 'FlexSingleCenter ActiveDisplayHidden' } />
+            <div ref = { onfidoMount } id="onfido-mount" className = { 'FlexSingleCenter ActiveDisplayHidden' } />
 
         </PageLayout>
     )

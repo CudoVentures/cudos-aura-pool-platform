@@ -49,12 +49,13 @@ export default class KycApiRepo implements KycRepo {
         }
     }
 
-    async creditCheck(kycEntity: KycEntity): Promise < void > {
+    async createCheck(kycEntity: KycEntity): Promise < void > {
         try {
             this.disableActions?.();
-            const resultKycEntity = await this.kycApi.creditCheck();
+            const resultKycEntity = await this.kycApi.createCheck();
 
             await runInActionAsync(() => {
+                console.log('new kyc', resultKycEntity, resultKycEntity.getKycStatus());
                 Object.assign(kycEntity, resultKycEntity);
             });
         } finally {

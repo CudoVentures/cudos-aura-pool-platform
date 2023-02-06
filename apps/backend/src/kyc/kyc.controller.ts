@@ -5,7 +5,7 @@ import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import { ReqCreditKyc } from './dto/requests.dto';
-import { ResFetchKyc, ResCreditKyc, ResCreditCheck } from './dto/responses.dto';
+import { ResFetchKyc, ResCreditKyc, ResCreateCheck } from './dto/responses.dto';
 import { KycService } from './kyc.service';
 
 @ApiTags('Kyc')
@@ -49,14 +49,14 @@ export class KycController {
 
     @UseGuards(RoleGuard([AccountType.USER]))
     @UseInterceptors(TransactionInterceptor)
-    @Post('creditCheck')
+    @Post('createCheck')
     @HttpCode(200)
-    async creditCheck(
+    async createCheck(
         @Req() req: AppRequest,
-    ): Promise < ResCreditCheck > {
+    ): Promise < ResCreateCheck > {
         let kycEntity = await this.kycService.fetchKycByAccount(req.sessionAccountEntity, req.transaction);
         kycEntity = await this.kycService.createOnfidoCheck(kycEntity, req.transaction);
-        return new ResCreditCheck(kycEntity);
+        return new ResCreateCheck(kycEntity);
     }
 
 }

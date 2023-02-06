@@ -34,4 +34,8 @@ export class KycJsonValidator {
     @IsOptional()
         checkResults: string[];
 
+    @IsArray()
+    @IsOptional()
+        checkStatuses: string[];
+
 }

@@ -22,7 +22,7 @@ export class ResCreditKyc {
 
 }
 
-export class ResCreditCheck {
+export class ResCreateCheck {
 
     kycEntity: KycEntity;
 

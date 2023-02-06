@@ -6,7 +6,6 @@ import AccountEntity from '../account/entities/account.entity';
 import KycEntity from './entities/kyc.entity';
 import { LOCK, Transaction } from 'sequelize';
 import AppRepo from '../common/repo/app.repo';
-import { IntBoolValue } from '../common/utils';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -52,6 +51,7 @@ export class KycService {
             const check = checksMap.get(checkId);
             if (check !== undefined) {
                 kycEntity.checkResults[i] = check.result;
+                kycEntity.checkStatuses[i] = check.status;
             }
         });
 
@@ -85,9 +85,12 @@ export class KycService {
             reportNames: reports,
         });
 
+        console.log('creating new check');
+        console.log(check);
         kycEntity.reports.push(reports);
         kycEntity.checkIds.push(check.id);
         kycEntity.checkResults.push(check.result);
+        kycEntity.checkStatuses.push(check.status);
 
         return this.creditKyc(kycEntity, tx);
     }

@@ -10,6 +10,7 @@ export const enum KycRepoColumn {
     REPORTS = 'reports',
     CHECK_IDS = 'check_ids',
     CHECK_RESULTS = 'check_results',
+    CHECK_STATUSES = 'check_statuses',
 }
 
 @Table({
@@ -42,8 +43,8 @@ export default class KycRepo extends Model {
         applicantId: string;
 
     @AllowNull(false)
-    @Column({ type: DataType.ARRAY(DataType.ARRAY(DataType.STRING)) })
-        reports: string[][];
+    @Column({ type: DataType.ARRAY(DataType.STRING) })
+        reports: string[];
 
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
@@ -52,4 +53,8 @@ export default class KycRepo extends Model {
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
         checkResults: string[];
+
+    @AllowNull(false)
+    @Column({ type: DataType.ARRAY(DataType.STRING) })
+        checkStatuses: string[];
 }

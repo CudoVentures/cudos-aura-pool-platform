@@ -1,7 +1,7 @@
 import axios from 'axios';
 import KycEntity from '../../entities/KycEntity';
 import { ReqCreditKyc } from '../dto/Requests';
-import { ResCreditCheck, ResCreditKyc, ResFetchKyc } from '../dto/Responses';
+import { ResCreateCheck, ResCreditKyc, ResFetchKyc } from '../dto/Responses';
 
 const KYC_ENDPOINT = '/api/v1/kyc';
 
@@ -23,9 +23,9 @@ export default class KycApi {
         }
     }
 
-    async creditCheck(): Promise < KycEntity > {
-        const { data } = await axios.post(`${KYC_ENDPOINT}/creditCheck`);
-        const res = new ResCreditCheck(data);
+    async createCheck(): Promise < KycEntity > {
+        const { data } = await axios.post(`${KYC_ENDPOINT}/createCheck`);
+        const res = new ResCreateCheck(data);
         return res.kycEntity;
     }
 

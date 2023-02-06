@@ -12,6 +12,7 @@ export default class KycEntity {
     reports: string[][];
     checkIds: string[];
     checkResults: string[];
+    checkStatuses: string[];
 
     constructor() {
         this.kycId = NOT_EXISTS_INT;
@@ -22,6 +23,7 @@ export default class KycEntity {
         this.reports = [];
         this.checkIds = [];
         this.checkResults = [];
+        this.checkStatuses = [];
     }
 
     static newInstance(accountId: number) {
@@ -66,9 +68,10 @@ export default class KycEntity {
         repoJson.firstName = entity.firstName ?? repoJson.firstName;
         repoJson.lastName = entity.lastName ?? repoJson.lastName;
         repoJson.applicantId = entity.applicantId ?? repoJson.applicantId;
-        repoJson.reports = entity.reports ?? repoJson.reports;
+        repoJson.reports = entity.reports?.map((reportsArray) => JSON.stringify(reportsArray)) ?? repoJson.reports;
         repoJson.checkIds = entity.checkIds ?? repoJson.checkIds;
         repoJson.checkResults = entity.checkResults ?? repoJson.checkResults;
+        repoJson.checkStatuses = entity.checkStatuses ?? repoJson.checkStatuses;
 
         return repoJson;
     }
@@ -86,9 +89,10 @@ export default class KycEntity {
         entity.firstName = repoJson.firstName ?? entity.firstName;
         entity.lastName = repoJson.lastName ?? entity.lastName;
         entity.applicantId = repoJson.applicantId ?? entity.applicantId;
-        entity.reports = repoJson.reports ?? entity.reports;
+        entity.reports = repoJson.reports?.map((reportsJson) => JSON.parse(reportsJson)) ?? entity.reports;
         entity.checkIds = repoJson.checkIds ?? entity.checkIds;
         entity.checkResults = repoJson.checkResults ?? entity.checkResults;
+        entity.checkStatuses = repoJson.checkStatuses ?? entity.checkStatuses;
 
         return entity;
     }
@@ -107,6 +111,7 @@ export default class KycEntity {
             'reports': entity.reports,
             'checkIds': entity.checkIds,
             'checkResults': entity.checkResults,
+            'checkStatuses': entity.checkStatuses,
         }
     }
 
@@ -125,6 +130,7 @@ export default class KycEntity {
         entity.reports = json.reports ?? entity.reports;
         entity.checkIds = json.checkIds ?? entity.checkIds;
         entity.checkResults = json.checkResults ?? entity.checkResults;
+        entity.checkStatuses = json.checkStatuses ?? entity.checkStatuses;
 
         return entity;
     }

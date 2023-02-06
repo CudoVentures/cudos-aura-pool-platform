@@ -44,6 +44,10 @@ module.exports = {
                     allowNull: false,
                     type: Sequelize.ARRAY(Sequelize.STRING),
                 },
+                check_statuses: {
+                    allowNull: false,
+                    type: Sequelize.ARRAY(Sequelize.STRING),
+                },
                 created_at: {
                     allowNull: false,
                     type: Sequelize.DATE,

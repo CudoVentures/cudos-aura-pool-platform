@@ -92,8 +92,8 @@ const generalStore = new GeneralStore(settingsRepo);
 
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
-const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, miningFarmRepo);
 const kycStore = new KycStore(kycRepo);
+const accountSessionStore = new AccountSessionStore(walletStore, kycStore, accountRepo, miningFarmRepo);
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, generalStore, miningFarmRepo);
 const marketplacePageStore = new MarketplacePageStore(collectionRepo, nftRepo, miningFarmRepo);
@@ -168,7 +168,6 @@ const App = () => {
 
         async function run() {
             await accountSessionStore.loadSessionAccountsAndSync();
-            await kycStore.init();
         }
         run();
     }, []);

@@ -250,7 +250,7 @@ export default class WalletSelectModal extends ModalStore {
             if (this.accountSessionStore.isUser() === false) {
                 this.progressSteps.push(ProgressSteps.SIGN);
             }
-            if (this.kycStore.isVerified() === false) {
+            if (this.kycStore.isVerificationNotStarted() === true) {
                 this.progressSteps.push(ProgressSteps.KYC);
             }
         } else if (this.isModeAdmin() === true) {
