@@ -1,23 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
+import { Link } from 'react-router-dom';
 
+import S from '../../../core/utilities/Main';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import BuyNftModalStore from '../stores/BuyNftModalStore';
 import ResellNftModalStore from '../stores/ResellNftModalStore';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import AnimationContainer from '../../../core/presentation/components/AnimationContainer';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
+import Checkbox from '../../../core/presentation/components/Checkbox';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ReportIcon from '@mui/icons-material/Report';
 import '../styles/buy-nft-modal.css';
-import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
-import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
-import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 type Props = {
     cudosStore?: CudosStore,
@@ -28,6 +32,8 @@ type Props = {
 
 function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalStore }: Props) {
     const nftEntity = buyNftModalStore.nftEntity;
+
+    const [acceptTermsAndConditions, setAcceptTermsAndConditions] = useState(S.INT_FALSE);
 
     useEffect(() => {
         cudosStore.init();
@@ -46,6 +52,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
         buyNftModalStore.buyNft();
     }
+
     return (
         <ModalWindow
             className = { 'BuyNftPopup' }
@@ -72,8 +79,16 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
                             <TextWithTooltip text={'Rewards Recepient Address'} tooltipText={'You can change this from Profile page'} />
                             <div className = { 'ColorPrimary060 Bold' } >{buyNftModalStore.recipient}</div>
                         </div>
+
+                        <Checkbox
+                            label = { (
+                                <div>I accept the <Link to = { AppRoutes.TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</Link> of AuraPool platform</div>
+                            ) }
+                            value = { acceptTermsAndConditions }
+                            onChange = { setAcceptTermsAndConditions } />
+
                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                            <Button onClick={onClickPurchaseNft}>Complete Purchase</Button>
+                            <Button onClick={onClickPurchaseNft} disabled = { acceptTermsAndConditions !== S.INT_TRUE }>Complete Purchase</Button>
                         </Actions>
                     </>
                 ) }

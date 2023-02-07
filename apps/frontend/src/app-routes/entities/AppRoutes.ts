@@ -12,6 +12,7 @@ export default class AppRoutes {
     static VIEW_NFT = '/view-nft';
     static CREDIT_COLLECTION = '/credit-collection';
     static CREDIT_MINING_FARM = '/credit-mining-farm';
+    static TERMS_AND_CONDITIONS = '/terms-and-conditions';
 
     // auth
     static LOGIN = '/login';

@@ -39,6 +39,7 @@ import KycPage from '../../../kyc/presentation/pages/KycPage';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/app-router.css';
+import TermsAndConditionsPage from '../../../info/presentation/pages/TermsAndConditionsPage';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
@@ -107,6 +108,7 @@ function AppRouter({ accountSessionStore, kycStore }: Props) {
                     <Route path = { `${AppRoutes.VIEW_NFT}/:nftId` } element = { <ViewNftPage /> } />
                     <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
                     <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
+                    <Route path = { AppRoutes.TERMS_AND_CONDITIONS } element = { <TermsAndConditionsPage /> } />
 
                     {/* Auth */}
                     <Route path = { AppRoutes.LOGIN } element = { <LoginPage /> } />
