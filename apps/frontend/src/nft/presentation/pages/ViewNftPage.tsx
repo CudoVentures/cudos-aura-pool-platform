@@ -16,6 +16,7 @@ import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../core/presentation/components/Breadcrumbs';
 import NftStats from '../components/NftStats';
@@ -47,9 +48,10 @@ type Props = {
     resellNftModalStore?: ResellNftModalStore;
     visitorStore?: VisitorStore;
     alertStore?: AlertStore;
+    kycStore?: KycStore;
 }
 
-function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore }: Props) {
+function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore, kycStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -104,6 +106,17 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         const balance = walletStore.getBalanceSafeInAcudos();
         if (balance.lt(nftEntity.priceInAcudos)) {
             alertStore.show('Your balance is not enough to buy this.');
+            return;
+        }
+
+        if (kycStore.isVerificationSuccessful() === false) {
+            alertStore.msg = 'You account is not verified';
+            alertStore.positiveLabel = 'Verify';
+            alertStore.positiveListener = () => {
+                navigate(AppRoutes.KYC);
+            };
+            alertStore.negativeLabel = 'Cancel';
+            alertStore.visible = true;
             return;
         }
 

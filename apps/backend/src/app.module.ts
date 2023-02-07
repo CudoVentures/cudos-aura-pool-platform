@@ -59,9 +59,17 @@ import { KycModule } from './kyc/kyc.module';
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', '..', 'data'),
             serveRoot: DataService.LOCAL_URI_PREFIX,
+            serveStaticOptions: {
+                cacheControl: true,
+                maxAge: 2592000000,
+            },
         }),
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', 'frontend', 'src', 'public'),
+            serveStaticOptions: {
+                cacheControl: true,
+                maxAge: 2592000000,
+            },
         }),
         ConfigModule.forRoot({
             isGlobal: true,
