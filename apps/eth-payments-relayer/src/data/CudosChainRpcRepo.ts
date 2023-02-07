@@ -49,9 +49,9 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
         return indexedTx ? PaymentTransactionEntity.fromChainIndexedTx(indexedTx) : null;
     }
 
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> {
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> {
         const mintFee = (new BigNumber(200000)).multipliedBy(Config.CUDOS_GAS_PRICE);
-        const amount = nftEntity.priceInAcudos.plus(mintFee);
+        const amount = (new BigNumber(Config.EXPECTED_PRICE_CUDOS)).plus(mintFee);
         const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
 
         const wallet = await DirectSecp256k1HdWallet.fromMnemonic(Config.CUDOS_SIGNER_MNEMONIC);
@@ -59,7 +59,7 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
         const signerAddress = firstAccount.address;
 
         const memo = `{
-            "uuid":"${nftEntity.id}",
+            "uuid":"",
             "contractPaymentId": "${paymentEventEntity.id}",
             "recipientAddress": "${paymentEventEntity.cudosAddress}"
         }`;

@@ -62,7 +62,7 @@ export class CudosChainRpcHappyPathMockRepo implements CudosChainRepo {
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> { return 'txHash'; }
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> { return 'txHash'; }
 }
 
 export class CudosChainRpcInvalidOriginalTxMockRepo implements CudosChainRepo {
@@ -72,7 +72,7 @@ export class CudosChainRpcInvalidOriginalTxMockRepo implements CudosChainRepo {
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return null; }
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> { return 'txHash'; }
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> { return 'txHash'; }
 }
 
 export class CudosChainRpcNoEventsMockRepo implements CudosChainRepo {
@@ -82,7 +82,7 @@ export class CudosChainRpcNoEventsMockRepo implements CudosChainRepo {
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return []; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> { return 'txHash'; }
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> { return 'txHash'; }
 }
 
 export class CudosChainRpcNoAddressbookEntryMockRepo implements CudosChainRepo {
@@ -92,7 +92,7 @@ export class CudosChainRpcNoAddressbookEntryMockRepo implements CudosChainRepo {
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> { return 'txHash'; }
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> { return 'txHash'; }
 }
 
 export class CudosChainRpcLowBlockMockRepo implements CudosChainRepo {
@@ -102,7 +102,7 @@ export class CudosChainRpcLowBlockMockRepo implements CudosChainRepo {
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> { return 'txHash'; }
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> { return 'txHash'; }
 }
 
 export class CudosChainRpcFailToMintMockRepo implements CudosChainRepo {
@@ -112,5 +112,5 @@ export class CudosChainRpcFailToMintMockRepo implements CudosChainRepo {
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise<string> { throw Error('Failed to mint') }
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> { throw Error('Failed to mint') }
 }

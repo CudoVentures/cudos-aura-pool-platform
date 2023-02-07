@@ -13,6 +13,7 @@ import AppRepo from '../common/repo/app.repo';
 import CoinGeckoService from '../coin-gecko/coin-gecko.service';
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NFTService {
@@ -23,6 +24,7 @@ export class NFTService {
         private collectionService: CollectionService,
         private visitorService: VisitorService,
         private coinGeckoService: CoinGeckoService,
+        private configService: ConfigService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -189,6 +191,29 @@ export class NFTService {
         nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;
 
         return this.updateOne(id, nftEntity);
+    }
+
+    async getRandomPresaleNft(): Promise <NftEntity> {
+        const collectionId = parseInt(this.configService.get<string>('APP_PRESALE_COLLECTION_ID'));
+        const nftEntitis = await this.findByCollectionIds([collectionId]);
+
+        // TODO: get random NFT
+        return nftEntitis.find((entity) => entity.isMinted() === false);
+    }
+
+    async updatePremintNftPrice(nftEntity: NftEntity): Promise <NftEntity> {
+        const nftPriceInEth = this.configService.get<string>('APP_PRESALE_NFT_ETH_PRICE');
+
+        const { ethPrice } = await this.coinGeckoService.fetchCudosPrice();
+        nftEntity.ethPrice = new BigNumber(nftPriceInEth);
+        nftEntity.acudosPrice = nftEntity.ethPrice.dividedBy(ethPrice).shiftedBy(CURRENCY_DECIMALS);
+
+        const FifteenMinutesInMilis = 15 * 60 * 1000;
+        nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;
+
+        await this.updateOne(nftEntity.id, nftEntity);
+
+        return nftEntity;
     }
 
     async findOne(id: string): Promise < NftEntity > {

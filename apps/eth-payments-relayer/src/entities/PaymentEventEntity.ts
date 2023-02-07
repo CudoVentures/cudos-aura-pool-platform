@@ -28,14 +28,14 @@ export function parsePaymentStatus(status: number): PaymentStatus {
 
 export default class PaymentEventEntity {
     id: number;
-    nftId: string;
+    // nftId: string;
     cudosAddress: string;
     amount: BigNumber;
     payee: string;
 
     constructor() {
         this.id = null;
-        this.nftId = '';
+        // this.nftId = '';
         this.cudosAddress = '';
         this.amount = null;
         this.payee = '';
@@ -43,7 +43,7 @@ export default class PaymentEventEntity {
 
     isValid(): boolean {
         return this.id !== null
-            && this.nftId !== ''
+            // && this.nftId !== ''
             && this.cudosAddress !== ''
             && this.amount !== null
             && this.payee !== ''
@@ -54,7 +54,7 @@ export default class PaymentEventEntity {
         const args = event.args;
 
         entity.id = args.id ? parseInt(args.paymentId) : entity.id;
-        entity.nftId = args.paymentId ? utils.toUtf8String(args.paymentId) : entity.nftId;
+        // entity.nftId = args.paymentId ? utils.toUtf8String(args.paymentId) : entity.nftId;
         entity.cudosAddress = args.cudosAddress ? utils.toUtf8String(args.cudosAddress) : entity.cudosAddress;
         entity.amount = args.amount ? new BigNumber(args.amount.toString()).shiftedBy(-18) : entity.amount;
         entity.payee = args.sender ?? entity.payee;

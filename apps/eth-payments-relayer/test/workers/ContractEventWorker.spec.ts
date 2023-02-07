@@ -1,8 +1,9 @@
 import * as request from 'supertest';
+import Config from '../../config/Config';
 import Logger from '../../config/Logger';
 import ContractEventWorker from '../../src/workers/ContractEventWorker';
-import { AuraContractHappyPathMockRepo, AuraContractLowBlockHeightMockRepo, AuraContractPaymentReturnedMockRepo } from '../mocks/AuraContractMockRepo';
-import { CudosAuraPoolServiceApiNoNftsFoundMockRepo, CudosAuraPoolServiceDifferentPriceApiRepo, CudosAuraPoolServiceHappyPathApiRepo, CudosAuraPoolServiceHighBlockCheckedMockRepo } from '../mocks/CudosAuraPoolServiceApiMockRepo';
+import { AuraContractHappyPathMockRepo, AuraContractLowBlockHeightMockRepo, AuraContractPaymentReturnedMockRepo, AuraContractWrongAmountMockRepo } from '../mocks/AuraContractMockRepo';
+import { CudosAuraPoolServiceApiNoNftsFoundMockRepo, CudosAuraPoolServiceHappyPathApiRepo, CudosAuraPoolServiceHighBlockCheckedMockRepo } from '../mocks/CudosAuraPoolServiceApiMockRepo';
 import { CudosChainRpcFailToMintMockRepo, CudosChainRpcHappyPathMockRepo, CudosChainRpcNoAddressbookEntryMockRepo } from '../mocks/CudosChainRpcMockRepo';
 
 describe('ContractEventWorker (e2e)', () => {
@@ -11,6 +12,8 @@ describe('ContractEventWorker (e2e)', () => {
 
     beforeEach(async () => {
         Logger.transports.forEach((t) => { t.silent = true });
+        Config.EXPECTED_PRICE_ETH = '0.0001';
+        Config.EXPECTED_PRICE_CUDOS = '123123';
     });
 
     it('Mint: HappyPath', async () => {
@@ -37,8 +40,8 @@ describe('ContractEventWorker (e2e)', () => {
     it('Refund: payment not equal to expected', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-        const auraContractRepo = new AuraContractHappyPathMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceDifferentPriceApiRepo();
+        const auraContractRepo = new AuraContractWrongAmountMockRepo();
+        const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
 
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
@@ -51,34 +54,11 @@ describe('ContractEventWorker (e2e)', () => {
 
         // Assert
         expect(logErrorSpy).not.toBeCalled();
-        expect(logWarn).toHaveBeenCalledWith('\tPayed amount to contract is not equal to the expected.\n\t\tNftId: id1\n\t\tPayed amount: 0.0001\n\t\tExpected amount: 123');
+        expect(logWarn).toHaveBeenCalledWith('\tPayed amount to contract is not equal to the expected.\n\t\tPayed amount: 123\n\t\tExpected amount: 0.0001');
         expect(spyRefund).toBeCalledTimes(6);
         expect(spyMint).not.toBeCalled();
         expect(spyFinish).toBeCalled();
     });
-
-    it('Refund: nft not found by id', async () => {
-        // Arrange
-        const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-        const auraContractRepo = new AuraContractHappyPathMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceApiNoNftsFoundMockRepo();
-
-        const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
-        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
-
-        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
-
-        // Act
-        await expect(worker.run()).resolves.not.toThrowError();
-
-        // Assert
-        expect(logErrorSpy).not.toBeCalled();
-        expect(logWarn).toHaveBeenCalledWith('\tNft entity with id id6 not fetched.');
-        expect(spyRefund).toBeCalledTimes(6);
-        expect(spyMint).not.toBeCalled();
-        expect(spyFinish).toBeCalled();
-    })
 
     it('Refund: no addressbook entry', async () => {
         // Arrange
@@ -97,7 +77,7 @@ describe('ContractEventWorker (e2e)', () => {
 
         // Assert
         expect(logErrorSpy).not.toHaveBeenCalled();
-        expect(logWarn).toHaveBeenCalledWith('\tAddressbook entry not found for payment nft id.\n\t\tNftId: id1\n\t\tPayment cudos address: address1');
+        expect(logWarn).toHaveBeenCalledWith('\tAddressbook entry not found for payment nft id.\n\t\tPayment cudos address: address1');
         expect(spyRefund).toBeCalledTimes(6);
         expect(spyMint).not.toBeCalled();
         expect(spyFinish).toBeCalled();

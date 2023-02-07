@@ -9,5 +9,5 @@ export default interface CudosChainRepo {
     fetchAddressbookEntry(cudosAddress: string): Promise < AddressbookEntryEntity >;
     fetchRefundTransactions(fromHeight: number, toHeight: number): Promise < RefundTransactionEntity[] >;
     fetchPaymentTransactionByTxhash(txHash: string): Promise < PaymentTransactionEntity >;
-    sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, nftEntity: NftEntity): Promise < string >;
+    sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise < string >;
 }

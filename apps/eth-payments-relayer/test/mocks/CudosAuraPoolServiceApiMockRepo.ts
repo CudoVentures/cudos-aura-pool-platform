@@ -29,13 +29,8 @@ export class CudosAuraPoolServiceHappyPathApiRepo implements CudosAuraPoolServic
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
 
-    async fetchNftsMapByIds(nftIds: string[]): Promise < Map< string, NftEntity > > {
-        const nftMap = new Map<string, NftEntity>();
-        nftEntities.forEach((nftEntity) => {
-            nftMap.set(nftEntity.id, nftEntity);
-        })
-
-        return nftMap;
+    async fetchRandomNftForMint(): Promise < NftEntity > {
+        return nftEntities[0];
     }
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
@@ -48,16 +43,11 @@ export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolS
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
 
-    async fetchNftsMapByIds(nftIds: string[]): Promise < Map< string, NftEntity > > {
-        const nftMap = new Map<string, NftEntity>();
+    async fetchRandomNftForMint(): Promise < NftEntity > {
+        const changedNftEntity = Object.assign(new NftEntity(), nftEntities[0]);
+        changedNftEntity.priceInEth = new BigNumber(123);
 
-        nftEntities.forEach((nftEntity) => {
-            const changedNftEntity = Object.assign(new NftEntity(), nftEntity);
-            changedNftEntity.priceInEth = new BigNumber(123);
-            nftMap.set(nftEntity.id, changedNftEntity);
-        })
-
-        return nftMap;
+        return changedNftEntity;
     }
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
@@ -70,8 +60,8 @@ export class CudosAuraPoolServiceApiNoNftsFoundMockRepo implements CudosAuraPool
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
 
-    async fetchNftsMapByIds(nftIds: string[]): Promise < Map< string, NftEntity > > {
-        return new Map();
+    async fetchRandomNftForMint(): Promise < NftEntity > {
+        return null
     }
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
@@ -84,8 +74,8 @@ export class CudosAuraPoolServiceHighBlockCheckedMockRepo implements CudosAuraPo
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 10 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 10 }
 
-    async fetchNftsMapByIds(nftIds: string[]): Promise < Map< string, NftEntity > > {
-        return new Map();
+    async fetchRandomNftForMint(): Promise < NftEntity > {
+        return null
     }
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}

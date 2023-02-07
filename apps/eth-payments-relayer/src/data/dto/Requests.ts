@@ -1,17 +1,3 @@
-export class ReqFetchNftsByIds {
-    nftFilterJson: any
-
-    constructor(nftIds: string[]) {
-        this.nftFilterJson = {
-            nftIds,
-            sessionAccount: 0,
-            orderBy: 2,
-            from: 0,
-            count: Number.MAX_SAFE_INTEGER,
-        };
-    }
-}
-
 export class ReqUpdateLastCheckedBlocks {
     lastCheckedEthBlock: number;
     lastCheckedCudosBlock: number;
