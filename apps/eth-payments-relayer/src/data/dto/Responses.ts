@@ -10,10 +10,10 @@ export class ResFetchLastCheckedBlocks {
     }
 }
 
-export class ResFetchNftsByIds {
-    nftEntities: NftEntity[];
+export class ResFetchRandomNftForPresaleMint {
+    nftEntity: NftEntity;
 
     constructor(data) {
-        this.nftEntities = data.nftEntities.map((json) => NftEntity.fromJson(json));
+        this.nftEntity = NftEntity.fromJson(data.nftEntity);
     }
 }

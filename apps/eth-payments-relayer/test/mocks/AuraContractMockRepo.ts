@@ -15,7 +15,6 @@ function createPaymentEventEntity(paymentId: number, nftId: string, cudosAddress
     const entity = new PaymentEventEntity();
 
     entity.id = paymentId;
-    entity.nftId = nftId;
     entity.cudosAddress = cudosAddress;
     entity.amount = new BigNumber(amount);
     entity.payee = ethAddress;
@@ -93,5 +92,29 @@ export class AuraContractLowBlockHeightMockRepo implements AuraContractRepo {
 
     async fetchPaymentStatus(paymentId: number): Promise<PaymentStatus> {
         return PaymentStatus.WITHDRAWABLE;
+    }
+}
+
+export class AuraContractWrongAmountMockRepo implements AuraContractRepo {
+    async fetchEvents(lastCheckedBlockHeight: number, currentBlockheight: number): Promise<PaymentEventEntity[]> {
+        const payments = paymentEvents.map((entity) => {
+            const editedPayment = Object.assign(new PaymentEventEntity(), entity)
+            editedPayment.amount = new BigNumber(123);
+            return editedPayment
+        });
+
+        return payments
+    }
+
+    async fetchCurrentBlockHeight(): Promise<number> {
+        return 3
+    }
+
+    async markPaymentWithdrawable(paymentId: number): Promise<string> {
+        return 'txhash';
+    }
+
+    async fetchPaymentStatus(paymentId: number): Promise<PaymentStatus> {
+        return PaymentStatus.LOCKED;
     }
 }

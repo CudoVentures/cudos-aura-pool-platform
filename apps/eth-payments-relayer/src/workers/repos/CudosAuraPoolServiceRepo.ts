@@ -9,5 +9,5 @@ export default interface CudosAuraPoolServiceRepo {
     updateNftPrice(id: string): Promise < void >;
     fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number >;
 
-    fetchNftsMapByIds(nftIds: string[]): Promise < Map< string, NftEntity > >;
+    fetchRandomNftForMint(): Promise < NftEntity >;
 }

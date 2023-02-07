@@ -17,6 +17,7 @@ import { validate } from 'uuid';
 import RoleGuard from '../auth/guards/role.guard';
 import { AccountType } from '../account/account.types';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
+import { IsPresaleContractRelayerGuard } from './guards/is-presale-contract-relayer';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -122,6 +123,17 @@ export class NFTController {
     @HttpCode(200)
     async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {
         const nftEntity = await this.nftService.updateNftCudosPrice(req.id);
+
+        return new ResUpdateNftCudosPrice(nftEntity);
+    }
+
+    @ApiBearerAuth('access-token')
+    @Post('get-random-presale-mint')
+    @UseGuards(IsPresaleContractRelayerGuard)
+    @HttpCode(200)
+    async fetchRandomNftForPresaleMint(): Promise<ResUpdateNftCudosPrice> {
+        const nftId = await this.nftService.getRandomPresaleNft();
+        const nftEntity = await this.nftService.updatePremintNftPrice(nftId);
 
         return new ResUpdateNftCudosPrice(nftEntity);
     }
