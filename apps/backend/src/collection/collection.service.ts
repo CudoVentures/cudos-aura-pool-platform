@@ -310,7 +310,7 @@ export class CollectionService {
         const collectionDetailsEntity = new CollectionDetailsEntity();
         collectionDetailsEntity.id = collectionId;
         collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString(10);
-        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos?.toString(10) || '0';
+        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos.isNaN() === true ? '0' : collectionTotalSales.salesInAcudos?.toString(10) ?? '0';
         collectionDetailsEntity.owners = nftOwnersSet.size;
         collectionDetailsEntity.cudosAddress = adminEntity?.cudosWalletAddress ?? '';
         collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;

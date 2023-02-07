@@ -11,10 +11,10 @@ import { ResFetchNftsByFilter, ResUpdateNftCudosPrice } from './dto/responses.dt
 import NftEntity from './entities/nft.entity';
 import { CollectionService } from '../collection/collection.service';
 import BigNumber from 'bignumber.js';
-import { NOT_EXISTS_INT } from '../common/utils';
 import { ChainMarketplaceNftEntity } from '../graphql/entities/nft-marketplace.entity';
 import { FarmService } from '../farm/farm.service';
 import { validate } from 'uuid';
+import AccountService from '../account/account.service';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -26,6 +26,7 @@ export class NFTController {
         private graphqlService: GraphqlService,
         @Inject(forwardRef(() => FarmService))
         private miningFarmService: FarmService,
+        private accountService: AccountService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -42,10 +43,22 @@ export class NFTController {
     }
 
     // used by on-demand-minting
-    @Get(':id')
+    @Get(':id/:recipient')
     @HttpCode(200)
-    async findOne(@Param('id') id: string): Promise<any> {
+    async findOne(@Param('id') id: string, @Param('recipient') recipient: string): Promise<any> {
+        const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
+        if (userEntity === null) {
+            throw new NotFoundException();
+        }
+
         const nftEntity = await this.nftService.findOne(id);
+        if (nftEntity.isPriceInAcudosValidForMinting() === false) {
+            throw new NotFoundException();
+        }
+
+        if (nftEntity.isQueued() === false) {
+            throw new NotFoundException();
+        }
 
         const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
         if (collectionEntity === null || collectionEntity.isApproved() === false) {
@@ -105,7 +118,7 @@ export class NFTController {
             nftEntity.name = chainMarketplaceNftEntity.name;
             nftEntity.currentOwner = chainMarketplaceNftEntity.owner;
             nftEntity.uri = chainMarketplaceNftEntity.uri;
-            nftEntity.acudosPrice = chainMarketplaceNftEntity.acudosPrice || new BigNumber(NOT_EXISTS_INT);
+            nftEntity.acudosPrice = chainMarketplaceNftEntity.acudosPrice ?? new BigNumber(0);
             nftEntity.tokenId = chainMarketplaceNftEntity.tokenId;
             nftEntity.status = chainMarketplaceNftEntity.burned === true ? NftStatus.REMOVED : NftStatus.MINTED;
             nftEntity.marketplaceNftId = chainMarketplaceNftEntity.marketplaceNftId ? chainMarketplaceNftEntity.marketplaceNftId.toString() : '';
@@ -117,8 +130,8 @@ export class NFTController {
     @Post('updatePrice')
     @HttpCode(200)
     async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {
-        const acudosPrice = await this.nftService.updateNftCudosPrice(req.id);
+        const nftEntity = await this.nftService.updateNftCudosPrice(req.id);
 
-        return new ResUpdateNftCudosPrice(acudosPrice);
+        return new ResUpdateNftCudosPrice(nftEntity);
     }
 }

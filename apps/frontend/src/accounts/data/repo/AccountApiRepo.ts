@@ -129,7 +129,7 @@ export default class AccountApiRepo implements AccountRepo {
     async editSessionAccountPass(oldPassword: string, newPassword: string, token: string): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.editSessionAccountPass(oldPassword, newPassword, token);
+            return await this.accountApi.editSessionAccountPass(oldPassword, newPassword, token);
         } catch (e) {
             switch (parseBackendErrorType(e)) {
                 case BackendErrorType.WRONG_OLD_PASSWORD:
@@ -149,7 +149,7 @@ export default class AccountApiRepo implements AccountRepo {
     async forgottenPassword(email: string): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.forgottenPassword(email);
+            return await this.accountApi.forgottenPassword(email);
         } finally {
             this.enableActions?.();
         }
@@ -158,7 +158,7 @@ export default class AccountApiRepo implements AccountRepo {
     async sendSessionAccountVerificationEmail(): Promise < void > {
         try {
             this.disableActions?.();
-            return this.accountApi.sendSessionAccountVerificationEmail();
+            return await this.accountApi.sendSessionAccountVerificationEmail();
         } finally {
             this.enableActions?.();
         }
@@ -167,7 +167,7 @@ export default class AccountApiRepo implements AccountRepo {
     async fetchFarmOwnerAccount(accountId: string): Promise < AdminEntity > {
         try {
             this.disableActions?.();
-            return this.accountApi.fetchFarmOwnerAccount(accountId);
+            return await this.accountApi.fetchFarmOwnerAccount(accountId);
         } finally {
             this.enableActions?.();
         }

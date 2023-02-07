@@ -1,0 +1,32 @@
+.KycBadge {
+    display: flex; align-items: flex-start;
+    gap: 10px;
+    font-size: 10px;
+    border-radius: 6px;
+    padding: 5px 8px;
+    cursor: pointer;
+}
+
+.KycBadge.KycBadgeNotVerified {
+    color: var(--color-warning-060);
+    background-color: var(--color-warning-010);
+}
+
+.KycBadge.KycBadgeVerificationInProgress {
+    color: var(--color-primary-060);
+    background-color: var(--color-primary-010);
+}
+
+.KycBadge.KycBadgeVerificationFailed {
+    color: var(--color-error-060);
+    background-color: var(--color-error-010);
+}
+
+.KycBadge.KycBadgeVerificationSucess {
+    color: var(--color-success-060);
+    background-color: var(--color-success-010);
+}
+
+.KycBadge .SvgIcon {
+    width: 14px; height: 14px;
+}

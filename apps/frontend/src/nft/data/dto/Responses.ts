@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import NftEntity from '../../entities/NftEntity'
 
 export class ResFetchNftsByFilter {
@@ -12,9 +11,9 @@ export class ResFetchNftsByFilter {
 }
 
 export class ResUpdateNftCudosPrice {
-    acudosPrice: BigNumber;
+    nftEntity: NftEntity;
 
     constructor(data) {
-        this.acudosPrice = new BigNumber(data.acudosPrice);
+        this.nftEntity = NftEntity.fromJson(data.nftEntity);
     }
 }

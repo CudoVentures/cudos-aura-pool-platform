@@ -127,12 +127,11 @@ export default class CollectionApiRepo implements CollectionRepo {
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]) {
+        const progressHandler = new DefaultProgressHandler('Uploading collection...', 'Processing collection...', this.onProgress);
         try {
             this.disableActions?.();
 
-            const progressHandler = new DefaultProgressHandler('Uploading collection...', 'Processing collection...', this.onProgress);
             const result = await this.collectionApi.creditCollection(collectionEntity, nftEntities, progressHandler.onProgress);
-            progressHandler.finish();
 
             await runInActionAsync(() => {
                 Object.assign(collectionEntity, result.collectionEntity);
@@ -160,6 +159,7 @@ export default class CollectionApiRepo implements CollectionRepo {
             }
         } finally {
             this.enableActions?.();
+            progressHandler.finish();
         }
     }
 
@@ -215,11 +215,11 @@ export default class CollectionApiRepo implements CollectionRepo {
             const secondaryCudosRoyalty = (new BigNumber(miningFarmEntity.cudosResaleNftRoyaltiesPercent)).multipliedBy(decimals);
 
             const data = `{
-            "farm_id":"${collectionEntity.farmId}",
-            "platform_royalties_address": "${superAdminEntity.cudosRoyalteesAddress}",
-            "farm_mint_royalties_address": "${farmOwnerAdminEntity.cudosWalletAddress}",
-            "farm_resale_royalties_address": "${miningFarmEntity.resaleFarmRoyaltiesCudosAddress}"
-        }`;
+                "farm_id":"${collectionEntity.farmId}",
+                "platform_royalties_address": "${superAdminEntity.cudosRoyalteesAddress}",
+                "farm_mint_royalties_address": "${farmOwnerAdminEntity.cudosWalletAddress}",
+                "farm_resale_royalties_address": "${miningFarmEntity.resaleFarmRoyaltiesCudosAddress}"
+            }`;
 
             const tx = await signingClient.marketplaceCreateCollection(
                 creatorCudosAddress,

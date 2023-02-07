@@ -60,7 +60,7 @@ export class ChainMarketplaceNftEntity {
     static fromGraphQl(queryNft: GraphQlMarketplaceNft): ChainMarketplaceNftEntity {
         const nftEntity = new ChainMarketplaceNftEntity();
 
-        nftEntity.tokenId = queryNft.token_id ?? nftEntity.tokenId;
+        nftEntity.tokenId = (queryNft.token_id ?? nftEntity.tokenId).toString();
         nftEntity.denomId = queryNft.denom_id ?? nftEntity.denomId;
         nftEntity.acudosPrice = new BigNumber(queryNft.price ?? nftEntity.acudosPrice);
         nftEntity.uid = queryNft.uid ?? nftEntity.uid;

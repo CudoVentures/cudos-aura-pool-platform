@@ -92,7 +92,7 @@ export default class CreditMiningFarmPageStore {
 
     async fetchMiningFarmDetails() {
         try {
-            const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id);
+            const miningFarmDetailsEntity = await this.miningFarmRepo.fetchMiningFarmDetailsById(this.miningFarmEntity.id, S.INT_TRUE);
 
             await runInActionAsync(() => {
                 this.miningFarmDetailsEntity = miningFarmDetailsEntity;

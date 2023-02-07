@@ -9,14 +9,20 @@ import {
     NftModuleNftEventTypes,
 } from '../entities/CudosAuraPoolServiceTxFilter';
 import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
+import { EmailRepo } from './repos/EmailRepo';
 
 export default class TxFindWorker {
     chainClient: StargateClient;
     cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
+    emailRepo: EmailRepo;
 
-    constructor(chainClient: StargateClient, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
+    lastSentEmailTimestamp: number;
+
+    constructor(chainClient: StargateClient, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo, emailRepo: EmailRepo) {
         this.chainClient = chainClient;
         this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
+        this.emailRepo = emailRepo;
+        this.lastSentEmailTimestamp = 0;
     }
 
     async run() {
@@ -43,6 +49,16 @@ export default class TxFindWorker {
             await this.cudosAuraPoolServiceApi.updateLastCheckedHeight(lastBlock);
         } catch (e) {
             console.log(e.message);
+
+            // sending an email once every 30 min
+            if (Date.now() - this.lastSentEmailTimestamp > 1800000) {
+                const ts = Date.now();
+                console.log('sending an email at', new Date(ts).toString())
+                this.lastSentEmailTimestamp = ts;
+                this.emailRepo.sendEmail(e.toString());
+            } else {
+                console.log('Next error email can be send no sooner than', (1800000 - (Date.now() - this.lastSentEmailTimestamp)) / 1000, ' s');
+            }
         }
     }
 

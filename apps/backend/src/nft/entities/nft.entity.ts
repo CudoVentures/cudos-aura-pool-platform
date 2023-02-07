@@ -65,6 +65,14 @@ export default class NftEntity {
         return this.status === NftStatus.MINTED && this.tokenId !== '';
     }
 
+    isPriceInAcudosValidForMinting(): boolean {
+        return Date.now() < this.priceAcudosValidUntil;
+    }
+
+    isQueued(): boolean {
+        return this.status === NftStatus.QUEUED;
+    }
+
     getTokenIdAsInt(): number {
         const tokenIdAsInt = parseInt(this.tokenId);
         return Number.isNaN(tokenIdAsInt) === true ? NOT_EXISTS_INT : tokenIdAsInt;
@@ -177,9 +185,9 @@ export default class NftEntity {
         repoJson.creatorId = entity.creatorId;
         repoJson.priceUsd = entity.priceUsd.toString();
         repoJson.priceAcudosValidUntil = entity.priceAcudosValidUntil.toString();
-        repoJson.updatedAt = new Date(entity.updatedAt);
-        repoJson.deletedAt = new Date(entity.deletedAt);
-        repoJson.createdAt = new Date(entity.createdAt);
+        // repoJson.updatedAt = new Date(entity.updatedAt);
+        // repoJson.deletedAt = new Date(entity.deletedAt);
+        // repoJson.createdAt = new Date(entity.createdAt);
 
         return repoJson;
     }

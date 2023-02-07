@@ -8,6 +8,7 @@ import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presen
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 import { InputAdornment } from '@mui/material';
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
@@ -29,10 +30,11 @@ type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
     walletStore?: WalletStore;
     accountSessionStore?: AccountSessionStore;
+    kycStore?: KycStore;
     alertStore?: AlertStore;
 }
 
-function WalletSelectModal({ walletSelectModalStore, walletStore, accountSessionStore, alertStore }: Props) {
+function WalletSelectModal({ walletSelectModalStore, walletStore, accountSessionStore, kycStore, alertStore }: Props) {
 
     const navigate = useNavigate();
 
@@ -107,6 +109,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 if (walletSelectModalStore.isModeUser() === true) {
                     if (accountSessionStore.isLoggedIn() === false) {
                         walletSelectModalStore.moveToProgressStepSign();
+                    } else if (kycStore.isVerificationNotStarted() === true) {
+                        walletSelectModalStore.moveToProgressStepKyc();
                     } else {
                         walletSelectModalStore.hide();
                     }
@@ -126,7 +130,11 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 } else {
                     await register();
                     if (walletSelectModalStore.isModeUser() === true) {
-                        walletSelectModalStore.moveToProgressStepKyc();
+                        if (kycStore.isVerificationNotStarted() === true) {
+                            walletSelectModalStore.moveToProgressStepKyc();
+                        } else {
+                            walletSelectModalStore.hide();
+                        }
                     } else if (walletSelectModalStore.isModeAdmin() === true) {
                         walletSelectModalStore.hide();
                     }
@@ -134,6 +142,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 break;
             case ProgressSteps.KYC:
                 walletSelectModalStore.hide();
+                navigate(AppRoutes.KYC);
                 break;
             default:
         }
@@ -155,34 +164,19 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
     }
 
     function renderNavSteps(): NavStep[] {
-        if (walletSelectModalStore.isModeUser() === true) {
-            let steps = [createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
-            if (accountSessionStore.isUser() === false) {
-                steps = steps.concat([
-                    createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc()),
-                    createNavStep(3, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false),
-                ]);
+        let stepsCounter = 0;
+        return walletSelectModalStore.progressSteps.map((progressStep) => {
+            switch (progressStep) {
+                case ProgressSteps.CONNECT_WALLET:
+                    return createNavStep(++stepsCounter, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false);
+                case ProgressSteps.SIGN:
+                    return createNavStep(++stepsCounter, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, walletSelectModalStore.isProgressStepKyc());
+                case ProgressSteps.KYC:
+                    return createNavStep(++stepsCounter, 'Verify Account', walletSelectModalStore.isProgressStepKyc(), false);
+                default:
+                    return null;
             }
-            return steps;
-        }
-
-        if (walletSelectModalStore.isModeAdmin() === true) {
-            const steps = [createNavStep(1, 'Connect Wallet', walletSelectModalStore.isProgressStepConnectWallet() === true, walletSelectModalStore.isProgressStepConnectWallet() === false)];
-            if (accountSessionStore.isAdmin() === false) {
-                steps.push(
-                    createNavStep(2, 'Sign a transaction', walletSelectModalStore.isProgressStepSign() === true, false),
-                )
-            }
-            return steps;
-        }
-
-        if (walletSelectModalStore.isModeSuperAdmin() === true) {
-            return [
-                createNavStep(1, 'Connect Wallet', true, false),
-            ]
-        }
-
-        return [];
+        })
     }
 
     function renderLoading(title, subtitle) {
@@ -225,13 +219,9 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
             <AnimationContainer className = { 'ProgressStep ProgressStepConnectWallet FlexColumn' } active = { walletSelectModalStore.isProgressStepConnectWallet() } >
                 <AnimationContainer active = {walletSelectModalStore.isWalletConnecting() === false } >
-                    <div className = { 'H3 Bold' } >
-                    Connect Your Wallet
-                    </div>
+                    <div className = { 'H3 Bold' } >Connect Your Wallet</div>
 
-                    <div className = { 'ModalWalletSubtitle' } >
-                    Select your prefered wallet to connect with.
-                    </div>
+                    <div className = { 'ModalWalletSubtitle' } >Select your prefered wallet to connect with.</div>
 
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError')}` } onClick = { onClickToggleKeplr } >
                         <img className = { 'WalletIcon' } src={'/assets/img/keplr-icon.png'} />
@@ -311,12 +301,16 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                             <a className={'ColorPrimary060'} href = { '' }>Learn more about wallets</a>
                         </div>
                     ) : (
-                        <Actions>
-                            <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickBack }>
-                                <Svg svg = { ArrowBackIcon } />
-                                Back
-                            </Button>
-                        </Actions>
+                        <>
+                            { walletSelectModalStore.hasBackStep() === true && (
+                                <Actions>
+                                    <Button type = { ButtonType.TEXT_INLINE } onClick = { onClickBack }>
+                                        <Svg svg = { ArrowBackIcon } />
+                                        Back
+                                    </Button>
+                                </Actions>
+                            ) }
+                        </>
                     ) }
                     <Actions className = { 'StartRight' } >
                         { walletSelectModalStore.hasNextStep() === true ? (

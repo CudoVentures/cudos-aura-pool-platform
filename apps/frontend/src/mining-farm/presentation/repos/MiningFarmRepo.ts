@@ -19,8 +19,8 @@ export default interface MiningFarmRepo {
     fetchMiningFarmById(miningFarmId: string, status?: MiningFarmStatus): Promise < MiningFarmEntity >;
     fetchMiningFarmBySessionAccountId(status?: MiningFarmStatus): Promise < MiningFarmEntity >;
     fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel, status?: MiningFarmStatus): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} >;
-    fetchMiningFarmDetailsById(miningFarmId: string): Promise < MiningFarmDetailsEntity >;
-    fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] >;
+    fetchMiningFarmDetailsById(miningFarmId: string, includesExternalDetails?: number): Promise < MiningFarmDetailsEntity >;
+    fetchMiningFarmsDetailsByIds(miningFarmIds: string[], includesExternalDetails?: number): Promise < MiningFarmDetailsEntity[] >;
     creditMiningFarm(miningFarmEntity: MiningFarmEntity): Promise < void >;
     fetchManufacturers(): Promise < ManufacturerEntity[] >;
     fetchMiners(): Promise < MinerEntity[] >;

@@ -2,6 +2,7 @@ import Config from '../config/Config';
 import { StargateClient } from 'cudosjs';
 import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApi';
 import TxFindWorker from './workers/TxFindWorker';
+import { EmailApi } from './data/EmailApi';
 
 export default class App {
     p: NodeJS.Timeout;
@@ -18,7 +19,7 @@ export default class App {
         const api = await this.getAuraPoolServiceApi();
         console.log('Connection to AuraPoolService established.');
 
-        const worker = new TxFindWorker(client, api);
+        const worker = new TxFindWorker(client, api, new EmailApi());
 
         this.p = setInterval(async () => {
             await worker.run();

@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import axios from '../../../core/utilities/AxiosWrapper';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
@@ -22,13 +21,13 @@ export default class NftApi {
         }
     }
 
-    async updateNftCudosPrice(id: string): Promise< BigNumber > {
+    async updateNftCudosPrice(id: string): Promise < NftEntity > {
         const req = new ReqUpdateNftCudosPrice(id);
         const { data } = await axios.post(`${NftApi.nftModuleUrl}/updatePrice`, req);
 
         const res = new ResUpdateNftCudosPrice(data);
 
-        return res.acudosPrice;
+        return res.nftEntity;
     }
 
 }

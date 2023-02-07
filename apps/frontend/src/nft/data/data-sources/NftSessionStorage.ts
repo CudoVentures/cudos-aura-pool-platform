@@ -28,7 +28,7 @@ export default class NftSessionStorage {
         const parsedMap = JSON.parse(mapJson);
         const map = new Map<string, NftEntity>(parsedMap);
         map.forEach((jsonEntity, key) => {
-            map.set(key, jsonEntity);
+            map.set(key, NftEntity.fromJson(jsonEntity));
         });
 
         return map
@@ -38,7 +38,7 @@ export default class NftSessionStorage {
         const jsonEntities = Array.from(map.entries());
 
         jsonEntities.forEach((entry) => {
-            entry[1] = NftEntity.fromJson(entry[1]);
+            entry[1] = NftEntity.toJson(entry[1]);
         });
 
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
