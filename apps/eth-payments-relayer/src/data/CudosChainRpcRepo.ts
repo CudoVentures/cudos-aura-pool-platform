@@ -24,9 +24,12 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
     }
 
     async fetchAddressbookEntry(cudosAddress: string): Promise<AddressbookEntryEntity> {
-        const res = await this.chainClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
-
-        return AddressbookEntryEntity.fromChainQuery(res);
+        try {
+            const res = await this.chainClient.addressbookModule.getAddress(cudosAddress, ADDRESSBOOK_NETWORK, ADDRESSBOOK_LABEL);
+            return AddressbookEntryEntity.fromChainQuery(res);
+        } catch (e) {
+            return null;
+        }
     }
 
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> {

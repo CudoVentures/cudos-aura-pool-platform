@@ -61,9 +61,9 @@ export default class PaymentTransactionEntity {
             throw Error(`Failed parse payment send memo: \n\tMemo: ${txBody.memo}\n\tError: ${e}`);
         }
 
-        if (!memoJson.contractPaymentId || !memoJson.recipientAddress || !memoJson.uuid) {
-            throw Error(`Missing paymend send memo property: \n\tOriginal memo: ${txBody.memo}\n\tParsed memo json: ${memoJson}`);
-        }
+        // if (!memoJson.contractPaymentId || !memoJson.recipientAddress || !memoJson.uuid) {
+        //         throw Error(`Missing paymend send memo property: \n\tOriginal memo: ${txBody.memo}\n\tParsed memo json: ${memoJson}`);
+        // }
 
         entity.txBody = txBody;
         entity.from = bankSendMessage.fromAddress;

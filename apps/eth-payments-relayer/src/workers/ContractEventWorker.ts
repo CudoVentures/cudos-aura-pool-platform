@@ -75,7 +75,7 @@ export default class ContractEventWorker {
                         // - is the given adress in addressbook with BTC address?
                         ContractEventWorker.log('\tGetting addressbook entry for payment cudos address...');
                         const addressbookEntry = await this.cudosChainRepo.fetchAddressbookEntry(paymentEventEntity.cudosAddress);
-                        if (addressbookEntry.isValid() === false) {
+                        if (!addressbookEntry || addressbookEntry.isValid() === false) {
                             ContractEventWorker.warn(`\tAddressbook entry not found for payment nft id.\n\t\tPayment cudos address: ${paymentEventEntity.cudosAddress}`);
                             shouldRefund = true;
                         }

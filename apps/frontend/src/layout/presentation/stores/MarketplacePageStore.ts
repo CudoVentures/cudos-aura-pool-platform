@@ -1,8 +1,8 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
-import NftRepo from '../../../nft/presentation/repos/NftRepo';
+import NftRepo, { BuyingCurrency } from '../../../nft/presentation/repos/NftRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRepo';
 import CollectionDetailsEntity from '../../../collection/entities/CollectionDetailsEntity';
@@ -11,18 +11,30 @@ import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDet
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
+import BigNumber from 'bignumber.js';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
+import AllowlistRepo from '../../../allowlist/presentation/repos/AllowlistRepo';
+import AllowlistUserEntity from '../../../allowlist/entities/AllowlistUserEntity';
 
 declare let Config;
 
 export default class MarketplacePageStore {
+    alertStore: AlertStore;
     cudosStore: CudosStore;
+    walletStore: WalletStore;
+    presaleStore: PresaleStore;
 
     collectionRepo: CollectionRepo;
     nftRepo: NftRepo;
     miningFarmRepo: MiningFarmRepo;
+    allowlistRepo: AllowlistRepo;
 
     defaultIntervalPickerState: DefaultIntervalPickerState;
 
+    presaleDateNow: number;
     presaleCollectionEntity: CollectionEntity;
     presaleCollectionDetailsEntity: CollectionDetailsEntity;
     presaleNftEntities: NftEntity[];
@@ -36,13 +48,22 @@ export default class MarketplacePageStore {
     popularFarmsEntities: MiningFarmEntity[];
     miningFarmDetailsMap: Map < string, MiningFarmDetailsEntity >;
 
-    constructor(cudosStore: CudosStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo) {
+    allowlistUserEntity: AllowlistUserEntity;
+    totalWhitelistedUsersCount: number;
+
+    constructor(presaleStore: PresaleStore, alertStore: AlertStore, walletStore: WalletStore, cudosStore: CudosStore, collectionRepo: CollectionRepo, nftRepo: NftRepo, miningFarmRepo: MiningFarmRepo, allowlistRepo: AllowlistRepo) {
+        this.cudosStore = cudosStore;
+        this.walletStore = walletStore;
+        this.alertStore = alertStore;
+        this.presaleStore = presaleStore;
+
         this.collectionRepo = collectionRepo;
         this.nftRepo = nftRepo;
         this.miningFarmRepo = miningFarmRepo;
-        this.cudosStore = cudosStore;
         this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopCollections);
+        this.allowlistRepo = allowlistRepo;
 
+        this.presaleDateNow = Date.now();
         this.presaleCollectionEntity = null;
         this.presaleCollectionDetailsEntity = null;
         this.presaleNftEntities = [];
@@ -56,14 +77,19 @@ export default class MarketplacePageStore {
         this.popularFarmsEntities = [];
         this.miningFarmDetailsMap = new Map();
 
+        this.allowlistUserEntity = null;
+        this.totalWhitelistedUsersCount = null;
+
         makeAutoObservable(this);
     }
 
     async init() {
+        this.presaleStore.update();
 
         if (this.isPresaleOver() === false) {
             this.cudosStore.init();
             this.fetchPresaleCollectionWithDetails();
+            this.fetchTotalWhitelistedCount();
         } else {
             await this.fetchTopCollections();
             await this.fetchNewNftDrops();
@@ -171,11 +197,19 @@ export default class MarketplacePageStore {
     }
 
     isPresaleOver(): boolean {
-        return this.presaleTimeLeftMilis() < 0;
+        return this.presaleStore.isInPresale() === false;
+    }
+
+    async fetchTotalWhitelistedCount(): Promise < void > {
+        const count = await this.allowlistRepo.fetchTotalListedUsers(PRESALE_CONSTS.PRESALE_ALLOWLIST_ID);
+
+        runInAction(() => {
+            this.totalWhitelistedUsersCount = count;
+        })
     }
 
     getPresaleTimeLeft(): {presaleDaysLeft: string, presaleHoursLeft: string, presaleMinutesLeft: string, presaleSecondsleft: string } {
-        const ms = this.presaleTimeLeftMilis();
+        const ms = this.presaleStore.timeLeftToPresale;
         const presaleDaysLeft = Math.floor(ms / (24 * 60 * 60 * 1000));
         const daysms = ms % (24 * 60 * 60 * 1000);
         const presaleHoursLeft = Math.floor(daysms / (60 * 60 * 1000));
@@ -192,10 +226,6 @@ export default class MarketplacePageStore {
         }
     }
 
-    private presaleTimeLeftMilis(): number {
-        return parseInt(Config.APP_PRESALE_END_TIMESTAMP) - Date.now();
-    }
-
     getPresaleTotalAmount(): number {
         return this.presaleNftEntities.length;
     }
@@ -208,31 +238,75 @@ export default class MarketplacePageStore {
         return (this.getPresaleMintedAmount() * 100) / this.getPresaleTotalAmount();
     }
 
+    isUserEligibleToBuy(): boolean {
+        if (this.walletStore.isConnected() === false) {
+            return false;
+        }
+        if (this.allowlistUserEntity === null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    async fetchAllowlistUser(): Promise < void > {
+        const address = this.walletStore.getAddress();
+        const allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserByAddress(PRESALE_CONSTS.PRESALE_ALLOWLIST_ID, address);
+
+        runInAction(() => {
+            this.allowlistUserEntity = allowlistUserEntity;
+        })
+    }
+
     getWhitelistedAmount(): number {
-        return 5000;
+        return this.totalWhitelistedUsersCount;
     }
 
     getPresalePriceCudosFormatted(): string {
-        return this.cudosStore.formatPriceInCudosForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false));
+        return `${PRESALE_CONSTS.PRICE_CUDOS} CUDOS`;
     }
 
     getPresalePriceEthFormatted(): string {
-        return `${this.cudosStore.getEthPriceForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false)).toFixed(5)} ETH`;
+        return `${PRESALE_CONSTS.PRICE_ETH} ETH`;
     }
 
     getPresalePriceUsdFormatted(): string {
-        return this.cudosStore.formatPriceInUsdForNft(this.presaleNftEntities.find((entity) => entity.isMinted() === false));
+        return this.cudosStore.formatConvertedCudosInUsd(new BigNumber(PRESALE_CONSTS.PRICE_CUDOS));
     }
 
-    onClickBuyWithCudos = () => {
-        // TODO
+    async onClickBuyWithCudos() {
+        try {
+            const cudosBalance = await this.walletStore.getBalanceSafe();
+
+            if (cudosBalance.lt((new BigNumber(PRESALE_CONSTS.PRICE_CUDOS)))) {
+                this.alertStore.show('Your balance is not enough to buy this.');
+                return;
+            }
+            await this.nftRepo.buyPresaleNft(BuyingCurrency.CUDOS, this.walletStore.ledger);
+        } catch (e) {
+            this.alertStore.show(e.message);
+        }
     }
 
-    onClickBuyWithEth = () => {
-        // TODO
+    async onClickBuyWithEth() {
+        try {
+            const ethBalance = await this.walletStore.getEthBalance();
+
+            if (ethBalance.lt((new BigNumber(PRESALE_CONSTS.PRICE_ETH)).shiftedBy(-18))) {
+                this.alertStore.show('Your balance is not enough to buy this.');
+                return;
+            }
+
+            await this.nftRepo.buyPresaleNft(BuyingCurrency.ETH, this.walletStore.ledger);
+        } catch (e) {
+            this.alertStore.show(e.message);
+        }
     }
 
     getPresaleNftPicture() {
+        if (this.presaleNftEntities.length === 0) {
+            return '';
+        }
         return this.presaleNftEntities[this.presaleNftIndexSelected]?.imageUrl;
     }
 

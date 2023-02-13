@@ -31,6 +31,7 @@ export const enum NftRepoColumn {
     DELETE_AT = 'deleted_at',
     CURRENT_OWNER = 'current_owner',
     MARKETPLACE_NFT_ID = 'marketplace_nft_id',
+    PRICE_USD = 'price_usd',
 }
 
 @Table({

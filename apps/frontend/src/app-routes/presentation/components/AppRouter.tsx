@@ -37,18 +37,22 @@ import SuperAdminDashboardPage from '../../../layout/presentation/pages/SuperAdm
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/app-router.css';
+import PresaleStore from '../PresaleStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
+    presaleStore?: PresaleStore
 }
 
-function AppRouter({ accountSessionStore }: Props) {
+function AppRouter({ accountSessionStore, presaleStore }: Props) {
 
     const location = useLocation();
     const [displayLocation, setDisplayLocation] = useState(location);
     const [transitionStage, setTransistionStage] = useState('PageTransitionIn');
 
     useEffect(() => {
+        presaleStore.update();
+
         if (location !== displayLocation) {
             setTransistionStage('PageTransitionOut');
         }
@@ -96,13 +100,14 @@ function AppRouter({ accountSessionStore }: Props) {
                     <Route path = { AppRoutes.UI_KIT } element = { <UiKitPage /> } />
                     <Route path = { AppRoutes.REWARDS_CALCULATOR } element = { <RewardsCalculatorPage /> } />
                     <Route path = { AppRoutes.MARKETPLACE } element = { <MarketplacePage /> } />
-                    <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
-                    <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
-                    <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
                     <Route path = { `${AppRoutes.VIEW_NFT}/:nftId` } element = { <ViewNftPage /> } />
-                    <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
-                    <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
-
+                    {presaleStore.isInPresale() === false && (<>
+                        <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
+                        <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
+                        <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
+                        <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
+                        <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
+                    </>)}
                     {/* Auth */}
                     <Route path = { AppRoutes.LOGIN } element = { <LoginPage /> } />
                     <Route path = { AppRoutes.REGISTER } element = { <RegisterPage /> } />

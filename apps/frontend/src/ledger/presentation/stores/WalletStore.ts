@@ -245,6 +245,8 @@ export default class WalletStore {
         this.web3 = web3;
 
         await window.ethereum.enable();
+
+        return this.web3;
     }
 
     async getEthBalance(): Promise< BigNumber > {

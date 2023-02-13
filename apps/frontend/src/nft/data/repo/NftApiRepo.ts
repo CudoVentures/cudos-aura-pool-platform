@@ -1,4 +1,4 @@
-import { CHAIN_DETAILS, ETH_CONSTS } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, ETH_CONSTS, PRESALE_CONSTS } from '../../../core/utilities/Constants';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity from '../../entities/NftEntity';
 import NftRepo, { BuyingCurrency } from '../../presentation/repos/NftRepo';
@@ -153,6 +153,57 @@ export default class NftApiRepo implements NftRepo {
             this.nftSessioNStorage.updateNftsMap([nftEntity]);
 
             return txHash;
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async buyPresaleNft(currency: BuyingCurrency, ledger: Ledger): Promise < string > {
+        try {
+            this.disableActions?.();
+            let txHash = S.Strings.EMPTY;
+
+            // sign transaction and send it to backend
+            if (currency === BuyingCurrency.ETH) {
+                const web3 = new Web3(window.ethereum);
+
+                const addresses = await web3.eth.getAccounts();
+
+                const contract = new web3.eth.Contract(
+                    contractABI.abi,
+                    ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS,
+                    {
+                        from: addresses[0],
+                    },
+                );
+
+                const tx = await contract.methods.sendPayment(web3.utils.asciiToHex('test4'), web3.utils.asciiToHex(ledger.accountAddress))
+                    .send({
+                        value: (new BigNumber(PRESALE_CONSTS.PRICE_ETH)).shiftedBy(18).toFixed(0),
+                    });
+
+                if (!tx.transactionHash) {
+                    throw Error(tx.message);
+                }
+
+                txHash = tx.transactionHash;
+            } else if (currency === BuyingCurrency.CUDOS) {
+                const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
+                const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
+
+                const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
+                const amount = (new BigNumber(PRESALE_CONSTS.PRICE_CUDOS)).shiftedBy(18).plus(mintFee);
+                const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
+                const memo = new MintMemo('', ledger.accountAddress).toJsonString();
+                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
+
+                txHash = tx.transactionHash;
+            }
+
+            return txHash;
+        } catch (e) {
+            console.log(e);
+            throw e
         } finally {
             this.enableActions?.();
         }

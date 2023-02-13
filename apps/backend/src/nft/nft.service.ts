@@ -15,8 +15,32 @@ import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
 
+enum Tier {
+    TIER_1 = 1,
+    TIER_2 = 2,
+    TIER_3 = 3,
+    TIER_4 = 4,
+    TIER_5 = 5
+}
+
+const tierBorderMap = new Map<Tier, number>([
+    [Tier.TIER_1, 0.95],
+    [Tier.TIER_2, 0.85],
+    [Tier.TIER_3, 0.7],
+    [Tier.TIER_4, 0.5],
+])
+
+const tierPriceMap = new Map<Tier, number>([
+    [Tier.TIER_1, 3000],
+    [Tier.TIER_2, 2000],
+    [Tier.TIER_3, 1000],
+    [Tier.TIER_4, 500],
+    [Tier.TIER_5, 300],
+])
+
 @Injectable()
 export class NFTService {
+
     constructor(
         @InjectModel(NftRepo)
         private nftRepo: typeof NftRepo,
@@ -146,6 +170,19 @@ export class NFTService {
         });
     }
 
+    async findAllByCollectionAndPriceUsd(collecionId: number, priceUsd: number) {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.COLLECTION_ID]: collecionId,
+                [NftRepoColumn.PRICE_USD]: priceUsd,
+            },
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
     async findByCollectionIds(collectionIds: number[]) {
         const nftRepos = await this.nftRepo.findAll({
             where: {
@@ -195,18 +232,53 @@ export class NFTService {
 
     async getRandomPresaleNft(): Promise <NftEntity> {
         const collectionId = parseInt(this.configService.get<string>('APP_PRESALE_COLLECTION_ID'));
-        const nftEntitis = await this.findByCollectionIds([collectionId]);
 
-        // TODO: get random NFT
-        return nftEntitis.find((entity) => entity.isMinted() === false);
+        // get a tier by random, if a tier is finished - add it to the closes lower tier
+        const randomNumber = Math.random();
+        let tier = Tier.TIER_5;
+        if (randomNumber > tierBorderMap.get(Tier.TIER_1)) {
+            tier = Tier.TIER_1;
+        } else if (randomNumber > tierBorderMap.get(Tier.TIER_2)) {
+            tier = Tier.TIER_2;
+        } else if (randomNumber > tierBorderMap.get(Tier.TIER_3)) {
+            tier = Tier.TIER_3;
+        } else if (randomNumber > tierBorderMap.get(Tier.TIER_4)) {
+            tier = Tier.TIER_4;
+        }
+
+        const tierArray = [];
+        for (let i = tier; i >= Tier.TIER_1; i--) {
+            tierArray.push(i);
+        }
+        for (let i = tier + 1; i <= Tier.TIER_5; i++) {
+            tierArray.push(i);
+        }
+
+        for (let i = 0; i < tierArray.length; i++) {
+            const tierToQuery = tierArray[i];
+            // get tier price range
+            const priceUsd = tierPriceMap.get(tierToQuery);
+
+            // get nft in price by random
+            const nftTierEntities = await this.findAllByCollectionAndPriceUsd(collectionId, priceUsd);
+
+            if (nftTierEntities.len > 0) {
+                const nftIndex = Math.floor(Math.random() * nftTierEntities.length);
+
+                return nftTierEntities[nftIndex];
+            }
+        }
+
+        return null;
     }
 
     async updatePremintNftPrice(nftEntity: NftEntity): Promise <NftEntity> {
         const nftPriceInEth = this.configService.get<string>('APP_PRESALE_NFT_ETH_PRICE');
+        const nftPriceInCudos = this.configService.get<string>('APP_PRESALE_NFT_CUDOS_PRICE');
 
-        const { ethPrice } = await this.coinGeckoService.fetchCudosPrice();
+        // const { ethPrice } = await this.coinGeckoService.fetchCudosPrice();
         nftEntity.ethPrice = new BigNumber(nftPriceInEth);
-        nftEntity.acudosPrice = nftEntity.ethPrice.dividedBy(ethPrice).shiftedBy(CURRENCY_DECIMALS);
+        nftEntity.acudosPrice = new BigNumber(nftPriceInCudos);
 
         const FifteenMinutesInMilis = 15 * 60 * 1000;
         nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;

@@ -18,6 +18,7 @@ import RoleGuard from '../auth/guards/role.guard';
 import { AccountType } from '../account/account.types';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import { IsPresaleContractRelayerGuard } from './guards/is-presale-contract-relayer';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -29,6 +30,7 @@ export class NFTController {
         private graphqlService: GraphqlService,
         @Inject(forwardRef(() => FarmService))
         private miningFarmService: FarmService,
+        private configService: ConfigService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -45,10 +47,24 @@ export class NFTController {
     }
 
     // used by on-demand-minting
-    @Get(':id')
+    @Get('on-demand-minting-nft/:id')
     @HttpCode(200)
     async findOne(@Param('id') id: string): Promise<any> {
-        const nftEntity = await this.nftService.findOne(id);
+
+        let nftEntity;
+
+        if (id === 'presale') {
+            const presaleEndTimestamp = parseInt(this.configService.get<string>('APP_PRESALE_END_TIMESTAMP'));
+            if (presaleEndTimestamp < Date.now()) {
+                throw new Error('Presale ended.')
+            }
+            nftEntity = await this.nftService.getRandomPresaleNft();
+            if (nftEntity !== null) {
+                nftEntity = await this.nftService.updatePremintNftPrice(nftEntity);
+            }
+        } else {
+            nftEntity = await this.nftService.findOne(id);
+        }
 
         const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
         if (collectionEntity === null || collectionEntity.isApproved() === false) {
@@ -123,17 +139,6 @@ export class NFTController {
     @HttpCode(200)
     async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {
         const nftEntity = await this.nftService.updateNftCudosPrice(req.id);
-
-        return new ResUpdateNftCudosPrice(nftEntity);
-    }
-
-    @ApiBearerAuth('access-token')
-    @Post('get-random-presale-mint')
-    @UseGuards(IsPresaleContractRelayerGuard)
-    @HttpCode(200)
-    async fetchRandomNftForPresaleMint(): Promise<ResUpdateNftCudosPrice> {
-        const nftId = await this.nftService.getRandomPresaleNft();
-        const nftEntity = await this.nftService.updatePremintNftPrice(nftId);
 
         return new ResUpdateNftCudosPrice(nftEntity);
     }

@@ -1,7 +1,6 @@
 import PaymentEventEntity, { parsePaymentStatus, PaymentStatus } from '../entities/PaymentEventEntity';
 import AuraContractRepo from '../workers/repos/AuraContractRepo';
 import { ethers } from 'ethers';
-import Logger from '../../config/Logger';
 
 export default class AuraContractRpcRepo implements AuraContractRepo {
     contract: ethers.Contract;
@@ -12,7 +11,6 @@ export default class AuraContractRpcRepo implements AuraContractRepo {
 
     async fetchEvents(lastCheckedBlockHeight: number, currentBlockHeight: number): Promise<PaymentEventEntity[]> {
         const paymentEvents = await this.contract.queryFilter('NftMinted', lastCheckedBlockHeight, currentBlockHeight);
-
         return paymentEvents.map((paymentEvent) => PaymentEventEntity.fromContractEvent(paymentEvent));
     }
 

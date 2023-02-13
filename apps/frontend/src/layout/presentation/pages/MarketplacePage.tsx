@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,15 +28,34 @@ import StyledContainer, { ContainerPadding } from '../../../core/presentation/co
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import Progressbar from '../../../core/presentation/components/StaticProgressBar';
 import PictureGallery from '../../../core/presentation/components/PictureGallery';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import { runInAction } from 'mobx';
 
 type Props = {
+    walletStore?: WalletStore
     marketplacePageStore?: MarketplacePageStore
 }
 
-function MarkedplacePage({ marketplacePageStore }: Props) {
+function MarkedplacePage({ marketplacePageStore, walletStore }: Props) {
     const {
         presaleCollectionEntity,
     } = marketplacePageStore;
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            runInAction(() => {
+                marketplacePageStore.presaleDateNow = Date.now();
+            })
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        }
+    }, []);
+
+    useEffect(() => {
+        marketplacePageStore.fetchAllowlistUser();
+    }, [walletStore.address]);
 
     const navigate = useNavigate();
 
@@ -54,6 +73,36 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
 
     function onClickExploreMarketplace() {
         window.location.hash = '#marketplace-heading';
+    }
+
+    function checkBtcAddressRegistered(): boolean {
+        if (this.accountSessionStore.shouldUserRegisterBtcAddress() === true) {
+            this.alertStore.positiveLabel = 'Register';
+            this.alertStore.positiveListener = () => {
+                navigate(AppRoutes.USER_PROFILE);
+            };
+            this.alertStore.msg = 'You must register BTC payout adress first';
+            this.alertStore.visible = true;
+            return false;
+        }
+
+        return true;
+    }
+
+    function onClickBuyWithCudos() {
+        if (checkBtcAddressRegistered() === false) {
+            return;
+        }
+
+        marketplacePageStore.onClickBuyWithCudos();
+    }
+
+    function onClickBuyWithEth() {
+        if (checkBtcAddressRegistered() === false) {
+            return;
+        }
+
+        marketplacePageStore.onClickBuyWithEth();
     }
 
     useEffect(() => {
@@ -271,10 +320,15 @@ function MarkedplacePage({ marketplacePageStore }: Props) {
                                     </ColumnLayout>
                                 </StyledContainer>
                             </ColumnLayout>
-                            <Actions height={ActionsHeight.HEIGHT_48}>
-                                <Button onClick={marketplacePageStore.onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()}</Button>
-                                <Button onClick={marketplacePageStore.onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()}</Button>
-                            </Actions>
+                            {walletStore.isConnected() === false && (
+                                <RowLayout numColumns={1}>Connect your wallet to buy.</RowLayout>
+                            )}
+                            {marketplacePageStore.isUserEligibleToBuy() === true && (
+                                <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()}</Button>
+                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()}</Button>
+                                </Actions>
+                            )}
                         </ColumnLayout>
 
                         <PictureGallery

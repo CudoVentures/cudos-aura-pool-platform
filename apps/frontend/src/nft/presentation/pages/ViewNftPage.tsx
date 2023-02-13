@@ -115,18 +115,6 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         buyNft(BuyingCurrency.CUDOS)
     }
 
-    async function onClickBuyNftWithEth() {
-        const ethBalance = await walletStore.getEthBalance();
-        const nftPriceInEth = cudosStore.getEthPriceForNft(nftEntity);
-
-        if (ethBalance.lt(nftPriceInEth)) {
-            alertStore.show('Your balance is not enough to buy this.');
-            return;
-        }
-
-        buyNft(BuyingCurrency.ETH)
-    }
-
     function onClickResellNft() {
         resellNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
@@ -268,7 +256,6 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                         { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                             <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                                                 <Button onClick={onClickBuyNft}>Buy now for {viewNftPageStore.formatPricePlusMintFeeInCudos()} </Button>
-                                                {nftEntity.isMinted() === false && (<Button onClick={onClickBuyNftWithEth}>Buy now with ETH for {viewNftPageStore.formatPricePlusMintFeeInEth()} </Button>)}
                                             </Actions>
                                         )}
                                         { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (

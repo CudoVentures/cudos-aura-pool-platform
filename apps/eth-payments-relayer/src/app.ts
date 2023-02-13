@@ -70,6 +70,9 @@ export default class App {
                     gasPrice: GasPrice.fromString(`${Config.CUDOS_GAS_PRICE}acudos`),
                 });
 
+                // it will fail if account not exists
+                const signerBalance = await signingStargateClient.getBalance(Config.CUDOS_SIGNER_ADDRESS, 'acudos');
+                Logger.info(`SIGNER BALANCE: ${signerBalance.amount} acudos`)
                 return { stargateClient, signingStargateClient }
 
             } catch (e) {

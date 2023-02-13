@@ -74,6 +74,8 @@ export default class EmailService {
     }
 
     private async sendEmail(emailObj) {
+
+        console.log(emailObj);
         try {
             if (this.emailFrom === '') {
                 throw Error('Service email is not configured');
