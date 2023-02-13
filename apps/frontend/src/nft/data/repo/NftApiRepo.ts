@@ -177,7 +177,7 @@ export default class NftApiRepo implements NftRepo {
                     },
                 );
 
-                const tx = await contract.methods.sendPayment(web3.utils.asciiToHex('test4'), web3.utils.asciiToHex(ledger.accountAddress))
+                const tx = await contract.methods.sendPayment(web3.utils.asciiToHex('presale'), web3.utils.asciiToHex(ledger.accountAddress))
                     .send({
                         value: (new BigNumber(PRESALE_CONSTS.PRICE_ETH)).shiftedBy(18).toFixed(0),
                     });
@@ -194,7 +194,7 @@ export default class NftApiRepo implements NftRepo {
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = (new BigNumber(PRESALE_CONSTS.PRICE_CUDOS)).shiftedBy(18).plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
-                const memo = new MintMemo('', ledger.accountAddress).toJsonString();
+                const memo = new MintMemo('presale', ledger.accountAddress).toJsonString();
                 const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
 
                 txHash = tx.transactionHash;

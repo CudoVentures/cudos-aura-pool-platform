@@ -30,13 +30,19 @@ import Progressbar from '../../../core/presentation/components/StaticProgressBar
 import PictureGallery from '../../../core/presentation/components/PictureGallery';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { runInAction } from 'mobx';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 type Props = {
+    alertStore?: AlertStore
+    accountSessionStore?: AccountSessionStore
     walletStore?: WalletStore
     marketplacePageStore?: MarketplacePageStore
+    presaleStore?: PresaleStore
 }
 
-function MarkedplacePage({ marketplacePageStore, walletStore }: Props) {
+function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore }: Props) {
     const {
         presaleCollectionEntity,
     } = marketplacePageStore;
@@ -44,7 +50,7 @@ function MarkedplacePage({ marketplacePageStore, walletStore }: Props) {
     useEffect(() => {
         const interval = setInterval(() => {
             runInAction(() => {
-                marketplacePageStore.presaleDateNow = Date.now();
+                presaleStore.update();
             })
         }, 1000);
 
@@ -76,13 +82,13 @@ function MarkedplacePage({ marketplacePageStore, walletStore }: Props) {
     }
 
     function checkBtcAddressRegistered(): boolean {
-        if (this.accountSessionStore.shouldUserRegisterBtcAddress() === true) {
-            this.alertStore.positiveLabel = 'Register';
-            this.alertStore.positiveListener = () => {
+        if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
+            alertStore.positiveLabel = 'Register';
+            alertStore.positiveListener = () => {
                 navigate(AppRoutes.USER_PROFILE);
             };
-            this.alertStore.msg = 'You must register BTC payout adress first';
-            this.alertStore.visible = true;
+            alertStore.msg = 'You must register BTC payout adress first';
+            alertStore.visible = true;
             return false;
         }
 

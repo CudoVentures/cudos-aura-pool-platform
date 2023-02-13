@@ -53,3 +53,119 @@ for (let i = 1; i <= 8; i++) {
 }
 
 export default nftTestEntitities;
+
+const nftPresaleEntities = [];
+
+for (let i = 1; i <= 10000; i++) {
+    nftPresaleEntities.push(NftEntity.fromJson({
+        id: uuidv4(),
+        name: `tier5_${i}`,
+        uri: 'someuri',
+        data: 'somestring',
+        hashingPower: i,
+        priceInAcudos: `${i}00`,
+        priceInEth: `${i}00`,
+        priceUsd: 300,
+        expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
+        status: NftStatus.MINTED,
+        tokenId: `${i}`,
+        collectionId: '1',
+        creatorId: `${i}`,
+        currentOwner: 'testowner',
+        marketplaceNftId: `${i}`,
+        deletedAt: NOT_EXISTS_INT,
+        priceAcudosValidUntil: getZeroDatePlusDaysTimestamp(i - 1) + 1000000000,
+        createdAt: getZeroDatePlusDaysTimestamp(i - 1),
+        updatedAt: getZeroDatePlusDaysTimestamp(i - 1),
+    }));
+
+    nftPresaleEntities.push(NftEntity.fromJson({
+        id: uuidv4(),
+        name: `tier4_${i}`,
+        uri: 'someuri',
+        data: 'somestring',
+        hashingPower: i,
+        priceInAcudos: `${i}00`,
+        priceInEth: `${i}00`,
+        priceUsd: 500,
+        expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
+        status: NftStatus.QUEUED,
+        tokenId: `${i}`,
+        collectionId: '1',
+        creatorId: `${i}`,
+        currentOwner: 'testowner',
+        marketplaceNftId: `${i}`,
+        deletedAt: NOT_EXISTS_INT,
+        priceAcudosValidUntil: getZeroDatePlusDaysTimestamp(i - 1) + 1000000000,
+        createdAt: getZeroDatePlusDaysTimestamp(i - 1),
+        updatedAt: getZeroDatePlusDaysTimestamp(i - 1),
+    }));
+
+    nftPresaleEntities.push(NftEntity.fromJson({
+        id: uuidv4(),
+        name: `tier3_${i}`,
+        uri: 'someuri',
+        data: 'somestring',
+        hashingPower: i,
+        priceInAcudos: `${i}00`,
+        priceInEth: `${i}00`,
+        priceUsd: 1000,
+        expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
+        status: NftStatus.QUEUED,
+        tokenId: `${i}`,
+        collectionId: '1',
+        creatorId: `${i}`,
+        currentOwner: 'testowner',
+        marketplaceNftId: `${i}`,
+        deletedAt: NOT_EXISTS_INT,
+        priceAcudosValidUntil: getZeroDatePlusDaysTimestamp(i - 1) + 1000000000,
+        createdAt: getZeroDatePlusDaysTimestamp(i - 1),
+        updatedAt: getZeroDatePlusDaysTimestamp(i - 1),
+    }));
+
+    nftPresaleEntities.push(NftEntity.fromJson({
+        id: uuidv4(),
+        name: `tier2_${i}`,
+        uri: 'someuri',
+        data: 'somestring',
+        hashingPower: i,
+        priceInAcudos: `${i}00`,
+        priceInEth: `${i}00`,
+        priceUsd: 2000,
+        expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
+        status: NftStatus.QUEUED,
+        tokenId: `${i}`,
+        collectionId: '1',
+        creatorId: `${i}`,
+        currentOwner: 'testowner',
+        marketplaceNftId: `${i}`,
+        deletedAt: NOT_EXISTS_INT,
+        priceAcudosValidUntil: getZeroDatePlusDaysTimestamp(i - 1) + 1000000000,
+        createdAt: getZeroDatePlusDaysTimestamp(i - 1),
+        updatedAt: getZeroDatePlusDaysTimestamp(i - 1),
+    }));
+
+    nftPresaleEntities.push(NftEntity.fromJson({
+        id: uuidv4(),
+        name: `tier1_${i}`,
+        uri: 'someuri',
+        data: 'somestring',
+        hashingPower: i,
+        priceInAcudos: `${i}00`,
+        priceInEth: `${i}00`,
+        priceUsd: 3000,
+        expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
+        status: NftStatus.QUEUED,
+        tokenId: `${i}`,
+        collectionId: '1',
+        creatorId: `${i}`,
+        currentOwner: 'testowner',
+        marketplaceNftId: `${i}`,
+        deletedAt: NOT_EXISTS_INT,
+        priceAcudosValidUntil: getZeroDatePlusDaysTimestamp(i - 1) + 1000000000,
+        createdAt: getZeroDatePlusDaysTimestamp(i - 1),
+        updatedAt: getZeroDatePlusDaysTimestamp(i - 1),
+    }));
+}
+
+export { nftPresaleEntities };

@@ -34,7 +34,6 @@ export default class MarketplacePageStore {
 
     defaultIntervalPickerState: DefaultIntervalPickerState;
 
-    presaleDateNow: number;
     presaleCollectionEntity: CollectionEntity;
     presaleCollectionDetailsEntity: CollectionDetailsEntity;
     presaleNftEntities: NftEntity[];
@@ -63,7 +62,6 @@ export default class MarketplacePageStore {
         this.defaultIntervalPickerState = new DefaultIntervalPickerState(this.fetchTopCollections);
         this.allowlistRepo = allowlistRepo;
 
-        this.presaleDateNow = Date.now();
         this.presaleCollectionEntity = null;
         this.presaleCollectionDetailsEntity = null;
         this.presaleNftEntities = [];

@@ -14,6 +14,7 @@ import CoinGeckoService from '../coin-gecko/coin-gecko.service';
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
+import { randomInt } from 'crypto';
 
 enum Tier {
     TIER_1 = 1,
@@ -175,6 +176,10 @@ export class NFTService {
             where: {
                 [NftRepoColumn.COLLECTION_ID]: collecionId,
                 [NftRepoColumn.PRICE_USD]: priceUsd,
+                [NftRepoColumn.TOKEN_ID]: '',
+                [NftRepoColumn.PRICE_VALID_UNTIL]: {
+                    [Op.lt]: Date.now(),
+                },
             },
         });
 
@@ -232,9 +237,9 @@ export class NFTService {
 
     async getRandomPresaleNft(): Promise <NftEntity> {
         const collectionId = parseInt(this.configService.get<string>('APP_PRESALE_COLLECTION_ID'));
-
         // get a tier by random, if a tier is finished - add it to the closes lower tier
-        const randomNumber = Math.random();
+        const randomNumber = randomInt(1, 1000001) * 0.000001;
+
         let tier = Tier.TIER_5;
         if (randomNumber > tierBorderMap.get(Tier.TIER_1)) {
             tier = Tier.TIER_1;
@@ -262,8 +267,8 @@ export class NFTService {
             // get nft in price by random
             const nftTierEntities = await this.findAllByCollectionAndPriceUsd(collectionId, priceUsd);
 
-            if (nftTierEntities.len > 0) {
-                const nftIndex = Math.floor(Math.random() * nftTierEntities.length);
+            if (nftTierEntities.length > 0) {
+                const nftIndex = randomInt(0, nftTierEntities.length);
 
                 return nftTierEntities[nftIndex];
             }

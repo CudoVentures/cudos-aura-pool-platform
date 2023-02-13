@@ -1,3 +1,4 @@
+import { makeAutoObservable } from 'mobx';
 import { PRESALE_CONSTS } from '../../core/utilities/Constants';
 
 export default class PresaleStore {
@@ -6,6 +7,8 @@ export default class PresaleStore {
     constructor() {
         this.timeLeftToPresale = 0;
         this.update();
+
+        makeAutoObservable(this);
     }
 
     update() {
@@ -16,4 +19,5 @@ export default class PresaleStore {
     isInPresale(): boolean {
         return this.timeLeftToPresale > 0;
     }
+
 }
