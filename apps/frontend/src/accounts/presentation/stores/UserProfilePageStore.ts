@@ -193,6 +193,7 @@ export default class UserProfilePageStore {
 
     onChangeTableFilter = action((value: number) => {
         this.nftEventFilterModel.eventTypes = [value];
+        this.fetchHistory();
     })
 
     getNftEntityById = (nftId: string): NftEntity => {
