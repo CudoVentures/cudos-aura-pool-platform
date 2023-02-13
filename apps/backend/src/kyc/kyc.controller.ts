@@ -4,15 +4,19 @@ import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
+import { StatisticsService } from '../statistics/statistics.service';
 import { ReqCreditKyc } from './dto/requests.dto';
-import { ResFetchKyc, ResCreditKyc, ResCreateCheck } from './dto/responses.dto';
+import { ResFetchKyc, ResCreditKyc, ResCreateWorkflowRun } from './dto/responses.dto';
 import { KycService } from './kyc.service';
 
 @ApiTags('Kyc')
 @Controller('kyc')
 export class KycController {
 
-    constructor(private kycService: KycService) {}
+    constructor(
+        private kycService: KycService,
+        private statisticsService: StatisticsService,
+    ) {}
 
     @UseInterceptors(TransactionInterceptor)
     @Post('fetchKyc')
@@ -21,11 +25,15 @@ export class KycController {
         @Req() req: AppRequest,
     ): Promise < ResFetchKyc > {
         let kycEntity = null;
+        let purchasesInUsdSoFar = 0;
         if (req.sessionAccountEntity !== null) {
             kycEntity = await this.kycService.fetchAndInvalidateKyc(req.sessionAccountEntity);
+            if (kycEntity.hasWorkflowRunWithFullParams() === false) {
+                purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(req.sessionUserEntity);
+            }
         }
 
-        return new ResFetchKyc(kycEntity);
+        return new ResFetchKyc(kycEntity, purchasesInUsdSoFar);
     }
 
     @UseGuards(RoleGuard([AccountType.USER]))
@@ -49,14 +57,15 @@ export class KycController {
 
     @UseGuards(RoleGuard([AccountType.USER]))
     @UseInterceptors(TransactionInterceptor)
-    @Post('createCheck')
+    @Post('createWorkflowRun')
     @HttpCode(200)
-    async createCheck(
+    async createWorkflowRun(
         @Req() req: AppRequest,
-    ): Promise < ResCreateCheck > {
+    ): Promise < ResCreateWorkflowRun > {
+        const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(req.sessionUserEntity);
         let kycEntity = await this.kycService.fetchKycByAccount(req.sessionAccountEntity, req.transaction);
-        kycEntity = await this.kycService.createOnfidoCheck(kycEntity, req.transaction);
-        return new ResCreateCheck(kycEntity);
+        kycEntity = await this.kycService.createWorkflowRun(req.sessionUserEntity, purchasesInUsdSoFar, kycEntity, req.transaction);
+        return new ResCreateWorkflowRun(kycEntity);
     }
 
 }

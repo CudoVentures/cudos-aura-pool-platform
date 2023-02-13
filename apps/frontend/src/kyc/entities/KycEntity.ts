@@ -8,6 +8,14 @@ export enum KycStatus {
     COMPLETED_SUCCESS = 4,
 }
 
+export enum KycStatusWithPartial {
+    NOT_STARTED = 1,
+    IN_PROGRESS = 2,
+    COMPLETED_FAILED = 3,
+    COMPLETED_SUCCESS = 4,
+    PARTIAL = 5,
+}
+
 export default class KycEntity {
 
     kycId: string;
@@ -15,10 +23,8 @@ export default class KycEntity {
     firstName: string;
     lastName: string;
     applicantId: string;
-    reports: string[][];
-    checkIds: string[];
-    checkResults: string[];
-    checkStatuses: string[];
+    kycLightStatus: KycStatus;
+    kycFullStatus: KycStatus;
 
     constructor() {
         this.kycId = S.Strings.NOT_EXISTS;
@@ -26,31 +32,14 @@ export default class KycEntity {
         this.firstName = '';
         this.lastName = '';
         this.applicantId = '';
-        this.reports = [];
-        this.checkIds = [];
-        this.checkResults = [];
-        this.checkStatuses = [];
+        this.kycLightStatus = KycStatus.NOT_STARTED;
+        this.kycFullStatus = KycStatus.NOT_STARTED;
 
         makeAutoObservable(this);
     }
 
     isNew(): boolean {
         return this.kycId === S.Strings.NOT_EXISTS;
-    }
-
-    getKycStatus(): KycStatus {
-        const lastCheckResult = this.checkResults.last();
-        const lastCheckStatus = this.checkStatuses.last();
-
-        if (lastCheckStatus === null) {
-            return KycStatus.NOT_STARTED;
-        }
-
-        if (lastCheckStatus === 'complete') {
-            return lastCheckResult === 'clear' ? KycStatus.COMPLETED_SUCCESS : KycStatus.COMPLETED_FAILED;
-        }
-
-        return KycStatus.IN_PROGRESS; // in progress includes in_progress, awaiting_applicant, withdrawn, paused, reopened
     }
 
     static getStatusName(status): string {
@@ -61,6 +50,8 @@ export default class KycEntity {
                 return 'Verification failed';
             case KycStatus.COMPLETED_SUCCESS:
                 return 'Verified';
+            case KycStatusWithPartial.PARTIAL:
+                return 'Partial';
             case KycStatus.NOT_STARTED:
             default:
                 return 'Not verified';
@@ -69,6 +60,38 @@ export default class KycEntity {
 
     hasRegisteredApplicant(): boolean {
         return this.applicantId !== '';
+    }
+
+    isLightStatusNotStarted(): boolean {
+        return this.kycLightStatus === KycStatus.NOT_STARTED;
+    }
+
+    isLightStatusInProgress(): boolean {
+        return this.kycLightStatus === KycStatus.IN_PROGRESS;
+    }
+
+    isLightStatusCompletedFailed(): boolean {
+        return this.kycLightStatus === KycStatus.COMPLETED_FAILED;
+    }
+
+    isLightStatusCompletedSuccess(): boolean {
+        return this.kycLightStatus === KycStatus.COMPLETED_SUCCESS;
+    }
+
+    isFullStatusNotStarted(): boolean {
+        return this.kycFullStatus === KycStatus.NOT_STARTED;
+    }
+
+    isFullStatusInProgress(): boolean {
+        return this.kycFullStatus === KycStatus.IN_PROGRESS;
+    }
+
+    isFullStatusCompletedFailed(): boolean {
+        return this.kycFullStatus === KycStatus.COMPLETED_FAILED;
+    }
+
+    isFullStatusCompletedSuccess(): boolean {
+        return this.kycFullStatus === KycStatus.COMPLETED_SUCCESS;
     }
 
     static toJson(entity: KycEntity): any {
@@ -82,10 +105,8 @@ export default class KycEntity {
             'firstName': entity.firstName,
             'lastName': entity.lastName,
             'applicantId': entity.applicantId,
-            'reports': entity.reports,
-            'checkIds': entity.checkIds,
-            'checkResults': entity.checkResults,
-            'checkStatuses': entity.checkStatuses,
+            'kycLightStatus': entity.kycLightStatus,
+            'kycFullStatus': entity.kycFullStatus,
         }
     }
 
@@ -101,10 +122,8 @@ export default class KycEntity {
         entity.firstName = json.firstName ?? entity.firstName;
         entity.lastName = json.lastName ?? entity.lastName;
         entity.applicantId = (json.applicantId ?? entity.applicantId).toString();
-        entity.reports = json.reports ?? entity.reports;
-        entity.checkIds = json.checkIds ?? entity.checkIds;
-        entity.checkResults = json.checkResults ?? entity.checkResults;
-        entity.checkStatuses = json.checkStatuses ?? entity.checkStatuses;
+        entity.kycLightStatus = parseInt(json.kycLightStatus ?? entity.kycLightStatus);
+        entity.kycFullStatus = parseInt(json.kycFullStatus ?? entity.kycFullStatus);
 
         return entity;
     }

@@ -63,6 +63,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
 
     useEffect(() => {
         async function run() {
+            await cudosStore.init();
             await viewNftPageStore.init(nftId);
             if (viewNftPageStore.hasAccess() === false) {
                 navigate(AppRoutes.HOME);
@@ -109,8 +110,9 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             return;
         }
 
-        if (kycStore.isVerificationSuccessful() === false) {
-            alertStore.msg = 'You account is not verified';
+        const nftUsdPrice = cudosStore.getNftUsdPrice(nftEntity);
+        if (kycStore.canBuyAnNft(nftUsdPrice) === false) {
+            alertStore.msg = 'You account is not verified or it is partially verified';
             alertStore.positiveLabel = 'Verify';
             alertStore.positiveListener = () => {
                 navigate(AppRoutes.KYC);

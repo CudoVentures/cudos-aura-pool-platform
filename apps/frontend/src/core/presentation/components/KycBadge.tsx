@@ -2,7 +2,7 @@ import { observer, inject } from 'mobx-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
-import { KycStatus } from '../../../kyc/entities/KycEntity';
+import KycEntity, { KycStatusWithPartial } from '../../../kyc/entities/KycEntity';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
 import Svg, { SvgSize } from './Svg';
 
@@ -16,35 +16,37 @@ type Props = {
 function KycBadge({ kycStore }: Props) {
     const navigate = useNavigate();
 
-    const kyeEntity = kycStore.kycEntity;
+    const kycStatus = kycStore.getBadgeStatus();
 
     function onClickKyc() {
         navigate(AppRoutes.KYC);
     }
 
     function getKycStatusCssClass() {
-        switch (kyeEntity?.getKycStatus()) {
-            case KycStatus.IN_PROGRESS:
+        switch (kycStatus) {
+            case KycStatusWithPartial.IN_PROGRESS:
                 return 'KycBadgeVerificationInProgress';
-            case KycStatus.COMPLETED_FAILED:
+            case KycStatusWithPartial.COMPLETED_FAILED:
                 return 'KycBadgeVerificationFailed';
-            case KycStatus.COMPLETED_SUCCESS:
+            case KycStatusWithPartial.COMPLETED_SUCCESS:
+            case KycStatusWithPartial.PARTIAL:
                 return 'KycBadgeVerificationSucess';
-            case KycStatus.NOT_STARTED:
+            case KycStatusWithPartial.NOT_STARTED:
             default:
                 return 'KycBadgeNotVerified';
         }
     }
 
     function shouldDisplayKycStatusIcon() {
-        switch (kyeEntity?.getKycStatus()) {
-            case KycStatus.IN_PROGRESS:
+        switch (kycStatus) {
+            case KycStatusWithPartial.IN_PROGRESS:
                 return false;
-            case KycStatus.COMPLETED_FAILED:
+            case KycStatusWithPartial.COMPLETED_FAILED:
                 return true;
-            case KycStatus.COMPLETED_SUCCESS:
+            case KycStatusWithPartial.COMPLETED_SUCCESS:
+            case KycStatusWithPartial.PARTIAL:
                 return false;
-            case KycStatus.NOT_STARTED:
+            case KycStatusWithPartial.NOT_STARTED:
             default:
                 return true;
         }
@@ -52,7 +54,7 @@ function KycBadge({ kycStore }: Props) {
 
     return (
         <div className = { `KycBadge Bold ${getKycStatusCssClass()}` } onClick = { onClickKyc } >
-            { kycStore.getStatusName() }
+            { KycEntity.getStatusName(kycStatus) }
             { shouldDisplayKycStatusIcon() === true && (
                 <Svg svg = { ErrorOutlineIcon } className = { 'SvgIcon' } size = { SvgSize.CUSTOM } />
             ) }

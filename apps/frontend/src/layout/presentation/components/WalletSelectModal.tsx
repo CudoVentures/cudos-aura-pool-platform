@@ -109,7 +109,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 if (walletSelectModalStore.isModeUser() === true) {
                     if (accountSessionStore.isLoggedIn() === false) {
                         walletSelectModalStore.moveToProgressStepSign();
-                    } else if (kycStore.isVerificationNotStarted() === true) {
+                    } else if (kycStore.isAnyVerificationNotStarted() === true) {
                         walletSelectModalStore.moveToProgressStepKyc();
                     } else {
                         walletSelectModalStore.hide();
@@ -130,7 +130,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 } else {
                     await register();
                     if (walletSelectModalStore.isModeUser() === true) {
-                        if (kycStore.isVerificationNotStarted() === true) {
+                        if (kycStore.isAnyVerificationNotStarted() === true) {
                             walletSelectModalStore.moveToProgressStepKyc();
                         } else {
                             walletSelectModalStore.hide();

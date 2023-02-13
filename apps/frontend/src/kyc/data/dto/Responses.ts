@@ -3,9 +3,11 @@ import KycEntity from '../../entities/KycEntity';
 export class ResFetchKyc {
 
     kycEntity: KycEntity;
+    purchasesInUsdSoFar: number;
 
     constructor(axiosData: any) {
         this.kycEntity = KycEntity.fromJson(axiosData.kycEntity);
+        this.purchasesInUsdSoFar = parseInt(axiosData.purchasesInUsdSoFar);
     }
 
 }
@@ -22,7 +24,7 @@ export class ResCreditKyc {
 
 }
 
-export class ResCreateCheck {
+export class ResCreateWorkflowRun {
 
     kycEntity: KycEntity;
 

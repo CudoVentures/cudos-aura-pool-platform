@@ -7,10 +7,10 @@ export const enum KycRepoColumn {
     FIRST_NAME = 'first_name',
     LAST_NAME = 'last_name',
     APPLICANT_ID = 'applicant_Id',
-    REPORTS = 'reports',
-    CHECK_IDS = 'check_ids',
-    CHECK_RESULTS = 'check_results',
-    CHECK_STATUSES = 'check_statuses',
+    WORKFLOW_IDS = 'workflow_ids',
+    WORKFLOW_RUN_IDS = 'workflow_run_ids',
+    WORKFLOW_RUN_STATUSES = 'workflow_run_statuses',
+    WORKFLOW_RUN_PARAMS = 'workflow_run_params',
 }
 
 @Table({
@@ -44,17 +44,17 @@ export default class KycRepo extends Model {
 
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
-        reports: string[];
+        workflowIds: string[];
 
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
-        checkIds: string[];
+        workflowRunIds: string[];
 
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
-        checkResults: string[];
+        workflowRunStatuses: string[];
 
     @AllowNull(false)
     @Column({ type: DataType.ARRAY(DataType.STRING) })
-        checkStatuses: string[];
+        workflowRunParams: string[];
 }

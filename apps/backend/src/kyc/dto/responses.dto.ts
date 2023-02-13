@@ -1,3 +1,4 @@
+import { IsNumber } from 'class-validator';
 import KycEntity from '../entities/kyc.entity';
 import { KycJsonValidator } from '../kyc.types';
 
@@ -5,8 +6,12 @@ export class ResFetchKyc {
 
     kycEntity: KycJsonValidator;
 
-    constructor(kycEntity: KycEntity) {
+    @IsNumber()
+        purchasesInUsdSoFar: number;
+
+    constructor(kycEntity: KycEntity, purchasesInUsdSoFar: number) {
         this.kycEntity = KycEntity.toJson(kycEntity);
+        this.purchasesInUsdSoFar = purchasesInUsdSoFar;
     }
 
 }
@@ -23,7 +28,7 @@ export class ResCreditKyc {
 
 }
 
-export class ResCreateCheck {
+export class ResCreateWorkflowRun {
 
     kycEntity: KycJsonValidator;
 

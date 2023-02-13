@@ -18,6 +18,7 @@ import PageHeader from '../../../layout/presentation/components/PageHeader';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/page-kyc.css';
+import RowLayout from '../../../core/presentation/components/RowLayout';
 
 type Props = {
     kycStore?: KycStore;
@@ -63,30 +64,221 @@ function KycPage({ kycStore, alertStore }: Props) {
 
         const token = await kycStore.creditKycAndGetToken();
         try {
-            if (kycStore.isVerificationNotStarted() === true || kycStore.isVerificationFailed() === true) {
-                Onfido.init({
-                    token,
-                    region: 'US',
-                    steps: ['welcome', 'document', 'complete'],
-                    onComplete: async (data) => {
-                        onfidoMount.current.classList.remove('Active');
-                        await kycStore.createCheck();
-                        alertStore.show('You have started your verification');
-                    },
-                    onError: (e) => {
-                        console.log(e);
-                        onfidoMount.current.classList.remove('Active');
-                        alertStore.show(`There was an error during your verification${e.message}`);
-                    },
-                    onUserExit: () => {
-                        onfidoMount.current.classList.remove('Active');
-                    },
-                });
-                onfidoMount.current.classList.add('Active');
-            }
+            Onfido.init({
+                token,
+                region: 'US',
+                steps: ['welcome', 'document', 'complete'],
+                useWorkflow: true,
+                onComplete: async (data) => {
+                    onfidoMount.current.classList.remove('Active');
+                    await kycStore.createWorkflowRun();
+                    alertStore.show('You have started your verification');
+                },
+                onError: (e) => {
+                    console.log(e);
+                    onfidoMount.current.classList.remove('Active');
+                    alertStore.show(`There was an error during your verification${e.message}`);
+                },
+                onUserExit: () => {
+                    onfidoMount.current.classList.remove('Active');
+                },
+            });
+            onfidoMount.current.classList.add('Active');
         } catch (e) {
             console.log(e);
         }
+    }
+
+    function renderLight() {
+        if (kycEntity?.isLightStatusCompletedSuccess() === true) {
+            return (
+                <AuthBlockLayout
+                    title = { 'KYC Light' }
+                    subtitle = { 'You are verified' }
+                    content = { (
+                        <>
+                        </>
+                    ) }
+                    actions = { (
+                        <>
+                            <Button onClick={ onClickMarketplace } >
+                                    Marketplace
+                            </Button>
+                        </>
+                    ) } />
+            )
+        }
+
+        if (kycEntity?.isLightStatusInProgress() === true) {
+            return (
+                <AuthBlockLayout
+                    title = { 'KYC Light' }
+                    subtitle = { 'You are being verified' }
+                    content = { (
+                        <>
+                        </>
+                    ) }
+                    actions = { (
+                        <>
+                            <Button onClick={ onClickMarketplace } >
+                                    Marketplace
+                            </Button>
+                        </>
+                    ) } />
+            )
+        }
+
+        if (kycEntity?.isLightStatusCompletedFailed() === true) {
+            return (
+                <AuthBlockLayout
+                    title = { 'KYC Light' }
+                    subtitle = { 'Your verification has failed' }
+                    content = { (
+                        <>
+                        </>
+                    ) }
+                    actions = { (
+                        <>
+                            <Button onClick={ onClickMarketplace } >
+                                    Marketplace
+                            </Button>
+                        </>
+                    ) } />
+            )
+        }
+
+        return (
+            <AuthBlockLayout
+                title = { 'KYC Light' }
+                subtitle = { '' }
+                // subtitle = { 'Fill your credentials in order to access your account' }
+                content = { (
+                    <>
+                        { kycEntity === null ? (
+                            <LoadingIndicator />
+                        ) : (
+                            <>
+                                <Input
+                                    label={'First name'}
+                                    inputValidation={firstNameValidation}
+                                    value={kycEntity.firstName}
+                                    onChange={onChangeFirstName}
+                                    onKeyUp= { onKeyUp } />
+                                <Input
+                                    label={'Last name'}
+                                    inputValidation={lastNameValidation}
+                                    value={kycEntity.lastName}
+                                    onChange={onChangeLastName}
+                                    onKeyUp = { onKeyUp } />
+                            </>
+                        ) }
+
+                    </>
+                ) }
+                actions = { (
+                    <>
+                        <Button onClick={ onClickCheck } >
+                                    Continue
+                        </Button>
+                    </>
+                ) } />
+        )
+    }
+
+    function renderFull() {
+        if (kycEntity?.isFullStatusCompletedSuccess() === true) {
+            return (
+                <AuthBlockLayout
+                    title = { 'KYC Full' }
+                    subtitle = { 'You are verified' }
+                    content = { (
+                        <>
+                        </>
+                    ) }
+                    actions = { (
+                        <>
+                            <Button onClick={ onClickMarketplace } >
+                                    Marketplace
+                            </Button>
+                        </>
+                    ) } />
+            )
+        }
+
+        if (kycEntity?.isFullStatusInProgress() === true) {
+            return (
+                <AuthBlockLayout
+                    title = { 'KYC Full' }
+                    subtitle = { 'You are being verified' }
+                    content = { (
+                        <>
+                        </>
+                    ) }
+                    actions = { (
+                        <>
+                            <Button onClick={ onClickMarketplace } >
+                                    Marketplace
+                            </Button>
+                        </>
+                    ) } />
+            )
+        }
+
+        if (kycEntity?.isFullStatusCompletedFailed() === true) {
+            return (
+                <AuthBlockLayout
+                    title = { 'KYC Full' }
+                    subtitle = { 'Your verification has failed' }
+                    content = { (
+                        <>
+                        </>
+                    ) }
+                    actions = { (
+                        <>
+                            <Button onClick={ onClickMarketplace } >
+                                    Marketplace
+                            </Button>
+                        </>
+                    ) } />
+            )
+        }
+
+        return (
+            <AuthBlockLayout
+                title = { 'KYC Full' }
+                subtitle = { '' }
+                // subtitle = { 'Fill your credentials in order to access your account' }
+                content = { (
+                    <>
+                        { kycEntity === null ? (
+                            <LoadingIndicator />
+                        ) : (
+                            <>
+                                <Input
+                                    label={'First name'}
+                                    inputValidation={firstNameValidation}
+                                    value={kycEntity.firstName}
+                                    onChange={onChangeFirstName}
+                                    onKeyUp= { onKeyUp } />
+                                <Input
+                                    label={'Last name'}
+                                    inputValidation={lastNameValidation}
+                                    value={kycEntity.lastName}
+                                    onChange={onChangeLastName}
+                                    onKeyUp = { onKeyUp } />
+                            </>
+                        ) }
+
+                    </>
+                ) }
+                actions = { (
+                    <>
+                        <Button onClick={ onClickCheck } >
+                                    Continue
+                        </Button>
+                    </>
+                ) } />
+        )
     }
 
     return (
@@ -96,93 +288,10 @@ function KycPage({ kycStore, alertStore }: Props) {
 
             <div className = { 'PageContent AppContent' } >
 
-                { kycStore.isVerificationSuccessful() === true && (
-                    <AuthBlockLayout
-                        title = { 'KYC' }
-                        subtitle = { 'You are verified' }
-                        content = { (
-                            <>
-                            </>
-                        ) }
-                        actions = { (
-                            <>
-                                <Button onClick={ onClickMarketplace } >
-                                    Marketplace
-                                </Button>
-                            </>
-                        ) } />
-                ) }
-
-                { kycStore.isVerificationInProgress() === true && (
-                    <AuthBlockLayout
-                        title = { 'KYC' }
-                        subtitle = { 'You are being verified' }
-                        content = { (
-                            <>
-                            </>
-                        ) }
-                        actions = { (
-                            <>
-                                <Button onClick={ onClickMarketplace } >
-                                    Marketplace
-                                </Button>
-                            </>
-                        ) } />
-                ) }
-
-                { kycStore.isVerificationFailed() === true && (
-                    <AuthBlockLayout
-                        title = { 'KYC' }
-                        subtitle = { 'Your verification has failed' }
-                        content = { (
-                            <>
-                            </>
-                        ) }
-                        actions = { (
-                            <>
-                                <Button onClick={ onClickMarketplace } >
-                                    Marketplace
-                                </Button>
-                            </>
-                        ) } />
-                ) }
-
-                { kycStore.isVerificationNotStarted() === true && (
-                    <AuthBlockLayout
-                        title = { 'KYC' }
-                        subtitle = { '' }
-                        // subtitle = { 'Fill your credentials in order to access your account' }
-                        content = { (
-                            <>
-                                { kycEntity === null ? (
-                                    <LoadingIndicator />
-                                ) : (
-                                    <>
-                                        <Input
-                                            label={'First name'}
-                                            inputValidation={firstNameValidation}
-                                            value={kycEntity.firstName}
-                                            onChange={onChangeFirstName}
-                                            onKeyUp= { onKeyUp } />
-                                        <Input
-                                            label={'Last name'}
-                                            inputValidation={lastNameValidation}
-                                            value={kycEntity.lastName}
-                                            onChange={onChangeLastName}
-                                            onKeyUp = { onKeyUp } />
-                                    </>
-                                ) }
-
-                            </>
-                        ) }
-                        actions = { (
-                            <>
-                                <Button onClick={ onClickCheck } >
-                                    Continue
-                                </Button>
-                            </>
-                        ) } />
-                ) }
+                <RowLayout numColumns = { 2 } >
+                    { renderLight() }
+                    { renderFull() }
+                </RowLayout>
 
             </div>
 
