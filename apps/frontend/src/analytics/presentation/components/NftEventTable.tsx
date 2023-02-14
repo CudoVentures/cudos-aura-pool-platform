@@ -50,7 +50,7 @@ function NftEventTable({ className, tableState, nftEventEntities, getNftEntityBy
     }
 
     function renderCollectionsRows() {
-        return nftEventEntities.map((nftEventEntity: NftEventEntity) => {
+        return nftEventEntities ? nftEventEntities.map((nftEventEntity: NftEventEntity) => {
             const tableCells = [
                 createTableCell((
                     <div className={'Bold Dots AddressCell'}>{nftEventEntity.fromAddress}</div>
@@ -89,7 +89,7 @@ function NftEventTable({ className, tableState, nftEventEntities, getNftEntityBy
                     createTableCellString(nftEventEntity.getTimePassedDisplay()),
                 ]),
             );
-        });
+        }) : [];
     }
 
     return (

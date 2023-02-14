@@ -15,6 +15,7 @@ import { FarmStatus } from '../../farm/farm.types';
 import { MiningFarmRepo } from '../../farm/repos/mining-farm.repo';
 import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
 import { AddressesPayoutHistoryRepo } from '../repos/addresses-payout-history.repo';
+import NftEntity from '../../nft/entities/nft.entity';
 
 export const miningFarmTestEntities = [MiningFarmEntity.fromJson({
     id: '1',
@@ -231,23 +232,26 @@ const chainMarketplaceCollectionEntities = [
 for (let i = 1; i <= 5; i++) {
 
     const uuid = uuidv4();
+    const nftTestEntity = new NftEntity();
 
-    nftTestEntitities.push({
-        id: uuid,
-        name: `nft${i}`,
-        uri: 'someuri',
-        data: 'somestring',
-        hashingPower: i,
-        price: `${i}00`,
-        expirationDate: new Date(2024, 10, 9),
-        status: NftStatus.MINTED,
-        tokenId: `${i}`,
-        collectionId: i,
-        creatorId: i,
-        deletedAt: null,
-        currentOwner: 'testowner',
-        marketplaceNftId: `${i}`,
-    });
+    nftTestEntity.id = uuid;
+    nftTestEntity.name = `nft${i}`;
+    nftTestEntity.uri = 'someuri';
+    nftTestEntity.data = 'somestring';
+    nftTestEntity.hashingPower = i;
+    nftTestEntity.acudosPrice = new BigNumber(`${i}00`);
+    nftTestEntity.status = NftStatus.MINTED;
+    nftTestEntity.tokenId = `${i}`;
+    nftTestEntity.collectionId = i;
+    nftTestEntity.creatorId = i;
+    nftTestEntity.deletedAt = null;
+    nftTestEntity.currentOwner = 'testowner';
+    nftTestEntity.marketplaceNftId = `${i}`;
+    nftTestEntity.updatedAt = 1676363749337;
+    nftTestEntity.createdAt = 1676363749337;
+    nftTestEntity.deletedAt = -2147483648;
+
+    nftTestEntitities.push(nftTestEntity);
 
     nftPayoutHistoryEntities.push({
         id: i,
@@ -295,7 +299,15 @@ export async function fillStatisticsTestData() {
     try {
         await MiningFarmRepo.bulkCreate(miningFarmTestEntities.map((entity) => MiningFarmEntity.toRepo(entity).toJSON()))
         await CollectionRepo.bulkCreate(collectionEntities.map((entity) => CollectionEntity.toRepo(entity).toJSON()));
-        await NftRepo.bulkCreate(nftTestEntitities);
+        await NftRepo.bulkCreate(nftTestEntitities.map((entity) => NftEntity.toRepo(entity).toJSON()));
+        const insertedNftEntities = (await NftRepo.findAll()).map((repo) => NftEntity.fromRepo(repo));
+        nftTestEntitities.forEach((entity) => {
+            const insertedEntity = insertedNftEntities.find((entity2) => entity.id === entity2.id);
+            entity.createdAt = insertedEntity.createdAt;
+            entity.updatedAt = insertedEntity.updatedAt;
+            entity.deletedAt = insertedEntity.deletedAt;
+        })
+
         await NftPayoutHistoryRepo.bulkCreate(nftPayoutHistoryEntities);
         await NftOwnersPayoutHistoryRepo.bulkCreate(nftOwnersPayoutHistoryEntities);
         await AddressesPayoutHistoryRepo.bulkCreate(addressesPayoutHistoryEntities);

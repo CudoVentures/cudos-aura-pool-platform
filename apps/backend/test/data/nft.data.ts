@@ -12,7 +12,8 @@ for (let i = 1; i <= 8; i++) {
         uri: 'someuri',
         data: 'somestring',
         hashingPower: i,
-        price: `${i}00`,
+        priceInAcudos: `${i}00`,
+        priceUsd: i,
         expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
         status: NftStatus.MINTED,
         tokenId: `${i}`,
@@ -20,6 +21,10 @@ for (let i = 1; i <= 8; i++) {
         creatorId: `${i}`,
         currentOwner: 'testowner',
         marketplaceNftId: `${i}`,
+        priceAcudosValidUntil: 1676363186163,
+        deletedAt: 1676363186163,
+        createdAt: 1676363186163,
+        updatedAt: 1676363186163,
     }));
 
     nftTestEntitities.push(NftEntity.fromJson({
@@ -28,7 +33,8 @@ for (let i = 1; i <= 8; i++) {
         uri: 'someuri',
         data: 'somestring',
         hashingPower: i,
-        price: `${i}00`,
+        priceInAcudos: `${i}00`,
+        priceUsd: i,
         expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
         status: NftStatus.QUEUED,
         tokenId: `${i}`,
@@ -36,6 +42,10 @@ for (let i = 1; i <= 8; i++) {
         creatorId: `${i}`,
         currentOwner: 'testowner',
         marketplaceNftId: `${i}`,
+        priceAcudosValidUntil: 1676363186163,
+        deletedAt: 1676363186163,
+        createdAt: 1676363186163,
+        updatedAt: 1676363186163,
     }));
 }
 

@@ -10,6 +10,17 @@ query NftTransferHistoryByUniqueIds($uniqIds: [String!]) {
   }
 }
 
+query NftTransferHistoryByUniqueIdsAndTimestamp($uniqIds: [String!], $timestampFrom: bigint!, $timestampTo: bigint!) {
+  nft_transfer_history(where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, uniq_id: {_in: $uniqIds}}) {
+    id
+    denom_id
+    new_owner
+    old_owner
+    timestamp
+    transaction_hash
+    uniq_id
+  }
+}
 query NftTransferHistoryByNewOwnerAddressAndTimestamp($timestampFrom: bigint!, $timestampTo: bigint!, $address: String!) {
   nft_transfer_history(where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, new_owner: {_eq: $address}}) {
     id
