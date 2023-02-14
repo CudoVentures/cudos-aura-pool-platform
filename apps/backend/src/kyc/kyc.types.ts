@@ -1,6 +1,13 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export const KYC_TABLE_NAME = 'kyc'
+
+export enum KycStatus {
+    NOT_STARTED = 1,
+    IN_PROGRESS = 2,
+    COMPLETED_FAILED = 3,
+    COMPLETED_SUCCESS = 4,
+}
 
 export class KycJsonValidator {
 
@@ -22,20 +29,12 @@ export class KycJsonValidator {
     @IsOptional()
         applicantId: string;
 
-    @IsArray()
+    @IsEnum(KycStatus)
     @IsOptional()
-        reports: string[][];
+        kycLightStatus: KycStatus;
 
-    @IsArray()
+    @IsEnum(KycStatus)
     @IsOptional()
-        checkIds: string[];
-
-    @IsArray()
-    @IsOptional()
-        checkResults: string[];
-
-    @IsArray()
-    @IsOptional()
-        checkStatuses: string[];
+        kycFullStatus: KycStatus;
 
 }

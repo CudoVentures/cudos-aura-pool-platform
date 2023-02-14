@@ -5,8 +5,8 @@ export default interface KycRepo {
     setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
     setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
 
-    fetchKyc(): Promise < KycEntity >;
+    fetchKyc(): Promise < { kycEntity: KycEntity, purchasesInUsdSoFar: number } >;
     creditKyc(kycEntity: KycEntity): Promise < string >;
-    createCheck(kycEntity: KycEntity): Promise < void >;
+    createWorkflowRun(kycEntity: KycEntity, runFullWorkflow: number): Promise < void >;
 
 }

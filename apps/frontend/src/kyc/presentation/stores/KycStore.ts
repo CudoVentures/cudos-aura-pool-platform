@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import KycEntity, { KycStatus } from '../../entities/KycEntity';
+import KycEntity, { KycStatusWithPartial } from '../../entities/KycEntity';
 import KycRepo from '../repos/KycRepo';
 
 export default class KycStore {
@@ -8,6 +8,7 @@ export default class KycStore {
     kycRepo: KycRepo
 
     kycEntity: KycEntity;
+    purchasesInUsdSoFar: number;
 
     constructor(kycRepo: KycRepo) {
         this.kycRepo = kycRepo;
@@ -19,43 +20,63 @@ export default class KycStore {
     }
 
     async fetchKyc(): Promise < void > {
-        const kycEntity = await this.kycRepo.fetchKyc();
+        const { kycEntity, purchasesInUsdSoFar } = await this.kycRepo.fetchKyc();
 
         await runInActionAsync(() => {
             this.kycEntity = kycEntity;
+            this.purchasesInUsdSoFar = purchasesInUsdSoFar;
         });
     }
 
     nullKycOnLogout() {
         this.kycEntity = null;
+        this.purchasesInUsdSoFar = 0;
     }
 
-    isVerificationNotStarted(): boolean {
-        return this.kycEntity?.getKycStatus() === KycStatus.NOT_STARTED ?? true;
+    isAnyVerificationNotStarted(): boolean {
+        if (this.kycEntity === null) {
+            return true;
+        }
+
+        return this.kycEntity.isLightStatusNotStarted() && this.kycEntity.isFullStatusNotStarted();
     }
 
-    isVerificationInProgress(): boolean {
-        return this.kycEntity?.getKycStatus() === KycStatus.IN_PROGRESS ?? false;
+    canBuyAnNft(nftPriceInUsd): boolean {
+        if (this.kycEntity === null) {
+            return false;
+        }
+
+        if (this.kycEntity.isFullStatusCompletedSuccess() === true) {
+            return true;
+        }
+
+        if (this.kycEntity.isLightStatusCompletedSuccess() === true) {
+            return nftPriceInUsd + this.purchasesInUsdSoFar <= 1000;
+        }
+
+        return false;
     }
 
-    isVerificationFailed(): boolean {
-        return this.kycEntity?.getKycStatus() === KycStatus.COMPLETED_FAILED ?? false;
-    }
+    getBadgeStatus(): KycStatusWithPartial {
+        let status = KycStatusWithPartial.NOT_STARTED;
 
-    isVerificationSuccessful(): boolean {
-        return this.kycEntity?.getKycStatus() === KycStatus.COMPLETED_SUCCESS ?? false;
-    }
+        if (this.kycEntity !== null) {
+            if (this.kycEntity.isFullStatusNotStarted() === true) {
+                status = this.kycEntity.isLightStatusCompletedSuccess() === true ? KycStatusWithPartial.PARTIAL : (this.kycEntity.kycLightStatus as unknown as KycStatusWithPartial);
+            } else {
+                status = this.kycEntity.kycFullStatus as unknown as KycStatusWithPartial;
+            }
+        }
 
-    getStatusName(): string {
-        return KycEntity.getStatusName(this.kycEntity?.getKycStatus() ?? KycStatus.NOT_STARTED);
+        return status;
     }
 
     async creditKycAndGetToken(): Promise < string > {
         return this.kycRepo.creditKyc(this.kycEntity);
     }
 
-    async createCheck(): Promise < void > {
-        return this.kycRepo.createCheck(this.kycEntity);
+    async createWorkflowRun(runFullWorkflow: number): Promise < void > {
+        return this.kycRepo.createWorkflowRun(this.kycEntity, runFullWorkflow);
     }
 
 }

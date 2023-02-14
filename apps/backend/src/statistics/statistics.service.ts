@@ -60,6 +60,34 @@ export class StatisticsService {
         private collectionPaymentAllocationRepo: typeof CollectionPaymentAllocationRepo,
     ) {}
 
+    async fetchUsersSpendingOnPlatformInUsd(userEntity: UserEntity): Promise < number > {
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.sessionAccount = IntBoolValue.TRUE;
+
+        const processedMintEventNftIdSet = new Set();
+        const { nftEventEntities } = await this.fetchNftEventsByFilter(userEntity, nftEventFilterEntity);
+        const sumInUsd = nftEventEntities.filter((nftEventEntity) => {
+            if (nftEventEntity.isMintEvent() === false && nftEventEntity.isSaleEvent() === false) {
+                return false;
+            }
+
+            if (nftEventEntity.isMintEvent() === true && processedMintEventNftIdSet.has(nftEventEntity.nftId) === true) {
+                return false;
+            }
+
+            const result = nftEventEntity.toAddress === userEntity.cudosWalletAddress;
+            if (result === true && nftEventEntity.isMintEvent() === true) {
+                processedMintEventNftIdSet.add(nftEventEntity.nftId);
+            }
+
+            return result;
+        }).reduce((accumulator, nftEventEntity) => {
+            return accumulator + nftEventEntity.transferPriceInUsd;
+        }, 0);
+
+        return Number(sumInUsd.toFixed(2));
+    }
+
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
         if (nftEventFilterEntity.isTimestampFilterSet() === true) {
             StatisticsService.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);

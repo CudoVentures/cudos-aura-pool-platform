@@ -26,7 +26,7 @@ export default class KycApiRepo implements KycRepo {
         this.showAlert = showAlert;
     }
 
-    async fetchKyc(): Promise < KycEntity > {
+    async fetchKyc(): Promise < { kycEntity: KycEntity, purchasesInUsdSoFar: number } > {
         try {
             this.disableActions?.();
             return await this.kycApi.fetchKyc();
@@ -49,13 +49,12 @@ export default class KycApiRepo implements KycRepo {
         }
     }
 
-    async createCheck(kycEntity: KycEntity): Promise < void > {
+    async createWorkflowRun(kycEntity: KycEntity, runFullWorkflow: number): Promise < void > {
         try {
             this.disableActions?.();
-            const resultKycEntity = await this.kycApi.createCheck();
+            const resultKycEntity = await this.kycApi.createWorkflowRun(runFullWorkflow);
 
             await runInActionAsync(() => {
-                console.log('new kyc', resultKycEntity, resultKycEntity.getKycStatus());
                 Object.assign(kycEntity, resultKycEntity);
             });
         } finally {

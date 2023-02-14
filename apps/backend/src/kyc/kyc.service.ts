@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import KycRepo from './repo/kyc.repo';
-import { Check, Onfido, Region } from '@onfido/api';
+import { Onfido, Region, WorkflowRun } from '@onfido/api';
 import AccountEntity from '../account/entities/account.entity';
 import KycEntity from './entities/kyc.entity';
 import { LOCK, Transaction } from 'sequelize';
 import AppRepo from '../common/repo/app.repo';
 import { ConfigService } from '@nestjs/config';
+import { WorkflowRunParamsEntity, WorkflowRunParamsV1Entity } from './entities/workflow-run-params.entity';
+import UserEntity from '../account/entities/user.entity';
 
 @Injectable()
 export class KycService {
@@ -26,9 +28,7 @@ export class KycService {
 
     async fetchAndInvalidateKyc(accountEntity: AccountEntity, tx: Transaction = undefined): Promise < KycEntity > {
         let kycEntity = await this.fetchKycByAccount(accountEntity, tx);
-        if (kycEntity.hasNotCompletedCheck() === true) {
-            kycEntity = await this.invalidateOnfidoChecks(kycEntity, tx);
-        }
+        kycEntity = await this.invalidateOnfidoWorkflows(kycEntity, tx);
         return kycEntity;
     }
 
@@ -40,18 +40,22 @@ export class KycService {
         return kycEntity;
     }
 
-    async invalidateOnfidoChecks(kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
-        const checks = await this.onfido.check.list(kycEntity.applicantId);
-        const checksMap = new Map < string, Check >();
-        checks.forEach((check) => {
-            checksMap.set(check.id, check);
-        });
+    async invalidateOnfidoWorkflows(kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
+        const runningWorkflowRunIds = kycEntity.getRunningWorkflowRunIds();
+        if (runningWorkflowRunIds.length === 0) {
+            return kycEntity;
+        }
 
-        kycEntity.checkIds.forEach((checkId, i) => {
-            const check = checksMap.get(checkId);
-            if (check !== undefined) {
-                kycEntity.checkResults[i] = check.result;
-                kycEntity.checkStatuses[i] = check.status;
+        const workflowRunsMap = new Map < string, WorkflowRun >();
+        for (let i = runningWorkflowRunIds.length; i-- > 0;) {
+            const workflowRun = await this.onfido.workflowRun.find(runningWorkflowRunIds[i]);
+            workflowRunsMap.set(workflowRun.id, workflowRun);
+        }
+
+        kycEntity.workflowRunIds.forEach((workflowRunId, i) => {
+            const workflowRun = workflowRunsMap.get(workflowRunId);
+            if (workflowRun !== undefined) {
+                kycEntity.workflowRunStatuses[i] = workflowRun.status;
             }
         });
 
@@ -73,24 +77,24 @@ export class KycService {
         }
     }
 
-    async createOnfidoCheck(kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
-        if (kycEntity.hasDocumentReport() === true) {
-            return kycEntity;
-        }
+    async createWorkflowRun(userEntity: UserEntity, purchasesInUsdSoFar: number, kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
+        const workflowId = this.configService.get < string >('APP_ONFIDO_WORKFLOW_ID');
+        // if (kycEntity.hasWorkflow(workflowId) === true) {
+        //     return kycEntity;
+        // }
 
-        const reports = ['document'];
+        const workflorRunParams = WorkflowRunParamsV1Entity.newInstance(userEntity.cudosWalletAddress, purchasesInUsdSoFar);
 
-        const check = await this.onfido.check.create({
+        const workflowRun: WorkflowRun = await this.onfido.workflowRun.create({
             applicantId: kycEntity.applicantId,
-            reportNames: reports,
+            workflowId,
+            customData: workflorRunParams.asCreateWorkflowParams(),
         });
 
-        console.log('creating new check');
-        console.log(check);
-        kycEntity.reports.push(reports);
-        kycEntity.checkIds.push(check.id);
-        kycEntity.checkResults.push(check.result);
-        kycEntity.checkStatuses.push(check.status);
+        kycEntity.workflowIds.push(workflowId);
+        kycEntity.workflowRunIds.push(workflowRun.id);
+        kycEntity.workflowRunStatuses.push(workflowRun.status);
+        kycEntity.workflowRunParams.push(WorkflowRunParamsEntity.wrap(workflorRunParams));
 
         return this.creditKyc(kycEntity, tx);
     }

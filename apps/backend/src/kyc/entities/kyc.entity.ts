@@ -1,6 +1,7 @@
 import { NOT_EXISTS_INT } from '../../common/utils';
-import { KycJsonValidator } from '../kyc.types';
+import { KycJsonValidator, KycStatus } from '../kyc.types';
 import KycRepo from '../repo/kyc.repo';
+import { WorkflowRunParamsEntity, WorkflowRunParamsV1Entity, WorkflowRunParamsVxEntity } from './workflow-run-params.entity';
 
 export default class KycEntity {
 
@@ -9,10 +10,10 @@ export default class KycEntity {
     firstName: string;
     lastName: string;
     applicantId: string;
-    reports: string[][];
-    checkIds: string[];
-    checkResults: string[];
-    checkStatuses: string[];
+    workflowIds: string[];
+    workflowRunIds: string[];
+    workflowRunStatuses: string[];
+    workflowRunParams: WorkflowRunParamsEntity < WorkflowRunParamsVxEntity >[];
 
     constructor() {
         this.kycId = NOT_EXISTS_INT;
@@ -20,10 +21,10 @@ export default class KycEntity {
         this.firstName = '';
         this.lastName = '';
         this.applicantId = '';
-        this.reports = [];
-        this.checkIds = [];
-        this.checkResults = [];
-        this.checkStatuses = [];
+        this.workflowIds = [];
+        this.workflowRunIds = [];
+        this.workflowRunStatuses = [];
+        this.workflowRunParams = [];
     }
 
     static newInstance(accountId: number) {
@@ -38,24 +39,102 @@ export default class KycEntity {
         return this.kycId === NOT_EXISTS_INT;
     }
 
-    hasDocumentReport(): boolean {
-        const report = this.reports.find((reportNames) => {
-            return reportNames.length === 1 && reportNames[0] === 'document';
-        });
+    // hasWorkflow(targetWorkflowId: string) {
+    //     const foundWorkflowId = this.workflowIds.find((workflowId) => {
+    //         return workflowId === targetWorkflowId;
+    //     });
 
-        return report !== undefined;
-    }
+    //     return foundWorkflowId !== undefined;
+    // }
 
     hasRegisteredApplicant(): boolean {
         return this.applicantId !== '';
     }
 
-    hasNotCompletedCheck(): boolean {
-        const check = this.checkStatuses.find((status) => {
-            return status !== 'complete';
-        });
+    hasWorkflowRunWithFullParams(): boolean {
+        const lastFullI = this.getLastFullWorkflowRunIndex();
+        return lastFullI !== NOT_EXISTS_INT;
+    }
 
-        return check !== undefined;
+    getRunningWorkflowRunIds(): string[] {
+        return this.workflowRunIds.filter((workflowRunId, i) => {
+            const status = this.workflowRunStatuses[i];
+            return status === 'processing' || status === 'awaiting_input';
+        });
+    }
+
+    getLastLightWorkflowRunIndex(): number {
+        for (let i = this.workflowRunParams.length; i-- > 0;) {
+            const workflowRunParams = this.workflowRunParams[i];
+            if (workflowRunParams.params instanceof WorkflowRunParamsV1Entity) {
+                const unwrappedParams = workflowRunParams.unwrap() as WorkflowRunParamsV1Entity;
+                if (unwrappedParams.areLightParams() === true) {
+                    return i;
+                }
+            }
+        }
+
+        return NOT_EXISTS_INT
+    }
+
+    getLastFullWorkflowRunIndex(): number {
+        for (let i = this.workflowRunParams.length; i-- > 0;) {
+            const workflowRunParams = this.workflowRunParams[i];
+            if (workflowRunParams.params instanceof WorkflowRunParamsV1Entity) {
+                const unwrappedParams = workflowRunParams.unwrap() as WorkflowRunParamsV1Entity;
+                if (unwrappedParams.areFullParams() === true) {
+                    return i;
+                }
+            }
+        }
+
+        return NOT_EXISTS_INT
+    }
+
+    getKycLightStatus(): KycStatus {
+        const lastLightI = this.getLastLightWorkflowRunIndex();
+
+        if (lastLightI === NOT_EXISTS_INT) {
+            return KycStatus.NOT_STARTED;
+        }
+
+        const lastWorkflowRunStatus = this.workflowRunStatuses[lastLightI];
+        switch (lastWorkflowRunStatus) {
+            case 'processing':
+            case 'awaiting_input':
+                return KycStatus.IN_PROGRESS;
+            case 'approved':
+                return KycStatus.COMPLETED_SUCCESS;
+            case 'abandoned':
+            case 'error':
+            case 'review':
+            case 'declined':
+            default:
+                return KycStatus.COMPLETED_FAILED;
+        }
+    }
+
+    getKycFullStatus(): KycStatus {
+        const lastFullI = this.getLastFullWorkflowRunIndex();
+
+        if (lastFullI === NOT_EXISTS_INT) {
+            return KycStatus.NOT_STARTED;
+        }
+
+        const lastWorkflowRunStatus = this.workflowRunStatuses[lastFullI];
+        switch (lastWorkflowRunStatus) {
+            case 'processing':
+            case 'awaiting_input':
+                return KycStatus.IN_PROGRESS;
+            case 'approved':
+                return KycStatus.COMPLETED_SUCCESS;
+            case 'abandoned':
+            case 'error':
+            case 'review':
+            case 'declined':
+            default:
+                return KycStatus.COMPLETED_FAILED;
+        }
     }
 
     static toRepo(entity: KycEntity): KycRepo {
@@ -72,10 +151,10 @@ export default class KycEntity {
         repoJson.firstName = entity.firstName ?? repoJson.firstName;
         repoJson.lastName = entity.lastName ?? repoJson.lastName;
         repoJson.applicantId = entity.applicantId ?? repoJson.applicantId;
-        repoJson.reports = entity.reports?.map((reportsArray) => JSON.stringify(reportsArray)) ?? repoJson.reports;
-        repoJson.checkIds = entity.checkIds ?? repoJson.checkIds;
-        repoJson.checkResults = entity.checkResults ?? repoJson.checkResults;
-        repoJson.checkStatuses = entity.checkStatuses ?? repoJson.checkStatuses;
+        repoJson.workflowIds = entity.workflowIds ?? repoJson.workflowIds;
+        repoJson.workflowRunIds = entity.workflowRunIds ?? repoJson.workflowRunIds;
+        repoJson.workflowRunStatuses = entity.workflowRunStatuses ?? repoJson.workflowRunStatuses;
+        repoJson.workflowRunParams = entity.workflowRunParams?.map((paramsObj) => JSON.stringify(WorkflowRunParamsEntity.toJson(paramsObj))) ?? repoJson.workflowRunParams;
 
         return repoJson;
     }
@@ -93,10 +172,10 @@ export default class KycEntity {
         entity.firstName = repoJson.firstName ?? entity.firstName;
         entity.lastName = repoJson.lastName ?? entity.lastName;
         entity.applicantId = repoJson.applicantId ?? entity.applicantId;
-        entity.reports = repoJson.reports?.map((reportsJson) => JSON.parse(reportsJson)) ?? entity.reports;
-        entity.checkIds = repoJson.checkIds ?? entity.checkIds;
-        entity.checkResults = repoJson.checkResults ?? entity.checkResults;
-        entity.checkStatuses = repoJson.checkStatuses ?? entity.checkStatuses;
+        entity.workflowIds = repoJson.workflowIds ?? entity.workflowIds;
+        entity.workflowRunIds = repoJson.workflowRunIds ?? entity.workflowRunIds;
+        entity.workflowRunStatuses = repoJson.workflowRunStatuses ?? entity.workflowRunStatuses;
+        entity.workflowRunParams = repoJson.workflowRunParams?.map((paramsJson) => WorkflowRunParamsEntity.fromJson(JSON.parse(paramsJson))) ?? entity.workflowRunParams;
 
         return entity;
     }
@@ -112,31 +191,26 @@ export default class KycEntity {
             'applicantId': entity.applicantId,
             'firstName': entity.firstName,
             'lastName': entity.lastName,
-            'reports': entity.reports,
-            'checkIds': entity.checkIds,
-            'checkResults': entity.checkResults,
-            'checkStatuses': entity.checkStatuses,
+            'kycLightStatus': entity.getKycLightStatus(),
+            'kycFullStatus': entity.getKycFullStatus(),
         }
     }
 
-    static fromJson(json: KycJsonValidator): KycEntity {
-        if (json === null) {
-            return null;
-        }
+    // Nothing is read from the frontend
+    // static fromJson(json: KycJsonValidator): KycEntity {
+    //     if (json === null) {
+    //         return null;
+    //     }
 
-        const entity = new KycEntity();
+    //     const entity = new KycEntity();
 
-        entity.kycId = parseInt(json.kycId ?? entity.kycId.toString());
-        entity.accountId = parseInt(json.accountId ?? entity.accountId.toString());
-        entity.applicantId = (json.applicantId ?? entity.applicantId).toString();
-        entity.firstName = (json.firstName ?? entity.firstName).toString();
-        entity.lastName = (json.lastName ?? entity.lastName).toString();
-        entity.reports = json.reports ?? entity.reports;
-        entity.checkIds = json.checkIds ?? entity.checkIds;
-        entity.checkResults = json.checkResults ?? entity.checkResults;
-        entity.checkStatuses = json.checkStatuses ?? entity.checkStatuses;
+    //     entity.kycId = parseInt(json.kycId ?? entity.kycId.toString());
+    //     entity.accountId = parseInt(json.accountId ?? entity.accountId.toString());
+    //     entity.applicantId = (json.applicantId ?? entity.applicantId).toString();
+    //     entity.firstName = (json.firstName ?? entity.firstName).toString();
+    //     entity.lastName = (json.lastName ?? entity.lastName).toString();
 
-        return entity;
-    }
+    //     return entity;
+    // }
 
 }
