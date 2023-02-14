@@ -13,6 +13,21 @@ query MarketplaceNftTradeHistoryByUniqueIds($uniqIds: [String!]) {
   }
 }
 
+query MarketplaceNftTradeHistoryByUniqueIdsAndTimestamp($uniqIds: [String!], $timestampFrom: bigint!, $timestampTo: bigint!) {
+  marketplace_nft_buy_history(where: { timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, uniq_id: {_in: $uniqIds}}) {
+    buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
+    uniq_id
+  }
+}
+
 query MarketplaceNftTradeHistoryBySellerAddressAndTimestamp($timestampFrom: bigint!, $timestampTo: bigint!, $address: String!) {
   marketplace_nft_buy_history(where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, seller: {_eq: $address}}) {
     buyer

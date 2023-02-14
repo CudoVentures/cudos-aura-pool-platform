@@ -38,6 +38,10 @@ import {
     MarketplaceNftTradeHistoryByBuyerAddressAndTimestampDocument,
     MarketplaceNftTradeHistoryBySellerAddressAndTimestampQuery,
     MarketplaceNftTradeHistoryBySellerAddressAndTimestampDocument,
+    MarketplaceNftTradeHistoryByUniqueIdsAndTimestampQuery,
+    MarketplaceNftTradeHistoryByUniqueIdsAndTimestampDocument,
+    NftTransferHistoryByUniqueIdsAndTimestampQuery,
+    NftTransferHistoryByUniqueIdsAndTimestampDocument,
 } from './types';
 import NftModuleNftTransferHistoryEntity from './entities/nft-module-nft-transfer-history';
 import NftMarketplaceTradeHistoryEntity from './entities/nft-marketplace-trade-history.entity';
@@ -152,6 +156,21 @@ export class GraphqlService {
         return nftTransferHistoryEntities || [];
     }
 
+    async fetchNftTransferHistoryByUniqueIdsAndTimestamp(timestampFrom: number, timestampTo: number, uniqIds: string[]): Promise<NftModuleNftTransferHistoryEntity[]> {
+        const res: AxiosResponse<{ data: NftTransferHistoryByUniqueIdsAndTimestampQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(NftTransferHistoryByUniqueIdsAndTimestampDocument),
+            variables: { uniqIds, timestampFrom, timestampTo },
+        });
+
+        if (!res.data?.data?.nft_transfer_history) {
+            throw new DataServiceError();
+        }
+
+        const nftTransferHistoryEntities = res.data.data?.nft_transfer_history?.map((json) => NftModuleNftTransferHistoryEntity.fromGraphQl(json));
+
+        return nftTransferHistoryEntities || [];
+    }
+
     async fetchNftTransferHistoryByAddressAndTimestamp(timestampFrom: number, timestampTo: number, address: string): Promise<NftModuleNftTransferHistoryEntity[]> {
         const res: AxiosResponse<{ data: NftTransferHistoryByNewOwnerAddressAndTimestampQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(NftTransferHistoryByNewOwnerAddressAndTimestampDocument),
@@ -181,6 +200,21 @@ export class GraphqlService {
         const res: AxiosResponse<{ data: MarketplaceNftTradeHistoryByUniqueIdsQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceNftTradeHistoryByUniqueIdsDocument),
             variables: { uniqIds },
+        });
+
+        if (!res.data?.data?.marketplace_nft_buy_history) {
+            throw new DataServiceError();
+        }
+
+        const nftMarketplaceTradeHistoryEntity = res.data.data?.marketplace_nft_buy_history?.map((json) => NftMarketplaceTradeHistoryEntity.fromGraphQl(json));
+
+        return nftMarketplaceTradeHistoryEntity || [];
+    }
+
+    async fetchMarketplaceNftTradeHistoryByUniqueIdsAndTimestamp(timestampFrom: number, timestampTo: number, uniqIds: string[]): Promise<NftMarketplaceTradeHistoryEntity[]> {
+        const res: AxiosResponse<{ data: MarketplaceNftTradeHistoryByUniqueIdsAndTimestampQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
+            query: print(MarketplaceNftTradeHistoryByUniqueIdsAndTimestampDocument),
+            variables: { uniqIds, timestampFrom, timestampTo },
         });
 
         if (!res.data?.data?.marketplace_nft_buy_history) {
