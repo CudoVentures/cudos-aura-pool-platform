@@ -126,6 +126,9 @@ export default class NftApiRepo implements NftRepo {
             this.nftSessioNStorage.updateNftsMap([nftEntity]);
 
             return txHash;
+        } catch (ex) {
+            console.log(ex);
+            throw ex;
         } finally {
             this.enableActions?.();
         }

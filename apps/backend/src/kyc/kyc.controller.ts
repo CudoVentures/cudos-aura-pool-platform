@@ -27,7 +27,7 @@ export class KycController {
     ): Promise < ResFetchKyc > {
         let kycEntity = null;
         let purchasesInUsdSoFar = 0;
-        if (req.sessionAccountEntity !== null) {
+        if (req.sessionUserEntity !== null) {
             kycEntity = await this.kycService.fetchAndInvalidateKyc(req.sessionAccountEntity);
             if (kycEntity.hasWorkflowRunWithFullParams() === false) {
                 purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(req.sessionUserEntity);
