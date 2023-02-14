@@ -91,8 +91,6 @@ export class KycService {
             customData: workflorRunParams.asCreateWorkflowParams(),
         });
 
-        console.log('creating new workflow run');
-        console.log(workflowRun);
         kycEntity.workflowIds.push(workflowId);
         kycEntity.workflowRunIds.push(workflowRun.id);
         kycEntity.workflowRunStatuses.push(workflowRun.status);
