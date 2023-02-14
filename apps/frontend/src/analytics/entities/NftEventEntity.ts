@@ -21,7 +21,6 @@ export default class NftEventEntity {
     transferPriceInAcudos: BigNumber;
     transferPriceInBtc: BigNumber;
     transferPriceInUsd: number;
-    quantity: number;
     timestamp: number;
 
     constructor() {
@@ -34,7 +33,6 @@ export default class NftEventEntity {
         this.transferPriceInAcudos = new BigNumber(S.NOT_EXISTS);
         this.transferPriceInBtc = new BigNumber(S.NOT_EXISTS);
         this.transferPriceInUsd = S.NOT_EXISTS;
-        this.quantity = 0;
         this.timestamp = S.NOT_EXISTS;
 
         makeAutoObservable(this);
@@ -102,7 +100,6 @@ export default class NftEventEntity {
             'transferPriceInAcudos': entity.transferPriceInAcudos.toString(10),
             'transferPriceInBtc': entity.transferPriceInBtc.toString(10),
             'transferPriceInUsd': entity.transferPriceInUsd,
-            'quantity': entity.quantity,
             'timestamp': entity.timestamp,
         }
     }
@@ -123,7 +120,6 @@ export default class NftEventEntity {
         entity.transferPriceInAcudos = new BigNumber(json.transferPriceInAcudos ?? entity.transferPriceInAcudos);
         entity.transferPriceInBtc = new BigNumber(json.transferPriceInBtc ?? entity.transferPriceInBtc);
         entity.transferPriceInUsd = parseFloat(json.transferPriceInUsd ?? entity.transferPriceInUsd);
-        entity.quantity = parseInt(json.quantity ?? entity.quantity);
         entity.timestamp = parseInt(json.timestamp ?? entity.timestamp);
 
         return entity;

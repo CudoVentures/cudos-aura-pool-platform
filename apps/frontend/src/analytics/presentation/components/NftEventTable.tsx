@@ -28,15 +28,15 @@ function NftEventTable({ className, tableState, nftEventEntities, getNftEntityBy
             legend.push('Item');
         }
 
-        return legend.concat(['Price', 'Quantity', 'To', 'Time']);
+        return legend.concat(['Price', 'To', 'Time']);
     }
 
     function getWidths() {
         if (showItem === true) {
-            return ['14%', '12%', '18%', '14%', '12%', '14%', '16%'];
+            return ['20%', '12%', '18%', '14%', '20%', '16%'];
         }
 
-        return ['17%', '15%', '17%', '15%', '17%', '19%'];
+        return ['24%', '15%', '18%', '24%', '19%'];
     }
 
     function getAligns() {
@@ -46,14 +46,14 @@ function NftEventTable({ className, tableState, nftEventEntities, getNftEntityBy
             aligns.push(ALIGN_LEFT);
         }
 
-        return aligns.concat([ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]);
+        return aligns.concat([ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]);
     }
 
     function renderCollectionsRows() {
         return nftEventEntities ? nftEventEntities.map((nftEventEntity: NftEventEntity) => {
             const tableCells = [
                 createTableCell((
-                    <div className={'Bold Dots AddressCell'}>{nftEventEntity.fromAddress}</div>
+                    <div className={'Bold Dots AddressCell'} title = { nftEventEntity.fromAddress }>{nftEventEntity.fromAddress}</div>
                 )),
                 createTableCellString(nftEventEntity.getEventActivityDisplayName()),
             ]
@@ -82,9 +82,8 @@ function NftEventTable({ className, tableState, nftEventEntities, getNftEntityBy
                             )}
                         </div>
                     )),
-                    createTableCellString(nftEventEntity.quantity.toString()),
                     createTableCell((
-                        <div className={'Bold Dots AddressCell'}>{nftEventEntity.toAddress}</div>
+                        <div className={'Bold Dots AddressCell'} title = { nftEventEntity.toAddress }>{nftEventEntity.toAddress}</div>
                     )),
                     createTableCellString(nftEventEntity.getTimePassedDisplay()),
                 ]),
