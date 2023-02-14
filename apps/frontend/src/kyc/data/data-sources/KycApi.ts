@@ -1,6 +1,6 @@
 import axios from 'axios';
 import KycEntity from '../../entities/KycEntity';
-import { ReqCreditKyc } from '../dto/Requests';
+import { ReqCreateWorkflowRun, ReqCreditKyc } from '../dto/Requests';
 import { ResCreateWorkflowRun, ResCreditKyc, ResFetchKyc } from '../dto/Responses';
 
 const KYC_ENDPOINT = '/api/v1/kyc';
@@ -26,8 +26,8 @@ export default class KycApi {
         }
     }
 
-    async createWorkflowRun(): Promise < KycEntity > {
-        const { data } = await axios.post(`${KYC_ENDPOINT}/createWorkflowRun`);
+    async createWorkflowRun(runFullWorkflow: number): Promise < KycEntity > {
+        const { data } = await axios.post(`${KYC_ENDPOINT}/createWorkflowRun`, new ReqCreateWorkflowRun(runFullWorkflow));
         const res = new ResCreateWorkflowRun(data);
         return res.kycEntity;
     }

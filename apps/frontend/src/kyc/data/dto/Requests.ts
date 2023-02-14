@@ -9,3 +9,13 @@ export class ReqCreditKyc {
     }
 
 }
+
+export class ReqCreateWorkflowRun {
+
+    runFullWorkflow: number;
+
+    constructor(runFullWorkflow: number) {
+        this.runFullWorkflow = runFullWorkflow;
+    }
+
+}

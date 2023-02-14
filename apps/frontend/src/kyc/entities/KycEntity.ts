@@ -49,9 +49,9 @@ export default class KycEntity {
             case KycStatus.COMPLETED_FAILED:
                 return 'Verification failed';
             case KycStatus.COMPLETED_SUCCESS:
-                return 'Verified';
+                return 'Completely Verified';
             case KycStatusWithPartial.PARTIAL:
-                return 'Partial';
+                return 'Partially Verified';
             case KycStatus.NOT_STARTED:
             default:
                 return 'Not verified';

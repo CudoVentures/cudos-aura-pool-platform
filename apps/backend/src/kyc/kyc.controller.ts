@@ -4,8 +4,9 @@ import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
+import { IntBoolValue } from '../common/utils';
 import { StatisticsService } from '../statistics/statistics.service';
-import { ReqCreditKyc } from './dto/requests.dto';
+import { ReqCreateWorkflowRun, ReqCreditKyc } from './dto/requests.dto';
 import { ResFetchKyc, ResCreditKyc, ResCreateWorkflowRun } from './dto/responses.dto';
 import { KycService } from './kyc.service';
 
@@ -61,9 +62,14 @@ export class KycController {
     @HttpCode(200)
     async createWorkflowRun(
         @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqCreateWorkflowRun: ReqCreateWorkflowRun,
     ): Promise < ResCreateWorkflowRun > {
-        const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(req.sessionUserEntity);
+        let purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(req.sessionUserEntity);
         let kycEntity = await this.kycService.fetchKycByAccount(req.sessionAccountEntity, req.transaction);
+        if (purchasesInUsdSoFar <= 1000 && reqCreateWorkflowRun.runFullWorkflow === IntBoolValue.TRUE) {
+            purchasesInUsdSoFar = 1000.001;
+        }
+
         kycEntity = await this.kycService.createWorkflowRun(req.sessionUserEntity, purchasesInUsdSoFar, kycEntity, req.transaction);
         return new ResCreateWorkflowRun(kycEntity);
     }

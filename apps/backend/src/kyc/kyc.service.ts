@@ -52,8 +52,8 @@ export class KycService {
             workflowRunsMap.set(workflowRun.id, workflowRun);
         }
 
-        kycEntity.workflowIds.forEach((workflowId, i) => {
-            const workflowRun = workflowRunsMap.get(workflowId);
+        kycEntity.workflowRunIds.forEach((workflowRunId, i) => {
+            const workflowRun = workflowRunsMap.get(workflowRunId);
             if (workflowRun !== undefined) {
                 kycEntity.workflowRunStatuses[i] = workflowRun.status;
             }
@@ -79,9 +79,9 @@ export class KycService {
 
     async createWorkflowRun(userEntity: UserEntity, purchasesInUsdSoFar: number, kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
         const workflowId = this.configService.get < string >('APP_ONFIDO_WORKFLOW_ID');
-        if (kycEntity.hasWorkflow(workflowId) === true) {
-            return kycEntity;
-        }
+        // if (kycEntity.hasWorkflow(workflowId) === true) {
+        //     return kycEntity;
+        // }
 
         const workflorRunParams = WorkflowRunParamsV1Entity.newInstance(userEntity.cudosWalletAddress, purchasesInUsdSoFar);
 
