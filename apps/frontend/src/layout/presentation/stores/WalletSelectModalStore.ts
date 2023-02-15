@@ -4,6 +4,8 @@ import ModalStore from '../../../core/presentation/stores/ModalStore';
 import S from '../../../core/utilities/Main';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import WalletStore, { SessionStorageWalletOptions } from '../../../ledger/presentation/stores/WalletStore';
+import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 enum WalletSelectMode {
     USER = 1,
@@ -34,6 +36,7 @@ enum TransactionStatus {
 export default class WalletSelectModal extends ModalStore {
 
     @observable walletSelectMode: WalletSelectMode;
+    @observable progressSteps: ProgressSteps[] = [];
     @observable progressStep: ProgressSteps;
     @observable walletConnectionStep: WalletConnectionSteps;
     @observable walletOption: SessionStorageWalletOptions;
@@ -45,15 +48,20 @@ export default class WalletSelectModal extends ModalStore {
 
     accountRepo: AccountRepo;
     walletStore: WalletStore;
+    accountSessionStore: AccountSessionStore;
+    kycStore: KycStore;
 
-    constructor(walletStore: WalletStore, accountRepo: AccountRepo) {
+    constructor(walletStore: WalletStore, accountRepo: AccountRepo, accountSessionStore: AccountSessionStore, kycStore: KycStore) {
         super();
 
         this.walletStore = walletStore;
         this.accountRepo = accountRepo;
+        this.accountSessionStore = accountSessionStore;
+        this.kycStore = kycStore;
 
         this.walletSelectMode = WalletSelectMode.USER;
         this.progressStep = ProgressSteps.CONNECT_WALLET;
+        this.progressSteps = [];
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
         this.walletOption = SessionStorageWalletOptions.KEPLR;
         this.identityTx = TransactionStatus.NOT_INITIALIZED;
@@ -196,6 +204,15 @@ export default class WalletSelectModal extends ModalStore {
         }
     }
 
+    hasBackStep(): boolean {
+        switch (this.progressStep) {
+            case ProgressSteps.KYC:
+                return false;
+            default:
+                return true;
+        }
+    }
+
     @action
     showSignalAsUser() {
         this.showSignal(WalletSelectMode.USER, null);
@@ -220,11 +237,35 @@ export default class WalletSelectModal extends ModalStore {
         this.identityTx = TransactionStatus.NOT_INITIALIZED;
         this.onFinish = onFinish;
 
+        this.invalidateProgressSteps();
+
         this.show();
+    }
+
+    invalidateProgressSteps() {
+        this.progressSteps = [];
+
+        if (this.isModeUser() === true) {
+            this.progressSteps.push(ProgressSteps.CONNECT_WALLET);
+            if (this.accountSessionStore.isUser() === false) {
+                this.progressSteps.push(ProgressSteps.SIGN);
+            }
+            if (this.kycStore.isAnyVerificationNotStarted() === true) {
+                this.progressSteps.push(ProgressSteps.KYC);
+            }
+        } else if (this.isModeAdmin() === true) {
+            this.progressSteps.push(ProgressSteps.CONNECT_WALLET);
+            if (this.accountSessionStore.isAdmin() === false) {
+                this.progressSteps.push(ProgressSteps.SIGN);
+            }
+        } else if (this.isModeSuperAdmin() === true) {
+            this.progressSteps.push(ProgressSteps.CONNECT_WALLET);
+        }
     }
 
     hide = action(() => {
         this.walletSelectMode = WalletSelectMode.USER;
+        this.progressSteps = [];
         this.progressStep = ProgressSteps.CONNECT_WALLET;
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
         this.walletOption = SessionStorageWalletOptions.KEPLR;

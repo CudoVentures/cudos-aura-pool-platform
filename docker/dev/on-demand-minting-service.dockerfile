@@ -1,6 +1,6 @@
 FROM amd64/golang:1.18-buster
 
-RUN apt-get update && apt-get install git
+RUN apt-get update && apt-get install git curl jq -y
 
 ARG USER_ID
 ARG USER_NAME
@@ -19,6 +19,7 @@ ARG MINTER_PORT
 ARG CHAIN_ID
 ARG CHAIN_RPC
 ARG CHAIN_GRPC
+ARG ON_DEMAND_MINTING_STARTING_HEIGHT
 
 ENV WALLET_MNEMONIC=${MINTER_WALLET_MNEMONIC}
 ENV AURA_POOL_BACKEND=${AURA_POOL_BACKEND}
@@ -37,6 +38,8 @@ WORKDIR ${WORKING_DIR}
 COPY ./CudosOnDemandMintingService ./CudosOnDemandMintingService
 
 WORKDIR ${WORKING_DIR}/CudosOnDemandMintingService
+
+RUN if [ "${ON_DEMAND_MINTING_STARTING_HEIGHT}" != "" ]; then echo "{\"height\": ${ON_DEMAND_MINTING_STARTING_HEIGHT} }" > ./state.json; fi;
 
 RUN go build -mod=readonly ./cmd/cudos-ondemand-minting-service
 

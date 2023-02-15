@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import { NOT_EXISTS_INT } from '../../../../backend/src/common/utils';
 import S from '../../core/utilities/Main';
@@ -125,6 +126,10 @@ export default class NftEntity {
 
     formatHashPowerInTh(): string {
         return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`;
+    }
+
+    formatPriceInUsd(): string {
+        return numeral(this.priceUsd).format(ProjectUtils.NUMERAL_USD);
     }
 
     cloneDeep(): NftEntity {

@@ -7,6 +7,7 @@ import { CudosChainRpcHappyPathMockRepo, CudosChainRpcInvalidOriginalTxMockRepo,
 
 describe('CudosRefundWorker (e2e)', () => {
     const logErrorSpy = jest.spyOn(CudosRefundWorker, 'error');
+    const logWarnSpy = jest.spyOn(CudosRefundWorker, 'warn');
 
     beforeEach(async () => {
         Logger.transports.forEach((t) => { t.silent = true });
@@ -85,9 +86,9 @@ describe('CudosRefundWorker (e2e)', () => {
         await expect(worker.run()).resolves.not.toThrowError();
 
         // Assert
-        expect(logErrorSpy).toBeCalledWith('Invalid transaction parsed:\n\tTxHash: refundTx\n\tParsed entity: null');
+        expect(logWarnSpy).toBeCalledWith('Invalid transaction parsed:\n\tTxHash: refundTx\n\tParsed entity: null');
         expect(spyRefund).not.toBeCalled();
-        expect(spyFinish).not.toBeCalled();
+        expect(spyFinish).toBeCalled();
     });
 
     it('Error: invalid blocks', async () => {

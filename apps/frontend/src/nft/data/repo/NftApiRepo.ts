@@ -153,6 +153,9 @@ export default class NftApiRepo implements NftRepo {
             this.nftSessioNStorage.updateNftsMap([nftEntity]);
 
             return txHash;
+        } catch (ex) {
+            console.log(ex);
+            throw ex;
         } finally {
             this.enableActions?.();
         }
@@ -177,7 +180,7 @@ export default class NftApiRepo implements NftRepo {
                     },
                 );
 
-                const tx = await contract.methods.sendPayment(web3.utils.asciiToHex('presale'), web3.utils.asciiToHex(ledger.accountAddress))
+                const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(ledger.accountAddress))
                     .send({
                         value: (new BigNumber(PRESALE_CONSTS.PRICE_ETH)).shiftedBy(18).toFixed(0),
                     });

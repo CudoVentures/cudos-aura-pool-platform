@@ -68,7 +68,7 @@ export class NftRepo extends Model {
         price: string;
 
     @AllowNull(false)
-    @Column
+    @Column({ type: DataType.DECIMAL })
         priceInEth: string
 
     @AllowNull(false)

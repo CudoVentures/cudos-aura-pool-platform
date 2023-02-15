@@ -10,10 +10,12 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../repos/AccountRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 export default class AccountSessionStore {
 
     walletStore: WalletStore;
+    kycStore: KycStore;
     accountRepo: AccountRepo;
     miningFarmRepo: MiningFarmRepo;
 
@@ -25,8 +27,9 @@ export default class AccountSessionStore {
     superAdminEntity: SuperAdminEntity;
     shouldChangePassword: number;
 
-    constructor(walletStore: WalletStore, accountRepo: AccountRepo, miningFarmRepo: MiningFarmRepo) {
+    constructor(walletStore: WalletStore, kycStore: KycStore, accountRepo: AccountRepo, miningFarmRepo: MiningFarmRepo) {
         this.walletStore = walletStore;
+        this.kycStore = kycStore;
         this.accountRepo = accountRepo;
         this.miningFarmRepo = miningFarmRepo;
 
@@ -172,6 +175,7 @@ export default class AccountSessionStore {
     async logout(): Promise < void > {
         await this.walletStore.disconnect();
         await this.accountRepo.logout();
+        this.kycStore.nullKycOnLogout();
 
         await runInActionAsync(() => {
             this.accountEntity = null;
@@ -253,6 +257,7 @@ export default class AccountSessionStore {
             console.log('Logged as super => wallet:', this.walletStore.isConnected())
         }
 
+        await this.kycStore.fetchKyc();
         await runInActionAsync(() => {
             this.accountEntity = accountEntity;
             this.userEntity = userEntity;

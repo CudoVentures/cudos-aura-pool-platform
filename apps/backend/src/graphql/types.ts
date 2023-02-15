@@ -16981,6 +16981,33 @@ export type MarketplaceNftTradeHistoryByUniqueIdsQueryVariables = Exact<{
 
 export type MarketplaceNftTradeHistoryByUniqueIdsQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
 
+export type MarketplaceNftTradeHistoryByUniqueIdsAndTimestampQueryVariables = Exact<{
+  uniqIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  timestampFrom: Scalars['bigint'];
+  timestampTo: Scalars['bigint'];
+}>;
+
+
+export type MarketplaceNftTradeHistoryByUniqueIdsAndTimestampQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
+
+export type MarketplaceNftTradeHistoryBySellerAddressAndTimestampQueryVariables = Exact<{
+  timestampFrom: Scalars['bigint'];
+  timestampTo: Scalars['bigint'];
+  address: Scalars['String'];
+}>;
+
+
+export type MarketplaceNftTradeHistoryBySellerAddressAndTimestampQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
+
+export type MarketplaceNftTradeHistoryByBuyerAddressAndTimestampQueryVariables = Exact<{
+  timestampFrom: Scalars['bigint'];
+  timestampTo: Scalars['bigint'];
+  address: Scalars['String'];
+}>;
+
+
+export type MarketplaceNftTradeHistoryByBuyerAddressAndTimestampQuery = { __typename?: 'query_root', marketplace_nft_buy_history: Array<{ __typename?: 'marketplace_nft_buy_history', buyer: string, btc_price: any, denom_id: string, price: any, seller: string, timestamp: any, token_id: any, usd_price: any, transaction_hash: string, uniq_id?: string | null }> };
+
 export type MarketplaceNftTradeHistoryByDenomIdsQueryVariables = Exact<{
   denomIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
@@ -17028,6 +17055,33 @@ export type NftTransferHistoryByUniqueIdsQueryVariables = Exact<{
 
 
 export type NftTransferHistoryByUniqueIdsQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
+
+export type NftTransferHistoryByUniqueIdsAndTimestampQueryVariables = Exact<{
+  uniqIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  timestampFrom: Scalars['bigint'];
+  timestampTo: Scalars['bigint'];
+}>;
+
+
+export type NftTransferHistoryByUniqueIdsAndTimestampQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
+
+export type NftTransferHistoryByNewOwnerAddressAndTimestampQueryVariables = Exact<{
+  timestampFrom: Scalars['bigint'];
+  timestampTo: Scalars['bigint'];
+  address: Scalars['String'];
+}>;
+
+
+export type NftTransferHistoryByNewOwnerAddressAndTimestampQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
+
+export type NftTransferHistoryByOldOwnerAddressAndTimestampQueryVariables = Exact<{
+  timestampFrom: Scalars['bigint'];
+  timestampTo: Scalars['bigint'];
+  address: Scalars['String'];
+}>;
+
+
+export type NftTransferHistoryByOldOwnerAddressAndTimestampQuery = { __typename?: 'query_root', nft_transfer_history: Array<{ __typename?: 'nft_transfer_history', id: any, denom_id: string, new_owner: string, old_owner: string, timestamp: any, transaction_hash: string, uniq_id?: string | null }> };
 
 export type NftPlatformTransferHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -17108,6 +17162,60 @@ export const MarketplaceNftPriceSumTotalDocument = gql`
 export const MarketplaceNftTradeHistoryByUniqueIdsDocument = gql`
     query MarketplaceNftTradeHistoryByUniqueIds($uniqIds: [String!]) {
   marketplace_nft_buy_history(where: {uniq_id: {_in: $uniqIds}}) {
+    buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
+    uniq_id
+  }
+}
+    `;
+export const MarketplaceNftTradeHistoryByUniqueIdsAndTimestampDocument = gql`
+    query MarketplaceNftTradeHistoryByUniqueIdsAndTimestamp($uniqIds: [String!], $timestampFrom: bigint!, $timestampTo: bigint!) {
+  marketplace_nft_buy_history(
+    where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, uniq_id: {_in: $uniqIds}}
+  ) {
+    buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
+    uniq_id
+  }
+}
+    `;
+export const MarketplaceNftTradeHistoryBySellerAddressAndTimestampDocument = gql`
+    query MarketplaceNftTradeHistoryBySellerAddressAndTimestamp($timestampFrom: bigint!, $timestampTo: bigint!, $address: String!) {
+  marketplace_nft_buy_history(
+    where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, seller: {_eq: $address}}
+  ) {
+    buyer
+    btc_price
+    denom_id
+    price
+    seller
+    timestamp
+    token_id
+    usd_price
+    transaction_hash
+    uniq_id
+  }
+}
+    `;
+export const MarketplaceNftTradeHistoryByBuyerAddressAndTimestampDocument = gql`
+    query MarketplaceNftTradeHistoryByBuyerAddressAndTimestamp($timestampFrom: bigint!, $timestampTo: bigint!, $address: String!) {
+  marketplace_nft_buy_history(
+    where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, buyer: {_eq: $address}}
+  ) {
     buyer
     btc_price
     denom_id
@@ -17241,6 +17349,51 @@ export const NftTransferHistoryByUniqueIdsDocument = gql`
   }
 }
     `;
+export const NftTransferHistoryByUniqueIdsAndTimestampDocument = gql`
+    query NftTransferHistoryByUniqueIdsAndTimestamp($uniqIds: [String!], $timestampFrom: bigint!, $timestampTo: bigint!) {
+  nft_transfer_history(
+    where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, uniq_id: {_in: $uniqIds}}
+  ) {
+    id
+    denom_id
+    new_owner
+    old_owner
+    timestamp
+    transaction_hash
+    uniq_id
+  }
+}
+    `;
+export const NftTransferHistoryByNewOwnerAddressAndTimestampDocument = gql`
+    query NftTransferHistoryByNewOwnerAddressAndTimestamp($timestampFrom: bigint!, $timestampTo: bigint!, $address: String!) {
+  nft_transfer_history(
+    where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, new_owner: {_eq: $address}}
+  ) {
+    id
+    denom_id
+    new_owner
+    old_owner
+    timestamp
+    transaction_hash
+    uniq_id
+  }
+}
+    `;
+export const NftTransferHistoryByOldOwnerAddressAndTimestampDocument = gql`
+    query NftTransferHistoryByOldOwnerAddressAndTimestamp($timestampFrom: bigint!, $timestampTo: bigint!, $address: String!) {
+  nft_transfer_history(
+    where: {timestamp: {_lte: $timestampTo, _gte: $timestampFrom}, old_owner: {_eq: $address}}
+  ) {
+    id
+    denom_id
+    new_owner
+    old_owner
+    timestamp
+    transaction_hash
+    uniq_id
+  }
+}
+    `;
 export const NftPlatformTransferHistoryDocument = gql`
     query NftPlatformTransferHistory {
   nft_transfer_history {
@@ -17280,6 +17433,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     MarketplaceNftTradeHistoryByUniqueIds(variables?: MarketplaceNftTradeHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByUniqueIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByUniqueIdsQuery>(MarketplaceNftTradeHistoryByUniqueIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByUniqueIds', 'query');
     },
+    MarketplaceNftTradeHistoryByUniqueIdsAndTimestamp(variables: MarketplaceNftTradeHistoryByUniqueIdsAndTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByUniqueIdsAndTimestampQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByUniqueIdsAndTimestampQuery>(MarketplaceNftTradeHistoryByUniqueIdsAndTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByUniqueIdsAndTimestamp', 'query');
+    },
+    MarketplaceNftTradeHistoryBySellerAddressAndTimestamp(variables: MarketplaceNftTradeHistoryBySellerAddressAndTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryBySellerAddressAndTimestampQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryBySellerAddressAndTimestampQuery>(MarketplaceNftTradeHistoryBySellerAddressAndTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryBySellerAddressAndTimestamp', 'query');
+    },
+    MarketplaceNftTradeHistoryByBuyerAddressAndTimestamp(variables: MarketplaceNftTradeHistoryByBuyerAddressAndTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByBuyerAddressAndTimestampQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByBuyerAddressAndTimestampQuery>(MarketplaceNftTradeHistoryByBuyerAddressAndTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByBuyerAddressAndTimestamp', 'query');
+    },
     MarketplaceNftTradeHistoryByDenomIds(variables?: MarketplaceNftTradeHistoryByDenomIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MarketplaceNftTradeHistoryByDenomIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MarketplaceNftTradeHistoryByDenomIdsQuery>(MarketplaceNftTradeHistoryByDenomIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MarketplaceNftTradeHistoryByDenomIds', 'query');
     },
@@ -17300,6 +17462,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     NftTransferHistoryByUniqueIds(variables?: NftTransferHistoryByUniqueIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryByUniqueIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryByUniqueIdsQuery>(NftTransferHistoryByUniqueIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistoryByUniqueIds', 'query');
+    },
+    NftTransferHistoryByUniqueIdsAndTimestamp(variables: NftTransferHistoryByUniqueIdsAndTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryByUniqueIdsAndTimestampQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryByUniqueIdsAndTimestampQuery>(NftTransferHistoryByUniqueIdsAndTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistoryByUniqueIdsAndTimestamp', 'query');
+    },
+    NftTransferHistoryByNewOwnerAddressAndTimestamp(variables: NftTransferHistoryByNewOwnerAddressAndTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryByNewOwnerAddressAndTimestampQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryByNewOwnerAddressAndTimestampQuery>(NftTransferHistoryByNewOwnerAddressAndTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistoryByNewOwnerAddressAndTimestamp', 'query');
+    },
+    NftTransferHistoryByOldOwnerAddressAndTimestamp(variables: NftTransferHistoryByOldOwnerAddressAndTimestampQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftTransferHistoryByOldOwnerAddressAndTimestampQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftTransferHistoryByOldOwnerAddressAndTimestampQuery>(NftTransferHistoryByOldOwnerAddressAndTimestampDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftTransferHistoryByOldOwnerAddressAndTimestamp', 'query');
     },
     NftPlatformTransferHistory(variables?: NftPlatformTransferHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftPlatformTransferHistoryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<NftPlatformTransferHistoryQuery>(NftPlatformTransferHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'NftPlatformTransferHistory', 'query');

@@ -28,9 +28,11 @@ export class ReqCreditMiningFarm {
 export class ReqFetchMiningFarmDetails {
 
     miningFarmIds: string[];
+    includesExternalDetails: number;
 
-    constructor(miningFarmIds: string[]) {
+    constructor(miningFarmIds: string[], includesExternalDetails: number) {
         this.miningFarmIds = miningFarmIds;
+        this.includesExternalDetails = includesExternalDetails;
     }
 
 }

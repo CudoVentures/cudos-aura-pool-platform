@@ -40,9 +40,9 @@ export class GeneralController {
     @Get('last-checked-payment-relayer-blocks')
     @HttpCode(200)
     async getLastCheckedPaymentRelayerBlock(): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
-        const { lastCheckedEthBlock, lastCheckedCudosBlock } = await this.generalService.getLastCheckedPaymentRelayerBlocks();
+        const generalEntity = await this.generalService.fetchGeneral();
 
-        const res = new ResFetchLastCheckedPaymenrRelayerBlocks(lastCheckedEthBlock, lastCheckedCudosBlock);
+        const res = new ResFetchLastCheckedPaymenrRelayerBlocks(generalEntity.lastCheckedPaymentRelayerEthBlock, generalEntity.lastCheckedPaymentRelayerCudosBlock);
 
         return res;
     }

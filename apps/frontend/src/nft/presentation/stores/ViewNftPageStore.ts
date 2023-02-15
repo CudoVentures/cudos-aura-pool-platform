@@ -211,12 +211,17 @@ export default class ViewNftPageStore {
         return `${ethPrice.toFixed(6)} ETH`;
     }
 
-    getNftPriceText() {
+    formatNftPriceInUsd() {
         if (this.nftEntity.isStatusListed() === false) {
             return 'Not for sale';
         }
 
-        return this.cudosStore.formatConvertedAcudosInUsd(this.nftEntity.priceInAcudos);
+        if (this.nftEntity.hasPriceInAcudos() === true) {
+            return this.cudosStore.formatConvertedAcudosInUsd(this.nftEntity.priceInAcudos);
+        }
+
+        return this.nftEntity.formatPriceInUsd();
+
     }
 
     getMonthlyMaintenanceFee(): BigNumber {

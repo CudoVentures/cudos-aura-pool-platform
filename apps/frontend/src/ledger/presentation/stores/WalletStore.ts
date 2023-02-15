@@ -204,7 +204,7 @@ export default class WalletStore {
     }
 
     formatBalance(): string {
-        return `${this.balance?.toFixed() ?? '0'} CUDOS`;
+        return `${this.balance?.toFixed(2) ?? '0'} CUDOS`;
     }
 
     getName(): string {

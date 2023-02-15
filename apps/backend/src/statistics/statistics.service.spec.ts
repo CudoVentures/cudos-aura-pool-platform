@@ -108,9 +108,27 @@ describe('StatisticsService', () => {
         jest.spyOn(graphQlService, 'fetchMarketplaceCollectionsByDenomIds').mockImplementation(async (denomIds) => getGraphQlmarketplaceCollections().filter((entity) => denomIds.includes(entity.denomId)));
         jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
         jest.spyOn(graphQlService, 'fetchNftTransferHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlNftNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
+        jest.spyOn(graphQlService, 'fetchNftTransferHistoryByUniqueIdsAndTimestamp').mockImplementation(async (timestampFrom, timestampTo, uniqIds) => getGraphQlNftNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)
+            && entity.timestamp >= timestampFrom
+            && entity.timestamp <= timestampTo));
         jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlMarketplaceNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
+        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByUniqueIdsAndTimestamp').mockImplementation(async (timestampFrom, timestampTo, uniqIds) => getGraphQlMarketplaceNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)
+            && entity.timestamp >= timestampFrom
+            && entity.timestamp <= timestampTo));
+        jest.spyOn(graphQlService, 'fetchNftTransferHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlNftNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
         jest.spyOn(graphQlService, 'fetchNftPlatformTransferHistory').mockImplementation(async () => getGraphQlNftNftEvents());
         jest.spyOn(graphQlService, 'fetchMarketplacePlatformNftTradeHistory').mockImplementation(async () => getGraphQlMarketplaceNftEvents());
+
+        jest.spyOn(graphQlService, 'fetchNftTransferHistoryByAddressAndTimestamp').mockImplementation(async (timestampFrom, timestampTo, address) => getGraphQlNftNftEvents().filter((entity) => (entity.newOwner === address
+            || entity.oldOwner === address)
+            && entity.timestamp >= timestampFrom
+            && entity.timestamp <= timestampTo));
+
+        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByAddressAndTimestamp').mockImplementation(async (timestampFrom, timestampTo, address) => getGraphQlMarketplaceNftEvents().filter((entity) => (entity.buyer === address
+            || entity.seller === address)
+            && entity.timestamp >= timestampFrom
+            && entity.timestamp <= timestampTo));
+
         jest.spyOn(configService, 'getOrThrow').mockImplementation(() => 'testpayout');
     });
 
@@ -291,30 +309,43 @@ describe('StatisticsService', () => {
         nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
         nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
 
-        let nftEntities = nftTestEntitities.filter((json) => json.currentOwner === userEntity.cudosWalletAddress).map((json) => NftEntity.fromRepo(json));
-        const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
-            const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
-            return `${entity.tokenId}@${collection.denomId}`;
-        });
-        const nftEventEntities = getGraphQlMarketplaceNftEvents()
-            .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
-            .map((entity) => {
-                const nftEventEntity = NftEventEntity.fromNftMarketplaceTradeHistory(entity);
-                const collection = collectionEntities.find((collectionEntity) => collectionEntity.denomId === nftEventEntity.denomId)
-                const nft = nftEntities.find((nftEntity) => nftEntity.tokenId === nftEventEntity.tokenId && nftEntity.collectionId === collection.id);
+        const collectionIdCollectionMap = new Map<number, CollectionEntity>();
+        collectionEntities.forEach((collectionEntity: CollectionEntity) => {
+            collectionIdCollectionMap.set(collectionEntity.id, collectionEntity);
+        })
 
-                nftEventEntity.nftId = nft.id;
-                return nftEventEntity;
-            })
+        const denomIdTokenIdNftEntityMap = new Map<string, Map<string, NftEntity>>();
+        nftTestEntitities.forEach((nftEntity: NftEntity) => {
+            const collectionEntity = collectionIdCollectionMap.get(nftEntity.collectionId);
+            if (denomIdTokenIdNftEntityMap.has(collectionEntity.denomId) === false) {
+                denomIdTokenIdNftEntityMap.set(collectionEntity.denomId, new Map());
+            }
+
+            const tempMap = denomIdTokenIdNftEntityMap.get(collectionEntity.denomId);
+
+            tempMap.set(nftEntity.tokenId, nftEntity);
+        });
+
+        const nftEventEntities = getGraphQlMarketplaceNftEvents().map((entity) => NftEventEntity.fromNftMarketplaceTradeHistory(entity))
+            .concat(getGraphQlNftNftEvents().map((entity) => NftEventEntity.fromNftModuleTransferHistory(entity)))
             .filter((entity) => {
-                return entity.isMintEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
+                return (entity.fromAddress === userEntity.cudosWalletAddress || entity.toAddress === userEntity.cudosWalletAddress)
+                && entity.isMintEvent()
+                && entity.timestamp <= nftEventFilterEntity.timestampTo
+                && entity.timestamp >= nftEventFilterEntity.timestampFrom;
             });
 
-        const nftEventMap = new Map<string, NftEventEntity>();
-        nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
+        let nftEntities = [];
+        nftEventEntities.forEach((entity) => {
+            const nft = denomIdTokenIdNftEntityMap.get(entity.denomId).get(entity.tokenId);
+            entity.nftId = nft.id;
+
+            nftEntities.push(nft);
+        })
+
+        nftEntities = nftEntities.filter((entity, index) => nftEntities.findIndex((entity2) => entity2.id === entity.id) === index);
 
         const total = nftEventEntities.length;
-        nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
 
         const result = { nftEventEntities, nftEntities, total };
 
@@ -344,7 +375,7 @@ describe('StatisticsService', () => {
         nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
         nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
 
-        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+        let nftEntities = nftTestEntitities;
         const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
             const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
             return `${entity.tokenId}@${collection.denomId}`;
@@ -387,7 +418,7 @@ describe('StatisticsService', () => {
         nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
         nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
 
-        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+        let nftEntities = nftTestEntitities;
 
         const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
             const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
@@ -437,12 +468,12 @@ describe('StatisticsService', () => {
         const collectionIds = collectionEntities.filter((collectionEntity) => collectionEntity.farmId === 1)
             .map((collectionEntity) => collectionEntity.id);
 
-        let nftEntities = nftTestEntitities.filter((json) => collectionIds.includes(json.collectionId))
-            .map((json) => NftEntity.fromRepo(json));
+        let nftEntities = nftTestEntitities.filter((json) => collectionIds.includes(json.collectionId));
         const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
             const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
             return `${entity.tokenId}@${collection.denomId}`;
         });
+
         const nftEventEntities = getGraphQlMarketplaceNftEvents()
             .filter((entity) => resultNftEntitiesUniqIds.includes(`${entity.tokenId}@${entity.denomId}`))
             .map((entity) => {
@@ -464,13 +495,13 @@ describe('StatisticsService', () => {
 
         nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
 
-        const result = { nftEventEntities, nftEntities, total };
+        const expected = { nftEventEntities, nftEntities, total };
 
         // Act
-        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const result = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
 
         // Assert
-        expect(userEarningsEntity).toEqual(result);
+        expect(result).toEqual(expected);
     });
 
     it('fetchNftEventsByFilter: By platform transferred', async () => {
@@ -482,7 +513,7 @@ describe('StatisticsService', () => {
         nftEventFilterEntity.timestampFrom = getZeroDatePlusDaysTimestamp(1);
         nftEventFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(3);
 
-        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+        let nftEntities = nftTestEntitities
 
         const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
             const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
@@ -612,7 +643,7 @@ describe('StatisticsService', () => {
         megaWalletEventFilter.timestampFrom = getZeroDatePlusDaysTimestamp(2);
         megaWalletEventFilter.timestampTo = getZeroDatePlusDaysTimestamp(4);
 
-        let nftEntities = nftTestEntitities.map((json) => NftEntity.fromRepo(json));
+        let nftEntities = nftTestEntitities
         const resultNftEntitiesUniqIds = nftEntities.map((entity) => {
             const collection = collectionEntities.find((collectionEntity) => collectionEntity.id === entity.collectionId);
             return `${entity.tokenId}@${collection.denomId}`;

@@ -109,15 +109,15 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
         }
     }
 
-    async fetchMiningFarmDetailsById(miningFarmId: string): Promise < MiningFarmDetailsEntity > {
-        const miningFarmDetailsEntities = await this.fetchMiningFarmsDetailsByIds([miningFarmId]);
+    async fetchMiningFarmDetailsById(miningFarmId: string, includesExternalDetails: number = S.INT_FALSE): Promise < MiningFarmDetailsEntity > {
+        const miningFarmDetailsEntities = await this.fetchMiningFarmsDetailsByIds([miningFarmId], includesExternalDetails);
         return miningFarmDetailsEntities.length === 1 ? miningFarmDetailsEntities[0] : null;
     }
 
-    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
+    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[], includesExternalDetails: number = S.INT_FALSE): Promise < MiningFarmDetailsEntity[] > {
         try {
             this.disableActions?.();
-            return await this.miningFarmApi.fetchMiningFarmsDetailsByIds(miningFarmIds);
+            return await this.miningFarmApi.fetchMiningFarmsDetailsByIds(miningFarmIds, includesExternalDetails);
         } finally {
             this.enableActions?.();
         }

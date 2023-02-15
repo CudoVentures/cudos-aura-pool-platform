@@ -1,0 +1,17 @@
+.PageKyc {
+    background:url("/assets/vectors/auth-bg.svg");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center bottom;
+}
+
+.PageKyc .PageContent {
+    padding: 100px var(--page-spacing-h);
+}
+
+.PageKyc #onfido-mount {
+    width: 100%; height: 100%;
+    position: fixed;
+    left: 0; top: 0;
+    background-color: #fff;
+}

@@ -64,6 +64,8 @@ import ApprovedCollectionsStore from './collection/presentation/stores/ApprovedC
 import RejectedCollectionsStore from './collection/presentation/stores/RejectedCollectionsStore';
 import GeneralStore from './general/presentation/stores/GeneralStore';
 import ProgressStore from './core/presentation/stores/ProgressStore';
+import KycApiRepo from './kyc/data/repo/KycApiRepo';
+import KycStore from './kyc/presentation/stores/KycStore';
 import CheckForPresaleRefundsModalStore from './accounts/presentation/stores/CheckForPresaleRefundsModalStore';
 import PresaleStore from './app-routes/presentation/PresaleStore';
 import AllowlistApiRepo from './allowlist/data/repo/AllowlistApiRepo';
@@ -91,6 +93,7 @@ const accountRepo = new AccountApiRepo();
 const walletRepo = new WalletApiRepo();
 const settingsRepo = new SettingsApiRepo();
 const allowlistRepo = new AllowlistApiRepo();
+const kycRepo = new KycApiRepo();
 
 const appStore = new AppStore();
 const alertStore = new AlertStore();
@@ -103,7 +106,8 @@ const presaleStore = new PresaleStore();
 
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
-const accountSessionStore = new AccountSessionStore(walletStore, accountRepo, miningFarmRepo);
+const kycStore = new KycStore(kycRepo);
+const accountSessionStore = new AccountSessionStore(walletStore, kycStore, accountRepo, miningFarmRepo);
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, generalStore, miningFarmRepo);
 const marketplacePageStore = new MarketplacePageStore(presaleStore, alertStore, walletStore, cudosStore, collectionRepo, nftRepo, miningFarmRepo, allowlistRepo);
@@ -135,7 +139,7 @@ const resellNftModalStore = new ResellNftModalStore(nftRepo, walletStore);
 const viewCollectionModalStore = new ViewCollectionModalStore(nftRepo, collectionRepo, accountRepo, miningFarmRepo);
 const viewMiningFarmModalStore = new ViewMiningFarmModalStore(generalStore, miningFarmRepo);
 const changePasswordModalStore = new ChangePasswordModalStore(accountRepo);
-const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo);
+const walletSelectModalStore = new WalletSelectModalStore(walletStore, accountRepo, accountSessionStore, kycStore);
 const valueChangeModalStore = new ValueChangeModalStore();
 const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSessionStore, generalStore);
 const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSessionStore, walletStore);
@@ -153,6 +157,7 @@ statisticsRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.
 accountRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 walletRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 settingsRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+kycRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 
 bitcoinRepo.setPresentationAlertCallbacks(alertStore.show);
 cudosRepo.setPresentationAlertCallbacks(alertStore.show);
@@ -164,6 +169,7 @@ statisticsRepo.setPresentationAlertCallbacks(alertStore.show);
 accountRepo.setPresentationAlertCallbacks(alertStore.show);
 walletRepo.setPresentationAlertCallbacks(alertStore.show);
 settingsRepo.setPresentationAlertCallbacks(alertStore.show);
+kycRepo.setPresentationAlertCallbacks(alertStore.show);
 
 collectionRepo.setProgressCallbacks(progressStore.onProgress);
 miningFarmRepo.setProgressCallbacks(progressStore.onProgress);
@@ -194,6 +200,7 @@ const App = () => {
                 cudosStore={cudosStore}
                 categoriesStore={categoriesStore}
                 accountSessionStore={accountSessionStore}
+                kycStore={kycStore}
                 exampleModalStore={exampleModalStore}
                 rewardsCalculatorStore={rewardsCalculatorStore}
                 exploreCollectionsPageStore={exploreCollectionsPageStore}

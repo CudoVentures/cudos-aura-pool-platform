@@ -19,6 +19,7 @@ import { AccountType } from '../account/account.types';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
 import { IsPresaleContractRelayerGuard } from './guards/is-presale-contract-relayer';
 import { ConfigService } from '@nestjs/config';
+import AccountService from '../account/account.service';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -31,6 +32,7 @@ export class NFTController {
         @Inject(forwardRef(() => FarmService))
         private miningFarmService: FarmService,
         private configService: ConfigService,
+        private accountService: AccountService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -47,23 +49,36 @@ export class NFTController {
     }
 
     // used by on-demand-minting
-    @Get('on-demand-minting-nft/:id')
+    @Get('on-demand-minting-nft/:id/:recipient')
     @HttpCode(200)
-    async findOne(@Param('id') id: string): Promise<any> {
+    async findOne(@Param('id') id: string, @Param('recipient') recipient: string): Promise<any> {
+        const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
+        if (userEntity === null) {
+            throw new NotFoundException();
+        }
 
         let nftEntity;
 
         if (id === 'presale') {
-            const presaleEndTimestamp = parseInt(this.configService.get<string>('APP_PRESALE_END_TIMESTAMP'));
+            const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp < Date.now()) {
                 throw new Error('Presale ended.')
             }
+
             nftEntity = await this.nftService.getRandomPresaleNft();
             if (nftEntity !== null) {
                 nftEntity = await this.nftService.updatePremintNftPrice(nftEntity);
             }
         } else {
             nftEntity = await this.nftService.findOne(id);
+        }
+
+        if (nftEntity.isPriceInAcudosValidForMinting() === false) {
+            throw new NotFoundException();
+        }
+
+        if (nftEntity.isQueued() === false) {
+            throw new NotFoundException();
         }
 
         const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
