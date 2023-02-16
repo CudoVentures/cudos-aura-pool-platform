@@ -18,6 +18,7 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 import AllowlistRepo from '../../../allowlist/presentation/repos/AllowlistRepo';
 import AllowlistUserEntity from '../../../allowlist/entities/AllowlistUserEntity';
+import { PresaleImage01, PresaleImage02, PresaleImage03, PresaleImage04, PresaleImage05 } from '../../../mining-farm/utilities/PresaleImages';
 
 declare let Config;
 
@@ -37,6 +38,7 @@ export default class MarketplacePageStore {
     presaleCollectionEntity: CollectionEntity;
     presaleCollectionDetailsEntity: CollectionDetailsEntity;
     presaleNftEntities: NftEntity[];
+    presaleNftsUniqueImageUrls: string[];
     presaleNftIndexSelected: number;
 
     collectionMap: Map < string, CollectionEntity >;
@@ -65,6 +67,7 @@ export default class MarketplacePageStore {
         this.presaleCollectionEntity = null;
         this.presaleCollectionDetailsEntity = null;
         this.presaleNftEntities = [];
+        this.presaleNftsUniqueImageUrls = ['/assets/presale-nft-images/level1.png', '/assets/presale-nft-images/level2.png', '/assets/presale-nft-images/level3.png', '/assets/presale-nft-images/level4.png', '/assets/presale-nft-images/level5.png'];
         this.presaleNftIndexSelected = 0;
 
         this.collectionMap = new Map();
@@ -124,6 +127,7 @@ export default class MarketplacePageStore {
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
         const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+
         await runInActionAsync(() => {
             this.presaleCollectionEntity = presaleCollection;
             this.presaleCollectionDetailsEntity = collectionDetails[0];
@@ -233,7 +237,12 @@ export default class MarketplacePageStore {
     }
 
     getPresaleMintedPercent(): number {
-        return (this.getPresaleMintedAmount() * 100) / this.getPresaleTotalAmount();
+        const total = this.getPresaleTotalAmount();
+        if (total === 0) {
+            return 0;
+        }
+
+        return (this.getPresaleMintedAmount() * 100) / total;
     }
 
     isUserEligibleToBuy(): boolean {
@@ -307,17 +316,14 @@ export default class MarketplacePageStore {
     }
 
     getPresaleNftPicture() {
-        if (this.presaleNftEntities.length === 0) {
-            return '';
-        }
-        return this.presaleNftEntities[this.presaleNftIndexSelected]?.imageUrl;
+        return this.presaleNftsUniqueImageUrls[this.presaleNftIndexSelected];
     }
 
     onClickNextPresaleNftPicture = () => {
-        this.presaleNftIndexSelected = this.presaleNftIndexSelected < this.presaleNftEntities.length - 1 ? this.presaleNftIndexSelected + 1 : 0;
+        this.presaleNftIndexSelected = this.presaleNftIndexSelected < this.presaleNftsUniqueImageUrls.length - 1 ? this.presaleNftIndexSelected + 1 : 0;
     }
 
     onClickPreviousPresaleNftPicture = () => {
-        this.presaleNftIndexSelected = this.presaleNftIndexSelected === 0 ? this.presaleNftEntities.length - 1 : this.presaleNftIndexSelected - 1;
+        this.presaleNftIndexSelected = this.presaleNftIndexSelected === 0 ? this.presaleNftsUniqueImageUrls.length - 1 : this.presaleNftIndexSelected - 1;
     }
 }

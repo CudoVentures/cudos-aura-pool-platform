@@ -76,7 +76,7 @@ function PageHeader({ accountSessionStore, walletStore }: Props) {
                     </div>
                 ) }
 
-                { accountSessionStore.isLoggedIn() === true && (
+                { accountSessionStore.isUser() === true && (
                     <KycBadge />
                 ) }
 

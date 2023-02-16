@@ -42,15 +42,17 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-credit-mining-farm.css';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 type Props = {
     creditMiningFarmPageStore?: CreditMiningFarmPageStore,
     accountSessionStore?: AccountSessionStore
     editMiningFarmModalStore?: EditMiningFarmModalStore
     visitorStore?: VisitorStore
+    alertStore?: AlertStore,
 }
 
-function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore, visitorStore }: Props) {
+function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore, visitorStore, alertStore }: Props) {
     const { farmId } = useParams();
     const navigate = useNavigate();
 
@@ -105,6 +107,12 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
         navigate(`${AppRoutes.CREDIT_COLLECTION}/${approvedCollectionEntities[index].id}`);
     }
 
+    function onClickMintPresaleNfts() {
+        alertStore.show('You are about to mint ALL presale NFTs. Do NOT do this operation twice', () => {
+            creditMiningFarmPageStore.createPresaleCollection();
+        });
+    }
+
     function renderQueuedCollectionsRows() {
         return queuedCollectionEntities.map((collectionEntity: CollectionEntity) => {
             return createTableRow([
@@ -117,11 +125,11 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                 createTableCellString(creditMiningFarmPageStore.getFloorPrice(collectionEntity.id)),
                 createTableCell((
                     <Actions height = { ActionsHeight.HEIGHT_32 }>
-                        <Button color = { ButtonColor.SCHEME_GREEN } type = { ButtonType.TEXT_INLINE } onClick = { () => creditMiningFarmPageStore.onClickApproveCollection(collectionEntity) }>
+                        <Button color = { ButtonColor.SCHEME_GREEN } type = { ButtonType.TEXT_INLINE } onClick = { creditMiningFarmPageStore.onClickApproveCollection.bind(creditMiningFarmPageStore, collectionEntity) }>
                             <Svg svg = { CheckCircleOutlineIcon } />
                             Approve
                         </Button>
-                        <Button color = { ButtonColor.SCHEME_RED } type = { ButtonType.TEXT_INLINE } onClick = { () => creditMiningFarmPageStore.onClickRejectCollection(collectionEntity) }>
+                        <Button color = { ButtonColor.SCHEME_RED } type = { ButtonType.TEXT_INLINE } onClick = { creditMiningFarmPageStore.onClickRejectCollection.bind(creditMiningFarmPageStore, collectionEntity) }>
                             <Svg svg = { HighlightOffIcon } />
                             Reject
                         </Button>
@@ -278,6 +286,12 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                             { accountSessionStore.isAdmin() === true && accountSessionStore.accountEntity.accountId === miningFarmEntity.accountId && (
                                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
                                     <Button
+                                        onClick={creditMiningFarmPageStore.onClickCreatePresaleCollection}
+                                        color={ButtonColor.SCHEME_4} >
+                                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                    Profile images
+                                    </Button>
+                                    <Button
                                         onClick={onClickProfileImages}
                                         color={ButtonColor.SCHEME_4} >
                                         <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
@@ -294,6 +308,16 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                                         color={ButtonColor.SCHEME_4} >
                                         <Svg size = { SvgSize.CUSTOM } svg={SettingsIcon} />
                                     Account settings
+                                    </Button>
+                                </Actions>
+                            ) }
+                            { accountSessionStore.isSuperAdmin() === true && (
+                                <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
+                                    <Button
+                                        onClick={onClickMintPresaleNfts}
+                                        color={ButtonColor.SCHEME_4} >
+                                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                        Create presale collection
                                     </Button>
                                 </Actions>
                             ) }

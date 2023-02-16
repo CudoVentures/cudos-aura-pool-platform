@@ -14,6 +14,8 @@ import CollectionDetailsEntity from '../../../collection/entities/CollectionDeta
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import NftEntity from '../../../nft/entities/NftEntity';
+import { CollectionCoverImage01, CollectionProfileImage01, PresaleImage01, PresaleImage02, PresaleImage03, PresaleImage04, PresaleImage05 } from '../../utilities/PresaleImages';
 
 export default class CreditMiningFarmPageStore {
 
@@ -200,7 +202,9 @@ export default class CreditMiningFarmPageStore {
         this.fetchAnyCollections();
     })
 
-    async onClickApproveCollection(collectionEntity: CollectionEntity) {
+    async onClickApproveCollection(collectionEntity: CollectionEntity, ev) {
+        ev.stopPropagation();
+
         if (this.walletStore.isConnected() === false) {
             this.alertStore.show('You must connect your wallet first');
             return;
@@ -219,7 +223,9 @@ export default class CreditMiningFarmPageStore {
         }
     }
 
-    async onClickRejectCollection(collectionEntity: CollectionEntity) {
+    async onClickRejectCollection(collectionEntity: CollectionEntity, ev) {
+        ev.stopPropagation();
+
         try {
             const collectionClone = collectionEntity.clone();
             collectionClone.markRejected();
@@ -260,4 +266,82 @@ export default class CreditMiningFarmPageStore {
     //         console.log(e);
     //     }
     // }
+
+    async createPresaleCollection() {
+        try {
+            const collectionEntity = new CollectionEntity();
+            collectionEntity.farmId = this.miningFarmEntity.id;
+            collectionEntity.name = 'Presale Collection';
+            collectionEntity.description = 'Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet. More';
+            collectionEntity.profileImgUrl = CollectionProfileImage01;
+            collectionEntity.coverImgUrl = CollectionCoverImage01;
+            collectionEntity.royalties = 3;
+
+            const nftEntities = [];
+            for (let i = 1; i <= 112; i++) {
+                const nftEntity = new NftEntity();
+                nftEntity.name = `Opal ${i}`;
+                nftEntity.hashPowerInTh = 1;
+                nftEntity.imageUrl = PresaleImage01;
+                nftEntity.expirationDateTimestamp = 1798754400000;
+                nftEntity.priceUsd = 150;
+
+                nftEntities.push(nftEntity);
+            }
+
+            for (let i = 1; i <= 440; i++) {
+                const nftEntity = new NftEntity();
+                nftEntity.name = `Ruby ${i}`;
+                nftEntity.hashPowerInTh = 2;
+                nftEntity.imageUrl = PresaleImage02;
+                nftEntity.expirationDateTimestamp = 1798754400000;
+                nftEntity.priceUsd = 300;
+
+                nftEntities.push(nftEntity);
+            }
+
+            for (let i = 1; i <= 29; i++) {
+                const nftEntity = new NftEntity();
+                nftEntity.name = `Emerald ${i}`;
+                nftEntity.hashPowerInTh = 6;
+                nftEntity.imageUrl = PresaleImage03;
+                nftEntity.expirationDateTimestamp = 1798754400000;
+                nftEntity.priceUsd = 1000;
+
+                nftEntities.push(nftEntity);
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                const nftEntity = new NftEntity();
+                nftEntity.name = `Diamond ${i}`;
+                nftEntity.hashPowerInTh = 18;
+                nftEntity.imageUrl = PresaleImage04;
+                nftEntity.expirationDateTimestamp = 1798754400000;
+                nftEntity.priceUsd = 3000;
+
+                nftEntities.push(nftEntity);
+            }
+
+            for (let i = 1; i <= 1; i++) {
+                const nftEntity = new NftEntity();
+                nftEntity.name = `Blue Diamond ${i}`;
+                nftEntity.hashPowerInTh = 30;
+                nftEntity.imageUrl = PresaleImage05;
+                nftEntity.expirationDateTimestamp = 1798754400000;
+                nftEntity.priceUsd = 5000;
+
+                nftEntities.push(nftEntity);
+            }
+
+            collectionEntity.hashPowerInTh = nftEntities.reduce((accu, nftEntity) => {
+                return accu + nftEntity.hashPowerInTh;
+            }, 0);
+
+            await this.collectionRepo.creditCollection(collectionEntity, nftEntities);
+            this.alertStore.show('Minting was successfull');
+        } catch (e) {
+            console.log(e);
+            this.alertStore.show('There was an error minting the NFTs');
+        }
+    }
 }

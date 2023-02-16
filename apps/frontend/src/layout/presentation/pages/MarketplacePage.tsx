@@ -317,7 +317,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                         <Progressbar fillPercent={marketplacePageStore.getPresaleMintedPercent()} />
                                         <div className={ 'AmountMintedRow FlexRow' }>
                                             <div className={'B3 ColorNeutral60'}>Minted so far</div>
-                                            <div className={'B3 ColorNeutral60'}>{marketplacePageStore.getPresaleMintedPercent()}% ({marketplacePageStore.getPresaleMintedAmount()}/{marketplacePageStore.getPresaleTotalAmount()})</div>
+                                            <div className={'B3 ColorNeutral60'}>{marketplacePageStore.getPresaleMintedPercent().toFixed(2)}% ({marketplacePageStore.getPresaleMintedAmount()}/{marketplacePageStore.getPresaleTotalAmount()})</div>
                                         </div>
                                     </ColumnLayout>
                                 </StyledContainer>
@@ -340,7 +340,9 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                 </StyledContainer>
                             </ColumnLayout>
                             {walletStore.isConnected() === false && (
-                                <RowLayout numColumns={1}>Connect your wallet to buy.</RowLayout>
+                                <div className = { 'FlexSingleCenter ColorError060 Bold' } >
+                                    Connect your wallet to buy
+                                </div>
                             )}
                             {marketplacePageStore.isUserEligibleToBuy() === true && (
                                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
