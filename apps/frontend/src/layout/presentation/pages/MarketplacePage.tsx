@@ -24,7 +24,7 @@ import SvgEthereumLogo from '../../../public/assets/vectors/ethereum-logo.svg';
 import '../styles/page-marketplace.css';
 import RowLayout from '../../../core/presentation/components/RowLayout';
 import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
-import StyledContainer, { ContainerPadding } from '../../../core/presentation/components/StyledContainer';
+import StyledContainer, { ContainerBorder, ContainerPadding } from '../../../core/presentation/components/StyledContainer';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import Progressbar from '../../../core/presentation/components/StaticProgressBar';
 import PictureGallery from '../../../core/presentation/components/PictureGallery';
@@ -287,8 +287,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                 <StyledContainer
                                     className={ 'PhaseInfoContainer' }
                                     containerPadding={ContainerPadding.PADDING_16}
-                                    containerShadow={true}
-                                >
+                                    containerBorder={ContainerBorder.PRIMARY_60}>
                                     <ColumnLayout className={ 'PhaseInfoColumn' } gap={8}>
                                         <RowLayout className={ 'PhaseHeader' } numColumns={2}>
                                             <div className={'PhaseName B3 SemiBold'}>Presale Phase</div>
@@ -324,9 +323,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                 </StyledContainer>
                                 <StyledContainer
                                     className={ 'PhaseInfoContainer' }
-                                    containerPadding={ContainerPadding.PADDING_16}
-                                    containerShadow={true}
-                                >
+                                    containerPadding={ContainerPadding.PADDING_16} >
                                     <ColumnLayout className={ 'PhaseInfoColumn' }>
                                         <RowLayout className={ 'PhaseHeader' } numColumns={2}>
                                             <div className={'PhaseName B3 SemiBold'}>Public Stage</div>

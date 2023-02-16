@@ -1,7 +1,7 @@
 .StyledContainer {
     box-sizing: border-box;
     margin: 0 auto;
-    border:1px solid var(--color-neutral-020);
+    border:1px solid transparent;
     border-radius: var(--border-radius);
 }
 
@@ -41,6 +41,14 @@
 
 .StyledContainer.Padding16 {
     padding: 16px;
+}
+
+.StyledContainer.BorderNeutral20 {
+    border-color: var(--color-neutral-020);
+}
+
+.StyledContainer.BorderPrimary60 {
+    border-color: var(--color-primary-060);
 }
 
 .StyledContainer.Shadow {
