@@ -278,6 +278,12 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                             { accountSessionStore.isAdmin() === true && accountSessionStore.accountEntity.accountId === miningFarmEntity.accountId && (
                                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
                                     <Button
+                                        onClick={creditMiningFarmPageStore.onClickCreatePresaleCollection}
+                                        color={ButtonColor.SCHEME_4} >
+                                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                    Profile images
+                                    </Button>
+                                    <Button
                                         onClick={onClickProfileImages}
                                         color={ButtonColor.SCHEME_4} >
                                         <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />

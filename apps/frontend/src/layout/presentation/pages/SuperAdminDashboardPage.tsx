@@ -142,9 +142,9 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                         headerRight = {
                             <DefaultIntervalPicker defaultIntervalPickerState = { farmsDefaultIntervalPickerState } />
                         }
-                        bottomRightButtons = {
+                        bottomRightButtons = {<>
                             <Button padding = { ButtonPadding.PADDING_48 } onClick = { onClickAllFarms }>See all farms</Button>
-                        } >
+                        </>} >
                         { bestPerformingMiningFarms === null ? (
                             <LoadingIndicator />
                         ) : (
