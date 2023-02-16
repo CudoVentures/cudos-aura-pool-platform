@@ -68,6 +68,8 @@ export class WorkflowRunParamsV1Entity implements WorkflowRunParamsVxEntity {
     address = '';
     balance = 0;
 
+    static LIGHT_PARAMS_LIMIT_IN_USD = 1000;
+
     static newInstance(address: string, balance: number): WorkflowRunParamsV1Entity {
         const entity = new WorkflowRunParamsV1Entity();
 
@@ -97,7 +99,7 @@ export class WorkflowRunParamsV1Entity implements WorkflowRunParamsVxEntity {
     }
 
     areLightParams() {
-        return this.balance < 1000;
+        return this.balance <= WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD;
     }
 
     areFullParams() {

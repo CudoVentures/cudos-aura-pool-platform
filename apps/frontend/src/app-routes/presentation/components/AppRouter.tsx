@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import AppRoutes from '../../entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
+import PresaleStore from '../PresaleStore';
 
 import NotFoundPage from '../../../layout/presentation/pages/NotFoundPage';
 import UiKitPage from '../../../ui-kit/presensation/components/UiKitPage';
@@ -35,24 +36,27 @@ import SuperAdminAnalyticsPage from '../../../analytics/presentation/pages/Super
 import SuperAdminMegaWalletPage from '../../../accounts/presentation/pages/SuperAdminMegaWalletPage';
 import SuperAdminDashboardPage from '../../../layout/presentation/pages/SuperAdminDashboardPage';
 import KycPage from '../../../kyc/presentation/pages/KycPage';
+import TermsAndConditionsPage from '../../../info/presentation/pages/TermsAndConditionsPage';
 
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/app-router.css';
-import TermsAndConditionsPage from '../../../info/presentation/pages/TermsAndConditionsPage';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
-    kycStore?: KycStore;
+    presaleStore?: PresaleStore
+    kycStore?: KycStore
 }
 
-function AppRouter({ accountSessionStore, kycStore }: Props) {
+function AppRouter({ accountSessionStore, kycStore, presaleStore }: Props) {
 
     const location = useLocation();
     const [displayLocation, setDisplayLocation] = useState(location);
     const [transitionStage, setTransistionStage] = useState('PageTransitionIn');
 
     useEffect(() => {
+        presaleStore.update();
+
         if (location !== displayLocation) {
             setTransistionStage('PageTransitionOut');
         }
@@ -102,12 +106,14 @@ function AppRouter({ accountSessionStore, kycStore }: Props) {
                     <Route path = { AppRoutes.UI_KIT } element = { <UiKitPage /> } />
                     <Route path = { AppRoutes.REWARDS_CALCULATOR } element = { <RewardsCalculatorPage /> } />
                     <Route path = { AppRoutes.MARKETPLACE } element = { <MarketplacePage /> } />
-                    <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
-                    <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
-                    <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
                     <Route path = { `${AppRoutes.VIEW_NFT}/:nftId` } element = { <ViewNftPage /> } />
-                    <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
-                    <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
+                    {presaleStore.isInPresale() === false && (<>
+                        <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
+                        <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
+                        <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
+                        <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
+                        <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
+                    </>)}
                     <Route path = { AppRoutes.TERMS_AND_CONDITIONS } element = { <TermsAndConditionsPage /> } />
 
                     {/* Auth */}

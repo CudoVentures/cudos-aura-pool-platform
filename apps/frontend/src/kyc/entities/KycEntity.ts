@@ -16,6 +16,8 @@ export enum KycStatusWithPartial {
     PARTIAL = 5,
 }
 
+export const LIGHT_PARAMS_LIMIT_IN_USD = 1000;
+
 export default class KycEntity {
 
     kycId: string;

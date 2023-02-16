@@ -204,12 +204,24 @@ export default class ViewNftPageStore {
         return `${this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1).toFixed(2)} CUDOS`;
     }
 
-    getNftPriceText() {
+    formatPricePlusMintFeeInEth(): string {
+        const cudosPrice = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
+        const ethPrice = this.cudosStore.convertCudosToEth(cudosPrice);
+
+        return `${ethPrice.toFixed(6)} ETH`;
+    }
+
+    formatNftPriceInUsd() {
         if (this.nftEntity.isStatusListed() === false) {
             return 'Not for sale';
         }
 
-        return this.cudosStore.formatConvertedAcudosInUsd(this.nftEntity.priceInAcudos);
+        if (this.nftEntity.hasPriceInAcudos() === true) {
+            return this.cudosStore.formatConvertedAcudosInUsd(this.nftEntity.priceInAcudos);
+        }
+
+        return this.nftEntity.formatPriceInUsd();
+
     }
 
     getMonthlyMaintenanceFee(): BigNumber {

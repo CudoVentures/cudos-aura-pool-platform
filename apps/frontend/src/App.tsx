@@ -66,6 +66,18 @@ import GeneralStore from './general/presentation/stores/GeneralStore';
 import ProgressStore from './core/presentation/stores/ProgressStore';
 import KycApiRepo from './kyc/data/repo/KycApiRepo';
 import KycStore from './kyc/presentation/stores/KycStore';
+import CheckForPresaleRefundsModalStore from './accounts/presentation/stores/CheckForPresaleRefundsModalStore';
+import PresaleStore from './app-routes/presentation/PresaleStore';
+import AllowlistApiRepo from './allowlist/data/repo/AllowlistApiRepo';
+
+// @ts-ignore
+declare global {
+    // tslint:disable-next-line
+    interface Window {
+      web3: any;
+      ethereum: any;
+    }
+}
 
 const storageHelper = new StorageHelper();
 storageHelper.open();
@@ -80,6 +92,7 @@ const statisticsRepo = new StatisticsApiRepo();
 const accountRepo = new AccountApiRepo();
 const walletRepo = new WalletApiRepo();
 const settingsRepo = new SettingsApiRepo();
+const allowlistRepo = new AllowlistApiRepo();
 const kycRepo = new KycApiRepo();
 
 const appStore = new AppStore();
@@ -89,6 +102,7 @@ const progressStore = new ProgressStore();
 const exampleModalStore = new ExampleModalStore();
 const walletStore = new WalletStore(alertStore, walletRepo);
 const generalStore = new GeneralStore(settingsRepo);
+const presaleStore = new PresaleStore();
 
 const bitcoinStore = new BitcoinStore(bitcoinRepo);
 const cudosStore = new CudosStore(cudosRepo);
@@ -96,7 +110,7 @@ const kycStore = new KycStore(kycRepo);
 const accountSessionStore = new AccountSessionStore(walletStore, kycStore, accountRepo, miningFarmRepo);
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, generalStore, miningFarmRepo);
-const marketplacePageStore = new MarketplacePageStore(collectionRepo, nftRepo, miningFarmRepo);
+const marketplacePageStore = new MarketplacePageStore(presaleStore, alertStore, walletStore, cudosStore, collectionRepo, nftRepo, miningFarmRepo, allowlistRepo);
 const superAdminDashboardPageStore = new SuperAdminDashboardPageStore(bitcoinStore, cudosStore, accountSessionStore, alertStore, statisticsRepo, miningFarmRepo, collectionRepo);
 const exploreCollectionsPageStore = new ExploreCollectionsPageStore(collectionRepo, miningFarmRepo);
 const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRepo);
@@ -131,6 +145,7 @@ const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSes
 const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSessionStore, walletStore);
 const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore();
 const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSessionStore);
+const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(walletStore);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -223,6 +238,8 @@ const App = () => {
                 megaWalletBalanceStore={megaWalletBalanceStore}
                 approvedCollectionsStore={approvedCollectionsStore}
                 rejectedCollectionsStore={rejectedCollectionsStore}
+                checkForPresaleRefundsModalStore={checkForPresaleRefundsModalStore}
+                presaleStore={presaleStore}
             >
                 <BrowserRouter>
                     <AppRouter />

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { NftStatus } from './nft.types';
@@ -14,6 +14,11 @@ import BigNumber from 'bignumber.js';
 import { ChainMarketplaceNftEntity } from '../graphql/entities/nft-marketplace.entity';
 import { FarmService } from '../farm/farm.service';
 import { validate } from 'uuid';
+import RoleGuard from '../auth/guards/role.guard';
+import { AccountType } from '../account/account.types';
+import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
+import { IsPresaleContractRelayerGuard } from './guards/is-presale-contract-relayer';
+import { ConfigService } from '@nestjs/config';
 import AccountService from '../account/account.service';
 
 @ApiTags('NFT')
@@ -26,6 +31,7 @@ export class NFTController {
         private graphqlService: GraphqlService,
         @Inject(forwardRef(() => FarmService))
         private miningFarmService: FarmService,
+        private configService: ConfigService,
         private accountService: AccountService,
     // eslint-disable-next-line no-empty-function
     ) {}
@@ -43,7 +49,7 @@ export class NFTController {
     }
 
     // used by on-demand-minting
-    @Get(':id/:recipient')
+    @Get('on-demand-minting-nft/:id/:recipient')
     @HttpCode(200)
     async findOne(@Param('id') id: string, @Param('recipient') recipient: string): Promise<any> {
         const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
@@ -51,7 +57,22 @@ export class NFTController {
             throw new NotFoundException();
         }
 
-        const nftEntity = await this.nftService.findOne(id);
+        let nftEntity;
+
+        if (id === 'presale') {
+            const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
+            if (presaleEndTimestamp < Date.now()) {
+                throw new Error('Presale ended.')
+            }
+
+            nftEntity = await this.nftService.getRandomPresaleNft();
+            if (nftEntity !== null) {
+                nftEntity = await this.nftService.updatePremintNftPrice(nftEntity);
+            }
+        } else {
+            nftEntity = await this.nftService.findOne(id);
+        }
+
         if (nftEntity.isPriceInAcudosValidForMinting() === false) {
             throw new NotFoundException();
         }
@@ -127,6 +148,8 @@ export class NFTController {
         }
     }
 
+    @ApiBearerAuth('access-token')
+    @UseGuards(RoleGuard([AccountType.USER]), IsCreatorOrSuperAdminGuard)
     @Post('updatePrice')
     @HttpCode(200)
     async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {

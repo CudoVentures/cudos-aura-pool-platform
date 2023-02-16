@@ -240,6 +240,8 @@ for (let i = 1; i <= 5; i++) {
     nftTestEntity.data = 'somestring';
     nftTestEntity.hashingPower = i;
     nftTestEntity.acudosPrice = new BigNumber(`${i}00`);
+    nftTestEntity.ethPrice = new BigNumber('100');
+    nftTestEntity.expirationDateTimestamp = new Date(2024, 10, 9).getTime();
     nftTestEntity.status = NftStatus.MINTED;
     nftTestEntity.tokenId = `${i}`;
     nftTestEntity.collectionId = i;
@@ -247,11 +249,30 @@ for (let i = 1; i <= 5; i++) {
     nftTestEntity.deletedAt = null;
     nftTestEntity.currentOwner = 'testowner';
     nftTestEntity.marketplaceNftId = `${i}`;
-    nftTestEntity.updatedAt = 1676363749337;
-    nftTestEntity.createdAt = 1676363749337;
-    nftTestEntity.deletedAt = -2147483648;
+    nftTestEntity.createdAt = new Date(getZeroDatePlusDaysTimestamp(i - 1)).getTime();
+    nftTestEntity.updatedAt = new Date(getZeroDatePlusDaysTimestamp(i - 1)).getTime();
 
     nftTestEntitities.push(nftTestEntity);
+
+    // nftTestEntitities.push({
+    //     id: uuid,
+    //     name: `nft${i}`,
+    //     uri: 'someuri',
+    //     data: 'somestring',
+    //     hashingPower: i,
+    //     price: `${i}00`,
+    //     priceInEth: '100',
+    //     expirationDate: new Date(2024, 10, 9),
+    //     status: NftStatus.MINTED,
+    //     tokenId: `${i}`,
+    //     collectionId: i,
+    //     creatorId: i,
+    //     deletedAt: null,
+    //     currentOwner: 'testowner',
+    //     marketplaceNftId: `${i}`,
+    //     createdAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
+    //     updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
+    // });
 
     nftPayoutHistoryEntities.push({
         id: i,

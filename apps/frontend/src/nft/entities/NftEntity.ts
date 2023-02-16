@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import { NOT_EXISTS_INT } from '../../../../backend/src/common/utils';
 import S from '../../core/utilities/Main';
@@ -20,6 +21,7 @@ export default class NftEntity {
     tokenId: string;
     hashPowerInTh: number;
     priceInAcudos: BigNumber;
+    priceInEth: BigNumber;
     imageUrl: string;
     status: NftStatus;
     expirationDateTimestamp: number;
@@ -40,6 +42,7 @@ export default class NftEntity {
         this.collectionId = S.Strings.NOT_EXISTS;
         this.hashPowerInTh = S.NOT_EXISTS;
         this.priceInAcudos = null;
+        this.priceInEth = null;
         this.imageUrl = '';
         this.status = NftStatus.QUEUED;
         this.expirationDateTimestamp = S.NOT_EXISTS;
@@ -125,6 +128,10 @@ export default class NftEntity {
         return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`;
     }
 
+    formatPriceInUsd(): string {
+        return numeral(this.priceUsd).format(ProjectUtils.NUMERAL_USD);
+    }
+
     cloneDeep(): NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 
@@ -151,6 +158,7 @@ export default class NftEntity {
             'tokenId': entity.tokenId,
             'hashingPower': entity.hashPowerInTh,
             'priceInAcudos': entity.priceInAcudos?.toString(10) ?? '0',
+            'priceInEth': entity.priceInEth?.toString(10) ?? '0',
             'uri': entity.imageUrl,
             'status': entity.status,
             'expirationDateTimestamp': entity.expirationDateTimestamp,
@@ -178,6 +186,7 @@ export default class NftEntity {
         model.tokenId = json.tokenId ?? model.tokenId;
         model.hashPowerInTh = parseInt(json.hashingPower ?? model.hashPowerInTh);
         model.priceInAcudos = new BigNumber(json.priceInAcudos ?? model.priceInAcudos);
+        model.priceInEth = new BigNumber(json.priceInEth ?? model.priceInEth);
         model.imageUrl = json.uri ?? model.imageUrl;
         model.status = json.status ?? model.status;
         model.expirationDateTimestamp = new Date(json.expirationDateTimestamp ?? model.expirationDateTimestamp).getTime();

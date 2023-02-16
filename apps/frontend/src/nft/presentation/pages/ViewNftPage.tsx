@@ -17,6 +17,7 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
+import { BuyingCurrency } from '../repos/NftRepo';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../core/presentation/components/Breadcrumbs';
 import NftStats from '../components/NftStats';
@@ -94,6 +95,12 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
     }
 
     function onClickBuyNft() {
+        const balance = walletStore.getBalanceSafe();
+        if (balance.lt(cudosStore.getNftCudosPriceForNft(nftEntity))) {
+            alertStore.show('Your balance is not enough to buy this.');
+            return;
+        }
+
         if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
             alertStore.positiveLabel = 'Register';
             alertStore.positiveListener = () => {
@@ -101,12 +108,6 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             };
             alertStore.msg = 'You must register BTC payout adress first';
             alertStore.visible = true;
-            return;
-        }
-
-        const balance = walletStore.getBalanceSafeInAcudos();
-        if (balance.lt(nftEntity.priceInAcudos)) {
-            alertStore.show('Your balance is not enough to buy this.');
             return;
         }
 
@@ -122,7 +123,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             return;
         }
 
-        buyNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
+        buyNftModalStore.showSignal(BuyingCurrency.CUDOS, nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
 
     function onClickResellNft() {
@@ -174,19 +175,17 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             <div className={'DataValue NftPrice FlexRow'}>
                 <Svg svg={SvgCudos}/>
                 <div className={'H3 Bold'}>{cudosStore.formatPriceInCudosForNft(nftEntity)}</div>
-                <div className={'SubPrice B2 SemiBold'}>{viewNftPageStore.getNftPriceText()}</div>
+                <div className={'SubPrice B2 SemiBold'}>{viewNftPageStore.formatNftPriceInUsd()}</div>
             </div>,
         ));
 
-        if (nftEntity.hasPriceInAcudos() === true) {
+        if (nftEntity.isStatusListed() === true) {
             priceDatapreviews.push(createDataPreview(
                 'Fee',
                 <div className={'DataValue NftPrice FlexRow'}>
                     <Svg svg={SvgCudos}/>
                     <div className={'H3 Bold'}>1 CUDOS</div>
-                    <div className={'SubPrice B2 SemiBold'}>${
-                        viewNftPageStore.cudosStore.convertCudosInUsd(new BigNumber(1)).toFixed(4)
-                    }</div>
+                    <div className={'SubPrice B2 SemiBold'}>{cudosStore.formatConvertedCudosInUsd(new BigNumber(1))}</div>
                 </div>,
             ));
         }

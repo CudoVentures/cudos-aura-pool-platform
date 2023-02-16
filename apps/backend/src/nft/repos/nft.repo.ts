@@ -5,7 +5,6 @@ import {
     ForeignKey,
     PrimaryKey,
     Unique,
-    IsDate,
     AllowNull,
     DataType,
     IsUUID,
@@ -29,8 +28,11 @@ export const enum NftRepoColumn {
     COLLECTION_ID = 'collection_id',
     CREATOR_ID = 'creator_id',
     DELETE_AT = 'deleted_at',
+    UPDATED_AT = 'updated_at',
     CURRENT_OWNER = 'current_owner',
     MARKETPLACE_NFT_ID = 'marketplace_nft_id',
+    PRICE_USD = 'price_usd',
+    PRICE_VALID_UNTIL = 'price_acudos_valid_until'
 }
 
 @Table({
@@ -64,6 +66,10 @@ export class NftRepo extends Model {
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })
         price: string;
+
+    @AllowNull(false)
+    @Column({ type: DataType.DECIMAL })
+        priceInEth: string
 
     @AllowNull(false)
     @Column({ type: DataType.DATE })

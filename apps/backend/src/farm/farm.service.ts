@@ -385,13 +385,14 @@ export class FarmService {
             collectionIds.push(collectionEntity.id);
             collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
         });
-
         const nftEntities = await this.nftService.findByCollectionIds(collectionIds);
         nftEntities.forEach((nftEntity) => {
             const collectionEntity = collectionEntitiesMap.get(nftEntity.collectionId);
             const miningFarmEntity = miningFarmEntitiesMap.get(collectionEntity.farmId);
             const miningFarmDetailsEntity = miningFarmIdToDetailsMap.get(miningFarmEntity.id);
             miningFarmDetailsEntity.remainingHashPowerInTH -= collectionEntity.hashingPower;
+            collectionEntity.hashingPower = 0;
+
             ++miningFarmDetailsEntity.nftsOwned;
             collectionEntity.hashingPower = 0;
             if (nftEntity.isSold() === true) {

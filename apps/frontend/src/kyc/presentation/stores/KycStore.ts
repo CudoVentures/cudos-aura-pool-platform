@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import KycEntity, { KycStatusWithPartial } from '../../entities/KycEntity';
+import KycEntity, { KycStatusWithPartial, LIGHT_PARAMS_LIMIT_IN_USD } from '../../entities/KycEntity';
 import KycRepo from '../repos/KycRepo';
 
 export default class KycStore {
@@ -51,7 +51,7 @@ export default class KycStore {
         }
 
         if (this.kycEntity.isLightStatusCompletedSuccess() === true) {
-            return nftPriceInUsd + this.purchasesInUsdSoFar <= 1000;
+            return nftPriceInUsd + this.purchasesInUsdSoFar <= LIGHT_PARAMS_LIMIT_IN_USD;
         }
 
         return false;

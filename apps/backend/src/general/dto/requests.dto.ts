@@ -1,5 +1,6 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmptyObject, IsObject, ValidateNested } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsOptional, ValidateNested } from 'class-validator';
 import { SettingsJsonValidator } from '../general.types';
 
 export class ReqCreditSettings {
@@ -11,4 +12,19 @@ export class ReqCreditSettings {
     @Type(() => SettingsJsonValidator)
         settingsEntity: SettingsJsonValidator;
 
+}
+
+export class ReqUpdateLastCheckedBlockRequest {
+    @IsNumber()
+        height: number;
+}
+
+export class ReqUpdateLastCheckedPaymentRelayerBlocksRequest {
+    @IsNumber()
+    @IsOptional()
+        lastCheckedEthBlock: number;
+
+    @IsNumber()
+    @IsOptional()
+        lastCheckedCudosBlock: number;
 }

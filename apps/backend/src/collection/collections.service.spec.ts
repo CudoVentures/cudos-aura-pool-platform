@@ -20,6 +20,7 @@ import { getGraphQlMarketplaceNftEvents, getGraphQlNftNftEvents } from '../../te
 import nftTestEntitities from '../../test/data/nft.data';
 import { CollectionEntity } from './entities/collection.entity';
 import NftEntity from '../nft/entities/nft.entity';
+import { NOT_EXISTS_INT } from '../common/utils';
 
 describe('CollectionService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -133,6 +134,9 @@ describe('CollectionService', () => {
         // Act
         const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo);
 
+        // db updates this on update and is hard to make it equal, so jsut bypass it
+        topCollectionsResult.forEach((entity) => { entity.timestampUpdatedAt = NOT_EXISTS_INT });
+
         // Assert
         expect(topCollectionsResult).toEqual(topCollectionsData);
     })
@@ -149,6 +153,9 @@ describe('CollectionService', () => {
 
         // Act
         const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo);
+
+        // db updates this on update and is hard to make it equal, so jsut bypass it
+        topCollectionsResult.forEach((entity) => { entity.timestampUpdatedAt = NOT_EXISTS_INT });
 
         // Assert
         expect(topCollectionsResult).toEqual(topCollectionsData);

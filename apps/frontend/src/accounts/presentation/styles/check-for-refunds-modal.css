@@ -1,0 +1,7 @@
+.CheckForPresaleRefundsModal .ModalHolder {
+    align-items: center;
+}
+
+.CheckForPresaleRefundsModal .ModalHolder .BigSvg {
+    width: 70px; height: 70px;
+}

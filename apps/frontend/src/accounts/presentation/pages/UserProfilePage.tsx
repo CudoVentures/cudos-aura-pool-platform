@@ -8,6 +8,9 @@ import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore
 import EditUserBtcModal from '../components/EditUserBtcModal';
 import EditUserBtcModalStore from '../stores/EditUserBtcModalStore';
 import EditUserModalStore from '../stores/EditUserModalStore';
+import CheckForPresaleRefundsModal from '../components/CheckForPresaleRefundsModal';
+import CheckForPresaleRefundsModalStore from '../stores/CheckForPresaleRefundsModalStore';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import PageLayout from '../../../core/presentation/components/PageLayout';
@@ -22,11 +25,11 @@ import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import Actions, { ActionsLayout } from '../../../core/presentation/components/Actions';
 import Button, { ButtonColor } from '../../../core/presentation/components/Button';
 import EditUserModal from '../components/EditUserModal';
+import KycBadge from '../../../core/presentation/components/KycBadge';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-user-profile.css';
-import KycBadge from '../../../core/presentation/components/KycBadge';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -34,9 +37,11 @@ type Props = {
     userProfilePageStore?: UserProfilePageStore,
     editUserModalStore?: EditUserModalStore;
     editUserBtcModalStore?: EditUserBtcModalStore;
+    checkForPresaleRefundsModalStore?: CheckForPresaleRefundsModalStore;
+    presaleStore?: PresaleStore;
 }
 
-function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore, editUserBtcModalStore }: Props) {
+function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore, editUserBtcModalStore, checkForPresaleRefundsModalStore }: Props) {
     useEffect(() => {
         async function init() {
             await bitcoinStore.init();
@@ -47,6 +52,10 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
 
     const accountEntity = accountSessionStore.accountEntity;
     const userEntity = accountSessionStore.userEntity;
+
+    function onClickCheckForRefunds() {
+        checkForPresaleRefundsModalStore.showSignal();
+    }
 
     function onClickProfileImages() {
         editUserModalStore.showSignalWithDefaultCallback(userEntity);
@@ -63,6 +72,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                 <>
                     <EditUserModal />
                     <EditUserBtcModal />
+                    <CheckForPresaleRefundsModal />
                 </>
             } >
             <PageHeader />
@@ -70,6 +80,12 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
             <div className={'PageContent AppContent'} >
                 <ProfileHeader coverPictureUrl={userEntity.coverImgUrl} profilePictureUrl={userEntity.profileImgUrl} />
                 <Actions layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
+                    {presaleStore.isInPresale() === true && (<Button
+                        onClick={onClickCheckForRefunds}
+                        color={ButtonColor.SCHEME_4} >
+                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                        Check For Presale Refunds
+                    </Button>)}
                     <Button
                         onClick={onClickProfileImages}
                         color={ButtonColor.SCHEME_4} >

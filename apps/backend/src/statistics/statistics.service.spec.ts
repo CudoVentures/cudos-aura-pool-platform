@@ -170,8 +170,8 @@ describe('StatisticsService', () => {
     it('fetchEarningsByCudosAddress: Happy path', async () => {
         const expectedUserEraningsEntity = UserEarningsEntity.fromJson({
             totalEarningInBtc: '15',
-            totalNftBought: 0,
-            totalContractHashPowerInTh: 0,
+            totalNftBought: 5,
+            totalContractHashPowerInTh: 15,
             btcEarnedInBtc: '12',
             earningsPerDayInBtc: ['3', '4', '5'],
         });
@@ -183,19 +183,19 @@ describe('StatisticsService', () => {
     it('fetchEarningsByCudosAddress: Not owned, expired and removed NFTs', async () => {
         // adding data to db that shouldn't be calculated
         await NftRepo.create({ // not owned
-            id: uuidv4(), name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '231400', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner2', marketplaceNftId: 10,
+            id: uuidv4(), name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '231400', priceInEth: '231400', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner2', marketplaceNftId: 10,
         });
         await NftRepo.create({ // owned but expired
-            id: uuidv4(), name: 'nftX2', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1231400', expirationDate: new Date(0), status: NftStatus.MINTED, tokenId: 11, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
+            id: uuidv4(), name: 'nftX2', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1231400', priceInEth: '231400', expirationDate: new Date(0), status: NftStatus.MINTED, tokenId: 11, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
         await NftRepo.create({ // owned but expired
-            id: uuidv4(), name: 'nftX3', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '21231400', expirationDate: new Date(2024, 9, 9), status: NftStatus.REMOVED, tokenId: 12, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
+            id: uuidv4(), name: 'nftX3', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '21231400', priceInEth: '231400', expirationDate: new Date(2024, 9, 9), status: NftStatus.REMOVED, tokenId: 12, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
 
         const expectedUserEraningsEntity = UserEarningsEntity.fromJson({
             totalEarningInBtc: '15',
-            totalNftBought: 0,
-            totalContractHashPowerInTh: 0,
+            totalNftBought: 5,
+            totalContractHashPowerInTh: 15,
             btcEarnedInBtc: '12',
             earningsPerDayInBtc: ['3', '4', '5'],
         });
@@ -207,7 +207,7 @@ describe('StatisticsService', () => {
     it('fetchEarningsByCudosAddress: BigNumber calculations and not sent payouts', async () => {
         // adding data to db that shouldn't be calculated
         await NftRepo.create({ // not owned
-            id: uuidv4(), name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '123412312490071992547409919007199254740991.90071992547409919007199254740991', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 'onchain_token', collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
+            id: uuidv4(), name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '123412312490071992547409919007199254740991.90071992547409919007199254740991', priceInEth: '231400', expirationDate: new Date(2024, 10, 10), status: NftStatus.MINTED, tokenId: 'onchain_token', collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
         await NftPayoutHistoryRepo.create({
             id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(9)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(9)),
@@ -227,8 +227,8 @@ describe('StatisticsService', () => {
 
         const expectedUserEraningsEntity = UserEarningsEntity.fromJson({
             totalEarningInBtc: '90071992547409919007199254741006.90071992547409919007199254740991000000003',
-            totalNftBought: 1,
-            totalContractHashPowerInTh: 1,
+            totalNftBought: 6,
+            totalContractHashPowerInTh: 16,
             btcEarnedInBtc: '90071992547409919007199254741003.90071992547409919007199254740991000000003',
             earningsPerDayInBtc: ['3', '4', '5', '0', '0', '0', '0', '90071992547409919007199254740991.90071992547409919007199254740991000000001', '0.00000000000000000000000000000000000000002'],
         });
@@ -249,7 +249,7 @@ describe('StatisticsService', () => {
     it('fetchEarningsByNftId: Queued NFTs', async () => {
         const id = uuidv4();
         await NftRepo.create({ // not owned
-            id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.QUEUED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
+            id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', priceInEth: '231400', expirationDate: new Date(2024, 10, 10), status: NftStatus.QUEUED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
         await NftPayoutHistoryRepo.create({
             id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)),
@@ -270,7 +270,7 @@ describe('StatisticsService', () => {
         // Arrange
         const id = uuidv4();
         await NftRepo.create({ // not owned
-            id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
+            id, name: 'nftX', uri: 'someuri', data: 'somestring', hashingPower: 1, price: '1.2', priceInEth: '231400', expirationDate: new Date(2024, 10, 10), status: NftStatus.REMOVED, tokenId: 10, collectionId: 1, creatorId: 1, deletedAt: null, currentOwner: 'testowner', marketplaceNftId: 10,
         });
         await NftPayoutHistoryRepo.create({
             id: 10, token_id: 10, denom_id: `testdenomid${10}`, payout_period_start: getZeroDatePlusDaysTimestamp(0), payout_period_end: getZeroDatePlusDaysTimestamp(5), reward: '190071992547409919007199254740991.90071992547409919007199254740991', tx_hash: 'txhash10', maintenance_fee: 10, cudo_part_of_maintenance_fee: 10, createdAt: new Date(getZeroDatePlusDaysTimestamp(3)), updatedAt: new Date(getZeroDatePlusDaysTimestamp(3)),
