@@ -95,20 +95,36 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
         return true;
     }
 
-    function onClickBuyWithCudos() {
+    async function onClickBuyWithCudos() {
         if (checkBtcAddressRegistered() === false) {
             return;
         }
 
-        marketplacePageStore.onClickBuyWithCudos();
+        const success = await marketplacePageStore.onClickBuyWithCudos();
+        if (success === true) {
+            showSuccessAlert();
+        }
     }
 
-    function onClickBuyWithEth() {
+    async function onClickBuyWithEth() {
         if (checkBtcAddressRegistered() === false) {
             return;
         }
 
-        marketplacePageStore.onClickBuyWithEth();
+        const success = await marketplacePageStore.onClickBuyWithEth();
+        if (success === true) {
+            showSuccessAlert();
+        }
+    }
+
+    function showSuccessAlert() {
+        alertStore.msg = 'You have successfully bought the NFTs. It should appear it your Profile page shortly. In case of an error you will be able to widthdraw your funds from Profile page as well.';
+        alertStore.positiveLabel = 'Profile';
+        alertStore.positiveListener = () => {
+            navigate(AppRoutes.USER_PROFILE);
+        };
+        alertStore.negativeLabel = 'Ok'
+        alertStore.visible = true;
     }
 
     useEffect(() => {

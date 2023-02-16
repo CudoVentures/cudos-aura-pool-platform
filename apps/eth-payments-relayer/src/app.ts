@@ -93,7 +93,7 @@ export default class App {
                 const contract = ethers.ContractFactory.getContract(Config.AURA_POOL_CONTRACT_ADDRESS || '', AuraPoolContract.abi, wallet);
                 return await contract.deployed();
             } catch (e) {
-                Logger.error(`Failed to get a chain client using ${Config.RPC_ENDPOINT}. Retrying...`);
+                Logger.error(`Failed to get a chain client using ${Config.ETH_NODE_URL}. Retrying...`);
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }
