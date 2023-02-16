@@ -31,9 +31,11 @@ export class ResCreditKyc {
 export class ResCreateWorkflowRun {
 
     kycEntity: KycJsonValidator;
+    workflowRunId: string;
 
-    constructor(kycEntity: KycEntity) {
+    constructor(kycEntity: KycEntity, workflowRunId: string) {
         this.kycEntity = KycEntity.toJson(kycEntity);
+        this.workflowRunId = workflowRunId;
     }
 
 }

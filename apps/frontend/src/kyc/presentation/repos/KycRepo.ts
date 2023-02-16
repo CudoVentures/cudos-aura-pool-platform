@@ -7,6 +7,6 @@ export default interface KycRepo {
 
     fetchKyc(): Promise < { kycEntity: KycEntity, purchasesInUsdSoFar: number } >;
     creditKyc(kycEntity: KycEntity): Promise < string >;
-    createWorkflowRun(kycEntity: KycEntity, runFullWorkflow: number): Promise < void >;
+    createWorkflowRun(kycEntity: KycEntity, runFullWorkflow: number): Promise < string >;
 
 }

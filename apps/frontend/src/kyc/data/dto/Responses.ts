@@ -27,9 +27,11 @@ export class ResCreditKyc {
 export class ResCreateWorkflowRun {
 
     kycEntity: KycEntity;
+    workflowRunId: string
 
     constructor(axiosData: any) {
         this.kycEntity = KycEntity.fromJson(axiosData.kycEntity);
+        this.workflowRunId = axiosData.workflowRunId;
     }
 
 }

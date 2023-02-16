@@ -26,10 +26,13 @@ export default class KycApi {
         }
     }
 
-    async createWorkflowRun(runFullWorkflow: number): Promise < KycEntity > {
+    async createWorkflowRun(runFullWorkflow: number): Promise < { kycEntity: KycEntity, workflowRunId: string } > {
         const { data } = await axios.post(`${KYC_ENDPOINT}/createWorkflowRun`, new ReqCreateWorkflowRun(runFullWorkflow));
         const res = new ResCreateWorkflowRun(data);
-        return res.kycEntity;
+        return {
+            kycEntity: res.kycEntity,
+            workflowRunId: res.workflowRunId,
+        }
     }
 
 }

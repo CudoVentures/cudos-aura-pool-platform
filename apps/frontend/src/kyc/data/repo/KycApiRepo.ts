@@ -49,14 +49,15 @@ export default class KycApiRepo implements KycRepo {
         }
     }
 
-    async createWorkflowRun(kycEntity: KycEntity, runFullWorkflow: number): Promise < void > {
+    async createWorkflowRun(kycEntity: KycEntity, runFullWorkflow: number): Promise < string > {
         try {
             this.disableActions?.();
-            const resultKycEntity = await this.kycApi.createWorkflowRun(runFullWorkflow);
+            const creditResult = await this.kycApi.createWorkflowRun(runFullWorkflow);
 
             await runInActionAsync(() => {
-                Object.assign(kycEntity, resultKycEntity);
+                Object.assign(kycEntity, creditResult.kycEntity);
             });
+            return creditResult.workflowRunId;
         } finally {
             this.enableActions?.();
         }

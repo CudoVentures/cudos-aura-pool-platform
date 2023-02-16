@@ -56,6 +56,14 @@ export default class KycEntity {
         return lastFullI !== NOT_EXISTS_INT;
     }
 
+    getLatestWorkflowRunId(): string {
+        if (this.workflowRunIds.length === 0) {
+            return null;
+        }
+
+        return this.workflowRunIds[this.workflowRunIds.length - 1];
+    }
+
     getRunningWorkflowRunIds(): string[] {
         return this.workflowRunIds.filter((workflowRunId, i) => {
             const status = this.workflowRunStatuses[i];

@@ -75,7 +75,7 @@ export default class KycStore {
         return this.kycRepo.creditKyc(this.kycEntity);
     }
 
-    async createWorkflowRun(runFullWorkflow: number): Promise < void > {
+    async createWorkflowRun(runFullWorkflow: number): Promise < string > {
         return this.kycRepo.createWorkflowRun(this.kycEntity, runFullWorkflow);
     }
 

@@ -58,23 +58,38 @@ function KycPage({ kycStore, alertStore }: Props) {
         runWorkflow(S.INT_TRUE);
     }
 
+    function onClickStartLightCheckForced() {
+        alertStore.show('Do you want to start the progress again', () => {
+            onClickStartLightCheck();
+        }, () => {});
+    }
+
+    function onClickStartFullCheckForced() {
+        alertStore.show('Do you want to start the progress again', () => {
+            onClickStartFullCheck();
+        }, () => {});
+    }
+
     async function runWorkflow(runFullWorkflow: number) {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
             return;
         }
 
+        const workflowRunId = await kycStore.createWorkflowRun(runFullWorkflow);
         const token = await kycStore.creditKycAndGetToken();
         const onfidoInstance = Onfido.init({
             token,
             region: 'US',
-            steps: ['welcome', 'document', 'data', 'complete'],
+            // steps: ['welcome', 'document', 'data', 'complete'],
             useWorkflow: true,
+            workflowRunId,
             onComplete: async (data) => {
                 onfidoMount.current.classList.remove('Active');
                 try {
-                    await kycStore.createWorkflowRun(runFullWorkflow);
-                    alertStore.show('You have started your verification');
+                    alertStore.show('You have started your verification', () => {
+                        window.location.reload();
+                    });
                 } catch (ex) {
                     console.log(ex);
                     alertStore.show(`There was an error during your verification${ex.message}`);
@@ -110,7 +125,7 @@ function KycPage({ kycStore, alertStore }: Props) {
 
         if (kycEntity.isLightStatusInProgress() === true) {
             return (
-                <Button disabled = { disabled } color = { ButtonColor.SCHEME_2 } > Light verification is in progress </Button>
+                <Button disabled = { disabled } color = { ButtonColor.SCHEME_2 } onClick = { onClickStartLightCheckForced } > Light verification is in progress </Button>
             )
         }
 
@@ -138,7 +153,7 @@ function KycPage({ kycStore, alertStore }: Props) {
 
         if (kycEntity.isFullStatusInProgress() === true) {
             return (
-                <Button color = { ButtonColor.SCHEME_2 } > Detailed verification is in progress </Button>
+                <Button color = { ButtonColor.SCHEME_2 } onClick = { onClickStartFullCheckForced } > Detailed verification is in progress </Button>
             )
         }
 
