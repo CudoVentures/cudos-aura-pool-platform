@@ -47,8 +47,6 @@ export default class CheckForPresaleRefundsModalStore extends ModalStore {
     async showSignal() {
         this.stage = RefundModalStage.INITIAL;
 
-        this.show();
-
         const provider = await this.walletStore.getEthProvider();
 
         const addresses = await provider.eth.getAccounts();
@@ -65,6 +63,7 @@ export default class CheckForPresaleRefundsModalStore extends ModalStore {
         this.availableRefundAmount = payments.filter((payment) => payment.status === PaymentStatus.WITHDRAWABLE)
             .reduce((total, payment) => total.plus(new BigNumber(payment.amount)), new BigNumber(0));
 
+        this.show();
     }
 
     hide = action(() => {

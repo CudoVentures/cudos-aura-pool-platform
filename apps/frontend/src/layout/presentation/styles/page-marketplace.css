@@ -145,7 +145,7 @@
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .PhaseName {
     background: #000000;
     border-radius: 6px;
-    padding: 10px 8px;
+    padding: 3px 8px;
     color: #f6f6f6;
     width: fit-content;
 }

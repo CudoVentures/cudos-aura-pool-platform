@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { coin, DirectSecp256k1HdWallet } from 'cudosjs';
+import { coin, CURRENCY_DECIMALS, DirectSecp256k1HdWallet } from 'cudosjs';
 import { SigningStargateClient, StargateClient } from 'cudosjs/build/stargate';
 import Config from '../../config/Config';
 import AddressbookEntryEntity, { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK } from '../entities/AddressbookEntryEntity';
@@ -42,32 +42,39 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
 
         return indexedTxs.map((indexedTx) => RefundTransactionEntity.fromChainIndexedTx(indexedTx))
             .filter((entity) => {
-                return entity.from === Config.MINTING_SERVICE_ADDRESS && Config.CUDOS_SIGNER_ADDRESS
+                return entity.from === Config.MINTING_SERVICE_ADDRESS && entity.to === Config.CUDOS_SIGNER_ADDRESS
             });
     }
 
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> {
-        const indexedTx = await this.chainClient.getTx(txHash);
+        try {
+            const indexedTx = await this.chainClient.getTx(txHash);
+            return indexedTx ? PaymentTransactionEntity.fromChainIndexedTx(indexedTx) : null;
+        } catch (ex) {
+            if (ex.toString().indexOf('parse error') !== -1) {
+                return null;
+            }
 
-        return indexedTx ? PaymentTransactionEntity.fromChainIndexedTx(indexedTx) : null;
+            throw ex;
+        }
     }
 
     async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> {
         const mintFee = (new BigNumber(200000)).multipliedBy(Config.CUDOS_GAS_PRICE);
-        const amount = (new BigNumber(Config.EXPECTED_PRICE_CUDOS)).plus(mintFee);
+        const amount = (new BigNumber(Config.EXPECTED_PRICE_CUDOS).shiftedBy(CURRENCY_DECIMALS)).plus(mintFee);
         const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
 
         const wallet = await DirectSecp256k1HdWallet.fromMnemonic(Config.CUDOS_SIGNER_MNEMONIC);
         const [firstAccount] = await wallet.getAccounts();
         const signerAddress = firstAccount.address;
 
-        const memo = `{
-            "uuid":"",
-            "contractPaymentId": "${paymentEventEntity.id}",
-            "recipientAddress": "${paymentEventEntity.cudosAddress}"
-        }`;
+        const memo = {
+            uuid: 'presale',
+            contractPaymentId: paymentEventEntity.id.toString(),
+            recipientAddress: paymentEventEntity.cudosAddress,
+        };
 
-        const tx = await this.chainSigningClient.sendTokens(signerAddress, Config.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
+        const tx = await this.chainSigningClient.sendTokens(signerAddress, Config.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', JSON.stringify(memo));
 
         if (tx.code !== 0) {
             throw Error(`${tx.rawLog}`)

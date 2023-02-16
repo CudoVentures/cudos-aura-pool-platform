@@ -14,7 +14,7 @@ type Props = {
     className?: string;
     error?: boolean,
     readOnly?: boolean;
-    label: string;
+    label: string | React.ReactNode;
     value: CheckboxBoolValue;
     onChange: (value: number, e?: any) => void;
 }

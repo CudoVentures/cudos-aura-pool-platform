@@ -20,23 +20,29 @@ export enum ContainerPadding {
     PADDING_16 = 'Padding16',
 }
 
+export enum ContainerBorder {
+    NEUTRAL_20 = 'BorderNeutral20',
+    PRIMARY_60 = 'BorderPrimary60',
+}
+
 export type Props = {
     className?: string;
     onClick?: () => void;
     containerWidth?: ContainerWidth,
     containerBackground?: ContainerBackground,
     containerPadding?: ContainerPadding,
+    containerBorder?: ContainerBorder,
     containerShadow?: boolean,
 }
 
-export default function StyledContainer({ className, onClick, containerWidth, containerBackground, containerPadding, containerShadow, children }: React.PropsWithChildren < Props >) {
+export default function StyledContainer({ className, onClick, containerWidth, containerBackground, containerPadding, containerShadow, containerBorder, children }: React.PropsWithChildren < Props >) {
 
     function cssContainerShadow() {
         return containerShadow === true ? 'Shadow' : '';
     }
 
     return (
-        <div className={`StyledContainer ${containerWidth} ${containerBackground} ${containerPadding} ${cssContainerShadow()} ${className}`} onClick = { onClick }>
+        <div className={`StyledContainer ${containerWidth} ${containerBackground} ${containerPadding} ${containerBorder} ${cssContainerShadow()} ${className}`} onClick = { onClick }>
             {children}
         </div>
     )
@@ -48,5 +54,6 @@ StyledContainer.defaultProps = {
     containerWidth: ContainerWidth.LARGE,
     containerBackground: ContainerBackground.WHITE,
     containerPadding: ContainerPadding.PADDING_40,
+    containerBorder: ContainerBorder.NEUTRAL_20,
     containerShadow: true,
 }

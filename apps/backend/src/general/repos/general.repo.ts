@@ -1,21 +1,16 @@
-import {
-    Column,
-    Model,
-    Table,
-    AllowNull,
-    PrimaryKey,
-    Unique,
-    AutoIncrement,
-    DataType,
-} from 'sequelize-typescript';
+import { Column, Model, Table, AllowNull, PrimaryKey, Unique, AutoIncrement, DataType } from 'sequelize-typescript';
+
+const GENERAL_TABLE_NAME = 'general';
+
+export const GENERAL_REPO_PK = 1;
 
 export const enum GeneralRepoColumn {
     ID = 'id',
     LAST_CHECKED_BLOCK = 'last_checked_block',
+    LAST_CHECKED_PAYMENT_RELAYER_ETH_BLOCK = 'last_checked_payment_relayer_eth_block',
+    LAST_CHECKED_PAYMENT_RELAYER_CUDOS_BLOCK = 'last_checked_payment_relayer_cudos_block',
     UPDATED_AT = 'updated_at',
 }
-
-const GENERAL_TABLE_NAME = 'general';
 
 @Table({
     freezeTableName: true,

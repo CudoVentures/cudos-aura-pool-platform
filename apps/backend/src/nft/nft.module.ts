@@ -8,6 +8,7 @@ import { CollectionModule } from '../collection/collection.module';
 import { VisitorModule } from '../visitor/visitor.module';
 import { FarmModule } from '../farm/farm.module';
 import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
+import { AccountModule } from '../account/account.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
         forwardRef(() => CollectionModule),
         forwardRef(() => FarmModule),
         CoinGeckoModule,
+        AccountModule,
     ],
     providers: [NFTService],
     controllers: [NFTController],

@@ -6,7 +6,8 @@
     margin-top: 24px;
 }
 
-.PageUserProfile .PageContent .ProfileHeaderDataRow .AccountName {
+.PageUserProfile .PageContent .ProfileHeaderDataRow .AccountNameWrapper {
+    gap: 16px;
     margin-bottom: 24px;
 }
 

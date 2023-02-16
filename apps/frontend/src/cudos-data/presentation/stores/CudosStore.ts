@@ -116,6 +116,14 @@ export default class CudosStore {
         return this.convertUsdInCudos(nftEntity.priceUsd);
     }
 
+    getNftUsdPrice(nftEntity: NftEntity): number {
+        if (nftEntity.isMinted() === true) {
+            return nftEntity.priceUsd;
+        }
+
+        return nftEntity.priceInAcudos === null ? 0 : Number(this.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2));
+    }
+
     formatPriceInCudosForNft(nftEntity: NftEntity): string {
         return `${this.getNftCudosPriceForNft(nftEntity).toFixed(2)} CUDOS`;
     }

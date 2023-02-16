@@ -16,6 +16,6 @@ export class IsPresaleContractRelayerGuard implements CanActivate {
             body,
         } = request;
 
-        return body.token === this.config.get('App_Eth_Contract_Relayer_token');
+        return body.token === this.config.get('APP_ETH_CONTRACT_RELAYER_TOKEN');
     }
 }

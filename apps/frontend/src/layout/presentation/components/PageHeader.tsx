@@ -11,6 +11,7 @@ import Svg from '../../../core/presentation/components/Svg';
 import HeaderWallet from './HeaderWallet';
 import Actions from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
+import KycBadge from '../../../core/presentation/components/KycBadge';
 
 import SvgAuraPoolLogo from '../../../public/assets/vectors/aura-pool-logo.svg';
 import '../styles/page-header.css'
@@ -73,6 +74,10 @@ function PageHeader({ accountSessionStore, walletStore }: Props) {
                         onClick={onClickAdminPortal}>
                         Farm profile
                     </div>
+                ) }
+
+                { accountSessionStore.isLoggedIn() === true && (
+                    <KycBadge />
                 ) }
 
                 <HeaderWallet />

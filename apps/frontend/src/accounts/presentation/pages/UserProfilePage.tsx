@@ -8,6 +8,9 @@ import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore
 import EditUserBtcModal from '../components/EditUserBtcModal';
 import EditUserBtcModalStore from '../stores/EditUserBtcModalStore';
 import EditUserModalStore from '../stores/EditUserModalStore';
+import CheckForPresaleRefundsModal from '../components/CheckForPresaleRefundsModal';
+import CheckForPresaleRefundsModalStore from '../stores/CheckForPresaleRefundsModalStore';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import PageLayout from '../../../core/presentation/components/PageLayout';
@@ -22,13 +25,11 @@ import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import Actions, { ActionsLayout } from '../../../core/presentation/components/Actions';
 import Button, { ButtonColor } from '../../../core/presentation/components/Button';
 import EditUserModal from '../components/EditUserModal';
+import KycBadge from '../../../core/presentation/components/KycBadge';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-user-profile.css';
-import CheckForPresaleRefundsModal from '../components/CheckForPresaleRefundsModal';
-import CheckForPresaleRefundsModalStore from '../stores/CheckForPresaleRefundsModalStore';
-import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -37,7 +38,7 @@ type Props = {
     editUserModalStore?: EditUserModalStore;
     editUserBtcModalStore?: EditUserBtcModalStore;
     checkForPresaleRefundsModalStore?: CheckForPresaleRefundsModalStore;
-    presaleStore: PresaleStore;
+    presaleStore?: PresaleStore;
 }
 
 function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore, editUserBtcModalStore, checkForPresaleRefundsModalStore }: Props) {
@@ -99,7 +100,10 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
                     </Button>
                 </Actions>
                 <div className={'ProfileHeaderDataRow'}>
-                    <div className={'AccountName H2 Bold'}>{accountEntity.name}</div>
+                    <div className = { 'AccountNameWrapper FlexRow' } >
+                        <div className={'H2 Bold'}> {accountEntity.name} </div>
+                        <KycBadge />
+                    </div>
                     <div className={'FlexRow'}>
                         <Svg svg = { SvgCudosLogo } />
                         <a href={ProjectUtils.makeUrlExplorer(userEntity.cudosWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</a>

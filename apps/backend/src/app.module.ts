@@ -20,6 +20,7 @@ import DataService from './data/data.service';
 import { GeneralModule } from './general/general.module';
 import { AccountModule } from './account/account.module';
 import { EmailModule } from './email/email.module';
+import { KycModule } from './kyc/kyc.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { EmailModule } from './email/email.module';
         VisitorModule,
         DataModule,
         EmailModule,
+        KycModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },
@@ -49,16 +51,25 @@ import { EmailModule } from './email/email.module';
                     password: config.get('APP_DATABASE_PASS'),
                     database: config.get('APP_DATABASE_DB_NAME'),
                     autoLoadModels: true,
-                    synchronize: true,
+                    synchronize: false,
+                    logging: false,
                 }
             },
         }),
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', '..', 'data'),
             serveRoot: DataService.LOCAL_URI_PREFIX,
+            serveStaticOptions: {
+                cacheControl: true,
+                maxAge: 2592000000,
+            },
         }),
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', 'frontend', 'src', 'public'),
+            serveStaticOptions: {
+                cacheControl: true,
+                maxAge: 2592000000,
+            },
         }),
         ConfigModule.forRoot({
             isGlobal: true,

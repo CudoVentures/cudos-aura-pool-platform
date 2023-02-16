@@ -11,5 +11,13 @@ export const BankSendMsgToOnDemandMintingServiceQuery: SearchByTagsQuery = {
             key: 'message.sender',
             value: Config.MINTING_SERVICE_ADDRESS,
         },
+        {
+            key: 'transfer.sender',
+            value: Config.MINTING_SERVICE_ADDRESS,
+        },
+        {
+            key: 'transfer.recipient',
+            value: Config.CUDOS_SIGNER_ADDRESS,
+        },
     ],
 }

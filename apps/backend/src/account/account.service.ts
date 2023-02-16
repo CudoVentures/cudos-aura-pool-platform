@@ -188,7 +188,6 @@ export default class AccountService {
         let accountRepo = AccountEntity.toRepo(accountEntity, includePassword);
 
         if (accountEntity.isNew() === true) {
-            console.log(accountRepo.toJSON());
             accountRepo = await this.accountRepo.create(accountRepo.toJSON(), {
                 returning: true,
                 transaction: tx,

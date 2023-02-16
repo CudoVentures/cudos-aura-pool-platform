@@ -229,8 +229,8 @@ export class NFTService {
         nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
         nftEntity.ethPrice = new BigNumber(cudosPrice.multipliedBy(ethPrice).toFixed(18));
 
-        const FifteenMinutesInMilis = 15 * 60 * 1000;
-        nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;
+        const fifteenMinutesInMilis = 15 * 60 * 1000;
+        nftEntity.priceAcudosValidUntil = Date.now() + fifteenMinutesInMilis;
 
         return this.updateOne(id, nftEntity);
     }
@@ -285,8 +285,8 @@ export class NFTService {
         nftEntity.ethPrice = new BigNumber(nftPriceInEth);
         nftEntity.acudosPrice = new BigNumber(nftPriceInCudos);
 
-        const FifteenMinutesInMilis = 15 * 60 * 1000;
-        nftEntity.priceAcudosValidUntil = Date.now() + FifteenMinutesInMilis;
+        const fifteenMinutesInMilis = 15 * 60 * 1000;
+        nftEntity.priceAcudosValidUntil = Date.now() + fifteenMinutesInMilis;
 
         await this.updateOne(nftEntity.id, nftEntity);
 

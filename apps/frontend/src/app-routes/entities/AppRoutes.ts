@@ -12,6 +12,7 @@ export default class AppRoutes {
     static VIEW_NFT = '/view-nft';
     static CREDIT_COLLECTION = '/credit-collection';
     static CREDIT_MINING_FARM = '/credit-mining-farm';
+    static TERMS_AND_CONDITIONS = '/terms-and-conditions';
 
     // auth
     static LOGIN = '/login';
@@ -23,6 +24,7 @@ export default class AppRoutes {
 
     // profile
     static USER_PROFILE = '/profile';
+    static KYC = '/kyc'
 
     // farm admin
     static CREDIT_ACCOUNT_SETTINGS = '/credit-account-settings';

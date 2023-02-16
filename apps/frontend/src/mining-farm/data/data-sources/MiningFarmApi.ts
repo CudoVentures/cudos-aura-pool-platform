@@ -30,8 +30,8 @@ export default class MiningFarmApi {
         };
     }
 
-    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[]): Promise < MiningFarmDetailsEntity[] > {
-        const { data } = await axios.post('/api/v1/farm/fetchMiningFarmsDetailsByIds', new ReqFetchMiningFarmDetails(miningFarmIds));
+    async fetchMiningFarmsDetailsByIds(miningFarmIds: string[], includesExternalDetails: number): Promise < MiningFarmDetailsEntity[] > {
+        const { data } = await axios.post('/api/v1/farm/fetchMiningFarmsDetailsByIds', new ReqFetchMiningFarmDetails(miningFarmIds, includesExternalDetails));
         const res = new ResFetchMiningFarmDetails(data);
         return res.miningFarmDetailsEntities;
     }

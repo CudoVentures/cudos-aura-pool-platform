@@ -272,32 +272,37 @@ export default class MarketplacePageStore {
         return this.cudosStore.formatConvertedCudosInUsd(new BigNumber(PRESALE_CONSTS.PRICE_CUDOS));
     }
 
-    async onClickBuyWithCudos() {
+    async onClickBuyWithCudos(): Promise < boolean > {
         try {
             const cudosBalance = await this.walletStore.getBalanceSafe();
 
             if (cudosBalance.lt((new BigNumber(PRESALE_CONSTS.PRICE_CUDOS)))) {
                 this.alertStore.show('Your balance is not enough to buy this.');
-                return;
+                return false;
             }
+
             await this.nftRepo.buyPresaleNft(BuyingCurrency.CUDOS, this.walletStore.ledger);
+            return true;
         } catch (e) {
             this.alertStore.show(e.message);
+            return false;
         }
     }
 
-    async onClickBuyWithEth() {
+    async onClickBuyWithEth(): Promise < boolean > {
         try {
             const ethBalance = await this.walletStore.getEthBalance();
 
             if (ethBalance.lt((new BigNumber(PRESALE_CONSTS.PRICE_ETH)).shiftedBy(-18))) {
                 this.alertStore.show('Your balance is not enough to buy this.');
-                return;
+                return false;
             }
 
             await this.nftRepo.buyPresaleNft(BuyingCurrency.ETH, this.walletStore.ledger);
+            return true;
         } catch (e) {
             this.alertStore.show(e.message);
+            return false;
         }
     }
 
