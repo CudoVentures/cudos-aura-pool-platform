@@ -8,6 +8,7 @@ import { IntBoolValue } from '../common/utils';
 import { StatisticsService } from '../statistics/statistics.service';
 import { ReqCreateWorkflowRun, ReqCreditKyc } from './dto/requests.dto';
 import { ResFetchKyc, ResCreditKyc, ResCreateWorkflowRun } from './dto/responses.dto';
+import { WorkflowRunParamsV1Entity } from './entities/workflow-run-params.entity';
 import { KycService } from './kyc.service';
 
 @ApiTags('Kyc')
@@ -66,8 +67,8 @@ export class KycController {
     ): Promise < ResCreateWorkflowRun > {
         let purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(req.sessionUserEntity);
         let kycEntity = await this.kycService.fetchKycByAccount(req.sessionAccountEntity, req.transaction);
-        if (purchasesInUsdSoFar <= 1000 && reqCreateWorkflowRun.runFullWorkflow === IntBoolValue.TRUE) {
-            purchasesInUsdSoFar = 1000.001;
+        if (purchasesInUsdSoFar <= WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD && reqCreateWorkflowRun.runFullWorkflow === IntBoolValue.TRUE) {
+            purchasesInUsdSoFar = WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD + 0.001;
         }
 
         kycEntity = await this.kycService.createWorkflowRun(req.sessionUserEntity, purchasesInUsdSoFar, kycEntity, req.transaction);
