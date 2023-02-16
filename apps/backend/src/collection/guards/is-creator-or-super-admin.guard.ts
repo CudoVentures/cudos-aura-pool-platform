@@ -2,11 +2,12 @@ import { CanActivate, ExecutionContext, forwardRef, Inject, Injectable, Unauthor
 import { CollectionService } from '../collection.service';
 import { RequestWithSessionAccounts } from '../../common/commont.types';
 import { CollectionEntity } from '../entities/collection.entity';
+import { FarmService } from '../../farm/farm.service';
 
 @Injectable()
 export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
-    constructor(@Inject(forwardRef(() => CollectionService)) private collectionService: CollectionService) {}
+    constructor(@Inject(forwardRef(() => CollectionService)) private collectionService: CollectionService, private farmService: FarmService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
@@ -25,6 +26,11 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
 
         // not super admin, so is it farm admin
         if (sessionAdminEntity === null) {
+            return false;
+        }
+
+        const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId);
+        if (miningFarmDb === null || miningFarmDb.accountId !== sessionAdminEntity.accountId) {
             return false;
         }
 

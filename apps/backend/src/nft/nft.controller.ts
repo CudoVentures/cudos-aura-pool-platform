@@ -91,6 +91,10 @@ export class NFTController {
             throw new NotFoundException();
         }
 
+        if (nftEntity.expirationDateTimestamp < Date.now()) {
+            throw new NotFoundException();
+        }
+
         return { ...NftEntity.toJson(nftEntity),
             denomId: collectionEntity.denomId,
             data: JSON.stringify({

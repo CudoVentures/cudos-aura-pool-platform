@@ -189,7 +189,7 @@ export default class NftEntity {
         model.priceInEth = new BigNumber(json.priceInEth ?? model.priceInEth);
         model.imageUrl = json.uri ?? model.imageUrl;
         model.status = json.status ?? model.status;
-        model.expirationDateTimestamp = new Date(json.expirationDateTimestamp ?? model.expirationDateTimestamp).getTime();
+        model.expirationDateTimestamp = json.expirationDateTimestamp ?? model.expirationDateTimestamp;
         model.creatorId = json.creatorId ?? model.creatorId;
         model.currentOwner = json.currentOwner ?? model.currentOwner;
         model.data = json.data ?? model.data;

@@ -30,6 +30,7 @@ import { ResFetchCollectionsByFilter, ResCreditCollection, ResFetchCollectionDet
 import CollectionFilterEntity from './entities/collection-filter.entity';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import { GraphqlService } from '../graphql/graphql.service';
+import { FarmService } from '../farm/farm.service';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -40,6 +41,7 @@ export class CollectionController {
         private nftService: NFTService,
         private dataService: DataService,
         private graphqlService: GraphqlService,
+        private farmService: FarmService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -90,11 +92,14 @@ export class CollectionController {
 
         const collectionId = collectionEntity.id;
 
+        const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId);
+        const collectionOwnerAccountId = miningFarmDb.accountId;
+
         try {
-            collectionEntity.bannerImage = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionEntity.bannerImage);
-            collectionEntity.mainImage = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, collectionEntity.mainImage);
+            collectionEntity.bannerImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.bannerImage);
+            collectionEntity.mainImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.mainImage);
             for (let i = nftEntities.length; i-- > 0;) {
-                nftEntities[i].uri = await this.dataService.trySaveUri(req.sessionAccountEntity.accountId, nftEntities[i].uri);
+                nftEntities[i].uri = await this.dataService.trySaveUri(collectionOwnerAccountId, nftEntities[i].uri);
             }
         } catch (e) {
             console.log(e);
@@ -124,12 +129,12 @@ export class CollectionController {
         let collectionEntityResult: CollectionEntity, nftEntityResults: NftEntity[] = [], nftsToDelete: NftEntity[] = [];
         try {
             if (collectionEntity.isNew()) {
-                collectionEntity.creatorId = req.sessionAdminEntity.accountId;
+                collectionEntity.creatorId = collectionOwnerAccountId
                 collectionEntityResult = await this.collectionService.createOne(collectionEntity, req.transaction);
 
                 const nfts = nftEntities.map(async (nftEntity) => {
                     nftEntity.collectionId = collectionEntityResult.id;
-                    nftEntity.creatorId = req.sessionAdminEntity.accountId;
+                    nftEntity.creatorId = collectionOwnerAccountId
                     const createdNftEntity = await this.nftService.createOne(nftEntity, req.transaction);
                     return createdNftEntity
                 })

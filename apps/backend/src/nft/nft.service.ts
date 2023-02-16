@@ -283,7 +283,7 @@ export class NFTService {
 
         // const { ethPrice } = await this.coinGeckoService.fetchCudosPrice();
         nftEntity.ethPrice = new BigNumber(nftPriceInEth);
-        nftEntity.acudosPrice = new BigNumber(nftPriceInCudos);
+        nftEntity.acudosPrice = new BigNumber(nftPriceInCudos).shiftedBy(CURRENCY_DECIMALS);
 
         const fifteenMinutesInMilis = 15 * 60 * 1000;
         nftEntity.priceAcudosValidUntil = Date.now() + fifteenMinutesInMilis;
