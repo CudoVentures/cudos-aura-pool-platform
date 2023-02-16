@@ -237,7 +237,12 @@ export default class MarketplacePageStore {
     }
 
     getPresaleMintedPercent(): number {
-        return (this.getPresaleMintedAmount() * 100) / this.getPresaleTotalAmount();
+        const total = this.getPresaleTotalAmount();
+        if (total === 0) {
+            return 0;
+        }
+
+        return (this.getPresaleMintedAmount() * 100) / total;
     }
 
     isUserEligibleToBuy(): boolean {
