@@ -3,7 +3,7 @@ import S from '../../core/utilities/Main';
 
 export default class CudosDataEntity {
 
-    static MODEL_VERSION = 1;
+    static MODEL_VERSION = 2;
 
     modelVersion: number;
     priceInUsd: number;
