@@ -57,6 +57,7 @@ export class NFTController {
         @Param('paidAmountAcudosStr') paidAmountAcudosStr: string,
     ): Promise<any> {
         const paidAmountAcudos = new BigNumber(paidAmountAcudosStr);
+        console.log(paidAmountAcudos.toString())
         const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
         if (userEntity === null) {
             throw new NotFoundException();

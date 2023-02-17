@@ -153,7 +153,7 @@ export default class NftApiRepo implements NftRepo {
 
                 const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(ledger.accountAddress))
                     .send({
-                        value: amount.toFixed(0),
+                        value: amount.shiftedBy(18).toFixed(0),
                     });
 
                 if (!tx.transactionHash) {
@@ -166,7 +166,7 @@ export default class NftApiRepo implements NftRepo {
                 const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
 
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
-                const sendAmountCoin = coin(amount.plus(mintFee).toFixed(0), 'acudos')
+                const sendAmountCoin = coin(amount.shiftedBy(CURRENCY_DECIMALS).plus(mintFee).toFixed(0), 'acudos')
                 const memo = new MintMemo('presale', ledger.accountAddress).toJsonString();
                 const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
 

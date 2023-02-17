@@ -59,6 +59,8 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
         }
     }
 
+    708
+    712
     async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, convertedPaymentToCudos: BigNumber): Promise<string> {
         const mintFee = (new BigNumber(200000)).multipliedBy(Config.CUDOS_GAS_PRICE);
         const amount = convertedPaymentToCudos.shiftedBy(CURRENCY_DECIMALS).plus(mintFee);

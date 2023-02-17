@@ -84,13 +84,13 @@ export default class ContractEventWorker {
 
                 for (let i = 0; i < paymentEventEntities.length; i++) {
                     const paymentEventEntity = paymentEventEntities[i];
-                    const receivedEthAmount = paymentEventEntity.amount.shiftedBy(-18);
+                    const receivedEthAmount = paymentEventEntity.amount;
 
                     // checks for refund
                     let shouldRefund = false;
 
                     // - Is the received amount equal to the expected?
-                    if (shouldRefund === false && receivedEthAmount.gte(expectedEthPriceLowerBand) === true && receivedEthAmount.lte(expectedEthPriceUpperBand) === true) {
+                    if (shouldRefund === false && receivedEthAmount.lt(expectedEthPriceLowerBand) === true || receivedEthAmount.gt(expectedEthPriceUpperBand) === true) {
                         ContractEventWorker.warn(`\tPayed amount to contract is not within the expected band.\n\t\tPayed amount: ${receivedEthAmount.toString(10)}\n\t\tExpected to be between: ${expectedEthPriceLowerBand.toString(10)} AND ${expectedEthPriceUpperBand.toString(10)}`);
                         shouldRefund = true;
                     }
@@ -120,8 +120,8 @@ export default class ContractEventWorker {
                         // if the checks pass, send payment to on demand minting service
                     } else {
                         ContractEventWorker.log('\tGoing to mint an nft.');
-                        const convertedPaymentToCudos = receivedEthAmount.multipliedBy(cudosEthPrice);
-                        ContractEventWorker.log(`\tReceived payment is ${receivedEthAmount.toString(10)} ETH = ${convertedPaymentToCudos} CUDOS in current prices`)
+                        const convertedPaymentToCudos = receivedEthAmount.dividedBy(cudosEthPrice);
+                        ContractEventWorker.log(`\tReceived payment is ${receivedEthAmount.toString(10)} ETH = ${convertedPaymentToCudos.toString(10)} CUDOS in current prices`)
                         ContractEventWorker.log('\tSending on demand minting Tx...')
                         const txhash = await this.cudosChainRepo.sendOnDemandMintingTx(paymentEventEntity, convertedPaymentToCudos);
                         ContractEventWorker.log(`\tPaymentId ${paymentEventEntity.id} sent for mint to on demand minting service. TxHash: ${txhash}`);

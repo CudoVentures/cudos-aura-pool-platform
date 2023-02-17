@@ -283,15 +283,15 @@ export default class MarketplacePageStore {
 
     async onClickBuyWithCudos(): Promise < boolean > {
         try {
-            const acudosBalance = await this.walletStore.getBalanceSafe();
-            const acudosPrice = this.cudosStore.convertUsdInAcudos(PRESALE_CONSTS.PRICE_USD);
+            const cudosBalance = await this.walletStore.getBalanceSafe();
+            const cudosPrice = this.cudosStore.convertUsdInCudos(PRESALE_CONSTS.PRICE_USD);
 
-            if (acudosBalance.lt(acudosPrice)) {
+            if (cudosBalance.lt(cudosPrice)) {
                 this.alertStore.show('Your balance is not enough to buy this.');
                 return false;
             }
 
-            await this.nftRepo.buyPresaleNft(BuyingCurrency.CUDOS, acudosPrice, this.walletStore.ledger);
+            await this.nftRepo.buyPresaleNft(BuyingCurrency.CUDOS, cudosPrice, this.walletStore.ledger);
             return true;
         } catch (e) {
             this.alertStore.show(e.message);
@@ -304,14 +304,14 @@ export default class MarketplacePageStore {
             const ethBalance = await this.walletStore.getEthBalance();
 
             const cudosPrice = this.cudosStore.convertUsdInCudos(PRESALE_CONSTS.PRICE_USD);
-            const weiPrice = this.cudosStore.convertCudosToEth(cudosPrice).shiftedBy(-18);
+            const ethPrice = this.cudosStore.convertCudosToEth(cudosPrice)
 
-            if (ethBalance.lt(weiPrice)) {
+            if (ethBalance.lt(ethPrice)) {
                 this.alertStore.show('Your balance is not enough to buy this.');
                 return false;
             }
 
-            await this.nftRepo.buyPresaleNft(BuyingCurrency.ETH, weiPrice, this.walletStore.ledger);
+            await this.nftRepo.buyPresaleNft(BuyingCurrency.ETH, ethPrice, this.walletStore.ledger);
             return true;
         } catch (e) {
             this.alertStore.show(e.message);
