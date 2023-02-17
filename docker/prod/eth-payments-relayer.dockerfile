@@ -8,7 +8,7 @@ WORKDIR ${WORKING_DIR}
 
 RUN npm i
 
-RUN npm run build:eth-payment-relayer:prod
+RUN npm run build:eth-payments-relayer:prod
 
 FROM node:16-buster
 
@@ -31,4 +31,4 @@ ENV App_Host="http://cudos-aura-platform-prod"
 
 RUN npm i --omit=dev
 
-CMD ["/bin/bash", "-c", "npm run start:built:eth-payment-relayer"] 
+CMD ["/bin/bash", "-c", "npm run start:built:eth-payments-relayer"] 
