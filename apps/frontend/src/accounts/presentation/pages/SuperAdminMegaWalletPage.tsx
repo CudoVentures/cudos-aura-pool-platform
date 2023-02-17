@@ -177,7 +177,7 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                                 <div className={'H2 ExtraBold'}>{superAdminMegaWalletPageStore.formatSuperAdminBalance()}</div>
                                 <div className={'H3 SemiBold ColorNeutral060'}>CUDOS</div>
                             </div>
-                            <div className={'H3 SemiBold AmountDollars'}>{cudosStore.formatConvertedAcudosInUsd(superAdminMegaWalletPageStore.getSuperAdminBalanceInAcudos())}</div>
+                            <div className={'H3 SemiBold AmountDollars'}>{cudosStore.formatAcudosInUsd(superAdminMegaWalletPageStore.getSuperAdminBalanceInAcudos())}</div>
                         </div> */}
                         <MegaWalletBalance />
                         <Actions className = { 'ActionsRow' } layout = { ActionsLayout.LAYOUT_ROW_FULL } >

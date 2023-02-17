@@ -39,7 +39,7 @@ function CreditCollectionAddNftsTable({ cudosStore, creditCollectionStore }: Pro
                 createTableCell(nftEntity.name),
                 createTableCell(collectionName),
                 createTableCell(nftEntity.formatHashPowerInTh()),
-                createTableCell(cudosStore.formatExistingPriceForNft(nftEntity)),
+                createTableCell(cudosStore.formatPriceInUsdForNft(nftEntity)),
                 // createTableCell(nftEntity.formatMaintenanceFeeInBtc()),
                 createTableCell(
                     <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT}>

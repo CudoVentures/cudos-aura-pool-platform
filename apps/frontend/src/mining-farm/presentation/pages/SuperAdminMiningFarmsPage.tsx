@@ -21,10 +21,13 @@ import Input from '../../../core/presentation/components/Input';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 import Svg from '../../../core/presentation/components/Svg';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../core/presentation/components/Table';
-import { ALIGN_LEFT } from '../../../core/presentation/components/TableDesktop';
+import { ALIGN_LEFT, ALIGN_RIGHT } from '../../../core/presentation/components/TableDesktop';
 
 import SearchIcon from '@mui/icons-material/Search';
 import '../styles/page-super-admin-mining-farms.css'
+import Actions from '../../../core/presentation/components/Actions';
+import Button, { ButtonColor, ButtonType } from '../../../core/presentation/components/Button';
+import MiningFarmEntity from '../../entities/MiningFarmEntity';
 
 type Props = {
     superAdminMiningFarmsPageStore?: SuperAdminMningFarmsPageStore;
@@ -48,6 +51,12 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, viewMiningF
         });
     }
 
+    function onClickViewMiningFarm(miningFarmEntity: MiningFarmEntity, e) {
+        e.stopPropagation();
+
+        navigate(ProjectUtils.makeUrlMiningFarm(miningFarmEntity.id));
+    }
+
     function renderAllFarmsRows() {
         return miningFarmEntities.map((miningFarmEntity) => {
             const miningFarmDetailsEntity = superAdminMiningFarmsPageStore.getMiningFarmDetails(miningFarmEntity.id);
@@ -64,7 +73,7 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, viewMiningF
                         { miningFarmDetailsEntity.hasFloorPrice() === true ? (
                             <>
                                 <div className={'B2 Bold MiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudosWithPrecision(miningFarmDetailsEntity.floorPriceInAcudos, 2)}</div>
-                                <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatConvertedAcudosInUsd(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
+                                <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatAcudosInUsd(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
                             </>
                         ) : (
                             <div className={'B2 Bold MiningFarmsCellTitle'}>No listed NFTs for sale</div>
@@ -76,6 +85,11 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, viewMiningF
                     <div className = { 'Bold' } >
                         { miningFarmEntity.formatHashPowerInTh() }
                     </div>
+                )),
+                createTableCell((
+                    <Actions>
+                        <Button type = { ButtonType.TEXT_INLINE } color = { ButtonColor.SCHEME_2 } onClick = { onClickViewMiningFarm.bind(null, miningFarmEntity) } >View</Button>
+                    </Actions>
                 )),
             ])
         })
@@ -115,9 +129,9 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, viewMiningF
                         <Table
                             className={'AllMiningFarmsTable'}
                             // legend={['Farm', '24H Volume', 'Floor Price', 'Total Hashrate']}
-                            legend={['Farm', 'Total sold NFTs', 'Floor Price', 'Total Hashrate']}
-                            widths={['40%', '20%', '20%', '20%']}
-                            aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT]}
+                            legend={['Farm', 'Total sold NFTs', 'Floor Price', 'Total Hashrate', '']}
+                            widths={['38%', '18%', '18%', '18%', '8%']}
+                            aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT, ALIGN_RIGHT]}
                             tableState={tableState}
                             onClickRow = { onClickTopFarmRow }
                             rows={renderAllFarmsRows()} />

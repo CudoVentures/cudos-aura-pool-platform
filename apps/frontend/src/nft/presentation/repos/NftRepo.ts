@@ -20,7 +20,12 @@ export default interface NftRepo {
     fetchTrendingNfts(status?: CollectionStatus): Promise < NftEntity[] >;
     fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } >;
 
+<<<<<<< HEAD
     buyNft(currency: BuyingCurrency, nftEntity: NftEntity, ledger: Ledger): Promise < string >;
     buyPresaleNft(currency: BuyingCurrency, amount: BigNumber, ledger: Ledger): Promise < string >;
+=======
+    buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string >;
+    buyPresaleNft(currency: BuyingCurrency, ledger: Ledger): Promise < string >;
+>>>>>>> ad51264a3c643069e66a4e3a6602e2f93cfa294c
     listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string >;
 }

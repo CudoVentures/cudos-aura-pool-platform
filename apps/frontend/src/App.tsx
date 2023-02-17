@@ -145,7 +145,7 @@ const megaWalletSettingsModalStore = new MegaWalletSettingsModalStore(accountSes
 const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSessionStore, walletStore);
 const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore();
 const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSessionStore);
-const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(walletStore);
+const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(appStore, walletStore);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);

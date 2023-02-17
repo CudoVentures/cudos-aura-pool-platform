@@ -89,7 +89,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                         }</div>
                         <div className={'B3 SemiBold Gray ColorNeutral060'}>{
                             miningFarmPerformanceEntity.ifFloorPriceSet() === true
-                                && (cudosStore.formatConvertedAcudosInUsd(miningFarmPerformanceEntity.floorPriceInAcudos))
+                                && (cudosStore.formatAcudosInUsd(miningFarmPerformanceEntity.floorPriceInAcudos))
                         }</div>
                     </div>
                 )),

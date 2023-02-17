@@ -24,7 +24,7 @@ function MegaWalletBalance({ className, cudosStore, megaWalletBalanceStore }: Pr
                 <div className={'H2 ExtraBold'}>{megaWalletBalanceStore.formatSuperAdminBalance()}</div>
                 <div className={'H3 SemiBold ColorNeutral060'}>CUDOS</div>
             </div>
-            <div className={'H3 SemiBold AmountDollars'}>{cudosStore.formatConvertedAcudosInUsd(megaWalletBalanceStore.getSuperAdminBalanceInAcudos())}</div>
+            <div className={'H3 SemiBold AmountDollars'}>{cudosStore.formatAcudosInUsd(megaWalletBalanceStore.getSuperAdminBalanceInAcudos())}</div>
         </div>
     )
 }

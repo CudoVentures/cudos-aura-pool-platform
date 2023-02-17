@@ -107,13 +107,15 @@ function AppRouter({ accountSessionStore, kycStore, presaleStore }: Props) {
                     <Route path = { AppRoutes.REWARDS_CALCULATOR } element = { <RewardsCalculatorPage /> } />
                     <Route path = { AppRoutes.MARKETPLACE } element = { <MarketplacePage /> } />
                     <Route path = { `${AppRoutes.VIEW_NFT}/:nftId` } element = { <ViewNftPage /> } />
-                    {presaleStore.isInPresale() === false && (<>
-                        <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
-                        <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
-                        <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
-                        <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
-                        <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
-                    </>)}
+                    { presaleStore.isInPresale() === false && (
+                        <>
+                            <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
+                            <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
+                            <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
+                            <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
+                            <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
+                        </>
+                    ) }
                     <Route path = { AppRoutes.TERMS_AND_CONDITIONS } element = { <TermsAndConditionsPage /> } />
 
                     {/* Auth */}
@@ -155,6 +157,16 @@ function AppRouter({ accountSessionStore, kycStore, presaleStore }: Props) {
                             <Route path = { AppRoutes.SUPER_ADMIN_MEGA_WALLET } element = { <SuperAdminMegaWalletPage /> } />
                             <Route path = { AppRoutes.SUPER_ADMIN_COLLECTIONS } element = { <SuperAdminCollectionsPage /> } />
                             <Route path = { AppRoutes.SUPER_ADMIN_MINING_FARMS } element = { <SuperAdminMiningFarmsPage /> } />
+
+                            { presaleStore.isInPresale() === true && (
+                                <>
+                                    <Route path = { AppRoutes.EXPLORE_NFTS } element = { <ExploreNftsPage /> } />
+                                    <Route path = { AppRoutes.EXPLORE_COLLECTIONS } element = { <ExploreCollectionsPage /> } />
+                                    <Route path = { AppRoutes.EXPLORE_MINING_FARMS } element = { <ExploreMiningFarmsPage /> } />
+                                    <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
+                                    <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
+                                </>
+                            ) }
                         </>
                     ) }
 

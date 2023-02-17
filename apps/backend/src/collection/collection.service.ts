@@ -201,15 +201,13 @@ export class CollectionService {
         });
     }
 
-    async createOne(
-        collectionEntity: CollectionEntity,
-        tx: Transaction = undefined,
-    ): Promise<CollectionEntity> {
+    async createOne(collectionEntity: CollectionEntity, tx: Transaction = undefined): Promise<CollectionEntity> {
         try {
             checkValidNftDenomId(collectionEntity.denomId);
         } catch (e) {
             throw new CollectionWrongDenomError();
         }
+
         const chainCollections = await this.graphqlService.fetchNftCollectionsByDenomIds([collectionEntity.denomId]);
         if (chainCollections.length > 0) {
             throw new CollectionDenomExistsError();
@@ -226,11 +224,12 @@ export class CollectionService {
 
     }
 
-    async updateOne(
-        id: number,
-        collectionEntity: CollectionEntity,
-        tx: Transaction = undefined,
-    ): Promise<CollectionEntity> {
+    async updateOne(id: number, collectionEntity: CollectionEntity, tx: Transaction = undefined): Promise<CollectionEntity> {
+        try {
+            checkValidNftDenomId(collectionEntity.denomId);
+        } catch (e) {
+            throw new CollectionWrongDenomError();
+        }
 
         const [count, [collection]] = await this.collectionRepo.update(
             CollectionEntity.toRepo(collectionEntity).toJSON(),

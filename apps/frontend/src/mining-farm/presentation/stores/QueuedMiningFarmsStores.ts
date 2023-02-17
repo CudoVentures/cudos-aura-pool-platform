@@ -151,7 +151,7 @@ export default class QueuedMiningFarmsStores {
     async rejectMiningfarm(miningFarmEntity: MiningFarmEntity) {
         const clonedMiningFarm = miningFarmEntity.clone();
 
-        clonedMiningFarm.marKRejected();
+        clonedMiningFarm.markRejected();
         await this.miningFarmRepo.creditMiningFarm(clonedMiningFarm);
 
         this.fetchMiningFarms();

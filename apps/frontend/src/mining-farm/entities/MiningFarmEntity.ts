@@ -111,7 +111,7 @@ export default class MiningFarmEntity {
         this.status = MiningFarmStatus.APPROVED;
     }
 
-    marKRejected() {
+    markRejected() {
         this.status = MiningFarmStatus.REJECTED;
     }
 
