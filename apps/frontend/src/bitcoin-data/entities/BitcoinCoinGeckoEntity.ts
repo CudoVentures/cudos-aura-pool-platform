@@ -18,7 +18,7 @@ export default class BitcoinCoinGeckoEntity {
     }
 
     shouldUpdate(): boolean {
-        return this.timestampLastUpdate + 2 * 3600 * 1000 < Date.now();
+        return this.timestampLastUpdate + 15 * 60 * 1000 < Date.now();
     }
 
     static toJson(entity: BitcoinCoinGeckoEntity): any {
