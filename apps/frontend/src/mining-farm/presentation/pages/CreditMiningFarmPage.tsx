@@ -99,16 +99,12 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
         navigate(AppRoutes.CREDIT_ACCOUNT_SETTINGS);
     }
 
-    function onClickQueuedCollectionRow(index) {
-        navigate(`${AppRoutes.CREDIT_COLLECTION}/${queuedCollectionEntities[index].id}`);
-    }
-
-    function onClickActiveCollectionRow(index) {
-        navigate(`${AppRoutes.CREDIT_COLLECTION}/${approvedCollectionEntities[index].id}`);
+    function onClickViewCollection(collectionEntity: CollectionEntity) {
+        navigate(ProjectUtils.makeUrlCollection(collectionEntity.id))
     }
 
     function onClickMintPresaleNfts() {
-        alertStore.show('You are about to mint ALL presale NFTs. Do NOT do this operation twice', () => {
+        alertStore.show('You are about to mint ALL presale NFTs.', () => {
             creditMiningFarmPageStore.createPresaleCollection();
         });
     }
@@ -133,6 +129,9 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                             <Svg svg = { HighlightOffIcon } />
                             Reject
                         </Button>
+                        <Button color = { ButtonColor.SCHEME_2 } type = { ButtonType.TEXT_INLINE } onClick = { onClickViewCollection.bind(null, collectionEntity) }>
+                            View
+                        </Button>
                     </Actions>
                 )),
             ]);
@@ -149,6 +148,13 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                     </div>
                 )),
                 createTableCellString(creditMiningFarmPageStore.getFloorPrice(collectionEntity.id)),
+                createTableCell((
+                    <Actions height = { ActionsHeight.HEIGHT_32 }>
+                        <Button color = { ButtonColor.SCHEME_2 } type = { ButtonType.TEXT_INLINE } onClick = { onClickViewCollection.bind(null, collectionEntity) }>
+                            View
+                        </Button>
+                    </Actions>
+                )),
             ])
         });
     }
@@ -216,7 +222,6 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                             widths={['34%', '33%', '33%']}
                             aligns={[ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT]}
                             tableState={creditMiningFarmPageStore.queuedCollectionsTableState}
-                            onClickRow = { onClickQueuedCollectionRow }
                             showPaging = { true }
                             rows={renderQueuedCollectionsRows()} />
                     ) }
@@ -227,11 +232,10 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
                         <LoadingIndicator />
                     ) : (
                         <Table
-                            legend={['Collection', 'Floor Price']}
-                            widths={['34%', '66%']}
-                            aligns={[ALIGN_LEFT, ALIGN_LEFT]}
+                            legend={['Collection', 'Floor Price', 'Action']}
+                            widths={['34%', '51%', '15%']}
+                            aligns={[ALIGN_LEFT, ALIGN_LEFT, ALIGN_RIGHT]}
                             tableState={creditMiningFarmPageStore.approvedCollectionsTableState}
-                            onClickRow = { onClickActiveCollectionRow }
                             showPaging = { true }
                             rows={renderActiveCollectionsRows()} />
                     ) }
@@ -285,12 +289,6 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
 
                             { accountSessionStore.isAdmin() === true && accountSessionStore.accountEntity.accountId === miningFarmEntity.accountId && (
                                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
-                                    <Button
-                                        onClick={creditMiningFarmPageStore.onClickCreatePresaleCollection}
-                                        color={ButtonColor.SCHEME_4} >
-                                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                                    Profile images
-                                    </Button>
                                     <Button
                                         onClick={onClickProfileImages}
                                         color={ButtonColor.SCHEME_4} >

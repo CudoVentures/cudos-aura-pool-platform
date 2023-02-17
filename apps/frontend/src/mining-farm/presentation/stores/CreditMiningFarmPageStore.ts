@@ -241,7 +241,7 @@ export default class CreditMiningFarmPageStore {
     rejectMiningFarm = async () => {
         try {
             const clonedFarm = this.miningFarmEntity.clone();
-            clonedFarm.marKRejected();
+            clonedFarm.markRejected();
             await this.miningFarmRepo.creditMiningFarm(clonedFarm);
 
             await runInActionAsync(() => {
@@ -268,10 +268,23 @@ export default class CreditMiningFarmPageStore {
     // }
 
     async createPresaleCollection() {
+        const presaleCollectionName = 'Presale Collection';
+        const presaleCollectionEntity = this.approvedCollectionEntities.find((collectionEntity) => {
+            return collectionEntity.name === presaleCollectionName;
+        });
+
+        if (presaleCollectionEntity !== undefined) {
+            // because it is called from alertStoreHandler
+            setTimeout(() => {
+                this.alertStore.show('The collection has already been minted');
+            });
+            return;
+        }
+
         try {
             const collectionEntity = new CollectionEntity();
             collectionEntity.farmId = this.miningFarmEntity.id;
-            collectionEntity.name = 'Presale Collection';
+            collectionEntity.name = presaleCollectionName;
             collectionEntity.description = 'Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet. More';
             collectionEntity.profileImgUrl = CollectionProfileImage01;
             collectionEntity.coverImgUrl = CollectionCoverImage01;

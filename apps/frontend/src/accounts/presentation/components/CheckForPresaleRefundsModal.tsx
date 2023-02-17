@@ -15,23 +15,13 @@ type Props = {
 }
 
 function CheckForPresaleRefundsModal({ checkForPresaleRefundsModalStore }: Props) {
-    return (
-        <ModalWindow className = { 'CheckForPresaleRefundsModal' } modalStore = { checkForPresaleRefundsModalStore } >
-            <div className={ ' ModalHolder FlexColumn' } >
-                { checkForPresaleRefundsModalStore.stage === RefundModalStage.INITIAL && modalStageInitial()}
-                { checkForPresaleRefundsModalStore.stage === RefundModalStage.FAIL && modalStageFail()}
-                { checkForPresaleRefundsModalStore.stage === RefundModalStage.SUCCESS && modalStageSuccess()}
-                { checkForPresaleRefundsModalStore.stage === RefundModalStage.PROCESSING && modalStageProcessing()}
-            </div>
-        </ModalWindow>
-    )
 
-    function modalStageInitial() {
+    function renderStageInitial() {
         return (<>
             { checkForPresaleRefundsModalStore.availableRefundAmount !== null && (
                 <>
                     <div className = { 'ModalTitleRow' } >
-                        <div className = { 'H3 Bold' } >Check for Presale Refunds</div>
+                        <div className = { 'H2 Bold ColorPrimary60' } >Check for Presale Refunds</div>
                     </div>
                     <div className = { 'ModalTitleRow' } >
                         <div className = { 'H4 Bold' } >ETH Address: {checkForPresaleRefundsModalStore.ethAddress}</div>
@@ -48,45 +38,52 @@ function CheckForPresaleRefundsModal({ checkForPresaleRefundsModalStore }: Props
         </>)
     }
 
-    function modalStageFail() {
+    function renderStageFail() {
         return <>
-            <Svg className={'BigSvg'} svg={ReportIcon} size={SvgSize.CUSTOM}/>
+            <Svg className={'StatusSvg ColorError060'} svg={ReportIcon} size={SvgSize.CUSTOM} />
             <div className={'H2 Bold'}>Error</div>
             <div className={'H3 Info'}>Transaction was not successful. Check your network or token balance.</div>
-            <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                <Button onClick={checkForPresaleRefundsModalStore.hide}>
-                Close
-                </Button>
-                <Button onClick={checkForPresaleRefundsModalStore.onClickRefund}>
-                Try Again
-                </Button>
+            <Actions className = { 'ModalActionsBottom' } layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
+                <Button onClick={checkForPresaleRefundsModalStore.hide}> Close </Button>
+                <Button onClick={checkForPresaleRefundsModalStore.onClickRefund}> Try Again </Button>
             </Actions>
         </>
     }
 
-    function modalStageSuccess() {
+    function renderStageSuccess() {
         return <>
-            <Svg className={'SuccessSvg'} svg={CheckCircleIcon} size={SvgSize.CUSTOM}/>
+            <Svg className={'StatusSvg ColorSuccess060'} svg={CheckCircleIcon} size={SvgSize.CUSTOM}/>
             <div className={'H2 Bold'}>Success!</div>
-            <div className={'H3'}>Transaction was successfully executed.</div>
-            <div className={'FlexRow TransactionView H3'}>
-                <a className={'Clickable'} href={checkForPresaleRefundsModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
-                        Transaction details
+            <div className={'H3 Info'}>Transaction was successfully executed.</div>
+            <div className={'TransactionView H3 ModalActionsBottom'}>
+                <a className={'FlexRow Clickable'} href={checkForPresaleRefundsModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                    Transaction details
                     <Svg svg={LaunchIcon} />
                 </a>
             </div>
         </>
     }
 
-    function modalStageProcessing() {
+    function renderStageProcessing() {
         return <>
             <div className={'H2 Bold'}>Processing...</div>
-            <div className={'Info'}>
-                <div className={'H3'}>Check your wallet for detailed information.</div>
-                <div className={'H3'}>Sign the transaction.</div>
+            <div className={'H3 Info'}>
+                <div>Check your wallet for detailed information.</div>
+                <div>Sign the transaction.</div>
             </div>
         </>
     }
+
+    return (
+        <ModalWindow className = { 'CheckForPresaleRefundsModal' } modalStore = { checkForPresaleRefundsModalStore } hasClose = { checkForPresaleRefundsModalStore.stage !== RefundModalStage.PROCESSING } >
+            <div className={ 'ModalHolder FlexColumn' } >
+                { checkForPresaleRefundsModalStore.stage === RefundModalStage.INITIAL && renderStageInitial()}
+                { checkForPresaleRefundsModalStore.stage === RefundModalStage.FAIL && renderStageFail()}
+                { checkForPresaleRefundsModalStore.stage === RefundModalStage.SUCCESS && renderStageSuccess()}
+                { checkForPresaleRefundsModalStore.stage === RefundModalStage.PROCESSING && renderStageProcessing()}
+            </div>
+        </ModalWindow>
+    )
 
 }
 
