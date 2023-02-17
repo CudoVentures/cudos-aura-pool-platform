@@ -278,11 +278,7 @@ export default class MarketplacePageStore {
     }
 
     getPresalePriceUsdFormatted(): string {
-<<<<<<< HEAD
         return `$ ${PRESALE_CONSTS.PRICE_USD}`;
-=======
-        return this.cudosStore.formatCudosInUsd(new BigNumber(PRESALE_CONSTS.PRICE_CUDOS));
->>>>>>> ad51264a3c643069e66a4e3a6602e2f93cfa294c
     }
 
     async onClickBuyWithCudos(): Promise < boolean > {
