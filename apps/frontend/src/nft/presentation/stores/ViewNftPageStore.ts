@@ -216,12 +216,7 @@ export default class ViewNftPageStore {
             return 'Not for sale';
         }
 
-        if (this.nftEntity.hasPriceInAcudos() === true) {
-            return this.cudosStore.formatConvertedAcudosInUsd(this.nftEntity.priceInAcudos);
-        }
-
-        return this.nftEntity.formatPriceInUsd();
-
+        return this.cudosStore.formatPriceInUsdForNft(this.nftEntity);
     }
 
     getMonthlyMaintenanceFee(): BigNumber {

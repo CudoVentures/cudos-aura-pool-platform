@@ -280,12 +280,12 @@ export default class CreditCollectionStore {
     }
 
     getSelectedNftPriceDisplayInCudos(): string {
-        const cudosPrice = this.cudosStore.convertUsdInAcudos(this.selectedNftEntity?.priceUsd);
+        const cudosPrice = this.cudosStore.convertUsdInAcudos(this.selectedNftEntity?.priceUsd ?? 0);
         return this.selectedNftPriceInDollarsInputValue !== '' ? cudosPrice.shiftedBy(-CURRENCY_DECIMALS).toFixed(2) : '0';
     }
 
     getCurrentNftIncomeForFarmFormatted(): string {
-        const nftPriceInCudos = this.selectedNftEntity?.priceInAcudos?.shiftedBy(-CURRENCY_DECIMALS) ?? new BigNumber(0);
+        const nftPriceInCudos = this.selectedNftEntity !== null ? this.cudosStore.getNftCudosPriceForNft(this.selectedNftEntity) : new BigNumber(0);
         const cudosMintNftRoyaltiesPercent = this.miningFarmEntity?.cudosMintNftRoyaltiesPercent ?? 100;
         return nftPriceInCudos.multipliedBy(1 - (cudosMintNftRoyaltiesPercent / 100)).toFormat(2);
     }
@@ -303,7 +303,6 @@ export default class CreditCollectionStore {
         this.selectedNftEntity = nftEntity.cloneDeep();
 
         this.selectedNftHashingPowerInThInputValue = nftEntity.hashPowerInTh !== S.NOT_EXISTS ? nftEntity.hashPowerInTh.toString() : '';
-        // this.selectedNftPriceInDollarsInputValue = nftEntity.priceInAcudos !== null ? this.cudosStore.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2) : '';
         this.selectedNftPriceInDollarsInputValue = nftEntity.priceUsd !== S.NOT_EXISTS ? nftEntity.priceUsd.toString() : '';
     }
 

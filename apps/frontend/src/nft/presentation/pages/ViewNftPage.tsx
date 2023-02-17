@@ -185,7 +185,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                 <div className={'DataValue NftPrice FlexRow'}>
                     <Svg svg={SvgCudos}/>
                     <div className={'H3 Bold'}>1 CUDOS</div>
-                    <div className={'SubPrice B2 SemiBold'}>{cudosStore.formatConvertedCudosInUsd(new BigNumber(1))}</div>
+                    <div className={'SubPrice B2 SemiBold'}>{cudosStore.formatCudosInUsd(new BigNumber(1))}</div>
                 </div>,
             ));
         }

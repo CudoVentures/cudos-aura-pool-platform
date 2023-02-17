@@ -167,7 +167,7 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
                                 <span className={'H2 Bold'}>{walletStore.formatBalanceInCudosInt()}<span className={'ColorNeutral060'}>.{walletStore.formatBalanceInCudosFraction()}</span></span>
                                 <span className={'H3 ColorNeutral060'}> CUDOS</span>
                             </div>
-                            <div className={'ColorPrimary060 H3 Bold'}>{cudosStore.formatConvertedCudosInUsd(walletStore.getBalanceSafe())}</div>
+                            <div className={'ColorPrimary060 H3 Bold'}>{cudosStore.formatCudosInUsd(walletStore.getBalanceSafe())}</div>
                         </div>
                     </StyledContainer>
                     <StyledContainer className={'FlexColumn BalanceColumn'} containerPadding={ContainerPadding.PADDING_24}>

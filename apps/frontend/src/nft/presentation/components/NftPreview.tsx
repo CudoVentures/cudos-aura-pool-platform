@@ -49,8 +49,8 @@ function NftPreview({ cudosStore, className, nftEntity, collectionName, disabled
             <div className={'HashPower'}>{nftEntity.formatHashPowerInTh()}</div>
             <div className={'Priceheading'}>Price</div>
             <div className={'PriceRow FlexRow Dots'}>
-                <Svg className = { 'SvgCudosLogo' } svg={SvgCudosLogo} />
-                <div className={'Price H4 Bold Dots'}>{cudosStore.formatExistingPriceForNft(nftEntity)}</div>
+                {/* <Svg className = { 'SvgCudosLogo' } svg={SvgCudosLogo} /> */}
+                <div className={'Price H4 Bold Dots'}>{cudosStore.formatPriceInUsdForNft(nftEntity)}</div>
             </div>
         </div>
     );

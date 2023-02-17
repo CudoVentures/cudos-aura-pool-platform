@@ -81,9 +81,9 @@ export default class NftEntity {
         return this.imageUrl !== '';
     }
 
-    hasPriceInAcudos(): boolean {
-        return this.priceInAcudos.gt(new BigNumber(0));
-    }
+    // hasPriceInAcudos(): boolean {
+    //     return this.priceInAcudos?.gt(new BigNumber(0)) ?? false;
+    // }
 
     markAsMinted(): void {
         this.status = NftStatus.MINTED;
@@ -92,6 +92,7 @@ export default class NftEntity {
     setPricesZero(): void {
         this.priceInAcudos = new BigNumber(0);
         this.priceUsd = NOT_EXISTS_INT;
+        this.priceInEth = new BigNumber(0);
     }
 
     markAsExpiringToday() {
@@ -136,6 +137,7 @@ export default class NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 
         newNftEntity.priceInAcudos = this.priceInAcudos !== null ? new BigNumber(this.priceInAcudos) : null;
+        newNftEntity.priceInEth = this.priceInEth !== null ? new BigNumber(this.priceInEth) : null;
 
         return newNftEntity;
     }
@@ -143,6 +145,7 @@ export default class NftEntity {
     copyDeepFrom(nftEntity: NftEntity): void {
         Object.assign(this, nftEntity);
         this.priceInAcudos = nftEntity.priceInAcudos !== null ? new BigNumber(nftEntity.priceInAcudos) : null;
+        this.priceInEth = nftEntity.priceInEth !== null ? new BigNumber(nftEntity.priceInEth) : null;
     }
 
     static toJson(entity: NftEntity): any {

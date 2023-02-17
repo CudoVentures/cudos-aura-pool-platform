@@ -73,7 +73,7 @@ function SuperAdminMiningFarmsPage({ superAdminMiningFarmsPageStore, viewMiningF
                         { miningFarmDetailsEntity.hasFloorPrice() === true ? (
                             <>
                                 <div className={'B2 Bold MiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudosWithPrecision(miningFarmDetailsEntity.floorPriceInAcudos, 2)}</div>
-                                <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatConvertedAcudosInUsd(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
+                                <div className={'B3 SemiBold Gray ColorNeutral060'}>{cudosStore.formatAcudosInUsd(miningFarmDetailsEntity.floorPriceInAcudos)}</div>
                             </>
                         ) : (
                             <div className={'B2 Bold MiningFarmsCellTitle'}>No listed NFTs for sale</div>

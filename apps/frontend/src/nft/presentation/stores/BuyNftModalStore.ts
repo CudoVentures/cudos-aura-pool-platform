@@ -147,6 +147,6 @@ export default class BuyNftModalStore extends ModalStore {
     formatPricePlusMintFeeInUsd(): string {
         const priceCudos = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
 
-        return this.cudosStore.formatConvertedCudosInUsd(priceCudos);
+        return this.cudosStore.formatCudosInUsd(priceCudos);
     }
 }
