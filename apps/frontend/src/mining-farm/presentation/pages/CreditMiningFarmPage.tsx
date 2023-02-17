@@ -106,7 +106,7 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
     function onClickMintPresaleNfts() {
         alertStore.show('You are about to mint ALL presale NFTs.', () => {
             creditMiningFarmPageStore.createPresaleCollection();
-        });
+        }, () => {});
     }
 
     function renderQueuedCollectionsRows() {
