@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
+import numeral from 'numeral';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import NftEntity from '../../../nft/entities/NftEntity';
@@ -8,17 +9,15 @@ import MiningFarmRepo from '../../../mining-farm/presentation/repos/MiningFarmRe
 import CollectionDetailsEntity from '../../../collection/entities/CollectionDetailsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import MiningFarmDetailsEntity from '../../../mining-farm/entities/MiningFarmDetailsEntity';
-import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import NftFilterModel from '../../../nft/utilities/NftFilterModel';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
-import BigNumber from 'bignumber.js';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 import AllowlistRepo from '../../../allowlist/presentation/repos/AllowlistRepo';
 import AllowlistUserEntity from '../../../allowlist/entities/AllowlistUserEntity';
-import { PresaleImage01, PresaleImage02, PresaleImage03, PresaleImage04, PresaleImage05 } from '../../../mining-farm/utilities/PresaleImages';
 
 declare let Config;
 
@@ -278,7 +277,7 @@ export default class MarketplacePageStore {
     }
 
     getPresalePriceUsdFormatted(): string {
-        return `$ ${PRESALE_CONSTS.PRICE_USD}`;
+        return numeral(PRESALE_CONSTS.PRICE_USD).format(ProjectUtils.NUMERAL_USD);
     }
 
     async onClickBuyWithCudos(): Promise < boolean > {
