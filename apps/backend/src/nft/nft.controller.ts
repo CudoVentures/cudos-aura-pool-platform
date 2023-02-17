@@ -14,10 +14,6 @@ import BigNumber from 'bignumber.js';
 import { ChainMarketplaceNftEntity } from '../graphql/entities/nft-marketplace.entity';
 import { FarmService } from '../farm/farm.service';
 import { validate } from 'uuid';
-import RoleGuard from '../auth/guards/role.guard';
-import { AccountType } from '../account/account.types';
-import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
-import { IsPresaleContractRelayerGuard } from './guards/is-presale-contract-relayer';
 import { ConfigService } from '@nestjs/config';
 import AccountService from '../account/account.service';
 
