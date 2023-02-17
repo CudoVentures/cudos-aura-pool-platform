@@ -240,7 +240,6 @@ for (let i = 1; i <= 5; i++) {
     nftTestEntity.data = 'somestring';
     nftTestEntity.hashingPower = i;
     nftTestEntity.acudosPrice = new BigNumber(`${i}00`);
-    nftTestEntity.ethPrice = new BigNumber('100');
     nftTestEntity.expirationDateTimestamp = new Date(2024, 10, 9).getTime();
     nftTestEntity.status = NftStatus.MINTED;
     nftTestEntity.tokenId = `${i}`;

@@ -59,6 +59,7 @@ export class NFTController {
         const paidAmountAcudos = new BigNumber(paidAmountAcudosStr);
         const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
         if (userEntity === null) {
+            console.log('Getting NFT from OnDemandMinting', 'user not found', recipient);
             throw new NotFoundException();
         }
 
@@ -67,6 +68,7 @@ export class NFTController {
         if (id === 'presale') {
             const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp < Date.now()) {
+                console.log('Getting NFT from OnDemandMinting', 'presale has ended at', presaleEndTimestamp);
                 throw new Error('Presale ended.')
             }
 
@@ -83,6 +85,7 @@ export class NFTController {
             const expectedAcudosUpperband = expectedAcudosEpsilonAbsolute.plus(expectedAcudosEpsilonAbsolute);
 
             if (nftEntity.acudosPrice.lt(expectedAcudosLowerBand) === true && nftEntity.acudosPrice.gt(expectedAcudosUpperband) === true) {
+                console.log('Getting NFT from OnDemandMinting', 'not enough funds', expectedAcudosLowerBand, nftEntity.acudosPrice, expectedAcudosUpperband);
                 nftEntity = null
             }
         }
@@ -92,24 +95,29 @@ export class NFTController {
         }
 
         if (nftEntity.isPriceInAcudosValidForMinting() === false) {
+            console.log('Getting NFT from OnDemandMinting', 'price not valid for minting');
             throw new NotFoundException();
         }
 
         if (nftEntity.isQueued() === false) {
+            console.log('Getting NFT from OnDemandMinting', 'is not queued');
             throw new NotFoundException();
         }
 
         const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
         if (collectionEntity === null || collectionEntity.isApproved() === false) {
+            console.log('Getting NFT from OnDemandMinting', 'wrong collection', nftEntity.collectionId);
             throw new NotFoundException();
         }
 
         const miningFarmEntity = await this.miningFarmService.findMiningFarmById(collectionEntity.farmId);
         if (miningFarmEntity === null || miningFarmEntity.isApproved() === false) {
+            console.log('Getting NFT from OnDemandMinting', 'wrong mining farm', collectionEntity.farmId);
             throw new NotFoundException();
         }
 
         if (nftEntity.expirationDateTimestamp < Date.now()) {
+            console.log('Getting NFT from OnDemandMinting', 'expired nft');
             throw new NotFoundException();
         }
 

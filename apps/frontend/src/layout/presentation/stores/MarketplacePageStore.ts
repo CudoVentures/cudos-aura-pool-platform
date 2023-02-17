@@ -273,7 +273,7 @@ export default class MarketplacePageStore {
     }
 
     getPresalePriceEthFormatted(): string {
-        return this.cudosStore.formatConvertedUsdInEth(PRESALE_CONSTS.PRICE_USD, 2);
+        return this.cudosStore.formatConvertedUsdInEth(PRESALE_CONSTS.PRICE_USD, 6);
     }
 
     getPresalePriceUsdFormatted(): string {
