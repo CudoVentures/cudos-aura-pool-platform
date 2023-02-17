@@ -57,7 +57,6 @@ export class NFTController {
         @Param('paidAmountAcudosStr') paidAmountAcudosStr: string,
     ): Promise<any> {
         const paidAmountAcudos = new BigNumber(paidAmountAcudosStr);
-        console.log(paidAmountAcudos.toString())
         const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
         if (userEntity === null) {
             throw new NotFoundException();
@@ -73,7 +72,7 @@ export class NFTController {
 
             nftEntity = await this.nftService.getRandomPresaleNft(paidAmountAcudos);
             if (nftEntity !== null) {
-                nftEntity = await this.nftService.updatePremintNftPrice(nftEntity);
+                nftEntity = await this.nftService.updatePremintNftPrice(nftEntity, paidAmountAcudos);
             }
         } else {
             nftEntity = await this.nftService.findOne(id);
