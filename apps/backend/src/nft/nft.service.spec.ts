@@ -7,20 +7,18 @@ import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
-import compose, { configServices } from 'docker-compose';
+import compose from 'docker-compose';
 import Path from 'path';
 import { NftRepo } from './repos/nft.repo';
 import { NFTService } from './nft.service';
-import { collectionEntities } from '../../test/data/collections.data';
-import { CollectionEntity } from '../collection/entities/collection.entity';
-import { CollectionRepo } from '../collection/repos/collection.repo';
-import { nftPresaleEntities } from '../../test/data/nft.data';
 import { VisitorModule } from '../visitor/visitor.module';
 import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
 import NftEntity from './entities/nft.entity';
-import { randomInt } from 'crypto';
+import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import BigNumber from 'bignumber.js';
 
 describe('NFTService', () => {
+    const oneCudosInAcudos = new BigNumber('1000000000000000000')
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
     let service: NFTService;
     let module: TestingModule;
@@ -86,6 +84,16 @@ describe('NFTService', () => {
         await module.init();
 
         service = module.get<NFTService>(NFTService);
+        const coinGeckoService = module.get<CoinGeckoService>(CoinGeckoService);
+        jest.spyOn(coinGeckoService, 'fetchCudosPrice').mockImplementation(async () => {
+            return {
+                cudosUsdPrice: Number(1),
+                cudosEthPrice: new BigNumber(1),
+            }
+        });
+
+        process.env.APP_PRESALE_PRICE_USD = '1';
+        process.env.APP_PRESALE_EXPECTED_PRICE_EPSILON = '0.01';
     });
 
     afterAll(async () => {
@@ -119,7 +127,7 @@ describe('NFTService', () => {
 
         // Act
         for (let i = 0; i < totalFetches; i++) {
-            const nftEntity = await service.getRandomPresaleNft();
+            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
             nftEntities.push(nftEntity);
         }
 
@@ -160,7 +168,7 @@ describe('NFTService', () => {
 
         // Act
         for (let i = 0; i < totalFetches; i++) {
-            const nftEntity = await service.getRandomPresaleNft();
+            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
             nftEntities.push(nftEntity);
         }
 
@@ -198,7 +206,7 @@ describe('NFTService', () => {
 
         // Act
         for (let i = 0; i < totalFetches; i++) {
-            const nftEntity = await service.getRandomPresaleNft();
+            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
             nftEntities.push(nftEntity);
         }
 
@@ -211,6 +219,11 @@ describe('NFTService', () => {
         expect(expectedTier5Count * (1 - countE) <= tier5EntitiesCount && tier5EntitiesCount <= expectedTier5Count * (1 + countE)).toBeTruthy();
         expect(expectedTier4Count * (1 - countE) <= tier4EntitiesCount && tier4EntitiesCount <= expectedTier4Count * (1 + countE)).toBeTruthy();
         expect(expectedTier3Count * (1 - countE) <= tier3EntitiesCount && tier3EntitiesCount <= expectedTier3Count * (1 + countE)).toBeTruthy();
+    })
+
+    it('getRandomPresaleNft: payment amount outside epsilon', async () => {
+        // Assert
+        expect(await service.getRandomPresaleNft(oneCudosInAcudos.plus(oneCudosInAcudos))).toEqual(null);
     })
 
 });
