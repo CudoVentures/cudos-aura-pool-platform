@@ -4,20 +4,19 @@ import NftEntity, { NftStatus } from '../../src/entities/NftEntity';
 import CudosAuraPoolServiceRepo from '../../src/workers/repos/CudosAuraPoolServiceRepo';
 
 const nftEntities = [
-    createNftEntity('id1', '1000', '0.0001'),
-    createNftEntity('id2', '1000', '0.0001'),
-    createNftEntity('id3', '1000', '0.0001'),
-    createNftEntity('id4', '1000', '0.0001'),
-    createNftEntity('id5', '1000', '0.0001'),
-    createNftEntity('id6', '1000', '0.0001'),
+    createNftEntity('id1', '1000'),
+    createNftEntity('id2', '1000'),
+    createNftEntity('id3', '1000'),
+    createNftEntity('id4', '1000'),
+    createNftEntity('id5', '1000'),
+    createNftEntity('id6', '1000'),
 ];
 
-function createNftEntity(nftId: string, priceInAcudos: string, priceInEth: string): NftEntity {
+function createNftEntity(nftId: string, priceInAcudos: string): NftEntity {
     const entity = new NftEntity();
 
     entity.id = nftId;
     entity.priceInAcudos = new BigNumber(priceInAcudos);
-    entity.priceInEth = new BigNumber(priceInEth);
     entity.priceValidUntil = Date.now() + 1000000;
     entity.status = NftStatus.QUEUED;
 
@@ -45,7 +44,6 @@ export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolS
 
     async fetchRandomNftForMint(): Promise < NftEntity > {
         const changedNftEntity = Object.assign(new NftEntity(), nftEntities[0]);
-        changedNftEntity.priceInEth = new BigNumber(123);
 
         return changedNftEntity;
     }

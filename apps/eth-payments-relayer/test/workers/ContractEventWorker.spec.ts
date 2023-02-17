@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+import Config from '../../config/Config';
 import Logger from '../../config/Logger';
 import CoinGeckoServiceApiRepo from '../../src/data/CoinGeckoServiceApiRepo';
 import ContractEventWorker from '../../src/workers/ContractEventWorker';
@@ -8,15 +10,20 @@ import { CudosChainRpcFailToMintMockRepo, CudosChainRpcHappyPathMockRepo, CudosC
 describe('ContractEventWorker (e2e)', () => {
     const logErrorSpy = jest.spyOn(ContractEventWorker, 'error');
     const logWarn = jest.spyOn(ContractEventWorker, 'warn');
+    const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
-    beforeEach(async () => {
+    jest.spyOn(coinGeckoServiceApi, 'fetchEthUsdPrice').mockImplementation(async () => { return 1 })
+    jest.spyOn(coinGeckoServiceApi, 'fetchCudosEthPrice').mockImplementation(async () => { return new BigNumber(1) })
+
+    beforeAll(async () => {
+        Config.EXPECTED_PRICE_USD = 1;
+        Config.EXPECTED_PRICE_EPSILON_PERCENT = 0.01;
         Logger.transports.forEach((t) => { t.silent = true });
     });
 
     it('Mint: HappyPath', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-        const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
         const auraContractRepo = new AuraContractHappyPathMockRepo();
         const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
@@ -40,7 +47,6 @@ describe('ContractEventWorker (e2e)', () => {
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
         const auraContractRepo = new AuraContractWrongAmountMockRepo();
         const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
-        const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
@@ -53,7 +59,7 @@ describe('ContractEventWorker (e2e)', () => {
 
         // Assert
         expect(logErrorSpy).not.toBeCalled();
-        expect(logWarn).toHaveBeenCalledWith('\tPayed amount to contract is not equal to the expected.\n\t\tPayed amount: 123\n\t\tExpected amount: 0.0001');
+        expect(logWarn).toHaveBeenCalledWith('\tPayed amount to contract is not within the expected band.\n\t\tPayed amount: 123\n\t\tExpected to be between: 0.99 AND 1.01');
         expect(spyRefund).toBeCalledTimes(6);
         expect(spyMint).not.toBeCalled();
         expect(spyFinish).toBeCalled();
@@ -64,7 +70,6 @@ describe('ContractEventWorker (e2e)', () => {
         const chainRpcRepo = new CudosChainRpcNoAddressbookEntryMockRepo();
         const auraContractRepo = new AuraContractHappyPathMockRepo();
         const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
-        const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
@@ -88,7 +93,6 @@ describe('ContractEventWorker (e2e)', () => {
         const chainRpcRepo = new CudosChainRpcNoAddressbookEntryMockRepo();
         const auraContractRepo = new AuraContractPaymentReturnedMockRepo();
         const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
-        const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
@@ -111,7 +115,6 @@ describe('ContractEventWorker (e2e)', () => {
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
         const auraContractRepo = new AuraContractLowBlockHeightMockRepo();
         const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
-        const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
@@ -134,7 +137,6 @@ describe('ContractEventWorker (e2e)', () => {
         const chainRpcRepo = new CudosChainRpcFailToMintMockRepo();
         const auraContractRepo = new AuraContractHappyPathMockRepo();
         const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
-        const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
@@ -157,7 +159,6 @@ describe('ContractEventWorker (e2e)', () => {
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
         const auraContractRepo = new AuraContractLowBlockHeightMockRepo();
         const auraPoolServiceRepo = new CudosAuraPoolServiceHighBlockCheckedMockRepo();
-        const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');

@@ -3,15 +3,15 @@ import PaymentEventEntity, { PaymentStatus } from '../../src/entities/PaymentEve
 import AuraContractRepo from '../../src/workers/repos/AuraContractRepo';
 
 const paymentEvents = [
-    createPaymentEventEntity(1, 'id1', 'address1', '0.0001', '0xaddress1'),
-    createPaymentEventEntity(2, 'id2', 'address2', '0.0001', '0xaddress2'),
-    createPaymentEventEntity(3, 'id3', 'address3', '0.0001', '0xaddress3'),
-    createPaymentEventEntity(4, 'id4', 'address4', '0.0001', '0xaddress4'),
-    createPaymentEventEntity(5, 'id5', 'address5', '0.0001', '0xaddress5'),
-    createPaymentEventEntity(6, 'id6', 'address6', '0.0001', '0xaddress6'),
+    createPaymentEventEntity(1, 'address1', '1', '0xaddress1'),
+    createPaymentEventEntity(2, 'address2', '1', '0xaddress2'),
+    createPaymentEventEntity(3, 'address3', '1', '0xaddress3'),
+    createPaymentEventEntity(4, 'address4', '1', '0xaddress4'),
+    createPaymentEventEntity(5, 'address5', '1', '0xaddress5'),
+    createPaymentEventEntity(6, 'address6', '1', '0xaddress6'),
 ]
 
-function createPaymentEventEntity(paymentId: number, nftId: string, cudosAddress: string, amount: string, ethAddress: string): PaymentEventEntity {
+function createPaymentEventEntity(paymentId: number, cudosAddress: string, amount: string, ethAddress: string): PaymentEventEntity {
     const entity = new PaymentEventEntity();
 
     entity.id = paymentId;

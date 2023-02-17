@@ -260,7 +260,6 @@ for (let i = 1; i <= 5; i++) {
     //     data: 'somestring',
     //     hashingPower: i,
     //     price: `${i}00`,
-    //     priceInEth: '100',
     //     expirationDate: new Date(2024, 10, 9),
     //     status: NftStatus.MINTED,
     //     tokenId: `${i}`,
