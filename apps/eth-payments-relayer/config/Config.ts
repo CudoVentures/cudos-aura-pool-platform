@@ -16,8 +16,8 @@ const config = {
     MINTING_SERVICE_ADDRESS: process.env.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
     CUDOS_SIGNER_MNEMONIC: process.env.App_Eth_Payment_Relayer_Cudos_Wallet_Mnemonic,
     CUDOS_SIGNER_ADDRESS: '',
-    EXPECTED_PRICE_ETH: process.env.APP_PRESALE_NFT_ETH_PRICE,
-    EXPECTED_PRICE_CUDOS: process.env.APP_PRESALE_NFT_CUDOS_PRICE,
+    EXPECTED_PRICE_USD: Number(process.env.APP_PRESALE_PRICE_USD),
+    EXPECTED_PRICE_EPSILON_PERCENT: Number(process.env.APP_PRESALE_EXPECTED_PRICE_EPSILON),
 };
 
 export default config;

@@ -84,6 +84,17 @@ export default class CudosStore {
         return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }
 
+    formatConvertedUsdInEth(usdPrice: number, precision?: number): string {
+        const cudosPrice = this.convertUsdInCudos(usdPrice);
+        const ethPrice = this.convertCudosToEth(cudosPrice);
+        return `${precision !== undefined ? ethPrice.toFixed(precision) : ethPrice.toString(10)} ETH`;
+    }
+
+    formatConvertedUsdInCudos(usdPrice: number, precision?: number): string {
+        const cudosPrice = this.convertUsdInCudos(usdPrice);
+        return `${precision !== undefined ? cudosPrice.toFixed(precision) : cudosPrice.toString(10)} CUDOS`;
+    }
+
     formatCudosPriceChangeInPercentage(): string {
         return `${this.getCudosPriceChangeInPercentage().toFixed(2)} %`;
     }

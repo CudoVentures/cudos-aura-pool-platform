@@ -59,9 +59,9 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
         }
     }
 
-    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise<string> {
+    async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, convertedPaymentToCudos: BigNumber): Promise<string> {
         const mintFee = (new BigNumber(200000)).multipliedBy(Config.CUDOS_GAS_PRICE);
-        const amount = (new BigNumber(Config.EXPECTED_PRICE_CUDOS).shiftedBy(CURRENCY_DECIMALS)).plus(mintFee);
+        const amount = convertedPaymentToCudos.shiftedBy(CURRENCY_DECIMALS).plus(mintFee);
         const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
 
         const wallet = await DirectSecp256k1HdWallet.fromMnemonic(Config.CUDOS_SIGNER_MNEMONIC);

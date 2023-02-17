@@ -161,7 +161,7 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async buyPresaleNft(currency: BuyingCurrency, ledger: Ledger): Promise < string > {
+    async buyPresaleNft(currency: BuyingCurrency, amount: BigNumber, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
             let txHash = S.Strings.EMPTY;
@@ -182,7 +182,7 @@ export default class NftApiRepo implements NftRepo {
 
                 const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(ledger.accountAddress))
                     .send({
-                        value: (new BigNumber(PRESALE_CONSTS.PRICE_ETH)).shiftedBy(18).toFixed(0),
+                        value: amount.toFixed(0),
                     });
 
                 if (!tx.transactionHash) {
@@ -195,8 +195,7 @@ export default class NftApiRepo implements NftRepo {
                 const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
 
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
-                const amount = (new BigNumber(PRESALE_CONSTS.PRICE_CUDOS)).shiftedBy(18).plus(mintFee);
-                const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
+                const sendAmountCoin = coin(amount.plus(mintFee).toFixed(0), 'acudos')
                 const memo = new MintMemo('presale', ledger.accountAddress).toJsonString();
                 const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
 

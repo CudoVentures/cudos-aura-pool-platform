@@ -239,6 +239,7 @@ export class FarmService {
                     miningFarmEntity.farmPhotoUrls[i] = await this.dataService.trySaveUri(miningFarmEntity.accountId, miningFarmEntity.farmPhotoUrls[i]);
                 }
             } catch (e) {
+                console.log(e)
                 throw new DataServiceError();
             }
             newUris = [miningFarmEntity.coverImgUrl, miningFarmEntity.profileImgUrl].concat(miningFarmEntity.farmPhotoUrls);
@@ -273,6 +274,7 @@ export class FarmService {
         } catch (ex) {
             this.dataService.cleanUpNewUris(oldUris, newUris);
             const errMessage = ex.response?.message;
+            console.log(ex)
             switch (errMessage) {
                 case ERROR_TYPES.NOT_FOUND:
                     throw ex;

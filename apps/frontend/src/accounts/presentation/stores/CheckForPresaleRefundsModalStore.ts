@@ -2,10 +2,9 @@ import { action, makeObservable, observable, runInAction } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
-import { ETH_CONSTS, getEthChainEtherscanLink, PRESALE_CONSTS } from '../../../core/utilities/Constants';
+import { ETH_CONSTS, getEthChainEtherscanLink } from '../../../core/utilities/Constants';
 import { Contract } from 'web3-eth-contract';
 import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAuraPool.json';
-import Web3 from 'web3';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export enum RefundModalStage {

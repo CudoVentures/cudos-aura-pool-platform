@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import AddressbookEntryEntity from '../../entities/AddressbookEntryEntity';
 import NftEntity from '../../entities/NftEntity';
 import PaymentEventEntity from '../../entities/PaymentEventEntity';
@@ -9,5 +10,5 @@ export default interface CudosChainRepo {
     fetchAddressbookEntry(cudosAddress: string): Promise < AddressbookEntryEntity >;
     fetchRefundTransactions(fromHeight: number, toHeight: number): Promise < RefundTransactionEntity[] >;
     fetchPaymentTransactionByTxhash(txHash: string): Promise < PaymentTransactionEntity >;
-    sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity): Promise < string >;
+    sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, convertedPaymentToCudos: BigNumber): Promise < string >;
 }

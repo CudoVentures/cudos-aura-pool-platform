@@ -49,15 +49,20 @@ export class NFTController {
     }
 
     // used by on-demand-minting
-    @Get('on-demand-minting-nft/:id/:recipient')
+    @Get('on-demand-minting-nft/:id/:recipient/:paidAmountAcudosStr')
     @HttpCode(200)
-    async findOne(@Param('id') id: string, @Param('recipient') recipient: string): Promise<any> {
+    async findOne(
+        @Param('id') id: string,
+        @Param('recipient') recipient: string,
+        @Param('paidAmountAcudosStr') paidAmountAcudosStr: string,
+    ): Promise<any> {
+        const paidAmountAcudos = new BigNumber(paidAmountAcudosStr);
         const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
         if (userEntity === null) {
             throw new NotFoundException();
         }
 
-        let nftEntity;
+        let nftEntity: NftEntity;
 
         if (id === 'presale') {
             const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
@@ -65,12 +70,25 @@ export class NFTController {
                 throw new Error('Presale ended.')
             }
 
-            nftEntity = await this.nftService.getRandomPresaleNft();
+            nftEntity = await this.nftService.getRandomPresaleNft(paidAmountAcudos);
             if (nftEntity !== null) {
                 nftEntity = await this.nftService.updatePremintNftPrice(nftEntity);
             }
         } else {
             nftEntity = await this.nftService.findOne(id);
+
+            const presaleExpectedPriceEpsilon = this.configService.get<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
+            const expectedAcudosEpsilonAbsolute = paidAmountAcudos.multipliedBy(presaleExpectedPriceEpsilon);
+            const expectedAcudosLowerBand = expectedAcudosEpsilonAbsolute.minus(expectedAcudosEpsilonAbsolute);
+            const expectedAcudosUpperband = expectedAcudosEpsilonAbsolute.plus(expectedAcudosEpsilonAbsolute);
+
+            if (nftEntity.acudosPrice.lt(expectedAcudosLowerBand) === true && nftEntity.acudosPrice.gt(expectedAcudosUpperband) === true) {
+                nftEntity = null
+            }
+        }
+
+        if (nftEntity === null) {
+            throw new NotFoundException();
         }
 
         if (nftEntity.isPriceInAcudosValidForMinting() === false) {
@@ -153,7 +171,6 @@ export class NFTController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([AccountType.USER]), IsCreatorOrSuperAdminGuard)
     @Post('updatePrice')
     @HttpCode(200)
     async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {

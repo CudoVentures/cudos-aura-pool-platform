@@ -76,8 +76,8 @@ function KycPage({ kycStore, alertStore }: Props) {
             return;
         }
 
-        const workflowRunId = await kycStore.createWorkflowRun(runFullWorkflow);
         const token = await kycStore.creditKycAndGetToken();
+        const workflowRunId = await kycStore.createWorkflowRun(runFullWorkflow);
         const onfidoInstance = Onfido.init({
             token,
             region: 'US',

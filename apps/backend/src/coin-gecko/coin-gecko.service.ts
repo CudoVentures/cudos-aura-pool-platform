@@ -6,12 +6,12 @@ import BigNumber from 'bignumber.js';
 export default class CoinGeckoService {
     static coinGeckoCudosApiUrl = 'https://api.coingecko.com/api/v3/coins/cudos?tickers=false&community_data=false&developer_data=false&sparkline=false'
 
-    async fetchCudosPrice(): Promise < {usdPrice: number, ethPrice: BigNumber } > {
+    async fetchCudosPrice(): Promise < {cudosUsdPrice: number, cudosEthPrice: BigNumber } > {
         const resultJson = await axios.get(CoinGeckoService.coinGeckoCudosApiUrl);
 
         return {
-            usdPrice: Number(resultJson.data.market_data.current_price.usd),
-            ethPrice: new BigNumber(resultJson.data.market_data.current_price.eth),
+            cudosUsdPrice: Number(resultJson.data.market_data.current_price.usd),
+            cudosEthPrice: new BigNumber(resultJson.data.market_data.current_price.eth),
         }
     }
 }

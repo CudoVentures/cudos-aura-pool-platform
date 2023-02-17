@@ -41,7 +41,6 @@ const tierPriceMap = new Map<Tier, number>([
 
 @Injectable()
 export class NFTService {
-
     constructor(
         @InjectModel(NftRepo)
         private nftRepo: typeof NftRepo,
@@ -223,11 +222,13 @@ export class NFTService {
             throw new NotFoundException();
         }
 
-        const { usdPrice, ethPrice } = await this.coinGeckoService.fetchCudosPrice();
-        const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(usdPrice);
+        const { cudosUsdPrice, cudosEthPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(cudosUsdPrice);
         const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
+        console.log('wfwefwef')
+
         nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
-        nftEntity.ethPrice = new BigNumber(cudosPrice.multipliedBy(ethPrice).toFixed(18));
+        nftEntity.ethPrice = new BigNumber(cudosPrice.multipliedBy(cudosEthPrice).toFixed(18));
 
         const fifteenMinutesInMilis = 15 * 60 * 1000;
         nftEntity.priceAcudosValidUntil = Date.now() + fifteenMinutesInMilis;
@@ -235,7 +236,21 @@ export class NFTService {
         return this.updateOne(id, nftEntity);
     }
 
-    async getRandomPresaleNft(): Promise <NftEntity> {
+    async getRandomPresaleNft(paidAmountAcudos: BigNumber): Promise <NftEntity> {
+
+        // check if paid price is within epsilon of expected
+        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const paidAmountCudos = paidAmountAcudos.shiftedBy(-CURRENCY_DECIMALS);
+        const paidAmountUsd = paidAmountCudos.multipliedBy(cudosUsdPrice);
+
+        const expectedUsd = Number(this.configService.get<string>('APP_PRESALE_PRICE_USD'));
+        const presaleExpectedPriceEpsilon = this.configService.get<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
+        const expectedUsdEpsilonAbsolute = expectedUsd * presaleExpectedPriceEpsilon;
+
+        if (paidAmountUsd.lt(expectedUsd - expectedUsdEpsilonAbsolute) || paidAmountUsd.gt(expectedUsd + expectedUsdEpsilonAbsolute)) {
+            return null;
+        }
+
         const collectionId = parseInt(this.configService.get<string>('APP_PRESALE_COLLECTION_ID'));
         // get a tier by random, if a tier is finished - add it to the closes lower tier
         const randomNumber = randomInt(1, 1000001) * 0.000001;
@@ -278,12 +293,13 @@ export class NFTService {
     }
 
     async updatePremintNftPrice(nftEntity: NftEntity): Promise <NftEntity> {
-        const nftPriceInEth = this.configService.get<string>('APP_PRESALE_NFT_ETH_PRICE');
-        const nftPriceInCudos = this.configService.get<string>('APP_PRESALE_NFT_CUDOS_PRICE');
+        const nftPriceUsd = this.configService.get<string>('APP_PRESALE_PRICE_USD');
+        const { cudosEthPrice, cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const nftCudosPrice = (new BigNumber(nftPriceUsd)).dividedBy(cudosUsdPrice);
+        const nftEthPrice = nftCudosPrice.multipliedBy(cudosEthPrice);
 
-        // const { ethPrice } = await this.coinGeckoService.fetchCudosPrice();
-        nftEntity.ethPrice = new BigNumber(nftPriceInEth);
-        nftEntity.acudosPrice = new BigNumber(nftPriceInCudos).shiftedBy(CURRENCY_DECIMALS);
+        nftEntity.ethPrice = nftEthPrice;
+        nftEntity.acudosPrice = nftCudosPrice.shiftedBy(CURRENCY_DECIMALS);
 
         const fifteenMinutesInMilis = 15 * 60 * 1000;
         nftEntity.priceAcudosValidUntil = Date.now() + fifteenMinutesInMilis;
