@@ -9,14 +9,12 @@ export enum NftStatus {
 export default class NftEntity {
     id: string;
     priceInAcudos: BigNumber;
-    priceInEth: BigNumber;
     priceValidUntil: number;
     status: NftStatus;
 
     constructor() {
         this.id = '';
         this.priceInAcudos = null;
-        this.priceInEth = null;
         this.priceValidUntil = null;
         this.status = null;
     }
@@ -24,7 +22,6 @@ export default class NftEntity {
     isBasicValid(): boolean {
         return this.id !== ''
             && this.priceInAcudos !== null
-            && this.priceInEth !== null
             && this.priceValidUntil !== null
             && this.status !== null;
     }
@@ -42,7 +39,6 @@ export default class NftEntity {
 
         entity.id = json.id ?? entity.id;
         entity.priceInAcudos = json.priceInAcudos ? new BigNumber(json.priceInAcudos) : entity.priceInAcudos;
-        entity.priceInEth = json.priceInEth ? new BigNumber(json.priceInEth) : entity.priceInEth;
         entity.priceValidUntil = json.priceAcudosValidUntil ?? entity.priceValidUntil;
         entity.status = json.status ?? entity.status;
 

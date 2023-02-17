@@ -11,7 +11,6 @@ export default class NftEntity {
     tokenId: string;
     hashingPower: number;
     acudosPrice: BigNumber;
-    ethPrice: BigNumber;
     expirationDateTimestamp: number;
     collectionId: number;
     marketplaceNftId: string;
@@ -32,7 +31,6 @@ export default class NftEntity {
         this.tokenId = '';
         this.hashingPower = NOT_EXISTS_INT;
         this.acudosPrice = new BigNumber(NOT_EXISTS_INT);
-        this.ethPrice = new BigNumber(NOT_EXISTS_INT);
         this.expirationDateTimestamp = NOT_EXISTS_INT;
         this.collectionId = NOT_EXISTS_INT;
         this.marketplaceNftId = '';
@@ -94,7 +92,6 @@ export default class NftEntity {
         entity.tokenId = json.tokenId ?? entity.tokenId;
         entity.hashingPower = json.hashingPower ?? entity.hashingPower;
         entity.acudosPrice = new BigNumber(json.priceInAcudos ?? entity.acudosPrice);
-        entity.ethPrice = new BigNumber(json.priceInEth ?? entity.ethPrice);
         entity.expirationDateTimestamp = json.expirationDateTimestamp ?? entity.expirationDateTimestamp;
         entity.collectionId = parseInt(json.collectionId ?? entity.collectionId.toString());
         entity.marketplaceNftId = json.marketplaceNftId ?? entity.marketplaceNftId;
@@ -119,7 +116,6 @@ export default class NftEntity {
             'tokenId': entity.tokenId,
             'hashingPower': entity.hashingPower,
             'priceInAcudos': entity.acudosPrice.toString(10),
-            'priceInEth': entity.ethPrice.toString(10),
             'expirationDateTimestamp': entity.expirationDateTimestamp,
             'collectionId': entity.collectionId.toString(),
             'marketplaceNftId': entity.marketplaceNftId,
@@ -149,7 +145,6 @@ export default class NftEntity {
         entity.data = repoJson.data ?? entity.data;
         entity.hashingPower = Number(repoJson.hashingPower ?? entity.hashingPower);
         entity.acudosPrice = new BigNumber(repoJson.price ?? entity.acudosPrice);
-        entity.ethPrice = new BigNumber(repoJson.priceInEth ?? entity.ethPrice);
         entity.expirationDateTimestamp = repoJson.expirationDate?.getTime() ?? entity.expirationDateTimestamp;
         entity.collectionId = repoJson.collectionId ?? entity.collectionId;
         entity.marketplaceNftId = repoJson.marketplaceNftId?.toString() ?? entity.marketplaceNftId;
@@ -182,7 +177,6 @@ export default class NftEntity {
         repoJson.tokenId = entity.tokenId;
         repoJson.hashingPower = entity.hashingPower.toString();
         repoJson.price = entity.acudosPrice.toString(10);
-        repoJson.priceInEth = entity.ethPrice.toString(10);
         repoJson.expirationDate = new Date(entity.expirationDateTimestamp);
         repoJson.collectionId = entity.collectionId;
         repoJson.marketplaceNftId = entity.marketplaceNftId === '' ? null : parseInt(entity.marketplaceNftId);

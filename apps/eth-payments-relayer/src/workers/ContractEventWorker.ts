@@ -9,17 +9,26 @@ import CoinGeckoServiceRepo from './repos/CoinGeckoServiceRepo';
 
 export default class ContractEventWorker {
     static WORKER_NAME = 'CONTRACT_EVENT_WORKER';
+    static FIFTEEN_MINUTES_IN_MS = 15 * 60 * 1000;
 
     coinGeckoRepo: CoinGeckoServiceRepo;
     cudosChainRepo: CudosChainRepo;
     contractRepo: AuraContractRepo;
     cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
 
+    ethUsdPrice: number;
+    cudosEthPrice: BigNumber;
+    lastUpdatedPricesTimestamp: number;
+
     constructor(coinGeckoRepo: CoinGeckoServiceRepo, cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
         this.coinGeckoRepo = coinGeckoRepo;
         this.cudosChainRepo = cudosChainRepo;
         this.contractRepo = contractRepo;
         this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
+
+        this.ethUsdPrice = 1;
+        this.cudosEthPrice = null;
+        this.lastUpdatedPricesTimestamp = 0;
     }
 
     async run() {
@@ -63,17 +72,21 @@ export default class ContractEventWorker {
                 // for each event
                 ContractEventWorker.log('Processing events...');
 
-                ContractEventWorker.log('Getting USD/ETH price for calculations...');
-                const ethUsdPrice = await this.coinGeckoRepo.fetchEthUsdPrice();
-                ContractEventWorker.log(`Current USD/ETH price is: $ ${ethUsdPrice}`);
+                if (this.lastUpdatedPricesTimestamp + ContractEventWorker.FIFTEEN_MINUTES_IN_MS < Date.now()) {
+                    ContractEventWorker.log('Getting USD/ETH price for calculations...');
+                    this.ethUsdPrice = await this.coinGeckoRepo.fetchEthUsdPrice();
+                    ContractEventWorker.log(`Current USD/ETH price is: $ ${this.ethUsdPrice}`);
 
-                ContractEventWorker.log('Getting ETH/CUDOS price for calculations...');
-                const cudosEthPrice = await this.coinGeckoRepo.fetchCudosEthPrice();
-                ContractEventWorker.log(`Current ETH/CUDOS price is: $ ${cudosEthPrice.toString(10)}`);
+                    ContractEventWorker.log('Getting ETH/CUDOS price for calculations...');
+                    this.cudosEthPrice = await this.coinGeckoRepo.fetchCudosEthPrice();
+                    ContractEventWorker.log(`Current ETH/CUDOS price is: $ ${this.cudosEthPrice.toString(10)}`);
+
+                    this.lastUpdatedPricesTimestamp = Date.now();
+                }
 
                 // expected price is set price +- epsilon in %
                 const setPriceUsd = Config.EXPECTED_PRICE_USD;
-                const expectedPriceEth = (new BigNumber(setPriceUsd)).dividedBy(ethUsdPrice);
+                const expectedPriceEth = (new BigNumber(setPriceUsd)).dividedBy(this.ethUsdPrice);
                 const priceEthEpsilon = expectedPriceEth.multipliedBy(Config.EXPECTED_PRICE_EPSILON_PERCENT);
                 const expectedEthPriceLowerBand = expectedPriceEth.minus(priceEthEpsilon);
                 const expectedEthPriceUpperBand = expectedPriceEth.plus(priceEthEpsilon);
@@ -90,7 +103,7 @@ export default class ContractEventWorker {
                     let shouldRefund = false;
 
                     // - Is the received amount equal to the expected?
-                    if (shouldRefund === false && receivedEthAmount.lt(expectedEthPriceLowerBand) === true || receivedEthAmount.gt(expectedEthPriceUpperBand) === true) {
+                    if (shouldRefund === false && (receivedEthAmount.lt(expectedEthPriceLowerBand) === true || receivedEthAmount.gt(expectedEthPriceUpperBand) === true)) {
                         ContractEventWorker.warn(`\tPayed amount to contract is not within the expected band.\n\t\tPayed amount: ${receivedEthAmount.toString(10)}\n\t\tExpected to be between: ${expectedEthPriceLowerBand.toString(10)} AND ${expectedEthPriceUpperBand.toString(10)}`);
                         shouldRefund = true;
                     }
@@ -120,7 +133,7 @@ export default class ContractEventWorker {
                         // if the checks pass, send payment to on demand minting service
                     } else {
                         ContractEventWorker.log('\tGoing to mint an nft.');
-                        const convertedPaymentToCudos = receivedEthAmount.dividedBy(cudosEthPrice);
+                        const convertedPaymentToCudos = receivedEthAmount.dividedBy(this.cudosEthPrice);
                         ContractEventWorker.log(`\tReceived payment is ${receivedEthAmount.toString(10)} ETH = ${convertedPaymentToCudos.toString(10)} CUDOS in current prices`)
                         ContractEventWorker.log('\tSending on demand minting Tx...')
                         const txhash = await this.cudosChainRepo.sendOnDemandMintingTx(paymentEventEntity, convertedPaymentToCudos);
