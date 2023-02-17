@@ -21,7 +21,7 @@ import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import AdminEntity from '../../../accounts/entities/AdminEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
-import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 
 enum StatsTabs {
@@ -201,11 +201,11 @@ export default class ViewNftPageStore {
     }
 
     formatPricePlusMintFeeInCudos(): string {
-        return `${this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1).toFixed(2)} CUDOS`;
+        return `${this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS).toFixed(2)} CUDOS`;
     }
 
     formatPricePlusMintFeeInEth(): string {
-        const cudosPrice = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
+        const cudosPrice = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS);
         const ethPrice = this.cudosStore.convertCudosToEth(cudosPrice);
 
         return `${ethPrice.toFixed(6)} ETH`;

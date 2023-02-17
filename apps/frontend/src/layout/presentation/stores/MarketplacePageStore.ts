@@ -18,6 +18,7 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 import AllowlistRepo from '../../../allowlist/presentation/repos/AllowlistRepo';
 import AllowlistUserEntity from '../../../allowlist/entities/AllowlistUserEntity';
+import BigNumber from 'bignumber.js';
 
 declare let Config;
 
@@ -268,22 +269,33 @@ export default class MarketplacePageStore {
         return this.totalWhitelistedUsersCount;
     }
 
+    private getPresalePriceInCudos(): BigNumber {
+        const price = this.cudosStore.convertUsdInCudos(PRESALE_CONSTS.PRICE_USD);
+        return price.plus(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS);
+    }
+
+    private getPresalePriceInEth(): BigNumber {
+        return this.cudosStore.convertCudosToEth(this.getPresalePriceInCudos());
+    }
+
     getPresalePriceCudosFormatted(): string {
-        return this.cudosStore.formatConvertedUsdInCudos(PRESALE_CONSTS.PRICE_USD, 2);
+        return this.getPresalePriceInCudos().toFixed(2);
     }
 
     getPresalePriceEthFormatted(): string {
-        return this.cudosStore.formatConvertedUsdInEth(PRESALE_CONSTS.PRICE_USD, 6);
+        return this.getPresalePriceInEth().toFixed(6);
     }
 
     getPresalePriceUsdFormatted(): string {
-        return numeral(PRESALE_CONSTS.PRICE_USD).format(ProjectUtils.NUMERAL_USD);
+        const onDemandMintingFeeInUsd = this.cudosStore.convertCudosInUsd(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS);
+        const presalePriceInUsd = onDemandMintingFeeInUsd.plus(new BigNumber(PRESALE_CONSTS.PRICE_USD));
+        return numeral(presalePriceInUsd.toFixed(2)).format(ProjectUtils.NUMERAL_USD);
     }
 
     async onClickBuyWithCudos(): Promise < boolean > {
         try {
             const cudosBalance = await this.walletStore.getBalanceSafe();
-            const cudosPrice = this.cudosStore.convertUsdInCudos(PRESALE_CONSTS.PRICE_USD);
+            const cudosPrice = this.getPresalePriceInCudos()
 
             if (cudosBalance.lt(cudosPrice)) {
                 this.alertStore.show('Your balance is not enough to buy this.');
@@ -302,8 +314,7 @@ export default class MarketplacePageStore {
         try {
             const ethBalance = await this.walletStore.getEthBalance();
 
-            const cudosPrice = this.cudosStore.convertUsdInCudos(PRESALE_CONSTS.PRICE_USD);
-            const ethPrice = this.cudosStore.convertCudosToEth(cudosPrice)
+            const ethPrice = this.getPresalePriceInEth()
 
             if (ethBalance.lt(ethPrice)) {
                 this.alertStore.show('Your balance is not enough to buy this.');

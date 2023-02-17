@@ -17,6 +17,7 @@ export default class ProjectUtils {
     static DATEPICKER_FORMAT_DATE = 'dd.MM.yyyy';
     static NUMERAL_USD = '$0,0.00';
     static CUDOS_CURRENCY_DIVIDER = new BigNumber(1).shiftedBy(CURRENCY_DECIMALS);
+    static ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS = new BigNumber(1);
 
     static makeBgImgStyle(url: string) {
         return {

@@ -161,7 +161,6 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         ));
         profitDatapreviews.push(createDataPreview('Estimated Profit per Month', viewNftPageStore.formatNetProfitPerMonth()));
         profitDatapreviews.push(createDataPreview('Estimated Profit per Year', viewNftPageStore.formatNetProfitPerYear()));
-        // profitDatapreviews.push(createDataPreview('Maintenance fee', nftEntity.formatMaintenanceFeeInBtc()));
 
         return profitDatapreviews;
     }
@@ -184,8 +183,8 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                 'Fee',
                 <div className={'DataValue NftPrice FlexRow'}>
                     <Svg svg={SvgCudos}/>
-                    <div className={'H3 Bold'}>1 CUDOS</div>
-                    <div className={'SubPrice B2 SemiBold'}>{cudosStore.formatCudosInUsd(new BigNumber(1))}</div>
+                    <div className={'H3 Bold'}>{ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS.toFixed(0)} CUDOS</div>
+                    <div className={'SubPrice B2 SemiBold'}>{cudosStore.formatCudosInUsd(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS)}</div>
                 </div>,
             ));
         }
