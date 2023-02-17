@@ -50,12 +50,33 @@ services:
         CHAIN_RPC: "$CHAIN_RPC"
         CHAIN_GRPC: "$CHAIN_GRPC"
     restart: unless-stopped
-    volumes:
-      - '../:/usr/cudos-aura-chain-observer'
     networks:
       - aurapool-prod-cudos-network
     extra_hosts:
-    - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+        max-file: "1"
+    depends_on: 
+      - cudos-aura-platform-prod
+
+  cudos-aura-platform-eth-payments-relayer-prod:
+    image: cudos-aura-platform-eth-payments-relayer-prod
+    container_name: cudos-aura-platform-eth-payments-relayer-prod
+    build:
+      dockerfile: docker/prod/eth-payments-relayer.dockerfile
+      context: ../../
+      args:
+        CHAIN_ID: "$CHAIN_ID"
+        CHAIN_RPC: "$CHAIN_RPC"
+        CHAIN_GRPC: "$CHAIN_GRPC"
+    restart: unless-stopped
+    networks:
+      - aurapool-prod-cudos-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     logging:
       driver: "json-file"
       options:

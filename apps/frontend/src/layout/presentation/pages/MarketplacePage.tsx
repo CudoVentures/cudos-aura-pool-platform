@@ -33,6 +33,7 @@ import { runInAction } from 'mobx';
 import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
+import KycStore from '../../../kyc/presentation/stores/KycStore';
 
 type Props = {
     alertStore?: AlertStore
@@ -40,9 +41,10 @@ type Props = {
     walletStore?: WalletStore
     marketplacePageStore?: MarketplacePageStore
     presaleStore?: PresaleStore
+    kycStore?: KycStore,
 }
 
-function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore }: Props) {
+function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore }: Props) {
     const {
         presaleCollectionEntity,
     } = marketplacePageStore;
@@ -95,8 +97,24 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
         return true;
     }
 
+    function checkKyc(): boolean {
+        const nftUsdPrice = 300;
+        if (kycStore.canBuyAnNft(nftUsdPrice) === false) {
+            alertStore.msg = 'You account is not verified or it is partially verified';
+            alertStore.positiveLabel = 'Verify';
+            alertStore.positiveListener = () => {
+                navigate(AppRoutes.KYC);
+            };
+            alertStore.negativeLabel = 'Cancel';
+            alertStore.visible = true;
+            return false;
+        }
+
+        return true;
+    }
+
     async function onClickBuyWithCudos() {
-        if (checkBtcAddressRegistered() === false) {
+        if (checkBtcAddressRegistered() === false || checkKyc() === false) {
             return;
         }
 
@@ -107,7 +125,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
     }
 
     async function onClickBuyWithEth() {
-        if (checkBtcAddressRegistered() === false) {
+        if (checkBtcAddressRegistered() === false || checkKyc() === false) {
             return;
         }
 

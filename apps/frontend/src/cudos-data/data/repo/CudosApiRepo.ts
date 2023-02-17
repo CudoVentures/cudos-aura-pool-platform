@@ -37,7 +37,7 @@ export default class CudosApiRepo implements CudosRepo {
         const cudosDataEntityJsonString = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (cudosDataEntityJsonString !== null) {
             const cudosDataEntityJson = JSON.parse(cudosDataEntityJsonString);
-            if (cudosDataEntity.modelVersion === CudosDataEntity.MODEL_VERSION) {
+            if (cudosDataEntityJson.modelVersion === CudosDataEntity.MODEL_VERSION) {
                 cudosDataEntity = CudosDataEntity.fromJson(cudosDataEntityJson);
             }
         }

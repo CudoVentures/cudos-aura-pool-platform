@@ -21,6 +21,7 @@
     "start:eth-payments-relayer:dev": "nest build eth-payments-relayer --webpack --webpackPath webpack-hmr.config.js --watch",
     "start:eth-payments-relayer:prod": "npm run build:eth-payments-relayer:prod && node dist/apps/eth-payments-relayer/main",
     "start:built:chain-observer": "node ./apps/chain-observer/main.js",
+    "start:built:eth-payment-relayer": "node ./apps/eth-payments-relayer/main.js",
     "start:built:platform": "npm run migrate && node ./apps/backend/main.js",
     "seed": "npx sequelize db:seed:all --config=./apps/backend/database/config/config.js --seeders-path=./apps/backend/database/seeders",
     "migrate": "npx sequelize db:migrate --config=./apps/backend/database/config/config.js --migrations-path=./apps/backend/database/migrations",

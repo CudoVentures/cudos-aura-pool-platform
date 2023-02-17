@@ -34,7 +34,7 @@ export default class BitcoinApiRepo implements BitcoinRepo {
         const bitcoinCoinGeckoEntityJsonString = localStorage.getItem(LOCAL_STORAGE_COIN_GECKO_KEY);
         if (bitcoinCoinGeckoEntityJsonString !== null) {
             const bitcoinCoinGeckoEntityJson = JSON.parse(bitcoinCoinGeckoEntityJsonString);
-            if (bitcoinCoinGeckoEntity.modelVersion === BitcoinCoinGeckoEntity.MODEL_VERSION) {
+            if (bitcoinCoinGeckoEntityJson.modelVersion === BitcoinCoinGeckoEntity.MODEL_VERSION) {
                 bitcoinCoinGeckoEntity = BitcoinCoinGeckoEntity.fromJson(bitcoinCoinGeckoEntityJson);
             }
         }
@@ -61,7 +61,7 @@ export default class BitcoinApiRepo implements BitcoinRepo {
         const bitcoinBlockchainInfoEntityJsonString = localStorage.getItem(LOCAL_STORAGE_BLOCKCHAIN_INFO_KEY);
         if (bitcoinBlockchainInfoEntityJsonString !== null) {
             const bitcoinBlockchainInfoEntityJson = JSON.parse(bitcoinBlockchainInfoEntityJsonString);
-            if (bitcoinBlockchainInfoEntity.modelVersion === BitcoinBlockchainInfoEntity.MODEL_VERSION) {
+            if (bitcoinBlockchainInfoEntityJson.modelVersion === BitcoinBlockchainInfoEntity.MODEL_VERSION) {
                 bitcoinBlockchainInfoEntity = BitcoinBlockchainInfoEntity.fromJson(bitcoinBlockchainInfoEntityJson);
             }
         }
