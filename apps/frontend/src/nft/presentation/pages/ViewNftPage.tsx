@@ -123,7 +123,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             return;
         }
 
-        buyNftModalStore.showSignal(BuyingCurrency.CUDOS, nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
+        buyNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
     }
 
     function onClickResellNft() {

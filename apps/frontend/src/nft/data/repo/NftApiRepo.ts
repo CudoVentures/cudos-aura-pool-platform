@@ -98,7 +98,7 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async buyNft(currency: BuyingCurrency, nftEntity: NftEntity, ledger: Ledger): Promise < string > {
+    async buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
@@ -116,33 +116,8 @@ export default class NftApiRepo implements NftRepo {
                 const memo = new MintMemo(nftEntity.id, ledger.accountAddress).toJsonString();
 
                 // sign transaction and send it to backend
-                if (currency === BuyingCurrency.ETH) {
-                    const web3 = new Web3(window.ethereum);
-
-                    const addresses = await web3.eth.getAccounts();
-
-                    const contract = new web3.eth.Contract(
-                        contractABI.abi,
-                        ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS,
-                        {
-                            from: addresses[0],
-                        },
-                    );
-
-                    const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(nftEntity.id), web3.utils.asciiToHex(ledger.accountAddress))
-                        .send({
-                            value: nftEntity.priceInEth.shiftedBy(18).toFixed(0),
-                        });
-
-                    if (!tx.transactionHash) {
-                        throw Error(tx.message);
-                    }
-
-                    txHash = tx.transactionHash;
-                } else if (currency === BuyingCurrency.CUDOS) {
-                    const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
-                    txHash = tx.transactionHash;
-                }
+                const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
+                txHash = tx.transactionHash;
             } else {
                 const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
@@ -172,13 +147,9 @@ export default class NftApiRepo implements NftRepo {
 
                 const addresses = await web3.eth.getAccounts();
 
-                const contract = new web3.eth.Contract(
-                    contractABI.abi,
-                    ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS,
-                    {
-                        from: addresses[0],
-                    },
-                );
+                const contract = new web3.eth.Contract(contractABI.abi, ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS, {
+                    from: addresses[0],
+                });
 
                 const tx = await contract.methods.sendPayment(web3.utils.asciiToHex(ledger.accountAddress))
                     .send({
