@@ -5,6 +5,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { json } from 'express';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
 declare const module: any;
 
@@ -21,6 +22,7 @@ async function bootstrap() {
     })
     app.use(json({ limit: '128mb' }))
     app.use(cookieParser(appCookiesSecret));
+    app.use(compression());
 
     app.useGlobalPipes(
         new ValidationPipe({
