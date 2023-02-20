@@ -258,7 +258,7 @@ export default class MarketplacePageStore {
 
     async fetchAllowlistUser(): Promise < void > {
         const address = this.walletStore.getAddress();
-        const allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserByAddress(PRESALE_CONSTS.PRESALE_ALLOWLIST_ID, address);
+        const allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserByAddress(address);
 
         runInAction(() => {
             this.allowlistUserEntity = allowlistUserEntity;

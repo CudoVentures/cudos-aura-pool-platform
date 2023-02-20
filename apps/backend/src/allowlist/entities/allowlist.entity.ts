@@ -18,4 +18,7 @@ export default class AllowlistEntity {
         return entity;
     }
 
+    static toJson(allowlistEntity: AllowlistEntity) {
+        return {}
+    }
 }
