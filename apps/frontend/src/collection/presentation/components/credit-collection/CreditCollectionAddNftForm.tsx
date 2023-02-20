@@ -7,7 +7,7 @@ import ValidationState from '../../../../core/presentation/stores/ValidationStat
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import Svg from '../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonType } from '../../../../core/presentation/components/Button';

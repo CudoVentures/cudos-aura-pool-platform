@@ -8,7 +8,7 @@ import ValidationState from '../../../core/presentation/stores/ValidationState';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import PageLayout from '../../../core/presentation/components/PageLayout';
 import PageFooter from '../../../layout/presentation/components/PageFooter';
 import PageAdminHeader from '../../../layout/presentation/components/PageAdminHeader';

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import S from '../../utilities/Main'
-import MuiPopover, { PopoverProps } from '@mui/material/Popover';
+import MuiPopover, { PopoverProps } from '@mui/material/Popover/Popover';
 
 import '../styles/popover.css';
 

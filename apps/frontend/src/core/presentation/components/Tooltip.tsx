@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MuiTooltip, { TooltipProps } from '@mui/material/Tooltip';
+import MuiTooltip, { TooltipProps } from '@mui/material/Tooltip/Tooltip';
 
 import '../styles/tooltip.css';
 

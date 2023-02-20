@@ -11,7 +11,7 @@ import PageLayout from '../../../core/presentation/components/PageLayout';
 import PageHeader from '../../../layout/presentation/components/PageHeader';
 import PageFooter from '../../../layout/presentation/components/PageFooter';
 import Input, { InputType } from '../../../core/presentation/components/Input';
-import InputAdornment from '@mui/material/InputAdornment';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import Svg from '../../../core/presentation/components/Svg';
 import GridView from '../../../core/presentation/components/GridView';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';

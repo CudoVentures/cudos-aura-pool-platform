@@ -10,7 +10,7 @@ import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import NavRow, { createNavStep, NavStep } from '../../../core/presentation/components/NavRow';

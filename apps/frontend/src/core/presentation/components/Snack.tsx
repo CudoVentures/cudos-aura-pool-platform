@@ -3,7 +3,8 @@ import { inject, observer } from 'mobx-react';
 
 import SnackStore, { SnackType } from '../stores/SnackStore'
 
-import { Alert, AlertColor, Snackbar } from '@mui/material';
+import Alert, { AlertColor } from '@mui/material/Alert/Alert';
+import Snackbar from '@mui/material/Snackbar/Snackbar';
 import Svg, { SvgSize } from './Svg';
 
 import CheckIcon from '@mui/icons-material/Check';

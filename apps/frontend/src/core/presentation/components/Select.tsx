@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Select as MuiSelect, SelectProps, InputLabel, FormControl, SelectChangeEvent, FormHelperText } from '@mui/material';
+import MuiSelect, { SelectProps, SelectChangeEvent } from '@mui/material/Select/Select';
+import InputLabel from '@mui/material/InputLabel/InputLabel';
+import FormControl from '@mui/material/FormControl/FormControl';
+import FormHelperText from '@mui/material/FormHelperText/FormHelperText';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import '../styles/select.css';
 import { InputValidation } from '../stores/ValidationState';

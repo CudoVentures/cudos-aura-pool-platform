@@ -1,5 +1,7 @@
 import React from 'react';
-import { createTheme, ThemeProvider, Button as MuiButton } from '@mui/material';
+import MuiButton from '@mui/material/Button/Button';
+import createTheme from '@mui/material/styles/createTheme';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
 
 import '../styles/button.css';
 

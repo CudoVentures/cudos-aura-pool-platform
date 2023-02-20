@@ -15,7 +15,7 @@ import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import Button, { ButtonColor, ButtonPadding, ButtonRadius, ButtonType } from '../../../core/presentation/components/Button';
 import Input from '../../../core/presentation/components/Input';
 import Select from '../../../core/presentation/components/Select';
-import { MenuItem } from '@mui/material'
+import MenuItem from '@mui/material/MenuItem/MenuItem'
 import Tooltip from '../../../core/presentation/components/Tooltip';
 import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';

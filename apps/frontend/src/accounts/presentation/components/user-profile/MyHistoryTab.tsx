@@ -5,7 +5,7 @@ import S from '../../../../core/utilities/Main';
 import UserProfilePageStore from '../../stores/UserProfilePageStore';
 import { NftEventType } from '../../../../analytics/entities/NftEventEntity';
 
-import { MenuItem } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
 import Select from '../../../../core/presentation/components/Select';
 import NftEventTable from '../../../../analytics/presentation/components/NftEventTable';

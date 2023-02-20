@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import S from '../../utilities/Main';
 import { InputValidation } from '../stores/ValidationState';
 
-import { TextField, TextFieldProps } from '@mui/material';
+import TextField, { TextFieldProps } from '@mui/material/TextField/TextField';
 import '../styles/input.css';
 import { action } from 'mobx';
 

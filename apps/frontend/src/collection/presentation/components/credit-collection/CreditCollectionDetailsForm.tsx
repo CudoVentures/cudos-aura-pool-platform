@@ -10,7 +10,7 @@ import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import AlertStore from '../../../../core/presentation/stores/AlertStore';
 import AppRoutes from '../../../../app-routes/entities/AppRoutes';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import Svg from '../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button, { ButtonPadding } from '../../../../core/presentation/components/Button';

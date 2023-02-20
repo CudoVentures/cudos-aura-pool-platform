@@ -9,7 +9,7 @@ import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import ViewMiningFarmModalStore from '../stores/ViewMiningFarmModalStore';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import PageLayout from '../../../core/presentation/components/PageLayout'
 import PageSuperAdminHeader from '../../../layout/presentation/components/PageSuperAdminHeader'
 import ColumnLayout from '../../../core/presentation/components/ColumnLayout';

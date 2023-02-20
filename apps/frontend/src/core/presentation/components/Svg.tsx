@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from 'react';
-import { SvgIconTypeMap } from '@mui/material';
+import { SvgIconTypeMap } from '@mui/material/SvgIcon';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
 import '../styles/svg.css';

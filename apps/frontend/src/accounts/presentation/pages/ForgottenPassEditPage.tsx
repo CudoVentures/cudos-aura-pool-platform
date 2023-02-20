@@ -7,7 +7,7 @@ import AccountSessionStore from '../stores/AccountSessionStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import Input from '../../../core/presentation/components/Input';
 import Button from '../../../core/presentation/components/Button';
 import PageLayout from '../../../core/presentation/components/PageLayout';

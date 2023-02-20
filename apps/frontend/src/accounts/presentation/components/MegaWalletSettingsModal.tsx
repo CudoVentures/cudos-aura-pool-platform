@@ -10,7 +10,7 @@ import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import Button from '../../../core/presentation/components/Button';
 
 import '../styles/mega-wallet-settings-modal.css';
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 
 type Props = {
     megaWalletSettingsModalStore?: MegaWalletSettingsModalStore;

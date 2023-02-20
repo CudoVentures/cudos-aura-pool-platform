@@ -11,7 +11,7 @@ import EditMiningFarmModal from '../components/EditMiningFarmModal';
 import EditMiningFarmModalStore from '../stores/EditMiningFarmModalStore';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import Breadcrumbs, { createBreadcrumb } from '../../../core/presentation/components/Breadcrumbs';

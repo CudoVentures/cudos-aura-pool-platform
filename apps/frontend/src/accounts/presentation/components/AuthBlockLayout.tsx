@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SvgIconTypeMap } from '@mui/material';
+import { SvgIconTypeMap } from '@mui/material/SvgIcon';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
 import StyledContainer, { ContainerWidth } from '../../../core/presentation/components/StyledContainer';

@@ -6,7 +6,7 @@ import NftEntity from '../../entities/NftEntity';
 import ExploreNftsPageStore from '../stores/ExploreNftsPageStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Input, { InputType } from '../../../core/presentation/components/Input';
 import PageLayout from '../../../core/presentation/components/PageLayout';

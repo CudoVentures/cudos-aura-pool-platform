@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import S from '../../../core/utilities/Main';
 import ResellNftModalStore from '../stores/ResellNftModalStore';
 
-import InputAdornment from '@mui/material/InputAdornment';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import Input, { InputType } from '../../../core/presentation/components/Input';
 import Checkbox from '../../../core/presentation/components/Checkbox';

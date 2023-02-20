@@ -14,7 +14,7 @@ import CreditMiningFarmDetailsPageStore from '../../stores/CreditMiningFarmDetai
 import ValidationState from '../../../../core/presentation/stores/ValidationState';
 
 import Input, { InputType } from '../../../../core/presentation/components/Input';
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presentation/components/Actions';
 import Button from '../../../../core/presentation/components/Button';

@@ -6,7 +6,7 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import ExploreCollectionsPageStore from '../stores/ExploreCollectionsPageStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import PageLayout from '../../../core/presentation/components/PageLayout';
 import Input, { InputType } from '../../../core/presentation/components/Input';

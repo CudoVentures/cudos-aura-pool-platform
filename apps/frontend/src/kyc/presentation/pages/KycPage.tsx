@@ -1,10 +1,9 @@
 import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import * as Onfido from 'onfido-sdk-ui';
+// import * as Onfido from 'onfido-sdk-ui';
+import { init as OnfidoInit } from 'onfido-sdk-ui/dist/onfido.min';
 import { runInAction } from 'mobx';
 
-import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 import KycStore from '../stores/KycStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
@@ -18,6 +17,7 @@ import PageHeader from '../../../layout/presentation/components/PageHeader';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
 
 import '../styles/page-kyc.css';
+import 'onfido-sdk-ui/dist/style.css';
 import S from '../../../core/utilities/Main';
 
 type Props = {
@@ -78,7 +78,7 @@ function KycPage({ kycStore, alertStore }: Props) {
 
         const token = await kycStore.creditKycAndGetToken();
         const workflowRunId = await kycStore.createWorkflowRun(runFullWorkflow);
-        const onfidoInstance = Onfido.init({
+        const onfidoInstance = OnfidoInit({
             token,
             region: 'US',
             // steps: ['welcome', 'document', 'data', 'complete'],

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
-import MuiAutocomplete, { AutocompleteProps } from '@mui/material/Autocomplete';
+import MuiAutocomplete, { AutocompleteProps } from '@mui/material/Autocomplete/Autocomplete';
 
 import S from '../../utilities/Main';
 import { InputValidation } from '../stores/ValidationState';

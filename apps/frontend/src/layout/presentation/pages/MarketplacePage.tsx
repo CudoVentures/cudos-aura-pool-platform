@@ -364,8 +364,8 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                             )}
                             {marketplacePageStore.isUserEligibleToBuy() === true && (
                                 <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()}</Button>
-                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()}</Button>
+                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()} ETH</Button>
                                 </Actions>
                             )}
                         </ColumnLayout>
