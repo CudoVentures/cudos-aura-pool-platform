@@ -148,6 +148,12 @@ function AppRouter({ accountSessionStore, kycStore, presaleStore }: Props) {
                                     <Route path = { AppRoutes.FARM_ANALYTICS } element = { <AnalyticsPage /> } />
                                 </>
                             ) }
+                            { presaleStore.isInPresale() === true && (
+                                <>
+                                    <Route path = { `${AppRoutes.CREDIT_COLLECTION}/:collectionId` } element = { <CreditCollectionPage /> } />
+                                    <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
+                                </>
+                            ) }
                         </>
                     )}
 

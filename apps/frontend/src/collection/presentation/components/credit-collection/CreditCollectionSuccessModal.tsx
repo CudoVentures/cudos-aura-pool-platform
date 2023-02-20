@@ -8,12 +8,12 @@ import CreditCollectionSuccessModalStore from '../../stores/CreditCollectionSucc
 import ModalWindow from '../../../../core/presentation/components/ModalWindow';
 import Svg, { SvgSize } from '../../../../core/presentation/components/Svg';
 import Actions, { ActionsLayout } from '../../../../core/presentation/components/Actions';
-import Button, { ButtonColor, ButtonType } from '../../../../core/presentation/components/Button';
+import Button, { ButtonColor } from '../../../../core/presentation/components/Button';
+import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
 import AddIcon from '@mui/icons-material/Add';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import '../../styles/credit-collection-success-modal.css';
-import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
 type Props = {
     creditCollectionSuccessModalStore?: CreditCollectionSuccessModalStore;
@@ -32,11 +32,11 @@ function CreditCollectionSuccessModal({ creditCollectionSuccessModalStore }: Pro
     }
 
     return (
-        <ModalWindow className = { 'CreditCollectionSuccessModal' } modalStore = { creditCollectionSuccessModalStore }>
+        <ModalWindow className = { 'CreditCollectionSuccessModal' } modalStore = { creditCollectionSuccessModalStore } hasClose = { false } >
             <ColumnLayout className = { 'CreditCollectionSuccessModalCnt' }>
                 <Svg className={'SuccessSvg'} svg={CheckCircleIcon} size={SvgSize.CUSTOM}/>
                 <div className={'H2 ExtraBold'}>Success!</div>
-                <div className={'H3'}>Transaction was successfully executed.</div>
+                {/* <div className={'H3'}>Transaction was successfully executed.</div> */}
                 <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER}>
                     <Button color = { ButtonColor.SCHEME_4 } onClick={onClickClose}>
                         Close

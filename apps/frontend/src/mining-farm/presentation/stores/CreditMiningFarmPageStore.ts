@@ -1,7 +1,7 @@
 import { action, makeAutoObservable } from 'mobx';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
-import MiningFarmEntity, { MiningFarmStatus } from '../../entities/MiningFarmEntity';
+import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
 import CollectionFilterModel from '../../../collection/utilities/CollectionFilterModel';
 import GridViewState from '../../../core/presentation/stores/GridViewState';
@@ -15,7 +15,7 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import NftEntity from '../../../nft/entities/NftEntity';
-import { CollectionCoverImage01, CollectionProfileImage01, PresaleImage01, PresaleImage02, PresaleImage03, PresaleImage04, PresaleImage05 } from '../../utilities/PresaleImages';
+import axios from 'axios';
 
 export default class CreditMiningFarmPageStore {
 
@@ -278,7 +278,7 @@ export default class CreditMiningFarmPageStore {
         });
 
         if (presaleCollectionEntity !== undefined) {
-            // because it is called from alertStoreHandler
+            // settimeout is because it is called from alertStoreHandler
             setTimeout(() => {
                 this.alertStore.show('The collection has already been minted');
             });
@@ -286,12 +286,24 @@ export default class CreditMiningFarmPageStore {
         }
 
         try {
+            const presaleImages = [];
+            for (let i = 0; i < 5; ++i) {
+                const baes64Image = await CreditMiningFarmPageStore.downloadNftImageAsBase64(`/assets/presale-nft-images/level${i + 1}.png`);
+                presaleImages.push(`data:image/png;base64,${baes64Image}`);
+            }
+
+            let collectionCoverImage01 = await CreditMiningFarmPageStore.downloadNftImageAsBase64('/assets/presale-nft-images/collection.png');
+            collectionCoverImage01 = `data:image/png;base64,${collectionCoverImage01}`;
+
+            let collectionProfileImage01 = await CreditMiningFarmPageStore.downloadNftImageAsBase64('/assets/presale-nft-images/collection-profile.png');
+            collectionProfileImage01 = `data:image/png;base64,${collectionProfileImage01}`;
+
             const collectionEntity = new CollectionEntity();
             collectionEntity.farmId = this.miningFarmEntity.id;
             collectionEntity.name = presaleCollectionName;
             collectionEntity.description = 'Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet. More';
-            collectionEntity.profileImgUrl = CollectionProfileImage01;
-            collectionEntity.coverImgUrl = CollectionCoverImage01;
+            collectionEntity.profileImgUrl = collectionProfileImage01;
+            collectionEntity.coverImgUrl = collectionCoverImage01;
             collectionEntity.royalties = 3;
 
             const nftEntities = [];
@@ -299,7 +311,7 @@ export default class CreditMiningFarmPageStore {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Opal ${i}`;
                 nftEntity.hashPowerInTh = 1;
-                nftEntity.imageUrl = PresaleImage01;
+                nftEntity.imageUrl = presaleImages[0];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 150;
 
@@ -310,7 +322,7 @@ export default class CreditMiningFarmPageStore {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Ruby ${i}`;
                 nftEntity.hashPowerInTh = 2;
-                nftEntity.imageUrl = PresaleImage02;
+                nftEntity.imageUrl = presaleImages[1];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 300;
 
@@ -321,18 +333,18 @@ export default class CreditMiningFarmPageStore {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Emerald ${i}`;
                 nftEntity.hashPowerInTh = 6;
-                nftEntity.imageUrl = PresaleImage03;
+                nftEntity.imageUrl = presaleImages[2];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 1000;
 
                 nftEntities.push(nftEntity);
             }
 
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 2; i++) {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Diamond ${i}`;
                 nftEntity.hashPowerInTh = 18;
-                nftEntity.imageUrl = PresaleImage04;
+                nftEntity.imageUrl = presaleImages[3];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 3000;
 
@@ -343,7 +355,7 @@ export default class CreditMiningFarmPageStore {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Blue Diamond ${i}`;
                 nftEntity.hashPowerInTh = 30;
-                nftEntity.imageUrl = PresaleImage05;
+                nftEntity.imageUrl = presaleImages[4];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 5000;
 
@@ -360,5 +372,10 @@ export default class CreditMiningFarmPageStore {
             console.log(e);
             this.alertStore.show('There was an error minting the NFTs');
         }
+    }
+
+    static async downloadNftImageAsBase64(url: string): Promise < string > {
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        return Buffer.from(response.data, 'binary').toString('base64');
     }
 }

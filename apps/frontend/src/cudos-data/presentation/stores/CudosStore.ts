@@ -149,7 +149,7 @@ export default class CudosStore {
 
     getNftUsdPrice(nftEntity: NftEntity): number {
         if (nftEntity.isMinted() === false) {
-            return nftEntity.priceUsd;
+            return nftEntity.priceUsd !== S.NOT_EXISTS ? nftEntity.priceUsd : 0;
         }
 
         return nftEntity.priceInAcudos === null ? 0 : Number(this.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2));
