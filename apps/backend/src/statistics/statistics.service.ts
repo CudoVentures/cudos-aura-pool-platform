@@ -85,7 +85,7 @@ export class StatisticsService {
             return accumulator + nftEventEntity.transferPriceInUsd;
         }, 0);
 
-        return Number(sumInUsd.toFixed(2));
+        return Number(sumInUsd.toFixed(0));
     }
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {

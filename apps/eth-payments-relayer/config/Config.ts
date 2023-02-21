@@ -29,8 +29,4 @@ const config = {
     },
 };
 
-// config.RPC_ENDPOINT = 'http://34.121.218.76:26657';
-// config.MINTING_SERVICE_ADDRESS = 'cudos18ehnzje36mn38c3qj6v2qmzjmg7shc9qke65c5'
-// config.CUDOS_SIGNER_MNEMONIC = 'route violin frost amount picture fat race minute donate morning dust wrong alert come taxi float bundle slight broom frequent catch like parent couch';
-
 export default config;

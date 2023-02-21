@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import BigNumber from 'bignumber.js';
 
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import ViewNftPageStore from '../stores/ViewNftPageStore';
@@ -17,7 +16,6 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
-import { BuyingCurrency } from '../repos/NftRepo';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../core/presentation/components/Breadcrumbs';
 import NftStats from '../components/NftStats';
@@ -38,6 +36,7 @@ import { ContainerBackground } from '../../../core/presentation/components/Style
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -50,9 +49,10 @@ type Props = {
     visitorStore?: VisitorStore;
     alertStore?: AlertStore;
     kycStore?: KycStore;
+    presaleStore?: PresaleStore
 }
 
-function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore, kycStore }: Props) {
+function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore, kycStore, presaleStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
@@ -258,55 +258,61 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                     <Button onClick={onClickCalculateRewards}>Calculate Rewards</Button>
                                 </Actions>
                             </div>
-                            <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
-                                { accountSessionStore.isUserAndWalletConnected() && (
-                                    <>
-                                        { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
-                                            <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                <Button onClick={onClickBuyNft}>Buy now for {viewNftPageStore.formatPricePlusMintFeeInCudos()} </Button>
-                                            </Actions>
-                                        )}
-                                        { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (
-                                            <>
-                                                { nftEntity.isOwnedByAddress(walletStore.getAddress()) && (
-                                                    <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                        <Button onClick={onClickResellNft}>Resell NFT</Button>
-                                                    </Actions>
-                                                ) }
-                                            </>
-                                        ) }
+                            { presaleStore.isInPresale() === false && (
+                                <DataPreviewLayout dataPreviews={getPriceDataPreviews()} >
+                                    { accountSessionStore.isUserAndWalletConnected() && (
+                                        <>
+                                            { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
+                                                <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                                    <Button onClick={onClickBuyNft}>Buy now for {viewNftPageStore.formatPricePlusMintFeeInCudos()} </Button>
+                                                </Actions>
+                                            )}
+                                            { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (
+                                                <>
+                                                    { nftEntity.isOwnedByAddress(walletStore.getAddress()) && (
+                                                        <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                                            <Button onClick={onClickResellNft}>Resell NFT</Button>
+                                                        </Actions>
+                                                    ) }
+                                                </>
+                                            ) }
 
-                                    </>
-                                ) }
-                            </DataPreviewLayout>
+                                        </>
+                                    ) }
+                                </DataPreviewLayout>
+                            ) }
                         </div>
                     </div>
 
-                    <div className={'SectionDivider'}/>
+                    { presaleStore.isInPresale() === false && (
+                        <>
+                            <div className={'SectionDivider'}/>
+                            <div className={'H2 Bold'}>Collection Items</div>
+                            <DataGridLayout className = { 'NftsCnt' } >
 
-                    <div className={'H2 Bold'}>Collection Items</div>
-                    <DataGridLayout className = { 'NftsCnt' } >
+                                { viewNftPageStore.nftEntities === null && (
+                                    <LoadingIndicator />
+                                ) }
 
-                        { viewNftPageStore.nftEntities === null && (
-                            <LoadingIndicator />
-                        ) }
+                                { viewNftPageStore.nftEntities !== null && (
+                                    <GridView
+                                        gridViewState={viewNftPageStore.gridViewState}
+                                        defaultContent={viewNftPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
+                                        { viewNftPageStore.nftEntities.map((nftEntityRef: NftEntity) => {
+                                            return (
+                                                <NftPreview
+                                                    key={nftEntityRef.id}
+                                                    nftEntity={nftEntityRef}
+                                                    collectionName={collectionEntity.name} />
+                                            )
+                                        }) }
+                                    </GridView>
+                                ) }
 
-                        { viewNftPageStore.nftEntities !== null && (
-                            <GridView
-                                gridViewState={viewNftPageStore.gridViewState}
-                                defaultContent={viewNftPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
-                                { viewNftPageStore.nftEntities.map((nftEntityRef: NftEntity) => {
-                                    return (
-                                        <NftPreview
-                                            key={nftEntityRef.id}
-                                            nftEntity={nftEntityRef}
-                                            collectionName={collectionEntity.name} />
-                                    )
-                                }) }
-                            </GridView>
-                        ) }
+                            </DataGridLayout>
+                        </>
+                    ) }
 
-                    </DataGridLayout>
                 </div>
             )}
 

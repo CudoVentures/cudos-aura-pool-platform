@@ -16,6 +16,7 @@ import { FarmService } from '../farm/farm.service';
 import { validate } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import AccountService from '../account/account.service';
+import { KycService } from '../kyc/kyc.service';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -29,6 +30,7 @@ export class NFTController {
         private miningFarmService: FarmService,
         private configService: ConfigService,
         private accountService: AccountService,
+        private kycService: KycService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -59,6 +61,7 @@ export class NFTController {
             throw new NotFoundException();
         }
 
+        const accountEntity = await this.accountService.findAccountById(userEntity.accountId);
         let nftEntity: NftEntity;
 
         if (id === 'presale') {
@@ -73,6 +76,12 @@ export class NFTController {
                 nftEntity = await this.nftService.updatePremintNftPrice(nftEntity, paidAmountAcudos);
             }
         } else {
+            const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
+            if (presaleEndTimestamp > Date.now()) {
+                console.log('Getting NFT from OnDemandMinting', 'public sale has not started yet', presaleEndTimestamp);
+                throw new Error('Presale ended.')
+            }
+
             nftEntity = await this.nftService.findOne(id);
 
             const presaleExpectedPriceEpsilon = this.configService.get<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
@@ -87,6 +96,18 @@ export class NFTController {
         }
 
         if (nftEntity === null) {
+            console.log('Nft is null');
+            throw new NotFoundException();
+        }
+
+        if (nftEntity.hasPrice() === false) {
+            console.log('nft does not have price in acudos');
+            throw new NotFoundException();
+        }
+
+        const canBuyNft = await this.kycService.canBuyAnNft(accountEntity, userEntity, nftEntity);
+        if (canBuyNft === false) {
+            console.log('The user does not meet KYC creteria');
             throw new NotFoundException();
         }
 

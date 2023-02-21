@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { CURRENCY_DECIMALS } from 'cudosjs';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import NftMarketplaceTradeHistoryEntity from '../../graphql/entities/nft-marketplace-trade-history.entity';
 import NftModuleNftTransferHistoryEntity from '../../graphql/entities/nft-module-nft-transfer-history';
@@ -73,9 +74,13 @@ export default class NftEventEntity {
         entity.fromAddress = nftMarketplaceTradeHistoryEntity.seller ?? entity.fromAddress;
         entity.toAddress = nftMarketplaceTradeHistoryEntity.buyer ?? entity.toAddress;
         entity.timestamp = nftMarketplaceTradeHistoryEntity.timestamp ?? entity.timestamp;
-        entity.transferPriceInBtc = nftMarketplaceTradeHistoryEntity.btcPrice ?? entity.transferPriceInBtc;
-        entity.transferPriceInUsd = nftMarketplaceTradeHistoryEntity.usdPrice ?? entity.transferPriceInUsd;
         entity.transferPriceInAcudos = nftMarketplaceTradeHistoryEntity.acudosPrice ?? entity.transferPriceInAcudos;
+        if (nftMarketplaceTradeHistoryEntity.btcPrice) {
+            entity.transferPriceInBtc = nftMarketplaceTradeHistoryEntity.btcPrice.multipliedBy(entity.transferPriceInAcudos.shiftedBy(-CURRENCY_DECIMALS));
+        }
+        if (nftMarketplaceTradeHistoryEntity.usdPrice) {
+            entity.transferPriceInUsd = Number(new BigNumber(nftMarketplaceTradeHistoryEntity.usdPrice).multipliedBy(entity.transferPriceInAcudos.shiftedBy(-CURRENCY_DECIMALS)).toFixed(2));
+        }
 
         return entity;
     }

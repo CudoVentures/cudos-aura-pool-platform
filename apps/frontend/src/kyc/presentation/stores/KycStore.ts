@@ -41,7 +41,7 @@ export default class KycStore {
         return this.kycEntity.isLightStatusNotStarted() && this.kycEntity.isFullStatusNotStarted();
     }
 
-    canBuyAnNft(nftPriceInUsd): boolean {
+    canBuyAnNft(nftPriceInUsd: number): boolean {
         if (this.kycEntity === null) {
             return false;
         }
