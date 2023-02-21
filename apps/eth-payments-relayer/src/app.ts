@@ -1,4 +1,4 @@
-import Config, { initConfig } from '../config/Config';
+import Config from '../config/Config';
 import { DirectSecp256k1HdWallet, GasPrice, SigningStargateClient, StargateClient } from 'cudosjs';
 import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApiRepo';
 import { ethers } from 'ethers';
@@ -17,8 +17,6 @@ export default class App {
 
     async start() {
         this.running = true;
-
-        await initConfig();
 
         Logger.info('Getting a chain client connection...');
         const { stargateClient, signingStargateClient } = await this.getCudosChainClient();
@@ -76,7 +74,7 @@ export default class App {
                 });
 
                 // it will fail if account not exists
-                const signerBalance = await signingStargateClient.getBalance(Config.CUDOS_SIGNER_ADDRESS, 'acudos');
+                const signerBalance = await signingStargateClient.getBalance(await Config.getCudosSignerAddress(), 'acudos');
                 Logger.info(`SIGNER BALANCE: ${signerBalance.amount} acudos`)
                 return { stargateClient, signingStargateClient }
 

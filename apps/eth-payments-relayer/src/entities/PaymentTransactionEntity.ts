@@ -27,10 +27,12 @@ export default class PaymentTransactionEntity {
         this.recipientAddress = '';
     }
 
-    isValid(): boolean {
+    async isValid(): Promise < boolean > {
+        const cudosSignerAddress = await Config.getCudosSignerAddress();
+
         return this.txBody !== null
             && this.txBody.messages.length === 1
-            && this.from === Config.CUDOS_SIGNER_ADDRESS
+            && this.from === cudosSignerAddress
             && this.to === Config.MINTING_SERVICE_ADDRESS
             && this.nftId !== ''
             && this.contractPaymentId !== null
