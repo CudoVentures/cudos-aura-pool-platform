@@ -310,7 +310,7 @@ export default class CreditMiningFarmPageStore {
             for (let i = 1; i <= 112; i++) {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Opal ${i}`;
-                nftEntity.hashPowerInTh = 1;
+                nftEntity.hashPowerInTh = 5;
                 nftEntity.imageUrl = presaleImages[0];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 150;
@@ -321,7 +321,7 @@ export default class CreditMiningFarmPageStore {
             for (let i = 1; i <= 440; i++) {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Ruby ${i}`;
-                nftEntity.hashPowerInTh = 2;
+                nftEntity.hashPowerInTh = 10;
                 nftEntity.imageUrl = presaleImages[1];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 300;
@@ -332,7 +332,7 @@ export default class CreditMiningFarmPageStore {
             for (let i = 1; i <= 29; i++) {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Emerald ${i}`;
-                nftEntity.hashPowerInTh = 6;
+                nftEntity.hashPowerInTh = 33;
                 nftEntity.imageUrl = presaleImages[2];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 1000;
@@ -343,7 +343,7 @@ export default class CreditMiningFarmPageStore {
             for (let i = 1; i <= 2; i++) {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Diamond ${i}`;
-                nftEntity.hashPowerInTh = 18;
+                nftEntity.hashPowerInTh = 100;
                 nftEntity.imageUrl = presaleImages[3];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 3000;
@@ -354,7 +354,7 @@ export default class CreditMiningFarmPageStore {
             for (let i = 1; i <= 1; i++) {
                 const nftEntity = new NftEntity();
                 nftEntity.name = `Blue Diamond ${i}`;
-                nftEntity.hashPowerInTh = 30;
+                nftEntity.hashPowerInTh = 170;
                 nftEntity.imageUrl = presaleImages[4];
                 nftEntity.expirationDateTimestamp = 1798754400000;
                 nftEntity.priceUsd = 5000;

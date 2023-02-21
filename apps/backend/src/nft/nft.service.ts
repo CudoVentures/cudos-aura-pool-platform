@@ -25,10 +25,10 @@ enum Tier {
 }
 
 const tierBorderMap = new Map<Tier, number>([
-    [Tier.TIER_1, 0.0025],
-    [Tier.TIER_2, 0.01],
-    [Tier.TIER_3, 0.02],
-    [Tier.TIER_4, 0.05],
+    [Tier.TIER_1, 0.9983],
+    [Tier.TIER_2, 0.9937],
+    [Tier.TIER_3, 0.9439],
+    [Tier.TIER_4, 0.1912],
 ])
 
 const tierPriceMap = new Map<Tier, number>([
