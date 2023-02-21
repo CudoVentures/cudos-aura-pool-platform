@@ -38,7 +38,7 @@ for (let i = 1; i <= 8; i++) {
         priceUsd: 100,
         expirationDateTimestamp: (new Date(2024, 10, 9)).getDate(),
         status: NftStatus.QUEUED,
-        tokenId: `${i}`,
+        tokenId: '',
         collectionId: `${i}`,
         creatorId: `${i}`,
         currentOwner: 'testowner',

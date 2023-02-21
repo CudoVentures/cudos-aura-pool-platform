@@ -10,6 +10,10 @@ const chainMarketplaceNftTradeEventEntities = [];
 const chainNftTransferHistoryEntities = [];
 
 nftTestEntitities.forEach((nftEntity) => {
+    if (nftEntity.tokenId === '') {
+        return;
+    }
+
     const collectionEntity = collectionEntities.find((entity) => entity.id === nftEntity.collectionId);
 
     for (let i = 1; i <= parseInt(nftEntity.collectionId); i++) {

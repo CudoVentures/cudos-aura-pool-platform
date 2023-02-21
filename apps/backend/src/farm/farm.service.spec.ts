@@ -183,17 +183,17 @@ describe('FarmService', () => {
         const timestampFrom = getZeroDatePlusDaysTimestamp(0);
         const timestampTo = getZeroDatePlusDaysTimestamp(5);
 
-        const miningFarmEntitiesExpected = miningFarmEntities.slice(0, 3).sort((a, b) => b.id - a.id);
+        const miningFarmEntitiesExpected = miningFarmEntities.slice(0, 3);
         const miningFarmPerformanceEntitiesExpected = miningFarmEntitiesExpected.map((entity) => MiningFarmPerformanceEntity.newInstanceForMiningFarm(entity.id))
-        miningFarmPerformanceEntitiesExpected[0].floorPriceInAcudos = new BigNumber('600');
-        miningFarmPerformanceEntitiesExpected[0].volumePer24HoursInAcudos = new BigNumber('340');
-        miningFarmPerformanceEntitiesExpected[0].volumePer24HoursInUsd = 340;
+        miningFarmPerformanceEntitiesExpected[0].floorPriceInAcudos = new BigNumber('100');
+        miningFarmPerformanceEntitiesExpected[0].volumePer24HoursInAcudos = new BigNumber('20');
+        miningFarmPerformanceEntitiesExpected[0].volumePer24HoursInUsd = 0;
         miningFarmPerformanceEntitiesExpected[1].floorPriceInAcudos = new BigNumber('400');
-        miningFarmPerformanceEntitiesExpected[1].volumePer24HoursInAcudos = new BigNumber('100');
-        miningFarmPerformanceEntitiesExpected[1].volumePer24HoursInUsd = 100;
-        miningFarmPerformanceEntitiesExpected[2].floorPriceInAcudos = new BigNumber('100');
-        miningFarmPerformanceEntitiesExpected[2].volumePer24HoursInAcudos = new BigNumber('40');
-        miningFarmPerformanceEntitiesExpected[2].volumePer24HoursInUsd = 40;
+        miningFarmPerformanceEntitiesExpected[1].volumePer24HoursInAcudos = new BigNumber('50');
+        miningFarmPerformanceEntitiesExpected[1].volumePer24HoursInUsd = 0;
+        miningFarmPerformanceEntitiesExpected[2].floorPriceInAcudos = new BigNumber('600');
+        miningFarmPerformanceEntitiesExpected[2].volumePer24HoursInAcudos = new BigNumber('170');
+        miningFarmPerformanceEntitiesExpected[2].volumePer24HoursInUsd = 0;
 
         const expectedObject = {
             miningFarmEntities: miningFarmEntitiesExpected,
