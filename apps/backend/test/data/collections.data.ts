@@ -2,6 +2,10 @@ import { CollectionEntity } from '../../src/collection/entities/collection.entit
 import { CollectionStatus } from '../../src/collection/utils';
 import { NOT_EXISTS_INT } from '../../src/common/utils';
 
+// farm1 - collections 1, 2, 3, farm2 - collections 4, 5, farm 3 - colelctions 6, 7, 8
+// all collections have the same hash power
+// creatorId (user) 1 - colelctions 1 - 3, creatodId2 - collections 4-8
+// approved collections - 1 - 5, QUEUED - 6, REJECTED - 7, DELETED - 8
 export const collectionEntities = [CollectionEntity.fromJson({
     id: '1',
     name: 'testcollection',
@@ -62,7 +66,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     id: '5',
     name: 'testcollection5',
     description: 'testcollectiondescription',
-    denomId: 'testdenomid5',
+    denomId: 'testdenomid5',and
     hashingPower: 15,
     royalties: 10,
     mainImage: 'testuri',

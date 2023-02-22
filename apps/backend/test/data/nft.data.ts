@@ -6,12 +6,26 @@ import { getZeroDatePlusDaysTimestamp } from '../../src/statistics/utils/test.ut
 
 const nftTestEntitities = [];
 
+// for each collection  - 1 minted nft and one queued
+// total 16 nfts - 8 minted
+// all nfts have unique ids
+// each nft has hash power, equal to the collection id - 1, 2 ...8
+// each nft has priceInAcudos, equal to the collection id * 100 - 100, 200 ...800
+// each nft has priceUsdr 100
+// tokenId equals collectionId
+// creatorId equals collectionId
+// marketplaceNftId equals collectionId
+// all nfts owner = "testowner"
+// each nft priceAcudosValidUntil is days passed from zero date to colelctionId - 1 + some time for valid price
+//      so nftId = 1 has zero date timestamp + some value so to be valid
+// each nft createdAt is days passed from zero date to colelctionId - 1
+// each nft updatedAt is days passed from zero date to colelctionId - 1
 for (let i = 1; i <= 8; i++) {
     nftTestEntitities.push(NftEntity.fromJson({
         id: uuidv4(),
         name: `nft${i}`,
-        uri: 'someuri',
-        data: 'somestring',
+        uri: 'someuri', // So far changing them won't affect anything
+        data: 'somestring', // So far changing them won't affect anything
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 100,
@@ -31,8 +45,8 @@ for (let i = 1; i <= 8; i++) {
     nftTestEntitities.push(NftEntity.fromJson({
         id: uuidv4(),
         name: `nftqueued${i}`,
-        uri: 'someuri',
-        data: 'somestring',
+        uri: 'someuri', // So far changing them won't affect anything
+        data: 'somestring', // So far changing them won't affect anything
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 100,
@@ -54,12 +68,28 @@ export default nftTestEntitities;
 
 const nftPresaleEntities = [];
 
+// total 50000 nfts - 10000 minted, 40000 queued
+// each tier - 10000 nfts
+// tier5 is all minted
+// names
+// all nfts have unique ids
+// each nft has hash power, equal to the collection id - 1, 2 ...8
+// each nft has priceInAcudos, equal to the collection id * 100 - 100, 200 ...800
+// each nft has priceUsdr 100
+// tokenId equals collectionId
+// creatorId equals collectionId
+// marketplaceNftId equals collectionId
+// all nfts owner = "testowner"
+// each nft priceAcudosValidUntil is days passed from zero date to colelctionId - 1 + some time for valid price
+//      so nftId = 1 has zero date timestamp + some value so to be valid
+// each nft createdAt is days passed from zero date to colelctionId - 1
+// each nft updatedAt is days passed from zero date to colelctionId - 1
 for (let i = 1; i <= 10000; i++) {
     nftPresaleEntities.push(NftEntity.fromJson({
         id: uuidv4(),
         name: `tier5_${i}`,
-        uri: 'someuri',
-        data: 'somestring',
+        uri: 'someuri', // So far changing them won't affect anything
+        data: 'somestring', // So far changing them won't affect anything
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 300,
@@ -79,8 +109,8 @@ for (let i = 1; i <= 10000; i++) {
     nftPresaleEntities.push(NftEntity.fromJson({
         id: uuidv4(),
         name: `tier4_${i}`,
-        uri: 'someuri',
-        data: 'somestring',
+        uri: 'someuri', // So far changing them won't affect anything
+        data: 'somestring', // So far changing them won't affect anything
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 500,
@@ -100,8 +130,8 @@ for (let i = 1; i <= 10000; i++) {
     nftPresaleEntities.push(NftEntity.fromJson({
         id: uuidv4(),
         name: `tier3_${i}`,
-        uri: 'someuri',
-        data: 'somestring',
+        uri: 'someuri', // So far changing them won't affect anything
+        data: 'somestring', // So far changing them won't affect anything
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 1000,
@@ -121,8 +151,8 @@ for (let i = 1; i <= 10000; i++) {
     nftPresaleEntities.push(NftEntity.fromJson({
         id: uuidv4(),
         name: `tier2_${i}`,
-        uri: 'someuri',
-        data: 'somestring',
+        uri: 'someuri', // So far changing them won't affect anything
+        data: 'somestring', // So far changing them won't affect anything
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 2000,
@@ -142,8 +172,8 @@ for (let i = 1; i <= 10000; i++) {
     nftPresaleEntities.push(NftEntity.fromJson({
         id: uuidv4(),
         name: `tier1_${i}`,
-        uri: 'someuri',
-        data: 'somestring',
+        uri: 'someuri', // So far changing them won't affect anything
+        data: 'somestring', // So far changing them won't affect anything
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 3000,
