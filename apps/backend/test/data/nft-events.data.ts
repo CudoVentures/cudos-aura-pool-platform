@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import ChainMarketplaceCollectionEntity from '../../src/collection/entities/chain-marketplace-collection.entity';
 import NftMarketplaceTradeHistoryEntity from '../../src/graphql/entities/nft-marketplace-trade-history.entity';
 import NftModuleNftTransferEntity from '../../src/graphql/entities/nft-module-nft-transfer-history';
 import { getZeroDatePlusDaysTimestamp } from '../../src/statistics/utils/test.utils';
@@ -8,6 +7,20 @@ import nftTestEntitities from './nft.data';
 
 const chainMarketplaceNftTradeEventEntities = [];
 const chainNftTransferHistoryEntities = [];
+
+// TODO: the cycle is not necessary here, should be reworked
+// for each nftEntity add  collectionId * (4 marketplace events + 2 nft module events)
+
+// nft module events - one is the zero date plus days equal to collectionId - 1, the other is Date.now() so to be fitlered byt timestamp from zero date
+// nft module events - transfer events
+// nft module events - old owner = testbuyer, new owner = testowner
+
+// marketplace module events - 2 are zero date plus days equal to collectionId - 1, the others are Date.now() so to be fitlered byt timestamp from zero date
+// marketplace module events - 1 mint event and one buy event
+// marketplace module events - mint event seller is the zero address, the buyer = "testbuyer"
+// marketplace module events - btcPrice is i / 10000 (so for collectionId 1 there are two nft mint events with btcPrice 0.0001 and 2 sell events with the same price)
+// marketplace module events - acudosPrice is i
+// marketplace module events - usdPrice is i
 
 nftTestEntitities.forEach((nftEntity) => {
     if (nftEntity.tokenId === '') {
@@ -40,15 +53,6 @@ nftTestEntitities.forEach((nftEntity) => {
             transactionHash: 'someresaletxhash',
         });
 
-        chainNftTransferHistoryEntities.push({
-            tokenId: nftEntity.tokenId,
-            denomId: collectionEntity.denomId,
-            newOwner: 'testowner',
-            oldOwner: 'testbuyer',
-            timestamp: getZeroDatePlusDaysTimestamp(i - 1),
-            transactionHash: 'somehash',
-        })
-
         // add some fore today as well
         chainMarketplaceNftTradeEventEntities.push({
             buyer: 'testbuyer',
@@ -72,6 +76,15 @@ nftTestEntitities.forEach((nftEntity) => {
             usdPrice: i,
             transactionHash: 'sometxhash',
         });
+
+        chainNftTransferHistoryEntities.push({
+            tokenId: nftEntity.tokenId,
+            denomId: collectionEntity.denomId,
+            newOwner: 'testowner',
+            oldOwner: 'testbuyer',
+            timestamp: getZeroDatePlusDaysTimestamp(i - 1),
+            transactionHash: 'somehash',
+        })
 
         chainNftTransferHistoryEntities.push({
             tokenId: nftEntity.tokenId,
