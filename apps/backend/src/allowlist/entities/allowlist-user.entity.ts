@@ -1,11 +1,11 @@
 export default class AllowlistUserEntity {
 
     static fromJson(json): AllowlistUserEntity {
-        const entity = new AllowlistUserEntity();
-
         if (json === null) {
             return null;
         }
+
+        const entity = new AllowlistUserEntity();
 
         return entity;
     }
