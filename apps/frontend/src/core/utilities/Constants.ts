@@ -21,7 +21,6 @@ export const ADDRESSBOOK_NETWORK = 'aurapool';
 export const PRESALE_CONSTS = {
     PRICE_USD: Number(Config.APP_PRESALE_PRICE_USD),
     PRESALE_ENDTIME: Config.APP_PRESALE_END_TIMESTAMP,
-    PRESALE_ALLOWLIST_ID: Config.APP_PRESALE_ALLOWLIST_ID,
 }
 
 export const ETH_CONSTS = {

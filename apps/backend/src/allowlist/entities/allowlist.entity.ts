@@ -18,4 +18,13 @@ export default class AllowlistEntity {
         return entity;
     }
 
+    static toJson(allowlistEntity: AllowlistEntity) {
+        if (allowlistEntity === null) {
+            return null;
+        }
+
+        return {
+            users: allowlistEntity.users,
+        }
+    }
 }

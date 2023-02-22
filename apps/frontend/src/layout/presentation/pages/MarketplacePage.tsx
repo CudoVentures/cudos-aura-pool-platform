@@ -332,7 +332,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                                     <div className={'B3 SemiBold ColorNeutral040'}>({marketplacePageStore.getPresalePriceUsdFormatted()})</div>
                                                 </div>
                                             </div>
-                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{marketplacePageStore.getWhitelistedAmount()}</span></div>
+                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{marketplacePageStore.totalWhitelistedUsersCount}</span></div>
                                         </div>
                                         <Progressbar fillPercent={marketplacePageStore.getPresaleMintedPercent()} />
                                         <div className={ 'AmountMintedRow FlexRow' }>
@@ -359,16 +359,20 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                     </ColumnLayout>
                                 </StyledContainer>
                             </ColumnLayout>
-                            {walletStore.isConnected() === false && (
-                                <div className = { 'FlexSingleCenter ColorError060 Bold' } >
-                                    Connect your wallet to buy
-                                </div>
-                            )}
+
                             {marketplacePageStore.isUserEligibleToBuy() === true && (
-                                <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()} CUDOS</Button>
-                                    <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()} ETH</Button>
-                                </Actions>
+                                <>
+                                    {walletStore.isConnected() === false ? (
+                                        <div className = { 'FlexSingleCenter ColorError060 Bold' } >
+                                            Connect your wallet to buy
+                                        </div>
+                                    ) : (
+                                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()} ETH</Button>
+                                        </Actions>
+                                    ) }
+                                </>
                             )}
                         </ColumnLayout>
 

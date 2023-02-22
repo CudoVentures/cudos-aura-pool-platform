@@ -1,4 +1,4 @@
-import { CHAIN_DETAILS, ETH_CONSTS, PRESALE_CONSTS } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, ETH_CONSTS } from '../../../core/utilities/Constants';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity from '../../entities/NftEntity';
 import NftRepo, { BuyingCurrency } from '../../presentation/repos/NftRepo';

@@ -16,6 +16,7 @@ import { FarmService } from '../farm/farm.service';
 import { validate } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import AccountService from '../account/account.service';
+import AllowlistService from '../allowlist/allowlist.service';
 import { KycService } from '../kyc/kyc.service';
 
 @ApiTags('NFT')
@@ -30,6 +31,7 @@ export class NFTController {
         private miningFarmService: FarmService,
         private configService: ConfigService,
         private accountService: AccountService,
+        private allowlistService: AllowlistService,
         private kycService: KycService,
     // eslint-disable-next-line no-empty-function
     ) {}
@@ -69,6 +71,13 @@ export class NFTController {
             if (presaleEndTimestamp < Date.now()) {
                 console.log('Getting NFT from OnDemandMinting', 'presale has ended at', presaleEndTimestamp);
                 throw new Error('Presale ended.')
+            }
+
+            const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient);
+
+            if (allowlistUser === null) {
+                console.log(`Address ${recipient} not found in allowlist`);
+                throw new Error('Recipient not in allowlist.')
             }
 
             nftEntity = await this.nftService.getRandomPresaleNft(paidAmountAcudos);
