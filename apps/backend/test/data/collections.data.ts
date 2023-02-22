@@ -66,7 +66,7 @@ export const collectionEntities = [CollectionEntity.fromJson({
     id: '5',
     name: 'testcollection5',
     description: 'testcollectiondescription',
-    denomId: 'testdenomid5',and
+    denomId: 'testdenomid5',
     hashingPower: 15,
     royalties: 10,
     mainImage: 'testuri',
