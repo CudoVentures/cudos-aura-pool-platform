@@ -65,7 +65,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
 
     useEffect(() => {
         marketplacePageStore.fetchAllowlistUser();
-    }, [walletStore.address]);
+    }, [accountSessionStore.userEntity?.cudosWalletAddress]);
 
     const navigate = useNavigate();
 
