@@ -17,55 +17,57 @@ import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
 import { AddressesPayoutHistoryRepo } from '../repos/addresses-payout-history.repo';
 import NftEntity from '../../nft/entities/nft.entity';
 
+// both farms are the same for the purpose of fitlering for events an other statistics by id.
+// Most of the data of the farm is not used so far
 export const miningFarmTestEntities = [MiningFarmEntity.fromJson({
     id: '1',
     accountId: '1',
-    name: 'testFarmName',
-    legalName: 'testFarmNameLtd',
-    primaryAccountOwnerName: 'Test Testov',
-    primaryAccountOwnerEmail: 'test@test.com',
-    description: 'string',
-    manufacturerIds: ['1'],
-    minerIds: ['1'],
-    energySourceIds: ['1'],
+    name: 'testFarmName', // So far changing them won't affect anything
+    legalName: 'testFarmNameLtd', // So far changing them won't affect anything
+    primaryAccountOwnerName: 'Test Testov', // So far changing them won't affect anything
+    primaryAccountOwnerEmail: 'test@test.com', // So far changing them won't affect anything
+    description: 'string', // So far changing them won't affect anything
+    manufacturerIds: ['1'], // So far changing them won't affect anything
+    minerIds: ['1'], // So far changing them won't affect anything
+    energySourceIds: ['1'], // So far changing them won't affect anything
     hashPowerInTh: 123123,
-    machinesLocation: 'test location',
-    profileImgUrl: 'some test url',
-    coverImgUrl: 'some test url',
-    farmPhotoUrls: ['some test url'],
+    machinesLocation: 'test location', // So far changing them won't affect anything
+    profileImgUrl: 'some test url', // So far changing them won't affect anything
+    coverImgUrl: 'some test url', // So far changing them won't affect anything
+    farmPhotoUrls: ['some test url'], // So far changing them won't affect anything
     status: FarmStatus.APPROVED,
-    maintenanceFeeInBtc: '1',
+    maintenanceFeeInBtc: '1', // So far changing them won't affect anything
     cudosMintNftRoyaltiesPercent: 10,
     cudosResaleNftRoyaltiesPercent: 2,
-    resaleFarmRoyaltiesCudosAddress: 'testCudosAddress',
-    rewardsFromPoolBtcAddress: 'leftoversTestAddress',
-    leftoverRewardsBtcAddress: 'testpayout',
-    maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress',
+    resaleFarmRoyaltiesCudosAddress: 'testCudosAddress', // So far changing them won't affect anything
+    rewardsFromPoolBtcAddress: 'leftoversTestAddress', // So far changing them won't affect anything
+    leftoverRewardsBtcAddress: 'testpayout', // So far changing them won't affect anything
+    maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress', // So far changing them won't affect anything
 }),
 MiningFarmEntity.fromJson({
     id: '2',
     accountId: '1',
-    name: 'testFarmName',
-    legalName: 'testFarmNameLtd',
-    primaryAccountOwnerName: 'Test Testov',
-    primaryAccountOwnerEmail: 'test@test.com',
-    description: 'string',
-    manufacturerIds: ['1'],
-    minerIds: ['1'],
-    energySourceIds: ['1'],
+    name: 'testFarmName', // So far changing them won't affect anything
+    legalName: 'testFarmNameLtd', // So far changing them won't affect anything
+    primaryAccountOwnerName: 'Test Testov', // So far changing them won't affect anything
+    primaryAccountOwnerEmail: 'test@test.com', // So far changing them won't affect anything
+    description: 'string', // So far changing them won't affect anything
+    manufacturerIds: ['1'], // So far changing them won't affect anything
+    minerIds: ['1'], // So far changing them won't affect anything
+    energySourceIds: ['1'], // So far changing them won't affect anything
     hashPowerInTh: 123123,
-    machinesLocation: 'test location',
-    profileImgUrl: 'some test url',
-    coverImgUrl: 'some test url',
-    farmPhotoUrls: ['some test url'],
+    machinesLocation: 'test location', // So far changing them won't affect anything
+    profileImgUrl: 'some test url', // So far changing them won't affect anything
+    coverImgUrl: 'some test url', // So far changing them won't affect anything
+    farmPhotoUrls: ['some test url'], // So far changing them won't affect anything
     status: FarmStatus.APPROVED,
-    maintenanceFeeInBtc: '1',
+    maintenanceFeeInBtc: '1', // So far changing them won't affect anything
     cudosMintNftRoyaltiesPercent: 10,
     cudosResaleNftRoyaltiesPercent: 2,
-    resaleFarmRoyaltiesCudosAddress: 'testCudosAddress',
-    rewardsFromPoolBtcAddress: 'leftoversTestAddress',
-    leftoverRewardsBtcAddress: 'testpayout',
-    maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress',
+    resaleFarmRoyaltiesCudosAddress: 'testCudosAddress', // So far changing them won't affect anything
+    rewardsFromPoolBtcAddress: 'leftoversTestAddress', // So far changing them won't affect anything
+    leftoverRewardsBtcAddress: 'testpayout', // So far changing them won't affect anything
+    maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress', // So far changing them won't affect anything
 }),
 ];
 
@@ -76,6 +78,13 @@ const addressesPayoutHistoryEntities = [];
 
 export const chainMarketplaceTradeHistoryEntities = []
 export const chainNftTransferHistoryEntities = []
+
+// for testdenomid and tokenId 1 to 5, add 2 standard marketplace events and 1 standard nft module transfer event
+// the same above is added again for custom tests, they have one denom for all  "string" and token ids "1" + i
+// all events new owner/buyer is "testbuyer"
+// all events new btcPricer is equal to tokenId / 10000
+// all events new btcPricer is equal to tokenId / 10000
+// all events new usdPrice is equal to tokenId
 
 for (let i = 1; i <= 5; i++) {
     chainMarketplaceTradeHistoryEntities.push({
@@ -145,6 +154,10 @@ for (let i = 1; i <= 5; i++) {
     /// ////////////////////////////////////////////////////////
 }
 
+// has 5 marketplace collections (denoms)
+// all collections have the same royalties, creator (cudostestfarmaddress), farmId (1), platformRoyaltiesAddress {cudostestplatformaddress}
+//  farmMintRoyaltiesAddress (cudostestfarmaddress) and farmResaleRoyaltiesAddress (cudostestfarmaddress)
+// denomIds are from "testdenomid1" to "testdenomid5";
 const chainMarketplaceCollectionEntities = [
     {
         mintRoyalties: [
@@ -234,6 +247,14 @@ for (let i = 1; i <= 5; i++) {
     const uuid = uuidv4();
     const nftTestEntity = new NftEntity();
 
+    // add 1 nft per collectionId
+    // each nft has different ownerId = collectionId
+    // all nfts are status "MINTED"
+    // each nft has acudos price = i * 100 cudos
+    // each nft has hashingPower = i
+    // each nft has different update and create times = zero date + days equal to collectionid - 1
+    //      this is for timestamp filtering
+
     nftTestEntity.id = uuid;
     nftTestEntity.name = `nft${i}`;
     nftTestEntity.uri = 'someuri';
@@ -272,6 +293,9 @@ for (let i = 1; i <= 5; i++) {
     //     updatedAt: new Date(getZeroDatePlusDaysTimestamp(i - 1)),
     // });
 
+    // add 1 nft payout history, 1 nftOwnerPayoutHistory and one addressPayoutHistory per NFT
+    // all addresses are "testpayout"
+    // all owners are "testowner"
     nftPayoutHistoryEntities.push({
         id: i,
         token_id: i,
