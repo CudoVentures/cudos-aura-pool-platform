@@ -258,11 +258,16 @@ export default class MarketplacePageStore {
     }
 
     async fetchAllowlistUser(): Promise < void > {
-        const allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserBySessionAccount();
+        let allowlistUserEntity;
+        if (this.presaleStore.isInPresale() === true) {
+            allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserBySessionAccount();
+        } else {
+            allowlistUserEntity = new AllowlistUserEntity(); // it just has to be != null in order to allow payment
+        }
 
         runInAction(() => {
             this.allowlistUserEntity = allowlistUserEntity;
-        })
+        });
     }
 
     private getPresalePriceInCudos(): BigNumber {

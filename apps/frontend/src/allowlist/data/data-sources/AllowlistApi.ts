@@ -16,7 +16,7 @@ export default class AllowlistApi {
             throw Error('Allowlist not found.');
         }
 
-        return allowlistEntity.users.length
+        return allowlistEntity.users?.length ?? 0;
     }
 
     async fetchAllowlistUserBySessionAccount(): Promise < AllowlistUserEntity > {

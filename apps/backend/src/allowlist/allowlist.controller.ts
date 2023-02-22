@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode } from '@nestjs/common';
+import { Controller, Get, HttpCode, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RequestWithSessionAccounts } from '../common/commont.types';
 
@@ -8,7 +8,7 @@ import { ResFetchAllowlist, ResFetchAllowlistUserBySessionAccount } from './dto/
 
 @ApiTags('Allowlist')
 @Controller('allowlist')
-export class NFTController {
+export class AllowlistController {
     allowlistId: string;
 
     constructor(
@@ -18,8 +18,9 @@ export class NFTController {
         this.allowlistId = this.configService.getOrThrow<string>('App_Presale_Allowlist_Id');
     }
 
+    @Get()
     @HttpCode(200)
-    async fetchAllowlist(): Promise<ResFetchAllowlist> {
+    async fetchAllowlist(): Promise < ResFetchAllowlist > {
         const allowlistEntity = await this.allowlistService.getAllowlistById(this.allowlistId);
         return new ResFetchAllowlist(allowlistEntity);
     }
@@ -27,7 +28,11 @@ export class NFTController {
     @ApiBearerAuth('access-token')
     @Get('fetchAllowlistUserBySessionAccount')
     @HttpCode(200)
-    async fetchAllowlistUserBySessionAccount(@Body() req: RequestWithSessionAccounts): Promise<ResFetchAllowlistUserBySessionAccount> {
+    async fetchAllowlistUserBySessionAccount(@Req() req: RequestWithSessionAccounts): Promise < ResFetchAllowlistUserBySessionAccount > {
+        if (req.sessionUserEntity === null) {
+            return new ResFetchAllowlistUserBySessionAccount(null);
+        }
+
         const allowlistUserEntity = await this.allowlistService.getAllowlistUserByAddress(req.sessionUserEntity.cudosWalletAddress);
         return new ResFetchAllowlistUserBySessionAccount(allowlistUserEntity);
     }

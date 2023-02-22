@@ -25,7 +25,7 @@ export default class AllowlistService {
     }
 
     async getAllowlistById(allowlistId: string): Promise < AllowlistEntity > {
-        const resultJson = await axios.get(`${this.allowlistUrl}/${AllowlistService.allowlistEndpoints}/id/${allowlistId}`);
+        const resultJson = await axios.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/id/${allowlistId}`);
 
         const allowlistEntity = AllowlistEntity.fromJson(resultJson.data.allowlistEntity);
 
