@@ -21,6 +21,7 @@ import { GeneralModule } from './general/general.module';
 import { AccountModule } from './account/account.module';
 import { EmailModule } from './email/email.module';
 import { KycModule } from './kyc/kyc.module';
+import { AllowlistModule } from './allowlist/allowlist.module';
 
 @Module({
     imports: [
@@ -36,6 +37,7 @@ import { KycModule } from './kyc/kyc.module';
         DataModule,
         EmailModule,
         KycModule,
+        AllowlistModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },

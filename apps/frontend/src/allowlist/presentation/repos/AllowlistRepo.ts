@@ -1,6 +1,9 @@
 import AllowlistUserEntity from '../../entities/AllowlistUserEntity';
 
 export default interface AllowlistRepo {
-    fetchAllowlistUserByAddress(allowlistId: string, address: string): Promise < AllowlistUserEntity >;
-    fetchTotalListedUsers(allowlistId: string): Promise < number >;
+    setPresentationActionsCallbacks(enableActions: () => void, disableActions: () => void);
+    setPresentationAlertCallbacks(showAlert: (msg: string, positiveListener : null | (() => boolean | void), negativeListener: null | (() => boolean | void)) => void);
+
+    fetchAllowlistUserBySessionAccount(): Promise < AllowlistUserEntity >;
+    fetchTotalListedUsers(): Promise < number >;
 }

@@ -9,6 +9,7 @@ import { VisitorModule } from '../visitor/visitor.module';
 import { FarmModule } from '../farm/farm.module';
 import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
 import { AccountModule } from '../account/account.module';
+import { AllowlistModule } from '../allowlist/allowlist.module';
 import { KycModule } from '../kyc/kyc.module';
 
 @Module({
@@ -20,6 +21,7 @@ import { KycModule } from '../kyc/kyc.module';
         forwardRef(() => FarmModule),
         CoinGeckoModule,
         AccountModule,
+        AllowlistModule,
         forwardRef(() => KycModule),
     ],
     providers: [NFTService],

@@ -158,6 +158,7 @@ accountRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.dis
 walletRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 settingsRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 kycRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
+allowlistRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 
 bitcoinRepo.setPresentationAlertCallbacks(alertStore.show);
 cudosRepo.setPresentationAlertCallbacks(alertStore.show);
@@ -170,6 +171,7 @@ accountRepo.setPresentationAlertCallbacks(alertStore.show);
 walletRepo.setPresentationAlertCallbacks(alertStore.show);
 settingsRepo.setPresentationAlertCallbacks(alertStore.show);
 kycRepo.setPresentationAlertCallbacks(alertStore.show);
+allowlistRepo.setPresentationAlertCallbacks(alertStore.show);
 
 collectionRepo.setProgressCallbacks(progressStore.onProgress);
 miningFarmRepo.setProgressCallbacks(progressStore.onProgress);

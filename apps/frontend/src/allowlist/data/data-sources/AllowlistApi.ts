@@ -1,24 +1,29 @@
 import axios from '../../../core/utilities/AxiosWrapper';
-import AllowlistEntity from '../../entities/AllowlistEntity';
 import AllowlistUserEntity from '../../entities/AllowlistUserEntity';
+import { ResFetchTotalListedUsers, ResFetchAllowlistUserBySessionAccount } from '../dto/Responses';
 
 export default class AllowlistApi {
     static allowlistEndpoints = '/api/v1/allowlist';
 
-    async getAllowlistUserByAddress(allowlistId: string, address: string): Promise < AllowlistUserEntity > {
-        // const resultJson = await axios.get(`${AllowlistApi.allowlistEndpoints}/${allowlistId}/user/${address}`);
+    async fetchTotalListedUsers(): Promise < number > {
+        const { data } = await axios.get(`${AllowlistApi.allowlistEndpoints}`);
 
-        // return AllowlistUserEntity.fromJson(resultJson);
+        const res = new ResFetchTotalListedUsers(data);
 
-        return new AllowlistUserEntity();
+        const allowlistEntity = res.allowlistEntity
+
+        if (allowlistEntity === null) {
+            throw Error('Allowlist not found.');
+        }
+
+        return allowlistEntity.users?.length ?? 0;
     }
 
-    async fetchTotalListedUsers(allowlistId: string): Promise < number > {
-        // const resultJson = await axios.get(`${AllowlistApi.allowlistEndpoints}/${allowlistId}`);
-        // const allowlistEntity = AllowlistEntity.fromJson(resultJson);
+    async fetchAllowlistUserBySessionAccount(): Promise < AllowlistUserEntity > {
+        const { data } = await axios.get(`${AllowlistApi.allowlistEndpoints}/fetchAllowlistUserBySessionAccount`);
 
-        // return allowlistEntity.addresses.length
+        const res = new ResFetchAllowlistUserBySessionAccount(data);
 
-        return 5000;
+        return res.allowlistUserEntity;
     }
 }
