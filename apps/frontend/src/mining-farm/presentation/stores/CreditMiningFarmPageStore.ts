@@ -272,7 +272,7 @@ export default class CreditMiningFarmPageStore {
     // }
 
     async createPresaleCollection() {
-        const presaleCollectionName = 'Presale Collection';
+        const presaleCollectionName = 'Presale Collection 2';
         const presaleCollectionEntity = this.approvedCollectionEntities.find((collectionEntity) => {
             return collectionEntity.name === presaleCollectionName;
         });
