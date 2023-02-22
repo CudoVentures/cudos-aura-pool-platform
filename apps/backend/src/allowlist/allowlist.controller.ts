@@ -1,38 +1,34 @@
-import { Body, Controller, Get, HttpCode, Param } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RequestWithSessionAccounts } from '../common/commont.types';
 
 import AllowlistService from './allowlist.service';
 import { ConfigService } from '@nestjs/config';
-import { ResFetchAllowlistEntity, ResFetchAllowlistUser } from './dto/responses.dto';
+import { ResFetchAllowlist, ResFetchAllowlistUserBySessionAccount } from './dto/responses.dto';
 
 @ApiTags('Allowlist')
 @Controller('allowlist')
 export class NFTController {
+    allowlistId: string;
+
     constructor(
         private allowlistService: AllowlistService,
         private configService: ConfigService,
-    // eslint-disable-next-line no-empty-function
-    ) {}
+    ) {
+        this.allowlistId = this.configService.getOrThrow<string>('App_Presale_Allowlist_Id');
+    }
 
-    @Get(':id')
     @HttpCode(200)
-    async fetchAllowlist(
-        @Param('id') id: string,
-    ): Promise<ResFetchAllowlistEntity> {
-        const allowlistEntity = await this.allowlistService.getAllowlistById(id);
-
-        return new ResFetchAllowlistEntity(allowlistEntity);
+    async fetchAllowlist(): Promise<ResFetchAllowlist> {
+        const allowlistEntity = await this.allowlistService.getAllowlistById(this.allowlistId);
+        return new ResFetchAllowlist(allowlistEntity);
     }
 
     @ApiBearerAuth('access-token')
-    @Get('user')
+    @Get('fetchAllowlistUserBySessionAccount')
     @HttpCode(200)
-    async fetchAllowlistUser(@Body() req: RequestWithSessionAccounts): Promise<ResFetchAllowlistUser> {
-        const allowlistUserEntity = await this.allowlistService.getAllowlistUserByAddress(
-            req.sessionUserEntity?.cudosWalletAddress,
-        );
-
-        return new ResFetchAllowlistUser(allowlistUserEntity);
+    async fetchAllowlistUserBySessionAccount(@Body() req: RequestWithSessionAccounts): Promise<ResFetchAllowlistUserBySessionAccount> {
+        const allowlistUserEntity = await this.allowlistService.getAllowlistUserByAddress(req.sessionUserEntity.cudosWalletAddress);
+        return new ResFetchAllowlistUserBySessionAccount(allowlistUserEntity);
     }
 }

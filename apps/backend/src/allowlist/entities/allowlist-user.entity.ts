@@ -1,9 +1,5 @@
 export default class AllowlistUserEntity {
 
-    constructor() {
-
-    }
-
     static fromJson(json): AllowlistUserEntity {
         const entity = new AllowlistUserEntity();
 

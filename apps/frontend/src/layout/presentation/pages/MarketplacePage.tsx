@@ -330,7 +330,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                                     <div className={'B3 SemiBold ColorNeutral040'}>({marketplacePageStore.getPresalePriceUsdFormatted()})</div>
                                                 </div>
                                             </div>
-                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{marketplacePageStore.getWhitelistedAmount()}</span></div>
+                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{marketplacePageStore.totalWhitelistedUsersCount}</span></div>
                                         </div>
                                         <Progressbar fillPercent={marketplacePageStore.getPresaleMintedPercent()} />
                                         <div className={ 'AmountMintedRow FlexRow' }>

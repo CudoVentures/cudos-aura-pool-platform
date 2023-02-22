@@ -1,24 +1,14 @@
 import axios from '../../../core/utilities/AxiosWrapper';
-import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
-import AllowlistEntity from '../../entities/AllowlistEntity';
 import AllowlistUserEntity from '../../entities/AllowlistUserEntity';
-import { ResFetchAllowlistEntity, ResFetchAllowlistUser } from '../dto/Responses';
+import { ResFetchTotalListedUsers, ResFetchAllowlistUserBySessionAccount } from '../dto/Responses';
 
 export default class AllowlistApi {
     static allowlistEndpoints = '/api/v1/allowlist';
 
-    async getAllowlistUserByAddress(address: string): Promise < AllowlistUserEntity > {
-        const resultJson = await axios.get(`${AllowlistApi.allowlistEndpoints}/user/${address}`);
+    async fetchTotalListedUsers(): Promise < number > {
+        const { data } = await axios.get(`${AllowlistApi.allowlistEndpoints}`);
 
-        const res = new ResFetchAllowlistUser(resultJson.data);
-
-        return res.allowlistUserEntity;
-    }
-
-    async fetchTotalListedUsers(allowlistId: string): Promise < number > {
-        const resultJson = await axios.get(`${AllowlistApi.allowlistEndpoints}/${allowlistId}`);
-
-        const res = new ResFetchAllowlistEntity(resultJson.data);
+        const res = new ResFetchTotalListedUsers(data);
 
         const allowlistEntity = res.allowlistEntity
 
@@ -27,5 +17,13 @@ export default class AllowlistApi {
         }
 
         return allowlistEntity.users.length
+    }
+
+    async fetchAllowlistUserBySessionAccount(): Promise < AllowlistUserEntity > {
+        const { data } = await axios.get(`${AllowlistApi.allowlistEndpoints}/fetchAllowlistUserBySessionAccount`);
+
+        const res = new ResFetchAllowlistUserBySessionAccount(data);
+
+        return res.allowlistUserEntity;
     }
 }

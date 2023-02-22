@@ -1,20 +1,20 @@
 import AllowlistEntity from '../../entities/AllowlistEntity';
 import AllowlistUserEntity from '../../entities/AllowlistUserEntity';
 
-export class ResFetchAllowlistUser {
-
-    allowlistUserEntity: AllowlistUserEntity;
-
-    constructor(json: any) {
-        this.allowlistUserEntity = AllowlistUserEntity.fromJson(json);
-    }
-}
-
-export class ResFetchAllowlistEntity {
+export class ResFetchTotalListedUsers {
 
     allowlistEntity: AllowlistEntity;
 
-    constructor(json: any) {
-        this.allowlistEntity = AllowlistEntity.fromJson(json);
+    constructor(axiosData: any) {
+        this.allowlistEntity = AllowlistEntity.fromJson(axiosData.allowlistEntity);
+    }
+}
+
+export class ResFetchAllowlistUserBySessionAccount {
+
+    allowlistUserEntity: AllowlistUserEntity;
+
+    constructor(axiosData: any) {
+        this.allowlistUserEntity = AllowlistUserEntity.fromJson(axiosData.allowlistUserEntity);
     }
 }

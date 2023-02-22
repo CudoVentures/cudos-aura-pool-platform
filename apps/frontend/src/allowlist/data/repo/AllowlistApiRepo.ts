@@ -9,18 +9,18 @@ export default class AllowlistApiRepo implements AllowlistRepo {
         this.allowlistApi = new AllowlistApi();
     }
 
-    async fetchAllowlistUserByAddress(address: string): Promise < AllowlistUserEntity > {
+    async fetchTotalListedUsers(): Promise < number > {
         try {
-            return this.allowlistApi.getAllowlistUserByAddress(address);
+            return this.allowlistApi.fetchTotalListedUsers();
         } catch (e) {
             console.log(e);
-            return null;
+            return 0;
         }
     }
 
-    async fetchTotalListedUsers(allowlistId: string): Promise < number > {
+    async fetchAllowlistUserBySessionAccount(): Promise < AllowlistUserEntity > {
         try {
-            return this.allowlistApi.fetchTotalListedUsers(allowlistId);
+            return this.allowlistApi.fetchAllowlistUserBySessionAccount();
         } catch (e) {
             console.log(e);
             return null;

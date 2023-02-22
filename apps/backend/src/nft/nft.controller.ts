@@ -54,7 +54,6 @@ export class NFTController {
         @Param('recipient') recipient: string,
         @Param('paidAmountAcudosStr') paidAmountAcudosStr: string,
     ): Promise<any> {
-        console.log('wefwefwefwefwef')
         const paidAmountAcudos = new BigNumber(paidAmountAcudosStr);
         const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
         if (userEntity === null) {
@@ -71,9 +70,7 @@ export class NFTController {
                 throw new Error('Presale ended.')
             }
 
-            const allowlistUser = this.allowlistService.getAllowlistUserByAddress(
-                recipient,
-            );
+            const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient);
 
             if (allowlistUser === null) {
                 console.log(`Address ${recipient} not found in allowlist`);

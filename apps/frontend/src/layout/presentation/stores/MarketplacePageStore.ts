@@ -79,7 +79,7 @@ export default class MarketplacePageStore {
         this.miningFarmDetailsMap = new Map();
 
         this.allowlistUserEntity = null;
-        this.totalWhitelistedUsersCount = null;
+        this.totalWhitelistedUsersCount = 0;
 
         makeAutoObservable(this);
     }
@@ -203,7 +203,7 @@ export default class MarketplacePageStore {
     }
 
     async fetchTotalWhitelistedCount(): Promise < void > {
-        const count = await this.allowlistRepo.fetchTotalListedUsers(PRESALE_CONSTS.PRESALE_ALLOWLIST_ID);
+        const count = await this.allowlistRepo.fetchTotalListedUsers();
 
         runInAction(() => {
             this.totalWhitelistedUsersCount = count;
@@ -249,6 +249,7 @@ export default class MarketplacePageStore {
         if (this.walletStore.isConnected() === false) {
             return false;
         }
+
         if (this.allowlistUserEntity === null) {
             return false;
         }
@@ -257,16 +258,11 @@ export default class MarketplacePageStore {
     }
 
     async fetchAllowlistUser(): Promise < void > {
-        const address = this.walletStore.getAddress();
-        const allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserByAddress(address);
+        const allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserBySessionAccount();
 
         runInAction(() => {
             this.allowlistUserEntity = allowlistUserEntity;
         })
-    }
-
-    getWhitelistedAmount(): number {
-        return this.totalWhitelistedUsersCount;
     }
 
     private getPresalePriceInCudos(): BigNumber {
