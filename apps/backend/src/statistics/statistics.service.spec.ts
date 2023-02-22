@@ -688,21 +688,35 @@ describe('StatisticsService', () => {
                 return entity.timestamp <= megaWalletEventFilter.timestampTo && entity.timestamp >= megaWalletEventFilter.timestampFrom;
             });
 
-        megaWalletEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+        megaWalletEventEntities.sort((a, b) => a.timestamp - b.timestamp)
 
         const nftEventMap = new Map<string, MegaWalletEventEntity>();
         megaWalletEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
 
-        nftEntities = nftEntities.filter((entity) => nftEventMap.get(entity.id));
+        const resultNftEntitiesMap = new Map < string, NftEntity >();
+        megaWalletEventEntities.forEach((entity) => {
+            const resultNftEntity = nftEntities.find((nftEntity) => nftEntity.id === entity.nftId);
+            resultNftEntitiesMap.set(resultNftEntity.id, resultNftEntity);
+        });
+        nftEntities = [];
+        resultNftEntitiesMap.forEach((nftEntity) => {
+            nftEntities.push(nftEntity);
+        });
 
         const result = {
             megaWalletEventEntities,
-            nftEntities: megaWalletEventEntities.map((megaWalletEventEntity) => nftEntities.find((nftEntity) => nftEntity.id === megaWalletEventEntity.nftId)),
+            nftEntities,
             total: nftEventEntities.length,
         }
+        result.nftEntities.sort((a: NftEntity, b: NftEntity) => {
+            return a.id.localeCompare(b.id);
+        })
 
         // Act
         const userEarningsEntity = await service.fetchMegaWalletEventsByFilter(megaWalletEventFilter);
+        userEarningsEntity.nftEntities.sort((a: NftEntity, b: NftEntity) => {
+            return a.id.localeCompare(b.id);
+        });
 
         // Assert
         expect(userEarningsEntity).toEqual(result);

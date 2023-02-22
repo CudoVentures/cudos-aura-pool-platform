@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { CURRENCY_DECIMALS } from 'cudosjs';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { NftJsonValidator, NftStatus } from '../nft.types';
 import { NftRepo } from '../repos/nft.repo';
@@ -76,6 +77,10 @@ export default class NftEntity {
     getTokenIdAsInt(): number {
         const tokenIdAsInt = parseInt(this.tokenId);
         return Number.isNaN(tokenIdAsInt) === true ? NOT_EXISTS_INT : tokenIdAsInt;
+    }
+
+    getPriceInCudos(): BigNumber {
+        return this.acudosPrice.shiftedBy(-CURRENCY_DECIMALS);
     }
 
     isSold(): boolean {

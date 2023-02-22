@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import KycRepo from './repo/kyc.repo';
 import { Onfido, Region, WorkflowRun } from '@onfido/api';
@@ -9,6 +9,9 @@ import AppRepo from '../common/repo/app.repo';
 import { ConfigService } from '@nestjs/config';
 import { WorkflowRunParamsEntity, WorkflowRunParamsV1Entity } from './entities/workflow-run-params.entity';
 import UserEntity from '../account/entities/user.entity';
+import NftEntity from '../nft/entities/nft.entity';
+import { StatisticsService } from '../statistics/statistics.service';
+import CoinGeckoService from '../coin-gecko/coin-gecko.service';
 
 @Injectable()
 export class KycService {
@@ -19,6 +22,9 @@ export class KycService {
         @InjectModel(KycRepo)
         private kycRepo: typeof KycRepo,
         private configService: ConfigService,
+        @Inject(forwardRef(() => StatisticsService))
+        private statisticsService: StatisticsService,
+        private coinGeckoService: CoinGeckoService,
     ) {
         this.onfido = new Onfido({
             apiToken: this.configService.get < string >('APP_ONFIDO_API_TOKEN'),
@@ -136,6 +142,22 @@ export class KycService {
         }
 
         return KycEntity.fromRepo(kycRepo);
+    }
+
+    async canBuyAnNft(accountEntity: AccountEntity, userEntity: UserEntity, nftEntity: NftEntity): Promise < boolean > {
+        const kycEntity = await this.fetchKycByAccount(accountEntity);
+        if (kycEntity.isFullVerified() === true) {
+            return true;
+        }
+
+        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(userEntity);
+        const nftPriceInUsd = Number(nftEntity.getPriceInCudos().multipliedBy(cudosUsdPrice).toFixed(2));
+        if (purchasesInUsdSoFar + nftPriceInUsd <= WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD) {
+            return kycEntity.isLightVerified();
+        }
+
+        return false;
     }
 
 }

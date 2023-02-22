@@ -85,7 +85,7 @@ export class StatisticsService {
             return accumulator + nftEventEntity.transferPriceInUsd;
         }, 0);
 
-        return Number(sumInUsd.toFixed(2));
+        return Number(sumInUsd.toFixed(0));
     }
 
     async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
@@ -98,24 +98,32 @@ export class StatisticsService {
         nftEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
 
         // filter for event type
-        let filteredNftEntities = nftEventFilterEntity.isEventFilterSet()
+        let filteredNftEventEntities = nftEventFilterEntity.isEventFilterSet()
             ? nftEventEntities.filter((entity) => nftEventFilterEntity.eventTypes.includes(entity.eventType))
             : nftEventEntities;
 
         // filter for period
-        filteredNftEntities = nftEventFilterEntity.isTimestampFilterSet()
-            ? filteredNftEntities.filter((entity) => entity.timestamp >= nftEventFilterEntity.timestampFrom && entity.timestamp <= nftEventFilterEntity.timestampTo)
-            : filteredNftEntities;
+        filteredNftEventEntities = nftEventFilterEntity.isTimestampFilterSet()
+            ? filteredNftEventEntities.filter((entity) => entity.timestamp >= nftEventFilterEntity.timestampFrom && entity.timestamp <= nftEventFilterEntity.timestampTo)
+            : filteredNftEventEntities;
 
         // slice
-        const slicedFilteredNftEntities = filteredNftEntities.slice(nftEventFilterEntity.from, nftEventFilterEntity.from + nftEventFilterEntity.count);
+        const slicedFilteredNftEventEntities = filteredNftEventEntities.slice(nftEventFilterEntity.from, nftEventFilterEntity.from + nftEventFilterEntity.count);
 
-        const nftEntities = slicedFilteredNftEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+        // const nftEntities = slicedFilteredNftEventEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+        const slicedFilteredNftEntitiesMap = new Map < string, NftEntity>();
+        slicedFilteredNftEventEntities.forEach((nftEventEntity) => {
+            slicedFilteredNftEntitiesMap.set(nftEventEntity.nftId, nftEntitiesMap.get(nftEventEntity.nftId));
+        });
+        const nftEntities = [];
+        slicedFilteredNftEntitiesMap.forEach((nftEntity) => {
+            nftEntities.push(nftEntity);
+        });
 
         return {
-            nftEventEntities: slicedFilteredNftEntities,
+            nftEventEntities: slicedFilteredNftEventEntities,
             nftEntities,
-            total: filteredNftEntities.length,
+            total: filteredNftEventEntities.length,
         }
     }
 
@@ -158,7 +166,7 @@ export class StatisticsService {
             )
         });
 
-        megaWalletEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+        megaWalletEventEntities.sort((a, b) => a.timestamp - b.timestamp)
 
         // filter for event type
         megaWalletEventEntities = megaWalletEventFilterEntity.isEventFilterSet()
@@ -175,7 +183,15 @@ export class StatisticsService {
         // slice
         megaWalletEventEntities = megaWalletEventEntities.slice(megaWalletEventFilterEntity.from, megaWalletEventFilterEntity.from + megaWalletEventFilterEntity.count);
 
-        const nftEntities = megaWalletEventEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+        // const nftEntities = megaWalletEventEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
+        const slicedFilteredNftEntitiesMap = new Map < string, NftEntity>();
+        megaWalletEventEntities.forEach((nftEventEntity) => {
+            slicedFilteredNftEntitiesMap.set(nftEventEntity.nftId, nftEntitiesMap.get(nftEventEntity.nftId));
+        });
+        const nftEntities = [];
+        slicedFilteredNftEntitiesMap.forEach((nftEntity) => {
+            nftEntities.push(nftEntity);
+        });
 
         return {
             megaWalletEventEntities,

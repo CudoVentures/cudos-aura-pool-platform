@@ -6,6 +6,7 @@ import S from '../../../core/utilities/Main';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 import Svg from '../../../core/presentation/components/Svg';
 import HeaderWallet from './HeaderWallet';
@@ -18,9 +19,10 @@ import '../styles/page-admin-header.css'
 type Props = {
     accountSessionStore?: AccountSessionStore;
     walletStore?: WalletStore,
+    presaleStore?: PresaleStore,
 };
 
-function PageAdminHeader({ accountSessionStore, walletStore }: Props) {
+function PageAdminHeader({ accountSessionStore, walletStore, presaleStore }: Props) {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -58,7 +60,7 @@ function PageAdminHeader({ accountSessionStore, walletStore }: Props) {
             </div>
 
             <div className={'NavCnt FlexRow'}>
-                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>Marketplace</div>
+                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>{ presaleStore.isInPresale() === true ? 'Presale' : 'Marketplace' }</div>
                 <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div>
 
                 { accountSessionStore.isAdmin() === true && (

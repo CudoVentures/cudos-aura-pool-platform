@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize, { Op, Transaction, where } from 'sequelize';
+import sequelize, { Op, Transaction } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
@@ -25,18 +25,18 @@ enum Tier {
 }
 
 const tierBorderMap = new Map<Tier, number>([
-    [Tier.TIER_1, 0.95],
-    [Tier.TIER_2, 0.85],
-    [Tier.TIER_3, 0.7],
-    [Tier.TIER_4, 0.5],
+    [Tier.TIER_1, 0.9983],
+    [Tier.TIER_2, 0.9937],
+    [Tier.TIER_3, 0.9439],
+    [Tier.TIER_4, 0.1912],
 ])
 
 const tierPriceMap = new Map<Tier, number>([
-    [Tier.TIER_1, 3000],
-    [Tier.TIER_2, 2000],
+    [Tier.TIER_1, 5000],
+    [Tier.TIER_2, 3000],
     [Tier.TIER_3, 1000],
-    [Tier.TIER_4, 500],
-    [Tier.TIER_5, 300],
+    [Tier.TIER_4, 300],
+    [Tier.TIER_5, 150],
 ])
 
 @Injectable()

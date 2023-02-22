@@ -35,6 +35,8 @@ import AccountSessionStore from '../../../accounts/presentation/stores/AccountSe
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
 
+declare let Config;
+
 type Props = {
     alertStore?: AlertStore
     accountSessionStore?: AccountSessionStore
@@ -98,7 +100,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
     }
 
     function checkKyc(): boolean {
-        const nftUsdPrice = 300;
+        const nftUsdPrice = parseInt(Config.APP_PRESALE_PRICE_USD);
         if (kycStore.canBuyAnNft(nftUsdPrice) === false) {
             alertStore.msg = 'You account is not verified or it is partially verified';
             alertStore.positiveLabel = 'Verify';
@@ -344,7 +346,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                     containerPadding={ContainerPadding.PADDING_16} >
                                     <ColumnLayout className={ 'PhaseInfoColumn' }>
                                         <RowLayout className={ 'PhaseHeader' } numColumns={2}>
-                                            <div className={'PhaseName B3 SemiBold'}>Public Stage</div>
+                                            <div className={'PhaseName B3 SemiBold'}>Public Sale</div>
                                             <div className={ 'B2 SemiBold PhaseEta FlexRow' }>
                                                 <div className={'ColorNeutral050'}>Starts in:</div>
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleDaysLeft}</div>
@@ -353,7 +355,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleSecondsleft}</div>
                                             </div>
                                         </RowLayout>
-                                        <div className={'B2 ColorNeutral050'}>Once the Public Phase starts the Aura Pool Platform will be open for everyone. This will allow whitelisted users to put their minted NFTs for resale.</div>
+                                        <div className={'B2 ColorNeutral050'}>Once the Public Sale starts the Aura Pool Platform will be open for everyone. This will allow whitelisted users to list their minted NFTs for sale.</div>
                                     </ColumnLayout>
                                 </StyledContainer>
                             </ColumnLayout>

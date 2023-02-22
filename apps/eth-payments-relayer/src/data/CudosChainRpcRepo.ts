@@ -8,7 +8,7 @@ import PaymentEventEntity from '../entities/PaymentEventEntity';
 import PaymentTransactionEntity from '../entities/PaymentTransactionEntity';
 import RefundTransactionEntity from '../entities/RefundTransactionEntity';
 import CudosChainRepo from '../workers/repos/CudosChainRepo';
-import { BankSendMsgToOnDemandMintingServiceQuery } from './dto/CudosAuraPoolServiceTxFilter';
+import { getBankSendMsgToOnDemandMintingServiceQuery } from './dto/CudosAuraPoolServiceTxFilter';
 
 export default class CudosChainRpcRepo implements CudosChainRepo {
     chainClient: StargateClient;
@@ -38,12 +38,12 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
             maxHeight: toHeight,
         };
 
-        const indexedTxs = await this.chainClient.searchTx(BankSendMsgToOnDemandMintingServiceQuery, heightFilter)
+        const indexedTxs = await this.chainClient.searchTx(await getBankSendMsgToOnDemandMintingServiceQuery(), heightFilter)
 
-        return indexedTxs.map((indexedTx) => RefundTransactionEntity.fromChainIndexedTx(indexedTx))
-            .filter((entity) => {
-                return entity.from === Config.MINTING_SERVICE_ADDRESS && entity.to === Config.CUDOS_SIGNER_ADDRESS
-            });
+        const cudosSignerAddress = await Config.getCudosSignerAddress();
+        return indexedTxs.map((indexedTx) => RefundTransactionEntity.fromChainIndexedTx(indexedTx)).filter((entity) => {
+            return entity.from === Config.MINTING_SERVICE_ADDRESS && entity.to === cudosSignerAddress;
+        });
     }
 
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> {
@@ -59,8 +59,6 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
         }
     }
 
-    708
-    712
     async sendOnDemandMintingTx(paymentEventEntity: PaymentEventEntity, convertedPaymentToCudos: BigNumber): Promise<string> {
         const mintFee = (new BigNumber(200000)).multipliedBy(Config.CUDOS_GAS_PRICE);
         const amount = convertedPaymentToCudos.shiftedBy(CURRENCY_DECIMALS).plus(mintFee);

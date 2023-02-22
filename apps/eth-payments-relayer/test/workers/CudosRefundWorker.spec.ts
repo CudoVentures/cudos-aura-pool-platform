@@ -11,7 +11,9 @@ describe('CudosRefundWorker (e2e)', () => {
 
     beforeEach(async () => {
         Logger.transports.forEach((t) => { t.silent = true });
-        Config.CUDOS_SIGNER_ADDRESS = 'testCudosSignerAddress';
+        Config.getCudosSignerAddress = async () => {
+            return 'testCudosSignerAddress';
+        }
         Config.MINTING_SERVICE_ADDRESS = 'testMintingServiceAddress';
     });
 

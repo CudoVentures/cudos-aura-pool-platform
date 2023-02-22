@@ -39,13 +39,13 @@ export default class KycEntity {
         return this.kycId === NOT_EXISTS_INT;
     }
 
-    // hasWorkflow(targetWorkflowId: string) {
-    //     const foundWorkflowId = this.workflowIds.find((workflowId) => {
-    //         return workflowId === targetWorkflowId;
-    //     });
+    isLightVerified(): boolean {
+        return this.getKycLightStatus() === KycStatus.COMPLETED_SUCCESS;
+    }
 
-    //     return foundWorkflowId !== undefined;
-    // }
+    isFullVerified(): boolean {
+        return this.getKycFullStatus() === KycStatus.COMPLETED_SUCCESS;
+    }
 
     hasRegisteredApplicant(): boolean {
         return this.applicantId !== '';

@@ -22,7 +22,7 @@ import AdminEntity from '../../../accounts/entities/AdminEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import { CURRENCY_DECIMALS } from 'cudosjs';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 enum StatsTabs {
     EARNINGS = 0,
@@ -36,6 +36,7 @@ export default class ViewNftPageStore {
     cudosStore: CudosStore;
     generalStore: GeneralStore;
     accountSessionStore: AccountSessionStore;
+    presaleStore: PresaleStore;
 
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
@@ -61,11 +62,12 @@ export default class ViewNftPageStore {
     nftEventEntities: NftEventEntity[];
     historyTableState: TableState;
 
-    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, generalStore: GeneralStore, accountSessionStore: AccountSessionStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
+    constructor(bitcoinStore: BitcoinStore, cudosStore: CudosStore, generalStore: GeneralStore, accountSessionStore: AccountSessionStore, presaleStore: PresaleStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, statisticsRepo: StatisticsRepo, accountRepo: AccountRepo) {
         this.bitcoinStore = bitcoinStore;
         this.cudosStore = cudosStore;
         this.generalStore = generalStore;
         this.accountSessionStore = accountSessionStore;
+        this.presaleStore = presaleStore;
 
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
@@ -128,6 +130,7 @@ export default class ViewNftPageStore {
             this.miningFarmEntity = miningFarmEntity;
             this.nftEventFilterModel.nftId = this.nftEntity.id;
         });
+
         await this.fetchNftsInTheCollection();
         await this.fetchEarnings();
         await this.fetchHistory();
@@ -146,11 +149,20 @@ export default class ViewNftPageStore {
     }
 
     fetchNftsInTheCollection = async () => {
-        const nftFilterModel = new NftFilterModel();
-        nftFilterModel.collectionIds = [this.nftEntity.collectionId];
-        nftFilterModel.from = this.gridViewState.getFrom();
-        nftFilterModel.count = this.gridViewState.getItemsPerPage();
-        const { nftEntities, total } = (await this.nftRepo.fetchNftsByFilter(nftFilterModel));
+        let nftEntities, total;
+
+        if (this.presaleStore.isInPresale() === false) {
+            const nftFilterModel = new NftFilterModel();
+            nftFilterModel.collectionIds = [this.nftEntity.collectionId];
+            nftFilterModel.from = this.gridViewState.getFrom();
+            nftFilterModel.count = this.gridViewState.getItemsPerPage();
+            const fetchedNfts = await this.nftRepo.fetchNftsByFilter(nftFilterModel);
+            nftEntities = fetchedNfts.nftEntities;
+            total = fetchedNfts.total;
+        } else {
+            nftEntities = [];
+            total = 0;
+        }
 
         await runInActionAsync(() => {
             this.nftEntities = nftEntities;
