@@ -16,6 +16,117 @@ import { MiningFarmRepo } from '../../farm/repos/mining-farm.repo';
 import MiningFarmEntity from '../../farm/entities/mining-farm.entity';
 import { AddressesPayoutHistoryRepo } from '../repos/addresses-payout-history.repo';
 import NftEntity from '../../nft/entities/nft.entity';
+import UserEntity from '../../account/entities/user.entity';
+import NftEventEntity, { NftTransferHistoryEventType } from '../entities/nft-event.entity';
+import NftEventFilterEntity from '../entities/nft-event-filter.entity';
+import { IntBoolValue, NOT_EXISTS_STRING } from '../../common/utils';
+import { NftEventType } from '../../../../frontend/src/analytics/entities/NftEventEntity';
+import MegaWalletEventFilterEntity from '../entities/mega-wallet-event-filter.entity';
+
+export function createBasicQueuedNft(id: string, name: string, hashingPower: number, acudosPrice: string, tokenId: string, collectionId: number, creatorId: number, currentOwner: string, marketplaceNftId: string): NftEntity {
+    return createBasicNft(id, name, hashingPower, acudosPrice, NftStatus.QUEUED, tokenId, collectionId, creatorId, currentOwner, marketplaceNftId);
+}
+
+export function createBasicMintedNft(id: string, name: string, hashingPower: number, acudosPrice: string, tokenId: string, collectionId: number, creatorId: number, currentOwner: string, marketplaceNftId: string): NftEntity {
+    return createBasicNft(id, name, hashingPower, acudosPrice, NftStatus.MINTED, tokenId, collectionId, creatorId, currentOwner, marketplaceNftId);
+}
+
+export function createBasicRemovedNft(id: string, name: string, hashingPower: number, acudosPrice: string, tokenId: string, collectionId: number, creatorId: number, currentOwner: string, marketplaceNftId: string): NftEntity {
+    return createBasicNft(id, name, hashingPower, acudosPrice, NftStatus.REMOVED, tokenId, collectionId, creatorId, currentOwner, marketplaceNftId);
+}
+
+export function createBasicNft(id: string, name: string, hashingPower: number, acudosPrice: string, status: NftStatus, tokenId: string, collectionId: number, creatorId: number, currentOwner: string, marketplaceNftId: string): NftEntity {
+    const nftEntity = new NftEntity();
+
+    nftEntity.id = id;
+    nftEntity.name = name;
+    nftEntity.hashingPower = hashingPower;
+    nftEntity.acudosPrice = new BigNumber(acudosPrice);
+    nftEntity.expirationDateTimestamp = (new Date(2124, 1, 1)).getDate();
+    nftEntity.status = status;
+    nftEntity.tokenId = tokenId;
+    nftEntity.collectionId = collectionId;
+    nftEntity.creatorId = creatorId;
+    nftEntity.deletedAt = null;
+    nftEntity.currentOwner = currentOwner;
+    nftEntity.marketplaceNftId = marketplaceNftId;
+
+    return nftEntity;
+}
+
+export function createBasicUser(userId: number, accountId: number, cudosTestWallet: string): UserEntity {
+    const userEntity = new UserEntity();
+
+    userEntity.userId = userId;
+    userEntity.accountId = accountId;
+    userEntity.cudosWalletAddress = cudosTestWallet;
+
+    return userEntity;
+}
+
+export function createBasicNftMintEvent(nftId: string, denomId: string, tokenId: string, fromAddress: string, toAddress: string, timestamp: number, transferPriceInUsd: number, transferPriceInBtc: string, transferPriceInAcudos: string): NftEventEntity {
+    return createBasicNftEvent(nftId, denomId, tokenId, fromAddress, toAddress, timestamp, NftTransferHistoryEventType.MINT, transferPriceInUsd, transferPriceInBtc, transferPriceInAcudos);
+}
+
+export function createBasicNftSaleEvent(nftId: string, denomId: string, tokenId: string, fromAddress: string, toAddress: string, timestamp: number, transferPriceInUsd: number, transferPriceInBtc: string, transferPriceInAcudos: string): NftEventEntity {
+    return createBasicNftEvent(nftId, denomId, tokenId, fromAddress, toAddress, timestamp, NftTransferHistoryEventType.SALE, transferPriceInUsd, transferPriceInBtc, transferPriceInAcudos);
+}
+
+export function createBasicNftTransferEvent(nftId: string, denomId: string, tokenId: string, fromAddress: string, toAddress: string, timestamp: number, transferPriceInUsd: number, transferPriceInBtc: string, transferPriceInAcudos: string): NftEventEntity {
+    return createBasicNftEvent(nftId, denomId, tokenId, fromAddress, toAddress, timestamp, NftTransferHistoryEventType.TRANSFER, transferPriceInUsd, transferPriceInBtc, transferPriceInAcudos);
+}
+
+export function createBasicNftEvent(nftId: string, denomId: string, tokenId: string, fromAddress: string, toAddress: string, timestamp: number, eventType: NftTransferHistoryEventType, transferPriceInUsd: number, transferPriceInBtc: string, transferPriceInAcudos: string): NftEventEntity {
+    const nftEventEntity = new NftEventEntity();
+
+    nftEventEntity.nftId = nftId;
+    nftEventEntity.denomId = denomId;
+    nftEventEntity.tokenId = tokenId;
+    nftEventEntity.fromAddress = fromAddress;
+    nftEventEntity.toAddress = toAddress;
+    nftEventEntity.timestamp = timestamp
+    nftEventEntity.eventType = eventType;
+    nftEventEntity.transferPriceInUsd = transferPriceInUsd;
+    nftEventEntity.transferPriceInBtc = new BigNumber(transferPriceInBtc);
+    nftEventEntity.transferPriceInAcudos = new BigNumber(transferPriceInAcudos);
+
+    return nftEventEntity;
+}
+
+export function createNftEventPlatformFilterEntity(eventTypes: NftTransferHistoryEventType[], timestampFrom: number, timestampTo: number, from: number, count: number): NftEventFilterEntity {
+    return createNftEventFilterEntity(IntBoolValue.FALSE, NOT_EXISTS_STRING, NOT_EXISTS_STRING, eventTypes, timestampFrom, timestampTo, from, count);
+}
+
+export function createNftEventSessionAccountFilterEntity(sessionAccount: IntBoolValue, eventTypes: NftTransferHistoryEventType[], timestampFrom: number, timestampTo: number, from: number, count: number): NftEventFilterEntity {
+    return createNftEventFilterEntity(sessionAccount, NOT_EXISTS_STRING, NOT_EXISTS_STRING, eventTypes, timestampFrom, timestampTo, from, count);
+}
+
+export function createNftEventFilterEntity(sessionAccount: IntBoolValue, nftId: string, miningFarmId: string, eventTypes: NftTransferHistoryEventType[], timestampFrom: number, timestampTo: number, from: number, count: number): NftEventFilterEntity {
+    const nftEventFilterEntity = new NftEventFilterEntity();
+
+    nftEventFilterEntity.sessionAccount = sessionAccount;
+    nftEventFilterEntity.nftId = nftId;
+    nftEventFilterEntity.miningFarmId = miningFarmId;
+    nftEventFilterEntity.eventTypes = eventTypes;
+    nftEventFilterEntity.timestampFrom = timestampFrom;
+    nftEventFilterEntity.timestampTo = timestampTo;
+    nftEventFilterEntity.from = from;
+    nftEventFilterEntity.count = count;
+
+    return nftEventFilterEntity;
+}
+
+export function createMegaWalletEventFilterEntity(eventTypes: NftTransferHistoryEventType[], timestampFrom: number, timestampTo: number, from: number, count: number): MegaWalletEventFilterEntity {
+    const megaWalletEventFilterEntity = new MegaWalletEventFilterEntity();
+
+    megaWalletEventFilterEntity.eventTypes = eventTypes;
+    megaWalletEventFilterEntity.timestampFrom = timestampFrom;
+    megaWalletEventFilterEntity.timestampTo = timestampTo;
+    megaWalletEventFilterEntity.from = from;
+    megaWalletEventFilterEntity.count = count;
+
+    return megaWalletEventFilterEntity;
+}
 
 // both farms are the same for the purpose of fitlering for events an other statistics by id.
 // Most of the data of the farm is not used so far
