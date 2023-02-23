@@ -4,7 +4,7 @@ import { GraphqlModule } from '../graphql/graphql.module';
 import { NFTModule } from './nft.module';
 import { FarmModule } from '../farm/farm.module';
 import { CollectionModule } from '../collection/collection.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/auth.types';
 import compose from 'docker-compose';
@@ -96,6 +96,10 @@ describe('NFTService', () => {
         process.env.APP_PRESALE_EXPECTED_PRICE_EPSILON = '0.01';
     });
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     afterAll(async () => {
         await module.close();
 
@@ -110,14 +114,12 @@ describe('NFTService', () => {
 
     it('getRandomPresaleNft: should have expected distribution', async () => {
         // Arrange
-        const nftEntities = [];
-        const totalFetches = 100000;
-        const expectedTier5Count = totalFetches * 0.5;
-        const expectedTier4Count = totalFetches * 0.2;
-        const expectedTier3Count = totalFetches * 0.15;
-        const expectedTier2Count = totalFetches * 0.10;
-        const expectedTier1Count = totalFetches * 0.05;
-        const countE = 0.05;
+        const totalFetches = 2000000;
+        const tiers = [150, 300, 1000, 3000, 5000];
+        const propabilities = [0.1912, 0.7527, 0.0498, 0.0046, 0.0017];
+        const expectedCounts = propabilities.map((probality) => totalFetches * probality);
+
+        const countE = 0.025;
 
         jest.spyOn(service, 'findAllByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
             const nftEntity = new NftEntity();
@@ -126,38 +128,32 @@ describe('NFTService', () => {
         });
 
         // Act
+        const resultCounts = expectedCounts.map((_) => 0);
         for (let i = 0; i < totalFetches; i++) {
             const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
-            nftEntities.push(nftEntity);
+            const tier = tiers.indexOf(nftEntity.priceUsd);
+            if (tier === -1) {
+                throw new Error(`Unknown tier:${tier}`);
+            }
+            ++resultCounts[tier];
         }
 
         // Assert
-        const tier5EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 300).length;
-        const tier4EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 500).length;
-        const tier3EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 1000).length;
-        const tier2EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 2000).length;
-        const tier1EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 3000).length;
-
-        // Assert
-        expect(expectedTier5Count * (1 - countE) <= tier5EntitiesCount && tier5EntitiesCount <= expectedTier5Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier4Count * (1 - countE) <= tier4EntitiesCount && tier4EntitiesCount <= expectedTier4Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier3Count * (1 - countE) <= tier3EntitiesCount && tier3EntitiesCount <= expectedTier3Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier2Count * (1 - countE) <= tier2EntitiesCount && tier2EntitiesCount <= expectedTier2Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier1Count * (1 - countE) <= tier1EntitiesCount && tier1EntitiesCount <= expectedTier1Count * (1 + countE)).toBeTruthy();
+        for (let i = 0; i < expectedCounts.length; ++i) {
+            expect(expectedCounts[i] * (1 - countE) <= resultCounts[i] && resultCounts[i] <= expectedCounts[i] * (1 + countE)).toBeTruthy();
+        }
     })
 
     it('getRandomPresaleNft: tier2 finished, tier1 should be minted instead', async () => {
         // Arrange
-        const nftEntities = [];
-        const totalFetches = 100000;
-        const expectedTier5Count = totalFetches * 0.5;
-        const expectedTier4Count = totalFetches * 0.2;
-        const expectedTier3Count = totalFetches * 0.15;
-        const expectedTier1Count = totalFetches * 0.15;
-        const countE = 0.05;
+        const totalFetches = 2000000;
+        const tiers = [150, 1000, 3000, 5000];
+        const propabilities = [0.1912 + 0.7527, 0.0498, 0.0046, 0.0017];
+        const expectedCounts = propabilities.map((probality) => totalFetches * probality);
+        const countE = 0.025;
 
         jest.spyOn(service, 'findAllByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
-            if (price === 2000) {
+            if (price === 300) {
                 return [];
             }
 
@@ -167,35 +163,32 @@ describe('NFTService', () => {
         });
 
         // Act
+        const resultCounts = expectedCounts.map((_) => 0);
         for (let i = 0; i < totalFetches; i++) {
             const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
-            nftEntities.push(nftEntity);
+            const tier = tiers.indexOf(nftEntity.priceUsd);
+            if (tier === -1) {
+                throw new Error(`Unknown tier:${tier}`);
+            }
+            ++resultCounts[tier];
         }
 
         // Assert
-        const tier5EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 300).length;
-        const tier4EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 500).length;
-        const tier3EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 1000).length;
-        const tier1EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 3000).length;
-
-        // Assert
-        expect(expectedTier5Count * (1 - countE) <= tier5EntitiesCount && tier5EntitiesCount <= expectedTier5Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier4Count * (1 - countE) <= tier4EntitiesCount && tier4EntitiesCount <= expectedTier4Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier3Count * (1 - countE) <= tier3EntitiesCount && tier3EntitiesCount <= expectedTier3Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier1Count * (1 - countE) <= tier1EntitiesCount && tier1EntitiesCount <= expectedTier1Count * (1 + countE)).toBeTruthy();
+        for (let i = 0; i < expectedCounts.length; ++i) {
+            expect(expectedCounts[i] * (1 - countE) <= resultCounts[i] && resultCounts[i] <= expectedCounts[i] * (1 + countE)).toBeTruthy();
+        }
     })
 
     it('getRandomPresaleNft: tiers 2 and 1 finished, tier 3 should be minted instead of them', async () => {
         // Arrange
-        const nftEntities = [];
-        const totalFetches = 100000;
-        const expectedTier5Count = totalFetches * 0.5;
-        const expectedTier4Count = totalFetches * 0.2;
-        const expectedTier3Count = totalFetches * 0.30;
-        const countE = 0.05;
+        const totalFetches = 2000000;
+        const tiers = [1000, 3000, 5000];
+        const propabilities = [0.1912 + 0.7527 + 0.0498, 0.0046, 0.0017];
+        const expectedCounts = propabilities.map((probality) => totalFetches * probality);
+        const countE = 0.025;
 
         jest.spyOn(service, 'findAllByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
-            if (price === 2000 || price === 3000) {
+            if (price === 150 || price === 300) {
                 return [];
             }
 
@@ -205,20 +198,20 @@ describe('NFTService', () => {
         });
 
         // Act
+        const resultCounts = expectedCounts.map((_) => 0);
         for (let i = 0; i < totalFetches; i++) {
             const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
-            nftEntities.push(nftEntity);
+            const tier = tiers.indexOf(nftEntity.priceUsd);
+            if (tier === -1) {
+                throw new Error(`Unknown tier:${tier}`);
+            }
+            ++resultCounts[tier];
         }
 
         // Assert
-        const tier5EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 300).length;
-        const tier4EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 500).length;
-        const tier3EntitiesCount = nftEntities.filter((entity) => entity.priceUsd === 1000).length;
-
-        // Assert
-        expect(expectedTier5Count * (1 - countE) <= tier5EntitiesCount && tier5EntitiesCount <= expectedTier5Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier4Count * (1 - countE) <= tier4EntitiesCount && tier4EntitiesCount <= expectedTier4Count * (1 + countE)).toBeTruthy();
-        expect(expectedTier3Count * (1 - countE) <= tier3EntitiesCount && tier3EntitiesCount <= expectedTier3Count * (1 + countE)).toBeTruthy();
+        for (let i = 0; i < expectedCounts.length; ++i) {
+            expect(expectedCounts[i] * (1 - countE) <= resultCounts[i] && resultCounts[i] <= expectedCounts[i] * (1 + countE)).toBeTruthy();
+        }
     })
 
     it('getRandomPresaleNft: payment amount outside epsilon', async () => {
