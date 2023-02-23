@@ -8,6 +8,13 @@ export enum NftStatus {
     REMOVED = 'removed',
 }
 
+export enum NftGroup {
+    GIVEAWAY = 'giveaway',
+    PRIVATE_SALE = 'private_sale',
+    PRESALE = 'presale',
+    PUBLIC_SALE = 'public_sale',
+}
+
 export type MarketplaceNftFilters = {
     denom_ids: string[];
     tx_hash: string;
@@ -25,7 +32,7 @@ export class NftJsonValidator {
         uri: string;
 
     @IsString()
-        data: string;
+        group: NftGroup;
 
     @IsString()
     @IsOptional()
@@ -108,6 +115,11 @@ export class NftFilterJsonValidation {
     @IsEnum(NftStatus, { each: true })
     @IsOptional()
         nftStatus: NftStatus[];
+
+    @IsArray()
+    @IsEnum(NftGroup, { each: true })
+    @IsOptional()
+        nftGroup: NftGroup[];
 
     @IsArray()
     @IsString({ each: true })

@@ -59,6 +59,10 @@ export default class NftApiRepo implements NftRepo {
         return nftEntities;
     }
 
+    async fetchPresaleAmounts(): Promise < { totalPresaleNftCount: number, presaleMintedNftCount } > {
+        return this.nftApi.fetchPresaleAmounts()
+    }
+
     async fetchNewNftDrops(status: CollectionStatus = CollectionStatus.APPROVED): Promise < NftEntity[] > {
         const nftFilterModel = new NftFilterModel();
 

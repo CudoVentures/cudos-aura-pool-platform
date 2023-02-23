@@ -7,7 +7,7 @@ import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import { ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
 import NftFilterEntity from './entities/nft-filter.entity';
-import { ResFetchNftsByFilter, ResUpdateNftCudosPrice } from './dto/responses.dto';
+import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResUpdateNftCudosPrice } from './dto/responses.dto';
 import NftEntity from './entities/nft.entity';
 import { CollectionService } from '../collection/collection.service';
 import BigNumber from 'bignumber.js';
@@ -211,5 +211,13 @@ export class NFTController {
         const nftEntity = await this.nftService.updateNftCudosPrice(req.id);
 
         return new ResUpdateNftCudosPrice(nftEntity);
+    }
+
+    @Get('fetchPresaleAmounts')
+    @HttpCode(200)
+    async fetchPresaleAmounts(): Promise<ResFetchPresaleAmounts> {
+        const { totalPresaleNftCount, presaleMintedNftCount } = await this.nftService.fetchPresaleAmounts();
+
+        return new ResFetchPresaleAmounts(totalPresaleNftCount, presaleMintedNftCount);
     }
 }

@@ -14,8 +14,10 @@ import CollectionDetailsEntity from '../../../collection/entities/CollectionDeta
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import NftEntity from '../../../nft/entities/NftEntity';
+import NftEntity, { NftGroup } from '../../../nft/entities/NftEntity';
 import axios from 'axios';
+import CudosCollectionData, { createNft, createRubyNft } from './CudoCollectionData';
+import CudoCollectionData from './CudoCollectionData';
 
 export default class CreditMiningFarmPageStore {
 
@@ -272,9 +274,8 @@ export default class CreditMiningFarmPageStore {
     // }
 
     async createPresaleCollection() {
-        const presaleCollectionName = 'Presale Collection 2';
         const presaleCollectionEntity = this.approvedCollectionEntities.find((collectionEntity) => {
-            return collectionEntity.name === presaleCollectionName;
+            return collectionEntity.name === CudosCollectionData.name;
         });
 
         if (presaleCollectionEntity !== undefined) {
@@ -300,71 +301,133 @@ export default class CreditMiningFarmPageStore {
 
             const collectionEntity = new CollectionEntity();
             collectionEntity.farmId = this.miningFarmEntity.id;
-            collectionEntity.name = presaleCollectionName;
-            collectionEntity.description = 'Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet. More';
+            collectionEntity.name = CudosCollectionData.name;
+            collectionEntity.description = CudosCollectionData.description;
             collectionEntity.profileImgUrl = collectionProfileImage01;
             collectionEntity.coverImgUrl = collectionCoverImage01;
-            collectionEntity.royalties = 3;
+            collectionEntity.royalties = CudosCollectionData.royalties;
 
             const nftEntities = [];
-            for (let i = 1; i <= 112; i++) {
-                const nftEntity = new NftEntity();
-                nftEntity.name = `Opal ${i}`;
-                nftEntity.hashPowerInTh = 5;
-                nftEntity.imageUrl = presaleImages[0];
-                nftEntity.expirationDateTimestamp = 1798754400000;
-                nftEntity.priceUsd = 150;
 
-                nftEntities.push(nftEntity);
+            // add OPAL tier for all sales
+            const opalNftData = CudosCollectionData.nfts.opal
+            for (let i = 1; i <= opalNftData.giveawayCount; i++) {
+                nftEntities.push(createNft(presaleImages[0], opalNftData, NftGroup.GIVEAWAY));
+            }
+            for (let i = 1; i <= opalNftData.privateSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[0], opalNftData, NftGroup.PRIVATE_SALE));
+            }
+            for (let i = 1; i <= opalNftData.presaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[0], opalNftData, NftGroup.PRESALE));
+            }
+            for (let i = 1; i <= opalNftData.publicSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[0], opalNftData, NftGroup.PUBLIC_SALE));
             }
 
-            for (let i = 1; i <= 440; i++) {
-                const nftEntity = new NftEntity();
-                nftEntity.name = `Ruby ${i}`;
-                nftEntity.hashPowerInTh = 10;
-                nftEntity.imageUrl = presaleImages[1];
-                nftEntity.expirationDateTimestamp = 1798754400000;
-                nftEntity.priceUsd = 300;
-
-                nftEntities.push(nftEntity);
+            // add RUBY tier for all sales
+            const rubyNftData = CudosCollectionData.nfts.ruby
+            for (let i = 1; i <= rubyNftData.giveawayCount; i++) {
+                nftEntities.push(createNft(presaleImages[1], rubyNftData, NftGroup.GIVEAWAY));
+            }
+            for (let i = 1; i <= rubyNftData.privateSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[1], rubyNftData, NftGroup.PRIVATE_SALE));
+            }
+            for (let i = 1; i <= rubyNftData.presaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[1], rubyNftData, NftGroup.PRESALE));
+            }
+            for (let i = 1; i <= rubyNftData.publicSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[1], rubyNftData, NftGroup.PUBLIC_SALE));
             }
 
-            for (let i = 1; i <= 29; i++) {
-                const nftEntity = new NftEntity();
-                nftEntity.name = `Emerald ${i}`;
-                nftEntity.hashPowerInTh = 33;
-                nftEntity.imageUrl = presaleImages[2];
-                nftEntity.expirationDateTimestamp = 1798754400000;
-                nftEntity.priceUsd = 1000;
-
-                nftEntities.push(nftEntity);
+            // add EMERALD tier for all sales
+            const emeraldNftData = CudosCollectionData.nfts.emerald
+            for (let i = 1; i <= emeraldNftData.giveawayCount; i++) {
+                nftEntities.push(createNft(presaleImages[2], emeraldNftData, NftGroup.GIVEAWAY));
+            }
+            for (let i = 1; i <= emeraldNftData.privateSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[2], emeraldNftData, NftGroup.PRIVATE_SALE));
+            }
+            for (let i = 1; i <= emeraldNftData.presaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[2], emeraldNftData, NftGroup.PRESALE));
+            }
+            for (let i = 1; i <= emeraldNftData.publicSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[2], emeraldNftData, NftGroup.PUBLIC_SALE));
             }
 
-            for (let i = 1; i <= 2; i++) {
-                const nftEntity = new NftEntity();
-                nftEntity.name = `Diamond ${i}`;
-                nftEntity.hashPowerInTh = 100;
-                nftEntity.imageUrl = presaleImages[3];
-                nftEntity.expirationDateTimestamp = 1798754400000;
-                nftEntity.priceUsd = 3000;
-
-                nftEntities.push(nftEntity);
+            // add EMERALD tier for all sales
+            const diamondNftData = CudosCollectionData.nfts.diamond
+            for (let i = 1; i <= diamondNftData.giveawayCount; i++) {
+                nftEntities.push(createNft(presaleImages[3], diamondNftData, NftGroup.GIVEAWAY));
+            }
+            for (let i = 1; i <= diamondNftData.privateSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[3], diamondNftData, NftGroup.PRIVATE_SALE));
+            }
+            for (let i = 1; i <= diamondNftData.presaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[3], diamondNftData, NftGroup.PRESALE));
+            }
+            for (let i = 1; i <= diamondNftData.publicSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[3], diamondNftData, NftGroup.PUBLIC_SALE));
             }
 
-            for (let i = 1; i <= 1; i++) {
-                const nftEntity = new NftEntity();
-                nftEntity.name = `Blue Diamond ${i}`;
-                nftEntity.hashPowerInTh = 170;
-                nftEntity.imageUrl = presaleImages[4];
-                nftEntity.expirationDateTimestamp = 1798754400000;
-                nftEntity.priceUsd = 5000;
-
-                nftEntities.push(nftEntity);
+            // add EMERALD tier for all sales
+            const blueDiamondNftData = CudosCollectionData.nfts.blueDiamond
+            for (let i = 1; i <= blueDiamondNftData.giveawayCount; i++) {
+                nftEntities.push(createNft(presaleImages[4], blueDiamondNftData, NftGroup.GIVEAWAY));
+            }
+            for (let i = 1; i <= blueDiamondNftData.privateSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[4], blueDiamondNftData, NftGroup.PRIVATE_SALE));
+            }
+            for (let i = 1; i <= blueDiamondNftData.presaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[4], blueDiamondNftData, NftGroup.PRESALE));
+            }
+            for (let i = 1; i <= blueDiamondNftData.publicSaleCount; i++) {
+                nftEntities.push(createNft(presaleImages[4], blueDiamondNftData, NftGroup.PUBLIC_SALE));
             }
 
             collectionEntity.hashPowerInTh = nftEntities.reduce((accu, nftEntity) => {
                 return accu + nftEntity.hashPowerInTh;
             }, 0);
+
+            // do some generated data checks
+            if (nftEntities.length !== CudoCollectionData.totalNfts) {
+                this.alertStore.show(`Total nfts count is not as expected. Total: ${nftEntities.length}, Expected: ${CudoCollectionData.totalNfts}`)
+                return;
+            }
+
+            if (collectionEntity.hashPowerInTh !== CudoCollectionData.expectedTotalHashPower) {
+                this.alertStore.show(`Total hash power is not as expected. Total: ${collectionEntity.hashPowerInTh}, Expected: ${CudoCollectionData.expectedTotalHashPower}`)
+                return;
+            }
+
+            const totalOpalCount = nftEntities.filter((entity) => entity.name.startsWith(opalNftData.name)).length
+            if (totalOpalCount !== opalNftData.totalCount) {
+                this.alertStore.show(`Total ${opalNftData.name} count is not as expected. Total: ${totalOpalCount}, Expected: ${opalNftData.totalCount}`)
+                return;
+            }
+
+            const totalRubyCount = nftEntities.filter((entity) => entity.name.startsWith(rubyNftData.name)).length
+            if (totalRubyCount !== rubyNftData.totalCount) {
+                this.alertStore.show(`Total ${rubyNftData.name} count is not as expected. Total: ${totalRubyCount}, Expected: ${rubyNftData.totalCount}`)
+                return;
+            }
+
+            const totalEmeraldCount = nftEntities.filter((entity) => entity.name.startsWith(emeraldNftData.name)).length
+            if (totalEmeraldCount !== emeraldNftData.totalCount) {
+                this.alertStore.show(`Total ${emeraldNftData.name} count is not as expected. Total: ${totalEmeraldCount}, Expected: ${emeraldNftData.totalCount}`)
+                return;
+            }
+
+            const totalDiamondCount = nftEntities.filter((entity) => entity.name.startsWith(diamondNftData.name)).length
+            if (totalDiamondCount !== diamondNftData.totalCount) {
+                this.alertStore.show(`Total ${diamondNftData.name} count is not as expected. Total: ${totalDiamondCount}, Expected: ${diamondNftData.totalCount}`)
+                return;
+            }
+
+            const totalBlueDiamondCount = nftEntities.filter((entity) => entity.name.startsWith(blueDiamondNftData.name)).length
+            if (totalBlueDiamondCount !== blueDiamondNftData.totalCount) {
+                this.alertStore.show(`Total ${blueDiamondNftData.name} count is not as expected. Total: ${totalBlueDiamondCount}, Expected: ${blueDiamondNftData.totalCount}`)
+                return;
+            }
 
             await this.collectionRepo.creditCollection(collectionEntity, nftEntities);
             this.alertStore.show('Minting was successfull');

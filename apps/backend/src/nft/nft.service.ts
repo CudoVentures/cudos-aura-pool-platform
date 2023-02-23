@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { NftRepo, NftRepoColumn } from './repos/nft.repo';
-import { NftOrderBy, NftStatus } from './nft.types';
+import { NftGroup, NftOrderBy, NftStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
@@ -67,6 +67,10 @@ export class NFTService {
 
         if (nftFilterEntity.hasNftStatus() === true) {
             whereClause.status = nftFilterEntity.nftStatus;
+        }
+
+        if (nftFilterEntity.hasNftGroup() === true) {
+            whereClause.group = nftFilterEntity.nftGroup;
         }
 
         if (nftFilterEntity.hasCollectionIds() === true) {
@@ -171,16 +175,19 @@ export class NFTService {
         });
     }
 
-    async findAllByCollectionAndPriceUsd(collecionId: number, priceUsd: number) {
-        const nftRepos = await this.nftRepo.findAll({
-            where: {
-                [NftRepoColumn.COLLECTION_ID]: collecionId,
-                [NftRepoColumn.PRICE_USD]: priceUsd,
-                [NftRepoColumn.TOKEN_ID]: '',
-                [NftRepoColumn.PRICE_VALID_UNTIL]: {
-                    [Op.lt]: Date.now(),
-                },
+    async findAllPremintByCollectionAndPriceUsd(collecionId?: number, priceUsd?: number) {
+        const whereClause = {
+            [NftRepoColumn.COLLECTION_ID]: collecionId,
+            [NftRepoColumn.PRICE_USD]: priceUsd,
+            [NftRepoColumn.TOKEN_ID]: '',
+            [NftRepoColumn.PRICE_VALID_UNTIL]: {
+                [Op.lt]: Date.now(),
             },
+            [NftRepoColumn.GROUP]: NftGroup.PRESALE,
+        },
+
+        const nftRepos = await this.nftRepo.findAll({
+            where: whereClause,
         });
 
         return nftRepos.map((nftRepo) => {
@@ -235,6 +242,20 @@ export class NFTService {
         return this.updateOne(id, nftEntity);
     }
 
+    async fetchPresaleAmounts(): Promise < {totalPresaleNftCount: number, presaleMintedNftCount: number} > {
+        const collectionId = this.configService.get<string>('APP_PRESALE_COLLECTION_ID');
+
+        const nftFilter = new NftFilterEntity();
+        nftFilter.collectionIds = [collectionId]
+        nftFilter.nftGroup = [NftGroup.PRESALE]
+
+        const { nftEntities } = await this.findByFilter(null, nftFilter);
+        const totalPresaleNftCount = nftEntities.length;
+        const presaleMintedNftCount = nftEntities.filter((nftEntity: NftEntity) => nftEntity.isMinted() === true).length;
+
+        return { totalPresaleNftCount, presaleMintedNftCount }
+    }
+
     async getRandomPresaleNft(paidAmountAcudos: BigNumber): Promise <NftEntity> {
 
         // check if paid price is within epsilon of expected
@@ -279,7 +300,7 @@ export class NFTService {
             const priceUsd = tierPriceMap.get(tierToQuery);
 
             // get nft in price by random
-            const nftTierEntities = await this.findAllByCollectionAndPriceUsd(collectionId, priceUsd);
+            const nftTierEntities = await this.findAllPremintByCollectionAndPriceUsd(collectionId, priceUsd);
 
             if (nftTierEntities.length > 0) {
                 const nftIndex = randomInt(0, nftTierEntities.length);

@@ -37,7 +37,8 @@ export default class MarketplacePageStore {
 
     presaleCollectionEntity: CollectionEntity;
     presaleCollectionDetailsEntity: CollectionDetailsEntity;
-    presaleNftEntities: NftEntity[];
+    presaleMintedNftCount: number;
+    totalPresaleNftCount: number;
     presaleNftsUniqueImageUrls: string[];
     presaleNftIndexSelected: number;
 
@@ -66,7 +67,8 @@ export default class MarketplacePageStore {
 
         this.presaleCollectionEntity = null;
         this.presaleCollectionDetailsEntity = null;
-        this.presaleNftEntities = [];
+        this.presaleMintedNftCount = 0;
+        this.totalPresaleNftCount = 0;
         this.presaleNftsUniqueImageUrls = ['/assets/presale-nft-images/level1.png', '/assets/presale-nft-images/level2.png', '/assets/presale-nft-images/level3.png', '/assets/presale-nft-images/level4.png', '/assets/presale-nft-images/level5.png'];
         this.presaleNftIndexSelected = 0;
 
@@ -126,12 +128,14 @@ export default class MarketplacePageStore {
 
         const nftFilter = new NftFilterModel();
         nftFilter.collectionIds = [collectionId];
-        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
+        const { totalPresaleNftCount, presaleMintedNftCount } = await this.nftRepo.fetchPresaleAmounts(nftFilter);
 
         await runInActionAsync(() => {
             this.presaleCollectionEntity = presaleCollection;
             this.presaleCollectionDetailsEntity = collectionDetails[0];
-            this.presaleNftEntities = nftEntities;
+
+            this.totalPresaleNftCount = totalPresaleNftCount;
+            this.presaleMintedNftCount = presaleMintedNftCount;
         })
     }
 
@@ -229,11 +233,11 @@ export default class MarketplacePageStore {
     }
 
     getPresaleTotalAmount(): number {
-        return this.presaleNftEntities.length;
+        return this.totalPresaleNftCount;
     }
 
     getPresaleMintedAmount(): number {
-        return this.presaleNftEntities.filter((entity) => entity.isMinted()).length;
+        return this.presaleMintedNftCount
     }
 
     getPresaleMintedPercent(): number {
