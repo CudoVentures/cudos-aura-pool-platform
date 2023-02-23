@@ -17,26 +17,27 @@ import { ConfigService } from '@nestjs/config';
 import { randomInt } from 'crypto';
 
 enum Tier {
-    TIER_1 = 1,
+    TIER_1 = 1, // cheapest
     TIER_2 = 2,
     TIER_3 = 3,
     TIER_4 = 4,
-    TIER_5 = 5
+    TIER_5 = 5 // most expensive
 }
 
 const tierBorderMap = new Map<Tier, number>([
-    [Tier.TIER_1, 0.9983],
-    [Tier.TIER_2, 0.9937],
-    [Tier.TIER_3, 0.9439],
-    [Tier.TIER_4, 0.1912],
+    [Tier.TIER_5, 9983],
+    [Tier.TIER_4, 9937],
+    [Tier.TIER_3, 9439],
+    [Tier.TIER_2, 1912],
+    [Tier.TIER_1, 0],
 ])
 
 const tierPriceMap = new Map<Tier, number>([
-    [Tier.TIER_1, 5000],
-    [Tier.TIER_2, 3000],
+    [Tier.TIER_1, 150],
+    [Tier.TIER_2, 300],
     [Tier.TIER_3, 1000],
-    [Tier.TIER_4, 300],
-    [Tier.TIER_5, 150],
+    [Tier.TIER_4, 3000],
+    [Tier.TIER_5, 5000],
 ])
 
 @Injectable()
@@ -251,17 +252,17 @@ export class NFTService {
 
         const collectionId = parseInt(this.configService.get<string>('APP_PRESALE_COLLECTION_ID'));
         // get a tier by random, if a tier is finished - add it to the closes lower tier
-        const randomNumber = randomInt(1, 1000001) * 0.000001;
+        const randomNumber = randomInt(1, 10001);
 
-        let tier = Tier.TIER_5;
-        if (randomNumber > tierBorderMap.get(Tier.TIER_1)) {
-            tier = Tier.TIER_1;
-        } else if (randomNumber > tierBorderMap.get(Tier.TIER_2)) {
-            tier = Tier.TIER_2;
-        } else if (randomNumber > tierBorderMap.get(Tier.TIER_3)) {
-            tier = Tier.TIER_3;
+        let tier = Tier.TIER_1;
+        if (randomNumber > tierBorderMap.get(Tier.TIER_5)) {
+            tier = Tier.TIER_5;
         } else if (randomNumber > tierBorderMap.get(Tier.TIER_4)) {
             tier = Tier.TIER_4;
+        } else if (randomNumber > tierBorderMap.get(Tier.TIER_3)) {
+            tier = Tier.TIER_3;
+        } else if (randomNumber > tierBorderMap.get(Tier.TIER_2)) {
+            tier = Tier.TIER_2;
         }
 
         const tierArray = [];

@@ -31,6 +31,7 @@
     "test-collection": "jest collection",
     "test-farm": "jest farm",
     "test-statistics": "jest statistics",
+    "test-nft": "jest nft",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
