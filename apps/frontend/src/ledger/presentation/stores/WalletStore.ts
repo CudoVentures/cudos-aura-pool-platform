@@ -101,7 +101,13 @@ export default class WalletStore {
             } catch (ex) {
                 console.error(ex);
             }
-            this.ledger = null;
+
+            await runInActionAsync(() => {
+                this.ledger = null;
+                this.balance = null;
+                this.address = S.Strings.EMPTY;
+                this.name = S.Strings.EMPTY;
+            });
         }
 
         sessionStorage.removeItem(SESSION_STORAGE_WALLET_KEY);
