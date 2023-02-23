@@ -8,7 +8,7 @@ import { CollectionService } from '../collection/collection.service';
 import ChainMarketplaceCollectionEntity from '../collection/entities/chain-marketplace-collection.entity';
 import CollectionFilterEntity from '../collection/entities/collection-filter.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
-import { DataServiceError } from '../common/errors/errors';
+import { CollectionDenomNotFoundError, CollectionNotFoundError, DataServiceError } from '../common/errors/errors';
 import { IntBoolValue, NOT_EXISTS_STRING } from '../common/utils';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
 import { FarmService } from '../farm/farm.service';
@@ -137,15 +137,27 @@ export class StatisticsService {
         const filteredNftEntities = nftEventEntities.filter((nftEventEntity) => nftEventEntity.hasPrice() === true);
 
         let denomIds = filteredNftEntities.map((nftEventEntity) => nftEventEntity.denomId);
-        denomIds = denomIds.filter((denomId, i) => denomIds.findIndex((value) => value === denomId) === i);
 
+        // filter only unique denomids
+        denomIds = denomIds.filter((denomId, i) => denomIds.findIndex((value) => value === denomId) === i);
         const marketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
+
+        // if lengths are not equal, it means collection not found. This should never occur
+        if (marketplaceCollectionEntities.length !== denomIds.length) {
+            throw new CollectionDenomNotFoundError();
+        }
+
         const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionEntity>();
         marketplaceCollectionEntities.forEach((marketplaceCollectionEntity) => {
             denomIdMarketplaceCollectionEntityMap.set(marketplaceCollectionEntity.denomId, marketplaceCollectionEntity);
         })
 
         const collectionEntities = await this.collectionService.findByDenomIds(denomIds);
+        // if lengths are not equal, it means collection not found. This should never occur
+        if (marketplaceCollectionEntities.length !== denomIds.length) {
+            throw new CollectionNotFoundError();
+        }
+
         const farmEntities = await this.farmService.findMiningFarmByIds(collectionEntities.map((collectionEntity) => collectionEntity.farmId));
         const farmIdFarmMap = new Map();
         farmEntities.forEach((farmEntity) => {

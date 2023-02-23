@@ -17,6 +17,8 @@ export enum ERROR_TYPES {
     FARM_CREATION_ERROR = '11',
 
     WRONG_SERVICE_PARAMETERS = '12',
+    GRAPHQL_COLLECTION_DENOM_NOT_FOUND_ERROR = '13',
+    COLLECTION_DENOM_NOT_FOUND_ERROR = '14',
 }
 
 export class WrongUserOrPasswordException extends BadRequestException {
@@ -64,6 +66,18 @@ export class CollectionCreationError extends BadRequestException {
 export class CollectionDenomExistsError extends BadRequestException {
     constructor() {
         super(ERROR_TYPES.COLLECTION_DENOM_EXISTS_ERROR);
+    }
+}
+
+export class CollectionDenomNotFoundError extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.GRAPHQL_COLLECTION_DENOM_NOT_FOUND_ERROR);
+    }
+}
+
+export class CollectionNotFoundError extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.COLLECTION_DENOM_NOT_FOUND_ERROR);
     }
 }
 

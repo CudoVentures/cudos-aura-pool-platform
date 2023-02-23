@@ -25,6 +25,7 @@ export default class NftEventEntity {
     transferPriceInAcudos: BigNumber;
 
     constructor() {
+        this.nftId = '';
         this.denomId = '';
         this.tokenId = '';
         this.fromAddress = '';
