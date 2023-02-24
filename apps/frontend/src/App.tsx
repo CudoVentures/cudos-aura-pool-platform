@@ -69,6 +69,7 @@ import KycStore from './kyc/presentation/stores/KycStore';
 import CheckForPresaleRefundsModalStore from './accounts/presentation/stores/CheckForPresaleRefundsModalStore';
 import PresaleStore from './app-routes/presentation/PresaleStore';
 import AllowlistApiRepo from './allowlist/data/repo/AllowlistApiRepo';
+import NftPresaleStore from './nft-presale/presentation/stores/NftPresaleStore';
 
 // @ts-ignore
 declare global {
@@ -110,7 +111,7 @@ const kycStore = new KycStore(kycRepo);
 const accountSessionStore = new AccountSessionStore(walletStore, kycStore, accountRepo, miningFarmRepo);
 const categoriesStore = new CategoriesStore(collectionRepo);
 const rewardsCalculatorStore = new RewardsCalculatorStore(bitcoinStore, generalStore, miningFarmRepo);
-const marketplacePageStore = new MarketplacePageStore(presaleStore, alertStore, walletStore, cudosStore, collectionRepo, nftRepo, miningFarmRepo, allowlistRepo);
+const marketplacePageStore = new MarketplacePageStore(alertStore, walletStore, collectionRepo, nftRepo, miningFarmRepo, allowlistRepo);
 const superAdminDashboardPageStore = new SuperAdminDashboardPageStore(bitcoinStore, cudosStore, accountSessionStore, alertStore, statisticsRepo, miningFarmRepo, collectionRepo);
 const exploreCollectionsPageStore = new ExploreCollectionsPageStore(collectionRepo, miningFarmRepo);
 const exploreMiningFarmsPageStore = new ExploreMiningFarmsPageStore(miningFarmRepo);
@@ -146,6 +147,7 @@ const megaWalletTransferModalStore = new MegaWalletTransferModalStore(accountSes
 const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore();
 const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSessionStore);
 const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(appStore, walletStore);
+const nftPresaleStore = new NftPresaleStore(nftRepo, collectionRepo, allowlistRepo, alertStore, cudosStore, presaleStore, walletStore);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -242,6 +244,7 @@ const App = () => {
                 rejectedCollectionsStore={rejectedCollectionsStore}
                 checkForPresaleRefundsModalStore={checkForPresaleRefundsModalStore}
                 presaleStore={presaleStore}
+                nftPresaleStore={nftPresaleStore}
             >
                 <BrowserRouter>
                     <AppRouter />

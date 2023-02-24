@@ -20,7 +20,7 @@ async function bootstrap() {
         type: VersioningType.URI,
         defaultVersion: '1',
     })
-    app.use(json({ limit: '128mb' }))
+    app.use(json({ limit: '256mb' }))
     app.use(cookieParser(appCookiesSecret));
     app.use(compression());
 

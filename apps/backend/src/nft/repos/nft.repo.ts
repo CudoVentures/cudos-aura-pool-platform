@@ -56,7 +56,7 @@ export class NftRepo extends Model {
     @Column({ type: DataType.TEXT })
         uri: string;
 
-    @Column({ type: DataType.ENUM(NftStatus.MINTED, NftStatus.QUEUED, NftStatus.REMOVED) })
+    @Column({ type: DataType.ENUM(NftGroup.GIVEAWAY, NftGroup.PRIVATE_SALE, NftGroup.PRESALE, NftGroup.PUBLIC_SALE) })
         group: NftGroup;
 
     @AllowNull(false)

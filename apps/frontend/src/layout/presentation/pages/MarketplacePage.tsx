@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,10 +34,12 @@ import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
+import NftPresaleStore from '../../../nft-presale/presentation/stores/NftPresaleStore';
 
 declare let Config;
 
 type Props = {
+    nftPresaleStore?: NftPresaleStore
     alertStore?: AlertStore
     accountSessionStore?: AccountSessionStore
     walletStore?: WalletStore
@@ -46,10 +48,10 @@ type Props = {
     kycStore?: KycStore,
 }
 
-function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore }: Props) {
+function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore }: Props) {
     const {
         presaleCollectionEntity,
-    } = marketplacePageStore;
+    } = nftPresaleStore;
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -64,7 +66,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
     }, []);
 
     useEffect(() => {
-        marketplacePageStore.fetchAllowlistUser();
+        nftPresaleStore.fetchAllowlistUser();
     }, [accountSessionStore.userEntity?.cudosWalletAddress]);
 
     const navigate = useNavigate();
@@ -120,7 +122,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
             return;
         }
 
-        const success = await marketplacePageStore.onClickBuyWithCudos();
+        const success = await nftPresaleStore.onClickBuyWithCudos();
         if (success === true) {
             showSuccessAlert();
         }
@@ -131,7 +133,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
             return;
         }
 
-        const success = await marketplacePageStore.onClickBuyWithEth();
+        const success = await nftPresaleStore.onClickBuyWithEth();
         if (success === true) {
             showSuccessAlert();
         }
@@ -149,12 +151,18 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
 
     useEffect(() => {
         async function run() {
-            await marketplacePageStore.init();
+            nftPresaleStore.presaleStore.update();
+
+            if (nftPresaleStore.isPresaleOver() === false) {
+                await nftPresaleStore.init();
+            } else {
+                await marketplacePageStore.init();
+            }
         }
         run();
     }, []);
 
-    const presaleTimesLeft = marketplacePageStore.getPresaleTimeLeft();
+    const presaleTimesLeft = nftPresaleStore.getPresaleTimeLeft();
 
     return (
         <PageLayout className = { 'PageMarketplace' } >
@@ -171,7 +179,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                             <label>Mine on real bitcoin</label>
                             <label>Simple process</label>
                         </div>
-                        {marketplacePageStore.isPresaleOver() === true
+                        {nftPresaleStore.isPresaleOver() === true
                             && (<Actions>
                                 <Button onClick = { onClickExploreMarketplace }>Explore Marketplace</Button>
                             </Actions>)}
@@ -184,7 +192,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                         <img className = { 'HeroImg01' } src={'/assets/img/marketplace-hero-01.png'} />
                     </div>
                 </div>
-                {marketplacePageStore.isPresaleOver() === true && (<>
+                {nftPresaleStore.isPresaleOver() === true && (<>
                     <div id = 'marketplace-heading' className={'MarketplaceHeading'}>
                         <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
                         <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
@@ -297,7 +305,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                         </Actions>
                     </div>
                 </>)}
-                {marketplacePageStore.isPresaleOver() === false && (
+                {nftPresaleStore.isPresaleOver() === false && (
                     <RowLayout className={ 'PresaleContainer' } numColumns={2} gap={100}>
                         <ColumnLayout className={ 'PresaleInfoColumn' } gap={24}>
                             <div className={ 'Primary60 B2 SemiBold' }>PRESALE COLLECTION</div>
@@ -324,20 +332,20 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                                 <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
                                                 <div className={ 'PriceWithIcon FlexRow' }>
                                                     <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM}/>
-                                                    <div className={'B2 SemiBold ColorNeutral100'}>{marketplacePageStore.getPresalePriceCudosFormatted()}</div>
+                                                    <div className={'B2 SemiBold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
                                                 </div>
                                                 <div className={ 'PriceWithIcon FlexRow' }>
                                                     <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM}/>
-                                                    <div className={'B2 SemiBold ColorNeutral100'}>{marketplacePageStore.getPresalePriceEthFormatted()}</div>
-                                                    <div className={'B3 SemiBold ColorNeutral040'}>({marketplacePageStore.getPresalePriceUsdFormatted()})</div>
+                                                    <div className={'B2 SemiBold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
+                                                    <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
                                                 </div>
                                             </div>
-                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{marketplacePageStore.totalWhitelistedUsersCount}</span></div>
+                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{nftPresaleStore.totalWhitelistedUsersCount}</span></div>
                                         </div>
-                                        <Progressbar fillPercent={marketplacePageStore.getPresaleMintedPercent()} />
+                                        <Progressbar fillPercent={nftPresaleStore.getPresaleMintedPercent()} />
                                         <div className={ 'AmountMintedRow FlexRow' }>
                                             <div className={'B3 ColorNeutral60'}>Minted so far</div>
-                                            <div className={'B3 ColorNeutral60'}>{marketplacePageStore.getPresaleMintedPercent().toFixed(2)}% ({marketplacePageStore.getPresaleMintedAmount()}/{marketplacePageStore.getPresaleTotalAmount()})</div>
+                                            <div className={'B3 ColorNeutral60'}>{nftPresaleStore.getPresaleMintedPercent().toFixed(2)}% ({nftPresaleStore.getPresaleMintedAmount()}/{nftPresaleStore.getPresaleTotalAmount()})</div>
                                         </div>
                                     </ColumnLayout>
                                 </StyledContainer>
@@ -360,7 +368,7 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                 </StyledContainer>
                             </ColumnLayout>
 
-                            {marketplacePageStore.isUserEligibleToBuy() === true && (
+                            {nftPresaleStore.isUserEligibleToBuy() === true && nftPresaleStore.getPresaleMintedPercent() !== 100 && (
                                 <>
                                     {walletStore.isConnected() === false ? (
                                         <div className = { 'FlexSingleCenter ColorError060 Bold' } >
@@ -368,8 +376,8 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
                                         </div>
                                     ) : (
                                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {marketplacePageStore.getPresalePriceCudosFormatted()} CUDOS</Button>
-                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {marketplacePageStore.getPresalePriceEthFormatted()} ETH</Button>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
                                         </Actions>
                                     ) }
                                 </>
@@ -378,9 +386,9 @@ function MarkedplacePage({ alertStore, accountSessionStore, marketplacePageStore
 
                         <PictureGallery
                             className={'PresaleNftPictureGallery'}
-                            picture={marketplacePageStore.getPresaleNftPicture()}
-                            onClickNext={marketplacePageStore.onClickNextPresaleNftPicture}
-                            onClickPrevious={marketplacePageStore.onClickPreviousPresaleNftPicture}
+                            picture={nftPresaleStore.getPresaleNftPicture()}
+                            onClickNext={nftPresaleStore.onClickNextPresaleNftPicture}
+                            onClickPrevious={nftPresaleStore.onClickPreviousPresaleNftPicture}
                         />
                     </RowLayout>
                 )}

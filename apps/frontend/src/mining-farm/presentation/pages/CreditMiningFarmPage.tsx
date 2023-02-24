@@ -43,16 +43,18 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-credit-mining-farm.css';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
+import NftPresaleStore from '../../../nft-presale/presentation/stores/NftPresaleStore';
 
 type Props = {
     creditMiningFarmPageStore?: CreditMiningFarmPageStore,
+    nftPresaleStore?: NftPresaleStore,
     accountSessionStore?: AccountSessionStore
     editMiningFarmModalStore?: EditMiningFarmModalStore
     visitorStore?: VisitorStore
     alertStore?: AlertStore,
 }
 
-function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore, visitorStore, alertStore }: Props) {
+function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore, visitorStore, alertStore }: Props) {
     const { farmId } = useParams();
     const navigate = useNavigate();
 
@@ -105,7 +107,7 @@ function CreditMiningFarmPage({ creditMiningFarmPageStore, accountSessionStore, 
 
     function onClickMintPresaleNfts() {
         alertStore.show('You are about to mint ALL presale NFTs.', () => {
-            creditMiningFarmPageStore.createPresaleCollection();
+            nftPresaleStore.createPresaleCollection(creditMiningFarmPageStore.miningFarmEntity.id, creditMiningFarmPageStore.approvedCollectionEntities);
         }, () => {});
     }
 

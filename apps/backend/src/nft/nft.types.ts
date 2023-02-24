@@ -12,7 +12,7 @@ export enum NftGroup {
     GIVEAWAY = 'giveaway',
     PRIVATE_SALE = 'private_sale',
     PRESALE = 'presale',
-    PUBLIC_SALE = 'public_sale',
+    PUBLIC_SALE = '',
 }
 
 export type MarketplaceNftFilters = {

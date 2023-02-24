@@ -249,7 +249,7 @@ export class CollectionService {
         tx: Transaction = undefined,
     ): Promise<CollectionEntity> {
         const [count, [collectionRepo]] = await this.collectionRepo.update(
-            { ...CollectionEntity.toRepo(collectionEntity).toJSON() },
+            CollectionEntity.toRepo(collectionEntity).toJSON(),
             {
                 where: { denom_id: denomId },
                 returning: true,
