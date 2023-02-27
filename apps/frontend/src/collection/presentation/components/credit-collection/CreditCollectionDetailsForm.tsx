@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
-import BigNumber from 'bignumber.js';
 
 import S from '../../../../core/utilities/Main';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';

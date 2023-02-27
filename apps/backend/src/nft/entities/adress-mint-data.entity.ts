@@ -23,7 +23,7 @@ export default class AddressMintDataEntity {
                 group: nftMintJson.group,
                 count: nftMintJson.count,
             }
-        })
+        }) ?? [];
 
         return entity;
     }
