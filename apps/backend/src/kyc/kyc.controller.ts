@@ -67,7 +67,7 @@ export class KycController {
     ): Promise < ResCreateWorkflowRun > {
         let purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(req.sessionUserEntity);
         let kycEntity = await this.kycService.fetchKycByAccount(req.sessionAccountEntity, req.transaction);
-        if (purchasesInUsdSoFar <= WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD && reqCreateWorkflowRun.runFullWorkflow === IntBoolValue.TRUE) {
+        if (purchasesInUsdSoFar < WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD && reqCreateWorkflowRun.runFullWorkflow === IntBoolValue.TRUE) {
             purchasesInUsdSoFar = WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD + 1;
         }
 
