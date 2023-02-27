@@ -32,6 +32,7 @@ export class NftJsonValidator {
         uri: string;
 
     @IsString()
+    @IsEnum(NftGroup)
         group: NftGroup;
 
     @IsString()
