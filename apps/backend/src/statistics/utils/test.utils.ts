@@ -20,7 +20,6 @@ import UserEntity from '../../account/entities/user.entity';
 import NftEventEntity, { NftTransferHistoryEventType } from '../entities/nft-event.entity';
 import NftEventFilterEntity from '../entities/nft-event-filter.entity';
 import { IntBoolValue, NOT_EXISTS_STRING } from '../../common/utils';
-import { NftEventType } from '../../../../frontend/src/analytics/entities/NftEventEntity';
 import MegaWalletEventFilterEntity from '../entities/mega-wallet-event-filter.entity';
 
 export function createBasicQueuedNft(id: string, name: string, hashingPower: number, acudosPrice: string, tokenId: string, collectionId: number, creatorId: number, currentOwner: string, marketplaceNftId: string): NftEntity {
@@ -369,7 +368,7 @@ for (let i = 1; i <= 5; i++) {
     nftTestEntity.id = uuid;
     nftTestEntity.name = `nft${i}`;
     nftTestEntity.uri = 'someuri';
-    nftTestEntity.data = 'somestring';
+    // nftTestEntity.data = 'somestring';
     nftTestEntity.hashingPower = i;
     nftTestEntity.acudosPrice = new BigNumber(`${i}00`);
     nftTestEntity.expirationDateTimestamp = new Date(2024, 10, 9).getTime();

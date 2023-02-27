@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 // import * as Onfido from 'onfido-sdk-ui';
 import { init as OnfidoInit } from 'onfido-sdk-ui/dist/onfido.min';
 import { runInAction } from 'mobx';
+import { Region } from '@onfido/api';
 
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 import KycStore from '../stores/KycStore';
@@ -80,7 +81,7 @@ function KycPage({ kycStore, alertStore }: Props) {
         const workflowRunId = await kycStore.createWorkflowRun(runFullWorkflow);
         const onfidoInstance = OnfidoInit({
             token,
-            region: 'US',
+            region: Region.EU,
             // steps: ['welcome', 'document', 'data', 'complete'],
             useWorkflow: true,
             workflowRunId,

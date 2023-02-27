@@ -184,7 +184,7 @@ export class NFTService {
                 [Op.lt]: Date.now(),
             },
             [NftRepoColumn.GROUP]: NftGroup.PRESALE,
-        },
+        };
 
         const nftRepos = await this.nftRepo.findAll({
             where: whereClause,

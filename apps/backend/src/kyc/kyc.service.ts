@@ -28,7 +28,7 @@ export class KycService {
     ) {
         this.onfido = new Onfido({
             apiToken: this.configService.get < string >('APP_ONFIDO_API_TOKEN'),
-            region: Region.US,
+            region: Region.EU,
         });
     }
 
@@ -54,8 +54,12 @@ export class KycService {
 
         const workflowRunsMap = new Map < string, WorkflowRun >();
         for (let i = runningWorkflowRunIds.length; i-- > 0;) {
-            const workflowRun = await this.onfido.workflowRun.find(runningWorkflowRunIds[i]);
-            workflowRunsMap.set(workflowRun.id, workflowRun);
+            try {
+                const workflowRun = await this.onfido.workflowRun.find(runningWorkflowRunIds[i]);
+                workflowRunsMap.set(workflowRun.id, workflowRun);
+            } catch (ex) {
+                console.error('There is error fetch workflowRunId so just skip it as it has been submitted');
+            }
         }
 
         kycEntity.workflowRunIds.forEach((workflowRunId, i) => {
@@ -153,7 +157,7 @@ export class KycService {
         const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
         const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(userEntity);
         const nftPriceInUsd = Number(nftEntity.getPriceInCudos().multipliedBy(cudosUsdPrice).toFixed(2));
-        if (purchasesInUsdSoFar + nftPriceInUsd <= WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD) {
+        if (purchasesInUsdSoFar + nftPriceInUsd < WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD) {
             return kycEntity.isLightVerified();
         }
 

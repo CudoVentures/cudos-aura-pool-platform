@@ -99,7 +99,7 @@ export class WorkflowRunParamsV1Entity implements WorkflowRunParamsVxEntity {
     }
 
     areLightParams() {
-        return this.balance <= WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD;
+        return this.balance < WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD;
     }
 
     areFullParams() {
