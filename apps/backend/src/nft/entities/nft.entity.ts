@@ -1,14 +1,14 @@
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { NOT_EXISTS_INT } from '../../common/utils';
-import { NftJsonValidator, NftStatus } from '../nft.types';
+import { NftGroup, NftJsonValidator, NftStatus } from '../nft.types';
 import { NftRepo } from '../repos/nft.repo';
 
 export default class NftEntity {
     id: string;
     name: string;
     uri: string;
-    data: string;
+    group: NftGroup;
     tokenId: string;
     hashingPower: number;
     acudosPrice: BigNumber;
@@ -28,7 +28,7 @@ export default class NftEntity {
         this.id = '';
         this.name = '';
         this.uri = '';
-        this.data = '';
+        this.group = NftGroup.PUBLIC_SALE;
         this.tokenId = '';
         this.hashingPower = NOT_EXISTS_INT;
         this.acudosPrice = new BigNumber(NOT_EXISTS_INT);
@@ -93,7 +93,7 @@ export default class NftEntity {
         entity.id = json.id ?? json.id;
         entity.name = json.name ?? entity.name;
         entity.uri = json.uri ?? entity.uri;
-        entity.data = json.data ?? entity.data;
+        entity.group = json.group ?? entity.group;
         entity.tokenId = json.tokenId ?? entity.tokenId;
         entity.hashingPower = json.hashingPower ?? entity.hashingPower;
         entity.acudosPrice = new BigNumber(json.priceInAcudos ?? entity.acudosPrice);
@@ -117,7 +117,7 @@ export default class NftEntity {
             'id': entity.id,
             'name': entity.name,
             'uri': entity.uri,
-            'data': entity.data,
+            'group': entity.group,
             'tokenId': entity.tokenId,
             'hashingPower': entity.hashingPower,
             'priceInAcudos': entity.acudosPrice.toString(10),
@@ -147,7 +147,7 @@ export default class NftEntity {
         entity.name = repoJson.name ?? entity.name;
         entity.uri = repoJson.uri ?? entity.uri;
         entity.tokenId = repoJson.tokenId ?? entity.tokenId;
-        entity.data = repoJson.data ?? entity.data;
+        entity.group = repoJson.group ?? entity.group;
         entity.hashingPower = Number(repoJson.hashingPower ?? entity.hashingPower);
         entity.acudosPrice = new BigNumber(repoJson.price ?? entity.acudosPrice);
         entity.expirationDateTimestamp = repoJson.expirationDate?.getTime() ?? entity.expirationDateTimestamp;
@@ -178,7 +178,7 @@ export default class NftEntity {
 
         repoJson.name = entity.name;
         repoJson.uri = entity.uri;
-        repoJson.data = entity.data;
+        repoJson.group = entity.group;
         repoJson.tokenId = entity.tokenId;
         repoJson.hashingPower = entity.hashingPower.toString();
         repoJson.price = entity.acudosPrice.toString(10);

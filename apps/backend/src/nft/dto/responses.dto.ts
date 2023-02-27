@@ -18,3 +18,13 @@ export class ResUpdateNftCudosPrice {
         this.nftEntity = NftEntity.toJson(nftEntity);
     }
 }
+
+export class ResFetchPresaleAmounts {
+    totalPresaleNftCount: number;
+    presaleMintedNftCount: number;
+
+    constructor(totalPresaleNftCount: number, presaleMintedNftCount: number) {
+        this.totalPresaleNftCount = totalPresaleNftCount;
+        this.presaleMintedNftCount = presaleMintedNftCount;
+    }
+}

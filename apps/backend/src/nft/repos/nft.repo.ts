@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 import AccountRepo from '../../account/repos/account.repo';
 import { CollectionRepo } from '../../collection/repos/collection.repo';
-import { NftStatus } from '../nft.types';
+import { NftGroup, NftStatus } from '../nft.types';
 
 const NFTS_TABLE_NAME = 'nfts'
 
@@ -19,7 +19,7 @@ export const enum NftRepoColumn {
     ID = 'id',
     NAME = 'name',
     URI = 'uri',
-    DATA = 'data',
+    GROUP = 'group',
     HASHING_POWER = 'hashing_power',
     price = 'price',
     EXPIRATION_DATE = 'expiration_date',
@@ -56,8 +56,8 @@ export class NftRepo extends Model {
     @Column({ type: DataType.TEXT })
         uri: string;
 
-    @Column({ type: DataType.STRING })
-        data: string;
+    @Column({ type: DataType.ENUM(NftGroup.GIVEAWAY, NftGroup.PRIVATE_SALE, NftGroup.PRESALE, NftGroup.PUBLIC_SALE) })
+        group: NftGroup;
 
     @AllowNull(false)
     @Column({ type: DataType.DECIMAL })

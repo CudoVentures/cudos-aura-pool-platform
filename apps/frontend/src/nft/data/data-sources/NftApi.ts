@@ -2,7 +2,7 @@ import axios from '../../../core/utilities/AxiosWrapper';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import { ReqFetchNftsByFilter, ReqUpdateNftCudosPrice } from '../dto/Requests';
-import { ResFetchNftsByFilter, ResUpdateNftCudosPrice } from '../dto/Responses';
+import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResUpdateNftCudosPrice } from '../dto/Responses';
 
 export default class NftApi {
 
@@ -28,5 +28,13 @@ export default class NftApi {
         const res = new ResUpdateNftCudosPrice(data);
 
         return res.nftEntity;
+    }
+
+    async fetchPresaleAmounts(): Promise < { totalPresaleNftCount: number, presaleMintedNftCount } > {
+        const { data } = await axios.get(`${NftApi.nftModuleUrl}/fetchPresaleAmounts`);
+
+        const res = new ResFetchPresaleAmounts(data);
+
+        return { totalPresaleNftCount: res.totalPresaleNftCount, presaleMintedNftCount: res.presaleMintedNftCount };
     }
 }

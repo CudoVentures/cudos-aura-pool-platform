@@ -11,6 +11,13 @@ export enum NftStatus {
     REMOVED = 'removed',
 }
 
+export enum NftGroup {
+    GIVEAWAY = 'giveaway',
+    PRIVATE_SALE = 'private_sale',
+    PRESALE = 'presale',
+    PUBLIC_SALE = '',
+}
+
 export default class NftEntity {
 
     id: string;
@@ -25,7 +32,7 @@ export default class NftEntity {
     status: NftStatus;
     expirationDateTimestamp: number;
     currentOwner: string;
-    data: string;
+    group: NftGroup;
     priceUsd: number;
     priceAcudosValidUntil: number;
     updatedAt: number;
@@ -44,8 +51,8 @@ export default class NftEntity {
         this.imageUrl = '';
         this.status = NftStatus.QUEUED;
         this.expirationDateTimestamp = S.NOT_EXISTS;
-        this.currentOwner = ''
-        this.data = ''
+        this.currentOwner = '';
+        this.group = NftGroup.PUBLIC_SALE;
         this.priceUsd = S.NOT_EXISTS;
         this.priceAcudosValidUntil = S.NOT_EXISTS;
         this.updatedAt = S.NOT_EXISTS;
@@ -160,7 +167,7 @@ export default class NftEntity {
             'status': entity.status,
             'expirationDateTimestamp': entity.expirationDateTimestamp,
             'currentOwner': entity.currentOwner,
-            'data': entity.data,
+            'group': entity.group,
             'priceUsd': entity.priceUsd,
             'priceAcudosValidUntil': entity.priceAcudosValidUntil,
             'updatedAt': entity.updatedAt,
@@ -188,7 +195,7 @@ export default class NftEntity {
         model.expirationDateTimestamp = json.expirationDateTimestamp ?? model.expirationDateTimestamp;
         model.creatorId = json.creatorId ?? model.creatorId;
         model.currentOwner = json.currentOwner ?? model.currentOwner;
-        model.data = json.data ?? model.data;
+        model.group = json.group ?? model.group;
         model.priceUsd = json.priceUsd ?? model.priceUsd;
         model.priceAcudosValidUntil = json.priceAcudosValidUntil ?? model.priceAcudosValidUntil;
         model.updatedAt = new Date(json.updatedAt ?? model.updatedAt).getTime();

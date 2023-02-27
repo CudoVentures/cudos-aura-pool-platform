@@ -121,7 +121,7 @@ describe('NFTService', () => {
 
         const countE = 0.025;
 
-        jest.spyOn(service, 'findAllByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
+        jest.spyOn(service, 'findAllPremintByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
             const nftEntity = new NftEntity();
             nftEntity.priceUsd = price;
             return [nftEntity];
@@ -152,7 +152,7 @@ describe('NFTService', () => {
         const expectedCounts = propabilities.map((probality) => totalFetches * probality);
         const countE = 0.025;
 
-        jest.spyOn(service, 'findAllByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
+        jest.spyOn(service, 'findAllPremintByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
             if (price === 300) {
                 return [];
             }
@@ -187,7 +187,7 @@ describe('NFTService', () => {
         const expectedCounts = propabilities.map((probality) => totalFetches * probality);
         const countE = 0.025;
 
-        jest.spyOn(service, 'findAllByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
+        jest.spyOn(service, 'findAllPremintByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
             if (price === 150 || price === 300) {
                 return [];
             }
