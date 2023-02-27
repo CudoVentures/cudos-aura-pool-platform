@@ -51,7 +51,7 @@ export default class KycStore {
         }
 
         if (this.kycEntity.isLightStatusCompletedSuccess() === true) {
-            return nftPriceInUsd + this.purchasesInUsdSoFar <= LIGHT_PARAMS_LIMIT_IN_USD;
+            return nftPriceInUsd + this.purchasesInUsdSoFar < LIGHT_PARAMS_LIMIT_IN_USD;
         }
 
         return false;
