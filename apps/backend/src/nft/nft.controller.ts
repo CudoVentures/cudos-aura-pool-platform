@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -191,7 +191,7 @@ export class NFTController {
             const nftEntity = nftEntities[i];
             const chainMarketplaceNftEntity = chainMarketplaceNftEntities.find((dto) => dto.uid === nftEntity.id);
 
-            nftEntity.data = chainMarketplaceNftEntity.data;
+            // nftEntity.data = chainMarketplaceNftEntity.data;
             nftEntity.name = chainMarketplaceNftEntity.name;
             nftEntity.currentOwner = chainMarketplaceNftEntity.owner;
             nftEntity.uri = chainMarketplaceNftEntity.uri;
