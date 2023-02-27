@@ -94,7 +94,6 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                     <MintPrivateSaleNftsModal />
                 </>
             ) } >
-        >
             <PageHeader />
 
             { collectionEntity === null || miningFarmEntity === null || nftEntities === null ? (
@@ -148,7 +147,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 ),
                             ]} >
                                 {accountSessionStore.isSuperAdmin() && (
-                                    <Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} >
+                                    <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} >
                                         {collectionEntity.isStatusApproved() && (
 
                                             <Button

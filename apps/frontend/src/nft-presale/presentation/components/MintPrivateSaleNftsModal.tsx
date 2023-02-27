@@ -1,9 +1,12 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import JSONPretty from 'react-json-pretty';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
+import DataPreviewLayout, { createDataPreview } from '../../../core/presentation/components/DataPreviewLayout';
+import { ContainerPadding } from '../../../core/presentation/components/StyledContainer';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
-import Button from '../../../core/presentation/components/Button';
+import Button, { ButtonColor } from '../../../core/presentation/components/Button';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import AnimationContainer from '../../../core/presentation/components/AnimationContainer';
 
@@ -29,7 +32,6 @@ type Props = {
 function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, walletStore }: Props) {
 
     function onClickSubmitForSell() {
-
         mintPrivateSaleNftsModalStore.onClickSubmitForSell();
     }
 
@@ -41,8 +43,33 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
             <AnimationContainer className = { 'Stage Upload FlexColumn' } active = { mintPrivateSaleNftsModalStore.isStageUploadFile() } >
                 { mintPrivateSaleNftsModalStore.isStageUploadFile() === true && (
                     <>
+                        <div className = { 'H3 Bold' }>Upload a json file with the following structure:</div>
+                        <JSONPretty mainStyle = { 'color: var(--color-neutral-060)'} data={{
+                            'addressMints': [
+                                {
+                                    'cudosAddress': 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0',
+                                    'firstName': 'Name',
+                                    'lastName': 'Name',
+                                    'applicantId': '314-14-31-421-3',
+                                    'workflowRunId': '314-14-31-421-3',
+                                    'nftMints': [
+                                        { 'tier': 2, 'count': 5 },
+                                    ],
+                                },
+                                {
+                                    'cudosAddress': 'cudos1wpzqe0jkyz3xc7dywtqnu2rd4gdys6a6npx2pk',
+                                    'firstName': 'Name',
+                                    'lastName': 'Name',
+                                    'applicantId': '314-14-31-421-3',
+                                    'workflowRunId': '314-14-31-421-3',
+                                    'nftMints': [
+                                        { 'tier': 1, 'count': 52 },
+                                    ],
+                                },
+                            ],
+                        }} />
                         <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT} height={ActionsHeight.HEIGHT_48}>
-                            <Button>
+                            <Button color = { ButtonColor.SCHEME_2 }>
                                 <Svg svg={FileUploadIcon} />
                                 Upload file
                                 <UploaderComponent
@@ -53,7 +80,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                         'onExceedLimit': () => {
                                             alertStore.show('Max file size is 70MB!');
                                         },
-                                        'multi': true,
+                                        'multi': false,
                                         onReadFileAsBase64: action((base64File, responseData, files: any[], i: number) => {
                                             try {
                                                 const preface = 'data:application/json;base64,';
@@ -61,6 +88,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                                 const json = JSON.parse(atob(file));
                                                 mintPrivateSaleNftsModalStore.parseMintDataEntity(json);
                                             } catch (e) {
+                                                console.error(e);
                                                 alertStore.show('Invalid JSON file.');
                                             }
                                         }),
@@ -75,33 +103,26 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                 { mintPrivateSaleNftsModalStore.isStagePreview() === true && (
                     <>
                         {mintPrivateSaleNftsModalStore.addressMintDataEntities.map((adressMintDataEntity: AddressMintDataEntity, i: number) => (
-                            <div key={i} className={'FlexColumn'}>
-                                <div className={'FlexRow AddressLine'}>
-                                    <div className={'AddressField'}>{adressMintDataEntity.cudosAddress}</div>
-                                    <div className={'FlexColumn MintsData'}>
-                                        {adressMintDataEntity.nftMints.map((nftMintEntitty, j) => (
-                                            <div key={`${j}_tier`}>
-                                                <div className={'FlexRow NftMintField'}>
-                                                    <div className={'NftTier'}>Tier: {nftMintEntitty.tier}</div>
-                                                    <div className={'NftCount'}>Count: {nftMintEntitty.count}</div>
-                                                </div>
-                                                <div className={'HorizontalSeparator'}/>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className={'HorizontalSeparator'}/>
+                            <div key = { i } className={'FlexRow AddressLine'}>
+                                <div className={'AddressField'}>{adressMintDataEntity.cudosAddress}</div>
+                                <DataPreviewLayout
+                                    styledContainerProps = { {
+                                        containerPadding: ContainerPadding.PADDING_16,
+                                    } }
+                                    dataPreviews = {
+                                        adressMintDataEntity.nftMints.map((nftMintEntitty, j) => {
+                                            return createDataPreview(`Tier: ${nftMintEntitty.tier}`, `Count: ${nftMintEntitty.count}`);
+                                        })
+                                    } />
                             </div>
                         ))}
-                        {(walletStore.isConnected() === false || walletStore.address !== CHAIN_DETAILS.MINTING_SERVICE_ADDRESS) && (
-                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                <Button disabled={true}>Connect collection owner wallet</Button>
-                            </Actions>
-                        )}
-                        {walletStore.isConnected() === true && walletStore.address === CHAIN_DETAILS.MINTING_SERVICE_ADDRESS && (
+
+                        {walletStore.isConnected() === true && walletStore.address === CHAIN_DETAILS.MINTING_SERVICE_ADDRESS ? (
                             <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                                 <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
                             </Actions>
+                        ) : (
+                            <div className = { 'Bold ColorError060' }>Connect collection owner wallet</div>
                         )}
                     </>
                 ) }
@@ -121,16 +142,12 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                         <Svg className={'BigSvg'} svg={CheckCircleIcon} size={SvgSize.CUSTOM}/>
                         <div className={'H2 Bold'}>Success!</div>
                         <div className={'H3 Info'}>Transaction was successfully executed.</div>
-                        <div className={'FlexRow TransactionView H3'}>
-                            <a className={'Clickable'} href={mintPrivateSaleNftsModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
-                            Transaction details
-                                <Svg svg={LaunchIcon} />
-                            </a>
-                        </div>
+                        <a className={'FlexRow TransactionView H3'} href={mintPrivateSaleNftsModalStore.getTxLink()} target={'_blank'} rel={'noreferrer'}>
+                            Transaction details <Svg svg={LaunchIcon} />
+                        </a>
                         <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                            <Button
-                                onClick={mintPrivateSaleNftsModalStore.hide}>
-                            Close Now
+                            <Button onClick={mintPrivateSaleNftsModalStore.hide}>
+                                Close Now
                             </Button>
                         </Actions>
                     </>
@@ -144,7 +161,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                         <div className={'H2 Bold'}>Error</div>
                         <div className={'H3 Info'}>Transaction was not successful.</div>
                         <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                            <Button onClick={mintPrivateSaleNftsModalStore.hide}>
+                            <Button onClick={mintPrivateSaleNftsModalStore.hide} color = { ButtonColor.SCHEME_4 }>
                                 Close
                             </Button>
                             <Button onClick={mintPrivateSaleNftsModalStore.onClickSubmitForSell}>
