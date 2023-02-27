@@ -12,9 +12,12 @@ import UserEntity from '../account/entities/user.entity';
 import AppRepo from '../common/repo/app.repo';
 import CoinGeckoService from '../coin-gecko/coin-gecko.service';
 import BigNumber from 'bignumber.js';
-import { CURRENCY_DECIMALS } from 'cudosjs';
+import { CURRENCY_DECIMALS, DirectSecp256k1Wallet, SigningStargateClient } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
 import { randomInt } from 'crypto';
+import AddressMintDataEntity from './entities/adress-mint-data.entity';
+import { MsgMintNFT } from 'cudosjs/build/stargate/modules/nft/proto-types/tx';
+import { CudosDirectSecp256k1HdWallet } from 'cudosjs/build/proto-signing/cudosdirectsecp256k1HdWallet';
 
 enum Tier {
     TIER_1 = 1, // cheapest

@@ -70,6 +70,7 @@ import CheckForPresaleRefundsModalStore from './accounts/presentation/stores/Che
 import PresaleStore from './app-routes/presentation/PresaleStore';
 import AllowlistApiRepo from './allowlist/data/repo/AllowlistApiRepo';
 import NftPresaleStore from './nft-presale/presentation/stores/NftPresaleStore';
+import MintPrivateSaleNftModalStore from './nft-presale/presentation/stores/MintPrivateSaleNftModalStore';
 
 // @ts-ignore
 declare global {
@@ -148,6 +149,7 @@ const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore();
 const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSessionStore);
 const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(appStore, walletStore);
 const nftPresaleStore = new NftPresaleStore(nftRepo, collectionRepo, allowlistRepo, alertStore, cudosStore, presaleStore, walletStore);
+const mintPrivateSaleNftsModalStore = new MintPrivateSaleNftModalStore(nftRepo, alertStore, walletStore);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -245,6 +247,7 @@ const App = () => {
                 checkForPresaleRefundsModalStore={checkForPresaleRefundsModalStore}
                 presaleStore={presaleStore}
                 nftPresaleStore={nftPresaleStore}
+                mintPrivateSaleNftsModalStore={mintPrivateSaleNftsModalStore}
             >
                 <BrowserRouter>
                     <AppRouter />

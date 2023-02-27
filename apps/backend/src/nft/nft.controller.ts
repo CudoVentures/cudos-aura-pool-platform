@@ -5,9 +5,9 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { NftStatus } from './nft.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
+import { ReqMintPresaleNfts, ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
 import NftFilterEntity from './entities/nft-filter.entity';
-import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResUpdateNftCudosPrice } from './dto/responses.dto';
+import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResMintPresaleNfts, ResUpdateNftCudosPrice } from './dto/responses.dto';
 import NftEntity from './entities/nft.entity';
 import { CollectionService } from '../collection/collection.service';
 import BigNumber from 'bignumber.js';
@@ -18,6 +18,10 @@ import { ConfigService } from '@nestjs/config';
 import AccountService from '../account/account.service';
 import AllowlistService from '../allowlist/allowlist.service';
 import { KycService } from '../kyc/kyc.service';
+import AddressMintDataEntity from './entities/adress-mint-data.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { AccountType } from '../account/account.types';
+import RoleGuard from '../auth/guards/role.guard';
 
 @ApiTags('NFT')
 @Controller('nft')

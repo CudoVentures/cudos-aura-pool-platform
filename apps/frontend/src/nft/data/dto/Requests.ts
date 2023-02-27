@@ -1,3 +1,5 @@
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
+import MintDataEntity from '../../../nft-presale/entities/MintDataEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 
 export class ReqFetchNftsByFilter {

@@ -1,6 +1,6 @@
-import { CHAIN_DETAILS, ETH_CONSTS } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, ETH_CONSTS, PRESALE_CONSTS } from '../../../core/utilities/Constants';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
-import NftEntity from '../../entities/NftEntity';
+import NftEntity, { NftGroup, NftStatus, NftTier, tierPriceMap } from '../../entities/NftEntity';
 import NftRepo, { BuyingCurrency } from '../../presentation/repos/NftRepo';
 import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftApi from '../data-sources/NftApi';
@@ -13,6 +13,8 @@ import NftSessionStorage from '../data-sources/NftSessionStorage';
 import Web3 from 'web3';
 import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAuraPool.json';
 import MintMemo from '../../entities/MintMemo';
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
+import { Coin } from 'cudosjs/build/stargate/modules/marketplace/proto-types/coin';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -202,6 +204,72 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
+    async mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger): Promise < string > {
+        try {
+
+            this.disableActions?.();
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
+
+            const nftFilter = new NftFilterModel();
+            nftFilter.collectionIds = [collectionEntity.id];
+            nftFilter.nftStatus = [NftStatus.QUEUED];
+            nftFilter.nftGroup = [NftGroup.GIVEAWAY, NftGroup.PRESALE];
+
+            const { nftEntities } = await this.nftApi.fetchNftsByFilter(nftFilter);
+
+            const tierMap = new Map<NftTier, NftEntity[]>();
+            tierMap.set(NftTier.TIER_1, nftEntities.filter((entity) => entity.priceUsd === tierPriceMap.get(NftTier.TIER_1)));
+            tierMap.set(NftTier.TIER_2, nftEntities.filter((entity) => entity.priceUsd === tierPriceMap.get(NftTier.TIER_2)));
+            tierMap.set(NftTier.TIER_3, nftEntities.filter((entity) => entity.priceUsd === tierPriceMap.get(NftTier.TIER_3)));
+            tierMap.set(NftTier.TIER_4, nftEntities.filter((entity) => entity.priceUsd === tierPriceMap.get(NftTier.TIER_4)));
+            tierMap.set(NftTier.TIER_5, nftEntities.filter((entity) => entity.priceUsd === tierPriceMap.get(NftTier.TIER_5)));
+
+            const msgs = [];
+            for (let i = 0; i < addressMintDataEntities.length; i++) {
+                const dataEntity = addressMintDataEntities[i];
+                const receiverAddress = dataEntity.cudosAddress;
+
+                for (let j = 0; j < dataEntity.nftMints.length; j++) {
+                    const nftMint = dataEntity.nftMints[j];
+                    const tier = nftMint.tier;
+                    // left unminted nfts of that tier
+                    const tierNftEntities = tierMap.get(tier).filter((entity) => entity.status === NftStatus.QUEUED);
+
+                    if (tierNftEntities.length < nftMint.count) {
+                        throw new Error('Not enough queued nfts.');
+                    }
+
+                    for (let i = 0; i <= nftMint.count; i++) {
+                        // mark it just for current purposes. Won't be saved in the DB
+                        const nftData = tierNftEntities[i];
+                        nftData.status = NftStatus.MINTED
+                        const { msg, fee } = await signingClient.marketplaceModule.msgMintNft(
+                            ledger.accountAddress,
+                            collectionEntity.denomId,
+                            receiverAddress,
+                            Coin.fromPartial({ denom: 'acudos', amount: '1' }),
+                            nftData.name,
+                            nftData.imageUrl,
+                            '',
+                            nftData.id,
+                            gasPrice,
+                        )
+                        msgs.push(msg);
+                    }
+                }
+            }
+
+            // const estimatedGas = await signingClient.simulate(ledger.accountAddress, msgs, '');
+            const tx = await signingClient.signAndBroadcast(ledger.accountAddress, msgs, 'auto');
+            const txHash = tx.transactionHash;
+
+            return txHash;
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
     private checkNftsVersusSessionStorage(nftEntities: NftEntity[]): NftEntity[] {
         const nftsMap = this.nftSessioNStorage.getNftsMap();
         return nftEntities.map((nftEntity) => {
@@ -213,4 +281,5 @@ export default class NftApiRepo implements NftRepo {
             return nftEntity;
         })
     }
+
 }

@@ -17,7 +17,6 @@ import Button, { ButtonPadding } from '../../../../core/presentation/components/
 import UploaderComponent from '../../../../core/presentation/components/UploaderComponent';
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import TextWithTooltip from '../../../../core/presentation/components/TextWithTooltip';
-import InfoBlueBox from '../../../../core/presentation/components/InfoBlueBox';
 import Checkbox from '../../../../core/presentation/components/Checkbox';
 import FieldColumnWrapper from '../../../../core/presentation/components/FieldColumnWrapper';
 

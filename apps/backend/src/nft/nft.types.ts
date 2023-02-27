@@ -1,4 +1,5 @@
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { isArray, IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from 'class-validator';
 import { CollectionStatus } from '../collection/utils';
 import { IntBoolValue } from '../common/utils';
 
@@ -31,7 +32,7 @@ export class NftJsonValidator {
     @IsNotEmpty()
         uri: string;
 
-    @IsString()
+    @IsEnum(NftGroup)
         group: NftGroup;
 
     @IsString()
@@ -153,4 +154,21 @@ export class UpdateNftJsonValidations {
     @IsNotEmpty()
         tokenId: string;
 
+}
+
+export class AddressMintJsonValidations {
+    @IsString()
+        cudosAddress: string;
+
+    @IsArray()
+    @ValidateNested()
+    @Type(() => NftMintJsonValidation)
+        nftMints: NftMintJsonValidation[]
+}
+
+class NftMintJsonValidation {
+    @IsEnum(NftGroup)
+        group: NftGroup;
+    @IsNumber()
+        count: number;
 }

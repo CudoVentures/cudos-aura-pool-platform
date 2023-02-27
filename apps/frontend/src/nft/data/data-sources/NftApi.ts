@@ -1,8 +1,10 @@
 import axios from '../../../core/utilities/AxiosWrapper';
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
+import MintDataEntity from '../../../nft-presale/entities/MintDataEntity';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
-import { ReqFetchNftsByFilter, ReqUpdateNftCudosPrice } from '../dto/Requests';
-import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResUpdateNftCudosPrice } from '../dto/Responses';
+import { ReqFetchNftsByFilter, ReqMintPresaleNfts, ReqUpdateNftCudosPrice } from '../dto/Requests';
+import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResMintPresaleNfts, ResUpdateNftCudosPrice } from '../dto/Responses';
 
 export default class NftApi {
 
@@ -23,6 +25,7 @@ export default class NftApi {
 
     async updateNftCudosPrice(id: string): Promise < NftEntity > {
         const req = new ReqUpdateNftCudosPrice(id);
+
         const { data } = await axios.post(`${NftApi.nftModuleUrl}/updatePrice`, req);
 
         const res = new ResUpdateNftCudosPrice(data);

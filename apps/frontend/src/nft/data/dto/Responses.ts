@@ -1,3 +1,4 @@
+import MintDataEntity from '../../../nft-presale/entities/MintDataEntity';
 import NftEntity from '../../entities/NftEntity'
 
 export class ResFetchNftsByFilter {
