@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import Ledger from 'cudosjs/build/ledgers/Ledger';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 
@@ -23,4 +24,6 @@ export default interface NftRepo {
     buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string >;
     buyPresaleNft(currency: BuyingCurrency, amount: BigNumber, ledger: Ledger): Promise < string >;
     listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string >;
+
+    mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger): Promise < string >;
 }

@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 import { CollectionStatus } from '../../collection/entities/CollectionEntity';
-import { NftStatus } from '../entities/NftEntity';
+import { NftGroup, NftStatus } from '../entities/NftEntity';
 
 export enum NftOrderBy {
     TRENDING_ASC = 1,
@@ -21,6 +21,7 @@ export default class NftFilterModel {
     searchString: string;
     sessionAccount: number;
     orderBy: NftOrderBy;
+    nftGroup: NftGroup[];
     from: number;
     count: number;
 
@@ -30,6 +31,7 @@ export default class NftFilterModel {
         this.nftStatus = null;
         this.collectionIds = null;
         this.searchString = '';
+        this.nftGroup = null;
         this.sessionAccount = S.INT_FALSE;
         this.orderBy = NftOrderBy.TIMESTAMP_DESC;
         this.from = 0;
@@ -49,6 +51,7 @@ export default class NftFilterModel {
             'nftStatus': entity.nftStatus,
             'collectionIds': entity.collectionIds,
             'searchString': entity.searchString,
+            'nftGroup': entity.nftGroup,
             'sessionAccount': entity.sessionAccount,
             'orderBy': entity.orderBy,
             'from': entity.from,

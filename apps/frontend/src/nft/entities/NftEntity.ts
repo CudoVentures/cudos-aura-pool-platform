@@ -5,6 +5,22 @@ import { NOT_EXISTS_INT } from '../../../../backend/src/common/utils';
 import S from '../../core/utilities/Main';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
 
+export enum NftTier {
+    TIER_1 = 1, // cheapest
+    TIER_2 = 2,
+    TIER_3 = 3,
+    TIER_4 = 4,
+    TIER_5 = 5 // most expensive
+}
+
+export const tierPriceMap = new Map<NftTier, number>([
+    [NftTier.TIER_1, 150],
+    [NftTier.TIER_2, 300],
+    [NftTier.TIER_3, 1000],
+    [NftTier.TIER_4, 3000],
+    [NftTier.TIER_5, 5000],
+])
+
 export enum NftStatus {
     QUEUED = 'queued',
     MINTED = 'minted',

@@ -1,0 +1,46 @@
+.MintPrivateSaleNftsModal .Stage.Upload, 
+.MintPrivateSaleNftsModal .Stage.Preview, 
+.MintPrivateSaleNftsModal .Stage.Processing, 
+.MintPrivateSaleNftsModal .Stage.Success, 
+.MintPrivateSaleNftsModal .Stage.Fail  {
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.MintPrivateSaleNftsModal .Stage.Preview>div {
+    align-items: center;
+    justify-content: center;
+}
+
+.MintPrivateSaleNftsModal .Stage.Preview>div:last-child>.HorizontalSeparator,
+.MintPrivateSaleNftsModal .Stage.Preview div .AddressLine .MintsData>div:last-child .HorizontalSeparator {
+    border: 0;
+}
+
+.MintPrivateSaleNftsModal .Preview>div {
+    width: 100%
+}
+
+.MintPrivateSaleNftsModal .Preview .AddressLine {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.MintPrivateSaleNftsModal .Preview .AddressLine .MintsData .NftMintField{
+    gap: 10px;
+}
+
+.MintPrivateSaleNftsModal .Info {
+    color: var(--color-neutral-060);
+    text-align: center;
+}
+
+.MintPrivateSaleNftsModal .BigSvg {
+    width: 70px; height: 70px;
+}
+
+.MintPrivateSaleNftsModal .TransactionView {
+    gap: 10px;
+    color: var(--color-primary-060);
+}

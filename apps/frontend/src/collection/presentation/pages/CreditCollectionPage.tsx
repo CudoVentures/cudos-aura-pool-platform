@@ -31,14 +31,17 @@ import CollectionStatusBadge from '../components/CollectionStatusBadge';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import '../styles/page-credit-collection.css';
+import MintPrivateSaleNftsModal from '../../../nft-presale/presentation/components/MintPrivateSaleNftsModal';
+import MintPrivateSaleNftModalStore from '../../../nft-presale/presentation/stores/MintPrivateSaleNftModalStore';
 
 type Props = {
     walletStore?: WalletStore
     creditCollectionPageStore?: CreditCollectionPageStore
     accountSessionStore?: AccountSessionStore
+    mintPrivateSaleNftsModalStore?: MintPrivateSaleNftModalStore
 }
 
-function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore }: Props) {
+function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, mintPrivateSaleNftsModalStore }: Props) {
     const collectionEntity = creditCollectionPageStore.collectionEntity;
     const collectionDetailsEntity = creditCollectionPageStore.collectionDetailsEntity;
     const miningFarmEntity = creditCollectionPageStore.miningFarmEntity;
@@ -84,7 +87,14 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore }
     }
 
     return (
-        <PageLayout className = { 'PageCreditCollection' }>
+        <PageLayout
+            className = { 'PageCreditCollection' }
+            modals = { (
+                <>
+                    <MintPrivateSaleNftsModal />
+                </>
+            ) } >
+        >
             <PageHeader />
 
             { collectionEntity === null || miningFarmEntity === null || nftEntities === null ? (
@@ -137,21 +147,31 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore }
                                     </a>,
                                 ),
                             ]} >
-                                {collectionEntity.isStatusQueued() && accountSessionStore.isSuperAdmin() && (
+                                {accountSessionStore.isSuperAdmin() && (
                                     <Actions layout={ActionsLayout.LAYOUT_ROW_ENDS} >
-                                        <Button
-                                            padding={ButtonPadding.PADDING_48}
-                                            color={ButtonColor.SCHEME_4}
-                                            onClick={creditCollectionPageStore.rejectCollection} >
-                                            <Svg svg={HighlightOffIcon}/>
+                                        {collectionEntity.isStatusApproved() && (
+
+                                            <Button
+                                                padding={ButtonPadding.PADDING_48}
+                                                color={ButtonColor.SCHEME_4}
+                                                onClick={() => mintPrivateSaleNftsModalStore.showSignal(collectionEntity)} >
+                                            Mint Private Sale Nfts
+                                            </Button>)}
+                                        {collectionEntity.isStatusQueued() && (<>
+                                            <Button
+                                                padding={ButtonPadding.PADDING_48}
+                                                color={ButtonColor.SCHEME_4}
+                                                onClick={creditCollectionPageStore.rejectCollection} >
+                                                <Svg svg={HighlightOffIcon}/>
                                             Reject Collection
-                                        </Button>
-                                        <Button
-                                            padding={ButtonPadding.PADDING_48}
-                                            onClick={creditCollectionPageStore.approveCollection} >
-                                            <Svg svg={CheckCircleOutlineIcon}/>
+                                            </Button>
+                                            <Button
+                                                padding={ButtonPadding.PADDING_48}
+                                                onClick={creditCollectionPageStore.approveCollection} >
+                                                <Svg svg={CheckCircleOutlineIcon}/>
                                             Approve Collection
-                                        </Button>
+                                            </Button>
+                                        </>)}
                                     </Actions>
                                 ) }
                             </DataPreviewLayout>

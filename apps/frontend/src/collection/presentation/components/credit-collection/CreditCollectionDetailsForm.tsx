@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
-import BigNumber from 'bignumber.js';
 
 import S from '../../../../core/utilities/Main';
 import CreditCollectionStore from '../../stores/CreditCollectionStore';
@@ -17,7 +16,6 @@ import Button, { ButtonPadding } from '../../../../core/presentation/components/
 import UploaderComponent from '../../../../core/presentation/components/UploaderComponent';
 import Input, { InputType } from '../../../../core/presentation/components/Input';
 import TextWithTooltip from '../../../../core/presentation/components/TextWithTooltip';
-import InfoBlueBox from '../../../../core/presentation/components/InfoBlueBox';
 import Checkbox from '../../../../core/presentation/components/Checkbox';
 import FieldColumnWrapper from '../../../../core/presentation/components/FieldColumnWrapper';
 
