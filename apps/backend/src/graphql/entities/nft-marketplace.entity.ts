@@ -57,6 +57,10 @@ export class ChainMarketplaceNftEntity {
         return this.acudosPrice.gt(new BigNumber(0));
     }
 
+    hasMarketplaceNftId(): boolean {
+        return this.marketplaceNftId !== NOT_EXISTS_INT;
+    }
+
     static fromGraphQl(queryNft: GraphQlMarketplaceNft): ChainMarketplaceNftEntity {
         const nftEntity = new ChainMarketplaceNftEntity();
 
@@ -64,7 +68,7 @@ export class ChainMarketplaceNftEntity {
         nftEntity.denomId = queryNft.denom_id ?? nftEntity.denomId;
         nftEntity.acudosPrice = new BigNumber(queryNft.price ?? nftEntity.acudosPrice);
         nftEntity.uid = queryNft.uid ?? nftEntity.uid;
-        nftEntity.marketplaceNftId = parseInt(queryNft.id) ?? nftEntity.marketplaceNftId;
+        nftEntity.marketplaceNftId = parseInt(queryNft.id ?? nftEntity.marketplaceNftId.toString());
         nftEntity.owner = queryNft.nft_nft.owner ?? nftEntity.owner;
         nftEntity.sender = queryNft.nft_nft.sender ?? nftEntity.sender;
         nftEntity.uri = queryNft.nft_nft.uri ?? nftEntity.uri;

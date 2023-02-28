@@ -198,7 +198,7 @@ export class NFTController {
             nftEntity.acudosPrice = chainMarketplaceNftEntity.acudosPrice ?? new BigNumber(0);
             nftEntity.tokenId = chainMarketplaceNftEntity.tokenId;
             nftEntity.status = chainMarketplaceNftEntity.burned === true ? NftStatus.REMOVED : NftStatus.MINTED;
-            nftEntity.marketplaceNftId = chainMarketplaceNftEntity.marketplaceNftId ? chainMarketplaceNftEntity.marketplaceNftId.toString() : '';
+            nftEntity.marketplaceNftId = chainMarketplaceNftEntity.hasMarketplaceNftId() === true ? chainMarketplaceNftEntity.marketplaceNftId.toString() : '';
 
             await this.nftService.updateOneWithStatus(nftEntity.id, nftEntity, req.transaction);
         }

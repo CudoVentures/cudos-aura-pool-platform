@@ -12,6 +12,7 @@ import EmailService from '../email/email.service';
 import JwtToken from './entities/jwt-token.entity';
 import { SIGN_NONCE } from './auth.types';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
+import AddressMintDataEntity from '../nft/entities/address-mint-data.entity';
 
 @Injectable()
 export class AuthService {
@@ -83,6 +84,10 @@ export class AuthService {
             throw new WrongNonceSignatureException();
         }
 
+        return this.creditUserAccounts(cudosWalletAddress, walletName, tx);
+    }
+
+    private async creditUserAccounts(cudosWalletAddress: string, walletName: string, tx: Transaction = undefined): Promise < AccountEntity > {
         let accountEntity = null;
         let userEntity = await this.accountService.findUserByCudosWalletAddress(cudosWalletAddress, tx, tx.LOCK.UPDATE);
 
@@ -127,6 +132,10 @@ export class AuthService {
         )
 
         return verified;
+    }
+
+    public async createPresaleAccounts(addressMintDataEntity: AddressMintDataEntity, tx: Transaction): Promise < AccountEntity > {
+        return this.creditUserAccounts(addressMintDataEntity.cudosAddress, `${addressMintDataEntity.firstName} ${addressMintDataEntity.lastName}`, tx);
     }
 
 }

@@ -175,7 +175,7 @@ export class NFTService {
         });
     }
 
-    async findAllPremintByCollectionAndPriceUsd(collecionId?: number, priceUsd?: number) {
+    async findAllPresaleByCollectionAndPriceUsd(collecionId?: number, priceUsd?: number) {
         const whereClause = {
             [NftRepoColumn.COLLECTION_ID]: collecionId,
             [NftRepoColumn.PRICE_USD]: priceUsd,
@@ -300,7 +300,7 @@ export class NFTService {
             const priceUsd = tierPriceMap.get(tierToQuery);
 
             // get nft in price by random
-            const nftTierEntities = await this.findAllPremintByCollectionAndPriceUsd(collectionId, priceUsd);
+            const nftTierEntities = await this.findAllPresaleByCollectionAndPriceUsd(collectionId, priceUsd);
 
             if (nftTierEntities.length > 0) {
                 const nftIndex = randomInt(0, nftTierEntities.length);

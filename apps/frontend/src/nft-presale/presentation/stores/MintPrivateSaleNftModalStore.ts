@@ -1,9 +1,11 @@
 import { action, makeObservable, observable } from 'mobx';
+import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import AddressMintDataEntity from '../../entities/AddressMintDataEntity';
@@ -17,22 +19,27 @@ export enum ModalStage {
 }
 
 export default class MintPrivateSaleNftModalStore extends ModalStore {
-    nftRepo: NftRepo;
     alertStore: AlertStore;
     walletStore: WalletStore;
+    cudosStore: CudosStore;
+
+    nftRepo: NftRepo;
+    accountRepo: AccountRepo;
 
     collectionEntity: CollectionEntity;
     addressMintDataEntities: AddressMintDataEntity[];
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
-    constructor(nftRepo: NftRepo, alertStore: AlertStore, walletStore: WalletStore) {
+    constructor(nftRepo: NftRepo, accountRepo: AccountRepo, alertStore: AlertStore, walletStore: WalletStore, cudosStore: CudosStore) {
         super();
 
         this.nftRepo = nftRepo;
+        this.accountRepo = accountRepo;
         this.modalStage = null;
         this.alertStore = alertStore;
         this.walletStore = walletStore;
+        this.cudosStore = cudosStore;
         this.collectionEntity = null;
         this.addressMintDataEntities = null;
 
@@ -40,6 +47,10 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
         this.resetValues();
 
         makeObservable(this);
+    }
+
+    async init() {
+        await this.cudosStore.init();
     }
 
     @action
@@ -87,7 +98,8 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
         this.modalStage = ModalStage.PROCESSING;
 
         try {
-            this.txHash = await this.nftRepo.mintPresaleNfts(this.collectionEntity, this.addressMintDataEntities, this.walletStore.ledger);
+            await this.accountRepo.createPresaleAccounts(this.addressMintDataEntities);
+            this.txHash = await this.nftRepo.mintPresaleNfts(this.collectionEntity, this.addressMintDataEntities, this.walletStore.ledger, this.cudosStore.getCudosPriceInUsd());
 
             await runInActionAsync(() => {
                 this.modalStage = ModalStage.SUCCESS;

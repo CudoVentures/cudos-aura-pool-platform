@@ -149,7 +149,7 @@ const superAdminCollectionsPageStore = new SuperAdminCollectionsPageStore();
 const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSessionStore);
 const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(appStore, walletStore);
 const nftPresaleStore = new NftPresaleStore(nftRepo, collectionRepo, allowlistRepo, alertStore, cudosStore, presaleStore, walletStore);
-const mintPrivateSaleNftsModalStore = new MintPrivateSaleNftModalStore(nftRepo, alertStore, walletStore);
+const mintPrivateSaleNftsModalStore = new MintPrivateSaleNftModalStore(nftRepo, accountRepo, alertStore, walletStore);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);

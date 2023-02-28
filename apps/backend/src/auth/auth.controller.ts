@@ -1,17 +1,22 @@
-import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors, HttpCode } from '@nestjs/common';
+import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors, HttpCode, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AccountType } from '../account/account.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest, RequestWithSessionAccounts } from '../common/commont.types';
 import { parseIntBoolValue } from '../common/utils';
+import { KycService } from '../kyc/kyc.service';
+import AddressMintDataEntity from '../nft/entities/address-mint-data.entity';
 import { AuthService } from './auth.service';
-import { ReqLogin, ReqRegister } from './dto/requests.dto';
+import { ReqCreatePresaleAccounts, ReqLogin, ReqRegister } from './dto/requests.dto';
 import { ResFetchSessionAccounts, ResLogin } from './dto/responses.dto';
+import RoleGuard from './guards/role.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(
         private authService: AuthService,
+        private kycService: KycService,
     ) {}
 
     @UseInterceptors(TransactionInterceptor)
@@ -40,6 +45,21 @@ export class AuthController {
     async fetchSessionAccounts(@Req() req: RequestWithSessionAccounts): Promise < ResFetchSessionAccounts > {
         const shouldChangePassword = req.sessionAccountEntity?.isDefaultSuperAdminPassword() ?? false;
         return new ResFetchSessionAccounts(req.sessionAccountEntity, req.sessionUserEntity, req.sessionAdminEntity, req.sessionSuperAdminEntity, parseIntBoolValue(shouldChangePassword));
+    }
+
+    @UseInterceptors(TransactionInterceptor)
+    @Post('createPresaleAccounts')
+    @HttpCode(200)
+    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    async createPresaleAccounts(
+        @Req() req: AppRequest,
+        @Body() reqCreatePresaleAccounts: ReqCreatePresaleAccounts,
+    ): Promise<void> {
+        for (let i = reqCreatePresaleAccounts.addressMintDataEntities.length; i-- > 0;) {
+            const addressMintDataEntity = AddressMintDataEntity.fromJson(reqCreatePresaleAccounts.addressMintDataEntities[i]);
+            const accountEntity = await this.authService.createPresaleAccounts(addressMintDataEntity, req.transaction);
+            await this.kycService.creditKycForPresale(accountEntity, addressMintDataEntity, req.transaction);
+        }
     }
 
 }

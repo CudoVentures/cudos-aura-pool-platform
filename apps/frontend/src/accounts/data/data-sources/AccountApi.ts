@@ -3,9 +3,10 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import axios, { setTokenInStorage } from '../../../core/utilities/AxiosWrapper';
-import { ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSessionSuperAdmin, ReqEditSessionUser, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
+import { ReqCreatePresaleAccounts, ReqEditSessionAccount, ReqEditSessionAccountPass, ReqEditSessionSuperAdmin, ReqEditSessionUser, ReqForgottenPassword, ReqLogin, ReqRegister } from '../dto/Requests';
 import { ResEditSessionAccount, ResEditSessionSuperAdmin, ResEditSessionUser, ResFetchFarmOwnerAccount, ResFetchSessionAccounts, ResLogin } from '../dto/Responses';
 import { StdSignature } from 'cudosjs';
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 
 export default class AccountApi {
 
@@ -71,5 +72,9 @@ export default class AccountApi {
         const { data } = await axios.get(`/api/v1/accounts/${accountId}`);
         const res = new ResFetchFarmOwnerAccount(data);
         return res.adminEntity
+    }
+
+    async createPresaleAccounts(addressMintDataEntities: AddressMintDataEntity[]): Promise < void > {
+        await axios.post('/api/v1/auth/createPresaleAccounts', new ReqCreatePresaleAccounts(addressMintDataEntities));
     }
 }

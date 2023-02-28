@@ -135,78 +135,83 @@ export default class NftPresaleStore {
             const nftEntities = [];
 
             // add OPAL tier for all sales
-            const opalNftData = CudosCollectionData.nfts.opal
+            const opalNftData = CudosCollectionData.nfts.opal;
+            let nftNameCounter = 0;
             for (let i = 1; i <= opalNftData.giveawayCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[0], opalNftData, NftGroup.GIVEAWAY));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[0], opalNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= opalNftData.privateSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[0], opalNftData, NftGroup.PRIVATE_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[0], opalNftData, NftGroup.PRIVATE_SALE));
             }
             for (let i = 1; i <= opalNftData.presaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[0], opalNftData, NftGroup.PRESALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[0], opalNftData, NftGroup.PRESALE));
             }
             for (let i = 1; i <= opalNftData.publicSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[0], opalNftData, NftGroup.PUBLIC_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[0], opalNftData, NftGroup.PUBLIC_SALE));
             }
 
             // add RUBY tier for all sales
-            const rubyNftData = CudosCollectionData.nfts.ruby
+            const rubyNftData = CudosCollectionData.nfts.ruby;
+            nftNameCounter = 0;
             for (let i = 1; i <= rubyNftData.giveawayCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[1], rubyNftData, NftGroup.GIVEAWAY));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[1], rubyNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= rubyNftData.privateSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[1], rubyNftData, NftGroup.PRIVATE_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[1], rubyNftData, NftGroup.PRIVATE_SALE));
             }
             for (let i = 1; i <= rubyNftData.presaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[1], rubyNftData, NftGroup.PRESALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[1], rubyNftData, NftGroup.PRESALE));
             }
             for (let i = 1; i <= rubyNftData.publicSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[1], rubyNftData, NftGroup.PUBLIC_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[1], rubyNftData, NftGroup.PUBLIC_SALE));
             }
 
             // add EMERALD tier for all sales
-            const emeraldNftData = CudosCollectionData.nfts.emerald
+            const emeraldNftData = CudosCollectionData.nfts.emerald;
+            nftNameCounter = 0;
             for (let i = 1; i <= emeraldNftData.giveawayCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[2], emeraldNftData, NftGroup.GIVEAWAY));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[2], emeraldNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= emeraldNftData.privateSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[2], emeraldNftData, NftGroup.PRIVATE_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[2], emeraldNftData, NftGroup.PRIVATE_SALE));
             }
             for (let i = 1; i <= emeraldNftData.presaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[2], emeraldNftData, NftGroup.PRESALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[2], emeraldNftData, NftGroup.PRESALE));
             }
             for (let i = 1; i <= emeraldNftData.publicSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[2], emeraldNftData, NftGroup.PUBLIC_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[2], emeraldNftData, NftGroup.PUBLIC_SALE));
             }
 
             // add EMERALD tier for all sales
-            const diamondNftData = CudosCollectionData.nfts.diamond
+            const diamondNftData = CudosCollectionData.nfts.diamond;
+            nftNameCounter = 0;
             for (let i = 1; i <= diamondNftData.giveawayCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[3], diamondNftData, NftGroup.GIVEAWAY));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[3], diamondNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= diamondNftData.privateSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[3], diamondNftData, NftGroup.PRIVATE_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[3], diamondNftData, NftGroup.PRIVATE_SALE));
             }
             for (let i = 1; i <= diamondNftData.presaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[3], diamondNftData, NftGroup.PRESALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[3], diamondNftData, NftGroup.PRESALE));
             }
             for (let i = 1; i <= diamondNftData.publicSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[3], diamondNftData, NftGroup.PUBLIC_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[3], diamondNftData, NftGroup.PUBLIC_SALE));
             }
 
             // add EMERALD tier for all sales
-            const blueDiamondNftData = CudosCollectionData.nfts.blueDiamond
+            const blueDiamondNftData = CudosCollectionData.nfts.blueDiamond;
+            nftNameCounter = 0;
             for (let i = 1; i <= blueDiamondNftData.giveawayCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[4], blueDiamondNftData, NftGroup.GIVEAWAY));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[4], blueDiamondNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= blueDiamondNftData.privateSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[4], blueDiamondNftData, NftGroup.PRIVATE_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[4], blueDiamondNftData, NftGroup.PRIVATE_SALE));
             }
             for (let i = 1; i <= blueDiamondNftData.presaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[4], blueDiamondNftData, NftGroup.PRESALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[4], blueDiamondNftData, NftGroup.PRESALE));
             }
             for (let i = 1; i <= blueDiamondNftData.publicSaleCount; i++) {
-                nftEntities.push(createNft(i, presaleImages[4], blueDiamondNftData, NftGroup.PUBLIC_SALE));
+                nftEntities.push(createNft(++nftNameCounter, presaleImages[4], blueDiamondNftData, NftGroup.PUBLIC_SALE));
             }
 
             collectionEntity.hashPowerInTh = nftEntities.reduce((accu, nftEntity) => {
@@ -255,10 +260,14 @@ export default class NftPresaleStore {
             }
 
             await this.collectionRepo.creditCollection(collectionEntity, nftEntities);
-            this.alertStore.show('Minting was successfull');
+            this.alertStore.show('Minting was successfull', () => {
+                window.location.reload();
+            });
         } catch (e) {
             console.log(e);
-            this.alertStore.show('There was an error minting the NFTs');
+            this.alertStore.show('There was an error minting the NFTs', () => {
+                window.location.reload();
+            });
         }
     }
 

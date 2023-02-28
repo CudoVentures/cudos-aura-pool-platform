@@ -1,4 +1,4 @@
-import { CHAIN_DETAILS, ETH_CONSTS, PRESALE_CONSTS } from '../../../core/utilities/Constants';
+import { CHAIN_DETAILS, ETH_CONSTS } from '../../../core/utilities/Constants';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import NftEntity, { NftGroup, NftStatus, NftTier, tierPriceMap } from '../../entities/NftEntity';
 import NftRepo, { BuyingCurrency } from '../../presentation/repos/NftRepo';
@@ -209,18 +209,19 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger): Promise < string > {
+    async mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger, cudosPriceInUsd: number): Promise < string > {
         try {
-
             this.disableActions?.();
+
+            const usdPriceInAcudos = new BigNumber(1).dividedBy(new BigNumber(cudosPriceInUsd)).shiftedBy(CURRENCY_DECIMALS);
+
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
 
             const nftFilter = new NftFilterModel();
             nftFilter.collectionIds = [collectionEntity.id];
             nftFilter.nftStatus = [NftStatus.QUEUED];
-            nftFilter.nftGroup = [NftGroup.GIVEAWAY, NftGroup.PRESALE];
-
+            nftFilter.nftGroup = [NftGroup.GIVEAWAY, NftGroup.PRIVATE_SALE];
             const { nftEntities } = await this.nftApi.fetchNftsByFilter(nftFilter);
 
             const tierMap = new Map<NftTier, NftEntity[]>();
@@ -238,26 +239,30 @@ export default class NftApiRepo implements NftRepo {
                 for (let j = 0; j < dataEntity.nftMints.length; j++) {
                     const nftMint = dataEntity.nftMints[j];
                     const tier = nftMint.tier;
+
                     // left unminted nfts of that tier
                     const tierNftEntities = tierMap.get(tier).filter((entity) => entity.status === NftStatus.QUEUED);
-
                     if (tierNftEntities.length < nftMint.count) {
                         throw new Error('Not enough queued nfts.');
                     }
 
-                    for (let i = 0; i <= nftMint.count; i++) {
+                    for (let k = 0; k < nftMint.count; k++) {
                         // mark it just for current purposes. Won't be saved in the DB
-                        const nftData = tierNftEntities[i];
-                        nftData.status = NftStatus.MINTED
-                        const { msg, fee } = await signingClient.marketplaceModule.msgMintNft(
+                        const nftEntity = tierNftEntities[k];
+                        nftEntity.markAsMinted();
+
+                        const { msg } = await signingClient.marketplaceModule.msgMintNft(
                             ledger.accountAddress,
                             collectionEntity.denomId,
                             receiverAddress,
-                            Coin.fromPartial({ denom: 'acudos', amount: '1' }),
-                            nftData.name,
-                            nftData.imageUrl,
-                            '',
-                            nftData.id,
+                            Coin.fromPartial({ denom: CHAIN_DETAILS.NATIVE_TOKEN_DENOM, amount: usdPriceInAcudos.multipliedBy(new BigNumber(nftEntity.priceUsd)).toFixed(0) }),
+                            nftEntity.name,
+                            nftEntity.imageUrl,
+                            JSON.stringify({
+                                'expiration_date': nftEntity.expirationDateTimestamp,
+                                'hash_rate_owned': nftEntity.hashPowerInTh,
+                            }),
+                            nftEntity.id,
                             gasPrice,
                         )
                         msgs.push(msg);
@@ -265,11 +270,8 @@ export default class NftApiRepo implements NftRepo {
                 }
             }
 
-            // const estimatedGas = await signingClient.simulate(ledger.accountAddress, msgs, '');
             const tx = await signingClient.signAndBroadcast(ledger.accountAddress, msgs, 'auto');
-            const txHash = tx.transactionHash;
-
-            return txHash;
+            return tx.transactionHash;
         } finally {
             this.enableActions?.();
         }

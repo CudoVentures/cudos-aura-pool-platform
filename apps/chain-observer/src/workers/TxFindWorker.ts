@@ -116,7 +116,6 @@ export default class TxFindWorker {
         }
 
         if (nftModuleNftEvents.length > 0) {
-
             const tokenIds = nftModuleNftEvents.map((event) => {
                 const tokenId = event.attributes.find((attribute) => attribute.key === 'token_id').value;
                 const denomId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;

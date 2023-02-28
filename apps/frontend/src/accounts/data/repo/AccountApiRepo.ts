@@ -7,6 +7,7 @@ import AccountApi from '../data-sources/AccountApi';
 import { StdSignature } from 'cudosjs';
 import { BackendErrorType, parseBackendErrorType } from '../../../core/utilities/AxiosWrapper';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 
 export default class AccountApiRepo implements AccountRepo {
 
@@ -168,6 +169,15 @@ export default class AccountApiRepo implements AccountRepo {
         try {
             this.disableActions?.();
             return await this.accountApi.fetchFarmOwnerAccount(accountId);
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async createPresaleAccounts(addressMintDataEntities: AddressMintDataEntity[]): Promise < void > {
+        try {
+            this.disableActions?.();
+            return await this.accountApi.createPresaleAccounts(addressMintDataEntities);
         } finally {
             this.enableActions?.();
         }

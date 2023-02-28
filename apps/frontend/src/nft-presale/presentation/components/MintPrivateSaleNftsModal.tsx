@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import JSONPretty from 'react-json-pretty';
 
@@ -30,6 +30,10 @@ type Props = {
 }
 
 function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, walletStore }: Props) {
+
+    useEffect(() => {
+        mintPrivateSaleNftsModalStore.init();
+    }, []);
 
     function onClickSubmitForSell() {
         mintPrivateSaleNftsModalStore.onClickSubmitForSell();
@@ -102,15 +106,19 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
             <AnimationContainer className = { 'Stage Preview FlexColumn' } active = { mintPrivateSaleNftsModalStore.isStagePreview() } >
                 { mintPrivateSaleNftsModalStore.isStagePreview() === true && (
                     <>
-                        {mintPrivateSaleNftsModalStore.addressMintDataEntities.map((adressMintDataEntity: AddressMintDataEntity, i: number) => (
+                        {mintPrivateSaleNftsModalStore.addressMintDataEntities.map((addressMintDataEntity: AddressMintDataEntity, i: number) => (
                             <div key = { i } className={'FlexRow AddressLine'}>
-                                <div className={'AddressField'}>{adressMintDataEntity.cudosAddress}</div>
+                                <div className={'AddressField'}>
+                                    <strong>{ addressMintDataEntity.firstName } { addressMintDataEntity.lastName }</strong><br />
+                                    {addressMintDataEntity.cudosAddress}<br />
+                                    <em>{`{${addressMintDataEntity.applicantId}-${addressMintDataEntity.workflowRunId}}`}</em>
+                                </div>
                                 <DataPreviewLayout
                                     styledContainerProps = { {
                                         containerPadding: ContainerPadding.PADDING_16,
                                     } }
                                     dataPreviews = {
-                                        adressMintDataEntity.nftMints.map((nftMintEntitty, j) => {
+                                        addressMintDataEntity.nftMints.map((nftMintEntitty) => {
                                             return createDataPreview(`Tier: ${nftMintEntitty.tier}`, `Count: ${nftMintEntitty.count}`);
                                         })
                                     } />
@@ -122,7 +130,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                 <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
                             </Actions>
                         ) : (
-                            <div className = { 'Bold ColorError060' }>Connect collection owner wallet</div>
+                            <div className = { 'Bold ColorError060 WrongWalletInfo' }>Connect OnDemandMintingService's wallet with address: {CHAIN_DETAILS.MINTING_SERVICE_ADDRESS}</div>
                         )}
                     </>
                 ) }

@@ -1,4 +1,6 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsDefined, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { AddressMintJsonValidations } from '../../nft/nft.types';
 
 export class ReqLogin {
 
@@ -55,5 +57,15 @@ export class ReqRegister {
 
     @IsNumber()
         accountNumber: number;
+
+}
+
+export class ReqCreatePresaleAccounts {
+
+    @IsDefined()
+    @ValidateNested()
+    @IsArray()
+    @Type(() => AddressMintJsonValidations)
+        addressMintDataEntities: AddressMintJsonValidations[];
 
 }

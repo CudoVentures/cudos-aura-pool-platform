@@ -6,12 +6,14 @@ import { jwtConstants } from './auth.types';
 import { AuthController } from './auth.controller';
 import { AccountModule } from '../account/account.module';
 import { EmailModule } from '../email/email.module';
+import { KycModule } from '../kyc/kyc.module';
 
 @Module({
     imports: [
         PassportModule,
         AccountModule,
         EmailModule,
+        KycModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },

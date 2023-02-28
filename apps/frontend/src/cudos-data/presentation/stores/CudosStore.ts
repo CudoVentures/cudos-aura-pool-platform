@@ -45,6 +45,10 @@ export default class CudosStore {
         return this.cudosDataEntity?.priceChangeInUsd ?? 0;
     }
 
+    getCudosPriceInEth(): BigNumber {
+        return this.cudosDataEntity?.priceInEth ?? new BigNumber(0);
+    }
+
     getCudosPriceChangeInPercentage(): number {
         const priceInUsd = this.getCudosPriceInUsd();
         const priceChangeInUsd = this.getCudosPriceChangeInUsd();
@@ -57,19 +61,19 @@ export default class CudosStore {
     }
 
     convertCudosToEth(cudosAmount: BigNumber): BigNumber {
-        return cudosAmount.multipliedBy(this.cudosDataEntity?.priceInEth ?? 0);
+        return cudosAmount.multipliedBy(this.getCudosPriceInEth());
     }
 
     convertAcudosToEth(acudosPrice: BigNumber): BigNumber {
-        return acudosPrice.shiftedBy(-CURRENCY_DECIMALS).multipliedBy(this.cudosDataEntity?.priceInEth ?? 0);
+        return acudosPrice.shiftedBy(-CURRENCY_DECIMALS).multipliedBy(this.getCudosPriceInEth());
     }
 
     convertAcudosInUsd(acudosPrice: BigNumber): BigNumber {
-        return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
+        return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.getCudosPriceInUsd());
     }
 
     convertCudosInUsd(cudosPrice: BigNumber): BigNumber {
-        return cudosPrice.multipliedBy(this.cudosDataEntity?.priceInUsd ?? 0);
+        return cudosPrice.multipliedBy(this.getCudosPriceInUsd());
     }
 
     convertAcudosInUsdAsString(acudosPrice: BigNumber): string {
@@ -77,7 +81,12 @@ export default class CudosStore {
     }
 
     convertUsdInAcudos(dollars: number): BigNumber {
-        return ProjectUtils.CUDOS_CURRENCY_DIVIDER.multipliedBy(dollars).dividedBy(this.cudosDataEntity?.priceInUsd ?? 1);
+        const priceInUsd = this.getCudosPriceInUsd();
+        if (priceInUsd === 0) {
+            return new BigNumber(0);
+        }
+
+        return new BigNumber(dollars).dividedBy(priceInUsd).shiftedBy(CURRENCY_DECIMALS);
     }
 
     convertUsdInCudos(dollars: number): BigNumber {

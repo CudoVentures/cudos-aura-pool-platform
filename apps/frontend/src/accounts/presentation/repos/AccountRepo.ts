@@ -3,6 +3,7 @@ import AdminEntity from '../../entities/AdminEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import { StdSignature } from 'cudosjs';
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 
 export default interface AccountRepo {
 
@@ -20,4 +21,6 @@ export default interface AccountRepo {
     forgottenPassword(email: string): Promise < void >
     sendSessionAccountVerificationEmail(): Promise < void >
     fetchFarmOwnerAccount(accountId: string): Promise < AdminEntity >;
+
+    createPresaleAccounts(addressMintDataEntities: AddressMintDataEntity[]): Promise < void >;
 }

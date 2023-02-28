@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { NOT_EXISTS_INT } from '../../src/common/utils';
 import NftEntity from '../../src/nft/entities/nft.entity';
-import { NftStatus } from '../../src/nft/nft.types';
+import { NftGroup, NftStatus } from '../../src/nft/nft.types';
 import { getZeroDatePlusDaysTimestamp } from '../../src/statistics/utils/test.utils';
 
 const nftTestEntitities = [];
@@ -25,7 +25,8 @@ for (let i = 1; i <= 8; i++) {
         id: uuidv4(),
         name: `nft${i}`,
         uri: 'someuri', // So far changing them won't affect anything
-        data: 'somestring', // So far changing them won't affect anything
+        // data: 'somestring', // So far changing them won't affect anything
+        group: NftGroup.PUBLIC_SALE,
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 100,
@@ -46,7 +47,8 @@ for (let i = 1; i <= 8; i++) {
         id: uuidv4(),
         name: `nftqueued${i}`,
         uri: 'someuri', // So far changing them won't affect anything
-        data: 'somestring', // So far changing them won't affect anything
+        // data: 'somestring', // So far changing them won't affect anything
+        group: NftGroup.PUBLIC_SALE,
         hashingPower: i,
         priceInAcudos: `${i}00`,
         priceUsd: 100,

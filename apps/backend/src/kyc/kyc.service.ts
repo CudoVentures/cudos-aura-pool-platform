@@ -12,6 +12,7 @@ import UserEntity from '../account/entities/user.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { StatisticsService } from '../statistics/statistics.service';
 import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import AddressMintDataEntity from '../nft/entities/address-mint-data.entity';
 
 @Injectable()
 export class KycService {
@@ -89,9 +90,6 @@ export class KycService {
 
     async createWorkflowRun(userEntity: UserEntity, purchasesInUsdSoFar: number, kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
         const workflowId = this.configService.get < string >('APP_ONFIDO_WORKFLOW_ID');
-        // if (kycEntity.hasWorkflow(workflowId) === true) {
-        //     return kycEntity;
-        // }
 
         const workflorRunParams = WorkflowRunParamsV1Entity.newInstance(userEntity.cudosWalletAddress, purchasesInUsdSoFar);
 
@@ -162,6 +160,26 @@ export class KycService {
         }
 
         return false;
+    }
+
+    async creditKycForPresale(accountEntity: AccountEntity, addressMintDataEntity: AddressMintDataEntity, tx: Transaction) {
+        let kycEntity = await this.fetchKycByAccount(accountEntity, tx);
+        kycEntity.firstName = addressMintDataEntity.firstName;
+        kycEntity.lastName = addressMintDataEntity.lastName;
+        kycEntity.applicantId = addressMintDataEntity.applicantId;
+
+        const hasWorkflowRunId = kycEntity.hasWorkflowRunId(addressMintDataEntity.workflowRunId);
+        if (hasWorkflowRunId === false) {
+            const workflowId = this.configService.get < string >('APP_ONFIDO_WORKFLOW_ID');
+            const workflorRunParams = WorkflowRunParamsV1Entity.newInstance(addressMintDataEntity.cudosAddress, 1001);
+
+            kycEntity.workflowIds.push(workflowId);
+            kycEntity.workflowRunIds.push(addressMintDataEntity.workflowRunId);
+            kycEntity.workflowRunStatuses.push('processing');
+            kycEntity.workflowRunParams.push(WorkflowRunParamsEntity.wrap(workflorRunParams));
+        }
+
+        kycEntity = await this.creditKyc(kycEntity, tx);
     }
 
 }

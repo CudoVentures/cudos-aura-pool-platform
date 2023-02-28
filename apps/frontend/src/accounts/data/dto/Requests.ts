@@ -1,4 +1,5 @@
 import { StdSignature } from '@cosmjs/amino';
+import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import AccountEntity from '../../entities/AccountEntity';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
@@ -105,6 +106,16 @@ export class ReqForgottenPassword {
 
     constructor(email: string) {
         this.email = email;
+    }
+
+}
+
+export class ReqCreatePresaleAccounts {
+
+    addressMintDataEntities: AddressMintDataEntity[];
+
+    constructor(addressMintDataEntities: AddressMintDataEntity[]) {
+        this.addressMintDataEntities = addressMintDataEntities.map((e) => AddressMintDataEntity.toJson(e));
     }
 
 }

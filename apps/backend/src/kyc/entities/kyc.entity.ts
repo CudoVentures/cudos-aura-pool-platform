@@ -71,6 +71,12 @@ export default class KycEntity {
         });
     }
 
+    hasWorkflowRunId(targetWorkflowRunId: string): boolean {
+        return this.workflowRunIds.find((workflowRunId) => {
+            return workflowRunId === targetWorkflowRunId;
+        }) !== undefined;
+    }
+
     getLastLightWorkflowRunIndex(): number {
         for (let i = this.workflowRunParams.length; i-- > 0;) {
             const workflowRunParams = this.workflowRunParams[i];

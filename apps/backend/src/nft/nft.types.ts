@@ -1,5 +1,4 @@
-import { Type } from 'class-transformer';
-import { isArray, IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { CollectionStatus } from '../collection/utils';
 import { IntBoolValue } from '../common/utils';
 
@@ -157,18 +156,20 @@ export class UpdateNftJsonValidations {
 }
 
 export class AddressMintJsonValidations {
+
     @IsString()
         cudosAddress: string;
 
-    @IsArray()
-    @ValidateNested()
-    @Type(() => NftMintJsonValidation)
-        nftMints: NftMintJsonValidation[]
-}
+    @IsString()
+        firstName: string;
 
-class NftMintJsonValidation {
-    @IsEnum(NftGroup)
-        group: NftGroup;
-    @IsNumber()
-        count: number;
+    @IsString()
+        lastName: string;
+
+    @IsString()
+        applicantId: string;
+
+    @IsString()
+        workflowRunId: string;
+
 }

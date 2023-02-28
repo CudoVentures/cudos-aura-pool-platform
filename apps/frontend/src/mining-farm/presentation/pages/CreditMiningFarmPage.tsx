@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
+import CudosCollectionData from '../../../nft-presale/data/data-sources/CudoCollectionData';
 import CreditMiningFarmPageStore from '../stores/CreditMiningFarmPageStore';
 import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
@@ -10,6 +11,8 @@ import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import EditMiningFarmModal from '../components/EditMiningFarmModal';
 import EditMiningFarmModalStore from '../stores/EditMiningFarmModalStore';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import NftPresaleStore from '../../../nft-presale/presentation/stores/NftPresaleStore';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
@@ -42,8 +45,6 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-credit-mining-farm.css';
-import AlertStore from '../../../core/presentation/stores/AlertStore';
-import NftPresaleStore from '../../../nft-presale/presentation/stores/NftPresaleStore';
 
 type Props = {
     creditMiningFarmPageStore?: CreditMiningFarmPageStore,
@@ -106,7 +107,7 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
     }
 
     function onClickMintPresaleNfts() {
-        alertStore.show('You are about to mint ALL presale NFTs.', () => {
+        alertStore.show(`You are about to mint ALL presale NFTs and its collection with name ${CudosCollectionData.name}`, () => {
             nftPresaleStore.createPresaleCollection(creditMiningFarmPageStore.miningFarmEntity.id, creditMiningFarmPageStore.approvedCollectionEntities);
         }, () => {});
     }

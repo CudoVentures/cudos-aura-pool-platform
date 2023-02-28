@@ -9,6 +9,8 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import CreditCollectionPageStore from '../stores/CreditCollectionPageStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import MintPrivateSaleNftsModal from '../../../nft-presale/presentation/components/MintPrivateSaleNftsModal';
+import MintPrivateSaleNftModalStore from '../../../nft-presale/presentation/stores/MintPrivateSaleNftModalStore';
 
 import LaunchIcon from '@mui/icons-material/Launch';
 import ProfileHeader from '../components/ProfileHeader';
@@ -31,17 +33,17 @@ import CollectionStatusBadge from '../components/CollectionStatusBadge';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import '../styles/page-credit-collection.css';
-import MintPrivateSaleNftsModal from '../../../nft-presale/presentation/components/MintPrivateSaleNftsModal';
-import MintPrivateSaleNftModalStore from '../../../nft-presale/presentation/stores/MintPrivateSaleNftModalStore';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
 
 type Props = {
     walletStore?: WalletStore
     creditCollectionPageStore?: CreditCollectionPageStore
     accountSessionStore?: AccountSessionStore
     mintPrivateSaleNftsModalStore?: MintPrivateSaleNftModalStore
+    alertStore?: AlertStore
 }
 
-function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, mintPrivateSaleNftsModalStore }: Props) {
+function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, mintPrivateSaleNftsModalStore, alertStore }: Props) {
     const collectionEntity = creditCollectionPageStore.collectionEntity;
     const collectionDetailsEntity = creditCollectionPageStore.collectionDetailsEntity;
     const miningFarmEntity = creditCollectionPageStore.miningFarmEntity;
@@ -84,6 +86,12 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
 
     function onClickCreditCollectionDetailsEdit() {
         navigate(`${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/${collectionEntity.id}`);
+    }
+
+    function onClickMintPrivateSaleNfts() {
+        alertStore.show('You are about to mint the GIVEAWAYS and PRIVATE SALE NFTs alongside corresponding users accounts. Continue with uploading the JSON data file?', () => {
+            mintPrivateSaleNftsModalStore.showSignal(collectionEntity)
+        }, () => {});
     }
 
     return (
@@ -146,29 +154,29 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                     </a>,
                                 ),
                             ]} >
-                                {accountSessionStore.isSuperAdmin() && (
+                                {accountSessionStore.isSuperAdmin() === true && (
                                     <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} >
                                         {collectionEntity.isStatusApproved() && (
-
                                             <Button
                                                 padding={ButtonPadding.PADDING_48}
                                                 color={ButtonColor.SCHEME_4}
-                                                onClick={() => mintPrivateSaleNftsModalStore.showSignal(collectionEntity)} >
-                                            Mint Private Sale Nfts
-                                            </Button>)}
+                                                onClick={onClickMintPrivateSaleNfts} >
+                                                Mint Private Sale Nfts and Users
+                                            </Button>
+                                        )}
                                         {collectionEntity.isStatusQueued() && (<>
                                             <Button
                                                 padding={ButtonPadding.PADDING_48}
                                                 color={ButtonColor.SCHEME_4}
                                                 onClick={creditCollectionPageStore.rejectCollection} >
                                                 <Svg svg={HighlightOffIcon}/>
-                                            Reject Collection
+                                                Reject Collection
                                             </Button>
                                             <Button
                                                 padding={ButtonPadding.PADDING_48}
                                                 onClick={creditCollectionPageStore.approveCollection} >
                                                 <Svg svg={CheckCircleOutlineIcon}/>
-                                            Approve Collection
+                                                Approve Collection
                                             </Button>
                                         </>)}
                                     </Actions>

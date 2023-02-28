@@ -16,8 +16,8 @@ export default class UserEntity {
         this.accountId = NOT_EXISTS_INT;
         this.cudosWalletAddress = '';
         this.bitcoinPayoutWalletAddress = '';
-        this.profileImgUrl = '/assets/temp/profile-preview.png';
-        this.coverImgUrl = '/assets/temp/profile-cover.png';
+        this.profileImgUrl = '/assets/profile/profile.png';
+        this.coverImgUrl = '/assets/profile/ccover.png';
     }
 
     isNew(): boolean {

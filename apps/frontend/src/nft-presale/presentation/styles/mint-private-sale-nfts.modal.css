@@ -6,7 +6,11 @@
 
 .MintPrivateSaleNftsModal .Stage.Preview .AddressLine {
     width: 100%;
-    gap: px;
+    gap: 16px;
+}
+
+.MintPrivateSaleNftsModal .Stage.Preview .WrongWalletInfo {
+    text-align: center;
 }
 
 .MintPrivateSaleNftsModal .Stage.Success .TransactionView {
