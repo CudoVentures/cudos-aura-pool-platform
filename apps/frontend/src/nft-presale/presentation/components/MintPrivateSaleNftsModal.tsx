@@ -109,9 +109,22 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                         {mintPrivateSaleNftsModalStore.addressMintDataEntities.map((addressMintDataEntity: AddressMintDataEntity, i: number) => (
                             <div key = { i } className={'FlexRow AddressLine'}>
                                 <div className={'AddressField'}>
-                                    <strong>{ addressMintDataEntity.firstName } { addressMintDataEntity.lastName }</strong><br />
-                                    {addressMintDataEntity.cudosAddress}<br />
-                                    <em>{`{${addressMintDataEntity.applicantId}-${addressMintDataEntity.workflowRunId}}`}</em>
+                                    { addressMintDataEntity.hasAccountData() === true ? (
+                                        <>
+                                            <strong>{ addressMintDataEntity.firstName } { addressMintDataEntity.lastName }</strong><br />
+                                            {addressMintDataEntity.cudosAddress}<br />
+                                            <em className = { 'ColorNeutral060' }>
+                                                KYC applicant: {addressMintDataEntity.applicantId}<br />
+                                                KYC workflowRunId: {addressMintDataEntity.workflowRunId}
+                                            </em>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {addressMintDataEntity.cudosAddress}<br />
+                                            <em className = { 'ColorWarning060' }>No KYC found for this address</em>
+                                        </>
+                                    ) }
+
                                 </div>
                                 <DataPreviewLayout
                                     styledContainerProps = { {

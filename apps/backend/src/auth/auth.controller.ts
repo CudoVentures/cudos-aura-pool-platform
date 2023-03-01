@@ -57,6 +57,11 @@ export class AuthController {
     ): Promise<void> {
         for (let i = reqCreatePresaleAccounts.addressMintDataEntities.length; i-- > 0;) {
             const addressMintDataEntity = AddressMintDataEntity.fromJson(reqCreatePresaleAccounts.addressMintDataEntities[i]);
+            if (addressMintDataEntity.hasAccountData() === false) {
+                console.log('skipping', addressMintDataEntity);
+                continue;
+            }
+
             const accountEntity = await this.authService.createPresaleAccounts(addressMintDataEntity, req.transaction);
             await this.kycService.creditKycForPresale(accountEntity, addressMintDataEntity, req.transaction);
         }

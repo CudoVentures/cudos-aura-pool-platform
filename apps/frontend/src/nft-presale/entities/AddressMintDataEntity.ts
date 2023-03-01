@@ -23,6 +23,10 @@ export default class AddressMintDataEntity {
         this.nftMints = [];
     }
 
+    hasAccountData(): boolean {
+        return this.cudosAddress !== '' && this.firstName !== '' && this.lastName !== '' && this.applicantId !== '' && this.workflowRunId !== '';
+    }
+
     static toJson(entity: AddressMintDataEntity): any {
         return {
             'cudosAddress': entity.cudosAddress,
@@ -34,8 +38,26 @@ export default class AddressMintDataEntity {
     }
 
     static fromJson(json: any): AddressMintDataEntity {
-        if (!json.cudosAddress || !json.firstName || !json.lastName || !json.applicantId || !json.workflowRunId || !json.nftMints) {
-            return null;
+        if (typeof (json) !== 'object') {
+            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+        }
+        if (typeof (json.cudosAddress) !== 'string') {
+            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+        }
+        if (typeof (json.firstName) !== 'string') {
+            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+        }
+        if (typeof (json.lastName) !== 'string') {
+            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+        }
+        if (typeof (json.applicantId) !== 'string') {
+            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+        }
+        if (typeof (json.workflowRunId) !== 'string') {
+            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+        }
+        if (typeof (json.nftMints) !== 'object' || typeof (json.nftMints.length) !== 'number') {
+            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
         }
 
         const entity = new AddressMintDataEntity();

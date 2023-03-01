@@ -161,7 +161,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                                 padding={ButtonPadding.PADDING_48}
                                                 color={ButtonColor.SCHEME_4}
                                                 onClick={onClickMintPrivateSaleNfts} >
-                                                Mint Private Sale Nfts and Users
+                                                Mint Giveaways/Private Sale Nfts and Users
                                             </Button>
                                         )}
                                         {collectionEntity.isStatusQueued() && (<>

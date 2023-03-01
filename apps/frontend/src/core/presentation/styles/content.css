@@ -246,6 +246,10 @@ html.OverflowHidden {
     color: var(--color-error-060)
 }
 
+.ColorWarning060 {
+    color: var(--color-warning-060);
+}
+
 .ColorSuccess060 {
     color: var(--color-success-060)
 }

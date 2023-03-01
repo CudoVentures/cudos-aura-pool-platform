@@ -16,6 +16,10 @@ export default class AddressMintDataEntity {
         this.workflowRunId = '';
     }
 
+    hasAccountData(): boolean {
+        return this.cudosAddress !== '' && this.firstName !== '' && this.lastName !== '' && this.applicantId !== '' && this.workflowRunId !== '';
+    }
+
     static fromJson(json: AddressMintJsonValidations) {
         if (json === null) {
             return null;

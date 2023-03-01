@@ -86,8 +86,7 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
         const addressMintDataEntities = json.addressMints.map((addressMintJson) => AddressMintDataEntity.fromJson(addressMintJson));
 
         if (addressMintDataEntities === null && addressMintDataEntities.length === 0) {
-            this.alertStore.show('Invalid JSON.');
-            return;
+            throw Error('Invalid JSON');
         }
 
         this.addressMintDataEntities = addressMintDataEntities;
