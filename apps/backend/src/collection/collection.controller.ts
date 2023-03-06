@@ -264,10 +264,10 @@ export class CollectionController {
             const chainMarketplaceCollectionEntitiesByIds = await this.collectionService.getChainMarketplaceCollectionsByIds(collectionIds);
 
             if (chainMarketplaceCollectionEntitiesByDenoms.length !== denomIds.length) {
-                throw new Error('BDJuno is updated but marketpalce collections are missing (fetch by denomIds)');
+                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by denomIds) looking for ${denomIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByDenoms.join(', ')}`);
             }
             if (chainMarketplaceCollectionEntitiesByIds.length !== collectionIds.length) {
-                throw new Error('BDJuno is updated but marketpalce collections are missing (fetch by collectionIds)');
+                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by collectionIds) looking for ${collectionIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByIds.join(', ')}`);
             }
 
             const chainMarketplaceCollectionEntitiesMap = new Map();
