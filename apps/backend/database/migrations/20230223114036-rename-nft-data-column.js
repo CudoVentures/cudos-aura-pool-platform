@@ -1,10 +1,10 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        queryInterface.renameColumn('nfts', 'data', 'group')
+        await queryInterface.renameColumn('nfts', 'data', 'group')
     },
 
     async down(queryInterface, Sequelize) {
-        queryInterface.renameColumn('nfts', 'group', 'data')
+        await queryInterface.renameColumn('nfts', 'group', 'data')
     },
 };
