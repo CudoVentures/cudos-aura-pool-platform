@@ -140,7 +140,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
 
                         {walletStore.isConnected() === true && walletStore.address === CHAIN_DETAILS.MINTING_SERVICE_ADDRESS ? (
                             <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
+                                <Button onClick={onClickSubmitForSell}>Mint giveaways/private sale NFTs</Button>
                             </Actions>
                         ) : (
                             <div className = { 'Bold ColorError060 WrongWalletInfo' }>Connect OnDemandMintingService's wallet with address: {CHAIN_DETAILS.MINTING_SERVICE_ADDRESS}</div>
