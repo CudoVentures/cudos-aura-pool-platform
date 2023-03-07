@@ -52,7 +52,8 @@ const accounts = [
 
 const superAdmins = [
     {
-        cudos_royaltees_address: 'cudos154dfcmrrdmafmvftuvypsvgpl2qyvw7lh0x23t',
+        // cudos_royaltees_address: 'cudos154dfcmrrdmafmvftuvypsvgpl2qyvw7lh0x23t',
+        cudos_royaltees_address: 'cudos1mltkk0ktaljxqmvuh7n703qcsjez6g22pwcp6j',
     },
 ]
 
