@@ -95,7 +95,7 @@ export class StatisticsService {
 
         const { nftEventEntities, nftEntitiesMap } = nftEventFilterEntity.isPlatformFilter() ? await this.fetchPlatformNftEvents() : await this.fetchNftEventsByNftFilter(userEntity, nftEventFilterEntity);
 
-        nftEventEntities.sort((a, b) => ((a.timestamp > b.timestamp) ? 1 : -1))
+        nftEventEntities.sort((a, b) => a.timestamp - b.timestamp);
 
         // filter for event type
         let filteredNftEventEntities = nftEventFilterEntity.isEventFilterSet()
