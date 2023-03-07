@@ -23,7 +23,6 @@
     "start:built:chain-observer": "node ./apps/chain-observer/main.js",
     "start:built:eth-payments-relayer": "node ./apps/eth-payments-relayer/main.js",
     "start:built:platform": "npm run migrate && node ./apps/backend/main.js",
-    "seed": "npx sequelize db:seed:all --config=./apps/backend/database/config/config.js --seeders-path=./apps/backend/database/seeders",
     "migrate": "npx sequelize db:migrate --config=./apps/backend/database/config/config.js --migrations-path=./apps/backend/database/migrations",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
