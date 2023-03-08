@@ -95,7 +95,8 @@ export class StatisticsService {
 
         const { nftEventEntities, nftEntitiesMap } = nftEventFilterEntity.isPlatformFilter() ? await this.fetchPlatformNftEvents() : await this.fetchNftEventsByNftFilter(userEntity, nftEventFilterEntity);
 
-        nftEventEntities.sort((a, b) => a.timestamp - b.timestamp);
+        // nftEventEntities.sort((a, b) => a.timestamp - b.timestamp);
+        nftEventEntities.sort((a, b) => b.timestamp - a.timestamp);
 
         // filter for event type
         let filteredNftEventEntities = nftEventFilterEntity.isEventFilterSet()
@@ -178,7 +179,7 @@ export class StatisticsService {
             )
         });
 
-        megaWalletEventEntities.sort((a, b) => a.timestamp - b.timestamp)
+        megaWalletEventEntities.sort((a, b) => b.timestamp - a.timestamp)
 
         // filter for event type
         megaWalletEventEntities = megaWalletEventFilterEntity.isEventFilterSet()

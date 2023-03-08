@@ -37,7 +37,7 @@ lerna-debug.log*
 
 
 # Config
-/config/.env
+/config/.env*
 /docker/prod/compose.arg
 /docker/dev/compose.arg
 /config/*.json

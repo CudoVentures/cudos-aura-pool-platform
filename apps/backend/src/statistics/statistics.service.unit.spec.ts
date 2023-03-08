@@ -191,7 +191,7 @@ describe('NFTService', () => {
             },
         },
         {
-            testName: 'events should be sorted by timestamp ASC',
+            testName: 'events should be sorted by timestamp DESC',
             callParams: {
                 userEntity: createBasicUser(1, 1, 'userCudosAddress'),
                 nftEventFilterENtity: createNftEventPlatformFilterEntity(null, 0, 10, 0, 10),
@@ -210,10 +210,10 @@ describe('NFTService', () => {
             fetchNftEventsByNftFilterReturs: null,
             result: {
                 nftEventEntities: [
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 2, 10, '', ''),
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 4, 10, '', ''),
                     createBasicNftSaleEvent('nftId', '', '', '', '', 5, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 4, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 2, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
                 ],
                 nftEntities: [
                     createBasicMintedNft('nftId', 'a', 1, '100', 'a', 1, 1, 'a', 'a'),
@@ -241,9 +241,9 @@ describe('NFTService', () => {
             fetchNftEventsByNftFilterReturs: null,
             result: {
                 nftEventEntities: [
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 2, 10, '', ''),
                     createBasicNftSaleEvent('nftId', '', '', '', '', 4, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 2, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
                 ],
                 nftEntities: [
                     createBasicMintedNft('nftId', 'a', 1, '100', 'a', 1, 1, 'a', 'a'),
@@ -271,8 +271,8 @@ describe('NFTService', () => {
             fetchNftEventsByNftFilterReturs: null,
             result: {
                 nftEventEntities: [
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 2, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 5, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 4, 10, '', ''),
                 ],
                 nftEntities: [
                     createBasicMintedNft('nftId', 'a', 1, '100', 'a', 1, 1, 'a', 'a'),
@@ -301,8 +301,8 @@ describe('NFTService', () => {
             fetchNftEventsByNftFilterReturs: null,
             result: {
                 nftEventEntities: [
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 2, 10, '', ''),
+                    createBasicNftSaleEvent('nftId2', '', '', '', '', 5, 10, '', ''),
+                    createBasicNftSaleEvent('nftId2', '', '', '', '', 4, 10, '', ''),
                 ],
                 nftEntities: [
                     createBasicMintedNft('nftId', 'a', 1, '100', 'a', 1, 1, 'a', 'a'),
@@ -330,10 +330,10 @@ describe('NFTService', () => {
             fetchNftEventsByNftFilterReturs: null,
             result: {
                 nftEventEntities: [
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
-                    createBasicNftTransferEvent('nftId', '', '', '', '', 2, 10, '', ''),
-                    createBasicNftSaleEvent('nftId', '', '', '', '', 4, 10, '', ''),
                     createBasicNftMintEvent('nftId', '', '', '', '', 5, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 4, 10, '', ''),
+                    createBasicNftTransferEvent('nftId', '', '', '', '', 2, 10, '', ''),
+                    createBasicNftSaleEvent('nftId', '', '', '', '', 1, 10, '', ''),
                 ],
                 nftEntities: [
                     createBasicMintedNft('nftId', 'a', 1, '100', 'a', 1, 1, 'a', 'a'),
@@ -387,8 +387,8 @@ describe('NFTService', () => {
             fetchNftEventsByNftFilterReturs: null,
             result: {
                 nftEventEntities: [
-                    createBasicNftMintEvent('nftId', '', '', '', '', 1, 10, '', ''),
                     createBasicNftMintEvent('nftId', '', '', '', '', 5, 10, '', ''),
+                    createBasicNftMintEvent('nftId', '', '', '', '', 1, 10, '', ''),
                 ],
                 nftEntities: [
                     createBasicMintedNft('nftId', 'a', 1, '100', 'a', 1, 1, 'a', 'a'),
