@@ -213,9 +213,12 @@ export class StatisticsService {
     }
 
     private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>} > {
+        const { collectionEntities } = await this.collectionService.findByFilter(new CollectionFilterEntity());
+        const denomIdsPre = collectionEntities.map((collection) => collection.denomId);
+
         // fetch all events from graphql
-        const nftModuleNftTransferEntities = await this.graphqlService.fetchNftPlatformTransferHistory();
-        const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplacePlatformNftTradeHistory();
+        const nftModuleNftTransferEntities = await this.graphqlService.fetchNftTransferHistoryByDenomIds(denomIdsPre);
+        const nftMarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(denomIdsPre);
 
         // get denom and token ids for query from db
         let denomIds = nftModuleNftTransferEntities.map((entity) => entity.denomId);
@@ -226,8 +229,10 @@ export class StatisticsService {
         tokenIds = tokenIds.concat(nftMarketplaceTradeEntities.map((entity) => entity.tokenId));
         tokenIds = tokenIds.filter((tokenId, i) => tokenIds.findIndex((id) => id === tokenId) === i);
 
+        // filter out collections that are not in graph ql
+        const collections = collectionEntities.filter((collectionEntity) => denomIds.includes(collectionEntity.denomId));
+
         // get collections so we can query nfts by collection ids
-        const collections = await this.collectionService.findByDenomIds(denomIds);
         const collectionIdCollectionMap = new Map<number, CollectionEntity>();
         collections.forEach((entity) => collectionIdCollectionMap.set(entity.id, entity));
 

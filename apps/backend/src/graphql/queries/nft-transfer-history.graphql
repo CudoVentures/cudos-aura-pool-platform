@@ -45,8 +45,8 @@ query NftTransferHistoryByOldOwnerAddressAndTimestamp($timestampFrom: bigint!, $
   }
 }
 
-query NftPlatformTransferHistory {
-  nft_transfer_history {
+query NftTransferHistoryByDenomIds($denomIds: [String!]) {
+  nft_transfer_history(where: {denom_id: {_in: $denomIds}}) {
     id
     denom_id
     new_owner
