@@ -88,9 +88,9 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
     //     megaWalletSettingsModalStore.showSignal(MegaWalletSettings.ADRESS);
     // }
 
-    const onClickChangeGlobalRoyalties = () => {
-        megaWalletSettingsModalStore.showSignal(MegaWalletSettings.GLOBAL_ROYALTIES);
-    }
+    // const onClickChangeGlobalRoyalties = () => {
+    //     megaWalletSettingsModalStore.showSignal(MegaWalletSettings.GLOBAL_ROYALTIES);
+    // }
 
     function onClickChangeGlobalFees() {
         megaWalletSettingsModalStore.showSignal(MegaWalletSettings.GLOBAL_FEES);

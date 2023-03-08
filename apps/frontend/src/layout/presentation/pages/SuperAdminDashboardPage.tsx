@@ -83,12 +83,12 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 createTableCell((
                     <div className = { 'Bold' } >
                         <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{
-                            miningFarmPerformanceEntity.ifFloorPriceSet() === true
+                            miningFarmPerformanceEntity.isFloorPriceSet() === true
                                 ? CudosStore.formatAcudosInCudos(miningFarmPerformanceEntity.floorPriceInAcudos)
                                 : 'No listed NFTs'
                         }</div>
                         <div className={'B3 SemiBold Gray ColorNeutral060'}>{
-                            miningFarmPerformanceEntity.ifFloorPriceSet() === true
+                            miningFarmPerformanceEntity.isFloorPriceSet() === true
                                 && (cudosStore.formatAcudosInUsd(miningFarmPerformanceEntity.floorPriceInAcudos))
                         }</div>
                     </div>

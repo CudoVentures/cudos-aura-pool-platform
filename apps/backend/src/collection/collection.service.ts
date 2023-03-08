@@ -19,7 +19,7 @@ import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
 import { NFTService } from '../nft/nft.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
-import BigNumber from 'bignumber.js';
+import CoinGeckoService from '../coin-gecko/coin-gecko.service';
 
 @Injectable()
 export class CollectionService {
@@ -32,6 +32,7 @@ export class CollectionService {
     private accountService: AccountService,
     @Inject(forwardRef(() => StatisticsService))
     private statisticsService: StatisticsService,
+    private coingeckoService: CoinGeckoService,
     // eslint-disable-next-line no-empty-function
     ) {}
 
@@ -287,13 +288,7 @@ export class CollectionService {
 
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
         const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-        const floorPriceInAcudos = approvedNfts.reduce((cheapestNftSoFar, nftEntity) => {
-            if (nftEntity.hasPrice() === false) {
-                return cheapestNftSoFar;
-            }
-            cheapestNftSoFar ??= nftEntity;
-            return nftEntity.acudosPrice.lt(cheapestNftSoFar.acudosPrice) ? nftEntity : cheapestNftSoFar;
-        }, null)?.acudosPrice ?? new BigNumber(0);
+        const floorPriceInAcudos = await this.coingeckoService.getFloorPriceOfNftEntities(approvedNfts);
 
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
         const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])

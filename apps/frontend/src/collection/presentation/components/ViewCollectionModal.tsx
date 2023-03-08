@@ -3,16 +3,16 @@ import { inject, observer } from 'mobx-react';
 
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import ViewCollectionModalStore from '../stores/ViewCollectionModalStore';
+import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../core/presentation/components/DataPreviewLayout';
 
 import '../styles/view-collection-modal.css';
-import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 type Props = {
     viewCollectionModalStore?: ViewCollectionModalStore;
-    cudosStore: CudosStore;
+    cudosStore?: CudosStore;
 }
 
 function ViewCollectionModal({ cudosStore, viewCollectionModalStore }: Props) {

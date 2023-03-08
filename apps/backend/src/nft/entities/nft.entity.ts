@@ -46,7 +46,16 @@ export default class NftEntity {
     }
 
     isListed(): boolean {
-        return this.isMinted() === true && this.hasPrice() === true;
+        if (this.isMinted() === true && this.hasPrice() === true) {
+            return true;
+        }
+
+        if (this.isMinted() === false && this.priceUsd !== NOT_EXISTS_INT) {
+            return true;
+        }
+
+        return false;
+        // return this.isMinted() === true && this.hasPrice() === true;
     }
 
     hasPrice(): boolean {

@@ -23,7 +23,8 @@ import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity
 import { StatisticsService } from '../statistics/statistics.service';
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
 import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
-import { NOT_EXISTS_INT } from '../common/utils';
+import { BIG_NUMBER_0, NOT_EXISTS_INT } from '../common/utils';
+import CoinGeckoService from '../coin-gecko/coin-gecko.service';
 
 @Injectable()
 export class FarmService {
@@ -46,6 +47,7 @@ export class FarmService {
         private dataService: DataService,
         @Inject(forwardRef(() => StatisticsService))
         private statisticsService: StatisticsService,
+        private coingeckoService: CoinGeckoService,
     ) {}
 
     async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
@@ -168,21 +170,19 @@ export class FarmService {
         miningFarmIds.forEach((miningFarmId) => {
             miningFarmIdToPerformanceEntitiesMap.set(miningFarmId, MiningFarmPerformanceEntity.newInstanceForMiningFarm(miningFarmId));
         });
-        nftEntities.forEach((nftEntity) => {
+        for (let i = nftEntities.length; i-- > 0;) {
+            const nftEntity = nftEntities[i];
             const miningFarmId = collectionToMiningFarmIdsMap.get(nftEntity.collectionId);
             nftToMiningFarmIdsMap.set(nftEntity.id, miningFarmId);
 
-            // if nft is not listed, don't use it's price
-            // not listed nfts have price of 0
-            if (nftEntity.isListed() === false) {
-                return
+            const priceInAcudos = await this.coingeckoService.getNftPriceInAcudos(nftEntity);
+            if (priceInAcudos.gt(BIG_NUMBER_0) === true) {
+                const miningFarmPerformanceEntity = miningFarmIdToPerformanceEntitiesMap.get(miningFarmId);
+                if (miningFarmPerformanceEntity.isFloorPriceSet() === false || miningFarmPerformanceEntity.floorPriceInAcudos.gt(priceInAcudos) === true) {
+                    miningFarmPerformanceEntity.floorPriceInAcudos = priceInAcudos;
+                }
             }
-
-            const miningFarmPerformanceEntity = miningFarmIdToPerformanceEntitiesMap.get(miningFarmId);
-            if (miningFarmPerformanceEntity.isFloorPriceSet() === false || miningFarmPerformanceEntity.floorPriceInAcudos.gt(nftEntity.acudosPrice) === true) {
-                miningFarmPerformanceEntity.floorPriceInAcudos = nftEntity.acudosPrice;
-            }
-        });
+        }
 
         nftEventEntities.forEach((nftEventEntity) => {
             const miningFarmId = nftToMiningFarmIdsMap.get(nftEventEntity.nftId) ?? NOT_EXISTS_INT;
@@ -388,7 +388,8 @@ export class FarmService {
             collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
         });
         const nftEntities = await this.nftService.findByCollectionIds(collectionIds);
-        nftEntities.forEach((nftEntity) => {
+        for (let i = nftEntities.length; i-- > 0;) {
+            const nftEntity = nftEntities[i];
             const collectionEntity = collectionEntitiesMap.get(nftEntity.collectionId);
             const miningFarmEntity = miningFarmEntitiesMap.get(collectionEntity.farmId);
             const miningFarmDetailsEntity = miningFarmIdToDetailsMap.get(miningFarmEntity.id);
@@ -400,14 +401,16 @@ export class FarmService {
             if (nftEntity.isSold() === true) {
                 ++miningFarmDetailsEntity.totalNftsSold;
             }
-            if (nftEntity.hasPrice() === true) {
+
+            const priceInAcudos = await this.coingeckoService.getNftPriceInAcudos(nftEntity);
+            if (priceInAcudos.gt(BIG_NUMBER_0) === true) {
                 if (miningFarmDetailsEntity.floorPriceInAcudos === null) {
-                    miningFarmDetailsEntity.floorPriceInAcudos = nftEntity.acudosPrice;
-                } else if (nftEntity.acudosPrice.lt(miningFarmDetailsEntity.floorPriceInAcudos)) {
+                    miningFarmDetailsEntity.floorPriceInAcudos = priceInAcudos;
+                } else if (priceInAcudos.lt(miningFarmDetailsEntity.floorPriceInAcudos)) {
                     miningFarmDetailsEntity.floorPriceInAcudos = nftEntity.acudosPrice;
                 }
             }
-        });
+        }
 
         const miningFarmDetailsEntities = [];
         miningFarmIdToDetailsMap.forEach((miningFarmDetailsEntity) => {
