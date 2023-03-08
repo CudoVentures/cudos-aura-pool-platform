@@ -51,9 +51,9 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
             )}
             {megaWalletSettingsModalStore.isSettingTypeGlobalFees() === true && (
                 <SettingLayout
-                    modalTitle={'Change Global Fees'}
+                    modalTitle={'Change Pool Fee'}
                     modalSubTitle={'Choose the amount you want to withdraw from your account and add the wallet address you want to send tokens to. (To be updated)'}
-                    label={'Global Fees %'}
+                    label={'Pool Fee %'}
                     inputType={InputType.REAL}
                 />
             )}

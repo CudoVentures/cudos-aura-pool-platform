@@ -50,7 +50,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
     const farmEnergySourceseValidation = useRef(validationState.addEmptyValidation('Empty energy source')).current;
     const farmLocationValidation = useRef(validationState.addEmptyValidation('Empty address')).current;
     const farmHashrateValidation = useRef(validationState.addEmptyValidation('Empty hashrate')).current;
-    const farmMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
+    const farmMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fee')).current;
     const resaleFarmRoyaltiesCudosAddressValidation = useRef(validationState.addCudosAddressValidation('Invalid cudos address')).current;
     // const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const farmLeftoversAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
@@ -262,8 +262,8 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                     </div>
                     <div className={'FlexColumn FeeInputHolder'}>
                         <Input
-                            label={ 'Maintenance Fees (per month)' }
-                            placeholder={'Maintenance fees...'}
+                            label={ 'Maintenance Fee (per month)' }
+                            placeholder={'Maintenance Fee...'}
                             value={maintenanceFeeInBtc}
                             inputType={InputType.REAL}
                             decimalLength = { 7 }

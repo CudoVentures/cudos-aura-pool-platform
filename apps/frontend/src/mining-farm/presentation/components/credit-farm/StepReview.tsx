@@ -49,7 +49,7 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
                         createDataPreview('Energy Source', creditMiningFarmDetailsPageStore.getSelectedEnergySourcesNames()),
                         createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
                         createDataPreview('Hashrate', miningFarmEntity.formatHashPowerInTh()),
-                        createDataPreview('Farm Maintenance Fees', miningFarmEntity.formatMaintenanceFeesInBtc()),
+                        createDataPreview('Farm Maintenance Fee', miningFarmEntity.formatMaintenanceFeesInBtc()),
                         createDataPreview('Farm Photos', miningFarmEntity.farmPhotoUrls.length),
 
                     ] } />
