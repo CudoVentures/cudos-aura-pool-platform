@@ -215,7 +215,7 @@ export default class ProjectUtils {
     }
 
     static formatUsd(usd: BigNumber): string {
-        return numeral(usd.toString(10)).format(ProjectUtils.NUMERAL_USD);
+        return numeral(usd.toFixed(4)).format(ProjectUtils.NUMERAL_USD);
     }
 
     static getEndOfTodaysTimestamp() {
