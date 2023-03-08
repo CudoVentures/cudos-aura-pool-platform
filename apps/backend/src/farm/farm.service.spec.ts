@@ -113,8 +113,8 @@ describe('FarmService', () => {
         service = module.get<FarmService>(FarmService);
         graphQlService = module.get<GraphqlService>(GraphqlService);
 
-        jest.spyOn(graphQlService, 'fetchMarketplacePlatformNftTradeHistory').mockImplementation(async () => getGraphQlMarketplaceNftEvents());
-        jest.spyOn(graphQlService, 'fetchNftPlatformTransferHistory').mockImplementation(async () => getGraphQlNftNftEvents());
+        jest.spyOn(graphQlService, 'fetchNftTransferHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlNftNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
+        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
 
     });
 

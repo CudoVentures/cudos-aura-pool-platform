@@ -116,8 +116,8 @@ describe('StatisticsService', () => {
             && entity.timestamp >= timestampFrom
             && entity.timestamp <= timestampTo));
         jest.spyOn(graphQlService, 'fetchNftTransferHistoryByUniqueIds').mockImplementation(async (uniqIds) => getGraphQlNftNftEvents().filter((entity) => uniqIds.includes(`${entity.tokenId}@${entity.denomId}`)));
-        jest.spyOn(graphQlService, 'fetchNftPlatformTransferHistory').mockImplementation(async () => getGraphQlNftNftEvents());
-        jest.spyOn(graphQlService, 'fetchMarketplacePlatformNftTradeHistory').mockImplementation(async () => getGraphQlMarketplaceNftEvents());
+        jest.spyOn(graphQlService, 'fetchNftTransferHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlNftNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
+        jest.spyOn(graphQlService, 'fetchMarketplaceNftTradeHistoryByDenomIds').mockImplementation(async (denomIds) => getGraphQlMarketplaceNftEvents().filter((entity) => denomIds.includes(entity.denomId)));
 
         jest.spyOn(graphQlService, 'fetchNftTransferHistoryByAddressAndTimestamp').mockImplementation(async (timestampFrom, timestampTo, address) => getGraphQlNftNftEvents().filter((entity) => (entity.newOwner === address
             || entity.oldOwner === address)
