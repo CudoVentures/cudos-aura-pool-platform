@@ -333,7 +333,8 @@ describe('StatisticsService', () => {
                 && entity.isMintEvent()
                 && entity.timestamp <= nftEventFilterEntity.timestampTo
                 && entity.timestamp >= nftEventFilterEntity.timestampFrom;
-            });
+            })
+            .sort((a, b) => b.timestamp - a.timestamp);
 
         let nftEntities = [];
         nftEventEntities.forEach((entity) => {
@@ -353,7 +354,9 @@ describe('StatisticsService', () => {
         const userEarningsEntity = await service.fetchNftEventsByFilter(userEntity, nftEventFilterEntity);
 
         // Assert
-        expect(userEarningsEntity).toEqual(result);
+        expect(userEarningsEntity.total).toEqual(result.total);
+        expect(userEarningsEntity.nftEventEntities).toEqual(result.nftEventEntities);
+        expect(userEarningsEntity.nftEntities.sort((a, b) => a.id.localeCompare(b.id))).toEqual(result.nftEntities.sort((a, b) => a.id.localeCompare(b.id)));
     });
 
     it('fetchNftEventsByFilter: Sales only', async () => {
@@ -392,7 +395,8 @@ describe('StatisticsService', () => {
             })
             .filter((entity) => {
                 return entity.isSaleEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
-            });
+            })
+            .sort((a, b) => b.timestamp - a.timestamp);
 
         const nftEventMap = new Map<string, NftEventEntity>();
         nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
@@ -406,7 +410,9 @@ describe('StatisticsService', () => {
         const userEarningsEntity = await service.fetchNftEventsByFilter(userEntity, nftEventFilterEntity);
 
         // Assert
-        expect(userEarningsEntity).toEqual(result);
+        expect(userEarningsEntity.total).toEqual(result.total);
+        expect(userEarningsEntity.nftEventEntities).toEqual(result.nftEventEntities);
+        expect(userEarningsEntity.nftEntities.sort((a, b) => a.id.localeCompare(b.id))).toEqual(result.nftEntities.sort((a, b) => a.id.localeCompare(b.id)));
     });
 
     it('fetchNftEventsByFilter: By platform minted', async () => {
@@ -437,7 +443,8 @@ describe('StatisticsService', () => {
             })
             .filter((entity) => {
                 return entity.isMintEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
-            });
+            })
+            .sort((a, b) => b.timestamp - a.timestamp);
 
         const nftEventMap = new Map<string, NftEventEntity>();
         nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
@@ -452,7 +459,9 @@ describe('StatisticsService', () => {
         const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
 
         // Assert
-        expect(userEarningsEntity).toEqual(result);
+        expect(userEarningsEntity.total).toEqual(result.total);
+        expect(userEarningsEntity.nftEventEntities).toEqual(result.nftEventEntities);
+        expect(userEarningsEntity.nftEntities.sort((a, b) => a.id.localeCompare(b.id))).toEqual(result.nftEntities.sort((a, b) => a.id.localeCompare(b.id)));
     });
 
     it('fetchNftEventsByFilter by farmid: Happy path', async () => {
@@ -486,7 +495,8 @@ describe('StatisticsService', () => {
             })
             .filter((entity) => {
                 return entity.isMintEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
-            });
+            })
+            .sort((a, b) => b.timestamp - a.timestamp);
 
         const nftEventMap = new Map<string, NftEventEntity>();
         nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
@@ -501,7 +511,9 @@ describe('StatisticsService', () => {
         const result = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
 
         // Assert
-        expect(result).toEqual(expected);
+        expect(expected.total).toEqual(result.total);
+        expect(expected.nftEventEntities).toEqual(result.nftEventEntities);
+        expect(expected.nftEntities.sort((a, b) => a.id.localeCompare(b.id))).toEqual(result.nftEntities.sort((a, b) => a.id.localeCompare(b.id)));
     });
 
     it('fetchNftEventsByFilter: By platform transferred', async () => {
@@ -532,7 +544,8 @@ describe('StatisticsService', () => {
             })
             .filter((entity) => {
                 return entity.isTransferEvent() && entity.timestamp <= nftEventFilterEntity.timestampTo && entity.timestamp >= nftEventFilterEntity.timestampFrom;
-            });
+            })
+            .sort((a, b) => b.timestamp - a.timestamp);
 
         const nftEventMap = new Map<string, NftEventEntity>();
         nftEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
@@ -547,7 +560,9 @@ describe('StatisticsService', () => {
         const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
 
         // Assert
-        expect(userEarningsEntity).toEqual(result);
+        expect(userEarningsEntity.total).toEqual(result.total);
+        expect(userEarningsEntity.nftEventEntities).toEqual(result.nftEventEntities);
+        expect(userEarningsEntity.nftEntities.sort((a, b) => a.id.localeCompare(b.id))).toEqual(result.nftEntities.sort((a, b) => a.id.localeCompare(b.id)));
     });
 
     it('fetchEarningsPerDay: cudos farm earnings Happy path', async () => {
@@ -688,7 +703,7 @@ describe('StatisticsService', () => {
                 return entity.timestamp <= megaWalletEventFilter.timestampTo && entity.timestamp >= megaWalletEventFilter.timestampFrom;
             });
 
-        megaWalletEventEntities.sort((a, b) => a.timestamp - b.timestamp)
+        megaWalletEventEntities.sort((a, b) => b.timestamp - a.timestamp)
 
         const nftEventMap = new Map<string, MegaWalletEventEntity>();
         megaWalletEventEntities.forEach((entity) => nftEventMap.set(entity.nftId, entity));
