@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 export enum IntBoolValue {
     TRUE = 1,
     FALSE = 0,
@@ -18,3 +20,5 @@ export function parseIntBoolValue(value: boolean | IntBoolValue | number): IntBo
 
 export const NOT_EXISTS_INT = -2147483648;
 export const NOT_EXISTS_STRING = '-2147483648';
+export const FIFTEEN_MINUTES_IN_MILIS = 15 * 60 * 1000;
+export const BIG_NUMBER_0 = new BigNumber(0);

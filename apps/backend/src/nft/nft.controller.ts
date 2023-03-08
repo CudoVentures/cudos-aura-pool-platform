@@ -114,12 +114,6 @@ export class NFTController {
             throw new NotFoundException();
         }
 
-        const canBuyNft = await this.kycService.canBuyAnNft(accountEntity, userEntity, nftEntity);
-        if (canBuyNft === false) {
-            console.log('The user does not meet KYC creteria');
-            throw new NotFoundException();
-        }
-
         if (nftEntity.isPriceInAcudosValidForMinting() === false) {
             console.log('Getting NFT from OnDemandMinting', 'price not valid for minting');
             throw new NotFoundException();
@@ -127,6 +121,12 @@ export class NFTController {
 
         if (nftEntity.isQueued() === false) {
             console.log('Getting NFT from OnDemandMinting', 'is not queued');
+            throw new NotFoundException();
+        }
+
+        const canBuyNft = await this.kycService.canBuyAnNft(accountEntity, userEntity, nftEntity);
+        if (canBuyNft === false) {
+            console.log('The user does not meet KYC creteria');
             throw new NotFoundException();
         }
 

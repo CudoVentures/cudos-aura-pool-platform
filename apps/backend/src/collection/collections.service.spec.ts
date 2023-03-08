@@ -21,6 +21,7 @@ import nftTestEntitities from '../../test/data/nft.data';
 import { CollectionEntity } from './entities/collection.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { NOT_EXISTS_INT } from '../common/utils';
+import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
 
 describe('CollectionService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -74,6 +75,7 @@ describe('CollectionService', () => {
                 forwardRef(() => NFTModule),
                 GraphqlModule,
                 AccountModule,
+                CoinGeckoModule,
                 forwardRef(() => StatisticsModule),
 
             ],

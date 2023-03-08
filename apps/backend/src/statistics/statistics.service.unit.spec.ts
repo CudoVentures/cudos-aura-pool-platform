@@ -35,8 +35,8 @@ describe('NFTService', () => {
 
     const service = new StatisticsService(
         new NFTService(null, null, null, null, null),
-        new CollectionService(null, null, null, null, null),
-        new FarmService(null, null, null, null, null, null, null, null, null, null),
+        new CollectionService(null, null, null, null, null, null),
+        new FarmService(null, null, null, null, null, null, null, null, null, null, null),
         new ConfigService(),
         new GraphqlService(null),
         NftPayoutHistoryRepo,

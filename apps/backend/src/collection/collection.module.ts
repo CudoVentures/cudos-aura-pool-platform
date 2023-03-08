@@ -10,6 +10,7 @@ import { AccountModule } from '../account/account.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { FarmModule } from '../farm/farm.module';
 import { DataModule } from '../data/data.module';
+import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { DataModule } from '../data/data.module';
         AccountModule,
         DataModule,
         GraphqlModule,
+        CoinGeckoModule,
         forwardRef(() => FarmModule),
         forwardRef(() => StatisticsModule),
     ],

@@ -15,7 +15,7 @@ export default class MiningFarmPerformanceEntity {
         this.floorPriceInAcudos = null;
     }
 
-    ifFloorPriceSet(): boolean {
+    isFloorPriceSet(): boolean {
         return this.floorPriceInAcudos !== null;
     }
 

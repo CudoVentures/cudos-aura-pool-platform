@@ -12,6 +12,7 @@ import { ManufacturerRepo } from './repos/manufacturer.repo';
 import { MinerRepo } from './repos/miner.repo';
 import { DataModule } from '../data/data.module';
 import { StatisticsModule } from '../statistics/statistics.module';
+import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
         HttpModule,
         VisitorModule,
         DataModule,
+        CoinGeckoModule,
         forwardRef(() => StatisticsModule),
     ],
     controllers: [FarmController],

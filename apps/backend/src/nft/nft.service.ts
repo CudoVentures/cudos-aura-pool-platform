@@ -15,6 +15,7 @@ import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
 import { randomInt } from 'crypto';
+import { FIFTEEN_MINUTES_IN_MILIS } from '../common/utils';
 
 enum Tier {
     TIER_1 = 1, // cheapest
@@ -236,8 +237,7 @@ export class NFTService {
 
         nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
 
-        const fifteenMinutesInMilis = 15 * 60 * 1000;
-        nftEntity.priceAcudosValidUntil = Date.now() + fifteenMinutesInMilis;
+        nftEntity.priceAcudosValidUntil = Date.now() + FIFTEEN_MINUTES_IN_MILIS;
 
         return this.updateOne(id, nftEntity);
     }
@@ -315,8 +315,7 @@ export class NFTService {
     async updatePremintNftPrice(nftEntity: NftEntity, paidAmountAcudos: BigNumber): Promise <NftEntity> {
         nftEntity.acudosPrice = paidAmountAcudos;
 
-        const fifteenMinutesInMilis = 15 * 60 * 1000;
-        nftEntity.priceAcudosValidUntil = Date.now() + fifteenMinutesInMilis;
+        nftEntity.priceAcudosValidUntil = Date.now() + FIFTEEN_MINUTES_IN_MILIS;
 
         await this.updateOne(nftEntity.id, nftEntity);
 
