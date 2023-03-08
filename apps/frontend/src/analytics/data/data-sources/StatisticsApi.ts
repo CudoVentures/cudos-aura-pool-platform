@@ -98,6 +98,7 @@ export default class StatisticsApi {
         const { data } = await axios.post(`${STATISTICS_URL}/fetchPlatformTotalBtcEarnings`)
 
         const res = new ResFetchPlatformTotalEarningsBtc(data)
+
         return res.platformTotalEarningsBtcEntity;
     }
 

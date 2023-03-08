@@ -76,7 +76,7 @@ export default class BitcoinStore {
     }
 
     static formatBtc(btc: BigNumber): string {
-        return `${btc.toString(10)} BTC`;
+        return `${btc.toFixed(8, BigNumber.ROUND_FLOOR)} BTC`;
     }
 
     static formatBtcWithPrecision(btc: BigNumber, decimals: number): string {

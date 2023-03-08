@@ -78,7 +78,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
             if (earningsPerDayFilterEntity.isCudos() === true) {
                 const platformTotalEarningsCudosEntity = superAdminAnalyticsPageStore.platformTotalEarningsCudosEntity;
                 return (
-                    <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudosWithPrecision(platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0), 2)} />
+                    <ChartInfo label = { 'Total Platform Sales'} value = { CudosStore.formatAcudosInCudosWithPrecision(platformTotalEarningsCudosEntity?.totalEarningsInAcudos() ?? new BigNumber(0), 2)} />
                 )
             }
 
@@ -87,10 +87,10 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 const platformTotalEarningsCudosEntity = superAdminAnalyticsPageStore.platformTotalEarningsCudosEntity;
 
                 const nftFeesTotalEarningsInBtc = platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0);
-                const resaleRoyaltiesTotalEarningsInAcudos = platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
+                const royaltiesTotalEarningsInAcudos = platformTotalEarningsCudosEntity?.totalEarningsInAcudos() ?? new BigNumber(0);
 
                 const nftFeesTotalEarningsInUsd = bitcoinStore.convertBtcInUsd(nftFeesTotalEarningsInBtc);
-                const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
+                const resaleRoyaltiesTotalEarningsInUsd = cudosStore.convertAcudosInUsd(royaltiesTotalEarningsInAcudos);
                 const totalInUsd = nftFeesTotalEarningsInUsd.plus(resaleRoyaltiesTotalEarningsInUsd);
 
                 return (
