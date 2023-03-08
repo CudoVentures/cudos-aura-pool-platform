@@ -72,19 +72,3 @@ query MarketplaceNftTradeHistoryByDenomIds($denomIds: [String!]) {
     uniq_id
   }
 }
-
-query MarketplaceNftPlatformTradeHistory {
-  marketplace_nft_buy_history {
-    buyer
-    btc_price
-    denom_id
-    price
-    seller
-    timestamp
-    token_id
-    usd_price
-    transaction_hash
-    uniq_id
-  }
-}
-
