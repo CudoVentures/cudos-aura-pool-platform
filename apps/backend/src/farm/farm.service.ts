@@ -407,7 +407,7 @@ export class FarmService {
                 if (miningFarmDetailsEntity.floorPriceInAcudos === null) {
                     miningFarmDetailsEntity.floorPriceInAcudos = priceInAcudos;
                 } else if (priceInAcudos.lt(miningFarmDetailsEntity.floorPriceInAcudos)) {
-                    miningFarmDetailsEntity.floorPriceInAcudos = nftEntity.acudosPrice;
+                    miningFarmDetailsEntity.floorPriceInAcudos = priceInAcudos;
                 }
             }
         }
