@@ -197,8 +197,8 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                     </StyledContainer>
                     <RowLayout className={'RoyaltyBoxesLayout'} numColumns = { 2 } gap = { 16 }>
                         {/* { renderBoxContainer('Global Royalties', settingsEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) } */}
-                        {/* { renderBoxContainer('Global Fees', settingsEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) } */}
-                        { renderBoxContainer(<TextWithTooltip text={'Global Fees'} tooltipText={'The value here is used only in rewards calculator. The actual value that the platform depends on is set in AuraPayService.'} />, settingsEntity.globalCudosFeesPercent, 'Change Global Fees', onClickChangeGlobalFees) }
+                        {/* { renderBoxContainer('Pool Fee', settingsEntity.globalCudosFeesPercent, 'Change Pool Fee', onClickChangeGlobalFees) } */}
+                        { renderBoxContainer(<TextWithTooltip text={'Pool Fee'} tooltipText={'The value here is used only in rewards calculator. The actual value that the platform depends on is set in AuraPayService.'} />, settingsEntity.globalCudosFeesPercent, 'Change Pool Fee', onClickChangeGlobalFees) }
                         { renderBoxContainer('Resale Fees', settingsEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
                         { renderBoxContainer('Royalty Fee upon first sale of NFT', settingsEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
                     </RowLayout>

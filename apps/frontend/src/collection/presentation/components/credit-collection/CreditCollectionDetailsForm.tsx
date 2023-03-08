@@ -37,7 +37,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const collectionNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
-    // const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty maintenance fees')).current;
+    // const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty Maintenance Fee')).current;
     // const collectionPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Empty payout address')).current;
     const collectionHashPowerPerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
@@ -267,8 +267,8 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             {/* <FieldColumnWrapper
                 field = {
                     <Input
-                        label={<TextWithTooltip text={'Maintenance Fees (per month)'} tooltipText={'Maintenance Fees (per month)'} />}
-                        placeholder={'Maintenance fees...'}
+                        label={<TextWithTooltip text={'Maintenance Fee (per month)'} tooltipText={'Maintenance Fee (per month)'} />}
+                        placeholder={'Maintenance Fee...'}
                         value={maintenanceFeeInBtc}
                         inputType={InputType.REAL}
                         inputValidation={collectionMainteannceFeesValidation}
