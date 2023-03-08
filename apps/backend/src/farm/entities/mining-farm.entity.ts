@@ -47,7 +47,7 @@ export default class MiningFarmEntity {
         this.hashPowerInTh = NOT_EXISTS_INT;
         this.machinesLocation = '';
         this.profileImgUrl = '/assets/profile/profile.png';
-        this.coverImgUrl = '/assets/profile/ccover.png';
+        this.coverImgUrl = '/assets/profile/cover.png';
         this.farmPhotoUrls = [];
         this.status = FarmStatus.QUEUED;
         this.maintenanceFeeInBtc = null;

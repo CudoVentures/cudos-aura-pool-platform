@@ -16,7 +16,7 @@ export default class UserEntity {
         this.cudosWalletAddress = '';
         this.bitcoinPayoutWalletAddress = '';
         this.profileImgUrl = '/assets/profile/profile.png';
-        this.coverImgUrl = '/assets/profile/ccover.png';
+        this.coverImgUrl = '/assets/profile/cover.png';
 
         makeAutoObservable(this);
     }
