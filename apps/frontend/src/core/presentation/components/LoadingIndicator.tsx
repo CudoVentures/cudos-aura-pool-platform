@@ -3,7 +3,7 @@ import { CSSProperties } from '@mui/material/styles/createMixins';
 
 import S from '../../utilities/Main';
 
-import Svg from './Svg';
+import Svg, { SvgSize } from './Svg';
 import SvgLoading from '../vectors/loading.svg';
 import '../styles/loading-indicator.css';
 
@@ -20,11 +20,14 @@ export default function LoadingIndicator({ className, margin, size, inline }: Pr
         'marginTop': margin,
         'marginBottom': margin,
     };
+
     const svgStyle: CSSProperties = {};
+    let svgSize = SvgSize.DEFAULT;
 
     if (size !== null) {
         svgStyle.width = size;
         svgStyle.height = size;
+        svgSize = SvgSize.CUSTOM;
     }
 
     return (
@@ -32,7 +35,7 @@ export default function LoadingIndicator({ className, margin, size, inline }: Pr
             className = { `LoadingIndicator ${S.CSS.getClassName(inline === false, 'FlexSingleCenter')} ${className}` }
             style = { style } >
 
-            <Svg style = { svgStyle } svg = { SvgLoading } />
+            <Svg style = { svgStyle } svg = { SvgLoading } size = { svgSize } />
 
         </div>
     );

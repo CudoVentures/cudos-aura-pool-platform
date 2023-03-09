@@ -138,6 +138,7 @@ module.exports = function () {
                             ['@babel/plugin-proposal-decorators', { 'legacy': true }],
                             ['@babel/plugin-proposal-class-properties', { 'loose': false }],
                             '@babel/proposal-object-rest-spread',
+                            '@babel/plugin-syntax-dynamic-import',
                             // '@babel/plugin-transform-regenerator',
                         ],
                         cacheDirectory: '/tmp',
