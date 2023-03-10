@@ -308,7 +308,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         onChange={action((string) => { miningFarmEntity.leftoverRewardsBtcAddress = string })} />
                     <Input
                         label = {
-                            <TextWithTooltip text={'BTC Address to receive maintenance fees'} tooltipText={'Farm BTC address which will collect all maintenance fees.'} />
+                            <TextWithTooltip text={'BTC Address to receive maintenance fee'} tooltipText={'Farm BTC address which will collect all maintenance fee.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.maintenanceFeePayoutBtcAddress}

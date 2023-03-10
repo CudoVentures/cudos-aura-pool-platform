@@ -145,6 +145,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 createDataPreview('Items', creditCollectionPageStore.gridViewState.getItemCount()),
                                 createDataPreview('Owners', collectionDetailsEntity.owners),
                                 createDataPreview('Total Hashing Power', collectionEntity.formatHashPowerInTh()),
+                                createDataPreview('Secondary Resale Royalty', collectionEntity.formatRoyaltiesInPercentage()),
                                 createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME),
                                 createDataPreview(
                                     'Address',

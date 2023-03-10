@@ -168,7 +168,7 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
                                 <TextWithTooltip
                                     className={'DataRowHeading'}
                                     text={'Pool Fee'}
-                                    tooltipText={'The percentage from BTC payouts kept by Aura pool as Protocol fees.'} />
+                                    tooltipText={'The percentage from BTC payouts kept by Aura pool as Protocol fee.'} />
                                 <div className={'DataRowValue StartRight'}>{generalStore.settingsEntity.globalCudosFeesPercent.toFixed(4)} %</div>
                             </div>
                             <div className={'DataRow FlexRow FlexSplit'}>

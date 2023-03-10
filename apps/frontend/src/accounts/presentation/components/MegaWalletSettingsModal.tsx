@@ -59,17 +59,17 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
             )}
             {megaWalletSettingsModalStore.isSettingTypeResaleFees() === true && (
                 <SettingLayout
-                    modalTitle={'Change Resale Fees'}
+                    modalTitle={'Change Resale Fee'}
                     modalSubTitle={'Choose the amount you want to withdraw from your account and add the wallet address you want to send tokens to. (To be updated)'}
-                    label={'Resale Fees %'}
+                    label={'Resale Fee %'}
                     inputType={InputType.REAL}
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeFirstSaleFees() === true && (
                 <SettingLayout
-                    modalTitle={'Change First Sale Fees'}
+                    modalTitle={'Change First Sale Fee'}
                     modalSubTitle={'Choose the amount you want to withdraw from your account and add the wallet address you want to send tokens to. (To be updated)'}
-                    label={'First Sale Fees %'}
+                    label={'First Sale Fee %'}
                     inputType={InputType.REAL}
                 />
             )}

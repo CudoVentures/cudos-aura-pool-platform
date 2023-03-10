@@ -131,6 +131,10 @@ export default class MiningFarmEntity {
         return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
     }
 
+    formatResaleNftRoyaltiesPercentSet(): string {
+        return `${this.isCudosResaleNftRoyaltiesPercentSet() === true ? this.cudosResaleNftRoyaltiesPercent.toFixed(2) : '0.00'} %`;
+    }
+
     clone(): MiningFarmEntity {
         return Object.assign(new MiningFarmEntity(), this);
     }

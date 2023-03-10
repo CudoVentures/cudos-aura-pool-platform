@@ -199,8 +199,8 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
                         {/* { renderBoxContainer('Global Royalties', settingsEntity.globalCudosRoyaltiesPercent, 'Change Global Royalties', onClickChangeGlobalRoyalties) } */}
                         {/* { renderBoxContainer('Pool Fee', settingsEntity.globalCudosFeesPercent, 'Change Pool Fee', onClickChangeGlobalFees) } */}
                         { renderBoxContainer(<TextWithTooltip text={'Pool Fee'} tooltipText={'The value here is used only in rewards calculator. The actual value that the platform depends on is set in AuraPayService.'} />, settingsEntity.globalCudosFeesPercent, 'Change Pool Fee', onClickChangeGlobalFees) }
-                        { renderBoxContainer('Resale Fees', settingsEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
-                        { renderBoxContainer('Royalty Fee upon first sale of NFT', settingsEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
+                        { renderBoxContainer(<TextWithTooltip text={'Resale Fee'} tooltipText={'This is default value that is assigned to each farm during approval. The actual fee is per farm basis and must be checked in farm\'s profile'} />, settingsEntity.resaleCudosRoyaltiesPercent, 'Change Resale Fees', onClickChangeResaleFees) }
+                        { renderBoxContainer(<TextWithTooltip text={'Royalty Fee upon first sale of NFT'} tooltipText={'This is default value that is assigned to each farm during approval. The actual fee is per farm basis and must be checked in farm\'s profile'} />, settingsEntity.firstSaleCudosRoyaltiesPercent, 'Change Royalty Fees', onClickChangeFirstSaleFees) }
                     </RowLayout>
                 </RowLayout>
                 <StyledLayout
