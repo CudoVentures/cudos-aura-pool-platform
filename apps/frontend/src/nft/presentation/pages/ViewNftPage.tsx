@@ -16,6 +16,7 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
+import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 import Breadcrumbs, { createBreadcrumb } from '../../../core/presentation/components/Breadcrumbs';
 import NftStats from '../components/NftStats';
@@ -36,7 +37,7 @@ import { ContainerBackground } from '../../../core/presentation/components/Style
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import PresaleStore from '../../../app-routes/presentation/PresaleStore';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -161,6 +162,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         ));
         profitDatapreviews.push(createDataPreview('Estimated Profit per Month', viewNftPageStore.formatNetProfitPerMonth()));
         profitDatapreviews.push(createDataPreview('Estimated Profit per Year', viewNftPageStore.formatNetProfitPerYear()));
+        profitDatapreviews.push(createDataPreview(<TextWithTooltip text = { 'Maintenance Fee' } tooltipText = { 'This NFT\'s part of Farm\'s Maintenance fee. The fee is monthly.' } />, viewNftPageStore.formatMontlyMaintenanceFee()));
 
         return profitDatapreviews;
     }

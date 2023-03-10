@@ -352,4 +352,8 @@ export default class ViewNftPageStore {
         return `${this.calculateNetProfitPerYear().toFixed(5)} BTC`;
     }
 
+    formatMontlyMaintenanceFee(): string {
+        return `${this.getMonthlyMaintenanceFee().toFixed(5)} BTC`;
+    }
+
 }
