@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import S from '../../../core/utilities/Main';
 import WalletSelectModalStore, { ProgressSteps } from '../stores/WalletSelectModalStore';
@@ -221,7 +221,10 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 <AnimationContainer active = {walletSelectModalStore.isWalletConnecting() === false } >
                     <div className = { 'H3 Bold' } >Connect Your Wallet</div>
 
-                    <div className = { 'ModalWalletSubtitle' } >Select your prefered wallet to connect with.</div>
+                    <div className = { 'ModalWalletSubtitle' } >
+                        Select your preferred wallet to connect with.<br />
+                        By connecting your wallet you are agreeing to Aura Pool’s <Link to = { AppRoutes.TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
+                    </div>
 
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError')}` } onClick = { onClickToggleKeplr } >
                         <img className = { 'WalletIcon' } src={'/assets/img/keplr-icon.png'} />
