@@ -9,22 +9,32 @@ export default class AllowlistService {
     static allowlistEndpoints = '/api/v1/allowlist';
     allowlistUrl: string;
     allowlistId: string;
+    allowlistApiKey: string;
 
     constructor(
         @Inject(forwardRef(() => ConfigService))
         private configService: ConfigService,
     ) {
-        this.allowlistUrl = this.configService.getOrThrow < string >('App_Allowlist_Url');
-        this.allowlistId = this.configService.getOrThrow<string>('App_Presale_Allowlist_Id');
+        this.allowlistUrl = this.configService.getOrThrow < string >('APP_ALLOWLIST_URL');
+        this.allowlistId = this.configService.getOrThrow<string>('APP_PRESALE_ALLOWLIST_ID');
+        this.allowlistApiKey = this.configService.getOrThrow<string>('APP_ALLOWLIST_API_KEY');
     }
 
     async getAllowlistUserByAddress(address: string): Promise < AllowlistUser > {
-        const { data } = await axios.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/${this.allowlistId}/user/address/${address}`);
+        const { data } = await axios.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/${this.allowlistId}/user/address/${address}`, this.getAllowlistRequestHeaders());
         return AllowlistUser.fromJson(data.userEntity);
     }
 
     async getAllowlist(): Promise < AllowlistEntity > {
-        const { data } = await axios.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/id/${this.allowlistId}`);
+        const { data } = await axios.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/id/${this.allowlistId}`, this.getAllowlistRequestHeaders());
         return AllowlistEntity.fromJson(data.allowlistEntity);
+    }
+
+    private getAllowlistRequestHeaders() {
+        return {
+            headers: {
+                'x-api-key': this.allowlistApiKey,
+            },
+        }
     }
 }
