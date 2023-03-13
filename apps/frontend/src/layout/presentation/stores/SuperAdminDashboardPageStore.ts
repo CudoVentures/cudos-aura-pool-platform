@@ -110,7 +110,7 @@ export default class SuperAdminDashboardPageStore {
 
     getTotalSalesInUsd() {
         const nftFeesTotalEarningsInBtc = this.platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0);
-        const resaleRoyaltiesTotalEarningsInAcudos = this.platformTotalEarningsCudosEntity?.resaleRoyaltiesTotalEarningsInAcudos ?? new BigNumber(0);
+        const resaleRoyaltiesTotalEarningsInAcudos = this.platformTotalEarningsCudosEntity?.totalEarningsInAcudos() ?? new BigNumber(0);
 
         const nftFeesTotalEarningsInUsd = this.bitcoinStore.convertBtcInUsd(nftFeesTotalEarningsInBtc);
         const resaleRoyaltiesTotalEarningsInUsd = this.cudosStore.convertAcudosInUsd(resaleRoyaltiesTotalEarningsInAcudos);
