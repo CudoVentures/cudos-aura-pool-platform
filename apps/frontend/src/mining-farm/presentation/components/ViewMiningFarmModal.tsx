@@ -31,6 +31,12 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const mintRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const resaleRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const farmLegalNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const farmLegalNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
+    // checks if legal name has only letters and numbers
+    const regex = /\W+/;
+
+    const farmLegalNameLettersAndNumbersOnly = useRef(validationState.addValidation('Contains special characters', (input) => input.match(regex) == null)).current;
 
     const [areChangesMade, setAreChangesMade] = useState(false);
 
@@ -53,6 +59,13 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     function onChangeRewardsFromPoolBtcAddress(value) {
         runInAction(() => {
             miningFarmEntity.rewardsFromPoolBtcAddress = value;
+            setAreChangesMade(true);
+        })
+    }
+
+    function onChangeRewardsFromPoolBtcWalletName(value) {
+        runInAction(() => {
+            miningFarmEntity.rewardsFromPoolBtcWalletName = value;
             setAreChangesMade(true);
         })
     }
@@ -102,6 +115,23 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     value = { miningFarmEntity.rewardsFromPoolBtcAddress }
                                     inputValidation={farmPayoutAddressValidation}
                                     onChange = { onChangeRewardsFromPoolBtcAddress }
+                                />,
+                            ),
+                            createDataPreview(
+                                'Pool BTC wallet name',
+                                <Input
+                                    label = {
+                                        <TextWithTooltip text={'BTC Wallet name on the BTC node'} tooltipText={'The BTC wallet which will collect all sales proceeds from sold NFTs.'} />
+                                    }
+                                    placeholder={'walletname123...'}
+                                    className={'FlexRow'}
+                                    value = { miningFarmEntity.rewardsFromPoolBtcWalletName }
+                                    inputValidation={[
+                                        farmLegalNameValidationNoEmpty,
+                                        farmLegalNameValidationNoSpace,
+                                        farmLegalNameLettersAndNumbersOnly,
+                                    ]}
+                                    onChange = { onChangeRewardsFromPoolBtcWalletName }
                                 />,
                             ),
                             createDataPreview('Leftover rewards address', miningFarmEntity.leftoverRewardsBtcAddress),

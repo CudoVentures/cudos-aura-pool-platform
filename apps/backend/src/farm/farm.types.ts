@@ -28,6 +28,9 @@ export class MiningFarmJsonValidator {
         legalName: string;
 
     @IsString()
+        rewardsFromPoolBtcWalletName: string;
+
+    @IsString()
         primaryAccountOwnerName: string;
 
     @IsString()

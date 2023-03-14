@@ -11,5 +11,5 @@ export default interface CudosRepo {
     fetchAcudosBalance(address: string): Promise < BigNumber >;
     creditBitcoinPayoutAddress(client: CudosSigningStargateClient, cudosWalletAddress: string, bitcoinAddress: string): Promise < void >
     fetchBitcoinPayoutAddress(cudosAddress: string): Promise < string >;
-
+    fetchBitcoinPayoutAddresses(cudosAddresses: string[]): Promise < string[] >;
 }

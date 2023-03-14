@@ -8,6 +8,7 @@ type NftMintData = {
 
 export default class AddressMintDataEntity {
     cudosAddress: string;
+    btcAddress: string;
     firstName: string;
     lastName: string;
     applicantId: string;
@@ -16,6 +17,7 @@ export default class AddressMintDataEntity {
 
     constructor() {
         this.cudosAddress = S.Strings.EMPTY;
+        this.btcAddress = S.Strings.EMPTY;
         this.firstName = S.Strings.EMPTY;
         this.lastName = S.Strings.EMPTY;
         this.applicantId = S.Strings.EMPTY;
@@ -30,6 +32,7 @@ export default class AddressMintDataEntity {
     static toJson(entity: AddressMintDataEntity): any {
         return {
             'cudosAddress': entity.cudosAddress,
+            'btcAddress': entity.btcAddress,
             'firstName': entity.firstName,
             'lastName': entity.lastName,
             'applicantId': entity.applicantId,
@@ -42,27 +45,31 @@ export default class AddressMintDataEntity {
             throw Error(`Invalid JSON ${JSON.stringify(json)}`);
         }
         if (typeof (json.cudosAddress) !== 'string') {
-            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+            throw Error(`Missing cudosAddress. Invalid JSON ${JSON.stringify(json)}`);
+        }
+        if (typeof (json.btcAddress) !== 'string') {
+            throw Error(`Missing btcAddress. Invalid JSON ${JSON.stringify(json)}`);
         }
         if (typeof (json.firstName) !== 'string') {
-            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+            throw Error(`Missing firstName. Invalid JSON ${JSON.stringify(json)}`);
         }
         if (typeof (json.lastName) !== 'string') {
-            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+            throw Error(`Missing lastName. Invalid JSON ${JSON.stringify(json)}`);
         }
         if (typeof (json.applicantId) !== 'string') {
-            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+            throw Error(`Missing applicantId. Invalid JSON ${JSON.stringify(json)}`);
         }
         if (typeof (json.workflowRunId) !== 'string') {
-            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+            throw Error(`Missing workflowRunId. Invalid JSON ${JSON.stringify(json)}`);
         }
         if (typeof (json.nftMints) !== 'object' || typeof (json.nftMints.length) !== 'number') {
-            throw Error(`Invalid JSON ${JSON.stringify(json)}`);
+            throw Error(`Missing nftMints. Invalid JSON ${JSON.stringify(json)}`);
         }
 
         const entity = new AddressMintDataEntity();
 
         entity.cudosAddress = json.cudosAddress ?? entity.cudosAddress;
+        entity.btcAddress = json.btcAddress ?? entity.btcAddress;
         entity.firstName = json.firstName ?? entity.firstName;
         entity.lastName = json.lastName ?? entity.lastName;
         entity.applicantId = json.applicantId ?? entity.applicantId;

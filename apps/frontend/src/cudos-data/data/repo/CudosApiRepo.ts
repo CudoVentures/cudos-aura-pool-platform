@@ -100,4 +100,25 @@ export default class CudosApiRepo implements CudosRepo {
         }
     }
 
+    async fetchBitcoinPayoutAddresses(cudosAddresses: string[]): Promise < string[] > {
+        try {
+            const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
+            const res = await cudosClient.addressbookModule.getAllAddresses();
+
+            const cudosAddressesMap = new Map();
+            cudosAddresses.forEach((cudosAddress) => {
+                cudosAddressesMap.set(cudosAddress, true);
+            });
+
+            const adresses = res.address.filter((address) => {
+                return cudosAddressesMap.get(address.value) === true
+                    && address.network === ADDRESSBOOK_NETWORK
+                    && address.label === ADDRESSBOOK_LABEL;
+            });
+
+            return adresses.map((address) => address.value);
+        } catch (e) {
+            return [];
+        }
+    }
 }

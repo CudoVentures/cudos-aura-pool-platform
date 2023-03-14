@@ -42,11 +42,6 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
     const validationState = useRef(new ValidationState()).current;
     const farmNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const farmLegalNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
-    const farmLegalNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
-    // checks if legal name has only letters and numbers
-    const regex = /\W+/;
-
-    const farmLegalNameLettersAndNumbersOnly = useRef(validationState.addValidation('Contains special characters', (input) => input.match(regex) == null)).current;
     const farmOwnerNameValidation = useRef(validationState.addEmptyValidation('Invalid name')).current;
     const farmOwnerEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
     const farmManufacturersValidation = useRef(validationState.addEmptyValidation('Empty manufacturers')).current;
@@ -162,8 +157,6 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         value={miningFarmEntity.legalName}
                         inputValidation={[
                             farmLegalNameValidationNoEmpty,
-                            farmLegalNameValidationNoSpace,
-                            farmLegalNameLettersAndNumbersOnly,
                         ]}
                         onChange={action((string) => { miningFarmEntity.legalName = string })} />
                     <Autocomplete

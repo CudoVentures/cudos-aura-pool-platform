@@ -52,6 +52,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                             'addressMints': [
                                 {
                                     'cudosAddress': 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0',
+                                    'btcAddress': 'bc1qj3q3yq3q3yq3yq3yq3yq3yq3yq3yq3yq3yq3yq',
                                     'firstName': 'Name',
                                     'lastName': 'Name',
                                     'applicantId': '314-14-31-421-3',
@@ -62,6 +63,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                 },
                                 {
                                     'cudosAddress': 'cudos1wpzqe0jkyz3xc7dywtqnu2rd4gdys6a6npx2pk',
+                                    'btcAddress': 'bc1qj3q3yq3q3yq3yq3yq3yq3yq3yq3yq3yq3yq3yq',
                                     'firstName': 'Name',
                                     'lastName': 'Name',
                                     'applicantId': '314-14-31-421-3',
@@ -85,12 +87,12 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                             alertStore.show('Max file size is 70MB!');
                                         },
                                         'multi': false,
-                                        onReadFileAsBase64: action((base64File, responseData, files: any[], i: number) => {
+                                        onReadFileAsBase64: action(async (base64File, responseData, files: any[], i: number) => {
                                             try {
                                                 const preface = 'data:application/json;base64,';
                                                 const file = base64File.replace(preface, '')
                                                 const json = JSON.parse(atob(file));
-                                                mintPrivateSaleNftsModalStore.parseMintDataEntity(json);
+                                                await mintPrivateSaleNftsModalStore.parseMintDataEntity(json);
                                             } catch (e) {
                                                 console.error(e);
                                                 alertStore.show('Invalid JSON file.');

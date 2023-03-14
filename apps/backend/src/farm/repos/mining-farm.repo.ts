@@ -1,3 +1,4 @@
+import { cp } from 'node:fs';
 import { Column, Model, AllowNull, PrimaryKey, Unique, AutoIncrement, Table, DataType, ForeignKey } from 'sequelize-typescript';
 import AccountRepo from '../../account/repos/account.repo';
 import { FarmStatus } from '../farm.types';
@@ -57,6 +58,10 @@ export class MiningFarmRepo extends Model {
     @AllowNull(false)
     @Column({ type: DataType.STRING })
         subAccountName: string;
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        rewardsFromPoolBtcWalletName: string;
 
     @AllowNull(false)
     @Column({ type: DataType.STRING })

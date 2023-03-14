@@ -1,10 +1,11 @@
-import { action, makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable, runInAction } from 'mobx';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
@@ -23,6 +24,7 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
     walletStore: WalletStore;
     cudosStore: CudosStore;
 
+    cudosRepo: CudosRepo;
     nftRepo: NftRepo;
     accountRepo: AccountRepo;
 
@@ -31,9 +33,10 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
     @observable modalStage: ModalStage;
     @observable txHash: string;
 
-    constructor(nftRepo: NftRepo, accountRepo: AccountRepo, alertStore: AlertStore, walletStore: WalletStore, cudosStore: CudosStore) {
+    constructor(cudosRepo: CudosRepo, nftRepo: NftRepo, accountRepo: AccountRepo, alertStore: AlertStore, walletStore: WalletStore, cudosStore: CudosStore) {
         super();
 
+        this.cudosRepo = cudosRepo;
         this.nftRepo = nftRepo;
         this.accountRepo = accountRepo;
         this.modalStage = null;
@@ -81,16 +84,35 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
         super.hide();
     })
 
-    @action
-    parseMintDataEntity(json) {
+    async parseMintDataEntity(json) {
         const addressMintDataEntities = json.addressMints.map((addressMintJson) => AddressMintDataEntity.fromJson(addressMintJson));
 
         if (addressMintDataEntities === null && addressMintDataEntities.length === 0) {
             throw Error('Invalid JSON');
         }
 
-        this.addressMintDataEntities = addressMintDataEntities;
-        this.modalStage = ModalStage.PREVIEW;
+        // check if any addresses are not present in the addressbook
+        const bitcoinPayoutAddresses = await this.cudosRepo.fetchBitcoinPayoutAddresses(addressMintDataEntities.map((addressMintDataEntity) => addressMintDataEntity.cudosAddress));
+        const bitcoinPayoutAddressesMap = new Map<string, string>();
+        bitcoinPayoutAddresses.forEach((bitcoinPayoutAddress, index) => {
+            bitcoinPayoutAddressesMap.set(addressMintDataEntities[index].cudosAddress, bitcoinPayoutAddress);
+        });
+
+        const missingCudosAddressesInAddressbook = [];
+        addressMintDataEntities.forEach((addressMintDataEntity) => {
+            if (bitcoinPayoutAddressesMap.get(addressMintDataEntity.cudosAddress) !== addressMintDataEntity.btcAddress) {
+                missingCudosAddressesInAddressbook.push(addressMintDataEntity.cudosAddress);
+            }
+        });
+
+        if (missingCudosAddressesInAddressbook.length > 0) {
+            throw Error(`The following addresses are missing (or with different BTC address) in the addressbook: ${missingCudosAddressesInAddressbook.join(', ')}`);
+        }
+
+        runInAction(() => {
+            this.addressMintDataEntities = addressMintDataEntities;
+            this.modalStage = ModalStage.PREVIEW;
+        });
     }
 
     onClickSubmitForSell = action(async () => {
