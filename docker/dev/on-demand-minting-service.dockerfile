@@ -20,6 +20,7 @@ ARG CHAIN_ID
 ARG CHAIN_RPC
 ARG CHAIN_GRPC
 ARG ON_DEMAND_MINTING_STARTING_HEIGHT
+ARG AURA_POOL_API_KEY
 
 ENV WALLET_MNEMONIC=${MINTER_WALLET_MNEMONIC}
 ENV AURA_POOL_BACKEND=${AURA_POOL_BACKEND}
@@ -32,6 +33,7 @@ ENV PORT=${MINTER_PORT}
 ENV CHAIN_ID=${CHAIN_ID}
 ENV CHAIN_RPC=${CHAIN_RPC}
 ENV CHAIN_GRPC=${CHAIN_GRPC}
+ENV AURA_POOL_API_KEY=${AURA_POOL_API_KEY}
 
 WORKDIR ${WORKING_DIR}
 
@@ -57,7 +59,8 @@ RUN echo "WALLET_MNEMONIC=\"${MINTER_WALLET_MNEMONIC}\"" > .env && \
     echo "PRETTY_LOGGING=1" >> .env && \
     echo "SENDGRID_API_KEY='' " >> .env && \
     echo "EMAIL_FROM='' " >> .env && \
-    echo "SERVICE_EMAIL='' " >> .env
+    echo "SERVICE_EMAIL='' " >> .env && \
+    echo "AURA_POOL_API_KEY=${AURA_POOL_API_KEY}" >> .env
 
 # CMD ["sleep", "infinity"]
 CMD ["/bin/bash", "-c", "./cudos-ondemand-minting-service"]

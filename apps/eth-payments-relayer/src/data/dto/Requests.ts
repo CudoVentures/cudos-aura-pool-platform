@@ -7,11 +7,3 @@ export class ReqUpdateLastCheckedBlocks {
         this.lastCheckedCudosBlock = lastCheckedCudosBlock;
     }
 }
-
-export class ReqUpdateNftPrice {
-    id: string;
-
-    constructor(id: string) {
-        this.id = id;
-    }
-}

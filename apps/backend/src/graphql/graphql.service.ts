@@ -127,6 +127,7 @@ export class GraphqlService {
     }
 
     async fetchMarketplaceNftsByTokenIds(tokenIds: string[], denomId: string): Promise< ChainMarketplaceNftEntity[] > {
+
         const res: AxiosResponse<{ data: MarketplaceNftsByTokenIdsQuery }> = await this.httpService.axiosRef.post(process.env.App_Hasura_Url, {
             query: print(MarketplaceNftsByTokenIdsDocument),
             variables: { tokenIds, denomId },

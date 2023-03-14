@@ -39,11 +39,6 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
         cudosStore.init();
     }, []);
 
-    function onClickResellNft() {
-        resellNftModalStore.showSignal(buyNftModalStore.nftEntity, buyNftModalStore.cudosPrice, buyNftModalStore.collectionEntity);
-        buyNftModalStore.hide();
-    }
-
     function onClickPurchaseNft() {
         if (buyNftModalStore.recipient === '') {
             alertStore.show('You must specify BTC reward adress in your profile');
@@ -130,9 +125,6 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
                             </a>
                         </div>
                         <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} height={ActionsHeight.HEIGHT_48}>
-                            <Button onClick={onClickResellNft}>
-                                Resell NFT
-                            </Button>
                             <Button onClick={buyNftModalStore.hide}>
                                 View Item
                             </Button>

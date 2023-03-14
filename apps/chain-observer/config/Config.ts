@@ -12,4 +12,5 @@ export default {
     LOOP_INTERVAL_MILIS: 7000,
     APP_SERVICE_EMAIL: process.env.App_Service_Email,
     APP_EMAIL_FROM: process.env.App_Email_From,
+    APP_AURA_POOL_API_KEY: process.env.App_Aura_Pool_Api_Key,
 };

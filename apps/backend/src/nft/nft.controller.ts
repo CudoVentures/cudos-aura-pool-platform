@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -18,6 +18,7 @@ import { ConfigService } from '@nestjs/config';
 import AccountService from '../account/account.service';
 import AllowlistService from '../allowlist/allowlist.service';
 import { KycService } from '../kyc/kyc.service';
+import ApiKeyGuard from '../auth/guards/api-key.guard';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -51,6 +52,7 @@ export class NFTController {
     // used by on-demand-minting
     @Get('on-demand-minting-nft/:id/:recipient/:paidAmountAcudosStr')
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async findOne(
         @Param('id') id: string,
         @Param('recipient') recipient: string,
@@ -155,9 +157,11 @@ export class NFTController {
             }) };
     }
 
+    // used by the chain-ibserver
     @UseInterceptors(TransactionInterceptor)
     @Put('trigger-updates')
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async updateNftsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
@@ -179,14 +183,13 @@ export class NFTController {
             const tokenIds = nftDataJsons.filter((nftDataJson) => nftDataJson.denomId === denomId).map((nftDataJson) => nftDataJson.tokenId);
 
             const marketplaceNftDtos = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds, denomId);
+
             chainMarketplaceNftEntities = chainMarketplaceNftEntities.concat(marketplaceNftDtos);
         }
-
         // fetch nfts
         const nftFilterEntity = new NftFilterEntity();
         nftFilterEntity.nftIds = chainMarketplaceNftEntities.filter((entity) => validate(entity.uid)).map((entity) => entity.uid);
         const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
-
         for (let i = 0; i < nftEntities.length; i++) {
             const nftEntity = nftEntities[i];
             const chainMarketplaceNftEntity = chainMarketplaceNftEntities.find((dto) => dto.uid === nftEntity.id);

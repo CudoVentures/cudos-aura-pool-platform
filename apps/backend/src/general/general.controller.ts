@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, Post, Put, Req, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AccountType } from '../account/account.types';
+import ApiKeyGuard from '../auth/guards/api-key.guard';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
@@ -16,12 +17,14 @@ export class GeneralController {
 
     @Get('heartbeat')
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async getAlive(): Promise<string> {
         return 'running';
     }
 
     @Get('last-checked-block')
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async getLastCheckedBlock(): Promise<{height: number}> {
         const height = await this.generalService.getLastCheckedBlock();
         return { height: height === 0 ? parseInt(process.env.APP_CUDOS_INIT_BLOCK) : height };
@@ -30,6 +33,7 @@ export class GeneralController {
     @UseInterceptors(TransactionInterceptor)
     @Put('last-checked-block')
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async updateLastCheckedBlock(
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedBlockRequest,
@@ -39,6 +43,7 @@ export class GeneralController {
 
     @Get('last-checked-payment-relayer-blocks')
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async getLastCheckedPaymentRelayerBlock(): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
         const generalEntity = await this.generalService.fetchGeneral();
 
@@ -50,6 +55,7 @@ export class GeneralController {
     @UseInterceptors(TransactionInterceptor)
     @Put('last-checked-payment-relayer-blocks')
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async updateLastCheckedPaymentRelayerBlock(
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedPaymentRelayerBlocksRequest,

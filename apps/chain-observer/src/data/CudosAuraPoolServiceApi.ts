@@ -18,17 +18,39 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
     }
 
     async fetchHeartbeat(): Promise< void > {
-        await axios.get(`${this.api_url}${HEARTBEAT_ENDPOINT}`);
+        await axios.get(
+            `${this.api_url}${HEARTBEAT_ENDPOINT}`,
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
+        );
     }
 
     async fetchLastCheckedBlock(): Promise < number > {
-        const { data } = await axios.get(`${this.api_url}${LAST_BLOCK_ENDPOINT}`);
+        const { data } = await axios.get(
+            `${this.api_url}${LAST_BLOCK_ENDPOINT}`,
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
+        );
 
         return data.height
     }
 
     async updateLastCheckedHeight(height: number): Promise < void > {
-        const res = await axios.put(`${this.api_url}${LAST_BLOCK_ENDPOINT}`, { height });
+        const res = await axios.put(
+            `${this.api_url}${LAST_BLOCK_ENDPOINT}`,
+            { height },
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
+        );
     }
 
     async triggerUpdateMarketplaceModuleCollections(denomIds: string[], collectionIds: string[], height: number): Promise < void > {
@@ -40,6 +62,11 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
                 collectionIds,
                 height,
             },
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
         );
     }
 
@@ -50,6 +77,11 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
                 module: MARKETPLACE_MODULE,
                 nftDtos,
                 height,
+            },
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
             },
         );
     }
@@ -63,6 +95,11 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
                 collectionIds: [],
                 height,
             },
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
         );
     }
 
@@ -73,6 +110,11 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
                 module: NFT_MODULE,
                 tokenIds,
                 height,
+            },
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
             },
         );
     }

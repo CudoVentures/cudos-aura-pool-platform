@@ -146,6 +146,7 @@ services:
         CHAIN_ID: "$CHAIN_ID"
         CHAIN_RPC: "$CHAIN_RPC"
         CHAIN_GRPC: "$CHAIN_GRPC"
+        AURA_POOL_API_KEY: "$AURA_POOL_API_KEY"
     restart: unless-stopped
     networks:
       - shared-cudos-network

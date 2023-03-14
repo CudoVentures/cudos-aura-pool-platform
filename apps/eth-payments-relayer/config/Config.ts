@@ -18,6 +18,8 @@ const config = {
     CUDOS_SIGNER_MNEMONIC: process.env.App_Eth_Payment_Relayer_Cudos_Wallet_Mnemonic,
     EXPECTED_PRICE_USD: Number(process.env.APP_PRESALE_PRICE_USD),
     EXPECTED_PRICE_EPSILON_PERCENT: Number(process.env.APP_PRESALE_EXPECTED_PRICE_EPSILON),
+    APP_AURA_POOL_API_KEY: process.env.App_Aura_Pool_Api_Key,
+
     async getCudosSignerAddress() {
         if (CUDOS_SIGNER_ADDRESS === null) {
             const wallet = await DirectSecp256k1HdWallet.fromMnemonic(config.CUDOS_SIGNER_MNEMONIC);

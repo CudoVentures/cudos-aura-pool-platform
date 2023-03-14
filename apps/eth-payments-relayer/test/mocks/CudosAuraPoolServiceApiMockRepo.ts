@@ -28,13 +28,8 @@ export class CudosAuraPoolServiceHappyPathApiRepo implements CudosAuraPoolServic
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
 
-    async fetchRandomNftForMint(): Promise < NftEntity > {
-        return nftEntities[0];
-    }
-
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
-    async updateNftPrice(id: string): Promise < void > {}
 }
 
 export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolServiceRepo {
@@ -42,15 +37,8 @@ export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolS
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
 
-    async fetchRandomNftForMint(): Promise < NftEntity > {
-        const changedNftEntity = Object.assign(new NftEntity(), nftEntities[0]);
-
-        return changedNftEntity;
-    }
-
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
-    async updateNftPrice(id: string): Promise < void > {}
 }
 
 export class CudosAuraPoolServiceApiNoNftsFoundMockRepo implements CudosAuraPoolServiceRepo {
@@ -58,13 +46,8 @@ export class CudosAuraPoolServiceApiNoNftsFoundMockRepo implements CudosAuraPool
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
 
-    async fetchRandomNftForMint(): Promise < NftEntity > {
-        return null
-    }
-
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
-    async updateNftPrice(id: string): Promise < void > {}
 }
 
 export class CudosAuraPoolServiceHighBlockCheckedMockRepo implements CudosAuraPoolServiceRepo {
@@ -72,11 +55,6 @@ export class CudosAuraPoolServiceHighBlockCheckedMockRepo implements CudosAuraPo
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 10 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 10 }
 
-    async fetchRandomNftForMint(): Promise < NftEntity > {
-        return null
-    }
-
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
-    async updateNftPrice(id: string): Promise < void > {}
 }

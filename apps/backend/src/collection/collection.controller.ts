@@ -31,6 +31,7 @@ import CollectionFilterEntity from './entities/collection-filter.entity';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
+import ApiKeyGuard from '../auth/guards/api-key.guard';
 
 @ApiTags('Collection')
 @Controller('collection')
@@ -244,9 +245,11 @@ export class CollectionController {
         return new ResEditCollection(collectionEntityResult);
     }
 
+    // used by the chain-ibserver
     @Put('trigger-updates')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @UseGuards(ApiKeyGuard)
     async updateCollectionsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,
