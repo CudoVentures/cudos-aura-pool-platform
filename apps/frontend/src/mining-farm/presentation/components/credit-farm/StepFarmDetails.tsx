@@ -43,6 +43,10 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
     const farmNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const farmLegalNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
     const farmLegalNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
+    // checks if legal name has only letters and numbers
+    const regex = /\W+/;
+
+    const farmLegalNameLettersAndNumbersOnly = useRef(validationState.addValidation('Contains special characters', (input) => input.match(regex) == null)).current;
     const farmOwnerNameValidation = useRef(validationState.addEmptyValidation('Invalid name')).current;
     const farmOwnerEmailValidation = useRef(validationState.addEmailValidation('Invalid email')).current;
     const farmManufacturersValidation = useRef(validationState.addEmptyValidation('Empty manufacturers')).current;
@@ -153,10 +157,14 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         value={miningFarmEntity.description}
                         onChange={action((string) => { miningFarmEntity.description = string })} />
                     <Input
-                        label={'Legal Entity Name'}
+                        label={'BTC Wallet Name (Foundry legal name)'}
                         placeholder={'e.g Cool Farm Inc.'}
                         value={miningFarmEntity.legalName}
-                        inputValidation={[farmLegalNameValidationNoEmpty, farmLegalNameValidationNoSpace]}
+                        inputValidation={[
+                            farmLegalNameValidationNoEmpty,
+                            farmLegalNameValidationNoSpace,
+                            farmLegalNameLettersAndNumbersOnly,
+                        ]}
                         onChange={action((string) => { miningFarmEntity.legalName = string })} />
                     <Autocomplete
                         label={'Manufacturers'}
