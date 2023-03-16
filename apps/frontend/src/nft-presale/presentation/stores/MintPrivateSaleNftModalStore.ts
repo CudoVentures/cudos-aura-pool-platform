@@ -109,7 +109,7 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
             throw Error(`The following addresses are missing (or with different BTC address) in the addressbook: ${missingCudosAddressesInAddressbook.join(', ')}`);
         }
 
-        runInAction(() => {
+        await runInActionAsync(() => {
             this.addressMintDataEntities = addressMintDataEntities;
             this.modalStage = ModalStage.PREVIEW;
         });

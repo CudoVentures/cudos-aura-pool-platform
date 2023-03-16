@@ -30,7 +30,6 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
             previews.push(createDataPreview('Price per NFT', collectionEntity.formatDefaultHashPowerPerNftInTh()));
         }
         previews.push(createDataPreview('NFTs in Collection', creditCollectionStore.nftEntities.length));
-        previews.push(createDataPreview('Royalties', collectionEntity.royalties));
         previews.push(createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInPercentage()));
 
         return previews

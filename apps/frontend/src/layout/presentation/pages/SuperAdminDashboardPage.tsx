@@ -137,7 +137,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                     </ColumnLayout>
                     <StyledLayout
                         className = { 'BestPerformingFarms' }
-                        title = { 'Top 5 Best Permorfming Farms' }
+                        title = { 'Top 5 Best Performing Farms' }
                         hasBottomDivider = { true }
                         headerRight = {
                             <DefaultIntervalPicker defaultIntervalPickerState = { farmsDefaultIntervalPickerState } />

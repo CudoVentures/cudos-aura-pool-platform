@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
+import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import MegaWalletSettingsModalStore from '../stores/MegaWalletSettingsModalStore';
 import Input, { InputType } from '../../../core/presentation/components/Input';
 import ValidationState, { InputValidation } from '../../../core/presentation/stores/ValidationState';
@@ -8,9 +9,9 @@ import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
 import Actions, { ActionsLayout } from '../../../core/presentation/components/Actions';
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import Button from '../../../core/presentation/components/Button';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 import '../styles/mega-wallet-settings-modal.css';
-import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 
 type Props = {
     megaWalletSettingsModalStore?: MegaWalletSettingsModalStore;
@@ -101,7 +102,7 @@ const SettingLayout = inject((stores) => stores)(observer(({
                 endAdornment: <InputAdornment position="end"> % </InputAdornment>,
             }}/>
         <Input
-            label={`New ${label}`}
+            label={<TextWithTooltip text={`New ${label}`} tooltipText={'Max 10%'} />}
             inputType={inputType}
             decimalLength={2}
             inputValidation={inputValidation}

@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import PackageJson from '../../../../../../package.json'
 
 import Svg from '../../../core/presentation/components/Svg';
 import { TERMS_AND_CONDITIONS, PRIVACY_POLICY, WEBSITE, TELEGRAM, LINKEDIN, TWITTER, DISCORD, FACEBOOK, MEDIUM, SPOTIFY, YOUTUBE } from '../../../core/utilities/Links';
@@ -65,6 +66,7 @@ export default function PageFooter() {
                 <a href={PRIVACY_POLICY} >Privacy Policy</a>
                 <a href={WEBSITE} target={'_blank'} rel={'noreferrer'} >Cudos.org</a>
                 <a>License &copy; 2018 - {new Date().getFullYear()}</a>
+                <a>v{PackageJson.version}</a>
             </div>
         </footer>
     )

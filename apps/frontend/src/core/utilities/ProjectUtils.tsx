@@ -32,9 +32,9 @@ export default class ProjectUtils {
         inputN.blur();
     }
 
-    static copyText(text: string) {
+    static async copyText(text: string) {
         if (navigator.clipboard !== undefined) {
-            navigator.clipboard.writeText(text);
+            await navigator.clipboard.writeText(text);
             return;
         }
 

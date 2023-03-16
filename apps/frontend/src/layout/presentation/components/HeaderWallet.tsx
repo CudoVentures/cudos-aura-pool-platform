@@ -8,6 +8,7 @@ import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import WalletSelectModalStore from '../stores/WalletSelectModalStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import SnackStore from '../../../core/presentation/stores/SnackStore';
 
 import Svg from '../../../core/presentation/components/Svg';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
@@ -24,15 +25,21 @@ type Props = {
     accountSessionStore?: AccountSessionStore;
     walletStore?: WalletStore;
     walletSelectModalStore?: WalletSelectModalStore;
+    snackStore?: SnackStore;
 }
 
-function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore }: Props) {
+function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore, snackStore }: Props) {
 
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     function onClickCopyAddress() {
-        ProjectUtils.copyText(walletStore.getAddress())
+        try {
+            ProjectUtils.copyText(walletStore.getAddress());
+            snackStore.showSuccess('Address is copied to the clipboard');
+        } catch (ex) {
+            snackStore.showError('There was an error copying the address to the clipboard');
+        }
     }
 
     function onClickAddressMenu(event) {

@@ -34,10 +34,10 @@ import NftPreview from '../components/NftPreview';
 import GridView from '../../../core/presentation/components/GridView';
 import DataPreviewLayout, { createDataPreview, DataRowsGap } from '../../../core/presentation/components/DataPreviewLayout';
 import { ContainerBackground } from '../../../core/presentation/components/StyledContainer';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -138,6 +138,8 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         generalDatapreviews.push(createDataPreview('Mining Farm', <span className = { 'Clickable' } onClick = { onClickFarmLink }>{miningFarmEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Collection', <span className = { 'Clickable' } onClick = { onClickCollectionLink }>{collectionEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
+        generalDatapreviews.push(createDataPreview('Collection royalties', collectionEntity.formatRoyaltiesInPercentage()));
+        generalDatapreviews.push(createDataPreview('Aura Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()));
 
         return generalDatapreviews;
     }

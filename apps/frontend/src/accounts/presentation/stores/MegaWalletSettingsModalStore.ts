@@ -98,6 +98,14 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
     }
 
     onInputChange = action((input: string) => {
+        const floatValue = parseFloat(input);
+        if (floatValue < 0) {
+            input = '0';
+        }
+        if (floatValue > 10) {
+            input = '10';
+        }
+
         this.value = input;
     })
 
