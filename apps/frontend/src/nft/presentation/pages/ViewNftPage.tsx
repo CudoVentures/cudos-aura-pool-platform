@@ -97,7 +97,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
 
     function onClickBuyNft() {
         const balance = walletStore.getBalanceSafe();
-        if (balance.lt(cudosStore.getNftCudosPriceForNft(nftEntity))) {
+        if (balance.lt(cudosStore.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity))) {
             alertStore.show('Your balance is not enough to buy this.');
             return;
         }
@@ -112,7 +112,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             return;
         }
 
-        const nftUsdPrice = cudosStore.getNftUsdPrice(nftEntity);
+        const nftUsdPrice = cudosStore.getNftUsdPricePlusOnDemandMintFeeIfNeeded(nftEntity);
         if (kycStore.canBuyAnNft(nftUsdPrice) === false) {
             alertStore.msg = 'You account is not verified or it is partially verified';
             alertStore.positiveLabel = 'Verify';
@@ -182,7 +182,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             </div>,
         ));
 
-        if (nftEntity.isStatusListed() === true) {
+        if (nftEntity.isStatusListed() === true && nftEntity.isMinted() === false) {
             priceDatapreviews.push(createDataPreview(
                 'Fee',
                 <div className={'DataValue NftPrice FlexRow'}>
@@ -268,7 +268,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                         <>
                                             { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                                 <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                    <Button onClick={onClickBuyNft}>Buy now for {viewNftPageStore.formatPricePlusMintFeeInCudos()} </Button>
+                                                    <Button onClick={onClickBuyNft}>Buy now for {cudosStore.formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity)} </Button>
                                                 </Actions>
                                             )}
                                             { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (

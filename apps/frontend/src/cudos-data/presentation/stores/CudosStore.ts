@@ -7,6 +7,7 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../repos/CudosRepo';
 import S from '../../../core/utilities/Main';
+import { BIG_NUMBER_0 } from '../../../../../backend/src/common/utils';
 
 export default class CudosStore {
 
@@ -156,9 +157,31 @@ export default class CudosStore {
         return this.convertUsdInCudos(nftEntity.priceUsd);
     }
 
+    getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): BigNumber {
+        let nftPriceInCudos = this.getNftCudosPriceForNft(nftEntity);
+
+        if (nftEntity.isMinted() === false) {
+            nftPriceInCudos = nftPriceInCudos.plus(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS);
+        }
+
+        return nftPriceInCudos;
+    }
+
     getNftUsdPrice(nftEntity: NftEntity): number {
         if (nftEntity.isMinted() === false) {
             return nftEntity.priceUsd !== S.NOT_EXISTS ? nftEntity.priceUsd : 0;
+        }
+
+        return nftEntity.priceInAcudos === null ? 0 : Number(this.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2));
+    }
+
+    getNftUsdPricePlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): number {
+        if (nftEntity.isMinted() === false) {
+            if (nftEntity.priceUsd !== S.NOT_EXISTS) {
+                const onDemandMintingFeeInUsd = this.convertCudosInUsd(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS);
+                return nftEntity.priceUsd + onDemandMintingFeeInUsd.toNumber();
+            }
+            return 0;
         }
 
         return nftEntity.priceInAcudos === null ? 0 : Number(this.convertAcudosInUsd(nftEntity.priceInAcudos).toFixed(2));
@@ -169,10 +192,18 @@ export default class CudosStore {
         return `${price.toFixed(2)} CUDOS`;
     }
 
+    formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
+        const price = this.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity);
+        return `${price.toFixed(2)} CUDOS`;
+    }
+
     formatPriceInUsdForNft(nftEntity: NftEntity): string {
-        // const price = !nftEntity || nftEntity.priceUsd === S.NOT_EXISTS ? 0 : nftEntity.priceUsd;
-        // return `$ ${new BigNumber(price).toFixed(2)}`;
         const price = this.getNftUsdPrice(nftEntity);
+        return numeral(price.toString()).format(ProjectUtils.NUMERAL_USD);
+    }
+
+    formatPriceInUsdForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
+        const price = this.getNftUsdPricePlusOnDemandMintFeeIfNeeded(nftEntity);
         return numeral(price.toString()).format(ProjectUtils.NUMERAL_USD);
     }
 

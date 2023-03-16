@@ -65,8 +65,8 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
                                 <div className={'CollectionName B2 SemiBold Gray'}>{buyNftModalStore.collectionEntity.name}</div>
                                 <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                                 <div className={'Price FlexRow'}>
-                                    <div className={'H3 Bold'}>{buyNftModalStore.formatPricePlusMintFeeInCudos() }</div>
-                                    <div className={'B2 SemiBold Gray'}>{buyNftModalStore.formatPricePlusMintFeeInUsd()}</div>
+                                    <div className={'H3 Bold'}>{cudosStore.formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity) }</div>
+                                    <div className={'B2 SemiBold Gray'}>{cudosStore.formatPriceInUsdForNftPlusOnDemandMintFeeIfNeeded(nftEntity)}</div>
                                 </div>
                             </div>
                         </div>

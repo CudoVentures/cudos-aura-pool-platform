@@ -8,8 +8,9 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
-import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import BigNumber from 'bignumber.js';
 
 export enum ModalStage {
     PREVIEW,
@@ -127,15 +128,4 @@ export default class BuyNftModalStore extends ModalStore {
         return this.modalStage === ModalStage.FAIL;
     }
 
-    formatPricePlusMintFeeInCudos(): string {
-        const price = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
-
-        return `${price.toFixed(2)} CUDOS`;
-    }
-
-    formatPricePlusMintFeeInUsd(): string {
-        const priceCudos = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(1);
-
-        return this.cudosStore.formatCudosInUsd(priceCudos);
-    }
 }
