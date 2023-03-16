@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -49,9 +49,9 @@ type Props = {
 }
 
 function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore }: Props) {
-    const {
-        presaleCollectionEntity,
-    } = nftPresaleStore;
+    const { presaleCollectionEntity } = nftPresaleStore;
+
+    const marketplaceHeadingRef = useRef(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -84,7 +84,9 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }
 
     function onClickExploreMarketplace() {
-        window.location.hash = '#marketplace-heading';
+        marketplaceHeadingRef?.current?.scrollIntoView({
+            'behavior': 'smooth',
+        });
     }
 
     function checkBtcAddressRegistered(): boolean {
@@ -193,7 +195,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     </div>
                 </div>
                 {nftPresaleStore.isPresaleOver() === true && (<>
-                    <div id = 'marketplace-heading' className={'MarketplaceHeading'}>
+                    <div ref = { marketplaceHeadingRef } className={'MarketplaceHeading'}>
                         <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
                         <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
                     </div>
