@@ -27,7 +27,7 @@ export default class SuperAdminMegaWalletPageStore {
         this.statisticsRepo = statisticsRepo;
 
         this.eventType = S.NOT_EXISTS;
-        this.walletEventTableState = new TableState(MegaWalletEventSortBY.TIME_ASC, [[MegaWalletEventSortBY.TIME_ASC, 4]], this.fetchMegaWalletActivity, 10);
+        this.walletEventTableState = new TableState(MegaWalletEventSortBY.TIME_DESC, [[MegaWalletEventSortBY.TIME_ASC, 4]], this.fetchMegaWalletActivity, 10);
         this.megaWalletEventEntities = null;
         this.nftEntitiesMap = new Map<string, NftEntity>();
 

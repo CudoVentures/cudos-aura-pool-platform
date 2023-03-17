@@ -180,7 +180,7 @@ export class StatisticsService {
         });
 
         if (megaWalletEventFilterEntity.isSortByTime() === true) {
-            megaWalletEventEntities.sort((a, b) => (b.timestamp - a.timestamp) * megaWalletEventFilterEntity.sortBy);
+            megaWalletEventEntities.sort((a, b) => (a.timestamp - b.timestamp) * megaWalletEventFilterEntity.sortBy);
         }
 
         // filter for event type

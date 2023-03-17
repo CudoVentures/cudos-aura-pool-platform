@@ -32,7 +32,7 @@ export const ALIGN_LEFT = 1;
 export const ALIGN_CENTER = 2;
 export const ALIGN_RIGHT = 3;
 
-const TableDesktop = ({ className, widths, legend, aligns, tableState, rows, columnsOrderMap, onChangeColumnsOrderIndex, onClickRow, onClickLegend = null, showPaging, contentScrollable, noRowsContent }: TableDesktopProps) => {
+const TableDesktop = ({ className, widths, legend, aligns, tableState, rows, columnsOrderMap, onChangeColumnsOrderIndex, onClickRow, onClickLegend, showPaging, contentScrollable, noRowsContent }: TableDesktopProps) => {
 
     function getCellStyle(index: number) {
         return {
@@ -209,6 +209,7 @@ TableDesktop.defaultProps = {
     className: S.Strings.EMPTY,
     aligns: null,
     onClickRow: null,
+    onClickLegend: null,
     showPaging: true,
     contentScrollable: false,
     columnsOrderMap: null,
