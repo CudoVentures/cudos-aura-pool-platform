@@ -122,7 +122,6 @@ function SuperAdminMegaWalletPage({ superAdminMegaWalletPageStore, megaWalletTra
         )
     }
 
-    // TODO: real values
     function renderWalletActivityTableRows() {
         return megaWalletEventEntities.map((megaWalletEventEntity) => {
             const nftEntity = superAdminMegaWalletPageStore.getNftEntity(megaWalletEventEntity.nftId);

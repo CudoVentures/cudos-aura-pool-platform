@@ -86,7 +86,7 @@
 }
 
 .TableDesktop .TableRow.Legend .TableCell.Sorted {
-    color: #FFF;
+    color: var(--color-primary-050);
 }
 
 .TableDesktop .TableCell.DropTarget {

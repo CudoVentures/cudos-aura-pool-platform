@@ -2,6 +2,11 @@ import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 import { NftEventType } from './NftEventEntity';
 
+export enum MegaWalletEventSortBY {
+    TIME_ASC = 1,
+    TIME_DESC = -TIME_ASC
+}
+
 export default class MegaWalletEventFilterModel {
 
     timestampFrom: number;
@@ -9,6 +14,7 @@ export default class MegaWalletEventFilterModel {
     eventTypes: NftEventType[];
     from: number;
     count: number;
+    sortBy: MegaWalletEventSortBY;
 
     constructor() {
         this.timestampFrom = S.NOT_EXISTS;
@@ -16,6 +22,7 @@ export default class MegaWalletEventFilterModel {
         this.eventTypes = null;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
+        this.sortBy = MegaWalletEventSortBY.TIME_DESC;
 
         makeAutoObservable(this);
     }
@@ -31,6 +38,7 @@ export default class MegaWalletEventFilterModel {
             'eventTypes': model.eventTypes,
             'from': model.from,
             'count': model.count,
+            'sortBy': model.sortBy,
         }
     }
 

@@ -1,5 +1,6 @@
 import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EarningsPerDayCurrency } from './entities/earnings-per-day-filter.entity';
+import { MegaWalletEventSortBy } from './entities/mega-wallet-event-filter.entity';
 import { NftTransferHistoryEventType } from './entities/nft-event.entity';
 
 export class EarningsPerDayFilterJsonValidator {
@@ -82,6 +83,10 @@ export class MegaWalletEventFilterValidationJson {
     @IsNumber()
     @IsOptional()
         count: number;
+
+    @IsEnum(MegaWalletEventSortBy)
+    @IsOptional()
+        sortBy: MegaWalletEventSortBy;
 }
 
 export function getDays(start, end) {
