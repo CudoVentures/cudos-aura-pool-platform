@@ -226,6 +226,22 @@ export default class ProjectUtils {
         return date.getTime() - 1;
     }
 
+    static clampInputValue(value: string, from: number, to: number): string {
+        if (Number.isNaN(value) === true) {
+            return '';
+        }
+
+        const floatValue = parseFloat(value);
+        if (floatValue < from) {
+            return from.toString();
+        }
+        if (floatValue > to) {
+            return to.toString()
+        }
+
+        return value;
+    }
+
 }
 
 export async function runInActionAsync(callback: () => void) {

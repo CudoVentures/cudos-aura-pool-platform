@@ -1,6 +1,7 @@
 import { isValidAddress } from 'cudosjs';
 import { action, computed, makeObservable, observable } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import AccountSessionStore from './AccountSessionStore';
@@ -98,15 +99,7 @@ export default class MegaWalletSettingsModalStore extends ModalStore {
     }
 
     onInputChange = action((input: string) => {
-        const floatValue = parseFloat(input);
-        if (floatValue < 0) {
-            input = '0';
-        }
-        if (floatValue > 10) {
-            input = '10';
-        }
-
-        this.value = input;
+        this.value = ProjectUtils.clampInputValue(input, 0, 10);
     })
 
     onSubmit = action(async () => {
