@@ -189,12 +189,14 @@ export default class CudosStore {
 
     formatPriceInCudosForNft(nftEntity: NftEntity): string {
         const price = this.getNftCudosPriceForNft(nftEntity);
-        return `${price.toFixed(2)} CUDOS`;
+        const prefix = nftEntity.isMinted() === true ? '' : '~';
+        return `${prefix}${price.toFixed(2)} CUDOS`;
     }
 
     formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
         const price = this.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity);
-        return `${price.toFixed(2)} CUDOS`;
+        const prefix = nftEntity.isMinted() === true ? '' : '~';
+        return `${prefix}${price.toFixed(2)} CUDOS`;
     }
 
     formatPriceInUsdForNft(nftEntity: NftEntity): string {
