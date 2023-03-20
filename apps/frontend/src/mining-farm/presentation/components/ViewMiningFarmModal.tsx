@@ -41,6 +41,8 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     const [areChangesMade, setAreChangesMade] = useState(false);
 
     function setEditedCudosMintRoyalties(value) {
+        value = ProjectUtils.clampInputValue(value, 0, 10);
+
         runInAction(() => {
             viewMiningFarmModalStore.editedCudosMintRoyalties = value;
             miningFarmEntity.cudosMintNftRoyaltiesPercent = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
@@ -49,6 +51,8 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     }
 
     function setEditedCudosResaleRoyalties(value) {
+        value = ProjectUtils.clampInputValue(value, 0, 10);
+
         runInAction(() => {
             viewMiningFarmModalStore.editedCudosResaleRoyalties = value;
             miningFarmEntity.cudosResaleNftRoyaltiesPercent = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
@@ -143,6 +147,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     value = { viewMiningFarmModalStore.editedCudosMintRoyalties }
                                     onChange = { setEditedCudosMintRoyalties }
                                     inputType = {InputType.REAL}
+                                    decimalLength={2}
                                     inputValidation={mintRoyaltiesValidation}
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end" >
@@ -158,6 +163,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     value = { viewMiningFarmModalStore.editedCudosResaleRoyalties }
                                     onChange = { setEditedCudosResaleRoyalties }
                                     inputType = {InputType.REAL}
+                                    decimalLength={2}
                                     inputValidation={resaleRoyaltiesValidation}
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end" >

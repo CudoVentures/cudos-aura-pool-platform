@@ -22,13 +22,17 @@ type SettingLayoutProps = {
     modalSubTitle?: string;
     label: string;
     inputType: InputType;
+    validationState?: ValidationState;
     inputValidation?: InputValidation[];
     megaWalletSettingsModalStore?: MegaWalletSettingsModalStore;
 }
 
 function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
-    const validationState = useRef(new ValidationState()).current;
-    const validationCudosAddress = useRef(validationState.addCudosAddressValidation('Invalid cudos address')).current;
+    const validationStateCudosAddress = useRef(new ValidationState()).current;
+    const validationCudosAddress = useRef(validationStateCudosAddress.addCudosAddressValidation('Invalid cudos address')).current;
+
+    const validationStateNotEmpty = useRef(new ValidationState()).current;
+    const validationNotEmpty = useRef(validationStateNotEmpty.addEmptyValidation('Must be a value between 0 and 10 inclusive')).current;
 
     return (
         <ModalWindow
@@ -39,7 +43,8 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     modalTitle={'Update Wallet Address'}
                     label={'Wallet Address'}
                     inputType={InputType.TEXT}
-                    inputValidation={[validationCudosAddress]}
+                    validationState = { validationStateCudosAddress }
+                    inputValidation={ [validationCudosAddress] }
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeGlobalRoyalties() === true && (
@@ -48,6 +53,8 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     modalSubTitle={'Choose the amount you want to withdraw from your account and add the wallet address you want to send tokens to. (To be updated)'}
                     label={'Global Royalties %'}
                     inputType={InputType.REAL}
+                    validationState = { validationStateNotEmpty }
+                    inputValidation={ [validationNotEmpty] }
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeGlobalFees() === true && (
@@ -56,6 +63,8 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     modalSubTitle={'Choose the amount you want to withdraw from your account and add the wallet address you want to send tokens to. (To be updated)'}
                     label={'Pool Fee %'}
                     inputType={InputType.REAL}
+                    validationState = { validationStateNotEmpty }
+                    inputValidation={ [validationNotEmpty] }
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeResaleFees() === true && (
@@ -64,6 +73,8 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     modalSubTitle={'Choose the amount you want to withdraw from your account and add the wallet address you want to send tokens to. (To be updated)'}
                     label={'Resale Fee %'}
                     inputType={InputType.REAL}
+                    validationState = { validationStateNotEmpty }
+                    inputValidation={ [validationNotEmpty] }
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeFirstSaleFees() === true && (
@@ -72,6 +83,8 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     modalSubTitle={'Choose the amount you want to withdraw from your account and add the wallet address you want to send tokens to. (To be updated)'}
                     label={'First Sale Fee %'}
                     inputType={InputType.REAL}
+                    validationState = { validationStateNotEmpty }
+                    inputValidation={ [validationNotEmpty] }
                 />
             )}
         </ModalWindow>
@@ -84,37 +97,50 @@ const SettingLayout = inject((stores) => stores)(observer(({
     modalSubTitle,
     label,
     inputType,
+    validationState,
     inputValidation,
     megaWalletSettingsModalStore,
-}: SettingLayoutProps) => <>
-    <div className = { 'MegaWalletSettingsModalTitleCnt' } >
-        <div className = { 'H3 ExtraBold' } >{modalTitle}</div>
-        <div className = { 'B2 ColorNeutral060 '} >{modalSubTitle}</div>
-    </div>
-    <ColumnLayout>
-        <Input
-            label={`Current ${label}`}
-            inputType={inputType}
-            value={megaWalletSettingsModalStore.getCurrentValue()}
-            inputValidation={inputValidation}
-            gray={true}
-            InputProps = {{
-                endAdornment: <InputAdornment position="end"> % </InputAdornment>,
-            }}/>
-        <Input
-            label={<TextWithTooltip text={`New ${label}`} tooltipText={'Max 10%'} />}
-            inputType={inputType}
-            decimalLength={2}
-            inputValidation={inputValidation}
-            value={megaWalletSettingsModalStore.value}
-            onChange={megaWalletSettingsModalStore.onInputChange}
-            InputProps = {{
-                endAdornment: <InputAdornment position="end"> % </InputAdornment>,
-            }} />
-        <Actions className = { 'SubmitButton' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL }>
-            <Button onClick={megaWalletSettingsModalStore.onSubmit} > Save Changes </Button>
-        </Actions>
-    </ColumnLayout>
-</>));
+}: SettingLayoutProps) => {
+    function onSubmit() {
+        if (validationState.getIsErrorPresent() === true) {
+            validationState.setShowErrors(true);
+            return;
+        }
+
+        megaWalletSettingsModalStore.onSubmit();
+    }
+
+    return (
+        <>
+            <div className = { 'MegaWalletSettingsModalTitleCnt' } >
+                <div className = { 'H3 ExtraBold' } >{modalTitle}</div>
+                <div className = { 'B2 ColorNeutral060 '} >{modalSubTitle}</div>
+            </div>
+            <ColumnLayout>
+                <Input
+                    label={`Current ${label}`}
+                    inputType={inputType}
+                    value={megaWalletSettingsModalStore.getCurrentValue()}
+                    gray={true}
+                    InputProps = {{
+                        endAdornment: <InputAdornment position="end"> % </InputAdornment>,
+                    }}/>
+                <Input
+                    label={<TextWithTooltip text={`New ${label}`} tooltipText={'Max 10%'} />}
+                    inputType={inputType}
+                    decimalLength={2}
+                    inputValidation={inputValidation}
+                    value={megaWalletSettingsModalStore.value}
+                    onChange={megaWalletSettingsModalStore.onInputChange}
+                    InputProps = {{
+                        endAdornment: <InputAdornment position="end"> % </InputAdornment>,
+                    }} />
+                <Actions className = { 'SubmitButton' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL }>
+                    <Button onClick={ onSubmit } > Save Changes </Button>
+                </Actions>
+            </ColumnLayout>
+        </>
+    )
+}));
 
 export default inject((stores) => stores)(observer(MegaWalletSettingsModal));
