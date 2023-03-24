@@ -11,9 +11,11 @@ import { ResEditSessionAccount, ResEditSessionSuperAdmin, ResEditSessionUser, Re
 import AccountEntity from './entities/account.entity';
 import SuperAdminEntity from './entities/super-admin.entity';
 import UserEntity from './entities/user.entity';
+import { EditSessionAccountPassGuard } from './guards/edit-session-account-pass-guard';
 import { ЕditSessionAccountGuard } from './guards/edit-session-account.guard';
 import { ЕditSessionSuperAdminGuard } from './guards/edit-session-super-admin.guard';
 import { EditSessionUserGuard } from './guards/edit-session-user.guard';
+import { FetchFarmOwnerAccountGuard } from './guards/fetch-farm-owner.guard';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -78,6 +80,7 @@ export class AccountController {
     }
 
     @UseInterceptors(TransactionInterceptor)
+    @UseGuards(EditSessionAccountPassGuard)
     @Patch('editSessionAccountPass')
     @HttpCode(200)
     async editSessionAccountPass(
@@ -129,6 +132,7 @@ export class AccountController {
     }
 
     @Get(':accountId')
+    @UseGuards(FetchFarmOwnerAccountGuard)
     @HttpCode(200)
     async fetchFarmOwnerAccount(
         @Param('accountId') accountId: number,
