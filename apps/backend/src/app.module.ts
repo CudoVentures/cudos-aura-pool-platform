@@ -22,6 +22,8 @@ import { AccountModule } from './account/account.module';
 import { EmailModule } from './email/email.module';
 import { KycModule } from './kyc/kyc.module';
 import { AllowlistModule } from './allowlist/allowlist.module';
+import { LoggerMiddleware } from './logger/logger.middleware';
+import { CONFIG_SERVICE_ROOT_PATH_KEY } from './common/utils';
 
 @Module({
     imports: [
@@ -78,6 +80,7 @@ import { AllowlistModule } from './allowlist/allowlist.module';
             envFilePath: ['./config/.env'],
             load: [() => {
                 const Config = {};
+                Config[CONFIG_SERVICE_ROOT_PATH_KEY] = Path.join(__dirname, '..', '..');
                 Object.keys(process.env).forEach((envName) => {
                     const envNameUppercase = envName.toUpperCase();
                     if (envNameUppercase.startsWith('APP_') === false) {
@@ -95,13 +98,14 @@ import { AllowlistModule } from './allowlist/allowlist.module';
 
 export class AppModule implements NestModule {
 
-    constructor(private dataService: DataService) {
+    constructor(dataService: DataService) {
         dataService.prepareDataFolder();
     }
 
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(VisitorMiddleware).forRoutes('*');
+        consumer.apply(LoggerMiddleware).forRoutes('*');
         consumer.apply(AuthMiddleware).forRoutes('*');
+        consumer.apply(VisitorMiddleware).forRoutes('*');
     }
 
 }

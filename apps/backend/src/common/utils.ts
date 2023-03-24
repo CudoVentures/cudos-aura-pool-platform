@@ -22,3 +22,4 @@ export const NOT_EXISTS_INT = -2147483648;
 export const NOT_EXISTS_STRING = '-2147483648';
 export const FIFTEEN_MINUTES_IN_MILIS = 15 * 60 * 1000;
 export const BIG_NUMBER_0 = new BigNumber(0);
+export const CONFIG_SERVICE_ROOT_PATH_KEY = 'ROOT_PATH';

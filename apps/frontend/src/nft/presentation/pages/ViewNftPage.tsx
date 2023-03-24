@@ -155,15 +155,15 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                 <div className={'SubPrice'}>{bitcoinStore.formatBtcInUsd(viewNftPageStore.calculateNetProfitPerDay())}</div>
             </div>,
         ));
-        profitDatapreviews.push(createDataPreview(
-            'Estimated Profit per Week',
-            <div className={'DataValue FlexRow'}>
-                { viewNftPageStore.formatNetProfitPerWeek() }
-                <div className={'SubPrice'}>{bitcoinStore.formatBtcInUsd(viewNftPageStore.calculateNetProfitPerWeek())}</div>
-            </div>,
-        ));
-        profitDatapreviews.push(createDataPreview('Estimated Profit per Month', viewNftPageStore.formatNetProfitPerMonth()));
-        profitDatapreviews.push(createDataPreview('Estimated Profit per Year', viewNftPageStore.formatNetProfitPerYear()));
+        // profitDatapreviews.push(createDataPreview(
+        //     'Estimated Profit per Week',
+        //     <div className={'DataValue FlexRow'}>
+        //         { viewNftPageStore.formatNetProfitPerWeek() }
+        //         <div className={'SubPrice'}>{bitcoinStore.formatBtcInUsd(viewNftPageStore.calculateNetProfitPerWeek())}</div>
+        //     </div>,
+        // ));
+        // profitDatapreviews.push(createDataPreview('Estimated Profit per Month', viewNftPageStore.formatNetProfitPerMonth()));
+        // profitDatapreviews.push(createDataPreview('Estimated Profit per Year', viewNftPageStore.formatNetProfitPerYear()));
         profitDatapreviews.push(createDataPreview(<TextWithTooltip text = { 'Maintenance Fee' } tooltipText = { 'This NFT\'s part of Farm\'s Maintenance fee. The fee is monthly.' } />, viewNftPageStore.formatMontlyMaintenanceFee()));
 
         return profitDatapreviews;
