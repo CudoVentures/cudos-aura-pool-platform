@@ -10,9 +10,10 @@ export class ЕditSessionSuperAdminGuard implements CanActivate {
         const request = context.switchToHttp().getRequest < RequestWithSessionAccounts >();
         const { body } = request;
 
-        const req = await (new ValidationPipe().transform(body, {
+        const req = await (new ValidationPipe({ transform: true }).transform(body, {
             type: 'body',
-        })) as unknown as ReqEditSessionSuperAdmin;
+            metatype: ReqEditSessionSuperAdmin,
+        })) as ReqEditSessionSuperAdmin;
         const superAdminEntity = SuperAdminEntity.fromJson(req.superAdminEntity);
 
         if (request.sessionSuperAdminEntity === null) {

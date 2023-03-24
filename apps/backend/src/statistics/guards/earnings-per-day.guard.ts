@@ -17,9 +17,10 @@ export class EarningsPerDayGuard implements CanActivate {
         }
 
         if (sessionAdminEntity !== null) {
-            const req = await (new ValidationPipe().transform(body, {
+            const req = await (new ValidationPipe({ transform: true }).transform(body, {
                 type: 'body',
-            })) as unknown as ReqFetchEarningsPerDay;
+                metatype: ReqFetchEarningsPerDay,
+            })) as ReqFetchEarningsPerDay;
             const farmId = parseInt(req.earningsPerDayFilterEntity.farmId);
 
             const miningFarmDb = await this.farmService.findMiningFarmById(farmId);

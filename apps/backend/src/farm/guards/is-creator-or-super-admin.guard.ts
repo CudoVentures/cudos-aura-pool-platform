@@ -17,9 +17,10 @@ export class IsCreatorOrSuperAdminGuard implements CanActivate {
             body,
         } = request;
 
-        const req = await (new ValidationPipe().transform(body, {
+        const req = await (new ValidationPipe({ transform: true }).transform(body, {
             type: 'body',
-        })) as unknown as ReqCreditMiningFarm;
+            metatype: ReqCreditMiningFarm,
+        })) as ReqCreditMiningFarm;
         const miningFarmEntity = MiningFarmEntity.fromJson(req.miningFarmEntity);
 
         // super admin can do anything

@@ -17,9 +17,10 @@ export class MiningFarmAggregatedStatisticsGuard implements CanActivate {
         }
 
         if (sessionAdminEntity !== null) {
-            const req = await (new ValidationPipe().transform(body, {
+            const req = await (new ValidationPipe({ transform: true }).transform(body, {
                 type: 'body',
-            })) as unknown as ReqWithMiningFarmId;
+                metatype: ReqWithMiningFarmId,
+            })) as ReqWithMiningFarmId;
             const farmId = parseInt(req.miningFarmId);
 
             const miningFarmDb = await this.farmService.findMiningFarmById(farmId);
