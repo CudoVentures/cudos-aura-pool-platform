@@ -8,6 +8,7 @@ import {
     forwardRef,
     Inject,
     UseGuards,
+    UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
@@ -29,6 +30,7 @@ import CollectionPaymentAllocationStatisticsFilter, { BtcEarningsType } from './
 import { NOT_EXISTS_INT } from '../common/utils';
 import { MiningFarmAggregatedStatisticsGuard } from './guards/mining-farm-aggregated-statistics.guard';
 import { EarningsPerDayGuard } from './guards/earnings-per-day.guard';
+import { TransactionInterceptor } from '../common/common.interceptors';
 
 @ApiTags('Statistics')
 @Controller('statistics')
@@ -40,6 +42,7 @@ export class StatisticsController {
     ) {}
 
     @Post('events/nft')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async getNftEvents(
         @Req() req: AppRequest,
@@ -51,8 +54,9 @@ export class StatisticsController {
     }
 
     @Post('events/mega-wallet')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    @HttpCode(200)
     async getMegaWalletEvents(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqMegaWalletEventsByFilter: ReqMegaWalletEventsByFilter,
@@ -66,6 +70,7 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchNftEarningsBySessionAccount')
+    @UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchNftEarningsBySessionAccount(
         @Req() req: AppRequest,
@@ -77,8 +82,10 @@ export class StatisticsController {
     }
 
     @Post('fetchNftEarningsByNftId')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchNftEarningsByNftId(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchNftEarningsByNftId: ReqFetchNftEarningsByNftId,
     ): Promise < ResFetchNftEarningsByNftId > {
         const nftEarningsEntity = await this.statisticsService.fetchEarningsByNftId(reqFetchNftEarningsByNftId.nftId, reqFetchNftEarningsByNftId.timestampFrom, reqFetchNftEarningsByNftId.timestampTo);
@@ -87,9 +94,11 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchEarningsPerDay')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), EarningsPerDayGuard)
+    @HttpCode(200)
     async fetchEarningsPerDay(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchEarningsPerDay: ReqFetchEarningsPerDay,
     ): Promise <ResFetchEarningsPerDay> {
         const earningsPerDayEntity = EarningsPerDayFilterEntity.fromJson(reqFetchEarningsPerDay.earningsPerDayFilterEntity);
@@ -101,9 +110,11 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchFarmMaintenanceFee')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), MiningFarmAggregatedStatisticsGuard)
+    @HttpCode(200)
     async fetchFarmMaintenanceFee(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchEarningsPerDay: ReqFetchMiningFarmMaintenanceFee,
     ): Promise <ResFetchMiningFarmMaintenanceFee> {
         const farmId = parseInt(reqFetchEarningsPerDay.miningFarmId);
@@ -128,9 +139,11 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchFarmTotalBtcEarnings')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), MiningFarmAggregatedStatisticsGuard)
+    @HttpCode(200)
     async fetchFarmTotalBtcEarnings(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchFarmTotalBtcEarnings: ReqFetchMiningFarmTotalBtcEarnings,
     ): Promise <ResFetchFarmTotalBtcEarnings> {
         const farmId = parseInt(reqFetchFarmTotalBtcEarnings.miningFarmId);
@@ -155,9 +168,11 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchFarmTotalCudosEarnings')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]), MiningFarmAggregatedStatisticsGuard)
+    @HttpCode(200)
     async fetchFarmTotalCudosEarnings(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmTotalEarningsCudos: ReqFetchMiningFarmTotalEarningsCudos,
     ): Promise <ResFetchMiningFarmTotalEarningsCudos> {
         const farmid = reqFetchMiningFarmTotalEarningsCudos.miningFarmId;
@@ -174,9 +189,12 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchPlatformTotalBtcEarnings')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
-    async fetchPlatformTotalBtcEarnings(): Promise <ResFetchPlatformTotalEarningsBtc> {
+    @HttpCode(200)
+    async fetchPlatformTotalBtcEarnings(
+        @Req() req: AppRequest,
+    ): Promise <ResFetchPlatformTotalEarningsBtc> {
         const collectionPaymentAllocationStatisticsFilter = new CollectionPaymentAllocationStatisticsFilter();
 
         collectionPaymentAllocationStatisticsFilter.type = BtcEarningsType.EARNINGS;
@@ -190,9 +208,12 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchPlatformMaintenanceFees')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
-    async fetchPlatformMaintenanceFees(): Promise <ResFetchPlatformMaintenanceFee> {
+    @HttpCode(200)
+    async fetchPlatformMaintenanceFees(
+        @Req() req: AppRequest,
+    ): Promise <ResFetchPlatformMaintenanceFee> {
         const collectionPaymentAllocationStatisticsFilter = new CollectionPaymentAllocationStatisticsFilter();
 
         collectionPaymentAllocationStatisticsFilter.type = BtcEarningsType.MAINTENANCE_FEE;
@@ -206,9 +227,12 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchPlatformTotalCudosEarnings')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
-    async fetchPlatformTotalCudosEarnings(): Promise <ResFetchPlatformTotalEarningsCudos> {
+    @HttpCode(200)
+    async fetchPlatformTotalCudosEarnings(
+        @Req() req: AppRequest,
+    ): Promise <ResFetchPlatformTotalEarningsCudos> {
         const { mintRoyalties, resaleRoyalties } = await this.statisticsService.fetchTotalCudosRoyalties(null, null);
 
         const platformTotalEarningsCudosEntity = new PlatformTotalEarningsCudosEntity();

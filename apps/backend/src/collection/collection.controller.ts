@@ -47,8 +47,10 @@ export class CollectionController {
     ) {}
 
     @Post()
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async findAll(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchCollectionsByFilter: ReqFetchCollectionsByFilter,
     ): Promise < ResFetchCollectionsByFilter > {
         const collectionFilterEntity = CollectionFilterEntity.fromJson(reqFetchCollectionsByFilter.collectionFilter);
@@ -59,8 +61,10 @@ export class CollectionController {
     }
 
     @Post('fetchTopCollections')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchTopCollections(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchTopCollections: ReqFetchTopCollections,
     ): Promise < ResFetchTopCollections > {
         const collectionEntities = await this.collectionService.findTopCollections(reqFetchTopCollections.timestampFrom, reqFetchTopCollections.timestampTo);
@@ -68,9 +72,13 @@ export class CollectionController {
     }
 
     @Post('details')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async getDetails(@Body(new ValidationPipe({ transform: true })) req: ReqFetchCollectionDetails): Promise<ResFetchCollectionDetails> {
-        const collectionIds = req.collectionIds;
+    async getDetails(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqFetchCollectionDetails: ReqFetchCollectionDetails,
+    ): Promise<ResFetchCollectionDetails> {
+        const collectionIds = reqFetchCollectionDetails.collectionIds;
 
         const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(parseInt(collectionId)))
         const collectionDetails = await Promise.all(getCollectionDetails)

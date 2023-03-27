@@ -20,8 +20,8 @@ export class KycController {
         private statisticsService: StatisticsService,
     ) {}
 
-    @UseInterceptors(TransactionInterceptor)
     @Post('fetchKyc')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchKyc(
         @Req() req: AppRequest,
@@ -38,9 +38,9 @@ export class KycController {
         return new ResFetchKyc(kycEntity, purchasesInUsdSoFar);
     }
 
-    @UseGuards(RoleGuard([AccountType.USER]))
-    @UseInterceptors(TransactionInterceptor)
     @Post('creditKyc')
+    @UseInterceptors(TransactionInterceptor)
+    @UseGuards(RoleGuard([AccountType.USER]))
     @HttpCode(200)
     async creditKyc(
         @Req() req: AppRequest,
@@ -57,9 +57,9 @@ export class KycController {
         return new ResCreditKyc(token, kycEntity);
     }
 
-    @UseGuards(RoleGuard([AccountType.USER]))
-    @UseInterceptors(TransactionInterceptor)
     @Post('createWorkflowRun')
+    @UseInterceptors(TransactionInterceptor)
+    @UseGuards(RoleGuard([AccountType.USER]))
     @HttpCode(200)
     async createWorkflowRun(
         @Req() req: AppRequest,

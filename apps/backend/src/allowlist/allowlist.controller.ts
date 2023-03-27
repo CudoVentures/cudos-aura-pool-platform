@@ -1,6 +1,7 @@
-import { Controller, Get, HttpCode, Req } from '@nestjs/common';
+import { Controller, Get, HttpCode, Req, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { RequestWithSessionAccounts } from '../common/commont.types';
+import { TransactionInterceptor } from '../common/common.interceptors';
+import { AppRequest } from '../common/commont.types';
 
 import AllowlistService from './allowlist.service';
 import { ResFetchAllowlist, ResFetchAllowlistUserBySessionAccount } from './dto/responses.dto';
@@ -14,16 +15,22 @@ export class AllowlistController {
     ) {}
 
     @Get()
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async fetchAllowlist(): Promise < ResFetchAllowlist > {
+    async fetchAllowlist(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchAllowlist > {
         const allowlistEntity = await this.allowlistService.getAllowlist();
         return new ResFetchAllowlist(allowlistEntity);
     }
 
     @ApiBearerAuth('access-token')
     @Get('fetchAllowlistUserBySessionAccount')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async fetchAllowlistUserBySessionAccount(@Req() req: RequestWithSessionAccounts): Promise < ResFetchAllowlistUserBySessionAccount > {
+    async fetchAllowlistUserBySessionAccount(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchAllowlistUserBySessionAccount > {
         if (req.sessionUserEntity === null) {
             return new ResFetchAllowlistUserBySessionAccount(null);
         }

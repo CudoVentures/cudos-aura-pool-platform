@@ -95,6 +95,7 @@ export class AccountController {
         }
     }
 
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @Patch('sendSessionAccountVerificationEmail')
     @HttpCode(200)
@@ -120,8 +121,10 @@ export class AccountController {
     }
 
     @Patch('forgottenPassword')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async forgottenPassword(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqForgottenPassword: ReqForgottenPassword,
     ): Promise < void > {
         const accountEntity = await this.accountService.findAccountByEmail(reqForgottenPassword.email);
@@ -133,8 +136,10 @@ export class AccountController {
 
     @Get(':accountId')
     @UseGuards(FetchFarmOwnerAccountGuard)
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchFarmOwnerAccount(
+        @Req() req: AppRequest,
         @Param('accountId') accountId: number,
     ): Promise < ResFetchFarmOwnerAccount > {
         const adminEntity = await this.accountService.findAdminByAccountId(accountId);

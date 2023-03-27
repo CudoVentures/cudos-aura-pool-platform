@@ -36,6 +36,7 @@ export class FarmController {
     ) { }
 
     @Post()
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchMiningFarmsByFilter(
         @Req() req: AppRequest,
@@ -46,6 +47,7 @@ export class FarmController {
     }
 
     @Post('fetchBestPerformingMiningFarm')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchBestPerformingMiningFarm(
         @Req() req: AppRequest,
@@ -56,8 +58,10 @@ export class FarmController {
     }
 
     @Post('fetchMiningFarmsDetailsByIds')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchMiningFarmsDetailsByIds(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmDetails: ReqFetchMiningFarmDetails,
     ): Promise < ResFetchMiningFarmDetails > {
         const miningFarmIds = reqFetchMiningFarmDetails.getParsedIds();
@@ -91,28 +95,37 @@ export class FarmController {
     }
 
     @Get('miners')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async findMiners(): Promise < ResFetchMiners > {
+    async findMiners(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchMiners > {
         const minerEntities = await this.miningFarmService.findMiners();
         return new ResFetchMiners(minerEntities);
     }
 
     @Get('energy-sources')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async findEnergySources(): Promise < ResFetchEnergySources > {
+    async findEnergySources(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchEnergySources > {
         const energySourceEntities = await this.miningFarmService.findEnergySources();
         return new ResFetchEnergySources(energySourceEntities);
     }
 
     @Get('manufacturers')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async findManufacturers(): Promise < ResFetchManufacturers > {
+    async findManufacturers(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchManufacturers > {
         const manufacturerEntities = await this.miningFarmService.findManufacturers();
         return new ResFetchManufacturers(manufacturerEntities);
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('miners')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async creditMiners(
         @Req() req: AppRequest,
@@ -123,8 +136,8 @@ export class FarmController {
         return new ResCreditMiner(minerEntity);
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('energy-sources')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async creditEnergySources(
         @Req() req: AppRequest,
@@ -135,8 +148,8 @@ export class FarmController {
         return new ResCreditEnergySource(energySourceEntity);
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('manufacturers')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async creditManufacturers(
         @Req() req: AppRequest,

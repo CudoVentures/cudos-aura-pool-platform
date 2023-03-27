@@ -38,6 +38,7 @@ export class NFTController {
     ) {}
 
     @Post()
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchByFilter(
         @Req() req: AppRequest,
@@ -51,9 +52,11 @@ export class NFTController {
 
     // used by on-demand-minting
     @Get('on-demand-minting-nft/:id/:recipient/:paidAmountAcudosStr')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
+    @HttpCode(200)
     async findOne(
+        @Req() req: AppRequest,
         @Param('id') id: string,
         @Param('recipient') recipient: string,
         @Param('paidAmountAcudosStr') paidAmountAcudosStr: string,
@@ -158,10 +161,10 @@ export class NFTController {
     }
 
     // used by the chain-ibserver
-    @UseInterceptors(TransactionInterceptor)
     @Put('trigger-updates')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
+    @HttpCode(200)
     async updateNftsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
@@ -209,16 +212,22 @@ export class NFTController {
 
     @ApiBearerAuth('access-token')
     @Post('updatePrice')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {
-        const nftEntity = await this.nftService.updateNftCudosPrice(req.id);
-
+    async updatePrice(
+        @Req() req: AppRequest,
+        @Body() reqUpdateNftCudosPrice: ReqUpdateNftCudosPrice,
+    ): Promise<ResUpdateNftCudosPrice> {
+        const nftEntity = await this.nftService.updateNftCudosPrice(reqUpdateNftCudosPrice.id);
         return new ResUpdateNftCudosPrice(nftEntity);
     }
 
     @Get('fetchPresaleAmounts')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async fetchPresaleAmounts(): Promise<ResFetchPresaleAmounts> {
+    async fetchPresaleAmounts(
+        @Req() req: AppRequest,
+    ): Promise<ResFetchPresaleAmounts> {
         const { totalPresaleNftCount, presaleMintedNftCount } = await this.nftService.fetchPresaleAmounts();
 
         return new ResFetchPresaleAmounts(totalPresaleNftCount, presaleMintedNftCount);
