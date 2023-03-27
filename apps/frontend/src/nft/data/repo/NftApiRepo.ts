@@ -15,6 +15,8 @@ import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAura
 import MintMemo from '../../entities/MintMemo';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import { Coin } from 'cudosjs/build/stargate/modules/marketplace/proto-types/coin';
+import PurchaseTransactionsFilterModel from '../../../accounts/entities/PurchaseTransactionsFilterModel';
+import PurchaseTransactionEntity from '../../../accounts/entities/PurchaseTransactionEntity';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -59,6 +61,20 @@ export default class NftApiRepo implements NftRepo {
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
+    }
+
+    async fetchPurchaseTransactions(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel): Promise<{ purchaseTransactionEntities: PurchaseTransactionEntity[], total: number }> {
+        try {
+            this.disableActions?.();
+            const sessionStoragePurchaseTransactionEntities = [];
+            this.nftSessioNStorage.getPurchaseTxsMap().forEach((value, key) => {
+                sessionStoragePurchaseTransactionEntities.push(value);
+            })
+
+            return await this.nftApi.fetchPurchaseTransactions(purchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities)
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchPresaleAmounts(): Promise < { totalPresaleNftCount: number, presaleMintedNftCount } > {
@@ -129,6 +145,14 @@ export default class NftApiRepo implements NftRepo {
                 // sign transaction and send it to backend
                 const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
                 txHash = tx.transactionHash;
+
+                // set tx hash in storage until processed by the observer
+                const purchaseTransactionEntity = new PurchaseTransactionEntity();
+                purchaseTransactionEntity.txhash = txHash;
+                purchaseTransactionEntity.timestamp = Date.now();
+
+                this.nftSessioNStorage.updatePurchaseTxsMap([purchaseTransactionEntity]);
+
             } else {
                 const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
@@ -183,6 +207,13 @@ export default class NftApiRepo implements NftRepo {
 
                 txHash = tx.transactionHash;
             }
+
+            // set tx hash in storage until processed by the observer
+            const purchaseTransactionEntity = new PurchaseTransactionEntity();
+            purchaseTransactionEntity.txhash = txHash;
+            purchaseTransactionEntity.timestamp = Date.now();
+
+            this.nftSessioNStorage.updatePurchaseTxsMap([purchaseTransactionEntity]);
 
             return txHash;
         } catch (e) {

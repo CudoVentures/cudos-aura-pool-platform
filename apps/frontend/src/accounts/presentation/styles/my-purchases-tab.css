@@ -1,0 +1,21 @@
+.MyPurchasesTab {
+    gap: 30px;
+}
+
+.MyPurchasesTab .TxHashCell{
+    color: var(--color-primary-060)
+}
+
+
+.MyPurchasesTab .PurchaseStatusCell.Pending{
+    color: var(--color-primary-050);
+}
+
+
+.MyPurchasesTab .PurchaseStatusCell.Success{
+    color: var(--color-success-050);
+}
+
+.MyPurchasesTab .PurchaseStatusCell.Refunded{
+    color: var(--color-warning-050);
+}

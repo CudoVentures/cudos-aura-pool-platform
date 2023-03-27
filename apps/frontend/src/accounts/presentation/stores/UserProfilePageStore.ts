@@ -14,11 +14,15 @@ import NftEventEntity from '../../../analytics/entities/NftEventEntity';
 import UserEarningsEntity from '../../../analytics/entities/UserEarningsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
+import AccountRepo from '../repos/AccountRepo';
 
 export enum ProfilePages {
     NFTS = 1,
     EARNINGS = 2,
-    HISTORY = 3
+    HISTORY = 3,
+    PURCHASES = 4,
 }
 
 export default class UserProfilePageStore {
@@ -45,6 +49,11 @@ export default class UserProfilePageStore {
     nftEventEntities: NftEventEntity[];
     nftEntitiesMap: Map < string, NftEntity >;
     historyTableState: TableState;
+
+    // purchases tab
+    purchaseTransactionEntities: PurchaseTransactionEntity[];
+    purchasesTableState: TableState;
+    purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel;
 
     constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, statisticsRepo: StatisticsRepo) {
         this.walletStore = walletStore;
@@ -76,6 +85,10 @@ export default class UserProfilePageStore {
         this.nftEventEntities = null;
         this.nftEntitiesMap = new Map();
         this.historyTableState = new TableState(0, [], this.fetchHistory, 10);
+
+        this.purchaseTransactionEntities = null;
+        this.purchasesTableState = new TableState(0, [], this.fetchPurchases, 10);
+        this.purchaseTransactionsFilterModel = new PurchaseTransactionsFilterModel();
     }
 
     async init() {
@@ -84,6 +97,7 @@ export default class UserProfilePageStore {
         await this.fetchMyNfts();
         await this.fetchEarnings();
         await this.fetchHistory();
+        await this.fetchPurchases();
     }
 
     fetchMyNfts = async () => {
@@ -154,6 +168,17 @@ export default class UserProfilePageStore {
         });
     }
 
+    fetchPurchases = async () => {
+        this.purchaseTransactionsFilterModel.from = this.purchasesTableState.tableFilterState.from;
+        this.purchaseTransactionsFilterModel.count = this.purchasesTableState.tableFilterState.itemsPerPage;
+        const { purchaseTransactionEntities, total } = await this.nftRepo.fetchPurchaseTransactions(this.purchaseTransactionsFilterModel);
+
+        await runInActionAsync(() => {
+            this.purchaseTransactionEntities = purchaseTransactionEntities;
+            this.purchasesTableState.tableFilterState.total = total;
+        })
+    }
+
     isMyNftTab(): boolean {
         return this.profilePage === ProfilePages.NFTS;
     }
@@ -166,6 +191,10 @@ export default class UserProfilePageStore {
         return this.profilePage === ProfilePages.HISTORY;
     }
 
+    isPurchasesTab(): boolean {
+        return this.profilePage === ProfilePages.PURCHASES;
+    }
+
     markMyNftTab = action(() => {
         this.profilePage = ProfilePages.NFTS;
     })
@@ -176,6 +205,10 @@ export default class UserProfilePageStore {
 
     markMyHistoryTab = action(() => {
         this.profilePage = ProfilePages.HISTORY;
+    })
+
+    markPurchasesTab = action(() => {
+        this.profilePage = ProfilePages.PURCHASES;
     })
 
     getCollectionName(collectionId: string): string {

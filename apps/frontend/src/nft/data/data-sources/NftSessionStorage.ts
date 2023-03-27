@@ -1,3 +1,4 @@
+import PurchaseTransactionEntity from '../../../accounts/entities/PurchaseTransactionEntity';
 import NftEntity from '../../entities/NftEntity';
 
 const STORAGE_KEY = 'cudos_aura_service_storage_nfts'
@@ -39,6 +40,46 @@ export default class NftSessionStorage {
 
         jsonEntities.forEach((entry) => {
             entry[1] = NftEntity.toJson(entry[1]);
+        });
+
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
+    }
+
+    updatePurchaseTxsMap(purchaseTransactionEntities: PurchaseTransactionEntity[]): void {
+        try {
+            const purchaseTransactionEntitiesMap = this.getPurchaseTxsMap();
+
+            purchaseTransactionEntities.forEach((purchaseTransactionEntity: PurchaseTransactionEntity) => {
+                purchaseTransactionEntitiesMap.set(purchaseTransactionEntity.txhash, purchaseTransactionEntity);
+            });
+
+            this.savePurchaseTxsMap(purchaseTransactionEntitiesMap);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    getPurchaseTxsMap(): Map<string, PurchaseTransactionEntity> {
+        const mapJson = sessionStorage.getItem(STORAGE_KEY);
+
+        if (!mapJson) {
+            return new Map<string, PurchaseTransactionEntity>();
+        }
+
+        const parsedMap = JSON.parse(mapJson);
+        const map = new Map<string, PurchaseTransactionEntity>(parsedMap);
+        map.forEach((jsonEntity, key) => {
+            map.set(key, PurchaseTransactionEntity.fromJson(jsonEntity));
+        });
+
+        return map
+    }
+
+    private savePurchaseTxsMap(map: Map<string, any>) {
+        const jsonEntities = Array.from(map.entries());
+
+        jsonEntities.forEach((entry) => {
+            entry[1] = PurchaseTransactionEntity.toJson(entry[1]);
         });
 
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
