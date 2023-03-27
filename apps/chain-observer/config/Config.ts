@@ -8,9 +8,10 @@ export default {
     APP_SENDGRID_API_KEY: process.env.App_Sendgrid_Api_Key,
     AURA_POOL_API: `${process.env.App_Host}:${process.env.App_Port}`,
     RPC_ENDPOINT: process.env.APP_CUDOS_RPC,
-    BLOCK_CHECK_LIMIT: 10000,
+    BLOCK_CHECK_LIMIT: 100,
     LOOP_INTERVAL_MILIS: 7000,
     APP_SERVICE_EMAIL: process.env.App_Service_Email,
     APP_EMAIL_FROM: process.env.App_Email_From,
     APP_AURA_POOL_API_KEY: process.env.App_Aura_Pool_Api_Key,
+    APP_CUDOS_ON_DEMAND_MINTING_ADDRESS: process.env.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
 };

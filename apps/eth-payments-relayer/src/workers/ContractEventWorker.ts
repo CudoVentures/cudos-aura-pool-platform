@@ -6,6 +6,7 @@ import { PaymentStatus } from '../entities/PaymentEventEntity';
 import Config from '../../config/Config';
 import BigNumber from 'bignumber.js';
 import CoinGeckoServiceRepo from './repos/CoinGeckoServiceRepo';
+import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
 
 export default class ContractEventWorker {
     static WORKER_NAME = 'CONTRACT_EVENT_WORKER';
@@ -138,6 +139,13 @@ export default class ContractEventWorker {
                         ContractEventWorker.log('\tSending on demand minting Tx...')
                         const txhash = await this.cudosChainRepo.sendOnDemandMintingTx(paymentEventEntity, convertedPaymentToCudos);
                         ContractEventWorker.log(`\tPaymentId ${paymentEventEntity.id} sent for mint to on demand minting service. TxHash: ${txhash}`);
+
+                        const purchaseTransactionEntity = new PurchaseTransactionEntity();
+                        purchaseTransactionEntity.txhash = paymentEventEntity.txHash;
+                        purchaseTransactionEntity.timestamp = paymentEventEntity.timestamp;
+
+                        ContractEventWorker.log('\tSaving purchase transaction to database...');
+                        await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
                     }
                 }
 

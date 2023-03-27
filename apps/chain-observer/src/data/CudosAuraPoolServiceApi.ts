@@ -1,6 +1,8 @@
 import axios from 'axios';
 import Config from '../../config/Config';
+import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
 import CudosAuraPoolServiceRepo from '../workers/repos/CudosAuraPoolServiceRepo';
+import { ReqCreditPurchaseTransactionEntities } from './dto/Requests';
 
 const HEARTBEAT_ENDPOINT = '/api/v1/general/heartbeat';
 const LAST_BLOCK_ENDPOINT = '/api/v1/general/last-checked-block';
@@ -15,6 +17,19 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
 
     constructor() {
         this.api_url = Config.AURA_POOL_API;
+    }
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise<void> {
+        const req = new ReqCreditPurchaseTransactionEntities(purchaseTransactionEntities);
+        await axios.put(
+            `${this.api_url}${HEARTBEAT_ENDPOINT}`,
+            req,
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
+        );
     }
 
     async fetchHeartbeat(): Promise< void > {

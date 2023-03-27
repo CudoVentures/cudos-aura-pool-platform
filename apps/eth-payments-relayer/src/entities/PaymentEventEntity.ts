@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { utils } from 'ethers';
+import { ethers, utils } from 'ethers';
+import { NOT_EXISTS_INT } from '../../../backend/src/common/utils';
 
 export enum PaymentStatus {
     LOCKED = 0,
@@ -32,6 +33,8 @@ export default class PaymentEventEntity {
     cudosAddress: string;
     amount: BigNumber;
     payee: string;
+    txHash: string;
+    timestamp: number;
 
     constructor() {
         this.id = null;
@@ -39,6 +42,8 @@ export default class PaymentEventEntity {
         this.cudosAddress = '';
         this.amount = null;
         this.payee = '';
+        this.txHash = '';
+        this.timestamp = NOT_EXISTS_INT;
     }
 
     isValid(): boolean {
@@ -47,9 +52,11 @@ export default class PaymentEventEntity {
             && this.cudosAddress !== ''
             && this.amount !== null
             && this.payee !== ''
+            && this.txHash !== ''
+            && this.timestamp !== NOT_EXISTS_INT;
     }
 
-    static fromContractEvent(event: any): PaymentEventEntity {
+    static fromContractEvent(event: ethers.Event, timestamp: number): PaymentEventEntity {
         const entity = new PaymentEventEntity();
         const args = event.args;
 
@@ -58,6 +65,8 @@ export default class PaymentEventEntity {
         entity.cudosAddress = args.cudosAddress ? utils.toUtf8String(args.cudosAddress) : entity.cudosAddress;
         entity.amount = args.amount ? new BigNumber(args.amount.toString()).shiftedBy(-18) : entity.amount;
         entity.payee = args.sender ?? entity.payee;
+        entity.txHash = event.transactionHash ?? entity.txHash;
+        entity.timestamp = timestamp ?? entity.timestamp;
 
         return entity;
     }

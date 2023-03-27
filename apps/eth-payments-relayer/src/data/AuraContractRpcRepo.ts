@@ -11,7 +11,16 @@ export default class AuraContractRpcRepo implements AuraContractRepo {
 
     async fetchEvents(lastCheckedBlockHeight: number, currentBlockHeight: number): Promise<PaymentEventEntity[]> {
         const paymentEvents = await this.contract.queryFilter('NftMinted', lastCheckedBlockHeight, currentBlockHeight);
-        return paymentEvents.map((paymentEvent) => PaymentEventEntity.fromContractEvent(paymentEvent));
+
+        const parseEvents = [];
+        for (let i = 0; i < parseEvents.length; i++) {
+            const paymentEvent = paymentEvents[i];
+            const block = await paymentEvent.getBlock();
+
+            parseEvents.push(PaymentEventEntity.fromContractEvent(paymentEvent, block.timestamp))
+        }
+
+        return parseEvents;
     }
 
     fetchCurrentBlockHeight(): Promise<number> {

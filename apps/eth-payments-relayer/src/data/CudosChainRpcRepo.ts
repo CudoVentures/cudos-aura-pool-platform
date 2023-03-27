@@ -72,6 +72,7 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
             uuid: 'presale',
             contractPaymentId: paymentEventEntity.id.toString(),
             recipientAddress: paymentEventEntity.cudosAddress,
+            ethTxHash: paymentEventEntity.txHash,
         };
 
         const tx = await this.chainSigningClient.sendTokens(signerAddress, Config.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', JSON.stringify(memo));

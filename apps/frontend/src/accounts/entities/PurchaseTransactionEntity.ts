@@ -8,11 +8,13 @@ export enum PurchaseTransactionStatus {
 }
 export default class PurchaseTransactionEntity {
     txhash: string;
+    recipientAddress: string;
     timestamp: number;
     status: PurchaseTransactionStatus;
 
     constructor() {
         this.txhash = S.Strings.EMPTY;
+        this.recipientAddress = S.Strings.EMPTY;
         this.timestamp = 0;
         this.status = PurchaseTransactionStatus.PENDING;
 
@@ -43,6 +45,7 @@ export default class PurchaseTransactionEntity {
 
         return {
             'txhash': entity.txhash,
+            'recipientAddress': entity.recipientAddress,
             'timestamp': entity.timestamp,
             'status': entity.status,
         }
@@ -56,6 +59,7 @@ export default class PurchaseTransactionEntity {
         const entity = new PurchaseTransactionEntity();
 
         entity.txhash = json.txhash ?? entity.txhash;
+        entity.recipientAddress = json.recipientAddress ?? entity.recipientAddress;
         entity.timestamp = json.timestamp ?? entity.timestamp;
         entity.status = json.status ?? entity.status;
 

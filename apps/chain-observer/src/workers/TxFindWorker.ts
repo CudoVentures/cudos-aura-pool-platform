@@ -1,4 +1,5 @@
 import { StargateClient } from '@cosmjs/stargate';
+import { decodeTxRaw } from 'cudosjs';
 import Config from '../../config/Config';
 import {
     MarketplaceCollectionEventTypes,
@@ -7,7 +8,12 @@ import {
     NftModuleCollectionEventTypes,
     NftModuleFilter,
     NftModuleNftEventTypes,
+    OnDemandMintNftMintFilter,
+    OnDemandMintReceivedFundsFilter,
+    OnDemandMintRefundsFilter,
 } from '../entities/CudosAuraPoolServiceTxFilter';
+import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
+import { convertBlockTimeToTimestamp } from './helpers';
 import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
 import { EmailRepo } from './repos/EmailRepo';
 
@@ -45,6 +51,9 @@ export default class TxFindWorker {
             // filter txs in these blocks
             await this.checkMarketplaceTransactions(heightFilter);
             await this.checkNftTransactions(heightFilter);
+            await this.checkOnDemandMintReceivedFundsTransactions(heightFilter);
+            await this.checkOnDemandRefundTransactions(heightFilter);
+            await this.checkOnDemandMintTransactions(heightFilter);
 
             await this.cudosAuraPoolServiceApi.updateLastCheckedHeight(lastBlock);
         } catch (e) {
@@ -127,4 +136,85 @@ export default class TxFindWorker {
         }
 
     }
+
+    async checkOnDemandMintReceivedFundsTransactions(heightFilter) {
+        const fundsReceivedTxs = await this.chainClient.searchTx(OnDemandMintReceivedFundsFilter, heightFilter)
+
+        const purchaseTransactionEntities = [];
+        for (let i = 0; i < fundsReceivedTxs.length; i++) {
+            const tx = fundsReceivedTxs[i];
+
+            const memo = decodeTxRaw(tx.tx).body.memo;
+            const memoJson = JSON.parse(memo);
+
+            if (memoJson.recipientAddress === '' || memoJson.uuid === 'presale') {
+                continue;
+            }
+
+            const purchaseTransactionEntity = new PurchaseTransactionEntity();
+            purchaseTransactionEntity.txhash = tx.hash;
+
+            const block = await this.chainClient.getBlock(tx.height);
+            purchaseTransactionEntity.timestamp = convertBlockTimeToTimestamp(block.header.time);
+
+            purchaseTransactionEntities.push(purchaseTransactionEntity);
+        }
+
+        if (purchaseTransactionEntities.length > 0) {
+            await this.cudosAuraPoolServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
+        }
+    }
+
+    async checkOnDemandRefundTransactions(heightFilter) {
+        const refundTransactions = await this.chainClient.searchTx(OnDemandMintRefundsFilter, heightFilter)
+
+        const purchaseTransactionEntities = [];
+        for (let i = 0; i < refundTransactions.length; i++) {
+            const tx = refundTransactions[i];
+
+            // on demand minter sets memo to be the receive funds tx hash
+            const txhash = decodeTxRaw(tx.tx).body.memo;
+
+            if (txhash === '') {
+                continue;
+            }
+
+            const purchaseTransactionEntity = new PurchaseTransactionEntity();
+            purchaseTransactionEntity.txhash = txhash;
+            purchaseTransactionEntity.status = PurchaseTransactionStatus.REFUNDED;
+
+            purchaseTransactionEntities.push(purchaseTransactionEntity);
+        }
+
+        if (purchaseTransactionEntities.length > 0) {
+            await this.cudosAuraPoolServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
+        }
+    }
+
+    async checkOnDemandMintTransactions(heightFilter) {
+        const mintTransactions = await this.chainClient.searchTx(OnDemandMintNftMintFilter, heightFilter)
+
+        const purchaseTransactionEntities = [];
+        for (let i = 0; i < mintTransactions.length; i++) {
+            const tx = mintTransactions[i];
+
+            // on demand minter sets memo to be the receive funds tx hash
+            const txhash = decodeTxRaw(tx.tx).body.memo;
+
+            if (txhash === '') {
+                continue;
+            }
+
+            const purchaseTransactionEntity = new PurchaseTransactionEntity();
+            purchaseTransactionEntity.txhash = txhash;
+            purchaseTransactionEntity.status = PurchaseTransactionStatus.SUCCESS;
+
+            purchaseTransactionEntities.push(purchaseTransactionEntity);
+        }
+
+        if (purchaseTransactionEntities.length > 0) {
+            await this.cudosAuraPoolServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
+        }
+    }
+
 }
