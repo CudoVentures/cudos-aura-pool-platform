@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors, HttpCode, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AccountType } from '../account/account.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest, RequestWithSessionAccounts } from '../common/commont.types';
@@ -22,6 +23,8 @@ export class AuthController {
     @UseInterceptors(TransactionInterceptor)
     @Post('login')
     @HttpCode(200)
+    @UseGuards(ThrottlerGuard)
+    @Throttle(1, 30)
     async login(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin,
