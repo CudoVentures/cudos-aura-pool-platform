@@ -179,6 +179,12 @@ export default class TxFindWorker {
                 continue;
             }
 
+            const originalTx = await this.chainClient.getTx(txhash);
+            const memoJson = JSON.parse(decodeTxRaw(originalTx.tx).body.memo);
+            if (memoJson.ethTxhash !== '') {
+                continue;
+            }
+
             const purchaseTransactionEntity = new PurchaseTransactionEntity();
             purchaseTransactionEntity.txhash = txhash;
             purchaseTransactionEntity.status = PurchaseTransactionStatus.REFUNDED;
