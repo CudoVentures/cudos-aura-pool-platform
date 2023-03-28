@@ -5,6 +5,7 @@ export enum PurchaseTransactionStatus {
     SUCCESS = 1,
     REFUNDED = 3,
 }
+
 export default class PurchaseTransactionEntity {
     txhash: string;
     recipientAddress: string;
