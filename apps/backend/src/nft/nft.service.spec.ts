@@ -130,7 +130,7 @@ describe('NFTService', () => {
         // Act
         const resultCounts = expectedCounts.map((_) => 0);
         for (let i = 0; i < totalFetches; i++) {
-            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
+            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos, undefined);
             const tier = tiers.indexOf(nftEntity.priceUsd);
             if (tier === -1) {
                 throw new Error(`Unknown tier:${tier}`);
@@ -165,7 +165,7 @@ describe('NFTService', () => {
         // Act
         const resultCounts = expectedCounts.map((_) => 0);
         for (let i = 0; i < totalFetches; i++) {
-            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
+            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos, undefined);
             const tier = tiers.indexOf(nftEntity.priceUsd);
             if (tier === -1) {
                 throw new Error(`Unknown tier:${tier}`);
@@ -187,7 +187,7 @@ describe('NFTService', () => {
         const expectedCounts = propabilities.map((probality) => totalFetches * probality);
         const countE = 0.025;
 
-        jest.spyOn(service, 'findAllPresaleByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
+        jest.spyOn(service, 'findAllPresaleByCollectionAndPriceUsd').mockImplementation(async (collectionId, price, dbTx, dbLock) => {
             if (price === 150 || price === 300) {
                 return [];
             }
@@ -200,7 +200,7 @@ describe('NFTService', () => {
         // Act
         const resultCounts = expectedCounts.map((_) => 0);
         for (let i = 0; i < totalFetches; i++) {
-            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos);
+            const nftEntity = await service.getRandomPresaleNft(oneCudosInAcudos, undefined);
             const tier = tiers.indexOf(nftEntity.priceUsd);
             if (tier === -1) {
                 throw new Error(`Unknown tier:${tier}`);
@@ -216,7 +216,7 @@ describe('NFTService', () => {
 
     it('getRandomPresaleNft: payment amount outside epsilon', async () => {
         // Assert
-        expect(await service.getRandomPresaleNft(oneCudosInAcudos.plus(oneCudosInAcudos))).toEqual(null);
+        expect(await service.getRandomPresaleNft(oneCudosInAcudos.plus(oneCudosInAcudos), undefined)).toEqual(null);
     })
 
 });

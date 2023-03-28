@@ -162,9 +162,9 @@ describe('StatisticsService', () => {
         nftEventFilterEntity.timestampTo = timestampTo;
 
         // Assert
-        expect(() => service.fetchEarningsByCudosAddress('testowner', timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
-        expect(() => service.fetchEarningsByNftId(uuidv4(), timestampFrom, timestampTo)).rejects.toThrow(DataServiceError);
-        expect(() => service.fetchNftEventsByFilter(null, nftEventFilterEntity)).rejects.toThrow(DataServiceError);
+        expect(() => service.fetchEarningsByCudosAddress('testowner', timestampFrom, timestampTo, undefined)).rejects.toThrow(DataServiceError);
+        expect(() => service.fetchEarningsByNftId(uuidv4(), timestampFrom, timestampTo, undefined)).rejects.toThrow(DataServiceError);
+        expect(() => service.fetchNftEventsByFilter(null, nftEventFilterEntity, undefined)).rejects.toThrow(DataServiceError);
     });
 
     it('fetchEarningsByCudosAddress: Happy path', async () => {
@@ -176,7 +176,7 @@ describe('StatisticsService', () => {
             earningsPerDayInBtc: ['3', '4', '5'],
         });
 
-        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4), undefined);
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
@@ -200,7 +200,7 @@ describe('StatisticsService', () => {
             earningsPerDayInBtc: ['3', '4', '5'],
         });
 
-        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4), undefined);
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
@@ -233,7 +233,7 @@ describe('StatisticsService', () => {
             earningsPerDayInBtc: ['3', '4', '5', '0', '0', '0', '0', '90071992547409919007199254740991.90071992547409919007199254740991000000001', '0.00000000000000000000000000000000000000002'],
         });
 
-        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(10));
+        const userEarningsEntity = await service.fetchEarningsByCudosAddress('testowner', getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(10), undefined);
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
@@ -242,7 +242,7 @@ describe('StatisticsService', () => {
             earningsPerDayInBtc: ['3', '0', '0'],
         });
 
-        const nftEarningsEntity = await service.fetchEarningsByNftId(nftTestEntitities[2].id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+        const nftEarningsEntity = await service.fetchEarningsByNftId(nftTestEntitities[2].id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4), undefined);
         expect(nftEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
@@ -262,7 +262,7 @@ describe('StatisticsService', () => {
             earningsPerDayInBtc: ['0', '0', '0'],
         });
 
-        const nftEarningsEntity = await service.fetchEarningsByNftId(id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+        const nftEarningsEntity = await service.fetchEarningsByNftId(id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4), undefined);
         expect(nftEarningsEntity).toEqual(expectedUserEraningsEntity);
     });
 
@@ -284,7 +284,7 @@ describe('StatisticsService', () => {
         });
 
         // Act
-        const nftEarningsEntity = await service.fetchEarningsByNftId(id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4));
+        const nftEarningsEntity = await service.fetchEarningsByNftId(id, getZeroDatePlusDaysTimestamp(2), getZeroDatePlusDaysTimestamp(4), undefined);
 
         // Assert
         expect(nftEarningsEntity).toEqual(expectedUserEraningsEntity);
@@ -351,7 +351,7 @@ describe('StatisticsService', () => {
         const result = { nftEventEntities, nftEntities, total };
 
         // Act
-        const userEarningsEntity = await service.fetchNftEventsByFilter(userEntity, nftEventFilterEntity);
+        const userEarningsEntity = await service.fetchNftEventsByFilter(userEntity, nftEventFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity.total).toEqual(result.total);
@@ -407,7 +407,7 @@ describe('StatisticsService', () => {
         const result = { nftEventEntities, nftEntities, total };
 
         // Act
-        const userEarningsEntity = await service.fetchNftEventsByFilter(userEntity, nftEventFilterEntity);
+        const userEarningsEntity = await service.fetchNftEventsByFilter(userEntity, nftEventFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity.total).toEqual(result.total);
@@ -456,7 +456,7 @@ describe('StatisticsService', () => {
         const result = { nftEventEntities, nftEntities, total };
 
         // Act
-        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity.total).toEqual(result.total);
@@ -508,7 +508,7 @@ describe('StatisticsService', () => {
         const expected = { nftEventEntities, nftEntities, total };
 
         // Act
-        const result = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const result = await service.fetchNftEventsByFilter(null, nftEventFilterEntity, undefined);
 
         // Assert
         expect(expected.total).toEqual(result.total);
@@ -557,7 +557,7 @@ describe('StatisticsService', () => {
         const result = { nftEventEntities, nftEntities, total };
 
         // Act
-        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const userEarningsEntity = await service.fetchNftEventsByFilter(null, nftEventFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity.total).toEqual(result.total);
@@ -581,7 +581,7 @@ describe('StatisticsService', () => {
         earningsPerDayFilterEntity.farmId = '1';
         earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.CUDOS
 
-        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
@@ -603,7 +603,7 @@ describe('StatisticsService', () => {
         earningsPerDayFilterEntity.farmId = '1';
         earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.BTC
 
-        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
@@ -624,7 +624,7 @@ describe('StatisticsService', () => {
         earningsPerDayFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(4);
         earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.CUDOS
 
-        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
@@ -646,7 +646,7 @@ describe('StatisticsService', () => {
         earningsPerDayFilterEntity.timestampTo = getZeroDatePlusDaysTimestamp(4);
         earningsPerDayFilterEntity.currency = EarningsPerDayCurrency.BTC
 
-        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity);
+        const userEarningsEntity = await service.fetchEarningsPerDay(earningsPerDayFilterEntity, undefined);
 
         // Assert
         expect(userEarningsEntity).toEqual(expectedUserEraningsEntity);
@@ -728,7 +728,7 @@ describe('StatisticsService', () => {
         })
 
         // Act
-        const userEarningsEntity = await service.fetchMegaWalletEventsByFilter(megaWalletEventFilter);
+        const userEarningsEntity = await service.fetchMegaWalletEventsByFilter(megaWalletEventFilter, undefined);
         userEarningsEntity.nftEntities.sort((a: NftEntity, b: NftEntity) => {
             return a.id.localeCompare(b.id);
         });

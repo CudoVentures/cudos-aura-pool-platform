@@ -36,7 +36,7 @@ export class CollectionService {
     // eslint-disable-next-line no-empty-function
     ) {}
 
-    async findByFilter(collectionFitlerEntity: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
+    async findByFilter(collectionFitlerEntity: CollectionFilterModel, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
@@ -86,6 +86,8 @@ export class CollectionService {
         const collectionRepos = await this.collectionRepo.findAll({
             where: whereClause,
             order: orderByClause,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         let collectionEntities = collectionRepos.map((collectionRepo) => CollectionEntity.fromRepo(collectionRepo));
@@ -99,16 +101,16 @@ export class CollectionService {
         };
     }
 
-    async findTopCollections(timestampFrom: number, timestampTo: number): Promise < CollectionEntity[] > {
+    async findTopCollections(timestampFrom: number, timestampTo: number, dbTx: Transaction): Promise < CollectionEntity[] > {
         const turnoversMap = new Map < string, number >();
         const nftEventFilterEntity = new NftEventFilterEntity();
         nftEventFilterEntity.timestampFrom = timestampFrom;
         nftEventFilterEntity.timestampTo = timestampTo;
         nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT, NftTransferHistoryEventType.SALE];
 
-        const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity, dbTx);
         const denomIds = nftEventEntities.map((nftEventEntity) => nftEventEntity.denomId);
-        const collectionEntities = await this.findByDenomIds(denomIds);
+        const collectionEntities = await this.findByDenomIds(denomIds, dbTx);
 
         nftEventEntities.forEach((nftEventEntity) => {
             const value = turnoversMap.get(nftEventEntity.denomId) ?? 0;
@@ -124,22 +126,26 @@ export class CollectionService {
         return collectionEntities;
     }
 
-    async findByCollectionIds(collectionIds: number[]): Promise < CollectionEntity[] > {
+    async findByCollectionIds(collectionIds: number[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < CollectionEntity[] > {
         const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 [CollectionRepoColumn.ID]: collectionIds,
             },
+            transaction: dbTx,
+            lock: dbLock,
         })
         return collectionRepos.map((collectionRepo) => {
             return CollectionEntity.fromRepo(collectionRepo);
         });
     }
 
-    async findByDenomIds(denomIds: string[]): Promise < CollectionEntity[] > {
+    async findByDenomIds(denomIds: string[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < CollectionEntity[] > {
         const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 [CollectionRepoColumn.DENOM_ID]: denomIds,
             },
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         return collectionRepos.map((collectionRepo) => {
@@ -147,13 +153,15 @@ export class CollectionService {
         });
     }
 
-    async findIdsByStatus(status: CollectionStatus[]): Promise < number[] > {
+    async findIdsByStatus(status: CollectionStatus[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < number[] > {
         const collections = await this.collectionRepo.findAll({
             where: {
                 status: {
                     [Op.in]: status,
                 },
             },
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         return collections.map((collection) => {
@@ -161,40 +169,46 @@ export class CollectionService {
         })
     }
 
-    async findOne(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise<CollectionEntity> {
+    async findOne(id: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise<CollectionEntity> {
         const collectionRepo = await this.collectionRepo.findByPk(id, {
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return CollectionEntity.fromRepo(collectionRepo);
     }
 
-    async findOneByDenomId(denomId: string): Promise<CollectionEntity> {
+    async findOneByDenomId(denomId: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise<CollectionEntity> {
         const collectionRepo = await this.collectionRepo.findOne({
             where: {
                 denom_id: denomId,
             },
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return CollectionEntity.fromRepo(collectionRepo);
     }
 
-    async findByFarmId(id: number): Promise<CollectionEntity[]> {
+    async findByFarmId(id: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise<CollectionEntity[]> {
         const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 farm_id: id,
             },
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return collectionRepos.map((collectionRepo) => CollectionEntity.fromRepo(collectionRepo));
     }
 
-    async findByMiningFarmIds(miningFarmIds: number[]): Promise < CollectionEntity[] > {
+    async findByMiningFarmIds(miningFarmIds: number[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < CollectionEntity[] > {
         const collectionRepos = await this.collectionRepo.findAll({
             where: {
                 [CollectionRepoColumn.FARM_ID]: miningFarmIds,
             },
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         return collectionRepos.map((collectionRepo) => {
@@ -202,7 +216,7 @@ export class CollectionService {
         });
     }
 
-    async createOne(collectionEntity: CollectionEntity, tx: Transaction = undefined): Promise<CollectionEntity> {
+    async createOne(collectionEntity: CollectionEntity, dbTx: Transaction): Promise<CollectionEntity> {
         try {
             checkValidNftDenomId(collectionEntity.denomId);
         } catch (e) {
@@ -219,13 +233,13 @@ export class CollectionService {
             ...collectionRepo.toJSON(),
             status: CollectionStatus.QUEUED,
         }, {
-            transaction: tx,
+            transaction: dbTx,
         });
         return CollectionEntity.fromRepo(collection);
 
     }
 
-    async updateOne(id: number, collectionEntity: CollectionEntity, tx: Transaction = undefined): Promise<CollectionEntity> {
+    async updateOne(id: number, collectionEntity: CollectionEntity, dbTx: Transaction): Promise<CollectionEntity> {
         try {
             checkValidNftDenomId(collectionEntity.denomId);
         } catch (e) {
@@ -237,7 +251,7 @@ export class CollectionService {
             {
                 where: { id },
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             },
         );
 
@@ -247,14 +261,14 @@ export class CollectionService {
     async updateOneByDenomId(
         denomId: string,
         collectionEntity: CollectionEntity,
-        tx: Transaction = undefined,
+        dbTx: Transaction,
     ): Promise<CollectionEntity> {
         const [count, [collectionRepo]] = await this.collectionRepo.update(
             CollectionEntity.toRepo(collectionEntity).toJSON(),
             {
                 where: { denom_id: denomId },
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             },
         );
 
@@ -273,8 +287,8 @@ export class CollectionService {
         return this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
     }
 
-    async getDetails(collectionId: number): Promise <CollectionDetailsEntity> {
-        const collection = await this.findOne(collectionId);
+    async getDetails(collectionId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise <CollectionDetailsEntity> {
+        const collection = await this.findOne(collectionId, dbTx, dbLock);
 
         if (!collection) {
             throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
@@ -284,7 +298,7 @@ export class CollectionService {
         nftFilter.collectionIds = [collectionId.toString()];
         nftFilter.nftStatus = [NftStatus.MINTED, NftStatus.QUEUED];
         nftFilter.orderBy = NftOrderBy.PRICE_ASC
-        const { nftEntities } = await this.nftService.findByFilter(null, nftFilter);
+        const { nftEntities } = await this.nftService.findByFilter(null, nftFilter, dbTx, dbLock);
 
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
         const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
@@ -295,7 +309,7 @@ export class CollectionService {
 
         const nftOwnersSet = new Set(nftEntities.filter((nft) => nft.hasOwner()).map((nft) => nft.currentOwner)); // Unique owners of all the NFTs in the collection
 
-        const adminEntity = await this.accountService.findAdminByAccountId(collection.creatorId);
+        const adminEntity = await this.accountService.findAdminByAccountId(collection.creatorId, dbTx, dbLock);
 
         // Get remaining hash power
         const nftsHashPowerSum = nftEntities.reduce((pervVal, currVal) => pervVal + Number(currVal.hashingPower), 0)

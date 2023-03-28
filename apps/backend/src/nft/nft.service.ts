@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize, { Op, Transaction } from 'sequelize';
+import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
@@ -54,7 +54,8 @@ export class NFTService {
     // eslint-disable-next-line no-empty-function
     ) {}
 
-    async findByFilter(userEntity: UserEntity, nftFilterEntity: NftFilterEntity): Promise < { nftEntities: NftEntity[], total: number } > {
+    // controller functions
+    async findByFilter(userEntity: UserEntity, nftFilterEntity: NftFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { nftEntities: NftEntity[], total: number } > {
         let whereClause: any = {};
         let orderByClause: any[] = null;
 
@@ -63,7 +64,7 @@ export class NFTService {
         }
 
         if (nftFilterEntity.hasCollectionStatus() === true) {
-            whereClause.collection_id = await this.collectionService.findIdsByStatus(nftFilterEntity.getCollectionStatus());
+            whereClause.collection_id = await this.collectionService.findIdsByStatus(nftFilterEntity.getCollectionStatus(), dbTx);
         }
 
         if (nftFilterEntity.hasNftStatus() === true) {
@@ -114,6 +115,8 @@ export class NFTService {
         const nftRepos = await this.nftRepo.findAll({
             where: whereClause,
             order: orderByClause,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         let nftEntities = nftRepos.map((nftRepo) => NftEntity.fromRepo(nftRepo));
@@ -122,7 +125,7 @@ export class NFTService {
                 return nftEntity.id.toString();
             });
             const sortDirection = Math.floor(Math.abs(nftFilterEntity.orderBy) / nftFilterEntity.orderBy);
-            const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds);
+            const visitorMap = await this.visitorService.fetchNftsVisitsCountAsMap(nftIds, dbTx, dbLock);
             nftEntities.sort((a: NftEntity, b: NftEntity) => {
                 const visitsA = visitorMap.get(a.id.toString()) ?? 0;
                 const visitsB = visitorMap.get(b.id.toString()) ?? 0;
@@ -140,124 +143,7 @@ export class NFTService {
 
     }
 
-    async findAll(): Promise <NftEntity[]> {
-        const nftRepos = await this.nftRepo.findAll();
-
-        const nftEntities = nftRepos.map((nftRepo) => NftEntity.fromRepo(nftRepo));
-
-        return nftEntities;
-    }
-
-    async findByAccountId(accountId: number): Promise < NftEntity[] > {
-        const whereClause = new NftRepo();
-        whereClause.creatorId = accountId;
-        const nftRepos = await this.nftRepo.findAll({
-            where: AppRepo.toJsonWhere(whereClause),
-        });
-
-        return nftRepos.map((nftRepo) => {
-            return NftEntity.fromRepo(nftRepo);
-        });
-    }
-
-    async findActiveByCurrentOwner(cudosWalletAddress: string): Promise < NftEntity[] > {
-        const nftRepos = await this.nftRepo.findAll({
-            where: {
-                [NftRepoColumn.CURRENT_OWNER]: cudosWalletAddress,
-                [NftRepoColumn.STATUS]: NftStatus.MINTED,
-                [NftRepoColumn.EXPIRATION_DATE]: {
-                    [Op.gt]: new Date(),
-                },
-            },
-        });
-
-        return nftRepos.map((nftRepo) => {
-            return NftEntity.fromRepo(nftRepo);
-        });
-    }
-
-    async findAllPresaleByCollectionAndPriceUsd(collecionId?: number, priceUsd?: number) {
-        const whereClause = {
-            [NftRepoColumn.COLLECTION_ID]: collecionId,
-            [NftRepoColumn.PRICE_USD]: priceUsd,
-            [NftRepoColumn.TOKEN_ID]: '',
-            [NftRepoColumn.PRICE_VALID_UNTIL]: {
-                [Op.lt]: Date.now(),
-            },
-            [NftRepoColumn.GROUP]: NftGroup.PRESALE,
-        };
-
-        const nftRepos = await this.nftRepo.findAll({
-            where: whereClause,
-        });
-
-        return nftRepos.map((nftRepo) => {
-            return NftEntity.fromRepo(nftRepo);
-        });
-    }
-
-    async findByCollectionIds(collectionIds: number[]) {
-        const nftRepos = await this.nftRepo.findAll({
-            where: {
-                [NftRepoColumn.COLLECTION_ID]: collectionIds,
-            },
-        });
-
-        return nftRepos.map((nftRepo) => {
-            return NftEntity.fromRepo(nftRepo);
-        });
-    }
-
-    async findByCollectionIdsAndTokenIds(collectionIds: number[], tokenIds: string[]) {
-        const nftRepos = await this.nftRepo.findAll({
-            where: {
-                [NftRepoColumn.COLLECTION_ID]: collectionIds,
-                [NftRepoColumn.TOKEN_ID]: tokenIds,
-            },
-        });
-
-        return nftRepos.map((nftRepo) => {
-            return NftEntity.fromRepo(nftRepo);
-        });
-    }
-
-    async updateNftCudosPrice(id: string): Promise<NftEntity> {
-        const nftEntity = await this.findOne(id);
-        if (nftEntity === null) {
-            throw new NotFoundException();
-        }
-
-        if (nftEntity.isMinted()) {
-            throw new NotFoundException();
-        }
-
-        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
-        const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(cudosUsdPrice);
-        const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
-
-        nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
-
-        nftEntity.priceAcudosValidUntil = Date.now() + FIFTEEN_MINUTES_IN_MILIS;
-
-        return this.updateOne(id, nftEntity);
-    }
-
-    async fetchPresaleAmounts(): Promise < {totalPresaleNftCount: number, presaleMintedNftCount: number} > {
-        const collectionId = this.configService.get<string>('APP_PRESALE_COLLECTION_ID');
-
-        const nftFilter = new NftFilterEntity();
-        nftFilter.collectionIds = [collectionId]
-        nftFilter.nftGroup = [NftGroup.PRESALE]
-
-        const { nftEntities } = await this.findByFilter(null, nftFilter);
-        const totalPresaleNftCount = nftEntities.length;
-        const presaleMintedNftCount = nftEntities.filter((nftEntity: NftEntity) => nftEntity.isMinted() === true).length;
-
-        return { totalPresaleNftCount, presaleMintedNftCount }
-    }
-
-    async getRandomPresaleNft(paidAmountAcudos: BigNumber): Promise <NftEntity> {
-
+    async getRandomPresaleNft(paidAmountAcudos: BigNumber, dbTx: Transaction, dbLock: LOCK = undefined): Promise <NftEntity> {
         // check if paid price is within epsilon of expected
         const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
         const paidAmountCudos = paidAmountAcudos.shiftedBy(-CURRENCY_DECIMALS);
@@ -300,7 +186,7 @@ export class NFTService {
             const priceUsd = tierPriceMap.get(tierToQuery);
 
             // get nft in price by random
-            const nftTierEntities = await this.findAllPresaleByCollectionAndPriceUsd(collectionId, priceUsd);
+            const nftTierEntities = await this.findAllPresaleByCollectionAndPriceUsd(collectionId, priceUsd, dbTx, dbLock);
 
             if (nftTierEntities.length > 0) {
                 const nftIndex = randomInt(0, nftTierEntities.length);
@@ -312,18 +198,161 @@ export class NFTService {
         return null;
     }
 
-    async updatePremintNftPrice(nftEntity: NftEntity, paidAmountAcudos: BigNumber): Promise <NftEntity> {
+    async updatePremintNftPrice(nftEntity: NftEntity, paidAmountAcudos: BigNumber, dbTx: Transaction): Promise <NftEntity> {
         nftEntity.acudosPrice = paidAmountAcudos;
 
         nftEntity.priceAcudosValidUntil = Date.now() + FIFTEEN_MINUTES_IN_MILIS;
 
-        await this.updateOne(nftEntity.id, nftEntity);
+        await this.updateOne(nftEntity.id, nftEntity, dbTx);
 
         return nftEntity;
     }
 
-    async findOne(id: string): Promise < NftEntity > {
-        const nftRepo = await this.nftRepo.findByPk(id);
+    async updateOneWithStatus(id: string, nftEntity: NftEntity, dbTx: Transaction): Promise < NftEntity > {
+        const [count, [nftRepo]] = await this.nftRepo.update(NftEntity.toRepo(nftEntity).toJSON(), {
+            where: { id },
+            returning: true,
+            transaction: dbTx,
+        });
+
+        return NftEntity.fromRepo(nftRepo);
+    }
+
+    async updateNftCudosPrice(id: string, dbTx: Transaction): Promise < NftEntity> {
+        const nftEntity = await this.findOne(id, dbTx, dbTx.LOCK.UPDATE);
+        if (nftEntity === null) {
+            throw new NotFoundException();
+        }
+
+        if (nftEntity.isMinted()) {
+            throw new NotFoundException();
+        }
+
+        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(cudosUsdPrice);
+        const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
+
+        nftEntity.acudosPrice = new BigNumber(acudosPrice.toFixed(0));
+
+        nftEntity.priceAcudosValidUntil = Date.now() + FIFTEEN_MINUTES_IN_MILIS;
+
+        return this.updateOne(id, nftEntity, dbTx);
+    }
+
+    async fetchPresaleAmounts(dbTx: Transaction): Promise < {totalPresaleNftCount: number, presaleMintedNftCount: number} > {
+        const collectionId = this.configService.get<string>('APP_PRESALE_COLLECTION_ID');
+
+        const nftFilter = new NftFilterEntity();
+        nftFilter.collectionIds = [collectionId]
+        nftFilter.nftGroup = [NftGroup.PRESALE]
+
+        const { nftEntities } = await this.findByFilter(null, nftFilter, dbTx);
+        const totalPresaleNftCount = nftEntities.length;
+        const presaleMintedNftCount = nftEntities.filter((nftEntity: NftEntity) => nftEntity.isMinted() === true).length;
+
+        return { totalPresaleNftCount, presaleMintedNftCount }
+    }
+
+    // async findAll(dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
+    //     const nftRepos = await this.nftRepo.findAll({
+    //         transaction: dbTx,
+    //         lock: dbLock,
+    //     });
+
+    //     const nftEntities = nftRepos.map((nftRepo) => NftEntity.fromRepo(nftRepo));
+
+    //     return nftEntities;
+    // }
+
+    // async findByAccountId(accountId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
+    //     const whereClause = new NftRepo();
+    //     whereClause.creatorId = accountId;
+    //     const nftRepos = await this.nftRepo.findAll({
+    //         where: AppRepo.toJsonWhere(whereClause),
+    //         transaction: dbTx,
+    //         lock: dbLock,
+    //     });
+
+    //     return nftRepos.map((nftRepo) => {
+    //         return NftEntity.fromRepo(nftRepo);
+    //     });
+    // }
+
+    // utilty functions
+    async findActiveByCurrentOwner(cudosWalletAddress: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.CURRENT_OWNER]: cudosWalletAddress,
+                [NftRepoColumn.STATUS]: NftStatus.MINTED,
+                [NftRepoColumn.EXPIRATION_DATE]: {
+                    [Op.gt]: new Date(),
+                },
+            },
+            transaction: dbTx,
+            lock: dbLock,
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
+    async findAllPresaleByCollectionAndPriceUsd(collecionId: number, priceUsd: number, dbTx: Transaction, dbLock: LOCK = undefined) {
+        const whereClause = {
+            [NftRepoColumn.COLLECTION_ID]: collecionId,
+            [NftRepoColumn.PRICE_USD]: priceUsd,
+            [NftRepoColumn.TOKEN_ID]: '',
+            [NftRepoColumn.PRICE_VALID_UNTIL]: {
+                [Op.lt]: Date.now(),
+            },
+            [NftRepoColumn.GROUP]: NftGroup.PRESALE,
+        };
+
+        const nftRepos = await this.nftRepo.findAll({
+            where: whereClause,
+            transaction: dbTx,
+            lock: dbLock,
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
+    async findByCollectionIds(collectionIds: number[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.COLLECTION_ID]: collectionIds,
+            },
+            transaction: dbTx,
+            lock: dbLock,
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
+    async findByCollectionIdsAndTokenIds(collectionIds: number[], tokenIds: string[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
+        const nftRepos = await this.nftRepo.findAll({
+            where: {
+                [NftRepoColumn.COLLECTION_ID]: collectionIds,
+                [NftRepoColumn.TOKEN_ID]: tokenIds,
+            },
+            transaction: dbTx,
+            lock: dbLock,
+        });
+
+        return nftRepos.map((nftRepo) => {
+            return NftEntity.fromRepo(nftRepo);
+        });
+    }
+
+    async findOne(id: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity > {
+        const nftRepo = await this.nftRepo.findByPk(id, {
+            transaction: dbTx,
+            lock: dbLock,
+        });
 
         if (!nftRepo) {
             throw new NotFoundException();
@@ -332,53 +361,37 @@ export class NFTService {
         return NftEntity.fromRepo(nftRepo);
     }
 
-    async createOne(nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
+    async createOne(nftEntity: NftEntity, dbTx: Transaction): Promise < NftEntity > {
+        nftEntity.currentOwner = '';
+        nftEntity.markAsQueued();
         const nftRepo = await this.nftRepo.create({
             ...NftEntity.toRepo(nftEntity).toJSON(),
             id: uuid(),
-            current_owner: '',
-            status: NftStatus.QUEUED,
         }, {
-            transaction: tx,
+            transaction: dbTx,
         });
 
         return NftEntity.fromRepo(nftRepo);
     }
 
-    async updateOne(id: string, nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
-        const [count, [nftRepo]] = await this.nftRepo.update(
-            {
-                ...NftEntity.toRepo(nftEntity).toJSON(),
-                status: NftStatus.QUEUED,
-            },
-            {
-                where: { id },
-                returning: true,
-                transaction: tx,
-            },
-        );
+    async updateOne(id: string, nftEntity: NftEntity, dbTx: Transaction): Promise < NftEntity > {
+        nftEntity.markAsQueued();
+        const [count, [nftRepo]] = await this.nftRepo.update(NftEntity.toRepo(nftEntity).toJSON(), {
+            where: { id },
+            returning: true,
+            transaction: dbTx,
+        });
 
         return NftEntity.fromRepo(nftRepo);
     }
 
-    async deleteMany(nftEntities: NftEntity[]): Promise <void> {
+    async deleteMany(nftEntities: NftEntity[], dbTx: Transaction): Promise <void> {
         // TODO: check settings for deletion
-        const promises = nftEntities.map((nftEtity) => NftEntity.toRepo(nftEtity).destroy());
+        const promises = nftEntities.map((nftEtity) => NftEntity.toRepo(nftEtity).destroy({
+            transaction: dbTx,
+        }));
 
         await Promise.all(promises);
-    }
-
-    async updateOneWithStatus(id: string, nftEntity: NftEntity, tx: Transaction = undefined): Promise < NftEntity > {
-        const [count, [nftRepo]] = await this.nftRepo.update(
-            NftEntity.toRepo(nftEntity).toJSON(),
-            {
-                where: { id },
-                returning: true,
-                transaction: tx,
-            },
-        );
-
-        return NftEntity.fromRepo(nftRepo);
     }
 
     // async getNftAttributes(txHash: string): Promise<{ token_id: string, uuid: string }> {

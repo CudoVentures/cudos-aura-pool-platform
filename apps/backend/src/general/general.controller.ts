@@ -29,7 +29,7 @@ export class GeneralController {
     async getLastCheckedBlock(
         @Req() req: AppRequest,
     ): Promise<{height: number}> {
-        const height = await this.generalService.getLastCheckedBlock();
+        const height = await this.generalService.getLastCheckedBlock(req.transaction);
         return { height: height === 0 ? parseInt(process.env.APP_CUDOS_INIT_BLOCK) : height };
     }
 
@@ -41,7 +41,7 @@ export class GeneralController {
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedBlockRequest,
     ): Promise<any> {
-        return this.generalService.setLastCheckedBlock(reqUpdateLastCheckedBlockRequest.height);
+        return this.generalService.setLastCheckedBlock(reqUpdateLastCheckedBlockRequest.height, req.transaction);
     }
 
     @Get('last-checked-payment-relayer-blocks')
@@ -51,7 +51,7 @@ export class GeneralController {
     async getLastCheckedPaymentRelayerBlock(
         @Req() req: AppRequest,
     ): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
-        const generalEntity = await this.generalService.fetchGeneral();
+        const generalEntity = await this.generalService.fetchGeneral(req.transaction);
 
         const res = new ResFetchLastCheckedPaymenrRelayerBlocks(generalEntity.lastCheckedPaymentRelayerEthBlock, generalEntity.lastCheckedPaymentRelayerCudosBlock);
 
@@ -66,7 +66,7 @@ export class GeneralController {
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedPaymentRelayerBlocksRequest,
     ): Promise<any> {
-        return this.generalService.setLastCheckedPaymentRelayerBlocks(reqUpdateLastCheckedBlockRequest.lastCheckedEthBlock, reqUpdateLastCheckedBlockRequest.lastCheckedCudosBlock);
+        return this.generalService.setLastCheckedPaymentRelayerBlocks(reqUpdateLastCheckedBlockRequest.lastCheckedEthBlock, reqUpdateLastCheckedBlockRequest.lastCheckedCudosBlock, req.transaction);
     }
 
     @Get('fetchSettings')
@@ -75,7 +75,7 @@ export class GeneralController {
     async fetchSettings(
         @Req() req: AppRequest,
     ): Promise < ResFetchSettings > {
-        const settingsEntity = await this.generalService.fetchSettings();
+        const settingsEntity = await this.generalService.fetchSettings(req.transaction);
         return new ResFetchSettings(settingsEntity);
     }
 

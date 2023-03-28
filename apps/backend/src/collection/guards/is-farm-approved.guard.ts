@@ -1,38 +1,34 @@
 import {
-    CanActivate,
-    ExecutionContext,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
 import { FarmService } from '../../farm/farm.service';
 import { NOT_EXISTS_INT } from '../../common/utils';
-import { FarmStatus } from '../../farm/farm.types';
 import { CollectionEntity } from '../entities/collection.entity';
+import { AppRequest } from '../../common/commont.types';
+import { ReqCreditCollection, ReqEditCollection } from '../dto/requests.dto';
 
 @Injectable()
-export class IsFarmApprovedGuard implements CanActivate {
-    constructor(
-      private farmService: FarmService,
-    // eslint-disable-next-line no-empty-function
-    ) {
-    }
+export class IsFarmApprovedGuard {
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const collectionEntity: CollectionEntity = CollectionEntity.fromJson(request.body.collectionDto);
+    constructor(private farmService: FarmService) {}
 
-        if (collectionEntity.farmId === NOT_EXISTS_INT) return false;
+    async canActivate(request: AppRequest, req: ReqCreditCollection | ReqEditCollection): Promise < void > {
+        // const req = context.switchToHttp().getRequest<AppRequest>();
+        const collectionEntity: CollectionEntity = CollectionEntity.fromJson(req.collectionDto);
 
-        const farmId = collectionEntity.farmId
-
-        const farm = await this.farmService.findMiningFarmById(farmId);
-
-        if (!farm || farm.status !== FarmStatus.APPROVED) {
-            throw new UnauthorizedException(
-                `Farm with id ${farmId} is not verified`,
-            );
+        if (collectionEntity.farmId === NOT_EXISTS_INT) {
+            throw new UnauthorizedException();
         }
 
-        return true;
+        const farmId = collectionEntity.farmId;
+        const farm = await this.farmService.findMiningFarmById(farmId, request.transaction);
+
+        if (farm?.isApproved() === true) {
+            return;
+        }
+
+        throw new UnauthorizedException();
+
     }
 }

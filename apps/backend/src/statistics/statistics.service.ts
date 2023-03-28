@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
 import BigNumber from 'bignumber.js';
-import sequelize, { Op } from 'sequelize';
+import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import UserEntity from '../account/entities/user.entity';
 import { CollectionService } from '../collection/collection.service';
 import ChainMarketplaceCollectionEntity from '../collection/entities/chain-marketplace-collection.entity';
@@ -60,40 +60,13 @@ export class StatisticsService {
         private collectionPaymentAllocationRepo: typeof CollectionPaymentAllocationRepo,
     ) {}
 
-    async fetchUsersSpendingOnPlatformInUsd(userEntity: UserEntity): Promise < number > {
-        const nftEventFilterEntity = new NftEventFilterEntity();
-        nftEventFilterEntity.sessionAccount = IntBoolValue.TRUE;
-
-        const processedMintEventNftIdSet = new Set();
-        const { nftEventEntities } = await this.fetchNftEventsByFilter(userEntity, nftEventFilterEntity);
-        const sumInUsd = nftEventEntities.filter((nftEventEntity) => {
-            if (nftEventEntity.isMintEvent() === false && nftEventEntity.isSaleEvent() === false) {
-                return false;
-            }
-
-            if (nftEventEntity.isMintEvent() === true && processedMintEventNftIdSet.has(nftEventEntity.nftId) === true) {
-                return false;
-            }
-
-            const result = nftEventEntity.toAddress === userEntity.cudosWalletAddress;
-            if (result === true && nftEventEntity.isMintEvent() === true) {
-                processedMintEventNftIdSet.add(nftEventEntity.nftId);
-            }
-
-            return result;
-        }).reduce((accumulator, nftEventEntity) => {
-            return accumulator + nftEventEntity.transferPriceInUsd;
-        }, 0);
-
-        return Number(sumInUsd.toFixed(0));
-    }
-
-    async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
+    // controller functions
+    async fetchNftEventsByFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise<{ nftEventEntities: NftEventEntity[], nftEntities: NftEntity[], total: number }> {
         if (nftEventFilterEntity.isTimestampFilterSet() === true) {
             StatisticsService.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
         }
 
-        const { nftEventEntities, nftEntitiesMap } = nftEventFilterEntity.isPlatformFilter() ? await this.fetchPlatformNftEvents() : await this.fetchNftEventsByNftFilter(userEntity, nftEventFilterEntity);
+        const { nftEventEntities, nftEntitiesMap } = nftEventFilterEntity.isPlatformFilter() ? await this.fetchPlatformNftEvents(dbTx, dbLock) : await this.fetchNftEventsByNftFilter(userEntity, nftEventFilterEntity, dbTx, dbLock);
 
         // nftEventEntities.sort((a, b) => a.timestamp - b.timestamp);
         nftEventEntities.sort((a, b) => b.timestamp - a.timestamp);
@@ -128,12 +101,12 @@ export class StatisticsService {
         }
     }
 
-    async fetchMegaWalletEventsByFilter(megaWalletEventFilterEntity: MegaWalletEventFilterEntity): Promise<{ megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number }> {
+    async fetchMegaWalletEventsByFilter(megaWalletEventFilterEntity: MegaWalletEventFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise<{ megaWalletEventEntities: MegaWalletEventEntity[], nftEntities: NftEntity[], total: number }> {
         if (megaWalletEventFilterEntity.isTimestampFilterSet() === true) {
             StatisticsService.checkTimeframe(megaWalletEventFilterEntity.timestampFrom, megaWalletEventFilterEntity.timestampTo);
         }
 
-        const { nftEventEntities, nftEntitiesMap } = await this.fetchPlatformNftEvents();
+        const { nftEventEntities, nftEntitiesMap } = await this.fetchPlatformNftEvents(dbTx, dbLock);
 
         const filteredNftEntities = nftEventEntities.filter((nftEventEntity) => nftEventEntity.hasPrice() === true);
 
@@ -153,13 +126,13 @@ export class StatisticsService {
             denomIdMarketplaceCollectionEntityMap.set(marketplaceCollectionEntity.denomId, marketplaceCollectionEntity);
         })
 
-        const collectionEntities = await this.collectionService.findByDenomIds(denomIds);
+        const collectionEntities = await this.collectionService.findByDenomIds(denomIds, dbTx, dbLock);
         // if lengths are not equal, it means collection not found. This should never occur
         if (marketplaceCollectionEntities.length !== denomIds.length) {
             throw new CollectionNotFoundError();
         }
 
-        const farmEntities = await this.farmService.findMiningFarmByIds(collectionEntities.map((collectionEntity) => collectionEntity.farmId));
+        const farmEntities = await this.farmService.findMiningFarmByIds(collectionEntities.map((collectionEntity) => collectionEntity.farmId), dbTx, dbLock);
         const farmIdFarmMap = new Map();
         farmEntities.forEach((farmEntity) => {
             farmIdFarmMap.set(farmEntity.id, farmEntity);
@@ -215,8 +188,225 @@ export class StatisticsService {
         }
     }
 
-    private async fetchPlatformNftEvents(): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>} > {
-        const { collectionEntities } = await this.collectionService.findByFilter(new CollectionFilterEntity());
+    async fetchEarningsByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < UserEarningsEntity > {
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
+
+        const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
+        const nftOwnersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress, timestampFrom, timestampTo, dbTx, dbLock);
+        earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities);
+
+        const sqlRow = await this.nftOwnersPayoutHistoryRepo.findOne({
+            where: {
+                [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
+                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
+            },
+            attributes: [
+                [sequelize.fn('SUM', sequelize.col(NftOwnersPayoutHistoryRepoColumn.REWARD)), 'sumOfRewards'],
+            ],
+            transaction: dbTx,
+            lock: dbLock,
+        });
+        const sumOfRewards = sqlRow.getDataValue('sumOfRewards');
+        const totalEarningInBtc = new BigNumber(sumOfRewards ?? 0);
+
+        const activeNftEntities = await this.nftService.findActiveByCurrentOwner(cudosAddress, dbTx, dbLock);
+        const totalContractHashPowerInTh = activeNftEntities.reduce((acc, nftEntity) => {
+            return acc + nftEntity.hashingPower;
+        }, 0);
+
+        const userEarningsEntity = new UserEarningsEntity();
+        userEarningsEntity.totalEarningInBtc = totalEarningInBtc;
+        userEarningsEntity.totalNftBought = activeNftEntities.length;
+        userEarningsEntity.totalContractHashPowerInTh = totalContractHashPowerInTh;
+        userEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDay;
+        userEarningsEntity.btcEarnedInBtc = earningsPerDayEntity.sumEarnings();
+
+        return userEarningsEntity;
+    }
+
+    async fetchEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEarningsEntity > {
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
+
+        const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
+
+        const nftEntity = await this.nftService.findOne(nftId, dbTx, dbLock);
+        if (nftEntity.isMinted() === true) {
+            const nftPayoutHistoryEntities = await this.fetchPayoutHistoryByTokenId(nftEntity.getTokenIdAsInt(), dbTx, dbLock);
+            const nftPayoutHistoryIds = nftPayoutHistoryEntities.map((nftPayoutHistoryEntity) => nftPayoutHistoryEntity.id);
+            const nftOwnersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds, timestampFrom, timestampTo, dbTx, dbLock);
+            earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities);
+        }
+
+        const nftEarningsEntity = new NftEarningsEntity();
+        nftEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDay;
+        return nftEarningsEntity;
+    }
+
+    async fetchEarningsPerDay(earningsPerDayFilterEntity: EarningsPerDayFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < EarningsEntity > {
+        const timestampFrom = earningsPerDayFilterEntity.timestampFrom;
+        const timestampTo = earningsPerDayFilterEntity.timestampTo;
+        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
+
+        const collectionFilterModel = new CollectionFilterEntity();
+
+        if (earningsPerDayFilterEntity.isFarmIdSet() === true) {
+            collectionFilterModel.farmId = earningsPerDayFilterEntity.farmId;
+        }
+
+        if (earningsPerDayFilterEntity.isCollectionIdSet() === true) {
+            collectionFilterModel.collectionIds = earningsPerDayFilterEntity.collectionIds
+        }
+
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterModel, dbTx, dbLock);
+        const collectionIdEntityMap = new Map<number, CollectionEntity>();
+        collectionEntities.forEach((entity) => {
+            collectionIdEntityMap.set(entity.id, entity)
+        })
+
+        let acudosEarningsPerDay = [];
+        if (earningsPerDayFilterEntity.shouldFetchCudosEarnings() === true) {
+            acudosEarningsPerDay = await this.fetchCudosEarningsForNfts(collectionEntities, earningsPerDayFilterEntity, dbTx, dbLock)
+        }
+
+        let btcEarningsPerDay = [];
+        if (earningsPerDayFilterEntity.shouldFetchBtcEarnings() === true) {
+            btcEarningsPerDay = await this.fetchBtcEarnings(earningsPerDayFilterEntity, dbTx, dbLock)
+        }
+
+        const earningsEntity = new EarningsEntity();
+        earningsEntity.acudosEarningsPerDay = acudosEarningsPerDay;
+        earningsEntity.btcEarningsPerDay = btcEarningsPerDay;
+        return earningsEntity
+    }
+
+    async fetchTotalBtcEarned(collectionPaymentStatisticsFilter: CollectionPaymentAllocationStatisticsFilter, dbTx: Transaction, dbLock: LOCK = undefined): Promise < BigNumber > {
+        const addressPayoutHistoryEntities = await this.fetchCollectionPaymentStatistics(collectionPaymentStatisticsFilter, dbTx, dbLock);
+
+        if (collectionPaymentStatisticsFilter.isForPlatform()) {
+            if (collectionPaymentStatisticsFilter.isTypeEarnings()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoGeneralFeeBtc), new BigNumber(0));
+            }
+
+            if (collectionPaymentStatisticsFilter.isTypeMaintenanceFee()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoMaintenanceFeeBtc), new BigNumber(0));
+            }
+        } else {
+            if (collectionPaymentStatisticsFilter.isTypeEarnings()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.farmUnsoldLeftoverFeeBtc), new BigNumber(0));
+            }
+
+            if (collectionPaymentStatisticsFilter.isTypeMaintenanceFee()) {
+                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.farmMaintenanceFeeBtc), new BigNumber(0));
+            }
+        }
+
+        throw Error('Didn\'t enter any type of fetch case.');
+    }
+
+    async fetchTotalCudosRoyalties(farmId: string | null, collectionId: string | null, dbTx: Transaction, dbLock: LOCK = undefined): Promise< { mintRoyalties: BigNumber, resaleRoyalties: BigNumber } > {
+        const isForPlatform = farmId === null;
+        const collectionFilterEntity = new CollectionFilterEntity();
+        if (isForPlatform === false) {
+            collectionFilterEntity.farmId = farmId;
+            if (collectionId !== NOT_EXISTS_STRING) {
+                collectionFilterEntity.collectionIds = [collectionId];
+            }
+        }
+
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity, dbTx, dbLock);
+
+        const denomIds = collectionEntities.map((collectionEntity) => collectionEntity.denomId);
+
+        // fetch marketplace collections for the royalties data
+        const marketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
+        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionEntity>();
+        marketplaceCollectionEntities.forEach((collectionEntity) => {
+            denomIdMarketplaceCollectionEntityMap.set(collectionEntity.denomId, collectionEntity);
+        })
+
+        // fetch all events for those nfts
+        const nftMarketplaceEventEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(denomIds);
+        const nftEventEntities = nftMarketplaceEventEntities.map((nftMarketplaceTradeHistoryEventEntity) => NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEventEntity));
+
+        // filter events by minted and by resale
+        const nftMintEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isMintEvent() === true);
+        const nftSaleEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isSaleEvent() === true);
+
+        const mintRoyaltiEntries: BigNumber[] = [];
+
+        // calculate minted royalties and resale royalties
+        nftMintEventEntities.forEach((nftEventEntity) => {
+            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+            if (!marketplaceCollectionEntity) {
+                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
+            }
+
+            const royaltiesAddress = isForPlatform === true ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmMintRoyaltiesAddress;
+            const royaltiesPercent = marketplaceCollectionEntity.getMintRoyaltiesPercent(royaltiesAddress);
+
+            if (!royaltiesPercent) {
+                throw Error('Missing royalties percent,');
+            }
+
+            const earningsFromMint = nftEventEntity.transferPriceInAcudos.multipliedBy(royaltiesPercent / 100);
+            mintRoyaltiEntries.push(earningsFromMint);
+        });
+
+        const resaleRoyaltiEntries: BigNumber[] = [];
+        nftSaleEventEntities.forEach((nftEventEntity) => {
+            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
+
+            if (!marketplaceCollectionEntity) {
+                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
+            }
+
+            const royaltiesAddress = isForPlatform === true ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmResaleRoyaltiesAddress;
+            const royaltiesPercent = marketplaceCollectionEntity.getResaleRoyaltiesPercent(royaltiesAddress);
+            if (!royaltiesPercent) {
+                throw Error('Missing royalties percent,');
+            }
+
+            const earningFromResale = nftEventEntity.transferPriceInAcudos.multipliedBy(royaltiesPercent / 100);
+            resaleRoyaltiEntries.push(earningFromResale);
+        });
+
+        const mintRoyalties = mintRoyaltiEntries.reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
+        const resaleRoyalties = resaleRoyaltiEntries.reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
+
+        return { mintRoyalties, resaleRoyalties };
+    }
+
+    async fetchUsersSpendingOnPlatformInUsd(userEntity: UserEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < number > {
+        const nftEventFilterEntity = new NftEventFilterEntity();
+        nftEventFilterEntity.sessionAccount = IntBoolValue.TRUE;
+
+        const processedMintEventNftIdSet = new Set();
+        const { nftEventEntities } = await this.fetchNftEventsByFilter(userEntity, nftEventFilterEntity, dbTx, dbLock);
+        const sumInUsd = nftEventEntities.filter((nftEventEntity) => {
+            if (nftEventEntity.isMintEvent() === false && nftEventEntity.isSaleEvent() === false) {
+                return false;
+            }
+
+            if (nftEventEntity.isMintEvent() === true && processedMintEventNftIdSet.has(nftEventEntity.nftId) === true) {
+                return false;
+            }
+
+            const result = nftEventEntity.toAddress === userEntity.cudosWalletAddress;
+            if (result === true && nftEventEntity.isMintEvent() === true) {
+                processedMintEventNftIdSet.add(nftEventEntity.nftId);
+            }
+
+            return result;
+        }).reduce((accumulator, nftEventEntity) => {
+            return accumulator + nftEventEntity.transferPriceInUsd;
+        }, 0);
+
+        return Number(sumInUsd.toFixed(0));
+    }
+
+    private async fetchPlatformNftEvents(dbTx: Transaction, dbLock: LOCK = undefined): Promise < {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity>} > {
+        const { collectionEntities } = await this.collectionService.findByFilter(new CollectionFilterEntity(), dbTx, dbLock);
         const denomIdsPre = collectionEntities.map((collection) => collection.denomId);
 
         // fetch all events from graphql
@@ -243,6 +433,8 @@ export class StatisticsService {
         const nfts = await this.nftService.findByCollectionIdsAndTokenIds(
             collections.map((entity) => entity.id),
             tokenIds,
+            dbTx,
+            dbLock,
         );
 
         // create a map for faster mapping of the graph ql values
@@ -310,7 +502,7 @@ export class StatisticsService {
         }
     }
 
-    private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
+    private async fetchNftEventsByNftFilter(userEntity: UserEntity, nftEventFilterEntity: NftEventFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise< {nftEventEntities: NftEventEntity[], nftEntitiesMap: Map<string, NftEntity> } > {
         if (nftEventFilterEntity.isTimestampFilterSet() === true) {
             StatisticsService.checkTimeframe(nftEventFilterEntity.timestampFrom, nftEventFilterEntity.timestampTo);
         }
@@ -325,12 +517,12 @@ export class StatisticsService {
             nftmoduleNftTransferEntities = await this.graphqlService.fetchNftTransferHistoryByAddressAndTimestamp(timestampFrom, timestampTo, userEntity.cudosWalletAddress);
             nftmarketplaceTradeEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByAddressAndTimestamp(timestampFrom, timestampTo, userEntity.cudosWalletAddress);
         } else if (nftEventFilterEntity.isByMiningFarmId()) {
-            const collectionEntities = await this.collectionService.findByFarmId(parseInt(nftEventFilterEntity.miningFarmId));
+            const collectionEntities = await this.collectionService.findByFarmId(parseInt(nftEventFilterEntity.miningFarmId), dbTx, dbLock);
             const collectionIdMap = new Map<number, CollectionEntity>();
             collectionEntities.forEach((entity) => {
                 collectionIdMap.set(entity.id, entity);
             })
-            const nftEntities = await this.nftService.findByCollectionIds(collectionEntities.map((collectionEntity) => collectionEntity.id));
+            const nftEntities = await this.nftService.findByCollectionIds(collectionEntities.map((collectionEntity) => collectionEntity.id), dbTx, dbLock);
 
             if (nftEntities.length === 0) {
                 throw Error('No NFTs found for that farm');
@@ -346,13 +538,13 @@ export class StatisticsService {
         } else if (nftEventFilterEntity.isByNftId()) {
             const nftFilterEntity = new NftFilterEntity();
             nftFilterEntity.nftIds = [nftEventFilterEntity.nftId];
-            const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
+            const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity, dbTx, dbLock);
 
             if (nftEntities.length === 0) {
                 throw Error('No NFT found with that id');
             }
 
-            const collectionEntites = await this.collectionService.findByCollectionIds([nftEntities[0].collectionId]);
+            const collectionEntites = await this.collectionService.findByCollectionIds([nftEntities[0].collectionId], dbTx, dbLock);
             if (collectionEntites.length === 0) {
                 throw Error('No Collection found with that id');
             }
@@ -369,7 +561,7 @@ export class StatisticsService {
             .map((entity) => entity.denomId)
             .concat(nftmarketplaceTradeEntities.map((entity) => entity.denomId));
 
-        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity);
+        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity, dbTx, dbLock);
         const collectionIdCollectionMap = new Map<number, CollectionEntity>();
         collectionEntities.forEach((collectionEntity) => {
             collectionIdCollectionMap.set(collectionEntity.id, collectionEntity);
@@ -380,7 +572,7 @@ export class StatisticsService {
             .map((entity) => entity.tokenId)
             .concat(nftmarketplaceTradeEntities.map((entity) => entity.tokenId));
         nftFilterEntity.collectionIds = collectionEntities.map((entity) => entity.id.toString());
-        const { nftEntities } = await this.nftService.findByFilter(userEntity, nftFilterEntity)
+        const { nftEntities } = await this.nftService.findByFilter(userEntity, nftFilterEntity, dbTx, dbLock)
 
         const denomIdTokenIdNftENtityMap = new Map<string, Map<string, NftEntity>>();
         nftEntities.forEach((nftEntity: NftEntity) => {
@@ -433,96 +625,7 @@ export class StatisticsService {
         }
     }
 
-    async fetchEarningsByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < UserEarningsEntity > {
-        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
-
-        const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
-        const nftOwnersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress, timestampFrom, timestampTo);
-        earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities);
-
-        const sqlRow = await this.nftOwnersPayoutHistoryRepo.findOne({
-            where: {
-                [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
-                [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
-            },
-            attributes: [
-                [sequelize.fn('SUM', sequelize.col(NftOwnersPayoutHistoryRepoColumn.REWARD)), 'sumOfRewards'],
-            ],
-        });
-        const sumOfRewards = sqlRow.getDataValue('sumOfRewards');
-        const totalEarningInBtc = new BigNumber(sumOfRewards ?? 0);
-
-        const activeNftEntities = await this.nftService.findActiveByCurrentOwner(cudosAddress);
-        const totalContractHashPowerInTh = activeNftEntities.reduce((acc, nftEntity) => {
-            return acc + nftEntity.hashingPower;
-        }, 0);
-
-        const userEarningsEntity = new UserEarningsEntity();
-        userEarningsEntity.totalEarningInBtc = totalEarningInBtc;
-        userEarningsEntity.totalNftBought = activeNftEntities.length;
-        userEarningsEntity.totalContractHashPowerInTh = totalContractHashPowerInTh;
-        userEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDay;
-        userEarningsEntity.btcEarnedInBtc = earningsPerDayEntity.sumEarnings();
-
-        return userEarningsEntity;
-    }
-
-    async fetchEarningsByNftId(nftId: string, timestampFrom: number, timestampTo: number): Promise < NftEarningsEntity > {
-        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
-
-        const earningsPerDayEntity = new EarningsPerDayEntity(timestampFrom, timestampTo);
-
-        const nftEntity = await this.nftService.findOne(nftId);
-        if (nftEntity.isMinted() === true) {
-            const nftPayoutHistoryEntities = await this.fetchPayoutHistoryByTokenId(nftEntity.getTokenIdAsInt());
-            const nftPayoutHistoryIds = nftPayoutHistoryEntities.map((nftPayoutHistoryEntity) => nftPayoutHistoryEntity.id);
-            const nftOwnersPayoutHistoryEntities = await this.fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds, timestampFrom, timestampTo);
-            earningsPerDayEntity.calculateEarningsByNftOwnersPayoutHistory(nftOwnersPayoutHistoryEntities);
-        }
-
-        const nftEarningsEntity = new NftEarningsEntity();
-        nftEarningsEntity.earningsPerDayInBtc = earningsPerDayEntity.earningsPerDay;
-        return nftEarningsEntity;
-    }
-
-    async fetchEarningsPerDay(earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise < EarningsEntity > {
-        const timestampFrom = earningsPerDayFilterEntity.timestampFrom;
-        const timestampTo = earningsPerDayFilterEntity.timestampTo;
-        StatisticsService.checkTimeframe(timestampFrom, timestampTo);
-
-        const collectionFilterModel = new CollectionFilterEntity();
-
-        if (earningsPerDayFilterEntity.isFarmIdSet() === true) {
-            collectionFilterModel.farmId = earningsPerDayFilterEntity.farmId;
-        }
-
-        if (earningsPerDayFilterEntity.isCollectionIdSet() === true) {
-            collectionFilterModel.collectionIds = earningsPerDayFilterEntity.collectionIds
-        }
-
-        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterModel);
-        const collectionIdEntityMap = new Map<number, CollectionEntity>();
-        collectionEntities.forEach((entity) => {
-            collectionIdEntityMap.set(entity.id, entity)
-        })
-
-        let acudosEarningsPerDay = [];
-        if (earningsPerDayFilterEntity.shouldFetchCudosEarnings() === true) {
-            acudosEarningsPerDay = await this.fetchCudosEarningsForNfts(collectionEntities, earningsPerDayFilterEntity)
-        }
-
-        let btcEarningsPerDay = [];
-        if (earningsPerDayFilterEntity.shouldFetchBtcEarnings() === true) {
-            btcEarningsPerDay = await this.fetchBtcEarnings(earningsPerDayFilterEntity)
-        }
-
-        const earningsEntity = new EarningsEntity();
-        earningsEntity.acudosEarningsPerDay = acudosEarningsPerDay;
-        earningsEntity.btcEarningsPerDay = btcEarningsPerDay;
-        return earningsEntity
-    }
-
-    private async fetchCudosEarningsForNfts(collectionEntities: CollectionEntity[], earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise< BigNumber[] > {
+    private async fetchCudosEarningsForNfts(collectionEntities: CollectionEntity[], earningsPerDayFilterEntity: EarningsPerDayFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise< BigNumber[] > {
         const denomIds = collectionEntities.map((collectionEntity) => collectionEntity.denomId);
 
         // fetch marketplace collections for the royalties data
@@ -585,11 +688,11 @@ export class StatisticsService {
         return earningsPerDayEntity.earningsPerDay
     }
 
-    private async fetchBtcEarnings(earningsPerDayFilterEntity: EarningsPerDayFilterEntity): Promise < BigNumber[] > {
+    private async fetchBtcEarnings(earningsPerDayFilterEntity: EarningsPerDayFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < BigNumber[] > {
         let address = null;
 
         if (earningsPerDayFilterEntity.isEarningsReceiverFarm() === true) {
-            const farm = await this.farmService.findMiningFarmById(parseInt(earningsPerDayFilterEntity.farmId));
+            const farm = await this.farmService.findMiningFarmById(parseInt(earningsPerDayFilterEntity.farmId), dbTx, dbLock);
 
             if (!farm) {
                 throw Error(`Farm not found by ID: ${earningsPerDayFilterEntity.farmId}`);
@@ -606,112 +709,14 @@ export class StatisticsService {
             throw Error('Address not set.');
         }
 
-        const addressPayoutHistoryForPeriod = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+        const addressPayoutHistoryForPeriod = await this.fetchAddressesPayoutHistoryByPayoutAddress(address, earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo, dbTx, dbLock);
         const earningsPerDayEntity = new EarningsPerDayEntity(earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
         earningsPerDayEntity.calculateEarningsByAddressPayoutHistory(addressPayoutHistoryForPeriod);
 
         return earningsPerDayEntity.earningsPerDay;
     }
 
-    async fetchTotalBtcEarned(collectionPaymentStatisticsFilter: CollectionPaymentAllocationStatisticsFilter): Promise < BigNumber > {
-        const addressPayoutHistoryEntities = await this.fetchCollectionPaymentStatistics(collectionPaymentStatisticsFilter);
-
-        if (collectionPaymentStatisticsFilter.isForPlatform()) {
-            if (collectionPaymentStatisticsFilter.isTypeEarnings()) {
-                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoGeneralFeeBtc), new BigNumber(0));
-            }
-
-            if (collectionPaymentStatisticsFilter.isTypeMaintenanceFee()) {
-                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.cudoMaintenanceFeeBtc), new BigNumber(0));
-            }
-        } else {
-            if (collectionPaymentStatisticsFilter.isTypeEarnings()) {
-                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.farmUnsoldLeftoverFeeBtc), new BigNumber(0));
-            }
-
-            if (collectionPaymentStatisticsFilter.isTypeMaintenanceFee()) {
-                return addressPayoutHistoryEntities.reduce((acc: BigNumber, entity) => acc.plus(entity.farmMaintenanceFeeBtc), new BigNumber(0));
-            }
-        }
-
-        throw Error('Didn\'t enter any type of fetch case.');
-    }
-
-    async fetchTotalCudosRoyalties(farmId: string | null, collectionId: string | null): Promise< { mintRoyalties: BigNumber, resaleRoyalties: BigNumber } > {
-        const isForPlatform = farmId === null;
-        const collectionFilterEntity = new CollectionFilterEntity();
-        if (isForPlatform === false) {
-            collectionFilterEntity.farmId = farmId;
-            if (collectionId !== NOT_EXISTS_STRING) {
-                collectionFilterEntity.collectionIds = [collectionId];
-            }
-        }
-
-        const { collectionEntities } = await this.collectionService.findByFilter(collectionFilterEntity);
-
-        const denomIds = collectionEntities.map((collectionEntity) => collectionEntity.denomId);
-
-        // fetch marketplace collections for the royalties data
-        const marketplaceCollectionEntities = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
-        const denomIdMarketplaceCollectionEntityMap = new Map<string, ChainMarketplaceCollectionEntity>();
-        marketplaceCollectionEntities.forEach((collectionEntity) => {
-            denomIdMarketplaceCollectionEntityMap.set(collectionEntity.denomId, collectionEntity);
-        })
-
-        // fetch all events for those nfts
-        const nftMarketplaceEventEntities = await this.graphqlService.fetchMarketplaceNftTradeHistoryByDenomIds(denomIds);
-        const nftEventEntities = nftMarketplaceEventEntities.map((nftMarketplaceTradeHistoryEventEntity) => NftEventEntity.fromNftMarketplaceTradeHistory(nftMarketplaceTradeHistoryEventEntity));
-
-        // filter events by minted and by resale
-        const nftMintEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isMintEvent() === true);
-        const nftSaleEventEntities = nftEventEntities.filter((nftEventEntity: NftEventEntity) => nftEventEntity.isSaleEvent() === true);
-
-        const mintRoyaltiEntries: BigNumber[] = [];
-
-        // calculate minted royalties and resale royalties
-        nftMintEventEntities.forEach((nftEventEntity) => {
-            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
-
-            if (!marketplaceCollectionEntity) {
-                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
-            }
-
-            const royaltiesAddress = isForPlatform === true ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmMintRoyaltiesAddress;
-            const royaltiesPercent = marketplaceCollectionEntity.getMintRoyaltiesPercent(royaltiesAddress);
-
-            if (!royaltiesPercent) {
-                throw Error('Missing royalties percent,');
-            }
-
-            const earningsFromMint = nftEventEntity.transferPriceInAcudos.multipliedBy(royaltiesPercent / 100);
-            mintRoyaltiEntries.push(earningsFromMint);
-        });
-
-        const resaleRoyaltiEntries: BigNumber[] = [];
-        nftSaleEventEntities.forEach((nftEventEntity) => {
-            const marketplaceCollectionEntity = denomIdMarketplaceCollectionEntityMap.get(nftEventEntity.denomId);
-
-            if (!marketplaceCollectionEntity) {
-                throw Error(`Missing collection for nft denom id: ${nftEventEntity.denomId}`);
-            }
-
-            const royaltiesAddress = isForPlatform === true ? marketplaceCollectionEntity.platformRoyaltiesAddress : marketplaceCollectionEntity.farmResaleRoyaltiesAddress;
-            const royaltiesPercent = marketplaceCollectionEntity.getResaleRoyaltiesPercent(royaltiesAddress);
-            if (!royaltiesPercent) {
-                throw Error('Missing royalties percent,');
-            }
-
-            const earningFromResale = nftEventEntity.transferPriceInAcudos.multipliedBy(royaltiesPercent / 100);
-            resaleRoyaltiEntries.push(earningFromResale);
-        });
-
-        const mintRoyalties = mintRoyaltiEntries.reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
-        const resaleRoyalties = resaleRoyaltiEntries.reduce((acc: BigNumber, nextValue) => acc.plus(nextValue), new BigNumber(0));
-
-        return { mintRoyalties, resaleRoyalties };
-    }
-
-    private async fetchCollectionPaymentStatistics(collectionPaymentStatisticsFilter: CollectionPaymentAllocationStatisticsFilter): Promise < CollectionPaymentAllocationEntity[] > {
+    private async fetchCollectionPaymentStatistics(collectionPaymentStatisticsFilter: CollectionPaymentAllocationStatisticsFilter, dbTx: Transaction, dbLock: LOCK = undefined): Promise < CollectionPaymentAllocationEntity[] > {
         const whereClause: any = {};
 
         if (collectionPaymentStatisticsFilter.isFarmIdSet()) {
@@ -731,6 +736,8 @@ export class StatisticsService {
 
         const collectionPaymentAllocationRepos = await this.collectionPaymentAllocationRepo.findAll({
             where: whereClause,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return collectionPaymentAllocationRepos.map((collectionPaymentAllocationRepo) => {
@@ -738,7 +745,7 @@ export class StatisticsService {
         });
     }
 
-    private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
+    private async fetchNftOwnersPayoutHistoryByCudosAddress(cudosAddress: string, timestampFrom: number, timestampTo: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftOwnersPayoutHistoryEntity[] > {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
                 [NftOwnersPayoutHistoryRepoColumn.OWNER]: cudosAddress,
@@ -748,6 +755,8 @@ export class StatisticsService {
                 },
                 [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
             },
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return nftOwnersPayoutHistoryRepos.map((nftOwnersPayoutHistoryRepo) => {
@@ -755,7 +764,7 @@ export class StatisticsService {
         });
     }
 
-    private async fetchAddressesPayoutHistoryByPayoutAddress(btcAddress: string, timestampFrom: number, timestampTo: number): Promise < AddressPayoutHistoryEntity[] > {
+    private async fetchAddressesPayoutHistoryByPayoutAddress(btcAddress: string, timestampFrom: number, timestampTo: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < AddressPayoutHistoryEntity[] > {
         const addressesPayoutHistoryRepos = await this.addressesPayoutHistoryRepo.findAll({
             where: {
                 [AddressesPayoutHistoryRepoColumn.ADDRESS]: btcAddress,
@@ -765,6 +774,8 @@ export class StatisticsService {
                 },
                 [AddressesPayoutHistoryRepoColumn.THRESHOLD_REACHED]: true,
             },
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return addressesPayoutHistoryRepos.map((adressPayoutHistoryRepo) => {
@@ -772,7 +783,7 @@ export class StatisticsService {
         });
     }
 
-    private async fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds: number[], timestampFrom: number, timestampTo: number): Promise < NftOwnersPayoutHistoryEntity[] > {
+    private async fetchNftOwnersPayoutHistoryByPayoutHistoryIds(nftPayoutHistoryIds: number[], timestampFrom: number, timestampTo: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftOwnersPayoutHistoryEntity[] > {
         const nftOwnersPayoutHistoryRepos = await this.nftOwnersPayoutHistoryRepo.findAll({
             where: {
                 [NftOwnersPayoutHistoryRepoColumn.NFT_PAYOUT_HISTORY_ID]: nftPayoutHistoryIds,
@@ -782,17 +793,21 @@ export class StatisticsService {
                 },
                 [NftOwnersPayoutHistoryRepoColumn.SENT]: true,
             },
+            transaction: dbTx,
+            lock: dbLock,
         });
         return nftOwnersPayoutHistoryRepos.map((nftOwnersPayoutHistoryRepo) => {
             return NftOwnersPayoutHistoryEntity.fromRepo(nftOwnersPayoutHistoryRepo);
         });
     }
 
-    private async fetchPayoutHistoryByTokenId(tokenId: number): Promise < NftPayoutHistoryEntity[] > {
+    private async fetchPayoutHistoryByTokenId(tokenId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftPayoutHistoryEntity[] > {
         const nftPayoutHistoryRepos = await this.nftPayoutHistoryRepo.findAll({
             where: {
                 [NftPayoutHistoryRepoColumn.TOKEN_ID]: tokenId,
             },
+            transaction: dbTx,
+            lock: dbLock,
         });
         return nftPayoutHistoryRepos.map((nftPayoutHistoryRepo) => {
             return NftPayoutHistoryEntity.fromRepo(nftPayoutHistoryRepo);

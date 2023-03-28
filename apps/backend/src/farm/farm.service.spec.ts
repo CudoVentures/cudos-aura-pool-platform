@@ -173,7 +173,7 @@ describe('FarmService', () => {
         miningFarmFilterModel.orderBy = MiningFarmOrderBy.POPULAR_DESC;
         miningFarmFilterModel.status = [status];
 
-        const popularFarmsResult = await service.findByFilter(null, miningFarmFilterModel);
+        const popularFarmsResult = await service.findByFilter(null, miningFarmFilterModel, undefined);
 
         // Assert
         expect(popularFarmsResult).toEqual(expectedObject);
@@ -203,7 +203,7 @@ describe('FarmService', () => {
         }
 
         // Act
-        const bestPerformingFarmsResult = await service.findBestPerformingMiningFarms(timestampFrom, timestampTo);
+        const bestPerformingFarmsResult = await service.findBestPerformingMiningFarms(timestampFrom, timestampTo, undefined);
 
         // Assert
         expect(bestPerformingFarmsResult).toEqual(expectedObject);

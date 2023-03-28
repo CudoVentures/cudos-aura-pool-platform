@@ -33,21 +33,21 @@ export class KycService {
         });
     }
 
-    async fetchAndInvalidateKyc(accountEntity: AccountEntity, tx: Transaction = undefined): Promise < KycEntity > {
-        let kycEntity = await this.fetchKycByAccount(accountEntity, tx);
-        kycEntity = await this.invalidateOnfidoWorkflows(kycEntity, tx);
+    async fetchAndInvalidateKyc(accountEntity: AccountEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < KycEntity > {
+        let kycEntity = await this.fetchKycByAccount(accountEntity, dbTx, dbLock);
+        kycEntity = await this.invalidateOnfidoWorkflows(kycEntity, dbTx);
         return kycEntity;
     }
 
-    async fetchKycByAccount(accountEntity: AccountEntity, tx: Transaction = undefined): Promise < KycEntity > {
-        let kycEntity = await this.findKycByAccountId(accountEntity.accountId, tx, tx?.LOCK.UPDATE);
+    async fetchKycByAccount(accountEntity: AccountEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < KycEntity > {
+        let kycEntity = await this.findKycByAccountId(accountEntity.accountId, dbTx, dbLock);
         if (kycEntity === null) {
             kycEntity = KycEntity.newInstance(accountEntity.accountId);
         }
         return kycEntity;
     }
 
-    async invalidateOnfidoWorkflows(kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
+    async invalidateOnfidoWorkflows(kycEntity: KycEntity, dbTx: Transaction): Promise < KycEntity > {
         const runningWorkflowRunIds = kycEntity.getRunningWorkflowRunIds();
         if (runningWorkflowRunIds.length === 0) {
             return kycEntity;
@@ -70,7 +70,7 @@ export class KycService {
             }
         });
 
-        return this.creditKyc(kycEntity, tx);
+        return this.creditKyc(kycEntity, dbTx);
     }
 
     async creditOnfidoApplicant(kycEntity: KycEntity): Promise < void > {
@@ -88,7 +88,7 @@ export class KycService {
         }
     }
 
-    async createWorkflowRun(userEntity: UserEntity, purchasesInUsdSoFar: number, kycEntity: KycEntity, tx: Transaction): Promise < KycEntity > {
+    async createWorkflowRun(userEntity: UserEntity, purchasesInUsdSoFar: number, kycEntity: KycEntity, dbTx: Transaction): Promise < KycEntity > {
         const workflowId = this.configService.get < string >('APP_ONFIDO_WORKFLOW_ID');
 
         const workflorRunParams = WorkflowRunParamsV1Entity.newInstance(userEntity.cudosWalletAddress, purchasesInUsdSoFar);
@@ -104,7 +104,7 @@ export class KycService {
         kycEntity.workflowRunStatuses.push(workflowRun.status);
         kycEntity.workflowRunParams.push(WorkflowRunParamsEntity.wrap(workflorRunParams));
 
-        return this.creditKyc(kycEntity, tx);
+        return this.creditKyc(kycEntity, dbTx);
     }
 
     async generateOnfidoToken(kycEntity: KycEntity): Promise < string > {
@@ -113,24 +113,24 @@ export class KycService {
         });
     }
 
-    async findKycByAccountId(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < KycEntity > {
+    async findKycByAccountId(accountId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < KycEntity > {
         const whereKycRepo = new KycRepo();
         whereKycRepo.accountId = accountId;
         const kycRepo = await this.kycRepo.findOne({
             where: AppRepo.toJsonWhere(whereKycRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return KycEntity.fromRepo(kycRepo);
     }
 
-    async creditKyc(kycEntity: KycEntity, tx: Transaction = undefined): Promise < KycEntity > {
+    async creditKyc(kycEntity: KycEntity, dbTx: Transaction): Promise < KycEntity > {
         let kycRepo = KycEntity.toRepo(kycEntity);
         if (kycEntity.isNew() === true) {
             kycRepo = await this.kycRepo.create(kycRepo.toJSON(), {
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
         } else {
             const whereKycRepo = new KycRepo();
@@ -138,7 +138,7 @@ export class KycService {
             const sqlResult = await this.kycRepo.update(kycRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereKycRepo),
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             });
             kycRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
         }
@@ -146,14 +146,14 @@ export class KycService {
         return KycEntity.fromRepo(kycRepo);
     }
 
-    async canBuyAnNft(accountEntity: AccountEntity, userEntity: UserEntity, nftEntity: NftEntity): Promise < boolean > {
-        const kycEntity = await this.fetchKycByAccount(accountEntity);
+    async canBuyAnNft(accountEntity: AccountEntity, userEntity: UserEntity, nftEntity: NftEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < boolean > {
+        const kycEntity = await this.fetchKycByAccount(accountEntity, dbTx, dbLock);
         if (kycEntity.isFullVerified() === true) {
             return true;
         }
 
         const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
-        const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(userEntity);
+        const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(userEntity, dbTx);
         const nftPriceInUsd = Number(nftEntity.getPriceInCudos().multipliedBy(cudosUsdPrice).toFixed(2));
         if (purchasesInUsdSoFar + nftPriceInUsd < WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD) {
             return kycEntity.isLightVerified();
@@ -162,8 +162,8 @@ export class KycService {
         return false;
     }
 
-    async creditKycForPresale(accountEntity: AccountEntity, addressMintDataEntity: AddressMintDataEntity, tx: Transaction) {
-        let kycEntity = await this.fetchKycByAccount(accountEntity, tx);
+    async creditKycForPresale(accountEntity: AccountEntity, addressMintDataEntity: AddressMintDataEntity, dbTx: Transaction) {
+        let kycEntity = await this.fetchKycByAccount(accountEntity, dbTx, dbTx.LOCK.UPDATE);
         kycEntity.firstName = addressMintDataEntity.firstName;
         kycEntity.lastName = addressMintDataEntity.lastName;
         kycEntity.applicantId = addressMintDataEntity.applicantId;
@@ -179,7 +179,7 @@ export class KycService {
             kycEntity.workflowRunParams.push(WorkflowRunParamsEntity.wrap(workflorRunParams));
         }
 
-        kycEntity = await this.creditKyc(kycEntity, tx);
+        kycEntity = await this.creditKyc(kycEntity, dbTx);
     }
 
 }

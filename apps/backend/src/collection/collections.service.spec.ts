@@ -132,7 +132,7 @@ describe('CollectionService', () => {
         });
 
         // Act
-        const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo);
+        const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo, undefined);
 
         // db updates this on update and is hard to make it equal, so jsut bypass it
         topCollectionsResult.forEach((entity) => { entity.timestampUpdatedAt = NOT_EXISTS_INT });
@@ -152,7 +152,7 @@ describe('CollectionService', () => {
         }).slice(0, -3);
 
         // Act
-        const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo);
+        const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo, undefined);
 
         // db updates this on update and is hard to make it equal, so jsut bypass it
         topCollectionsResult.forEach((entity) => { entity.timestampUpdatedAt = NOT_EXISTS_INT });

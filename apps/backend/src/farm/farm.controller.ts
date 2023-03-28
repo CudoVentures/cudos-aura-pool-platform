@@ -30,10 +30,14 @@ import { FarmCreationError } from '../common/errors/errors';
 @ApiTags('Farm')
 @Controller('farm')
 export class FarmController {
+
+    isCreatorOrSuperAdminGuard: IsCreatorOrSuperAdminGuard;
+
     constructor(
         private miningFarmService: FarmService,
-    // eslint-disable-next-line no-empty-function
-    ) { }
+    ) {
+        this.isCreatorOrSuperAdminGuard = new IsCreatorOrSuperAdminGuard(this.miningFarmService);
+    }
 
     @Post()
     @UseInterceptors(TransactionInterceptor)
@@ -42,7 +46,7 @@ export class FarmController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
     ): Promise < ResFetchMiningFarmsByFilter > {
-        const { miningFarmEntities, total } = await this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
+        const { miningFarmEntities, total } = await this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel, req.transaction);
         return new ResFetchMiningFarmsByFilter(miningFarmEntities, total);
     }
 
@@ -53,7 +57,7 @@ export class FarmController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
     ): Promise < ResFetchBestPerformingMiningFarms > {
-        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo);
+        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo, req.transaction);
         return new ResFetchBestPerformingMiningFarms(miningFarmEntities, miningFarmPerformanceEntities);
     }
 
@@ -66,12 +70,12 @@ export class FarmController {
     ): Promise < ResFetchMiningFarmDetails > {
         const miningFarmIds = reqFetchMiningFarmDetails.getParsedIds();
         const includesExternalDetails = reqFetchMiningFarmDetails.getIncludesExternalDetailsAsBoolean();
-        const miningFarmDetailEntities = await this.miningFarmService.getMiningFarmDetails(miningFarmIds, includesExternalDetails);
+        const miningFarmDetailEntities = await this.miningFarmService.getMiningFarmDetails(miningFarmIds, includesExternalDetails, req.transaction);
         return new ResFetchMiningFarmDetails(miningFarmDetailEntities);
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
@@ -79,6 +83,8 @@ export class FarmController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditMiningFarm: ReqCreditMiningFarm,
     ): Promise < ResCreditMiningFarm > {
+        this.isCreatorOrSuperAdminGuard.canActivate(req, reqCreditMiningFarm);
+
         let miningFarmEntity = MiningFarmEntity.fromJson(reqCreditMiningFarm.miningFarmEntity);
         if (req.sessionAccountEntity.isAdmin() === true) {
             miningFarmEntity.accountId = req.sessionAccountEntity.accountId;
@@ -100,7 +106,7 @@ export class FarmController {
     async findMiners(
         @Req() req: AppRequest,
     ): Promise < ResFetchMiners > {
-        const minerEntities = await this.miningFarmService.findMiners();
+        const minerEntities = await this.miningFarmService.findMiners(req.transaction);
         return new ResFetchMiners(minerEntities);
     }
 
@@ -110,7 +116,7 @@ export class FarmController {
     async findEnergySources(
         @Req() req: AppRequest,
     ): Promise < ResFetchEnergySources > {
-        const energySourceEntities = await this.miningFarmService.findEnergySources();
+        const energySourceEntities = await this.miningFarmService.findEnergySources(req.transaction);
         return new ResFetchEnergySources(energySourceEntities);
     }
 
@@ -120,7 +126,7 @@ export class FarmController {
     async findManufacturers(
         @Req() req: AppRequest,
     ): Promise < ResFetchManufacturers > {
-        const manufacturerEntities = await this.miningFarmService.findManufacturers();
+        const manufacturerEntities = await this.miningFarmService.findManufacturers(req.transaction);
         return new ResFetchManufacturers(manufacturerEntities);
     }
 

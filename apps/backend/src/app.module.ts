@@ -57,6 +57,9 @@ import { CONFIG_SERVICE_ROOT_PATH_KEY } from './common/utils';
                     autoLoadModels: true,
                     synchronize: false,
                     logging: false,
+                    pool: {
+                        max: 8,
+                    },
                 }
             },
         }),

@@ -20,7 +20,7 @@ export class AllowlistController {
     async fetchAllowlist(
         @Req() req: AppRequest,
     ): Promise < ResFetchAllowlist > {
-        const allowlistEntity = await this.allowlistService.getAllowlist();
+        const allowlistEntity = await this.allowlistService.getAllowlist(req.transaction);
         return new ResFetchAllowlist(allowlistEntity);
     }
 
@@ -35,7 +35,7 @@ export class AllowlistController {
             return new ResFetchAllowlistUserBySessionAccount(null);
         }
 
-        const allowlistUserEntity = await this.allowlistService.getAllowlistUserByAddress(req.sessionUserEntity.cudosWalletAddress);
+        const allowlistUserEntity = await this.allowlistService.getAllowlistUserByAddress(req.sessionUserEntity.cudosWalletAddress, req.transaction);
         return new ResFetchAllowlistUserBySessionAccount(allowlistUserEntity);
     }
 }

@@ -127,7 +127,7 @@ export class AccountController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqForgottenPassword: ReqForgottenPassword,
     ): Promise < void > {
-        const accountEntity = await this.accountService.findAccountByEmail(reqForgottenPassword.email);
+        const accountEntity = await this.accountService.findAccountByEmail(reqForgottenPassword.email, req.transaction);
         if (accountEntity === null) {
             return;
         }
@@ -142,7 +142,7 @@ export class AccountController {
         @Req() req: AppRequest,
         @Param('accountId') accountId: number,
     ): Promise < ResFetchFarmOwnerAccount > {
-        const adminEntity = await this.accountService.findAdminByAccountId(accountId);
+        const adminEntity = await this.accountService.findAdminByAccountId(accountId, req.transaction);
         return new ResFetchFarmOwnerAccount(adminEntity);
     }
 }

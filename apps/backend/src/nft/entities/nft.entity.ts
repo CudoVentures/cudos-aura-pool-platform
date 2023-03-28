@@ -83,6 +83,10 @@ export default class NftEntity {
         return this.status === NftStatus.QUEUED;
     }
 
+    isSold(): boolean {
+        return this.tokenId !== '';
+    }
+
     getTokenIdAsInt(): number {
         const tokenIdAsInt = parseInt(this.tokenId);
         return Number.isNaN(tokenIdAsInt) === true ? NOT_EXISTS_INT : tokenIdAsInt;
@@ -92,8 +96,8 @@ export default class NftEntity {
         return this.acudosPrice.shiftedBy(-CURRENCY_DECIMALS);
     }
 
-    isSold(): boolean {
-        return this.tokenId !== '';
+    markAsQueued() {
+        this.status = NftStatus.QUEUED;
     }
 
     static fromJson(json: NftJsonValidator): NftEntity {

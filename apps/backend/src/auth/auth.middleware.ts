@@ -4,7 +4,7 @@ import { ExtractJwt } from 'passport-jwt';
 import { JwtService } from '@nestjs/jwt';
 import JwtToken from './entities/jwt-token.entity';
 import AccountService from '../account/account.service';
-import { RequestWithSessionAccounts } from '../common/commont.types';
+import { AppRequest } from '../common/commont.types';
 import { pbkdf2Sync } from 'node:crypto';
 
 @Injectable()
@@ -15,14 +15,14 @@ export class AuthMiddleware implements NestMiddleware {
         private accountService: AccountService,
     ) {}
 
-    async use(req: RequestWithSessionAccounts, res: Response, next: NextFunction) {
+    async use(req: AppRequest, res: Response, next: NextFunction) {
         const extractorFunction = ExtractJwt.fromAuthHeaderAsBearerToken();
 
         const encodedToken = extractorFunction(req);
         try {
             this.jwtService.verify(encodedToken, JwtToken.getConfig());
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
-            const accounts = await this.accountService.findAccounts(jwtToken.id);
+            const accounts = await this.accountService.findAccounts(jwtToken.id, req.transaction);
             const derivedKey = pbkdf2Sync(accounts.accountEntity.hashedPass.substring(0, 10), 'salt', 100000, 64, 'sha512');
 
             if (derivedKey.toString('hex') !== jwtToken.derivedKey) {

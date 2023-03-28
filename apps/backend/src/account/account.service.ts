@@ -47,133 +47,133 @@ export default class AccountService {
     }
 
     // controller functions
-    async editAccountPassByOldPass(accountEntity: AccountEntity, oldPass: string, newPass: string, tx: Transaction) {
+    async editAccountPassByOldPass(accountEntity: AccountEntity, oldPass: string, newPass: string, dbTx: Transaction) {
         if (AccountService.isPassValid(accountEntity, oldPass) === false) {
             throw new WrongOldPasswordException();
         }
 
         accountEntity.salt = AccountService.generateSalt();
         accountEntity.hashedPass = AccountService.generateHashedPass(newPass, accountEntity.salt);
-        await this.creditAccount(accountEntity, true, tx);
+        await this.creditAccount(accountEntity, true, dbTx);
     }
 
-    async editAccountPassByToken(encodedToken: string, newPass: string, tx: Transaction) {
+    async editAccountPassByToken(encodedToken: string, newPass: string, dbTx: Transaction) {
         try {
             this.jwtService.verify(encodedToken, JwtToken.getConfig());
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
-            const accountEntity = await this.findAccountById(jwtToken.id, tx, tx.LOCK.UPDATE);
+            const accountEntity = await this.findAccountById(jwtToken.id, dbTx, dbTx.LOCK.UPDATE);
             accountEntity.salt = AccountService.generateSalt();
             accountEntity.hashedPass = AccountService.generateHashedPass(newPass, accountEntity.salt);
-            await this.creditAccount(accountEntity, true, tx);
+            await this.creditAccount(accountEntity, true, dbTx);
         } catch (ex) {
             throw new WrongVerificationTokenException();
         }
     }
 
-    async verifyEmailByToken(encodedToken: string, tx: Transaction) {
+    async verifyEmailByToken(encodedToken: string, dbTx: Transaction) {
         try {
             this.jwtService.verify(encodedToken, JwtToken.getConfig());
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
 
-            const accountEntity = await this.findAccountById(jwtToken.id, tx, tx.LOCK.UPDATE);
+            const accountEntity = await this.findAccountById(jwtToken.id, dbTx, dbTx.LOCK.UPDATE);
             accountEntity.markAsEmailVerified();
-            await this.creditAccount(accountEntity, false, tx);
+            await this.creditAccount(accountEntity, false, dbTx);
         } catch (ex) {
             throw new WrongVerificationTokenException();
         }
     }
 
     // db functions
-    async findAccountById(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < AccountEntity | null > {
+    async findAccountById(accountId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < AccountEntity | null > {
         const whereAccountRepo = new AccountRepo();
         whereAccountRepo.accountId = accountId;
         const accountRepo = await this.accountRepo.findOne({
             where: AppRepo.toJsonWhere(whereAccountRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return AccountEntity.fromRepo(accountRepo);
     }
 
-    async findAdminByAccountId(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < AdminEntity | null > {
+    async findAdminByAccountId(accountId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < AdminEntity | null > {
         const whereAdminRepo = new AdminRepo();
         whereAdminRepo.accountId = accountId;
         const adminRepo = await this.adminRepo.findOne({
             where: AppRepo.toJsonWhere(whereAdminRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         return AdminEntity.fromRepo(adminRepo);
     }
 
-    async findUserById(userId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < UserEntity | null > {
+    async findUserById(userId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < UserEntity | null > {
         const whereUserRepo = new UserRepo();
         whereUserRepo.userId = userId;
         const userRepo = await this.userRepo.findOne({
             where: AppRepo.toJsonWhere(whereUserRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return UserEntity.fromRepo(userRepo);
     }
 
-    async findAccountByEmail(email: string, tx: Transaction = undefined, lock: LOCK = undefined): Promise < AccountEntity | null > {
+    async findAccountByEmail(email: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise < AccountEntity | null > {
         const whereAccountRepo = new AccountRepo();
         whereAccountRepo.email = email;
 
         const accountRepo = await this.accountRepo.findOne({
             where: AppRepo.toJsonWhere(whereAccountRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         return AccountEntity.fromRepo(accountRepo);
     }
 
-    async findUserByCudosWalletAddress(cudosWalletAddress: string, tx: Transaction = undefined, lock: LOCK = undefined): Promise < UserEntity | null > {
+    async findUserByCudosWalletAddress(cudosWalletAddress: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise < UserEntity | null > {
         const whereUserRepo = new UserRepo();
         whereUserRepo.cudosWalletAddress = cudosWalletAddress;
 
         const userRepo = await this.userRepo.findOne({
             where: AppRepo.toJsonWhere(whereUserRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         return UserEntity.fromRepo(userRepo);
     }
 
-    async findAccounts(accountId: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } > {
+    async findAccounts(accountId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity } > {
         const accountRepo = await this.accountRepo.findByPk(accountId, {
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         });
 
         const whereUserRepo = new UserRepo();
         whereUserRepo.accountId = accountId;
         const userRepo = await this.userRepo.findOne({
             where: AppRepo.toJsonWhere(whereUserRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         const whereAdminRepo = new AdminRepo();
         whereAdminRepo.accountId = accountId;
         const adminRepo = await this.adminRepo.findOne({
             where: AppRepo.toJsonWhere(whereAdminRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         const whereSuperAdminRepo = new SuperAdminRepo();
         whereSuperAdminRepo.accountId = accountId;
         const superAdminRepo = await this.superAdminRepo.findOne({
             where: AppRepo.toJsonWhere(whereSuperAdminRepo),
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         })
 
         return {
@@ -184,13 +184,13 @@ export default class AccountService {
         }
     }
 
-    async creditAccount(accountEntity: AccountEntity, includePassword = false, tx: Transaction = undefined): Promise < AccountEntity > {
+    async creditAccount(accountEntity: AccountEntity, includePassword: boolean, dbTx: Transaction): Promise < AccountEntity > {
         let accountRepo = AccountEntity.toRepo(accountEntity, includePassword);
 
         if (accountEntity.isNew() === true) {
             accountRepo = await this.accountRepo.create(accountRepo.toJSON(), {
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
         } else {
             const whereAccountRepo = new AccountRepo();
@@ -198,7 +198,7 @@ export default class AccountService {
             accountRepo = await this.accountRepo.update(accountRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereAccountRepo),
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             });
             accountRepo = accountRepo[1].length === 1 ? accountRepo[1][0] : null;
         }
@@ -206,7 +206,7 @@ export default class AccountService {
         return AccountEntity.fromRepo(accountRepo);
     }
 
-    async creditUser(userEntity: UserEntity, tx: Transaction = undefined): Promise < UserEntity > {
+    async creditUser(userEntity: UserEntity, dbTx: Transaction): Promise < UserEntity > {
         let newUris = [], oldUris = [];
 
         try {
@@ -222,10 +222,10 @@ export default class AccountService {
             if (userEntity.isNew() === true) {
                 userRepo = await this.userRepo.create(userRepo.toJSON(), {
                     returning: true,
-                    transaction: tx,
+                    transaction: dbTx,
                 })
             } else {
-                const userRepoDb = await this.findUserById(userEntity.userId, tx, tx.LOCK.UPDATE);
+                const userRepoDb = await this.findUserById(userEntity.userId, dbTx, dbTx.LOCK.UPDATE);
                 if (!userRepoDb) {
                     throw new NotFoundException();
                 }
@@ -236,7 +236,7 @@ export default class AccountService {
                 const sqlResult = await this.userRepo.update(userRepo.toJSON(), {
                     where: AppRepo.toJsonWhere(whereUserRepo),
                     returning: true,
-                    transaction: tx,
+                    transaction: dbTx,
                 });
                 userRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
             }
@@ -248,12 +248,12 @@ export default class AccountService {
         return UserEntity.fromRepo(userRepo);
     }
 
-    async creditAdmin(adminEntity: AdminEntity, tx: Transaction = undefined): Promise < AdminEntity > {
+    async creditAdmin(adminEntity: AdminEntity, dbTx: Transaction): Promise < AdminEntity > {
         let adminRepo = AdminEntity.toRepo(adminEntity);
         if (adminEntity.isNew() === true) {
             adminRepo = await this.adminRepo.create(adminRepo.toJSON(), {
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
         } else {
             const whereAdminRepo = new AdminRepo();
@@ -261,7 +261,7 @@ export default class AccountService {
             const sqlResult = await this.adminRepo.update(adminRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereAdminRepo),
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             });
             adminRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
         }
@@ -269,12 +269,12 @@ export default class AccountService {
         return AdminEntity.fromRepo(adminRepo);
     }
 
-    async creditSuperAdmin(superAdminEntity: SuperAdminEntity, tx: Transaction = undefined): Promise < SuperAdminEntity > {
+    async creditSuperAdmin(superAdminEntity: SuperAdminEntity, dbTx: Transaction): Promise < SuperAdminEntity > {
         let superAdminRepo = SuperAdminEntity.toRepo(superAdminEntity);
         if (superAdminEntity.isNew() === true) {
             superAdminRepo = await this.superAdminRepo.create(superAdminRepo.toJSON(), {
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
         } else {
             const whereSuperAdminRepo = new SuperAdminRepo();
@@ -282,7 +282,7 @@ export default class AccountService {
             const sqlResult = await this.superAdminRepo.update(superAdminRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereSuperAdminRepo),
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             });
             superAdminRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
         }

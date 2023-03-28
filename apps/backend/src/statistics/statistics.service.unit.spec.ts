@@ -134,7 +134,7 @@ describe('NFTService', () => {
     fetchUsersSpendingOnPlatformInUsdTestData.forEach((testData: FetchUsersSpendingOnPlatformInUsdTestData) => it(`fetchUsersSpendingOnPlatformInUsd: ${testData.testName}`, async () => {
         jest.spyOn(service, 'fetchNftEventsByFilter').mockImplementation(async () => { return { nftEventEntities: testData.nftEventEntities, nftEntities: null, total: 0 } })
 
-        expect(await service.fetchUsersSpendingOnPlatformInUsd(testData.callParams.userEntity)).toEqual(testData.result)
+        expect(await service.fetchUsersSpendingOnPlatformInUsd(testData.callParams.userEntity, undefined)).toEqual(testData.result)
     }))
 
     type FetchNftEventsByFilterTestData = {
@@ -403,9 +403,9 @@ describe('NFTService', () => {
         jest.spyOn(StatisticsService.prototype as any, 'fetchPlatformNftEvents').mockImplementation(async () => testData.fetchPlatformNftEventsReturns);
 
         if (typeof testData.result === 'string') {
-            await expect(service.fetchNftEventsByFilter(testData.callParams.userEntity, testData.callParams.nftEventFilterENtity)).rejects.toThrow(new Error(testData.result));
+            await expect(service.fetchNftEventsByFilter(testData.callParams.userEntity, testData.callParams.nftEventFilterENtity, undefined)).rejects.toThrow(new Error(testData.result));
         } else {
-            expect(await service.fetchNftEventsByFilter(testData.callParams.userEntity, testData.callParams.nftEventFilterENtity)).toEqual(testData.result)
+            expect(await service.fetchNftEventsByFilter(testData.callParams.userEntity, testData.callParams.nftEventFilterENtity, undefined)).toEqual(testData.result)
         }
     }))
 
@@ -531,9 +531,9 @@ describe('NFTService', () => {
         jest.spyOn(FarmService.prototype as any, 'findMiningFarmByIds').mockImplementation(async () => testData.farmServiceFindMiningFarmByIdsResult);
 
         if (typeof testData.result === 'string') {
-            await expect(service.fetchMegaWalletEventsByFilter(testData.callParams)).rejects.toThrow(new Error(testData.result));
+            await expect(service.fetchMegaWalletEventsByFilter(testData.callParams, undefined)).rejects.toThrow(new Error(testData.result));
         } else {
-            expect(await service.fetchMegaWalletEventsByFilter(testData.callParams)).toEqual(testData.result);
+            expect(await service.fetchMegaWalletEventsByFilter(testData.callParams, undefined)).toEqual(testData.result);
         }
     }))
 });
