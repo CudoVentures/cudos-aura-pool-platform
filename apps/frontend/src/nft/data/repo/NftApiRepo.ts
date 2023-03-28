@@ -15,8 +15,8 @@ import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAura
 import MintMemo from '../../entities/MintMemo';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import { Coin } from 'cudosjs/build/stargate/modules/marketplace/proto-types/coin';
-import PurchaseTransactionsFilterModel from '../../../accounts/entities/PurchaseTransactionsFilterModel';
-import PurchaseTransactionEntity from '../../../accounts/entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 
 export default class NftApiRepo implements NftRepo {
 

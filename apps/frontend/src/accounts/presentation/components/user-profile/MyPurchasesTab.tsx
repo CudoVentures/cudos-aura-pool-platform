@@ -8,7 +8,7 @@ import StyledContainer, { ContainerPadding } from '../../../../core/presentation
 import '../../styles/my-purchases-tab.css';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
-import PurchaseTransactionEntity from '../../../entities/PurchaseTransactionEntity';
+import PurchaseTransactionEntity from '../../../../nft/entities/PurchaseTransactionEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 
 type Props = {
@@ -51,13 +51,14 @@ function MyPurchasesTab({ userProfilePageStore }: Props) {
             <div className={'FlexRow TableHeader'}>
                 <div className={'H3 Bold'}>Purchases</div>
             </div>
-            <Table
+            {userProfilePageStore.purchaseTransactionEntities !== null && (<Table
                 className={'PurchaseTransactionsTable'}
                 legend={getLegend()}
                 widths={getWidths()}
                 aligns={getAligns()}
                 tableState={userProfilePageStore.purchasesTableState}
-                rows={renderCollectionsRows()} />
+                rows={renderCollectionsRows()} />)}
+            {userProfilePageStore.purchaseTransactionEntities === null && (<div className={'Loading'} />)}
         </StyledContainer>)
 }
 

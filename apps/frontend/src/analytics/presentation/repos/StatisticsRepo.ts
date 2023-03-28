@@ -1,5 +1,5 @@
-import PurchaseTransactionEntity from '../../../accounts/entities/PurchaseTransactionEntity';
-import PurchaseTransactionsFilterModel from '../../../accounts/entities/PurchaseTransactionsFilterModel';
+import PurchaseTransactionEntity from '../../../nft/entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../../nft/entities/PurchaseTransactionsFilterModel';
 import NftEntity from '../../../nft/entities/NftEntity';
 import EarningsPerDayEntity from '../../entities/EarningsPerDayEntity';
 import EarningsPerDayFilterEntity from '../../entities/EarningsPerDayFilterEntity';

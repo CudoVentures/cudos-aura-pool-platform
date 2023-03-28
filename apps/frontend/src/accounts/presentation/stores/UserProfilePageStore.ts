@@ -14,8 +14,8 @@ import NftEventEntity from '../../../analytics/entities/NftEventEntity';
 import UserEarningsEntity from '../../../analytics/entities/UserEarningsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
-import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
+import PurchaseTransactionEntity from '../../../nft/entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../../nft/entities/PurchaseTransactionsFilterModel';
 import AccountRepo from '../repos/AccountRepo';
 
 export enum ProfilePages {

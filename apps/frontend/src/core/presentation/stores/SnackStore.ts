@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import React from 'react';
 
 export const enum SnackType {
-    SUCCESS = 1,
+    SUCCESS = '2',
     ERROR = 2,
 }
 

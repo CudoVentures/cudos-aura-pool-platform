@@ -1,11 +1,7 @@
 import { makeAutoObservable } from 'mobx';
-import S from '../../core/utilities/Main';
+import { PurchaseTransactionStatus } from '../nft.types';
+import { PurchaseTransactionRepo } from '../repos/purchase-transaction.repo';
 
-export enum PurchaseTransactionStatus {
-    PENDING = 0,
-    SUCCESS = 1,
-    REFUNDED = 3,
-}
 export default class PurchaseTransactionEntity {
     txhash: string;
     recipientAddress: string;
@@ -13,8 +9,8 @@ export default class PurchaseTransactionEntity {
     status: PurchaseTransactionStatus;
 
     constructor() {
-        this.txhash = S.Strings.EMPTY;
-        this.recipientAddress = S.Strings.EMPTY;
+        this.txhash = '';
+        this.recipientAddress = '';
         this.timestamp = 0;
         this.status = PurchaseTransactionStatus.PENDING;
 
@@ -51,7 +47,7 @@ export default class PurchaseTransactionEntity {
         }
     }
 
-    static fromJson(json: any) {
+    static fromJson(json: any): PurchaseTransactionEntity {
         if (json === null) {
             return null;
         }
@@ -64,5 +60,35 @@ export default class PurchaseTransactionEntity {
         entity.status = json.status ?? entity.status;
 
         return entity;
+    }
+
+    static fromRepo(repoJson: PurchaseTransactionRepo): PurchaseTransactionEntity {
+        if (repoJson === null) {
+            return null;
+        }
+
+        const entity = new PurchaseTransactionEntity();
+
+        entity.txhash = repoJson.txHash ?? entity.txhash;
+        entity.recipientAddress = repoJson.recipientAddress ?? entity.recipientAddress;
+        entity.timestamp = repoJson.timestamp ?? entity.timestamp;
+        entity.status = repoJson.status ?? entity.status;
+
+        return entity;
+    }
+
+    static toRepo(entity: PurchaseTransactionEntity): PurchaseTransactionRepo {
+        if (entity === null) {
+            return null;
+        }
+
+        const repoJson = new PurchaseTransactionRepo();
+
+        repoJson.txHash = entity.txhash ?? repoJson.txHash;
+        repoJson.recipientAddress = entity.recipientAddress ?? repoJson.recipientAddress;
+        repoJson.timestamp = entity.timestamp ?? repoJson.timestamp;
+        repoJson.status = entity.status ?? repoJson.status;
+
+        return repoJson;
     }
 }

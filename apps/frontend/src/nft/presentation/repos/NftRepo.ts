@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { Ledger } from 'cudosjs';
-import PurchaseTransactionEntity from '../../../accounts/entities/PurchaseTransactionEntity';
-import PurchaseTransactionsFilterModel from '../../../accounts/entities/PurchaseTransactionsFilterModel';
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import NftEntity from '../../entities/NftEntity';

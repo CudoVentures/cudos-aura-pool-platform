@@ -1,4 +1,4 @@
-import PurchaseTransactionEntity from '../../../accounts/entities/PurchaseTransactionEntity';
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 import NftEntity from '../../entities/NftEntity'
 
 export class ResFetchNftsByFilter {

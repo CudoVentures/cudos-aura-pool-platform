@@ -8,21 +8,29 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.BIGINT,
             },
-            txHash: {
+            tx_hash: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            recipientAddress: {
+            recipient_address: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
             timestamp: {
-                type: Sequelize.NUMBER,
+                type: Sequelize.BIGINT,
                 allowNull: false,
             },
             status: {
-                type: Sequelize.NUMBER,
+                type: Sequelize.BIGINT,
                 allowNull: false,
+            },
+            created_at: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+            updated_at: {
+                allowNull: false,
+                type: Sequelize.DATE,
             },
         });
     },

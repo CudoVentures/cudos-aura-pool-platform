@@ -47,13 +47,13 @@ export default class CudosApiRepo implements CudosRepo {
         }
 
         try {
-            this.disableActions?.();
+            // this.disableActions?.();
             cudosDataEntity = await this.cudosApi.fetchCudosData();
             cudosDataEntity.timestampLastUpdate = Date.now();
 
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(CudosDataEntity.toJson(cudosDataEntity)));
         } finally {
-            this.enableActions?.();
+            // this.enableActions?.();
         }
 
         return cudosDataEntity;

@@ -44,13 +44,13 @@ export default class BitcoinApiRepo implements BitcoinRepo {
         }
 
         try {
-            this.disableActions?.();
+            // this.disableActions?.();
             bitcoinCoinGeckoEntity = await this.bitcoinApi.fetchBitcoinCoinGecko();
             bitcoinCoinGeckoEntity.timestampLastUpdate = Date.now();
 
             localStorage.setItem(LOCAL_STORAGE_COIN_GECKO_KEY, JSON.stringify(BitcoinCoinGeckoEntity.toJson(bitcoinCoinGeckoEntity)));
         } finally {
-            this.enableActions?.();
+            // this.enableActions?.();
         }
 
         return bitcoinCoinGeckoEntity;
@@ -71,14 +71,14 @@ export default class BitcoinApiRepo implements BitcoinRepo {
         }
 
         try {
-            this.disableActions?.();
+            // this.disableActions?.();
 
             bitcoinBlockchainInfoEntity = await this.bitcoinApi.fetchBitcoinBlockchainInfo();
             bitcoinBlockchainInfoEntity.timestampLastUpdate = Date.now();
 
             localStorage.setItem(LOCAL_STORAGE_BLOCKCHAIN_INFO_KEY, JSON.stringify(BitcoinBlockchainInfoEntity.toJson(bitcoinBlockchainInfoEntity)));
         } finally {
-            this.enableActions?.();
+            // this.enableActions?.();
         }
 
         return bitcoinBlockchainInfoEntity;

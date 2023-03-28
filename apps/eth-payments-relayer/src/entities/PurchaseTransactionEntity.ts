@@ -1,9 +1,9 @@
 import { makeAutoObservable } from 'mobx';
 
 export enum PurchaseTransactionStatus {
-    PENDING = 0,
-    SUCCESS = 1,
-    REFUNDED = 3,
+    PENDING = '1',
+    SUCCESS = '2',
+    REFUNDED = '3',
 }
 export default class PurchaseTransactionEntity {
     txhash: string;

@@ -1,5 +1,5 @@
-import PurchaseTransactionEntity from '../../../accounts/entities/PurchaseTransactionEntity';
-import PurchaseTransactionsFilterModel from '../../../accounts/entities/PurchaseTransactionsFilterModel';
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import axios from '../../../core/utilities/AxiosWrapper';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import MintDataEntity from '../../../nft-presale/entities/MintDataEntity';
@@ -44,27 +44,13 @@ export default class NftApi {
     }
 
     async fetchPurchaseTransactions(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities: PurchaseTransactionEntity[]): Promise<{ purchaseTransactionEntities: PurchaseTransactionEntity[]; total: number; }> {
-        // const req = new ReqFetchPurchaseTransactions(purchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities);
+        const req = new ReqFetchPurchaseTransactions(purchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities);
 
-        // const { data } = await axios.post(`${NftApi.nftModuleUrl}/fetchPurchaseTransactions`, req);
+        const { data } = await axios.put(`${NftApi.nftModuleUrl}/fetchPurchaseTransactions`, req);
 
-        // const res = new ResFetchPurchaseTransactions(data);
+        const res = new ResFetchPurchaseTransactions(data);
 
-        // return { purchaseTransactionEntities: res.purchaseTransactionEntities, total: res.total };
-        const purchaseTransactions: PurchaseTransactionEntity[] = []
-
-        for (let i = 0; i < 100; i++) {
-            const purchaseTransaction = new PurchaseTransactionEntity();
-            purchaseTransaction.txhash = `wgw2323tmewgkeflwbwelgweawehaerh;erhmerh${i}`;
-            purchaseTransaction.timestamp = Date.now() - i;
-
-            purchaseTransactions.push(purchaseTransaction);
-        }
-
-        return {
-            purchaseTransactionEntities: purchaseTransactions.slice(purchaseTransactionsFilterModel.from, purchaseTransactionsFilterModel.from + purchaseTransactionsFilterModel.count),
-            total: 100,
-        }
+        return { purchaseTransactionEntities: res.purchaseTransactionEntities, total: res.total };
     }
 
 }

@@ -5,17 +5,19 @@ import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { NftRepo, NftRepoColumn } from './repos/nft.repo';
-import { NftGroup, NftOrderBy, NftStatus } from './nft.types';
+import { NftGroup, NftOrderBy, NftStatus, PurchaseTransactionStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
-import AppRepo from '../common/repo/app.repo';
 import CoinGeckoService from '../coin-gecko/coin-gecko.service';
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
 import { randomInt } from 'crypto';
 import { FIFTEEN_MINUTES_IN_MILIS } from '../common/utils';
+import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
+import { PurchaseTransactionRepo, PurchaseTransactionsRepoCOlumn } from './repos/purchase-transaction.repo';
+import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
 
 enum Tier {
     TIER_1 = 1, // cheapest
@@ -46,6 +48,8 @@ export class NFTService {
     constructor(
         @InjectModel(NftRepo)
         private nftRepo: typeof NftRepo,
+        @InjectModel(PurchaseTransactionRepo)
+        private purchaseTransactionRepo: typeof PurchaseTransactionRepo,
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private visitorService: VisitorService,
@@ -432,4 +436,59 @@ export class NFTService {
     //         uuid,
     //     }
     // }
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < void > {
+        const txHashes = purchaseTransactionEntities.map((purchaseTransactionEntity) => purchaseTransactionEntity.txhash);
+        const purchaseTransactionRepos = await this.purchaseTransactionRepo.findAll({
+            where: {
+                [PurchaseTransactionsRepoCOlumn.TX_HASH]: txHashes,
+            },
+            transaction: dbTx,
+        });
+
+        const purchaseTransactionEntitiesMap = new Map<string, PurchaseTransactionEntity>();
+        purchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
+            purchaseTransactionEntitiesMap.set(purchaseTransactionEntity.txhash, purchaseTransactionEntity);
+        });
+
+        const purchaseTransactionEntitiesToUpdate = purchaseTransactionRepos.map((purchaseTransactionRepo) => PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo));
+        purchaseTransactionEntitiesToUpdate.forEach((purchaseTransactionEntity) => {
+            const newPurchaseTransactionEntity = purchaseTransactionEntitiesMap.get(purchaseTransactionEntity.txhash);
+            if (newPurchaseTransactionEntity.status === PurchaseTransactionStatus.PENDING) {
+                purchaseTransactionEntity.status = newPurchaseTransactionEntity.status;
+            }
+        });
+
+        const purchaseTransactionReposToUpdate = purchaseTransactionEntitiesToUpdate.map((purchaseTransactionEntity) => PurchaseTransactionEntity.toRepo(purchaseTransactionEntity));
+
+        purchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
+            purchaseTransactionReposToUpdate.push(PurchaseTransactionEntity.toRepo(purchaseTransactionEntity));
+        });
+
+        await this.purchaseTransactionRepo.bulkCreate(purchaseTransactionReposToUpdate.map((repoJson) => repoJson.toJSON()), {
+            updateOnDuplicate: [PurchaseTransactionsRepoCOlumn.TX_HASH],
+            transaction: dbTx,
+        });
+    }
+
+    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFIlterModel: PurchaseTransactionsFilterEntity, purchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
+        const purchaseTransactionRepos = await this.purchaseTransactionRepo.findAll({
+            where: {
+                [PurchaseTransactionsRepoCOlumn.RECIPIENT_ADDRESS]: cudosAddress,
+            },
+            transaction: dbTx,
+        });
+
+        let totalPurchaseTransactionEntities = purchaseTransactionRepos.map((purchaseTransactionRepo) => PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo));
+        totalPurchaseTransactionEntities = totalPurchaseTransactionEntities.concat(purchaseTransactionEntities)
+
+        const sortedPurchaseTransactionEntities = totalPurchaseTransactionEntities.sort((a, b) => {
+            return b.timestamp - a.timestamp;
+        });
+
+        return {
+            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(purchaseTransactionFIlterModel.from, purchaseTransactionFIlterModel.from + purchaseTransactionFIlterModel.count),
+            total: sortedPurchaseTransactionEntities.length,
+        }
+    }
 }
