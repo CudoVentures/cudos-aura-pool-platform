@@ -144,7 +144,7 @@ export class NFTService {
 
     async getRandomPresaleNft(paidAmountAcudos: BigNumber, dbTx: Transaction, dbLock: LOCK = undefined): Promise <NftEntity> {
         // check if paid price is within epsilon of expected
-        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosData();
         const paidAmountCudos = paidAmountAcudos.shiftedBy(-CURRENCY_DECIMALS);
         const paidAmountUsd = paidAmountCudos.multipliedBy(cudosUsdPrice);
 
@@ -227,7 +227,7 @@ export class NFTService {
             throw new NotFoundException();
         }
 
-        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosData();
         const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(cudosUsdPrice);
         const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
 

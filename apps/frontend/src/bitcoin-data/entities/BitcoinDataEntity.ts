@@ -1,7 +1,6 @@
-import BigNumber from 'bignumber.js';
 import S from '../../core/utilities/Main';
 
-export default class BitcoinCoinGeckoEntity {
+export default class BitcoinDataEntity {
 
     static MODEL_VERSION = 1;
 
@@ -11,7 +10,7 @@ export default class BitcoinCoinGeckoEntity {
     timestampLastUpdate: number;
 
     constructor() {
-        this.modelVersion = BitcoinCoinGeckoEntity.MODEL_VERSION;
+        this.modelVersion = BitcoinDataEntity.MODEL_VERSION;
         this.priceInUsd = S.NOT_EXISTS;
         this.priceChangeInUsd = S.NOT_EXISTS;
         this.timestampLastUpdate = S.NOT_EXISTS;
@@ -21,7 +20,7 @@ export default class BitcoinCoinGeckoEntity {
         return this.timestampLastUpdate + 15 * 60 * 1000 < Date.now();
     }
 
-    static toJson(entity: BitcoinCoinGeckoEntity): any {
+    static toJson(entity: BitcoinDataEntity): any {
         if (entity === null) {
             return null;
         }
@@ -34,12 +33,12 @@ export default class BitcoinCoinGeckoEntity {
         }
     }
 
-    static fromJson(json): BitcoinCoinGeckoEntity {
+    static fromJson(json): BitcoinDataEntity {
         if (json === null) {
             return null;
         }
 
-        const model = new BitcoinCoinGeckoEntity();
+        const model = new BitcoinDataEntity();
 
         model.modelVersion = parseInt(json.modelVersion) ?? model.modelVersion;
         model.priceInUsd = Number(json.priceInUsd) ?? model.priceInUsd;
