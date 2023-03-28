@@ -53,6 +53,7 @@
     "@nestjs/sequelize": "^9.0.0",
     "@nestjs/serve-static": "^3.0.1",
     "@nestjs/swagger": "^6.2.1",
+    "@nestjs/throttler": "^4.0.0",
     "@onfido/api": "^2.6.0",
     "@sendgrid/mail": "^7.7.0",
     "aes-js": "^3.1.2",
