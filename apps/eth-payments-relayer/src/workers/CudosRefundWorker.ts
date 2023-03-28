@@ -3,6 +3,7 @@ import CudosChainRepo from './repos/CudosChainRepo';
 import AuraContractRepo from './repos/AuraContractRepo';
 import Logger from '../../config/Logger';
 import { PaymentStatus } from '../entities/PaymentEventEntity';
+import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
 
 export default class CudosRefundWorker {
     static WORKER_NAME = 'CUDOS_REFUND_WORKER';
@@ -80,6 +81,15 @@ export default class CudosRefundWorker {
                     } else {
                         CudosRefundWorker.log('Payment ALREADY unlocked.');
                     }
+
+                    // mark purchase transaction as refunded
+                    const originalSendTx = await this.cudosChainRepo.fetchPaymentTransactionByTxhash(refundTransactionEntity.refundedTxHash);
+                    const purchaseTransactionEntity = new PurchaseTransactionEntity();
+                    purchaseTransactionEntity.txhash = originalSendTx.ethTxHash;
+                    purchaseTransactionEntity.status = PurchaseTransactionStatus.REFUNDED;
+
+                    CudosRefundWorker.log('Updating purchase transaction with status refunded...');
+                    await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
                 }
             } else {
                 CudosRefundWorker.log(`No events found until curren block. Block number: ${currentCudosBlock}`);

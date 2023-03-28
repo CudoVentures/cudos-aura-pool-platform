@@ -7,7 +7,8 @@ import Config from '../../config/Config';
 type PaymentMemo = {
     uuid: string,
     contractPaymentId: number,
-    recipientAddress: string
+    recipientAddress: string,
+    ethTxHash: string,
 }
 
 export default class PaymentTransactionEntity {
@@ -17,6 +18,7 @@ export default class PaymentTransactionEntity {
     nftId: string;
     contractPaymentId: number;
     recipientAddress: string;
+    ethTxHash: string;
 
     constructor() {
         this.txBody = null;
@@ -25,6 +27,7 @@ export default class PaymentTransactionEntity {
         this.nftId = '';
         this.contractPaymentId = null;
         this.recipientAddress = '';
+        this.ethTxHash = '';
     }
 
     async isValid(): Promise < boolean > {
@@ -36,7 +39,8 @@ export default class PaymentTransactionEntity {
             && this.to === Config.MINTING_SERVICE_ADDRESS
             && this.nftId !== ''
             && this.contractPaymentId !== null
-            && this.recipientAddress !== '';
+            && this.recipientAddress !== ''
+            && this.ethTxHash !== '';
     }
 
     static fromChainIndexedTx(chainTx: IndexedTx): PaymentTransactionEntity {
@@ -73,6 +77,8 @@ export default class PaymentTransactionEntity {
         entity.nftId = memoJson.uuid;
         entity.recipientAddress = memoJson.recipientAddress;
         entity.contractPaymentId = memoJson.contractPaymentId;
+        entity.contractPaymentId = memoJson.contractPaymentId;
+        entity.ethTxHash = memoJson.ethTxHash;
 
         return entity;
     }
