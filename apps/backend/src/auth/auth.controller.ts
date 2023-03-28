@@ -24,7 +24,7 @@ export class AuthController {
     @Post('login')
     @HttpCode(200)
     @UseGuards(ThrottlerGuard)
-    @Throttle(1, 30)
+    @Throttle(5, 30)
     async login(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin,

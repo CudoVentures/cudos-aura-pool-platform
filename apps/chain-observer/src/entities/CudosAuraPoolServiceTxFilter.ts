@@ -66,10 +66,6 @@ export const OnDemandMintReceivedFundsFilter: SearchByTagsQuery = {
             value: 'bank',
         },
         {
-            key: 'message.action',
-            value: 'send',
-        },
-        {
             key: 'transfer.recipient',
             value: Config.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
         },
@@ -98,10 +94,6 @@ export const OnDemandMintRefundsFilter: SearchByTagsQuery = {
         {
             key: 'message.module',
             value: 'bank',
-        },
-        {
-            key: 'message.action',
-            value: 'send',
         },
         {
             key: 'transfer.sender',

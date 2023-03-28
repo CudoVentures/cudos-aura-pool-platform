@@ -145,8 +145,13 @@ export default class TxFindWorker {
             const tx = fundsReceivedTxs[i];
 
             const memo = decodeTxRaw(tx.tx).body.memo;
-            const memoJson = JSON.parse(memo);
-
+            let memoJson;
+            try {
+                memoJson = JSON.parse(memo);
+            } catch (e) {
+                continue;
+            }
+            console.log(memoJson)
             if (memoJson.recipientAddress === '' || memoJson.uuid === 'presale') {
                 continue;
             }
