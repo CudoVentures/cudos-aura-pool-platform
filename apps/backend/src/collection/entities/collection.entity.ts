@@ -50,6 +50,10 @@ export class CollectionEntity {
         return this.status === CollectionStatus.APPROVED;
     }
 
+    markAsQueued() {
+        this.status = CollectionStatus.QUEUED;
+    }
+
     static toRepo(entity: CollectionEntity): CollectionRepo {
         if (entity === null) {
             return null;

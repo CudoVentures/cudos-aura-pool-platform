@@ -1,5 +1,5 @@
 import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
-import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
+import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
 import BitcoinRepo from '../../presentation/repos/BitcoinRepo';
 import BitcoinApi from '../data-sources/BitcoinApi';
 
@@ -29,31 +29,31 @@ export default class BitcoinApiRepo implements BitcoinRepo {
         this.showAlert = showAlert;
     }
 
-    async fetchBitcoinCoinGecko(): Promise < BitcoinCoinGeckoEntity > {
-        let bitcoinCoinGeckoEntity = new BitcoinCoinGeckoEntity();
-        const bitcoinCoinGeckoEntityJsonString = localStorage.getItem(LOCAL_STORAGE_COIN_GECKO_KEY);
-        if (bitcoinCoinGeckoEntityJsonString !== null) {
-            const bitcoinCoinGeckoEntityJson = JSON.parse(bitcoinCoinGeckoEntityJsonString);
-            if (bitcoinCoinGeckoEntityJson.modelVersion === BitcoinCoinGeckoEntity.MODEL_VERSION) {
-                bitcoinCoinGeckoEntity = BitcoinCoinGeckoEntity.fromJson(bitcoinCoinGeckoEntityJson);
+    async fetchBitcoinCoinGecko(): Promise < BitcoinDataEntity > {
+        let bitcoinDataEntity = new BitcoinDataEntity();
+        const bitcoinDataEntityJsonString = localStorage.getItem(LOCAL_STORAGE_COIN_GECKO_KEY);
+        if (bitcoinDataEntityJsonString !== null) {
+            const bitcoinDataEntityJson = JSON.parse(bitcoinDataEntityJsonString);
+            if (bitcoinDataEntityJson.modelVersion === BitcoinDataEntity.MODEL_VERSION) {
+                bitcoinDataEntity = BitcoinDataEntity.fromJson(bitcoinDataEntityJson);
             }
         }
 
-        if (bitcoinCoinGeckoEntity.shouldUpdate() === false) {
-            return bitcoinCoinGeckoEntity;
+        if (bitcoinDataEntity.shouldUpdate() === false) {
+            return bitcoinDataEntity;
         }
 
         try {
-            // this.disableActions?.();
-            bitcoinCoinGeckoEntity = await this.bitcoinApi.fetchBitcoinCoinGecko();
-            bitcoinCoinGeckoEntity.timestampLastUpdate = Date.now();
+            this.disableActions?.();
+            bitcoinDataEntity = await this.bitcoinApi.fetchBitcoinCoinGecko();
+            bitcoinDataEntity.timestampLastUpdate = Date.now();
 
-            localStorage.setItem(LOCAL_STORAGE_COIN_GECKO_KEY, JSON.stringify(BitcoinCoinGeckoEntity.toJson(bitcoinCoinGeckoEntity)));
+            localStorage.setItem(LOCAL_STORAGE_COIN_GECKO_KEY, JSON.stringify(BitcoinDataEntity.toJson(bitcoinDataEntity)));
         } finally {
             // this.enableActions?.();
         }
 
-        return bitcoinCoinGeckoEntity;
+        return bitcoinDataEntity;
     }
 
     async fetchBitcoinBlockchainInfo(): Promise < BitcoinBlockchainInfoEntity > {

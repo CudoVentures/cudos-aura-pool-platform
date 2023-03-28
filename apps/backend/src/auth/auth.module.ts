@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { AccountModule } from '../account/account.module';
 import { EmailModule } from '../email/email.module';
 import { KycModule } from '../kyc/kyc.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
     imports: [
@@ -17,6 +18,10 @@ import { KycModule } from '../kyc/kyc.module';
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },
+        }),
+        ThrottlerModule.forRoot({
+            ttl: 30,
+            limit: 1,
         }),
     ],
     providers: [AuthService],

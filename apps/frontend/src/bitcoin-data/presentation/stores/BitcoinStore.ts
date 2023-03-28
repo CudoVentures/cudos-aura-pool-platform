@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
-import BitcoinCoinGeckoEntity from '../../entities/BitcoinCoinGeckoEntity';
+import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
 import BitcoinRepo from '../repos/BitcoinRepo';
 import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
@@ -16,14 +16,14 @@ export default class BitcoinStore {
     bitcoinRepo: BitcoinRepo;
 
     inited: boolean;
-    bitcoinCoinGeckoEntity: BitcoinCoinGeckoEntity;
+    bitcoinDataEntity: BitcoinDataEntity;
     bitcoinBlockchainInfoEntity: BitcoinBlockchainInfoEntity;
 
     constructor(bitcoinRepo: BitcoinRepo) {
         this.bitcoinRepo = bitcoinRepo;
 
         this.inited = false;
-        this.bitcoinCoinGeckoEntity = null;
+        this.bitcoinDataEntity = null;
         this.bitcoinBlockchainInfoEntity = null;
 
         makeAutoObservable(this);
@@ -34,22 +34,22 @@ export default class BitcoinStore {
             return;
         }
 
-        const bitcoinCoinGeckoEntity = await this.bitcoinRepo.fetchBitcoinCoinGecko();
+        const bitcoinDataEntity = await this.bitcoinRepo.fetchBitcoinCoinGecko();
         const bitcoinBlockchainInfoEntity = await this.bitcoinRepo.fetchBitcoinBlockchainInfo();
 
         await runInActionAsync(() => {
             this.inited = true;
-            this.bitcoinCoinGeckoEntity = bitcoinCoinGeckoEntity;
+            this.bitcoinDataEntity = bitcoinDataEntity;
             this.bitcoinBlockchainInfoEntity = bitcoinBlockchainInfoEntity;
         })
     }
 
     getBitcoinPriceInUsd(): number {
-        return this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0;
+        return this.bitcoinDataEntity?.priceInUsd ?? 0;
     }
 
     getBitcoinPriceChangeInUsd(): number {
-        return this.bitcoinCoinGeckoEntity?.priceChangeInUsd ?? 0;
+        return this.bitcoinDataEntity?.priceChangeInUsd ?? 0;
     }
 
     getBitcoinPriceChangeInPercentage(): number {
@@ -68,7 +68,7 @@ export default class BitcoinStore {
     }
 
     formatBtcInUsd(btc: BigNumber): string {
-        return numeral(btc.multipliedBy(this.bitcoinCoinGeckoEntity?.priceInUsd ?? 0).toFixed(4)).format(ProjectUtils.NUMERAL_USD);
+        return numeral(btc.multipliedBy(this.bitcoinDataEntity?.priceInUsd ?? 0).toFixed(4)).format(ProjectUtils.NUMERAL_USD);
     }
 
     formatBitcoinPriceChangeInPercentage(): string {

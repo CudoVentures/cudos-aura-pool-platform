@@ -152,7 +152,7 @@ export class KycService {
             return true;
         }
 
-        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosPrice();
+        const { cudosUsdPrice } = await this.coinGeckoService.getCachedCudosData();
         const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(userEntity, dbTx);
         const nftPriceInUsd = Number(nftEntity.getPriceInCudos().multipliedBy(cudosUsdPrice).toFixed(2));
         if (purchasesInUsdSoFar + nftPriceInUsd < WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD) {

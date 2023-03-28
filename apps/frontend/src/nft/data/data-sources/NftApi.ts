@@ -1,8 +1,6 @@
 import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import axios from '../../../core/utilities/AxiosWrapper';
-import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
-import MintDataEntity from '../../../nft-presale/entities/MintDataEntity';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 import { ReqFetchNftsByFilter, ReqFetchPurchaseTransactions, ReqMintPresaleNfts, ReqUpdateNftCudosPrice } from '../dto/Requests';
