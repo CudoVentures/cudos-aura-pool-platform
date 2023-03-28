@@ -19,6 +19,7 @@ import AccountService from '../account/account.service';
 import AllowlistService from '../allowlist/allowlist.service';
 import { KycService } from '../kyc/kyc.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
+import { LOCK } from 'sequelize';
 
 @ApiTags('NFT')
 @Controller('nft')
@@ -38,34 +39,37 @@ export class NFTController {
     ) {}
 
     @Post()
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqNftsByFilter: ReqNftsByFilter,
     ): Promise < ResFetchNftsByFilter > {
         const nftFilterEntity = NftFilterEntity.fromJson(reqNftsByFilter.nftFilterJson);
-        const { nftEntities, total } = await this.nftService.findByFilter(req.sessionUserEntity, nftFilterEntity);
+        const { nftEntities, total } = await this.nftService.findByFilter(req.sessionUserEntity, nftFilterEntity, req.transaction);
 
         return new ResFetchNftsByFilter(nftEntities, total);
     }
 
     // used by on-demand-minting
     @Get('on-demand-minting-nft/:id/:recipient/:paidAmountAcudosStr')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
+    @HttpCode(200)
     async findOne(
+        @Req() req: AppRequest,
         @Param('id') id: string,
         @Param('recipient') recipient: string,
         @Param('paidAmountAcudosStr') paidAmountAcudosStr: string,
     ): Promise<any> {
         const paidAmountAcudos = new BigNumber(paidAmountAcudosStr);
-        const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient);
+        const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient, req.transaction);
         if (userEntity === null) {
             console.log('Getting NFT from OnDemandMinting', 'user not found', recipient);
             throw new NotFoundException();
         }
 
-        const accountEntity = await this.accountService.findAccountById(userEntity.accountId);
+        const accountEntity = await this.accountService.findAccountById(userEntity.accountId, req.transaction);
         let nftEntity: NftEntity;
 
         if (id === 'presale') {
@@ -75,16 +79,16 @@ export class NFTController {
                 throw new Error('Presale ended.')
             }
 
-            const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient);
+            const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient, req.transaction);
 
             if (allowlistUser === null) {
                 console.log(`Address ${recipient} not found in allowlist`);
                 throw new Error('Recipient not in allowlist.')
             }
 
-            nftEntity = await this.nftService.getRandomPresaleNft(paidAmountAcudos);
+            nftEntity = await this.nftService.getRandomPresaleNft(paidAmountAcudos, req.transaction, req.transaction.LOCK.UPDATE);
             if (nftEntity !== null) {
-                nftEntity = await this.nftService.updatePremintNftPrice(nftEntity, paidAmountAcudos);
+                nftEntity = await this.nftService.updatePremintNftPrice(nftEntity, paidAmountAcudos, req.transaction);
             }
         } else {
             const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
@@ -93,7 +97,7 @@ export class NFTController {
                 throw new Error('Presale ended.')
             }
 
-            nftEntity = await this.nftService.findOne(id);
+            nftEntity = await this.nftService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
 
             const presaleExpectedPriceEpsilon = this.configService.get<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
             const expectedAcudosEpsilonAbsolute = paidAmountAcudos.multipliedBy(presaleExpectedPriceEpsilon);
@@ -126,19 +130,19 @@ export class NFTController {
             throw new NotFoundException();
         }
 
-        const canBuyNft = await this.kycService.canBuyAnNft(accountEntity, userEntity, nftEntity);
+        const canBuyNft = await this.kycService.canBuyAnNft(accountEntity, userEntity, nftEntity, req.transaction);
         if (canBuyNft === false) {
             console.log('The user does not meet KYC creteria');
             throw new NotFoundException();
         }
 
-        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId);
+        const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId, req.transaction);
         if (collectionEntity === null || collectionEntity.isApproved() === false) {
             console.log('Getting NFT from OnDemandMinting', 'wrong collection', nftEntity.collectionId);
             throw new NotFoundException();
         }
 
-        const miningFarmEntity = await this.miningFarmService.findMiningFarmById(collectionEntity.farmId);
+        const miningFarmEntity = await this.miningFarmService.findMiningFarmById(collectionEntity.farmId, req.transaction);
         if (miningFarmEntity === null || miningFarmEntity.isApproved() === false) {
             console.log('Getting NFT from OnDemandMinting', 'wrong mining farm', collectionEntity.farmId);
             throw new NotFoundException();
@@ -158,10 +162,10 @@ export class NFTController {
     }
 
     // used by the chain-ibserver
-    @UseInterceptors(TransactionInterceptor)
     @Put('trigger-updates')
-    @HttpCode(200)
+    @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
+    @HttpCode(200)
     async updateNftsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
@@ -189,7 +193,7 @@ export class NFTController {
         // fetch nfts
         const nftFilterEntity = new NftFilterEntity();
         nftFilterEntity.nftIds = chainMarketplaceNftEntities.filter((entity) => validate(entity.uid)).map((entity) => entity.uid);
-        const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
+        const { nftEntities } = await this.nftService.findByFilter(null, nftFilterEntity, req.transaction, req.transaction.LOCK.UPDATE);
         for (let i = 0; i < nftEntities.length; i++) {
             const nftEntity = nftEntities[i];
             const chainMarketplaceNftEntity = chainMarketplaceNftEntities.find((dto) => dto.uid === nftEntity.id);
@@ -209,18 +213,23 @@ export class NFTController {
 
     @ApiBearerAuth('access-token')
     @Post('updatePrice')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async updatePrice(@Body() req: ReqUpdateNftCudosPrice): Promise<ResUpdateNftCudosPrice> {
-        const nftEntity = await this.nftService.updateNftCudosPrice(req.id);
-
+    async updatePrice(
+        @Req() req: AppRequest,
+        @Body() reqUpdateNftCudosPrice: ReqUpdateNftCudosPrice,
+    ): Promise<ResUpdateNftCudosPrice> {
+        const nftEntity = await this.nftService.updateNftCudosPrice(reqUpdateNftCudosPrice.id, req.transaction);
         return new ResUpdateNftCudosPrice(nftEntity);
     }
 
     @Get('fetchPresaleAmounts')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async fetchPresaleAmounts(): Promise<ResFetchPresaleAmounts> {
-        const { totalPresaleNftCount, presaleMintedNftCount } = await this.nftService.fetchPresaleAmounts();
-
+    async fetchPresaleAmounts(
+        @Req() req: AppRequest,
+    ): Promise<ResFetchPresaleAmounts> {
+        const { totalPresaleNftCount, presaleMintedNftCount } = await this.nftService.fetchPresaleAmounts(req.transaction);
         return new ResFetchPresaleAmounts(totalPresaleNftCount, presaleMintedNftCount);
     }
 }

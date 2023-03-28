@@ -14,8 +14,8 @@ export class VisitorController {
 
     constructor(private visitorService: VisitorService) {}
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitMiningFarm')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async signalVisitMiningFarm(
         @Req() req: AppRequest,
@@ -30,8 +30,8 @@ export class VisitorController {
         this.visitorService.signalVisitFarm(miningFarmEntity.id, uuid, req.transaction);
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('signalVisitNft')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async signalVisitNft(
         @Req() req: AppRequest,

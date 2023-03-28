@@ -41,6 +41,7 @@ export class AuthController {
     }
 
     @Get('fetchSessionAccounts')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchSessionAccounts(@Req() req: RequestWithSessionAccounts): Promise < ResFetchSessionAccounts > {
         const shouldChangePassword = req.sessionAccountEntity?.isDefaultSuperAdminPassword() ?? false;

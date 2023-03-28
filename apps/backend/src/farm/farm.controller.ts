@@ -30,44 +30,52 @@ import { FarmCreationError } from '../common/errors/errors';
 @ApiTags('Farm')
 @Controller('farm')
 export class FarmController {
+
+    isCreatorOrSuperAdminGuard: IsCreatorOrSuperAdminGuard;
+
     constructor(
         private miningFarmService: FarmService,
-    // eslint-disable-next-line no-empty-function
-    ) { }
+    ) {
+        this.isCreatorOrSuperAdminGuard = new IsCreatorOrSuperAdminGuard(this.miningFarmService);
+    }
 
     @Post()
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchMiningFarmsByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
     ): Promise < ResFetchMiningFarmsByFilter > {
-        const { miningFarmEntities, total } = await this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel);
+        const { miningFarmEntities, total } = await this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel, req.transaction);
         return new ResFetchMiningFarmsByFilter(miningFarmEntities, total);
     }
 
     @Post('fetchBestPerformingMiningFarm')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchBestPerformingMiningFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
     ): Promise < ResFetchBestPerformingMiningFarms > {
-        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo);
+        const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo, req.transaction);
         return new ResFetchBestPerformingMiningFarms(miningFarmEntities, miningFarmPerformanceEntities);
     }
 
     @Post('fetchMiningFarmsDetailsByIds')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchMiningFarmsDetailsByIds(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmDetails: ReqFetchMiningFarmDetails,
     ): Promise < ResFetchMiningFarmDetails > {
         const miningFarmIds = reqFetchMiningFarmDetails.getParsedIds();
         const includesExternalDetails = reqFetchMiningFarmDetails.getIncludesExternalDetailsAsBoolean();
-        const miningFarmDetailEntities = await this.miningFarmService.getMiningFarmDetails(miningFarmIds, includesExternalDetails);
+        const miningFarmDetailEntities = await this.miningFarmService.getMiningFarmDetails(miningFarmIds, includesExternalDetails, req.transaction);
         return new ResFetchMiningFarmDetails(miningFarmDetailEntities);
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
@@ -75,6 +83,8 @@ export class FarmController {
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditMiningFarm: ReqCreditMiningFarm,
     ): Promise < ResCreditMiningFarm > {
+        this.isCreatorOrSuperAdminGuard.canActivate(req, reqCreditMiningFarm);
+
         let miningFarmEntity = MiningFarmEntity.fromJson(reqCreditMiningFarm.miningFarmEntity);
         if (req.sessionAccountEntity.isAdmin() === true) {
             miningFarmEntity.accountId = req.sessionAccountEntity.accountId;
@@ -91,28 +101,37 @@ export class FarmController {
     }
 
     @Get('miners')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async findMiners(): Promise < ResFetchMiners > {
-        const minerEntities = await this.miningFarmService.findMiners();
+    async findMiners(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchMiners > {
+        const minerEntities = await this.miningFarmService.findMiners(req.transaction);
         return new ResFetchMiners(minerEntities);
     }
 
     @Get('energy-sources')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async findEnergySources(): Promise < ResFetchEnergySources > {
-        const energySourceEntities = await this.miningFarmService.findEnergySources();
+    async findEnergySources(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchEnergySources > {
+        const energySourceEntities = await this.miningFarmService.findEnergySources(req.transaction);
         return new ResFetchEnergySources(energySourceEntities);
     }
 
     @Get('manufacturers')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async findManufacturers(): Promise < ResFetchManufacturers > {
-        const manufacturerEntities = await this.miningFarmService.findManufacturers();
+    async findManufacturers(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchManufacturers > {
+        const manufacturerEntities = await this.miningFarmService.findManufacturers(req.transaction);
         return new ResFetchManufacturers(manufacturerEntities);
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('miners')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async creditMiners(
         @Req() req: AppRequest,
@@ -123,8 +142,8 @@ export class FarmController {
         return new ResCreditMiner(minerEntity);
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('energy-sources')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async creditEnergySources(
         @Req() req: AppRequest,
@@ -135,8 +154,8 @@ export class FarmController {
         return new ResCreditEnergySource(energySourceEntity);
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('manufacturers')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async creditManufacturers(
         @Req() req: AppRequest,

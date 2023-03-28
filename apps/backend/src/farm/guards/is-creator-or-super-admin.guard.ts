@@ -1,50 +1,49 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, ValidationPipe } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { FarmService } from '../farm.service';
-import { RequestWithSessionAccounts } from '../../common/commont.types';
+import { AppRequest } from '../../common/commont.types';
 import { ReqCreditMiningFarm } from '../dto/requests.dto';
 import MiningFarmEntity from '../entities/mining-farm.entity';
 
-@Injectable()
-export class IsCreatorOrSuperAdminGuard implements CanActivate {
+export class IsCreatorOrSuperAdminGuard {
 
     constructor(private farmService: FarmService) {}
 
-    async canActivate(context: ExecutionContext): Promise < boolean > {
-        const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
+    async canActivate(request: AppRequest, req: ReqCreditMiningFarm): Promise < void > {
+        // const request = context.switchToHttp().getRequest<AppRequest>();
         const {
             sessionAdminEntity,
             sessionSuperAdminEntity,
-            body,
+            // body,
         } = request;
 
-        const req = await (new ValidationPipe({ transform: true }).transform(body, {
-            type: 'body',
-            metatype: ReqCreditMiningFarm,
-        })) as ReqCreditMiningFarm;
+        // const req = await (new ValidationPipe({ transform: true }).transform(body, {
+        //     type: 'body',
+        //     metatype: ReqCreditMiningFarm,
+        // })) as ReqCreditMiningFarm;
         const miningFarmEntity = MiningFarmEntity.fromJson(req.miningFarmEntity);
 
         // super admin can do anything
         if (sessionSuperAdminEntity !== null) {
-            return miningFarmEntity.isNew() === false;
+            if (miningFarmEntity.isNew() === true) {
+                throw new UnauthorizedException();
+            }
+            return;
         }
 
         // not super admin, so is it farm admin
         if (sessionAdminEntity === null) {
-            return false;
+            throw new UnauthorizedException();
         }
 
         if (miningFarmEntity.isNew() === true) {
-            return true
+            return;
         }
 
-        const miningFarmDb = await this.farmService.findMiningFarmById(miningFarmEntity.id);
-
-        if (miningFarmDb === null) {
-            throw new UnauthorizedException(
-                `Farm with id ${miningFarmDb.id} is not found`,
-            );
+        const miningFarmDb = await this.farmService.findMiningFarmById(miningFarmEntity.id, request.transaction);
+        if (miningFarmDb?.accountId === sessionAdminEntity.accountId) {
+            return;
         }
 
-        return miningFarmDb.accountId === sessionAdminEntity.accountId;
+        throw new UnauthorizedException();
     }
 }

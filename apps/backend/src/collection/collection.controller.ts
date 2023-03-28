@@ -36,6 +36,10 @@ import ApiKeyGuard from '../auth/guards/api-key.guard';
 @ApiTags('Collection')
 @Controller('collection')
 export class CollectionController {
+
+    isCreatorOrSuperAdminGuard: IsCreatorOrSuperAdminGuard;
+    isFarmApprovedGuard: IsFarmApprovedGuard;
+
     constructor(
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
@@ -43,43 +47,53 @@ export class CollectionController {
         private dataService: DataService,
         private graphqlService: GraphqlService,
         private farmService: FarmService,
-    // eslint-disable-next-line no-empty-function
-    ) {}
+    ) {
+        this.isCreatorOrSuperAdminGuard = new IsCreatorOrSuperAdminGuard(this.collectionService, this.farmService);
+        this.isFarmApprovedGuard = new IsFarmApprovedGuard(this.farmService);
+    }
 
     @Post()
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async findAll(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchCollectionsByFilter: ReqFetchCollectionsByFilter,
     ): Promise < ResFetchCollectionsByFilter > {
         const collectionFilterEntity = CollectionFilterEntity.fromJson(reqFetchCollectionsByFilter.collectionFilter);
 
-        const { collectionEntities, total } = await this.collectionService.findByFilter(collectionFilterEntity);
+        const { collectionEntities, total } = await this.collectionService.findByFilter(collectionFilterEntity, req.transaction);
 
         return new ResFetchCollectionsByFilter(collectionEntities, total);
     }
 
     @Post('fetchTopCollections')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchTopCollections(
+        @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchTopCollections: ReqFetchTopCollections,
     ): Promise < ResFetchTopCollections > {
-        const collectionEntities = await this.collectionService.findTopCollections(reqFetchTopCollections.timestampFrom, reqFetchTopCollections.timestampTo);
+        const collectionEntities = await this.collectionService.findTopCollections(reqFetchTopCollections.timestampFrom, reqFetchTopCollections.timestampTo, req.transaction);
         return new ResFetchTopCollections(collectionEntities);
     }
 
     @Post('details')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async getDetails(@Body(new ValidationPipe({ transform: true })) req: ReqFetchCollectionDetails): Promise<ResFetchCollectionDetails> {
-        const collectionIds = req.collectionIds;
+    async getDetails(
+        @Req() req: AppRequest,
+        @Body(new ValidationPipe({ transform: true })) reqFetchCollectionDetails: ReqFetchCollectionDetails,
+    ): Promise<ResFetchCollectionDetails> {
+        const collectionIds = reqFetchCollectionDetails.collectionIds;
 
-        const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(parseInt(collectionId)))
+        const getCollectionDetails = collectionIds.map(async (collectionId) => this.collectionService.getDetails(parseInt(collectionId), req.transaction))
         const collectionDetails = await Promise.all(getCollectionDetails)
 
         return new ResFetchCollectionDetails(collectionDetails);
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
@@ -87,13 +101,16 @@ export class CollectionController {
         @Req() req: AppRequest,
         @Body() reqCreditCollection: ReqCreditCollection,
     ): Promise<ResCreditCollection> {
+        this.isCreatorOrSuperAdminGuard.canActivate(req, reqCreditCollection);
+        this.isFarmApprovedGuard.canActivate(req, reqCreditCollection);
+
         const { collectionDto, nftDtos } = reqCreditCollection
         const collectionEntity = CollectionEntity.fromJson(collectionDto);
         const nftEntities = nftDtos.map((nftDto) => NftEntity.fromJson(nftDto));
 
         const collectionId = collectionEntity.id;
 
-        const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId);
+        const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId, req.transaction);
         const collectionOwnerAccountId = miningFarmDb.accountId;
 
         try {
@@ -110,7 +127,7 @@ export class CollectionController {
         const collectionDbEntity = await this.collectionService.findOne(collectionId, req.transaction, req.transaction.LOCK.UPDATE);
         const nftFilterEntity = new NftFilterEntity();
         nftFilterEntity.collectionIds = [collectionId.toString()];
-        const { nftEntities: collectionNftDbEntities } = await this.nftService.findByFilter(null, nftFilterEntity);
+        const { nftEntities: collectionNftDbEntities } = await this.nftService.findByFilter(null, nftFilterEntity, req.transaction, req.transaction.LOCK.UPDATE);
 
         let oldUris = [];
         if (collectionDbEntity !== null) {
@@ -149,11 +166,11 @@ export class CollectionController {
 
                 const tempNftFilterEntity = new NftFilterEntity();
                 tempNftFilterEntity.collectionIds = [collectionId.toString()];
-                const { nftEntities: collectionDbNftEntities } = await this.nftService.findByFilter(null, tempNftFilterEntity);
+                const { nftEntities: collectionDbNftEntities } = await this.nftService.findByFilter(null, tempNftFilterEntity, req.transaction, req.transaction.LOCK.UPDATE);
 
                 // DELETE nfts in db but not in reques
                 nftsToDelete = collectionDbNftEntities.filter((nft) => nftEntities.findIndex((item) => item.id === nft.id) === -1);
-                await this.nftService.deleteMany(nftsToDelete);
+                await this.nftService.deleteMany(nftsToDelete, req.transaction);
 
                 // CREATE OR UPDATE rest
                 const nftsToCreateOrEdit = nftEntities.map(async (nftEntity: NftEntity) => {
@@ -189,7 +206,7 @@ export class CollectionController {
     }
 
     @ApiBearerAuth('access-token')
-    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]), IsCreatorOrSuperAdminGuard, IsFarmApprovedGuard)
+    @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Put('editCollection')
     @HttpCode(200)
@@ -197,6 +214,9 @@ export class CollectionController {
         @Req() req: AppRequest,
         @Body() reqEditCollection: ReqEditCollection,
     ): Promise<ResEditCollection> {
+        this.isCreatorOrSuperAdminGuard.canActivate(req, reqEditCollection);
+        this.isFarmApprovedGuard.canActivate(req, reqEditCollection);
+
         const { collectionDto } = reqEditCollection
         const collectionEntity = CollectionEntity.fromJson(collectionDto);
 
@@ -289,7 +309,7 @@ export class CollectionController {
                 const chainMarketplaceCollectionEntity = chainMarketplaceCollectionEntities[i];
                 const denomId = chainMarketplaceCollectionEntity.denomId;
 
-                const collectionEntity = await this.collectionService.findOneByDenomId(denomId);
+                const collectionEntity = await this.collectionService.findOneByDenomId(denomId, req.transaction, req.transaction.LOCK.UPDATE);
                 if (!collectionEntity) {
                     return;
                 }
@@ -312,7 +332,7 @@ export class CollectionController {
             for (let i = 0; i < chainNftCollectionEntities.length; i++) {
                 const chainNftCollectionEntity = chainNftCollectionEntities[i];
                 const denomId = chainNftCollectionEntity.id;
-                const collectionEntity = await this.collectionService.findOneByDenomId(denomId);
+                const collectionEntity = await this.collectionService.findOneByDenomId(denomId, req.transaction, req.transaction.LOCK.UPDATE);
 
                 if (!collectionEntity) {
                     return;

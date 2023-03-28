@@ -1,54 +1,51 @@
-import { CanActivate, ExecutionContext, forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { CollectionService } from '../collection.service';
-import { RequestWithSessionAccounts } from '../../common/commont.types';
+import { AppRequest } from '../../common/commont.types';
 import { CollectionEntity } from '../entities/collection.entity';
 import { FarmService } from '../../farm/farm.service';
+import { ReqCreditCollection, ReqEditCollection } from '../dto/requests.dto';
 
-@Injectable()
-export class IsCreatorOrSuperAdminGuard implements CanActivate {
+export class IsCreatorOrSuperAdminGuard {
 
-    constructor(@Inject(forwardRef(() => CollectionService)) private collectionService: CollectionService, private farmService: FarmService) {}
+    constructor(private collectionService: CollectionService, private farmService: FarmService) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
+    async canActivate(request: AppRequest, req: ReqCreditCollection | ReqEditCollection): Promise < void > {
+        // const request = context.switchToHttp().getRequest<AppRequest>();
         const {
             sessionAdminEntity,
             sessionSuperAdminEntity,
-            body,
+            // body,
         } = request;
 
-        const collectionEntity: CollectionEntity = CollectionEntity.fromJson(body.collectionDto);
+        const collectionEntity: CollectionEntity = CollectionEntity.fromJson(req.collectionDto);
 
         // super admin can do anything
         if (sessionSuperAdminEntity !== null) {
-            return true;
+            return;
         }
 
         // not super admin, so is it farm admin
         if (sessionAdminEntity === null) {
-            return false;
+            throw new UnauthorizedException();
         }
 
-        const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId);
+        const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId, request.transaction);
         if (miningFarmDb === null || miningFarmDb.accountId !== sessionAdminEntity.accountId) {
-            return false;
+            throw new UnauthorizedException();
         }
 
         // it is farm admin, so he can always create a new collection
         if (collectionEntity.isNew()) {
-            return true
+            return
         }
 
         // it's not a new collection, so is the farm admin the owner?
-        const collection = await this.collectionService.findOne(collectionEntity.id);
-
-        if (!collection) {
-            throw new UnauthorizedException(
-                `Collection with id ${collectionEntity.id} is not found`,
-            );
+        const collection = await this.collectionService.findOne(collectionEntity.id, request.transaction);
+        if (collection?.creatorId === sessionAdminEntity.accountId) {
+            return;
         }
 
-        return collection.creatorId === sessionAdminEntity.accountId;
+        throw new UnauthorizedException();
     }
 
 }

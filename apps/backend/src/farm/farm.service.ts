@@ -50,7 +50,7 @@ export class FarmService {
         private coingeckoService: CoinGeckoService,
     ) {}
 
-    async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
+    async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
         let whereClause: any = {};
 
         if (miningFarmFilterModel.hasMiningFarmIds() === true) {
@@ -76,6 +76,8 @@ export class FarmService {
 
         const miningFarmRepos = await this.miningFarmRepo.findAll({
             where: whereClause,
+            transaction: dbTx,
+            lock: dbLock,
         });
         let miningFarmEntities = miningFarmRepos.map((miningFarmRepo) => {
             return MiningFarmEntity.fromRepo(miningFarmRepo);
@@ -86,7 +88,7 @@ export class FarmService {
                 return miningFarmEntity.id;
             });
             const sortDirection = Math.floor(Math.abs(miningFarmFilterModel.orderBy) / miningFarmFilterModel.orderBy);
-            const visitorMap = await this.visitorService.fetchMiningFarmVisitsCount(miningFarmIds);
+            const visitorMap = await this.visitorService.fetchMiningFarmVisitsCount(miningFarmIds, dbTx, dbLock);
             miningFarmEntities.sort((a: MiningFarmEntity, b: MiningFarmEntity) => {
                 const visitsA = visitorMap.get(a.id) ?? 0;
                 const visitsB = visitorMap.get(b.id) ?? 0;
@@ -103,7 +105,7 @@ export class FarmService {
         };
     }
 
-    async findBestPerformingMiningFarms(timestampFrom: number, timestampTo: number): Promise < { miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[] } > {
+    async findBestPerformingMiningFarms(timestampFrom: number, timestampTo: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[] } > {
         const nftToMiningFarmIdsMap = new Map < string, number >();
         const collectionToMiningFarmIdsMap = new Map < number, number >();
         const miningFarmIdToVolumeInUsdMap = new Map < number, number >();
@@ -113,11 +115,11 @@ export class FarmService {
         nftEventFilterEntity.timestampTo = timestampTo;
         nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT, NftTransferHistoryEventType.SALE];
 
-        const { nftEventEntities, nftEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const { nftEventEntities, nftEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity, dbTx, dbLock);
         const collectionIds = nftEntities.map((nftEntity) => nftEntity.collectionId);
-        const collectionEntities = await this.collectionService.findByCollectionIds(collectionIds);
+        const collectionEntities = await this.collectionService.findByCollectionIds(collectionIds, dbTx, dbLock);
         let miningFarmIds = collectionEntities.map((collectionEntity) => collectionEntity.farmId);
-        let miningFarmEntities = await this.findMiningFarmByIds(miningFarmIds);
+        let miningFarmEntities = await this.findMiningFarmByIds(miningFarmIds, dbTx, dbLock);
 
         collectionEntities.forEach((collectionEntity) => {
             collectionToMiningFarmIdsMap.set(collectionEntity.id, collectionEntity.farmId);
@@ -142,12 +144,12 @@ export class FarmService {
         miningFarmEntities = miningFarmEntities.slice(0, 5);
         miningFarmIds = miningFarmEntities.map((miningFarmEntity) => miningFarmEntity.id);
 
-        const miningFarmPerformanceEntities = await this.findMiningFarmPerformanceByIds(miningFarmIds);
+        const miningFarmPerformanceEntities = await this.findMiningFarmPerformanceByIds(miningFarmIds, dbTx, dbLock);
 
         return { miningFarmEntities, miningFarmPerformanceEntities };
     }
 
-    async findMiningFarmPerformanceByIds(miningFarmIds: number[]): Promise < MiningFarmPerformanceEntity[] > {
+    async findMiningFarmPerformanceByIds(miningFarmIds: number[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < MiningFarmPerformanceEntity[] > {
         const selectedMiningFarmIds = new Set(miningFarmIds);
         const miningFarmIdToPerformanceEntitiesMap = new Map < number, MiningFarmPerformanceEntity >();
         const nftToMiningFarmIdsMap = new Map < string, number >();
@@ -159,11 +161,11 @@ export class FarmService {
         nftEventFilterEntity.timestampFrom = date.getTime();
         nftEventFilterEntity.timestampTo = Date.now();
         nftEventFilterEntity.eventTypes = [NftTransferHistoryEventType.MINT, NftTransferHistoryEventType.SALE];
-        const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity);
+        const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity, dbTx, dbLock);
 
-        const collectionEntities = await this.collectionService.findByMiningFarmIds(miningFarmIds);
+        const collectionEntities = await this.collectionService.findByMiningFarmIds(miningFarmIds, dbTx, dbLock);
         const collectionIds = collectionEntities.map((collectionEntity) => collectionEntity.id);
-        const nftEntities = await this.nftService.findByCollectionIds(collectionIds);
+        const nftEntities = await this.nftService.findByCollectionIds(collectionIds, dbTx, dbLock);
         collectionEntities.forEach((collectionEntity) => {
             collectionToMiningFarmIdsMap.set(collectionEntity.id, collectionEntity.farmId);
         });
@@ -209,26 +211,28 @@ export class FarmService {
         return miningFarmPerformanceEntities;
     }
 
-    async findMiningFarmById(id: number, tx: Transaction = undefined, lock: LOCK = undefined): Promise < MiningFarmEntity > {
+    async findMiningFarmById(id: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < MiningFarmEntity > {
         const miningFarmRepo = await this.miningFarmRepo.findByPk(id, {
-            transaction: tx,
-            lock,
+            transaction: dbTx,
+            lock: dbLock,
         });
         return MiningFarmEntity.fromRepo(miningFarmRepo);
     }
 
-    async findMiningFarmByIds(miningFarmIds: number[]): Promise < MiningFarmEntity[] > {
+    async findMiningFarmByIds(miningFarmIds: number[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < MiningFarmEntity[] > {
         const miningFarmRepos = await this.miningFarmRepo.findAll({
             where: {
                 [MiningFarmRepoColumn.ID]: miningFarmIds,
             },
+            transaction: dbTx,
+            lock: dbLock,
         });
         return miningFarmRepos.map((miningFarmRepo) => {
             return MiningFarmEntity.fromRepo(miningFarmRepo);
         });
     }
 
-    async creditMiningFarm(miningFarmEntity: MiningFarmEntity, creditImages = true, tx: Transaction = undefined): Promise < MiningFarmEntity > {
+    async creditMiningFarm(miningFarmEntity: MiningFarmEntity, creditImages: boolean, dbTx: Transaction): Promise < MiningFarmEntity > {
         let newUris = [], oldUris = [];
 
         if (creditImages === true) {
@@ -250,11 +254,11 @@ export class FarmService {
             if (miningFarmEntity.isNew() === true) {
                 miningFarmRepo = await this.miningFarmRepo.create(miningFarmRepo.toJSON(), {
                     returning: true,
-                    transaction: tx,
+                    transaction: dbTx,
                 })
             } else {
                 if (creditImages === true) {
-                    const miningFarmRepoDb = await this.findMiningFarmById(miningFarmRepo.id, tx, tx.LOCK.UPDATE);
+                    const miningFarmRepoDb = await this.findMiningFarmById(miningFarmRepo.id, dbTx, dbTx.LOCK.UPDATE);
                     if (!miningFarmRepoDb) {
                         throw new NotFoundException();
                     }
@@ -266,7 +270,7 @@ export class FarmService {
                 const sqlResult = await this.miningFarmRepo.update(miningFarmRepo.toJSON(), {
                     where: AppRepo.toJsonWhere(whereClause),
                     returning: true,
-                    transaction: tx,
+                    transaction: dbTx,
                 })
                 miningFarmRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
             }
@@ -286,33 +290,42 @@ export class FarmService {
         return MiningFarmEntity.fromRepo(miningFarmRepo);
     }
 
-    async findMiners(): Promise < MinerEntity[] > {
-        const minerRepos = await this.minerRepo.findAll();
+    async findMiners(dbTx: Transaction, dbLock: LOCK = undefined): Promise < MinerEntity[] > {
+        const minerRepos = await this.minerRepo.findAll({
+            transaction: dbTx,
+            lock: dbLock,
+        });
         return minerRepos.map((minerEntity) => {
             return MinerEntity.fromRepo(minerEntity);
         });
     }
 
-    async findEnergySources(): Promise < EnergySourceEntity[] > {
-        const energySourceRepos = await this.energySourceRepo.findAll();
+    async findEnergySources(dbTx: Transaction, dbLock: LOCK = undefined): Promise < EnergySourceEntity[] > {
+        const energySourceRepos = await this.energySourceRepo.findAll({
+            transaction: dbTx,
+            lock: dbLock,
+        });
         return energySourceRepos.map((energySourceRepo) => {
             return EnergySourceEntity.fromRepo(energySourceRepo);
         });
     }
 
-    async findManufacturers(): Promise < ManufacturerEntity[] > {
-        const manufacturerRepos = await this.manufacturerRepo.findAll();
+    async findManufacturers(dbTx: Transaction, dbLock: LOCK = undefined): Promise < ManufacturerEntity[] > {
+        const manufacturerRepos = await this.manufacturerRepo.findAll({
+            transaction: dbTx,
+            lock: dbLock,
+        });
         return manufacturerRepos.map((manufacturerRepo) => {
             return ManufacturerEntity.fromRepo(manufacturerRepo);
         })
     }
 
-    async creditEnergySource(energySourceEntity: EnergySourceEntity, tx: Transaction = undefined): Promise < EnergySourceEntity > {
+    async creditEnergySource(energySourceEntity: EnergySourceEntity, dbTx: Transaction): Promise < EnergySourceEntity > {
         let energySourceRepo = EnergySourceEntity.toRepo(energySourceEntity);
         if (energySourceEntity.isNew() === true) {
             energySourceRepo = await this.energySourceRepo.create(energySourceRepo.toJSON(), {
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
         } else {
             const whereClause = new EnergySourceRepo();
@@ -320,7 +333,7 @@ export class FarmService {
             const sqlResult = await this.energySourceRepo.update(energySourceRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereClause),
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
             energySourceRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
         }
@@ -328,12 +341,12 @@ export class FarmService {
         return EnergySourceEntity.fromRepo(energySourceRepo);
     }
 
-    async creditMiner(minerEntity: MinerEntity, tx: Transaction = undefined): Promise < MinerEntity > {
+    async creditMiner(minerEntity: MinerEntity, dbTx: Transaction): Promise < MinerEntity > {
         let minerRepo = MinerEntity.toRepo(minerEntity);
         if (minerEntity.isNew() === true) {
             minerRepo = await this.minerRepo.create(minerRepo.toJSON(), {
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
         } else {
             const whereClause = new MinerRepo();
@@ -341,7 +354,7 @@ export class FarmService {
             const sqlResult = await this.minerRepo.update(minerRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereClause),
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
             minerRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
         }
@@ -349,12 +362,12 @@ export class FarmService {
         return MinerEntity.fromRepo(minerRepo);
     }
 
-    async creditManufacturer(manufacturerEntity: ManufacturerEntity, tx: Transaction = undefined): Promise < ManufacturerEntity > {
+    async creditManufacturer(manufacturerEntity: ManufacturerEntity, dbTx: Transaction): Promise < ManufacturerEntity > {
         let manufacturerRepo = ManufacturerEntity.toRepo(manufacturerEntity);
         if (manufacturerEntity.isNew() === true) {
             manufacturerRepo = await this.manufacturerRepo.create(manufacturerRepo.toJSON(), {
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
         } else {
             const whereClause = new MinerRepo();
@@ -362,7 +375,7 @@ export class FarmService {
             const sqlResult = await this.manufacturerRepo.update(manufacturerRepo.toJSON(), {
                 where: AppRepo.toJsonWhere(whereClause),
                 returning: true,
-                transaction: tx,
+                transaction: dbTx,
             })
             manufacturerRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
         }
@@ -370,24 +383,24 @@ export class FarmService {
         return ManufacturerEntity.fromRepo(manufacturerRepo);
     }
 
-    async getMiningFarmDetails(miningFarmIds: number[], includesExternalDetails: boolean): Promise < MiningFarmDetailsEntity[] > {
+    async getMiningFarmDetails(miningFarmIds: number[], includesExternalDetails: boolean, dbTx: Transaction, dbLock: LOCK = undefined): Promise < MiningFarmDetailsEntity[] > {
         const miningFarmEntitiesMap = new Map();
         const collectionEntitiesMap = new Map();
         const miningFarmIdToDetailsMap = new Map();
 
-        const miningFarmEntities = await this.findMiningFarmByIds(miningFarmIds);
+        const miningFarmEntities = await this.findMiningFarmByIds(miningFarmIds, dbTx, dbLock);
         miningFarmEntities.forEach((miningFarmEntity) => {
             miningFarmEntitiesMap.set(miningFarmEntity.id, miningFarmEntity);
             miningFarmIdToDetailsMap.set(miningFarmEntity.id, MiningFarmDetailsEntity.newInstanceByMiningFarm(miningFarmEntity));
         });
 
-        const collectionEntities = await this.collectionService.findByMiningFarmIds(miningFarmIds);
+        const collectionEntities = await this.collectionService.findByMiningFarmIds(miningFarmIds, dbTx, dbLock);
         const collectionIds = [];
         collectionEntities.forEach((collectionEntity) => {
             collectionIds.push(collectionEntity.id);
             collectionEntitiesMap.set(collectionEntity.id, collectionEntity);
         });
-        const nftEntities = await this.nftService.findByCollectionIds(collectionIds);
+        const nftEntities = await this.nftService.findByCollectionIds(collectionIds, dbTx, dbLock);
         for (let i = nftEntities.length; i-- > 0;) {
             const nftEntity = nftEntities[i];
             const collectionEntity = collectionEntitiesMap.get(nftEntity.collectionId);

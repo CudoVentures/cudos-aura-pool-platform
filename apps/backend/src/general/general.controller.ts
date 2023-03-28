@@ -23,56 +23,65 @@ export class GeneralController {
     }
 
     @Get('last-checked-block')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
-    async getLastCheckedBlock(): Promise<{height: number}> {
-        const height = await this.generalService.getLastCheckedBlock();
+    async getLastCheckedBlock(
+        @Req() req: AppRequest,
+    ): Promise<{height: number}> {
+        const height = await this.generalService.getLastCheckedBlock(req.transaction);
         return { height: height === 0 ? parseInt(process.env.APP_CUDOS_INIT_BLOCK) : height };
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('last-checked-block')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
     async updateLastCheckedBlock(
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedBlockRequest,
     ): Promise<any> {
-        return this.generalService.setLastCheckedBlock(reqUpdateLastCheckedBlockRequest.height);
+        return this.generalService.setLastCheckedBlock(reqUpdateLastCheckedBlockRequest.height, req.transaction);
     }
 
     @Get('last-checked-payment-relayer-blocks')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
-    async getLastCheckedPaymentRelayerBlock(): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
-        const generalEntity = await this.generalService.fetchGeneral();
+    async getLastCheckedPaymentRelayerBlock(
+        @Req() req: AppRequest,
+    ): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
+        const generalEntity = await this.generalService.fetchGeneral(req.transaction);
 
         const res = new ResFetchLastCheckedPaymenrRelayerBlocks(generalEntity.lastCheckedPaymentRelayerEthBlock, generalEntity.lastCheckedPaymentRelayerCudosBlock);
 
         return res;
     }
 
-    @UseInterceptors(TransactionInterceptor)
     @Put('last-checked-payment-relayer-blocks')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
     async updateLastCheckedPaymentRelayerBlock(
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedPaymentRelayerBlocksRequest,
     ): Promise<any> {
-        return this.generalService.setLastCheckedPaymentRelayerBlocks(reqUpdateLastCheckedBlockRequest.lastCheckedEthBlock, reqUpdateLastCheckedBlockRequest.lastCheckedCudosBlock);
+        return this.generalService.setLastCheckedPaymentRelayerBlocks(reqUpdateLastCheckedBlockRequest.lastCheckedEthBlock, reqUpdateLastCheckedBlockRequest.lastCheckedCudosBlock, req.transaction);
     }
 
     @Get('fetchSettings')
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async fetchSettings(): Promise < ResFetchSettings > {
-        const settingsEntity = await this.generalService.fetchSettings();
+    async fetchSettings(
+        @Req() req: AppRequest,
+    ): Promise < ResFetchSettings > {
+        const settingsEntity = await this.generalService.fetchSettings(req.transaction);
         return new ResFetchSettings(settingsEntity);
     }
 
+    @Post('creditSettings')
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
-    @Post('creditSettings')
     @HttpCode(200)
     async creditSettings(
         @Req() req: AppRequest,
