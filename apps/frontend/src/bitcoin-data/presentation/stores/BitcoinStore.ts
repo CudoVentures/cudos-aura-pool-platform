@@ -34,7 +34,7 @@ export default class BitcoinStore {
             return;
         }
 
-        const bitcoinDataEntity = await this.bitcoinRepo.fetchBitcoinCoinGecko();
+        const bitcoinDataEntity = await this.bitcoinRepo.fetchBitcoinData();
         const bitcoinBlockchainInfoEntity = await this.bitcoinRepo.fetchBitcoinBlockchainInfo();
 
         await runInActionAsync(() => {
