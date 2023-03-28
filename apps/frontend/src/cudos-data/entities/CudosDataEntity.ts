@@ -3,7 +3,7 @@ import S from '../../core/utilities/Main';
 
 export default class CudosDataEntity {
 
-    static MODEL_VERSION = 2;
+    static MODEL_VERSION = 3;
 
     modelVersion: number;
     priceInUsd: number;
@@ -30,8 +30,8 @@ export default class CudosDataEntity {
 
         return {
             'modelVersion': entity.modelVersion,
-            'priceInUsd': entity.priceInUsd,
-            'priceInEth': entity.priceInEth.toString(10),
+            'cudosUsdPrice': entity.priceInUsd,
+            'cudosEthPrice': entity.priceInEth.toString(10),
             'priceChangeInUsd': entity.priceChangeInUsd,
             'timestampLastUpdate': entity.timestampLastUpdate,
         }
@@ -44,9 +44,9 @@ export default class CudosDataEntity {
 
         const model = new CudosDataEntity();
 
-        model.modelVersion = parseInt(json.modelVersion) ?? model.modelVersion;
-        model.priceInUsd = Number(json.priceInUsd) ?? model.priceInUsd;
-        model.priceInEth = new BigNumber(json.priceInEth ?? model.priceInEth);
+        model.modelVersion = parseInt(json.modelVersion ?? model.modelVersion);
+        model.priceInUsd = Number(json.cudosUsdPrice) ?? model.priceInUsd;
+        model.priceInEth = new BigNumber(json.cudosEthPrice ?? model.priceInEth);
         model.priceChangeInUsd = Number(json.priceChangeInUsd) ?? model.priceChangeInUsd;
         model.timestampLastUpdate = parseInt(json.timestampLastUpdate ?? model.timestampLastUpdate);
 
