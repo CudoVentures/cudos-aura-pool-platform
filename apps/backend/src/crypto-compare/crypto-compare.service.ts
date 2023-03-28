@@ -1,6 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { BIG_NUMBER_0, FIFTEEN_MINUTES_IN_MILIS, NOT_EXISTS_INT } from '../common/utils';
@@ -22,18 +22,21 @@ export default class CryptoCompareService {
     fetchedCachedCudosDataEntityTimestamp = NOT_EXISTS_INT;
     fetchedCachedBitcoinDataEntityTimestamp = NOT_EXISTS_INT;
 
-    constructor(private configService: ConfigService) {
+    constructor(
+        private configService: ConfigService,
+        private readonly httpService: HttpService,
+    ) {
         this.cryptoCompareApiKey = this.configService.get < string >('APP_CRYPTO_COMPARE_API_KEY') ?? '';
     }
 
     async fetchCudosData(): Promise < CudosDataEntity > {
-        const resultJson = await axios.get(CryptoCompareService.cryptoCompareCudosApiUrl, this.getCryptoCompareRequestHeader());
+        const resultJson = await this.httpService.axiosRef.get(CryptoCompareService.cryptoCompareCudosApiUrl, this.getCryptoCompareRequestHeader());
         // return new CudosDataEntity(resultJson.data.market_data.current_price.usd, resultJson.data.market_data.current_price.eth, resultJson.data.market_data.price_change_24h);
         return new CudosDataEntity(resultJson.data.RAW.CUDOS.USD.PRICE, new BigNumber(resultJson.data.RAW.CUDOS.ETH.PRICE), resultJson.data.RAW.CUDOS.USD.CHANGE24HOUR);
     }
 
     async fetchBitcoinData(): Promise < BitcoinDataEntity > {
-        const resultJson = await axios.get(CryptoCompareService.cryptoCompareBitcoinApiUrl, this.getCryptoCompareRequestHeader());
+        const resultJson = await this.httpService.axiosRef.get(CryptoCompareService.cryptoCompareBitcoinApiUrl, this.getCryptoCompareRequestHeader());
         // return new BitcoinDataEntity(resultJson.data.market_data.current_price.usd, resultJson.data.market_data.price_change_24h);
         return new BitcoinDataEntity(resultJson.data.RAW.BTC.USD.PRICE, resultJson.data.RAW.BTC.USD.CHANGE24HOUR);
     }
