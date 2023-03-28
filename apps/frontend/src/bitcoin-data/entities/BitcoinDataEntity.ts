@@ -2,7 +2,7 @@ import S from '../../core/utilities/Main';
 
 export default class BitcoinDataEntity {
 
-    static MODEL_VERSION = 1;
+    static MODEL_VERSION = 2;
 
     modelVersion: number;
     priceInUsd: number;
@@ -40,7 +40,7 @@ export default class BitcoinDataEntity {
 
         const model = new BitcoinDataEntity();
 
-        model.modelVersion = parseInt(json.modelVersion) ?? model.modelVersion;
+        model.modelVersion = parseInt(json.modelVersion ?? model.modelVersion);
         model.priceInUsd = Number(json.priceInUsd) ?? model.priceInUsd;
         model.priceChangeInUsd = Number(json.priceChangeInUsd) ?? model.priceChangeInUsd;
         model.timestampLastUpdate = parseInt(json.timestampLastUpdate ?? model.timestampLastUpdate);
