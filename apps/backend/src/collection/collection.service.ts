@@ -6,8 +6,6 @@ import { NftOrderBy, NftStatus } from '../nft/nft.types';
 import CollectionFilterModel from './entities/collection-filter.entity';
 import sequelize, { LOCK, Op, Transaction } from 'sequelize';
 import { GraphqlService } from '../graphql/graphql.service';
-import ChainMarketplaceCollectionEntity from './entities/chain-marketplace-collection.entity';
-import ChainNftCollectionEntity from './entities/chain-nft-collection.entity';
 import { checkValidNftDenomId } from 'cudosjs';
 import { CollectionDenomExistsError, CollectionWrongDenomError } from '../common/errors/errors';
 import { CollectionEntity } from './entities/collection.entity';
@@ -33,9 +31,9 @@ export class CollectionService {
     @Inject(forwardRef(() => StatisticsService))
     private statisticsService: StatisticsService,
     private coingeckoService: CoinGeckoService,
-    // eslint-disable-next-line no-empty-function
     ) {}
 
+    // controller functions
     async findByFilter(collectionFitlerEntity: CollectionFilterModel, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         let whereClause: any = {};
         let orderByClause: any[] = null;
@@ -126,6 +124,46 @@ export class CollectionService {
         return collectionEntities;
     }
 
+    async getDetails(collectionId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise <CollectionDetailsEntity> {
+        const collection = await this.findOne(collectionId, dbTx, dbLock);
+
+        if (!collection) {
+            throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
+        }
+
+        const nftFilter = new NftFilterEntity();
+        nftFilter.collectionIds = [collectionId.toString()];
+        nftFilter.nftStatus = [NftStatus.MINTED, NftStatus.QUEUED];
+        nftFilter.orderBy = NftOrderBy.PRICE_ASC
+        const { nftEntities } = await this.nftService.findByFilter(null, nftFilter, dbTx, dbLock);
+
+        // Get the lowest priced NFT from this collection "floorPriceInAcudos"
+        const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
+        const floorPriceInAcudos = await this.coingeckoService.getFloorPriceOfNftEntities(approvedNfts);
+
+        // Get the total value spent on NFTs from this collection "volumeInAcudos"
+        const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])
+
+        const nftOwnersSet = new Set(nftEntities.filter((nft) => nft.hasOwner()).map((nft) => nft.currentOwner)); // Unique owners of all the NFTs in the collection
+
+        const adminEntity = await this.accountService.findAdminByAccountId(collection.creatorId, dbTx, dbLock);
+
+        // Get remaining hash power
+        const nftsHashPowerSum = nftEntities.reduce((pervVal, currVal) => pervVal + Number(currVal.hashingPower), 0)
+        const remainingHashPowerInTH = collection.hashingPower - nftsHashPowerSum
+
+        const collectionDetailsEntity = new CollectionDetailsEntity();
+        collectionDetailsEntity.id = collectionId;
+        collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString(10);
+        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos.isNaN() === true ? '0' : collectionTotalSales.salesInAcudos?.toString(10) ?? '0';
+        collectionDetailsEntity.owners = nftOwnersSet.size;
+        collectionDetailsEntity.cudosAddress = adminEntity?.cudosWalletAddress ?? '';
+        collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
+
+        return collectionDetailsEntity;
+    }
+
+    // utilities functions
     async findByCollectionIds(collectionIds: number[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < CollectionEntity[] > {
         const collectionRepos = await this.collectionRepo.findAll({
             where: {
@@ -181,7 +219,7 @@ export class CollectionService {
     async findOneByDenomId(denomId: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise<CollectionEntity> {
         const collectionRepo = await this.collectionRepo.findOne({
             where: {
-                denom_id: denomId,
+                [CollectionRepoColumn.DENOM_ID]: denomId,
             },
             transaction: dbTx,
             lock: dbLock,
@@ -193,7 +231,7 @@ export class CollectionService {
     async findByFarmId(id: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise<CollectionEntity[]> {
         const collectionRepos = await this.collectionRepo.findAll({
             where: {
-                farm_id: id,
+                [CollectionRepoColumn.FARM_ID]: id,
             },
             transaction: dbTx,
             lock: dbLock,
@@ -228,11 +266,9 @@ export class CollectionService {
             throw new CollectionDenomExistsError();
         }
 
+        collectionEntity.markAsQueued();
         const collectionRepo = CollectionEntity.toRepo(collectionEntity);
-        const collection = await this.collectionRepo.create({
-            ...collectionRepo.toJSON(),
-            status: CollectionStatus.QUEUED,
-        }, {
+        const collection = await this.collectionRepo.create(collectionRepo.toJSON(), {
             transaction: dbTx,
         });
         return CollectionEntity.fromRepo(collection);
@@ -246,83 +282,25 @@ export class CollectionService {
             throw new CollectionWrongDenomError();
         }
 
-        const [count, [collection]] = await this.collectionRepo.update(
-            CollectionEntity.toRepo(collectionEntity).toJSON(),
-            {
-                where: { id },
-                returning: true,
-                transaction: dbTx,
-            },
-        );
+        const [count, [collection]] = await this.collectionRepo.update(CollectionEntity.toRepo(collectionEntity).toJSON(), {
+            where: { id },
+            returning: true,
+            transaction: dbTx,
+        });
 
         return CollectionEntity.fromRepo(collection);
     }
 
-    async updateOneByDenomId(
-        denomId: string,
-        collectionEntity: CollectionEntity,
-        dbTx: Transaction,
-    ): Promise<CollectionEntity> {
-        const [count, [collectionRepo]] = await this.collectionRepo.update(
-            CollectionEntity.toRepo(collectionEntity).toJSON(),
-            {
-                where: { denom_id: denomId },
-                returning: true,
-                transaction: dbTx,
+    async updateOneByDenomId(denomId: string, collectionEntity: CollectionEntity, dbTx: Transaction): Promise < CollectionEntity > {
+        const [count, [collectionRepo]] = await this.collectionRepo.update(CollectionEntity.toRepo(collectionEntity).toJSON(), {
+            where: {
+                [CollectionRepoColumn.DENOM_ID]: denomId,
             },
-        );
+            returning: true,
+            transaction: dbTx,
+        });
 
         return CollectionEntity.fromRepo(collectionRepo);
     }
 
-    async getChainMarketplaceCollectionsByDenomIds(denomIds: string[]): Promise < ChainMarketplaceCollectionEntity[] > {
-        return this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
-    }
-
-    async getChainMarketplaceCollectionsByIds(ids: number[]): Promise < ChainMarketplaceCollectionEntity[] > {
-        return this.graphqlService.fetchMarketplaceCollectionsByIds(ids);
-    }
-
-    async getChainNftCollectionsByDenomIds(denomIds: string[]): Promise < ChainNftCollectionEntity[] > {
-        return this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
-    }
-
-    async getDetails(collectionId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise <CollectionDetailsEntity> {
-        const collection = await this.findOne(collectionId, dbTx, dbLock);
-
-        if (!collection) {
-            throw new NotFoundException(`Collection with id '${collectionId}' doesn't exist`)
-        }
-
-        const nftFilter = new NftFilterEntity();
-        nftFilter.collectionIds = [collectionId.toString()];
-        nftFilter.nftStatus = [NftStatus.MINTED, NftStatus.QUEUED];
-        nftFilter.orderBy = NftOrderBy.PRICE_ASC
-        const { nftEntities } = await this.nftService.findByFilter(null, nftFilter, dbTx, dbLock);
-
-        // Get the lowest priced NFT from this collection "floorPriceInAcudos"
-        const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-        const floorPriceInAcudos = await this.coingeckoService.getFloorPriceOfNftEntities(approvedNfts);
-
-        // Get the total value spent on NFTs from this collection "volumeInAcudos"
-        const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])
-
-        const nftOwnersSet = new Set(nftEntities.filter((nft) => nft.hasOwner()).map((nft) => nft.currentOwner)); // Unique owners of all the NFTs in the collection
-
-        const adminEntity = await this.accountService.findAdminByAccountId(collection.creatorId, dbTx, dbLock);
-
-        // Get remaining hash power
-        const nftsHashPowerSum = nftEntities.reduce((pervVal, currVal) => pervVal + Number(currVal.hashingPower), 0)
-        const remainingHashPowerInTH = collection.hashingPower - nftsHashPowerSum
-
-        const collectionDetailsEntity = new CollectionDetailsEntity();
-        collectionDetailsEntity.id = collectionId;
-        collectionDetailsEntity.floorPriceInAcudos = floorPriceInAcudos.toString(10);
-        collectionDetailsEntity.volumeInAcudos = collectionTotalSales.salesInAcudos.isNaN() === true ? '0' : collectionTotalSales.salesInAcudos?.toString(10) ?? '0';
-        collectionDetailsEntity.owners = nftOwnersSet.size;
-        collectionDetailsEntity.cudosAddress = adminEntity?.cudosWalletAddress ?? '';
-        collectionDetailsEntity.remainingHashPowerInTH = remainingHashPowerInTH;
-
-        return collectionDetailsEntity;
-    }
 }

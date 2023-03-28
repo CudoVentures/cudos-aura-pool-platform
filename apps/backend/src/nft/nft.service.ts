@@ -51,7 +51,6 @@ export class NFTService {
         private visitorService: VisitorService,
         private coinGeckoService: CoinGeckoService,
         private configService: ConfigService,
-    // eslint-disable-next-line no-empty-function
     ) {}
 
     // controller functions
@@ -253,31 +252,6 @@ export class NFTService {
         return { totalPresaleNftCount, presaleMintedNftCount }
     }
 
-    // async findAll(dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
-    //     const nftRepos = await this.nftRepo.findAll({
-    //         transaction: dbTx,
-    //         lock: dbLock,
-    //     });
-
-    //     const nftEntities = nftRepos.map((nftRepo) => NftEntity.fromRepo(nftRepo));
-
-    //     return nftEntities;
-    // }
-
-    // async findByAccountId(accountId: number, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
-    //     const whereClause = new NftRepo();
-    //     whereClause.creatorId = accountId;
-    //     const nftRepos = await this.nftRepo.findAll({
-    //         where: AppRepo.toJsonWhere(whereClause),
-    //         transaction: dbTx,
-    //         lock: dbLock,
-    //     });
-
-    //     return nftRepos.map((nftRepo) => {
-    //         return NftEntity.fromRepo(nftRepo);
-    //     });
-    // }
-
     // utilty functions
     async findActiveByCurrentOwner(cudosWalletAddress: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise < NftEntity[] > {
         const nftRepos = await this.nftRepo.findAll({
@@ -364,10 +338,10 @@ export class NFTService {
     async createOne(nftEntity: NftEntity, dbTx: Transaction): Promise < NftEntity > {
         nftEntity.currentOwner = '';
         nftEntity.markAsQueued();
-        const nftRepo = await this.nftRepo.create({
-            ...NftEntity.toRepo(nftEntity).toJSON(),
-            id: uuid(),
-        }, {
+
+        const repo = NftEntity.toRepo(nftEntity);
+        repo.id = uuid();
+        const nftRepo = await this.nftRepo.create(repo.toJSON(), {
             transaction: dbTx,
         });
 
@@ -386,50 +360,12 @@ export class NFTService {
     }
 
     async deleteMany(nftEntities: NftEntity[], dbTx: Transaction): Promise <void> {
-        // TODO: check settings for deletion
-        const promises = nftEntities.map((nftEtity) => NftEntity.toRepo(nftEtity).destroy({
+        await this.nftRepo.destroy({
+            where: {
+                [NftRepoColumn.ID]: nftEntities.map((nftEntity) => nftEntity.id),
+            },
             transaction: dbTx,
-        }));
-
-        await Promise.all(promises);
+        });
     }
 
-    // async getNftAttributes(txHash: string): Promise<{ token_id: string, uuid: string }> {
-    //     let tokenId;
-    //     let uuid;
-
-    //     enum Attribute {
-    //         uid = 'uid',
-    //         nft_id = 'nft_id'
-    //     }
-
-    //     try {
-    //         const res = await axios.get(
-    //             `${process.env.App_Public_API}/cosmos/tx/v1beta1/txs/${txHash}`,
-    //         );
-
-    //         if (res.data.tx_response.code !== 0) {
-    //             throw new NotFoundException();
-    //         }
-
-    //         const data = JSON.parse(res.data.tx_response.raw_log);
-    //         const mintNFTObj = data[0].events.find(
-    //             (el) => el.type === 'marketplace_mint_nft',
-    //         );
-
-    //         tokenId = mintNFTObj.attributes.find((el) => el.key === Attribute.nft_id).value;
-    //         uuid = mintNFTObj.attributes.find((el) => el.key === Attribute.uid).value;
-    //     } catch (err) {
-    //         throw new NotFoundException();
-    //     }
-
-    //     if (!tokenId || !uuid) {
-    //         throw new NotFoundException();
-    //     }
-
-    //     return {
-    //         token_id: tokenId.toString(),
-    //         uuid,
-    //     }
-    // }
 }

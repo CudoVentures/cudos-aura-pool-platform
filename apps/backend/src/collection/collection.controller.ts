@@ -283,8 +283,8 @@ export class CollectionController {
         }
 
         if (module === ModuleName.MARKETPLACE) {
-            const chainMarketplaceCollectionEntitiesByDenoms = await this.collectionService.getChainMarketplaceCollectionsByDenomIds(denomIds);
-            const chainMarketplaceCollectionEntitiesByIds = await this.collectionService.getChainMarketplaceCollectionsByIds(collectionIds);
+            const chainMarketplaceCollectionEntitiesByDenoms = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
+            const chainMarketplaceCollectionEntitiesByIds = await this.graphqlService.fetchMarketplaceCollectionsByIds(collectionIds);
 
             if (chainMarketplaceCollectionEntitiesByDenoms.length !== denomIds.length) {
                 throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by denomIds) looking for ${denomIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByDenoms.join(', ')}`);
@@ -323,7 +323,7 @@ export class CollectionController {
                 await this.collectionService.updateOneByDenomId(denomId, collectionEntity, req.transaction);
             }
         } else if (module === ModuleName.NFT) {
-            const chainNftCollectionEntities = await this.collectionService.getChainNftCollectionsByDenomIds(denomIds);
+            const chainNftCollectionEntities = await this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
 
             if (chainNftCollectionEntities.length !== denomIds.length) {
                 throw new Error('BDJuno is updated but nft collection entities are missing');
