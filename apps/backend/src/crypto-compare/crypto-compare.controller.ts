@@ -1,13 +1,13 @@
 import { Controller, HttpCode, Post, Req, UseInterceptors } from '@nestjs/common';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import CoinGeckoService from './coin-gecko.service';
+import CryptoCompareService from './crypto-compare.service';
 import { ResFetchBitcoinData, ResFetchCudosData } from './dto/responses.dto';
 
-@Controller('coin-gecko')
-export class CoinGeckoController {
+@Controller('crypto-compare')
+export class CryptoCompareController {
 
-    constructor(private coinGeckoService: CoinGeckoService) {}
+    constructor(private cryptoCompareService: CryptoCompareService) {}
 
     @Post('fetchCudosData')
     @UseInterceptors(TransactionInterceptor)
@@ -15,7 +15,7 @@ export class CoinGeckoController {
     async fetchCudosData(
         @Req() req: AppRequest,
     ): Promise < ResFetchCudosData > {
-        const cudosPriceEntity = await this.coinGeckoService.getCachedCudosData();
+        const cudosPriceEntity = await this.cryptoCompareService.getCachedCudosData();
         return new ResFetchCudosData(cudosPriceEntity);
     }
 
@@ -25,7 +25,7 @@ export class CoinGeckoController {
     async fetchBitcoinData(
         @Req() req: AppRequest,
     ): Promise < ResFetchBitcoinData > {
-        const bitcoinPriceEntity = await this.coinGeckoService.getCachedBitcoinData();
+        const bitcoinPriceEntity = await this.cryptoCompareService.getCachedBitcoinData();
         return new ResFetchBitcoinData(bitcoinPriceEntity);
     }
 

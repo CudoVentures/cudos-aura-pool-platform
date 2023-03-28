@@ -10,7 +10,7 @@ import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
 import AppRepo from '../common/repo/app.repo';
-import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import CryptoCompareService from '../crypto-compare/crypto-compare.service';
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
@@ -49,7 +49,7 @@ export class NFTService {
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private visitorService: VisitorService,
-        private coinGeckoService: CoinGeckoService,
+        private cryptoCompareService: CryptoCompareService,
         private configService: ConfigService,
     ) {}
 
@@ -144,7 +144,7 @@ export class NFTService {
 
     async getRandomPresaleNft(paidAmountAcudos: BigNumber, dbTx: Transaction, dbLock: LOCK = undefined): Promise <NftEntity> {
         // check if paid price is within epsilon of expected
-        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosData();
+        const { cudosUsdPrice } = await this.cryptoCompareService.fetchCudosData();
         const paidAmountCudos = paidAmountAcudos.shiftedBy(-CURRENCY_DECIMALS);
         const paidAmountUsd = paidAmountCudos.multipliedBy(cudosUsdPrice);
 
@@ -227,7 +227,7 @@ export class NFTService {
             throw new NotFoundException();
         }
 
-        const { cudosUsdPrice } = await this.coinGeckoService.fetchCudosData();
+        const { cudosUsdPrice } = await this.cryptoCompareService.fetchCudosData();
         const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(cudosUsdPrice);
         const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
 

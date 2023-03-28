@@ -6,7 +6,7 @@ import { ResFetchBitcoinData } from '../dto/Responses';
 
 export default class BitcoiApi {
 
-    static URL = '/api/v1/coin-gecko';
+    static URL = '/api/v1/crypto-compare';
 
     async fetchBitcoinCoinGecko(): Promise < BitcoinDataEntity > {
         const { data } = await axios.post(`${BitcoiApi.URL}/fetchBitcoinData`);

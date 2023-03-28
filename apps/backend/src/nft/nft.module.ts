@@ -7,7 +7,7 @@ import { GraphqlModule } from '../graphql/graphql.module';
 import { CollectionModule } from '../collection/collection.module';
 import { VisitorModule } from '../visitor/visitor.module';
 import { FarmModule } from '../farm/farm.module';
-import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
+import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
 import { AccountModule } from '../account/account.module';
 import { AllowlistModule } from '../allowlist/allowlist.module';
 import { KycModule } from '../kyc/kyc.module';
@@ -19,7 +19,7 @@ import { KycModule } from '../kyc/kyc.module';
         forwardRef(() => GraphqlModule),
         forwardRef(() => CollectionModule),
         forwardRef(() => FarmModule),
-        CoinGeckoModule,
+        CryptoCompareModule,
         AccountModule,
         AllowlistModule,
         forwardRef(() => KycModule),

@@ -10,7 +10,7 @@ import { AccountModule } from '../account/account.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { FarmModule } from '../farm/farm.module';
 import { DataModule } from '../data/data.module';
-import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
+import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
 
 @Module({
     imports: [
@@ -23,7 +23,7 @@ import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
         AccountModule,
         DataModule,
         GraphqlModule,
-        CoinGeckoModule,
+        CryptoCompareModule,
         forwardRef(() => FarmModule),
         forwardRef(() => StatisticsModule),
     ],

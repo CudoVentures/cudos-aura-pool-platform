@@ -24,7 +24,7 @@ import { StatisticsService } from '../statistics/statistics.service';
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
 import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
 import { BIG_NUMBER_0, NOT_EXISTS_INT } from '../common/utils';
-import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import CryptoCompareService from '../crypto-compare/crypto-compare.service';
 
 @Injectable()
 export class FarmService {
@@ -47,7 +47,7 @@ export class FarmService {
         private dataService: DataService,
         @Inject(forwardRef(() => StatisticsService))
         private statisticsService: StatisticsService,
-        private coingeckoService: CoinGeckoService,
+        private cryptoCompareService: CryptoCompareService,
     ) {}
 
     async findByFilter(accountEntity: AccountEntity, miningFarmFilterModel: MiningFarmFilterModel, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { miningFarmEntities: MiningFarmEntity[], total: number } > {
@@ -177,7 +177,7 @@ export class FarmService {
             const miningFarmId = collectionToMiningFarmIdsMap.get(nftEntity.collectionId);
             nftToMiningFarmIdsMap.set(nftEntity.id, miningFarmId);
 
-            const priceInAcudos = await this.coingeckoService.getNftPriceInAcudos(nftEntity);
+            const priceInAcudos = await this.cryptoCompareService.getNftPriceInAcudos(nftEntity);
             if (priceInAcudos.gt(BIG_NUMBER_0) === true) {
                 const miningFarmPerformanceEntity = miningFarmIdToPerformanceEntitiesMap.get(miningFarmId);
                 if (miningFarmPerformanceEntity.isFloorPriceSet() === false || miningFarmPerformanceEntity.floorPriceInAcudos.gt(priceInAcudos) === true) {
@@ -415,7 +415,7 @@ export class FarmService {
                 ++miningFarmDetailsEntity.totalNftsSold;
             }
 
-            const priceInAcudos = await this.coingeckoService.getNftPriceInAcudos(nftEntity);
+            const priceInAcudos = await this.cryptoCompareService.getNftPriceInAcudos(nftEntity);
             if (priceInAcudos.gt(BIG_NUMBER_0) === true) {
                 if (miningFarmDetailsEntity.floorPriceInAcudos === null) {
                     miningFarmDetailsEntity.floorPriceInAcudos = priceInAcudos;
