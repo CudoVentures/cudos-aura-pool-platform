@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
@@ -8,30 +9,45 @@ import BitcoinDataEntity from './entities/bitcoin-data.entity';
 import CudosDataEntity from './entities/cudos-data.entity';
 
 @Injectable()
-export default class CoinGeckoService {
+export default class CryptoCompareService {
 
     // static coinGeckoCudosApiUrl = 'https://api.coingecko.com/api/v3/coins/cudos?tickers=false&community_data=false&developer_data=false&sparkline=false';
     // static coinGeckoBitcoinApiUrl = 'https://api.coingecko.com/api/v3/coins/bitcoin?tickers=false&community_data=false&developer_data=false&sparkline=false';
-    static coinGeckoCudosApiUrl = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=CUDOS&tsyms=USD,ETH';
-    static coinGeckoBitcoinApiUrl = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD';
+    static cryptoCompareCudosApiUrl = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=CUDOS&tsyms=USD,ETH';
+    static cryptoCompareBitcoinApiUrl = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD';
 
+    cryptoCompareApiKey: string;
     cachedCudosDataEntity: CudosDataEntity = null;
     cachedBitcoinDataEntity: BitcoinDataEntity = null;
     fetchedCachedCudosDataEntityTimestamp = NOT_EXISTS_INT;
     fetchedCachedBitcoinDataEntityTimestamp = NOT_EXISTS_INT;
 
+    constructor(private configService: ConfigService) {
+        this.cryptoCompareApiKey = this.configService.get < string >('APP_CRYPTO_COMPARE_API_KEY') ?? '';
+    }
+
     async fetchCudosData(): Promise < CudosDataEntity > {
-        const resultJson = await axios.get(CoinGeckoService.coinGeckoCudosApiUrl);
+        const resultJson = await axios.get(CryptoCompareService.cryptoCompareCudosApiUrl, this.getCryptoCompareRequestHeader());
         // return new CudosDataEntity(resultJson.data.market_data.current_price.usd, resultJson.data.market_data.current_price.eth, resultJson.data.market_data.price_change_24h);
-        console.log(new CudosDataEntity(resultJson.data.RAW.CUDOS.USD.PRICE, new BigNumber(resultJson.data.RAW.CUDOS.ETH.PRICE), resultJson.data.RAW.CUDOS.USD.CHANGE24HOUR));
         return new CudosDataEntity(resultJson.data.RAW.CUDOS.USD.PRICE, new BigNumber(resultJson.data.RAW.CUDOS.ETH.PRICE), resultJson.data.RAW.CUDOS.USD.CHANGE24HOUR);
     }
 
     async fetchBitcoinData(): Promise < BitcoinDataEntity > {
-        const resultJson = await axios.get(CoinGeckoService.coinGeckoBitcoinApiUrl);
+        const resultJson = await axios.get(CryptoCompareService.cryptoCompareBitcoinApiUrl, this.getCryptoCompareRequestHeader());
         // return new BitcoinDataEntity(resultJson.data.market_data.current_price.usd, resultJson.data.market_data.price_change_24h);
-        console.log(new BitcoinDataEntity(resultJson.data.RAW.BTC.USD.PRICE, resultJson.data.RAW.BTC.USD.CHANGE24HOUR));
         return new BitcoinDataEntity(resultJson.data.RAW.BTC.USD.PRICE, resultJson.data.RAW.BTC.USD.CHANGE24HOUR);
+    }
+
+    private getCryptoCompareRequestHeader() {
+        if (this.cryptoCompareApiKey === '') {
+            return {};
+        }
+
+        return {
+            headers: {
+                'authorization': `Apikey ${this.cryptoCompareApiKey}`,
+            },
+        }
     }
 
     async getCachedCudosData(): Promise < CudosDataEntity > {
@@ -58,8 +74,8 @@ export default class CoinGeckoService {
         }
 
         if (nftEntity.isMinted() === false && nftEntity.priceUsd !== NOT_EXISTS_INT) {
-            const coingeckoEntity = await this.getCachedCudosData();
-            return new BigNumber(nftEntity.priceUsd).dividedBy(coingeckoEntity.cudosUsdPrice).shiftedBy(CURRENCY_DECIMALS);
+            const cudosDataEntity = await this.getCachedCudosData();
+            return new BigNumber(nftEntity.priceUsd).dividedBy(cudosDataEntity.cudosUsdPrice).shiftedBy(CURRENCY_DECIMALS);
         }
 
         return BIG_NUMBER_0;

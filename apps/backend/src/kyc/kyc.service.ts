@@ -11,7 +11,7 @@ import { WorkflowRunParamsEntity, WorkflowRunParamsV1Entity } from './entities/w
 import UserEntity from '../account/entities/user.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { StatisticsService } from '../statistics/statistics.service';
-import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import CryptoCompareService from '../crypto-compare/crypto-compare.service';
 import AddressMintDataEntity from '../nft/entities/address-mint-data.entity';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class KycService {
         private configService: ConfigService,
         @Inject(forwardRef(() => StatisticsService))
         private statisticsService: StatisticsService,
-        private coinGeckoService: CoinGeckoService,
+        private cryptoCompareService: CryptoCompareService,
     ) {
         this.onfido = new Onfido({
             apiToken: this.configService.get < string >('APP_ONFIDO_API_TOKEN'),
@@ -152,7 +152,7 @@ export class KycService {
             return true;
         }
 
-        const { cudosUsdPrice } = await this.coinGeckoService.getCachedCudosData();
+        const { cudosUsdPrice } = await this.cryptoCompareService.getCachedCudosData();
         const purchasesInUsdSoFar = await this.statisticsService.fetchUsersSpendingOnPlatformInUsd(userEntity, dbTx);
         const nftPriceInUsd = Number(nftEntity.getPriceInCudos().multipliedBy(cudosUsdPrice).toFixed(2));
         if (purchasesInUsdSoFar + nftPriceInUsd < WorkflowRunParamsV1Entity.LIGHT_PARAMS_LIMIT_IN_USD) {

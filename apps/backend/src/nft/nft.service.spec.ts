@@ -12,9 +12,9 @@ import Path from 'path';
 import { NftRepo } from './repos/nft.repo';
 import { NFTService } from './nft.service';
 import { VisitorModule } from '../visitor/visitor.module';
-import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
+import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
 import NftEntity from './entities/nft.entity';
-import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import CryptoCompareService from '../crypto-compare/crypto-compare.service';
 import BigNumber from 'bignumber.js';
 
 describe('NFTService', () => {
@@ -73,7 +73,7 @@ describe('NFTService', () => {
                 CollectionModule,
                 FarmModule,
                 GraphqlModule,
-                CoinGeckoModule,
+                CryptoCompareModule,
                 VisitorModule,
             ],
             providers: [
@@ -84,11 +84,12 @@ describe('NFTService', () => {
         await module.init();
 
         service = module.get<NFTService>(NFTService);
-        const coinGeckoService = module.get<CoinGeckoService>(CoinGeckoService);
-        jest.spyOn(coinGeckoService, 'fetchCudosPrice').mockImplementation(async () => {
+        const cryptoCompareService = module.get<CryptoCompareService>(CryptoCompareService);
+        jest.spyOn(cryptoCompareService, 'fetchCudosData').mockImplementation(async () => {
             return {
                 cudosUsdPrice: Number(1),
                 cudosEthPrice: new BigNumber(1),
+                priceChangeInUsd: Number(1),
             }
         });
 

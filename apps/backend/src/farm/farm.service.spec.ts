@@ -39,7 +39,7 @@ import { getZeroDatePlusDaysTimestamp } from '../statistics/utils/test.utils';
 import NftEntity from '../nft/entities/nft.entity';
 import MiningFarmPerformanceEntity from './entities/mining-farm-performance.entity';
 import BigNumber from 'bignumber.js';
-import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
+import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
 
 describe('FarmService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -101,7 +101,7 @@ describe('FarmService', () => {
                 DataModule,
                 GraphqlModule,
                 StatisticsModule,
-                CoinGeckoModule,
+                CryptoCompareModule,
             ],
             providers: [
                 FarmService,

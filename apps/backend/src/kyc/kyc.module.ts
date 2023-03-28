@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { CoinGeckoModule } from '../coin-gecko/coin-gecko.module';
+import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { KycController } from './kyc.controller';
 import { KycService } from './kyc.service';
@@ -10,7 +10,7 @@ import KycRepo from './repo/kyc.repo';
     imports: [
         SequelizeModule.forFeature([KycRepo]),
         forwardRef(() => StatisticsModule),
-        CoinGeckoModule,
+        CryptoCompareModule,
     ],
     providers: [KycService],
     controllers: [KycController],

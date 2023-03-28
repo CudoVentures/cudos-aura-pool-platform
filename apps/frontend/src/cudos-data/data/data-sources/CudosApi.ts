@@ -1,11 +1,10 @@
 import axios from '../../../core/utilities/AxiosWrapper';
-import BigNumber from 'bignumber.js';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import { ResFetchCudosData } from '../dto/Responses';
 
 export default class CudosApi {
 
-    static URL = '/api/v1/coin-gecko';
+    static URL = '/api/v1/crypto-compare';
 
     async fetchCudosData(): Promise < CudosDataEntity > {
         const { data } = await axios.post(`${CudosApi.URL}/fetchCudosData`);

@@ -17,7 +17,7 @@ import NftEventFilterEntity from '../statistics/entities/nft-event-filter.entity
 import { NftTransferHistoryEventType } from '../statistics/entities/nft-event.entity';
 import { NFTService } from '../nft/nft.service';
 import NftFilterEntity from '../nft/entities/nft-filter.entity';
-import CoinGeckoService from '../coin-gecko/coin-gecko.service';
+import CryptoCompareService from '../crypto-compare/crypto-compare.service';
 
 @Injectable()
 export class CollectionService {
@@ -30,7 +30,7 @@ export class CollectionService {
     private accountService: AccountService,
     @Inject(forwardRef(() => StatisticsService))
     private statisticsService: StatisticsService,
-    private coingeckoService: CoinGeckoService,
+    private cryptoCompareService: CryptoCompareService,
     ) {}
 
     // controller functions
@@ -139,7 +139,7 @@ export class CollectionService {
 
         // Get the lowest priced NFT from this collection "floorPriceInAcudos"
         const approvedNfts = nftEntities.filter((nftEntity) => nftEntity.status === NftStatus.QUEUED) // Approved but not bought NFT-s
-        const floorPriceInAcudos = await this.coingeckoService.getFloorPriceOfNftEntities(approvedNfts);
+        const floorPriceInAcudos = await this.cryptoCompareService.getFloorPriceOfNftEntities(approvedNfts);
 
         // Get the total value spent on NFTs from this collection "volumeInAcudos"
         const collectionTotalSales = await this.graphqlService.fetchCollectionTotalSales([collection.denomId])
