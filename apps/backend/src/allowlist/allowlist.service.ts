@@ -1,6 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
 import { Transaction } from 'sequelize';
 import AllowlistUser from './entities/allowlist-user.entity';
 import AllowlistEntity from './entities/allowlist.entity';
@@ -15,6 +15,7 @@ export default class AllowlistService {
     constructor(
         @Inject(forwardRef(() => ConfigService))
         private configService: ConfigService,
+        private readonly httpService: HttpService,
     ) {
         this.allowlistUrl = this.configService.getOrThrow < string >('APP_ALLOWLIST_URL');
         this.allowlistId = this.configService.getOrThrow<string>('APP_PRESALE_ALLOWLIST_ID');
@@ -23,12 +24,12 @@ export default class AllowlistService {
 
     // controller functions
     async getAllowlist(dbTx: Transaction): Promise < AllowlistEntity > {
-        const { data } = await axios.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/id/${this.allowlistId}`, this.getAllowlistRequestHeaders());
+        const { data } = await this.httpService.axiosRef.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/id/${this.allowlistId}`, this.getAllowlistRequestHeaders());
         return AllowlistEntity.fromJson(data.allowlistEntity);
     }
 
     async getAllowlistUserByAddress(address: string, dbTx: Transaction): Promise < AllowlistUser > {
-        const { data } = await axios.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/${this.allowlistId}/user/address/${address}`, this.getAllowlistRequestHeaders());
+        const { data } = await this.httpService.axiosRef.get(`${this.allowlistUrl}${AllowlistService.allowlistEndpoints}/${this.allowlistId}/user/address/${address}`, this.getAllowlistRequestHeaders());
         return AllowlistUser.fromJson(data.userEntity);
     }
 

@@ -29,7 +29,7 @@ export default class BitcoinApiRepo implements BitcoinRepo {
         this.showAlert = showAlert;
     }
 
-    async fetchBitcoinCoinGecko(): Promise < BitcoinDataEntity > {
+    async fetchBitcoinData(): Promise < BitcoinDataEntity > {
         let bitcoinDataEntity = new BitcoinDataEntity();
         const bitcoinDataEntityJsonString = localStorage.getItem(LOCAL_STORAGE_COIN_GECKO_KEY);
         if (bitcoinDataEntityJsonString !== null) {
@@ -45,7 +45,7 @@ export default class BitcoinApiRepo implements BitcoinRepo {
 
         try {
             this.disableActions?.();
-            bitcoinDataEntity = await this.bitcoinApi.fetchBitcoinCoinGecko();
+            bitcoinDataEntity = await this.bitcoinApi.fetchBitcoinData();
             bitcoinDataEntity.timestampLastUpdate = Date.now();
 
             localStorage.setItem(LOCAL_STORAGE_COIN_GECKO_KEY, JSON.stringify(BitcoinDataEntity.toJson(bitcoinDataEntity)));
