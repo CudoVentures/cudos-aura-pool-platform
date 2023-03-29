@@ -79,7 +79,7 @@ export class StatisticsController {
 
     @ApiBearerAuth('access-token')
     @Post('fetchNftEarningsBySessionAccount')
-    @UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)@UseInterceptors(TransactionInterceptor)
+    @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchNftEarningsBySessionAccount(
         @Req() req: AppRequest,
