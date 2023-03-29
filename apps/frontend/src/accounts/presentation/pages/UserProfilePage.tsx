@@ -54,10 +54,6 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
     const accountEntity = accountSessionStore.accountEntity;
     const userEntity = accountSessionStore.userEntity;
 
-    function onClickCheckForRefunds() {
-        checkForPresaleRefundsModalStore.showSignal();
-    }
-
     function onClickProfileImages() {
         editUserModalStore.showSignalWithDefaultCallback(userEntity);
     }
@@ -81,12 +77,6 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
             <div className={'PageContent AppContent'} >
                 <ProfileHeader coverPictureUrl={userEntity.coverImgUrl} profilePictureUrl={userEntity.profileImgUrl} />
                 <Actions layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
-                    {/* <Button
-                        onClick={onClickCheckForRefunds}
-                        color={ButtonColor.SCHEME_4} >
-                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                        Check For Presale ETH Refunds
-                    </Button> */}
                     <Button
                         onClick={onClickProfileImages}
                         color={ButtonColor.SCHEME_4} >
