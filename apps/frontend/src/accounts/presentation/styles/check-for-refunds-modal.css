@@ -1,5 +1,6 @@
 .CheckForPresaleRefundsModal .ModalHolder {
     align-items: center;
+    gap: 20px;
 }
 
 .CheckForPresaleRefundsModal .ModalHolder .Info {
@@ -8,6 +9,21 @@
 
 .CheckForPresaleRefundsModal .ModalHolder .StatusSvg {
     width: 70px; height: 70px;
+}
+
+
+.CheckForPresaleRefundsModal .ModalHolder .StatusSvg.Refund {
+    color: var(--color-primary-060);
+}
+
+
+.CheckForPresaleRefundsModal .ModalHolder .StatusSvg.Success {
+    color: var(--color-success-060);
+}
+
+
+.CheckForPresaleRefundsModal .ModalHolder .StatusSvg.Error {
+    color: var(--color-error-060);
 }
 
 .CheckForPresaleRefundsModal .ModalHolder .TransactionView {

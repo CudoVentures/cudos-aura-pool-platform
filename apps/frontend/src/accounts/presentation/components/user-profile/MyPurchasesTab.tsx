@@ -7,13 +7,11 @@ import StyledContainer, { ContainerPadding } from '../../../../core/presentation
 
 import '../../styles/my-purchases-tab.css';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
-import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
+import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
 import PurchaseTransactionEntity from '../../../../nft/entities/PurchaseTransactionEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import Svg from '../../../../core/presentation/components/Svg';
-import Button, { ButtonColor, ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
 import CheckForPresaleRefundsModalStore from '../../stores/CheckForPresaleRefundsModalStore';
-import Actions, { ActionsHeight } from '../../../../core/presentation/components/Actions';
 
 type Props = {
     userProfilePageStore?: UserProfilePageStore
