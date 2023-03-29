@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import Config from '../../config/Config';
 import Logger from '../../config/Logger';
-import CoinGeckoServiceApiRepo from '../../src/data/CoinGeckoServiceApiRepo';
+import CryptoCompareApiRepo from '../../src/data/CryptoCompareApiRepo';
 import ContractEventWorker from '../../src/workers/ContractEventWorker';
 import { AuraContractHappyPathMockRepo, AuraContractLowBlockHeightMockRepo, AuraContractPaymentReturnedMockRepo, AuraContractWrongAmountMockRepo } from '../mocks/AuraContractMockRepo';
 import { CudosAuraPoolServiceHappyPathApiRepo, CudosAuraPoolServiceHighBlockCheckedMockRepo } from '../mocks/CudosAuraPoolServiceApiMockRepo';
@@ -10,7 +10,7 @@ import { CudosChainRpcFailToMintMockRepo, CudosChainRpcHappyPathMockRepo, CudosC
 describe('ContractEventWorker (e2e)', () => {
     const logErrorSpy = jest.spyOn(ContractEventWorker, 'error');
     const logWarn = jest.spyOn(ContractEventWorker, 'warn');
-    const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
+    const coinGeckoServiceApi = new CryptoCompareApiRepo();
 
     jest.spyOn(coinGeckoServiceApi, 'fetchEthUsdPrice').mockImplementation(async () => { return 1 })
     jest.spyOn(coinGeckoServiceApi, 'fetchCudosEthPrice').mockImplementation(async () => { return new BigNumber(1) })
