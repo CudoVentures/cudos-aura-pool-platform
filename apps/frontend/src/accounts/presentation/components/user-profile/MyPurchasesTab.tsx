@@ -10,22 +10,27 @@ import Table, { createTableCell, createTableCellString, createTableRow } from '.
 import { ALIGN_CENTER, ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
 import PurchaseTransactionEntity from '../../../../nft/entities/PurchaseTransactionEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
+import Svg from '../../../../core/presentation/components/Svg';
+import Button, { ButtonColor, ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
+import CheckForPresaleRefundsModalStore from '../../stores/CheckForPresaleRefundsModalStore';
+import Actions, { ActionsHeight } from '../../../../core/presentation/components/Actions';
 
 type Props = {
     userProfilePageStore?: UserProfilePageStore
+    checkForPresaleRefundsModalStore?: CheckForPresaleRefundsModalStore;
 }
 
-function MyPurchasesTab({ userProfilePageStore }: Props) {
+function MyPurchasesTab({ userProfilePageStore, checkForPresaleRefundsModalStore }: Props) {
     function getLegend() {
         return ['txHash', 'Time', 'Status'];
     }
 
     function getWidths() {
-        return ['50%', '35%', '15%'];
+        return ['50%', '30%', '20%'];
     }
 
     function getAligns() {
-        return [ALIGN_LEFT, ALIGN_LEFT, ALIGN_CENTER];
+        return [ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT];
     }
 
     function renderCollectionsRows() {
@@ -36,7 +41,21 @@ function MyPurchasesTab({ userProfilePageStore }: Props) {
                 )),
                 createTableCellString(purchaseTransactionEntity.getTimeFormatted()),
                 createTableCell(
-                    <div className={`PurchaseStatusCell ${purchaseTransactionEntity.getStatusString()}`}>{purchaseTransactionEntity.getStatusString()}</div>,
+                    <div className={`PurchaseStatusCell FlexRow ${purchaseTransactionEntity.getStatusString()}`}>
+                        {purchaseTransactionEntity.isStatusRefunded() === true && purchaseTransactionEntity.isEthTransaction() === true
+                            ? <div
+                                className={'PurchaseStatusCell FlexRow'}
+                                onClick={() => checkForPresaleRefundsModalStore.showSignal()}
+                            >
+                                <Svg svg={purchaseTransactionEntity.getStatusSvg()} />
+                                Check for refunds
+                            </div>
+                            : <>
+                                <Svg svg={purchaseTransactionEntity.getStatusSvg()} />
+                                {purchaseTransactionEntity.getStatusString()}
+                            </>
+                        }
+                    </div>,
                 ),
             ]
 

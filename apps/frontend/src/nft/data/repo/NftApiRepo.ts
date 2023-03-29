@@ -147,11 +147,11 @@ export default class NftApiRepo implements NftRepo {
                 txHash = tx.transactionHash;
 
                 // set tx hash in storage until processed by the observer
-                const purchaseTransactionEntity = new PurchaseTransactionEntity();
-                purchaseTransactionEntity.txhash = txHash;
-                purchaseTransactionEntity.timestamp = Date.now();
+                // const purchaseTransactionEntity = new PurchaseTransactionEntity();
+                // purchaseTransactionEntity.txhash = txHash;
+                // purchaseTransactionEntity.timestamp = Date.now();
 
-                this.nftSessioNStorage.updatePurchaseTxsMap([purchaseTransactionEntity]);
+                // this.nftSessioNStorage.updatePurchaseTxsMap([purchaseTransactionEntity]);
 
             } else {
                 const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);

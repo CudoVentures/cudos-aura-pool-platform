@@ -71,7 +71,7 @@ export default class PurchaseTransactionEntity {
 
         entity.txhash = repoJson.txHash ?? entity.txhash;
         entity.recipientAddress = repoJson.recipientAddress ?? entity.recipientAddress;
-        entity.timestamp = repoJson.timestamp ?? entity.timestamp;
+        entity.timestamp = repoJson.timestamp ?? entity.timestamp
         entity.status = repoJson.status ?? entity.status;
 
         return entity;

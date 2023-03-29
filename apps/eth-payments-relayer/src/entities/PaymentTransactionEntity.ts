@@ -3,13 +3,7 @@ import { TxBody } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import Config from '../../config/Config';
-
-type PaymentMemo = {
-    uuid: string,
-    contractPaymentId: number,
-    recipientAddress: string,
-    ethTxHash: string,
-}
+import MintMemo from './MintMemo';
 
 export default class PaymentTransactionEntity {
     txBody: TxBody;
@@ -60,7 +54,7 @@ export default class PaymentTransactionEntity {
             throw Error(`Failed to decode msg into send msg: \n\tTxBody: ${txBody}\n\tError: ${e}`);
         }
 
-        let memoJson: PaymentMemo
+        let memoJson: MintMemo
         try {
             memoJson = JSON.parse(txBody.memo);
         } catch (e) {
@@ -76,8 +70,7 @@ export default class PaymentTransactionEntity {
         entity.to = bankSendMessage.toAddress;
         entity.nftId = memoJson.uuid;
         entity.recipientAddress = memoJson.recipientAddress;
-        entity.contractPaymentId = memoJson.contractPaymentId;
-        entity.contractPaymentId = memoJson.contractPaymentId;
+        entity.contractPaymentId = parseInt(memoJson.contractPaymentId);
         entity.ethTxHash = memoJson.ethTxHash;
 
         return entity;

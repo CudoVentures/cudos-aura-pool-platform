@@ -2,15 +2,11 @@
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('purchase_transactions', {
-            id: {
-                allowNull: false,
-                autoIncrement: true,
-                primaryKey: true,
-                type: Sequelize.BIGINT,
-            },
             tx_hash: {
-                type: Sequelize.STRING,
+                primaryKey: true,
+                unique: true,
                 allowNull: false,
+                type: Sequelize.STRING,
             },
             recipient_address: {
                 type: Sequelize.STRING,

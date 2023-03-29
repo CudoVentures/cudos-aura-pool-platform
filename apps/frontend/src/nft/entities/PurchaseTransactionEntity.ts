@@ -1,5 +1,10 @@
 import { makeAutoObservable } from 'mobx';
+import moment from 'moment';
 import S from '../../core/utilities/Main';
+import ProjectUtils from '../../core/utilities/ProjectUtils';
+import InfoIcon from '@mui/icons-material/Info';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ReplayCircleFilledRoundedIcon from '@mui/icons-material/ReplayCircleFilledRounded';
 
 export enum PurchaseTransactionStatus {
     PENDING = '1',
@@ -21,8 +26,29 @@ export default class PurchaseTransactionEntity {
         makeAutoObservable(this);
     }
 
+    isStatusRefunded(): boolean {
+        return this.status === PurchaseTransactionStatus.REFUNDED;
+    }
+
+    isEthTransaction(): boolean {
+        return this.txhash.startsWith('0x');
+    }
+
     getTimeFormatted(): string {
-        return new Date(this.timestamp).toLocaleString();
+        return moment(new Date(this.timestamp)).format(ProjectUtils.MOMENT_FORMAT_DATE_AND_TIME);
+    }
+
+    getStatusSvg() {
+        switch (this.status) {
+            case PurchaseTransactionStatus.PENDING:
+                return InfoIcon;
+            case PurchaseTransactionStatus.SUCCESS:
+                return CheckCircleIcon;
+            case PurchaseTransactionStatus.REFUNDED:
+                return ReplayCircleFilledRoundedIcon;
+            default:
+                return null;
+        }
     }
 
     getStatusString(): string {

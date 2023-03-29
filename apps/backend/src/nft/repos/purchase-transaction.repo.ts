@@ -6,7 +6,6 @@ import {
     Unique,
     AllowNull,
     DataType,
-    IsUUID,
 } from 'sequelize-typescript';
 import { PurchaseTransactionStatus } from '../nft.types';
 
@@ -26,13 +25,8 @@ export const enum PurchaseTransactionsRepoCOlumn {
     underscored: true,
 })
 export class PurchaseTransactionRepo extends Model {
-    @PrimaryKey
     @Unique
-    @IsUUID(4)
-    @AllowNull(false)
-    @Column({ type: DataType.UUID })
-        id: string;
-
+    @PrimaryKey
     @AllowNull(false)
     @Column({ type: DataType.STRING })
         txHash: string;

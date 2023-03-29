@@ -6,6 +6,10 @@
     color: var(--color-primary-060)
 }
 
+.MyPurchasesTab .PurchaseStatusCell {
+    justify-content: flex-start;
+    gap: 10px;
+}
 
 .MyPurchasesTab .PurchaseStatusCell.Pending{
     color: var(--color-primary-050);

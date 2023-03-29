@@ -3,7 +3,7 @@ import { coin, CURRENCY_DECIMALS, DirectSecp256k1HdWallet } from 'cudosjs';
 import { SigningStargateClient, StargateClient } from 'cudosjs/build/stargate';
 import Config from '../../config/Config';
 import AddressbookEntryEntity, { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK } from '../entities/AddressbookEntryEntity';
-import NftEntity from '../entities/NftEntity';
+import MintMemo from '../entities/MintMemo';
 import PaymentEventEntity from '../entities/PaymentEventEntity';
 import PaymentTransactionEntity from '../entities/PaymentTransactionEntity';
 import RefundTransactionEntity from '../entities/RefundTransactionEntity';
@@ -67,15 +67,9 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
         const wallet = await DirectSecp256k1HdWallet.fromMnemonic(Config.CUDOS_SIGNER_MNEMONIC);
         const [firstAccount] = await wallet.getAccounts();
         const signerAddress = firstAccount.address;
+        const mintMemo = new MintMemo('presale', paymentEventEntity.cudosAddress, paymentEventEntity.id.toString(), paymentEventEntity.txHash)
 
-        const memo = {
-            uuid: 'presale',
-            contractPaymentId: paymentEventEntity.id.toString(),
-            recipientAddress: paymentEventEntity.cudosAddress,
-            ethTxHash: paymentEventEntity.txHash,
-        };
-
-        const tx = await this.chainSigningClient.sendTokens(signerAddress, Config.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', JSON.stringify(memo));
+        const tx = await this.chainSigningClient.sendTokens(signerAddress, Config.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', JSON.stringify(MintMemo.toJson(mintMemo)));
 
         if (tx.code !== 0) {
             throw Error(`${tx.rawLog}`)

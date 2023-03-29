@@ -11,9 +11,9 @@ export class ReqUpdateLastCheckedBlocks {
 }
 
 export class ReqCreditPurchaseTransactionEntities {
-    purcahseTransactionEntitiesJson: any[];
+    purchaseTransactionEntitiesJson: any[];
 
     constructor(purcahseTransactionEntities: PurchaseTransactionEntity[]) {
-        this.purcahseTransactionEntitiesJson = purcahseTransactionEntities.map((entity) => PurchaseTransactionEntity.toJson(entity));
+        this.purchaseTransactionEntitiesJson = purcahseTransactionEntities.map((entity) => PurchaseTransactionEntity.toJson(entity));
     }
 }

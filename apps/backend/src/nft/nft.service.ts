@@ -429,21 +429,36 @@ export class NFTService {
         const purchaseTransactionEntitiesToUpdate = purchaseTransactionRepos.map((purchaseTransactionRepo) => PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo));
         purchaseTransactionEntitiesToUpdate.forEach((purchaseTransactionEntity) => {
             const newPurchaseTransactionEntity = purchaseTransactionEntitiesMap.get(purchaseTransactionEntity.txhash);
-            if (newPurchaseTransactionEntity.status === PurchaseTransactionStatus.PENDING) {
+            if (purchaseTransactionEntity.status === PurchaseTransactionStatus.PENDING) {
                 purchaseTransactionEntity.status = newPurchaseTransactionEntity.status;
             }
         });
 
-        const purchaseTransactionReposToUpdate = purchaseTransactionEntitiesToUpdate.map((purchaseTransactionEntity) => PurchaseTransactionEntity.toRepo(purchaseTransactionEntity));
+        const purchaseTransactionReposToCreate = [];
 
         purchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
-            purchaseTransactionReposToUpdate.push(PurchaseTransactionEntity.toRepo(purchaseTransactionEntity));
+            if (purchaseTransactionRepos.findIndex((repo) => repo.txHash === purchaseTransactionEntity.txhash) === -1) {
+                purchaseTransactionReposToCreate.push(PurchaseTransactionEntity.toRepo(purchaseTransactionEntity));
+            }
         });
 
-        await this.purchaseTransactionRepo.bulkCreate(purchaseTransactionReposToUpdate.map((repoJson) => repoJson.toJSON()), {
-            updateOnDuplicate: [PurchaseTransactionsRepoCOlumn.TX_HASH],
-            transaction: dbTx,
-        });
+        await this.purchaseTransactionRepo.bulkCreate(
+            purchaseTransactionReposToCreate.map((repoJson) => repoJson.toJSON()),
+            {
+                transaction: dbTx,
+            },
+        );
+
+        for (let i = 0; i < purchaseTransactionEntitiesToUpdate.length; i++) {
+            const entity = purchaseTransactionEntitiesToUpdate[i];
+            await this.purchaseTransactionRepo.update(
+                PurchaseTransactionEntity.toRepo(entity).toJSON(),
+                {
+                    where: { [PurchaseTransactionsRepoCOlumn.TX_HASH]: entity.txhash },
+                    transaction: dbTx,
+                },
+            );
+        }
     }
 
     async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFIlterModel: PurchaseTransactionsFilterEntity, purchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {

@@ -235,15 +235,16 @@ export class NFTController {
     }
 
     @Put('creditPurchaseTransactions')
+    @UseGuards(ApiKeyGuard)
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async creditPurchaseTransactions(
         @Req() req: AppRequest,
         @Body() reqCreditPurchaseTransactionEntities: ReqCreditPurchaseTransactionEntities,
     ): Promise<void> {
-        const purcahseTransactionEntities = reqCreditPurchaseTransactionEntities.purcahseTransactionEntitiesJson.map((purchaseTransactionEntityJson) => PurchaseTransactionEntity.fromJson(purchaseTransactionEntityJson));
+        const purcahseTransactionEntities = reqCreditPurchaseTransactionEntities.purchaseTransactionEntitiesJson.map((purchaseTransactionEntityJson) => PurchaseTransactionEntity.fromJson(purchaseTransactionEntityJson));
 
-        this.nftService.creditPurchaseTransactions(purcahseTransactionEntities, req.transaction);
+        await this.nftService.creditPurchaseTransactions(purcahseTransactionEntities, req.transaction);
     }
 
     @Put('fetchPurchaseTransactions')

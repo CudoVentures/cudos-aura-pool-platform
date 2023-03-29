@@ -80,7 +80,7 @@ export const OnDemandMintNftMintFilter: SearchByTagsQuery = {
         },
         {
             key: 'message.action',
-            value: 'marketplace_mint_nft',
+            value: 'mint_nft',
         },
         {
             key: 'message.sender',

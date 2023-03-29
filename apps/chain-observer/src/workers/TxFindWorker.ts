@@ -12,6 +12,7 @@ import {
     OnDemandMintReceivedFundsFilter,
     OnDemandMintRefundsFilter,
 } from '../entities/CudosAuraPoolServiceTxFilter';
+import MintMemo from '../entities/MintMemo';
 import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
 import { convertBlockTimeToTimestamp } from './helpers';
 import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
@@ -151,13 +152,15 @@ export default class TxFindWorker {
             } catch (e) {
                 continue;
             }
-            console.log(memoJson)
-            if (memoJson.recipientAddress === '' || memoJson.uuid === 'presale') {
+
+            const mintMemo = MintMemo.fromJson(memoJson);
+            if (mintMemo.ethTxHash !== '') {
                 continue;
             }
 
             const purchaseTransactionEntity = new PurchaseTransactionEntity();
             purchaseTransactionEntity.txhash = tx.hash;
+            purchaseTransactionEntity.recipientAddress = memoJson.recipientAddress;
 
             const block = await this.chainClient.getBlock(tx.height);
             purchaseTransactionEntity.timestamp = convertBlockTimeToTimestamp(block.header.time);
@@ -180,13 +183,15 @@ export default class TxFindWorker {
             // on demand minter sets memo to be the receive funds tx hash
             const txhash = decodeTxRaw(tx.tx).body.memo;
 
-            if (txhash === '') {
+            if (txhash.length !== '8A3065FFE24859FB066A0F50B3F9C02DBB532A52BF43A1E74F1897AB7E8AF33C'.length) {
                 continue;
             }
-
             const originalTx = await this.chainClient.getTx(txhash);
+
             const memoJson = JSON.parse(decodeTxRaw(originalTx.tx).body.memo);
-            if (memoJson.ethTxhash !== '') {
+            const mintMemo = MintMemo.fromJson(memoJson);
+
+            if (mintMemo.ethTxHash !== '') {
                 continue;
             }
 
@@ -204,7 +209,6 @@ export default class TxFindWorker {
 
     async checkOnDemandMintTransactions(heightFilter) {
         const mintTransactions = await this.chainClient.searchTx(OnDemandMintNftMintFilter, heightFilter)
-
         const purchaseTransactionEntities = [];
         for (let i = 0; i < mintTransactions.length; i++) {
             const tx = mintTransactions[i];
@@ -212,12 +216,21 @@ export default class TxFindWorker {
             // on demand minter sets memo to be the receive funds tx hash
             const txhash = decodeTxRaw(tx.tx).body.memo;
 
-            if (txhash === '') {
+            if (txhash.length !== '8A3065FFE24859FB066A0F50B3F9C02DBB532A52BF43A1E74F1897AB7E8AF33C'.length) {
                 continue;
             }
+            const originalTx = await this.chainClient.getTx(txhash);
+
+            const memoJson = JSON.parse(decodeTxRaw(originalTx.tx).body.memo);
+            const mintMemo = MintMemo.fromJson(memoJson);
 
             const purchaseTransactionEntity = new PurchaseTransactionEntity();
-            purchaseTransactionEntity.txhash = txhash;
+            if (mintMemo.ethTxHash !== '') {
+                purchaseTransactionEntity.txhash = mintMemo.ethTxHash;
+            } else {
+                purchaseTransactionEntity.txhash = txhash;
+            }
+
             purchaseTransactionEntity.status = PurchaseTransactionStatus.SUCCESS;
 
             purchaseTransactionEntities.push(purchaseTransactionEntity);

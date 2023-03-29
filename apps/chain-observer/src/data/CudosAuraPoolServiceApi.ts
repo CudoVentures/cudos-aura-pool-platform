@@ -12,6 +12,8 @@ const TRIGGER_COLLECTION_UPDATES = '/api/v1/collection/trigger-updates';
 const MARKETPLACE_MODULE = 'marketplace';
 const NFT_MODULE = 'nft';
 
+const CREDIT_PURCHASE_TRANSACTIONS = '/api/v1/nft/creditPurchaseTransactions'
+
 export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo {
     api_url: string;
 
@@ -22,7 +24,7 @@ export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo
     async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise<void> {
         const req = new ReqCreditPurchaseTransactionEntities(purchaseTransactionEntities);
         await axios.put(
-            `${this.api_url}${HEARTBEAT_ENDPOINT}`,
+            `${this.api_url}${CREDIT_PURCHASE_TRANSACTIONS}`,
             req,
             {
                 headers: {

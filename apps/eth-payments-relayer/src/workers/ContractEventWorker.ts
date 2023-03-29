@@ -142,7 +142,8 @@ export default class ContractEventWorker {
 
                         const purchaseTransactionEntity = new PurchaseTransactionEntity();
                         purchaseTransactionEntity.txhash = paymentEventEntity.txHash;
-                        purchaseTransactionEntity.timestamp = paymentEventEntity.timestamp;
+                        purchaseTransactionEntity.recipientAddress = paymentEventEntity.cudosAddress;
+                        purchaseTransactionEntity.timestamp = paymentEventEntity.timestamp * 1000; // eth timestamps are in seconds
 
                         ContractEventWorker.log('\tSaving purchase transaction to database...');
                         await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
@@ -150,7 +151,7 @@ export default class ContractEventWorker {
                 }
 
             } else {
-                ContractEventWorker.log(`No events found until curren block. Block number: ${currentEthereumBlock}`);
+                ContractEventWorker.log(`No events found until current block. Block number: ${currentEthereumBlock}`);
             }
 
             // save last checked block

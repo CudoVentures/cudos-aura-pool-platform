@@ -1,9 +1,9 @@
 import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 
 export class ReqCreditPurchaseTransactionEntities {
-    purcahseTransactionEntitiesJson: any[];
+    purchaseTransactionEntitiesJson: any[];
 
-    constructor(purcahseTransactionEntities: PurchaseTransactionEntity[]) {
-        this.purcahseTransactionEntitiesJson = purcahseTransactionEntities.map((entity) => PurchaseTransactionEntity.toJson(entity));
+    constructor(purchaseTransactionEntities: PurchaseTransactionEntity[]) {
+        this.purchaseTransactionEntitiesJson = purchaseTransactionEntities.map((entity) => PurchaseTransactionEntity.toJson(entity));
     }
 }

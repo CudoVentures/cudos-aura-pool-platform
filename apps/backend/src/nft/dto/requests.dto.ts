@@ -42,7 +42,7 @@ export class ReqCreditPurchaseTransactionEntities {
     @IsArray()
     @ValidateNested()
     @Type(() => PurchaseTransactionJsonValidations)
-        purcahseTransactionEntitiesJson: PurchaseTransactionJsonValidations[];
+        purchaseTransactionEntitiesJson: PurchaseTransactionJsonValidations[];
 }
 
 export class ReqFetchPurchaseTransactions {
