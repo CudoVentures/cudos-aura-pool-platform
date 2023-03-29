@@ -55,13 +55,7 @@ export default class NftEventEntity {
     }
 
     formatTransferPriceInUsd(): string {
-        const formattedTransferPriceInUsd = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(this.transferPriceInUsd);
-        return formattedTransferPriceInUsd;
+        return numeral(this.transferPriceInUsd).format(ProjectUtils.NUMERAL_USD);
     }
 
     getTimePassedDisplay(): string {

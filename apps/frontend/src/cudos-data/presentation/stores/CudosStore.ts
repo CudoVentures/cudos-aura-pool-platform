@@ -209,13 +209,7 @@ export default class CudosStore {
 
     formatPriceInUsdForNft(nftEntity: NftEntity): string {
         const price = this.getNftUsdPrice(nftEntity);
-        const formattedPrice = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(price);
-        return formattedPrice;
+        return numeral(price.toString()).format(ProjectUtils.NUMERAL_USD);
     }
 
     formatPriceInUsdForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
