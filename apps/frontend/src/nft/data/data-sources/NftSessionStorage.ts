@@ -45,6 +45,14 @@ export default class NftSessionStorage {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jsonEntities));
     }
 
+    onNewPurchase(txHash: string) {
+        const purchaseTransactionEntity = new PurchaseTransactionEntity();
+        purchaseTransactionEntity.txhash = txHash;
+        purchaseTransactionEntity.timestamp = Date.now();
+
+        this.updatePurchaseTxsMap([purchaseTransactionEntity]);
+    }
+
     updatePurchaseTxsMap(purchaseTransactionEntities: PurchaseTransactionEntity[]): void {
         try {
             const purchaseTransactionEntitiesMap = this.getPurchaseTxsMap();

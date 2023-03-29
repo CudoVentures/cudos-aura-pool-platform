@@ -1,4 +1,3 @@
-import { makeAutoObservable } from 'mobx';
 import { PurchaseTransactionStatus } from '../nft.types';
 import { PurchaseTransactionRepo } from '../repos/purchase-transaction.repo';
 
@@ -13,12 +12,10 @@ export default class PurchaseTransactionEntity {
         this.recipientAddress = '';
         this.timestamp = 0;
         this.status = PurchaseTransactionStatus.PENDING;
-
-        makeAutoObservable(this);
     }
 
-    getTimeFormatted(): string {
-        return new Date(this.timestamp).toLocaleString();
+    isPending(): boolean {
+        return this.status === PurchaseTransactionStatus.PENDING;
     }
 
     getStatusString(): string {

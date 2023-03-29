@@ -11,8 +11,7 @@ import { PurchaseTransactionStatus } from '../nft.types';
 
 const PURCAHSE_TRANSACTIONS_TABLE_NAME = 'purchase_transactions'
 
-export const enum PurchaseTransactionsRepoCOlumn {
-    ID = 'id',
+export const enum PurchaseTransactionsRepoColumn {
     TX_HASH = 'tx_hash',
     RECIPIENT_ADDRESS = 'recipient_address',
     TIMESTAMP = 'timestamp',

@@ -370,28 +370,27 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 </StyledContainer>
                             </ColumnLayout>
 
-                            {/* {nftPresaleStore.isUserEligibleToBuy() === true && nftPresaleStore.getPresaleMintedPercent() !== 100 && ( */}
-                            <>
-                                {walletStore.isConnected() === false ? (
-                                    <div className = { 'FlexSingleCenter ColorError060 Bold' } >
+                            {nftPresaleStore.isUserEligibleToBuy() === true && nftPresaleStore.getPresaleMintedPercent() !== 100 && (
+                                <>
+                                    {walletStore.isConnected() === false ? (
+                                        <div className = { 'FlexSingleCenter ColorError060 Bold' } >
                                             Connect your wallet to buy
-                                    </div>
-                                ) : (
-                                    <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                                        <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
-                                        <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
-                                    </Actions>
-                                ) }
-                            </>
-                            {/* )} */}
+                                        </div>
+                                    ) : (
+                                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
+                                        </Actions>
+                                    ) }
+                                </>
+                            )}
                         </ColumnLayout>
 
                         <PictureGallery
                             className={'PresaleNftPictureGallery'}
                             picture={nftPresaleStore.getPresaleNftPicture()}
                             onClickNext={nftPresaleStore.onClickNextPresaleNftPicture}
-                            onClickPrevious={nftPresaleStore.onClickPreviousPresaleNftPicture}
-                        />
+                            onClickPrevious={nftPresaleStore.onClickPreviousPresaleNftPicture} />
                     </RowLayout>
                 )}
             </div>

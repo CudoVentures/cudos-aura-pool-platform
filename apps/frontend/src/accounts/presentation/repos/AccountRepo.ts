@@ -4,8 +4,6 @@ import SuperAdminEntity from '../../entities/SuperAdminEntity';
 import UserEntity from '../../entities/UserEntity';
 import { StdSignature } from 'cudosjs';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
-import PurchaseTransactionsFilterModel from '../../../nft/entities/PurchaseTransactionsFilterModel';
-import PurchaseTransactionEntity from '../../../nft/entities/PurchaseTransactionEntity';
 
 export default interface AccountRepo {
 

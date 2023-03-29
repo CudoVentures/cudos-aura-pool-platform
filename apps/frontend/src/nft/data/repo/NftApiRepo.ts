@@ -21,7 +21,7 @@ import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity'
 export default class NftApiRepo implements NftRepo {
 
     nftApi: NftApi;
-    nftSessioNStorage: NftSessionStorage;
+    nftSessionStorage: NftSessionStorage;
 
     enableActions: () => void;
     disableActions: () => void;
@@ -29,7 +29,7 @@ export default class NftApiRepo implements NftRepo {
 
     constructor() {
         this.nftApi = new NftApi();
-        this.nftSessioNStorage = new NftSessionStorage();
+        this.nftSessionStorage = new NftSessionStorage();
 
         this.enableActions = null;
         this.disableActions = null;
@@ -67,7 +67,7 @@ export default class NftApiRepo implements NftRepo {
         try {
             this.disableActions?.();
             const sessionStoragePurchaseTransactionEntities = [];
-            this.nftSessioNStorage.getPurchaseTxsMap().forEach((value, key) => {
+            this.nftSessionStorage.getPurchaseTxsMap().forEach((value, key) => {
                 sessionStoragePurchaseTransactionEntities.push(value);
             })
 
@@ -139,7 +139,6 @@ export default class NftApiRepo implements NftRepo {
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntityResult.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
-                // const memo = `{"uuid":"${nftEntity.id}"}`;
                 const memo = new MintMemo(nftEntity.id, ledger.accountAddress).toJsonString();
 
                 // sign transaction and send it to backend
@@ -147,12 +146,7 @@ export default class NftApiRepo implements NftRepo {
                 txHash = tx.transactionHash;
 
                 // set tx hash in storage until processed by the observer
-                // const purchaseTransactionEntity = new PurchaseTransactionEntity();
-                // purchaseTransactionEntity.txhash = txHash;
-                // purchaseTransactionEntity.timestamp = Date.now();
-
-                // this.nftSessioNStorage.updatePurchaseTxsMap([purchaseTransactionEntity]);
-
+                this.nftSessionStorage.onNewPurchase(txHash);
             } else {
                 const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
@@ -160,7 +154,7 @@ export default class NftApiRepo implements NftRepo {
 
             nftEntity.markAsMinted();
             nftEntity.setPricesZero();
-            this.nftSessioNStorage.updateNftsMap([nftEntity]);
+            this.nftSessionStorage.updateNftsMap([nftEntity]);
 
             return txHash;
         } catch (ex) {
@@ -209,11 +203,7 @@ export default class NftApiRepo implements NftRepo {
             }
 
             // set tx hash in storage until processed by the observer
-            const purchaseTransactionEntity = new PurchaseTransactionEntity();
-            purchaseTransactionEntity.txhash = txHash;
-            purchaseTransactionEntity.timestamp = Date.now();
-
-            this.nftSessioNStorage.updatePurchaseTxsMap([purchaseTransactionEntity]);
+            this.nftSessionStorage.onNewPurchase(txHash);
 
             return txHash;
         } catch (e) {
@@ -233,7 +223,7 @@ export default class NftApiRepo implements NftRepo {
             const txHash = tx.transactionHash;
 
             nftEntity.priceInAcudos = priceInCudos;
-            this.nftSessioNStorage.updateNftsMap([nftEntity]);
+            this.nftSessionStorage.updateNftsMap([nftEntity]);
             return txHash;
         } finally {
             this.enableActions?.();
@@ -309,7 +299,7 @@ export default class NftApiRepo implements NftRepo {
     }
 
     private checkNftsVersusSessionStorage(nftEntities: NftEntity[]): NftEntity[] {
-        const nftsMap = this.nftSessioNStorage.getNftsMap();
+        const nftsMap = this.nftSessionStorage.getNftsMap();
         return nftEntities.map((nftEntity) => {
             const storageNft = nftsMap.get(nftEntity.id);
             if (storageNft !== undefined && nftEntity.updatedAt === storageNft.updatedAt) {

@@ -14,7 +14,6 @@ import {
 } from '../entities/CudosAuraPoolServiceTxFilter';
 import MintMemo from '../entities/MintMemo';
 import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
-import { convertBlockTimeToTimestamp } from './helpers';
 import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
 import { EmailRepo } from './repos/EmailRepo';
 
@@ -163,7 +162,7 @@ export default class TxFindWorker {
             purchaseTransactionEntity.recipientAddress = memoJson.recipientAddress;
 
             const block = await this.chainClient.getBlock(tx.height);
-            purchaseTransactionEntity.timestamp = convertBlockTimeToTimestamp(block.header.time);
+            purchaseTransactionEntity.timestamp = new Date(block.header.time).getTime();
 
             purchaseTransactionEntities.push(purchaseTransactionEntity);
         }

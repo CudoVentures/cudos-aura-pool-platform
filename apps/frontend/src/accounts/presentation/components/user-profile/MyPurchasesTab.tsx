@@ -8,10 +8,13 @@ import StyledContainer, { ContainerPadding } from '../../../../core/presentation
 import '../../styles/my-purchases-tab.css';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../../core/presentation/components/Table';
 import { ALIGN_LEFT } from '../../../../core/presentation/components/TableDesktop';
-import PurchaseTransactionEntity from '../../../../nft/entities/PurchaseTransactionEntity';
+import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../../../../nft/entities/PurchaseTransactionEntity';
 import { CHAIN_DETAILS } from '../../../../core/utilities/Constants';
 import Svg from '../../../../core/presentation/components/Svg';
 import CheckForPresaleRefundsModalStore from '../../stores/CheckForPresaleRefundsModalStore';
+import InfoIcon from '@mui/icons-material/Info';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ReplayCircleFilledRoundedIcon from '@mui/icons-material/ReplayCircleFilledRounded';
 
 type Props = {
     userProfilePageStore?: UserProfilePageStore
@@ -31,6 +34,19 @@ function MyPurchasesTab({ userProfilePageStore, checkForPresaleRefundsModalStore
         return [ALIGN_LEFT, ALIGN_LEFT, ALIGN_LEFT];
     }
 
+    function getStatusSvg(purchaseTransactionEntity: PurchaseTransactionEntity) {
+        switch (purchaseTransactionEntity.status) {
+            case PurchaseTransactionStatus.PENDING:
+                return InfoIcon;
+            case PurchaseTransactionStatus.SUCCESS:
+                return CheckCircleIcon;
+            case PurchaseTransactionStatus.REFUNDED:
+                return ReplayCircleFilledRoundedIcon;
+            default:
+                return null;
+        }
+    }
+
     function renderCollectionsRows() {
         return userProfilePageStore.purchaseTransactionEntities.map((purchaseTransactionEntity: PurchaseTransactionEntity) => {
             const tableCells = [
@@ -45,11 +61,11 @@ function MyPurchasesTab({ userProfilePageStore, checkForPresaleRefundsModalStore
                                 className={'PurchaseStatusCell FlexRow'}
                                 onClick={() => checkForPresaleRefundsModalStore.showSignal()}
                             >
-                                <Svg svg={purchaseTransactionEntity.getStatusSvg()} />
+                                <Svg svg={getStatusSvg(purchaseTransactionEntity)} />
                                 Check for refunds
                             </div>
                             : <>
-                                <Svg svg={purchaseTransactionEntity.getStatusSvg()} />
+                                <Svg svg={getStatusSvg(purchaseTransactionEntity)} />
                                 {purchaseTransactionEntity.getStatusString()}
                             </>
                         }

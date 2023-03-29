@@ -2,15 +2,13 @@ import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
 import S from '../../core/utilities/Main';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
-import InfoIcon from '@mui/icons-material/Info';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ReplayCircleFilledRoundedIcon from '@mui/icons-material/ReplayCircleFilledRounded';
 
 export enum PurchaseTransactionStatus {
     PENDING = '1',
     SUCCESS = '2',
     REFUNDED = '3',
 }
+
 export default class PurchaseTransactionEntity {
     txhash: string;
     recipientAddress: string;
@@ -36,19 +34,6 @@ export default class PurchaseTransactionEntity {
 
     getTimeFormatted(): string {
         return moment(new Date(this.timestamp)).format(ProjectUtils.MOMENT_FORMAT_DATE_AND_TIME);
-    }
-
-    getStatusSvg() {
-        switch (this.status) {
-            case PurchaseTransactionStatus.PENDING:
-                return InfoIcon;
-            case PurchaseTransactionStatus.SUCCESS:
-                return CheckCircleIcon;
-            case PurchaseTransactionStatus.REFUNDED:
-                return ReplayCircleFilledRoundedIcon;
-            default:
-                return null;
-        }
     }
 
     getStatusString(): string {
