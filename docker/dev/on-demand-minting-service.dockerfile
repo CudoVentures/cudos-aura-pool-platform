@@ -24,7 +24,6 @@ ARG AURA_POOL_API_KEY
 
 ENV WALLET_MNEMONIC=${MINTER_WALLET_MNEMONIC}
 ENV AURA_POOL_BACKEND=${AURA_POOL_BACKEND}
-ENV STATE_FILE=${MINTER_STATE_FILE}
 ENV MAX_RETRIES=${MINTER_MAX_RETRIES}
 ENV RETRY_INTERVAL=${MINTER_RETRY_INTERVAL}
 ENV RELAY_INTERVAL=${MINTER_RELAY_INTERVAL}
@@ -41,7 +40,7 @@ COPY ./CudosOnDemandMintingService ./CudosOnDemandMintingService
 
 WORKDIR ${WORKING_DIR}/CudosOnDemandMintingService
 
-RUN if [ "${ON_DEMAND_MINTING_STARTING_HEIGHT}" != "" ]; then echo "{\"height\": ${ON_DEMAND_MINTING_STARTING_HEIGHT} }" > ./state.json; fi;
+# RUN if [ "${ON_DEMAND_MINTING_STARTING_HEIGHT}" != "" ]; sed -i "s/STARTING_HEIGHT.*/STARTING_HEIGHT=\"${ON_DEMAND_MINTING_STARTING_HEIGHT}\"/" "state.json"; fi;
 
 RUN go build -mod=readonly ./cmd/cudos-ondemand-minting-service
 
@@ -50,7 +49,7 @@ RUN echo "WALLET_MNEMONIC=\"${MINTER_WALLET_MNEMONIC}\"" > .env && \
     echo "CHAIN_RPC=${CHAIN_RPC}" >> .env && \
     echo "CHAIN_GRPC=${CHAIN_GRPC}" >> .env && \
     echo "AURA_POOL_BACKEND=${AURA_POOL_BACKEND}" >> .env && \
-    echo "STATE_FILE=${MINTER_STATE_FILE}" >> .env && \
+    if [ "${ON_DEMAND_MINTING_STARTING_HEIGHT}" != "" ]; then echo "STARTING_HEIGHT=${ON_DEMAND_MINTING_STARTING_HEIGHT}" >> .env; else echo "STARTING_HEIGHT=1" >> .env; fi && \
     echo "MAX_RETRIES=${MINTER_MAX_RETRIES}" >> .env && \
     echo "RETRY_INTERVAL=${MINTER_RETRY_INTERVAL}" >> .env && \
     echo "RELAY_INTERVAL=${MINTER_RELAY_INTERVAL}" >> .env && \
