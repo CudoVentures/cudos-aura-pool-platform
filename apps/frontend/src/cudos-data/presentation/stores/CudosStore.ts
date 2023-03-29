@@ -189,19 +189,33 @@ export default class CudosStore {
 
     formatPriceInCudosForNft(nftEntity: NftEntity): string {
         const price = this.getNftCudosPriceForNft(nftEntity);
+        const formattedPrice = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(price.toNumber());
         const prefix = nftEntity.isMinted() === true ? '' : '~';
-        return `${prefix}${price.toFixed(2)} CUDOS`;
+        return `${prefix}${formattedPrice} CUDOS`;
     }
 
     formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
         const price = this.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity);
         const prefix = nftEntity.isMinted() === true ? '' : '~';
-        return `${prefix}${price.toFixed(2)} CUDOS`;
+        const formattedPrice = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(price.toNumber());
+        return `${prefix}${formattedPrice} CUDOS`;
     }
 
     formatPriceInUsdForNft(nftEntity: NftEntity): string {
         const price = this.getNftUsdPrice(nftEntity);
-        return numeral(price.toString()).format(ProjectUtils.NUMERAL_USD);
+        const formattedPrice = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(price);
+        return formattedPrice;
     }
 
     formatPriceInUsdForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
