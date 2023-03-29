@@ -43,11 +43,25 @@ export default class NftEventEntity {
     }
 
     formatTransferPriceInCudos(): string {
-        return `${this.transferPriceInAcudos.div(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(2)} CUDOS`;
+        const transferPriceInCudos = Number(
+            this.transferPriceInAcudos
+                .div(ProjectUtils.CUDOS_CURRENCY_DIVIDER)
+                .toFixed(2)
+        );
+        const formattedTransferPriceInCudos = new Intl.NumberFormat(
+            'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            .format(transferPriceInCudos);
+        return `${formattedTransferPriceInCudos} CUDOS`;
     }
 
     formatTransferPriceInUsd(): string {
-        return numeral(this.transferPriceInUsd).format(ProjectUtils.NUMERAL_USD);
+        const formattedTransferPriceInUsd = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(this.transferPriceInUsd);
+        return formattedTransferPriceInUsd;
     }
 
     getTimePassedDisplay(): string {
