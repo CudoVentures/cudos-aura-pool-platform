@@ -84,9 +84,10 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }
 
     function onClickExploreMarketplace() {
-        marketplaceHeadingRef?.current?.scrollIntoView({
-            'behavior': 'smooth',
-        });
+        onClickSeeAllNfts()
+        // marketplaceHeadingRef?.current?.scrollIntoView({
+        //     'behavior': 'smooth',
+        // });
     }
 
     function checkBtcAddressRegistered(): boolean {
