@@ -221,7 +221,13 @@ export default class WalletStore {
     }
 
     formatBalanceInCudosInt(): string {
-        return this.balance?.toFixed(0) ?? '0';
+        if (!this.balance) {
+            return '0';
+        }
+        const balanceAsNumber = parseFloat(this.balance.toFixed(0));
+        return new Intl.NumberFormat('en-US', {
+            maximumFractionDigits: 0,
+        }).format(balanceAsNumber);
     }
 
     formatBalanceInCudosFraction(): string {
