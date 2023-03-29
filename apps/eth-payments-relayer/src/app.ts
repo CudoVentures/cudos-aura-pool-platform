@@ -8,7 +8,7 @@ import ContractEventWorker from './workers/ContractEventWorker';
 import AuraContractRpcRepo from './data/AuraContractRpcRepo';
 import CudosRefundWorker from './workers/CudosRefundWorker';
 import Logger from '../config/Logger';
-import CoinGeckoServiceApiRepo from './data/CoinGeckoServiceApiRepo';
+import CryptoCompareApiRepo from './data/CryptoCompareApiRepo';
 
 export default class App {
     // eslint-disable-next-line no-undef
@@ -124,7 +124,7 @@ export default class App {
     async getCoinGeckoServiceApi() {
         while (this.running) {
             try {
-                const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
+                const coinGeckoServiceApi = new CryptoCompareApiRepo();
 
                 // check if it is working
                 await coinGeckoServiceApi.fetchEthUsdPrice();

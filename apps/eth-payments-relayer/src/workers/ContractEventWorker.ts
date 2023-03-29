@@ -5,13 +5,13 @@ import Logger from '../../config/Logger';
 import { PaymentStatus } from '../entities/PaymentEventEntity';
 import Config from '../../config/Config';
 import BigNumber from 'bignumber.js';
-import CoinGeckoServiceRepo from './repos/CoinGeckoServiceRepo';
+import CryptoCompareRepo from './repos/CryptoCompareRepo';
 
 export default class ContractEventWorker {
     static WORKER_NAME = 'CONTRACT_EVENT_WORKER';
     static FIFTEEN_MINUTES_IN_MS = 15 * 60 * 1000;
 
-    coinGeckoRepo: CoinGeckoServiceRepo;
+    coinGeckoRepo: CryptoCompareRepo;
     cudosChainRepo: CudosChainRepo;
     contractRepo: AuraContractRepo;
     cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
@@ -20,7 +20,7 @@ export default class ContractEventWorker {
     cudosEthPrice: BigNumber;
     lastUpdatedPricesTimestamp: number;
 
-    constructor(coinGeckoRepo: CoinGeckoServiceRepo, cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
+    constructor(coinGeckoRepo: CryptoCompareRepo, cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
         this.coinGeckoRepo = coinGeckoRepo;
         this.cudosChainRepo = cudosChainRepo;
         this.contractRepo = contractRepo;

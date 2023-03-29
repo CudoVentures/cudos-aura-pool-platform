@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-export default interface CoinGeckoServiceRepo {
+export default interface CryptoCompareRepo {
 
     fetchEthUsdPrice(): Promise < number >;
     fetchCudosEthPrice(): Promise < BigNumber >;
