@@ -8,7 +8,7 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
 import PageLayout from '../../../core/presentation/components/PageLayout';
-import Button, { ButtonPadding, ButtonType } from '../../../core/presentation/components/Button';
+import Button, { ButtonColor, ButtonPadding, ButtonType } from '../../../core/presentation/components/Button';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
 import TopCollections from '../../../collection/presentation/components/TopCollections';
 import PageHeader from '../../../layout/presentation/components/PageHeader';
@@ -167,42 +167,42 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     const presaleTimesLeft = nftPresaleStore.getPresaleTimeLeft();
 
     return (
-        <PageLayout className = { 'PageMarketplace' } >
+        <PageLayout className={'PageMarketplace'} >
             <PageHeader />
             <div className={'PageContent AppContent'} >
 
-                <div className = { 'MarketplaceHero' } >
-                    <div className = { 'MarketplaceHeroInfo' } >
-                        <div className = { 'MarketplaceHeroInfoHeadingLine1 ExtraBold' } >Mine BTC</div>
-                        <div className = { 'MarketplaceHeroInfoHeadingLine2 ExtraBold' } >Sustainably</div>
-                        <div className = { 'H3 MarketplaceHeroInfoDesc' } >Enabling mining power access to the next million miners</div>
-                        <div className = { 'MarketplaceHeroInfoCons FlexRow' } >
+                <div className={'MarketplaceHero'} >
+                    <div className={'MarketplaceHeroInfo'} >
+                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >Mine BTC</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Sustainably</div>
+                        <div className={'H3 MarketplaceHeroInfoDesc'} >Enabling mining power access to the next million miners</div>
+                        <div className={'MarketplaceHeroInfoCons FlexRow'} >
                             <label>Daily payments</label>
                             <label>Mine on real bitcoin</label>
                             <label>Simple process</label>
                         </div>
                         {nftPresaleStore.isPresaleOver() === true
                             && (<Actions>
-                                <Button onClick = { onClickExploreMarketplace }>Explore Marketplace</Button>
+                                <Button onClick={onClickExploreMarketplace}>Explore Marketplace</Button>
                             </Actions>)}
                     </div>
-                    <div className = { 'MarketplaceHeroBg' }>
-                        <div className = { 'HeroCircle HeroCircle03' } />
-                        <img className = { 'HeroImg02' } src={'/assets/img/marketplace-hero-02.png'} />
-                        <div className = { 'HeroCircle HeroCircle01' } />
-                        <div className = { 'HeroCircle HeroCircle02' } />
-                        <img className = { 'HeroImg01' } src={'/assets/img/marketplace-hero-01.png'} />
+                    <div className={'MarketplaceHeroBg'}>
+                        <div className={'HeroCircle HeroCircle03'} />
+                        <img className={'HeroImg02'} src={'/assets/img/marketplace-hero-02.png'} />
+                        <div className={'HeroCircle HeroCircle01'} />
+                        <div className={'HeroCircle HeroCircle02'} />
+                        <img className={'HeroImg01'} src={'/assets/img/marketplace-hero-01.png'} />
                     </div>
                 </div>
                 {nftPresaleStore.isPresaleOver() === true && (<>
-                    <div ref = { marketplaceHeadingRef } className={'MarketplaceHeading'}>
+                    <div ref={marketplaceHeadingRef} className={'MarketplaceHeading'}>
                         <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
                         <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
                     </div>
 
-                    <div className = { 'SectionWrapper' } >
+                    <div className={'SectionWrapper'} >
                         <div className={'H2 ExtraBold SectionHeadingCnt'}>Trending NFTs</div>
-                        { marketplacePageStore.trendingNftEntities.length === 0 ? (
+                        {marketplacePageStore.trendingNftEntities.length === 0 ? (
                             <div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>
                         ) : (
                             <Slider>
@@ -215,51 +215,57 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                     )
                                 })}
                             </Slider>
-                        ) }
+                        )}
                         <Actions
-                            className = { 'SectionActions' }
+                            className={'SectionActions'}
                             layout={ActionsLayout.LAYOUT_ROW_CENTER}
                             height={ActionsHeight.HEIGHT_48} >
                             <Button
                                 padding={ButtonPadding.PADDING_24}
                                 type={ButtonType.ROUNDED}
                                 onClick={onClickSeeAllNfts} >
-                            See All NFTs
+                                See All NFTs
                             </Button>
                         </Actions>
                     </div>
 
-                    <div className = { 'SectionWrapper SectionHashRateDrops' } >
-                        <div className = { 'HashRateDropsInfo FlexColumn' } >
-                            <div className = { 'H2 ExtraBold' } >New Hash Rate NFT Drops</div>
-                            <div className = { 'B1' } >Powered by AuraPool Protocol</div>
-                            <Actions className = { 'HashRateDropsInfoActions' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL } >
-                                <Button onClick = { onClickSeeAllNfts }>Explore NFTs</Button>
+                    <div className={'SectionWrapper SectionHashRateDrops'} >
+                        <div className={'HashRateDropsInfo FlexColumn'} >
+                            <div className={'H2 ExtraBold'} >New Hash Rate NFT Drops</div>
+                            <div className={'B1'} >Powered by AuraPool Protocol</div>
+                            <Actions className={'HashRateDropsInfoActions'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} >
+                                <Button
+                                    className='NoBorder'
+                                    color={ButtonColor.SCHEME_4}
+                                    onClick={onClickSeeAllNfts}
+                                >
+                                    Explore NFTs
+                                </Button>
                             </Actions>
                         </div>
 
-                        <div className = { 'HashRateDropsCnt' }>
-                            { marketplacePageStore.newNftDropsEntities.length === 0 ? (
+                        <div className={'HashRateDropsCnt'}>
+                            {marketplacePageStore.newNftDropsEntities.length === 0 ? (
                                 <div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>
                             ) : (
-                                <Slider itemsPerPage = { 3 } showDots = { false } navWithTransparency = { false } >
-                                    { marketplacePageStore.newNftDropsEntities.map((nftEntity: NftEntity, index: number) => {
+                                <Slider itemsPerPage={3} showDots={false} navWithTransparency={false} >
+                                    {marketplacePageStore.newNftDropsEntities.map((nftEntity: NftEntity, index: number) => {
                                         return (
                                             <NftPreviewInPicture
                                                 key={index}
                                                 nftEntity={nftEntity}
                                                 collectionEntity={marketplacePageStore.getCollectionById(nftEntity.collectionId)} />
                                         )
-                                    }) }
+                                    })}
                                 </Slider>
-                            ) }
+                            )}
                         </div>
                     </div>
 
-                    <div className = { 'SectionWrapper' } >
-                        <div className = { 'SectionHeadingCnt' } >
+                    <div className={'SectionWrapper'} >
+                        <div className={'SectionHeadingCnt'} >
                             <div className={'H2 ExtraBold'}>Top Collections</div>
-                            <div className = { 'CenterCnt FlexSingleCenter' } >
+                            <div className={'CenterCnt FlexSingleCenter'} >
                                 <DefaultIntervalPicker defaultIntervalPickerState={marketplacePageStore.defaultIntervalPickerState} />
                             </div>
                         </div>
@@ -267,61 +273,61 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                             topCollectionEntities={marketplacePageStore.topCollectionEntities}
                             collectionDetailsMap={marketplacePageStore.collectionDetailsMap} />
                         <Actions
-                            className = { 'SectionActions' }
+                            className={'SectionActions'}
                             layout={ActionsLayout.LAYOUT_ROW_CENTER}
                             height={ActionsHeight.HEIGHT_48}>
                             <Button
                                 onClick={onClickSeeAllCollections}
                                 padding={ButtonPadding.PADDING_24}>
-                            See All Collections
+                                See All Collections
                             </Button>
                         </Actions>
                     </div>
 
                     <div className={'SectionWrapper'}>
                         <div className={'SectionHeadingCnt H2 ExtraBold'}>Popular Farms</div>
-                        { marketplacePageStore.popularFarmsEntities.length === 0 ? (
+                        {marketplacePageStore.popularFarmsEntities.length === 0 ? (
                             <div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>
                         ) : (
-                            <Slider itemsPerPage = { 3 } extendPaddingForShadow = { true } >
-                                { marketplacePageStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
+                            <Slider itemsPerPage={3} extendPaddingForShadow={true} >
+                                {marketplacePageStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
                                     return (
                                         <MiningFarmPreview
                                             key={index}
                                             miningFarmEntity={miningFarmEntity}
-                                            miningFarmDetailsEntity = { marketplacePageStore.getMiningFarmDetailsEntity(miningFarmEntity.id) } />
+                                            miningFarmDetailsEntity={marketplacePageStore.getMiningFarmDetailsEntity(miningFarmEntity.id)} />
                                     )
-                                }) }
+                                })}
                             </Slider>
-                        ) }
+                        )}
                         <Actions
-                            className = { 'SectionActions' }
+                            className={'SectionActions'}
                             layout={ActionsLayout.LAYOUT_ROW_CENTER}
                             height={ActionsHeight.HEIGHT_48}>
                             <Button
                                 onClick={onClickSeeAllFarms}
                                 padding={ButtonPadding.PADDING_24}
                                 type={ButtonType.ROUNDED}>
-                        See All Farms
+                                See All Farms
                             </Button>
                         </Actions>
                     </div>
                 </>)}
                 {nftPresaleStore.isPresaleOver() === false && (
-                    <RowLayout className={ 'PresaleContainer' } numColumns={2} gap={100}>
-                        <ColumnLayout className={ 'PresaleInfoColumn' } gap={24}>
-                            <div className={ 'Primary60 B2 SemiBold' }>PRESALE COLLECTION</div>
-                            <div className={ 'ColorNeutral100 B1 Bold'}>{presaleCollectionEntity?.name ?? ''}</div>
-                            <div className={ 'B2 SemiBold' }>{presaleCollectionEntity?.description ?? ''}</div>
-                            <ColumnLayout className={ 'PresaleInfoColumn' } gap={8}>
+                    <RowLayout className={'PresaleContainer'} numColumns={2} gap={100}>
+                        <ColumnLayout className={'PresaleInfoColumn'} gap={24}>
+                            <div className={'Primary60 B2 SemiBold'}>PRESALE COLLECTION</div>
+                            <div className={'ColorNeutral100 B1 Bold'}>{presaleCollectionEntity?.name ?? ''}</div>
+                            <div className={'B2 SemiBold'}>{presaleCollectionEntity?.description ?? ''}</div>
+                            <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
                                 <StyledContainer
-                                    className={ 'PhaseInfoContainer' }
+                                    className={'PhaseInfoContainer'}
                                     containerPadding={ContainerPadding.PADDING_16}
                                     containerBorder={ContainerBorder.PRIMARY_60}>
-                                    <ColumnLayout className={ 'PhaseInfoColumn' } gap={8}>
-                                        <RowLayout className={ 'PhaseHeader' } numColumns={2}>
+                                    <ColumnLayout className={'PhaseInfoColumn'} gap={8}>
+                                        <RowLayout className={'PhaseHeader'} numColumns={2}>
                                             <div className={'PhaseName B3 SemiBold'}>Presale Phase</div>
-                                            <div className={ 'FlexRow PhaseEta B2 SemiBold' }>
+                                            <div className={'FlexRow PhaseEta B2 SemiBold'}>
                                                 <div className={'ColorNeutral050'}>Ends in:</div>
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleDaysLeft}</div>
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleHoursLeft}</div>
@@ -329,35 +335,35 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleSecondsleft}</div>
                                             </div>
                                         </RowLayout>
-                                        <div className={ 'PhasePriceRow FlexRow' }>
-                                            <div className={ 'PriceInfo FlexRow' }>
+                                        <div className={'PhasePriceRow FlexRow'}>
+                                            <div className={'PriceInfo FlexRow'}>
                                                 <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
-                                                <div className={ 'PriceWithIcon FlexRow' }>
-                                                    <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM}/>
+                                                <div className={'PriceWithIcon FlexRow'}>
+                                                    <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} />
                                                     <div className={'B2 SemiBold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
                                                 </div>
-                                                <div className={ 'PriceWithIcon FlexRow' }>
-                                                    <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM}/>
+                                                <div className={'PriceWithIcon FlexRow'}>
+                                                    <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} />
                                                     <div className={'B2 SemiBold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
                                                     <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
                                                 </div>
                                             </div>
-                                            <div className={ 'WhitelistedInfo B2 SemiBold ColorNeutral060' }>Whitelisted: <span className={'ColorNeutral100'}>{nftPresaleStore.totalWhitelistedUsersCount}</span></div>
+                                            <div className={'WhitelistedInfo B2 SemiBold ColorNeutral060'}>Whitelisted: <span className={'ColorNeutral100'}>{nftPresaleStore.totalWhitelistedUsersCount}</span></div>
                                         </div>
                                         <Progressbar fillPercent={nftPresaleStore.getPresaleMintedPercent()} />
-                                        <div className={ 'AmountMintedRow FlexRow' }>
+                                        <div className={'AmountMintedRow FlexRow'}>
                                             <div className={'B3 ColorNeutral60'}>Minted so far</div>
                                             <div className={'B3 ColorNeutral60'}>{nftPresaleStore.getPresaleMintedPercent().toFixed(2)}% ({nftPresaleStore.getPresaleMintedAmount()}/{nftPresaleStore.getPresaleTotalAmount()})</div>
                                         </div>
                                     </ColumnLayout>
                                 </StyledContainer>
                                 <StyledContainer
-                                    className={ 'PhaseInfoContainer' }
+                                    className={'PhaseInfoContainer'}
                                     containerPadding={ContainerPadding.PADDING_16} >
-                                    <ColumnLayout className={ 'PhaseInfoColumn' }>
-                                        <RowLayout className={ 'PhaseHeader' } numColumns={2}>
+                                    <ColumnLayout className={'PhaseInfoColumn'}>
+                                        <RowLayout className={'PhaseHeader'} numColumns={2}>
                                             <div className={'PhaseName B3 SemiBold'}>Public Sale</div>
-                                            <div className={ 'B2 SemiBold PhaseEta FlexRow' }>
+                                            <div className={'B2 SemiBold PhaseEta FlexRow'}>
                                                 <div className={'ColorNeutral050'}>Starts in:</div>
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleDaysLeft}</div>
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleHoursLeft}</div>
@@ -373,7 +379,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                             {nftPresaleStore.isUserEligibleToBuy() === true && nftPresaleStore.getPresaleMintedPercent() !== 100 && (
                                 <>
                                     {walletStore.isConnected() === false ? (
-                                        <div className = { 'FlexSingleCenter ColorError060 Bold' } >
+                                        <div className={'FlexSingleCenter ColorError060 Bold'} >
                                             Connect your wallet to buy
                                         </div>
                                     ) : (
@@ -381,7 +387,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                             <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
                                             <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
                                         </Actions>
-                                    ) }
+                                    )}
                                 </>
                             )}
                         </ColumnLayout>
