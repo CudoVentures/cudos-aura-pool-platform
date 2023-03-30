@@ -24,4 +24,13 @@ export default class MintMemo {
             'ethTxHash': entity.ethTxHash,
         }
     }
+
+    static fromJson(json: string): MintMemo {
+        if (json === null) {
+            return null;
+        }
+
+        const obj = JSON.parse(json);
+        return new MintMemo(obj.uuid, obj.recipientAddress, obj.contractPaymentId, obj.ethTxHash);
+    }
 }

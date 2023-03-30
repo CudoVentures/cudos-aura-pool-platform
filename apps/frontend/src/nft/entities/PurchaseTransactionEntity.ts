@@ -71,7 +71,7 @@ export default class PurchaseTransactionEntity {
 
         entity.txhash = json.txhash ?? entity.txhash;
         entity.recipientAddress = json.recipientAddress ?? entity.recipientAddress;
-        entity.timestamp = json.timestamp ?? entity.timestamp;
+        entity.timestamp = parseInt(json.timestamp ?? entity.timestamp.toString());
         entity.status = json.status ?? entity.status;
 
         return entity;

@@ -1,9 +1,10 @@
 import axios from 'axios';
 import Config from '../../config/Config';
+import CudosPriceDataEntity from '../entities/CudosPriceDataEntity';
 import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
 import CudosAuraPoolServiceRepo from '../workers/repos/CudosAuraPoolServiceRepo';
 import { ReqCreditPurchaseTransactionEntities, ReqUpdateLastCheckedBlocks } from './dto/Requests';
-import { ResFetchLastCheckedBlocks } from './dto/Responses';
+import { ResFetchCudosPriceData, ResFetchLastCheckedBlocks } from './dto/Responses';
 
 const HEARTBEAT_ENDPOINT = '/api/v1/general/heartbeat';
 const LAST_BLOCK_ENDPOINT = '/api/v1/general/last-checked-payment-relayer-blocks';
@@ -92,6 +93,15 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
                 },
             },
         );
+    }
+
+    async fetchCudosPriceData(): Promise<CudosPriceDataEntity> {
+        const { data } = await axios.post(
+            `${this.api_url}/api/v1/crypto-compare/fetchCudosData`,
+        );
+        const res = new ResFetchCudosPriceData(data);
+
+        return res.cudosPriceDataEntity;
     }
 
 }

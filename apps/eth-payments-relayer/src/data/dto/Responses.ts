@@ -1,3 +1,4 @@
+import CudosPriceDataEntity from '../../entities/CudosPriceDataEntity';
 import NftEntity from '../../entities/NftEntity';
 
 export class ResFetchLastCheckedBlocks {
@@ -15,5 +16,13 @@ export class ResFetchRandomNftForPresaleMint {
 
     constructor(data) {
         this.nftEntity = NftEntity.fromJson(data.nftEntity);
+    }
+}
+
+export class ResFetchCudosPriceData {
+    cudosPriceDataEntity: CudosPriceDataEntity;
+
+    constructor(data) {
+        this.cudosPriceDataEntity = CudosPriceDataEntity.fromJson(data.cudosDataEntity);
     }
 }

@@ -12,9 +12,6 @@ describe('ContractEventWorker (e2e)', () => {
     const logWarn = jest.spyOn(ContractEventWorker, 'warn');
     const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
-    jest.spyOn(coinGeckoServiceApi, 'fetchEthUsdPrice').mockImplementation(async () => { return 1 })
-    jest.spyOn(coinGeckoServiceApi, 'fetchCudosEthPrice').mockImplementation(async () => { return new BigNumber(1) })
-
     beforeAll(async () => {
         Config.EXPECTED_PRICE_USD = 1;
         Config.EXPECTED_PRICE_EPSILON_PERCENT = 0.01;

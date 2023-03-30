@@ -56,7 +56,7 @@ export default class PaymentTransactionEntity {
 
         let memoJson: MintMemo
         try {
-            memoJson = JSON.parse(txBody.memo);
+            memoJson = MintMemo.fromJson(txBody.memo);
         } catch (e) {
             throw Error(`Failed parse payment send memo: \n\tMemo: ${txBody.memo}\n\tError: ${e}`);
         }

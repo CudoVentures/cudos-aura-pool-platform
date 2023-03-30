@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { NftRepo, NftRepoColumn } from './repos/nft.repo';
-import { NftGroup, NftOrderBy, NftStatus } from './nft.types';
+import { NftGroup, NftOrderBy, NftStatus, PurchaseTransactionStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
@@ -191,7 +191,6 @@ export class NFTService {
 
             // get nft in price by random
             const nftTierEntities = await this.findAllPresaleByCollectionAndPriceUsd(collectionId, priceUsd, dbTx, dbLock);
-
             if (nftTierEntities.length > 0) {
                 const nftIndex = randomInt(0, nftTierEntities.length);
 
@@ -268,71 +267,31 @@ export class NFTService {
         for (let i = purchaseTransactionEntities.length; i-- > 0;) {
             const purchaseTransactionEntity = purchaseTransactionEntities[i];
             const purchaseTransactionEntityToUpdate = purchaseTransactionEntitiesToUpdateMap.get(purchaseTransactionEntity.txhash);
-            if (purchaseTransactionEntityToUpdate.isPending() === true) {
+
+            if (purchaseTransactionEntityToUpdate !== undefined) {
+                if (purchaseTransactionEntityToUpdate.isPending() === false) {
+                    return;
+                }
                 purchaseTransactionEntityToUpdate.status = purchaseTransactionEntity.status;
                 await this.creditPurchaseTransaction(purchaseTransactionEntityToUpdate, dbTx);
             } else {
                 await this.creditPurchaseTransaction(purchaseTransactionEntity, dbTx);
             }
         }
-        // const purchaseTransactionRepos = await this.purchaseTransactionRepo.findAll({
-        //     where: {
-        //         [PurchaseTransactionsRepoColumn.TX_HASH]: txHashes,
-        //     },
-        //     transaction: dbTx,
-        // });
-
-        // const purchaseTransactionEntitiesMap = new Map<string, PurchaseTransactionEntity>();
-        // purchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
-        //     purchaseTransactionEntitiesMap.set(purchaseTransactionEntity.txhash, purchaseTransactionEntity);
-        // });
-
-        // // const purchaseTransactionEntitiesToUpdate = purchaseTransactionRepos.map((purchaseTransactionRepo) => PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo));
-        // purchaseTransactionEntitiesToUpdate.forEach((purchaseTransactionEntity) => {
-        //     const newPurchaseTransactionEntity = purchaseTransactionEntitiesMap.get(purchaseTransactionEntity.txhash);
-        //     if (purchaseTransactionEntity.isPending() === true) {
-        //         purchaseTransactionEntity.status = newPurchaseTransactionEntity.status;
-        //     }
-        // });
-
-        // const purchaseTransactionReposToCreate = [];
-
-        // purchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
-        //     if (purchaseTransactionRepos.findIndex((repo) => repo.txHash === purchaseTransactionEntity.txhash) === -1) {
-        //         purchaseTransactionReposToCreate.push(PurchaseTransactionEntity.toRepo(purchaseTransactionEntity));
-        //     }
-        // });
-
-        // await this.purchaseTransactionRepo.bulkCreate(
-        //     purchaseTransactionReposToCreate.map((repoJson) => repoJson.toJSON()),
-        //     {
-        //         transaction: dbTx,
-        //     },
-        // );
-
-        // for (let i = 0; i < purchaseTransactionEntitiesToUpdate.length; i++) {
-        //     const entity = purchaseTransactionEntitiesToUpdate[i];
-        //     await this.purchaseTransactionRepo.update(
-        //         PurchaseTransactionEntity.toRepo(entity).toJSON(),
-        //         {
-        //             where: { [PurchaseTransactionsRepoColumn.TX_HASH]: entity.txhash },
-        //             transaction: dbTx,
-        //         },
-        //     );
-        // }
     }
 
-    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFIlterModel: PurchaseTransactionsFilterEntity, purchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
-        // const purchaseTransactionRepos = await this.purchaseTransactionRepo.findAll({
-        //     where: {
-        //         [PurchaseTransactionsRepoColumn.RECIPIENT_ADDRESS]: cudosAddress,
-        //     },
-        //     transaction: dbTx,
-        // });
+    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFIlterModel: PurchaseTransactionsFilterEntity, unsavedPurchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
+        const totalPurchaseTransactionEntities = await this.fetchPurchasesTransactionsByRecipientAddress(cudosAddress, dbTx);
+        const savedTransactionsMap = new Map < string, PurchaseTransactionEntity >();
+        totalPurchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
+            savedTransactionsMap.set(purchaseTransactionEntity.txhash, purchaseTransactionEntity);
+        });
 
-        // let totalPurchaseTransactionEntities = purchaseTransactionRepos.map((purchaseTransactionRepo) => PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo));
-        let totalPurchaseTransactionEntities = await this.fetchPurchasesTransactionsByRecipientAddress(cudosAddress, dbTx);
-        totalPurchaseTransactionEntities = totalPurchaseTransactionEntities.concat(purchaseTransactionEntities)
+        unsavedPurchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
+            if (savedTransactionsMap.has(purchaseTransactionEntity.txhash) === false) {
+                totalPurchaseTransactionEntities.push(purchaseTransactionEntity);
+            }
+        });
 
         const sortedPurchaseTransactionEntities = totalPurchaseTransactionEntities.sort((a, b) => {
             return b.timestamp - a.timestamp;

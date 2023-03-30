@@ -28,4 +28,5 @@ export default interface NftRepo {
     listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string >;
     mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger, cudosPriceInUsd: number): Promise < string >;
     fetchPurchaseTransactions(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel): Promise < { purchaseTransactionEntities: PurchaseTransactionEntity[], total: number } >;
+    clearPurchaseTransactionsSessionStorage(): void;
 }

@@ -5,31 +5,26 @@ import Logger from '../../config/Logger';
 import { PaymentStatus } from '../entities/PaymentEventEntity';
 import Config from '../../config/Config';
 import BigNumber from 'bignumber.js';
-import CoinGeckoServiceRepo from './repos/CoinGeckoServiceRepo';
 import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
 
 export default class ContractEventWorker {
     static WORKER_NAME = 'CONTRACT_EVENT_WORKER';
     static FIFTEEN_MINUTES_IN_MS = 15 * 60 * 1000;
 
-    coinGeckoRepo: CoinGeckoServiceRepo;
     cudosChainRepo: CudosChainRepo;
     contractRepo: AuraContractRepo;
     cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
 
     ethUsdPrice: number;
     cudosEthPrice: BigNumber;
-    lastUpdatedPricesTimestamp: number;
 
-    constructor(coinGeckoRepo: CoinGeckoServiceRepo, cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
-        this.coinGeckoRepo = coinGeckoRepo;
+    constructor(cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
         this.cudosChainRepo = cudosChainRepo;
         this.contractRepo = contractRepo;
         this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
 
         this.ethUsdPrice = 1;
         this.cudosEthPrice = null;
-        this.lastUpdatedPricesTimestamp = 0;
     }
 
     async run() {
@@ -73,17 +68,15 @@ export default class ContractEventWorker {
                 // for each event
                 ContractEventWorker.log('Processing events...');
 
-                if (this.lastUpdatedPricesTimestamp + ContractEventWorker.FIFTEEN_MINUTES_IN_MS < Date.now()) {
-                    ContractEventWorker.log('Getting USD/ETH price for calculations...');
-                    this.ethUsdPrice = await this.coinGeckoRepo.fetchEthUsdPrice();
-                    ContractEventWorker.log(`Current USD/ETH price is: $ ${this.ethUsdPrice}`);
+                ContractEventWorker.log('Getting USD/ETH price for calculations...');
+                const cudosPriceData = await this.cudosAuraPoolServiceApi.fetchCudosPriceData();
 
-                    ContractEventWorker.log('Getting ETH/CUDOS price for calculations...');
-                    this.cudosEthPrice = await this.coinGeckoRepo.fetchCudosEthPrice();
-                    ContractEventWorker.log(`Current ETH/CUDOS price is: $ ${this.cudosEthPrice.toString(10)}`);
+                this.ethUsdPrice = 1 / cudosPriceData.cudosEthPrice.dividedBy(cudosPriceData.cudosUsdPrice).toNumber();
+                ContractEventWorker.log(`Current USD/ETH price is: $ ${this.ethUsdPrice}`);
 
-                    this.lastUpdatedPricesTimestamp = Date.now();
-                }
+                ContractEventWorker.log('Getting ETH/CUDOS price for calculations...');
+                this.cudosEthPrice = cudosPriceData.cudosEthPrice
+                ContractEventWorker.log(`Current ETH/CUDOS price is: $ ${this.cudosEthPrice.toString(10)}`);
 
                 // expected price is set price +- epsilon in %
                 const setPriceUsd = Config.EXPECTED_PRICE_USD;

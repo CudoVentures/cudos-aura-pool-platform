@@ -102,7 +102,7 @@ const alertStore = new AlertStore();
 const snackStore = new SnackStore();
 const progressStore = new ProgressStore();
 const exampleModalStore = new ExampleModalStore();
-const walletStore = new WalletStore(alertStore, walletRepo);
+const walletStore = new WalletStore(alertStore, walletRepo, nftRepo);
 const generalStore = new GeneralStore(settingsRepo);
 const presaleStore = new PresaleStore();
 

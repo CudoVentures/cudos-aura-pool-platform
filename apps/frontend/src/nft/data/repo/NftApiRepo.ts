@@ -165,6 +165,10 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
+    clearPurchaseTransactionsSessionStorage() {
+        this.nftSessionStorage.clearPurchaseMap();
+    }
+
     async buyPresaleNft(currency: BuyingCurrency, amount: BigNumber, ledger: Ledger): Promise < string > {
         try {
             this.disableActions?.();

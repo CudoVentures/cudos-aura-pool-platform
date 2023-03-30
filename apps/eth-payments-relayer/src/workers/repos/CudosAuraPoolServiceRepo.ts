@@ -1,3 +1,4 @@
+import CudosPriceDataEntity from '../../entities/CudosPriceDataEntity';
 import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 
 export default interface CudosAuraPoolServiceRepo {
@@ -8,5 +9,6 @@ export default interface CudosAuraPoolServiceRepo {
     updateLastCheckedCudosRefundBlock(height: number): Promise < void >;
     fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number >;
     creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise < void >;
+    fetchCudosPriceData(): Promise<CudosPriceDataEntity>
 
 }

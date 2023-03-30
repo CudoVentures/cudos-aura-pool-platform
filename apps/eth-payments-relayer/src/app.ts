@@ -8,7 +8,6 @@ import ContractEventWorker from './workers/ContractEventWorker';
 import AuraContractRpcRepo from './data/AuraContractRpcRepo';
 import CudosRefundWorker from './workers/CudosRefundWorker';
 import Logger from '../config/Logger';
-import CoinGeckoServiceApiRepo from './data/CoinGeckoServiceApiRepo';
 
 export default class App {
     // eslint-disable-next-line no-undef
@@ -32,11 +31,7 @@ export default class App {
         const api = await this.getAuraPoolServiceApi();
         Logger.info('Connection to AuraPoolService established.');
 
-        Logger.info('Testing CoinGeckoService connection...');
-        const coinGeckoapi = await this.getCoinGeckoServiceApi();
-        Logger.info('Connection to CoinGeckoService established.');
-
-        const contractEventWorker = new ContractEventWorker(coinGeckoapi, chainApiRepo, contractRpcRepo, api);
+        const contractEventWorker = new ContractEventWorker(chainApiRepo, contractRpcRepo, api);
         const cudosRefundWorker = new CudosRefundWorker(chainApiRepo, contractRpcRepo, api);
 
         const run = async () => {
@@ -114,24 +109,6 @@ export default class App {
                 return cudosAuraPoolApi;
             } catch (e) {
                 Logger.error('Failed to get a heartbeat from AuraPoolService. Retrying...');
-                await new Promise((resolve) => { setTimeout(resolve, 2000) });
-            }
-        }
-
-        return null;
-    }
-
-    async getCoinGeckoServiceApi() {
-        while (this.running) {
-            try {
-                const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
-
-                // check if it is working
-                await coinGeckoServiceApi.fetchEthUsdPrice();
-
-                return coinGeckoServiceApi;
-            } catch (e) {
-                Logger.error('Failed to get a heartbeat from CoinGeckoServiceApi. Retrying...');
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }

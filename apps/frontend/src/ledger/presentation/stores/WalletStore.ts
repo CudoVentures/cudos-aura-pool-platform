@@ -7,8 +7,8 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import WalletRepo from '../repos/WalletRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
+import NftRepo from '../../../nft/presentation/repos/NftRepo';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
@@ -20,6 +20,7 @@ export enum SessionStorageWalletOptions {
 export default class WalletStore {
     alertStore: AlertStore;
     walletRepo: WalletRepo;
+    nftRepo: NftRepo;
 
     web3: Web3;
 
@@ -28,11 +29,10 @@ export default class WalletStore {
     address: string;
     name: string;
 
-    constructor(alertStore: AlertStore, walletRepo: WalletRepo) {
+    constructor(alertStore: AlertStore, walletRepo: WalletRepo, nftRepo: NftRepo) {
         this.alertStore = alertStore;
         this.walletRepo = walletRepo;
-
-        this.ethProvider = null;
+        this.nftRepo = nftRepo;
 
         this.ledger = null;
         this.balance = null;
@@ -101,6 +101,8 @@ export default class WalletStore {
             } catch (ex) {
                 console.error(ex);
             }
+
+            this.nftRepo.clearPurchaseTransactionsSessionStorage();
 
             await runInActionAsync(() => {
                 this.ledger = null;
