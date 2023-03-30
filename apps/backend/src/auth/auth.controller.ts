@@ -1,5 +1,4 @@
 import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors, HttpCode, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AccountType } from '../account/account.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
@@ -12,7 +11,6 @@ import { ReqCreatePresaleAccounts, ReqLogin, ReqRegister } from './dto/requests.
 import { ResFetchSessionAccounts, ResLogin } from './dto/responses.dto';
 import RoleGuard from './guards/role.guard';
 
-@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(

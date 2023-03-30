@@ -10,7 +10,6 @@ import {
     UseInterceptors,
     HttpCode,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
 import { FarmService } from './farm.service';
 import { IsCreatorOrSuperAdminGuard } from './guards/is-creator-or-super-admin.guard';
@@ -27,7 +26,6 @@ import MinerEntity from './entities/miner.entity';
 import ManufacturerEntity from './entities/manufacturer.entity';
 import { FarmCreationError } from '../common/errors/errors';
 
-@ApiTags('Farm')
 @Controller('farm')
 export class FarmController {
 
@@ -74,7 +72,6 @@ export class FarmController {
         return new ResFetchMiningFarmDetails(miningFarmDetailEntities);
     }
 
-    @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Put()

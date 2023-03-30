@@ -1,5 +1,4 @@
 import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Param, Res, HttpCode } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
@@ -17,7 +16,6 @@ import { ЕditSessionSuperAdminGuard } from './guards/edit-session-super-admin.g
 import { EditSessionUserGuard } from './guards/edit-session-user.guard';
 import { FetchFarmOwnerAccountGuard } from './guards/fetch-farm-owner.guard';
 
-@ApiTags('Accounts')
 @Controller('accounts')
 export class AccountController {
     constructor(

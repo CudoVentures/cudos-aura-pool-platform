@@ -1,6 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsOptional, ValidateNested } from 'class-validator';
+import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsOptional, ValidateNested } from 'class-validator';
 import { SettingsJsonValidator } from '../general.types';
 
 export class ReqCreditSettings {

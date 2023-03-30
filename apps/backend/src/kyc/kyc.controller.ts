@@ -1,6 +1,4 @@
 import { Body, Controller, HttpCode, Post, Req, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { LOCK } from 'sequelize';
 import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
@@ -12,7 +10,6 @@ import { ResFetchKyc, ResCreditKyc, ResCreateWorkflowRun } from './dto/responses
 import { WorkflowRunParamsV1Entity } from './entities/workflow-run-params.entity';
 import { KycService } from './kyc.service';
 
-@ApiTags('Kyc')
 @Controller('kyc')
 export class KycController {
 

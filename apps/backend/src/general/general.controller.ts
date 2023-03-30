@@ -1,5 +1,4 @@
 import { Body, Controller, Get, HttpCode, Post, Put, Req, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
 import { AccountType } from '../account/account.types';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
 import RoleGuard from '../auth/guards/role.guard';
@@ -10,7 +9,6 @@ import { ResCreditSettings, ResFetchLastCheckedPaymenrRelayerBlocks, ResFetchSet
 import SettingsEntity from './entities/settings.entity';
 import GeneralService from './general.service';
 
-@ApiTags('GENERAL')
 @Controller('general')
 export class GeneralController {
     constructor(private generalService: GeneralService) {}
