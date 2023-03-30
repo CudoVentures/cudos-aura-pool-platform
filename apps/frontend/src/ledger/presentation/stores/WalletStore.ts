@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
 import { KeplrWallet, Ledger, CosmostationWallet, StdSignature, CURRENCY_DECIMALS } from 'cudosjs';
 import S from '../../../core/utilities/Main';
 import { CHAIN_DETAILS, ETH_CONSTS, SIGN_NONCE } from '../../../core/utilities/Constants';
@@ -7,7 +7,6 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import WalletRepo from '../repos/WalletRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
-import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
@@ -32,8 +31,6 @@ export default class WalletStore {
         this.alertStore = alertStore;
         this.walletRepo = walletRepo;
 
-        this.ethProvider = null;
-
         this.ledger = null;
         this.balance = null;
         this.address = S.Strings.EMPTY;
@@ -42,7 +39,7 @@ export default class WalletStore {
         makeAutoObservable(this);
     }
 
-    public async connectKeplr(): Promise<void> {
+    public async connectKeplr(): Promise < void > {
         this.ledger = new KeplrWallet({
             CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
             CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME,
@@ -55,7 +52,7 @@ export default class WalletStore {
         await this.connectLedger(SessionStorageWalletOptions.KEPLR);
     }
 
-    public async connectCosmostation(): Promise<void> {
+    public async connectCosmostation(): Promise < void > {
         this.ledger = new CosmostationWallet({
             CHAIN_ID: CHAIN_DETAILS.CHAIN_ID,
             CHAIN_NAME: CHAIN_DETAILS.CHAIN_NAME,
@@ -68,7 +65,7 @@ export default class WalletStore {
         await this.connectLedger(SessionStorageWalletOptions.COSMOSTATION);
     }
 
-    private async connectLedger(ledgerType: SessionStorageWalletOptions): Promise<void> {
+    private async connectLedger(ledgerType: SessionStorageWalletOptions): Promise < void > {
         makeObservable(this.ledger, {
             'connected': observable,
             'accountAddress': observable,
@@ -94,7 +91,7 @@ export default class WalletStore {
         }
     }
 
-    public async disconnect(): Promise<void> {
+    public async disconnect(): Promise < void > {
         if (this.ledger !== null) {
             try {
                 await this.ledger.disconnect();
@@ -113,7 +110,7 @@ export default class WalletStore {
         sessionStorage.removeItem(SESSION_STORAGE_WALLET_KEY);
     }
 
-    public async connectWallet(sessionStorageWalletOptions: SessionStorageWalletOptions): Promise<void> {
+    public async connectWallet(sessionStorageWalletOptions: SessionStorageWalletOptions): Promise < void > {
         switch (sessionStorageWalletOptions) {
             case SessionStorageWalletOptions.KEPLR:
                 await this.connectKeplr();
@@ -139,7 +136,7 @@ export default class WalletStore {
         // console.log(metadata);
     }
 
-    public async tryConnect(): Promise<void> {
+    public async tryConnect(): Promise < void > {
         const sessionStorageWalletOptions = sessionStorage.getItem(SESSION_STORAGE_WALLET_KEY);
         switch (sessionStorageWalletOptions) {
             case SessionStorageWalletOptions.KEPLR:
@@ -157,7 +154,7 @@ export default class WalletStore {
         return this.ledger?.isConnected() ?? false;
     }
 
-    private async loadBalance(): Promise<void> {
+    private async loadBalance(): Promise < void > {
         try {
             const balance = await this.ledger?.getBalance() ?? new BigNumber(0);
 
@@ -171,15 +168,15 @@ export default class WalletStore {
         }
     }
 
-    async getClient(): Promise<CudosSigningStargateClient> {
+    async getClient(): Promise < CudosSigningStargateClient > {
         return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, this.ledger.offlineSigner);
     }
 
-    async getSigningClient(): Promise<CudosSigningStargateClient> {
+    async getSigningClient(): Promise < CudosSigningStargateClient > {
         return CudosSigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, this.ledger.offlineSigner);
     }
 
-    async signNonceMsg(): Promise<StdSignature> {
+    async signNonceMsg(): Promise < StdSignature > {
         const data = JSON.stringify({
             nonce: SIGN_NONCE,
         })
@@ -210,8 +207,7 @@ export default class WalletStore {
     }
 
     formatBalance(): string {
-        const formattedBalance = new Intl.NumberFormat(
-            'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        const formattedBalance = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
             .format(Number(this.balance?.toFixed(2) ?? '0'));
         return `${formattedBalance} CUDOS`;
     }
@@ -264,7 +260,7 @@ export default class WalletStore {
         return this.web3;
     }
 
-    async getEthBalance(): Promise<BigNumber> {
+    async getEthBalance(): Promise < BigNumber > {
         await this.getEthProvider();
         const accounts = await this.web3.eth.getAccounts();
         const balanceWei = await this.web3.eth.getBalance(accounts[0])
