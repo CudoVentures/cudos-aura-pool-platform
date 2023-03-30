@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import BigNumber from 'bignumber.js';
+import CudosPriceDataEntity from '../../src/entities/CudosPriceDataEntity';
 import NftEntity, { NftStatus } from '../../src/entities/NftEntity';
+import PurchaseTransactionEntity from '../../src/entities/PurchaseTransactionEntity';
 import CudosAuraPoolServiceRepo from '../../src/workers/repos/CudosAuraPoolServiceRepo';
 
 const nftEntities = [
@@ -30,6 +32,15 @@ export class CudosAuraPoolServiceHappyPathApiRepo implements CudosAuraPoolServic
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise < void > {}
+    async fetchCudosPriceData(): Promise<CudosPriceDataEntity> {
+        return CudosPriceDataEntity.fromJson({
+            'cudosUsdPrice': 1,
+            'cudosEthPrice': new BigNumber(1),
+            'priceChangeInUsd': 1,
+        })
+    }
 }
 
 export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolServiceRepo {
@@ -39,6 +50,15 @@ export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolS
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise < void > {}
+    async fetchCudosPriceData(): Promise<CudosPriceDataEntity> {
+        return CudosPriceDataEntity.fromJson({
+            'cudosUsdPrice': 1,
+            'cudosEthPrice': new BigNumber(1),
+            'priceChangeInUsd': 1,
+        })
+    }
 }
 
 export class CudosAuraPoolServiceApiNoNftsFoundMockRepo implements CudosAuraPoolServiceRepo {
@@ -48,6 +68,15 @@ export class CudosAuraPoolServiceApiNoNftsFoundMockRepo implements CudosAuraPool
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise < void > {}
+    async fetchCudosPriceData(): Promise<CudosPriceDataEntity> {
+        return CudosPriceDataEntity.fromJson({
+            'cudosUsdPrice': 1,
+            'cudosEthPrice': new BigNumber(1),
+            'priceChangeInUsd': 1,
+        })
+    }
 }
 
 export class CudosAuraPoolServiceHighBlockCheckedMockRepo implements CudosAuraPoolServiceRepo {
@@ -57,4 +86,13 @@ export class CudosAuraPoolServiceHighBlockCheckedMockRepo implements CudosAuraPo
 
     async updateLastCheckedEthereumBlock(lastCheckedEthBlock: number): Promise < void > {}
     async updateLastCheckedCudosRefundBlock(lastCheckedCudosBlock: number): Promise < void > {}
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise < void > {}
+    async fetchCudosPriceData(): Promise<CudosPriceDataEntity> {
+        return CudosPriceDataEntity.fromJson({
+            'cudosUsdPrice': 1,
+            'cudosEthPrice': new BigNumber(1),
+            'priceChangeInUsd': 1,
+        })
+    }
 }

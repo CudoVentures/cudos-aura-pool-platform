@@ -16,6 +16,7 @@ import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
 import NftEntity from './entities/nft.entity';
 import CryptoCompareService from '../crypto-compare/crypto-compare.service';
 import BigNumber from 'bignumber.js';
+import { PurchaseTransactionRepo } from './repos/purchase-transaction.repo';
 
 describe('NFTService', () => {
     const oneCudosInAcudos = new BigNumber('1000000000000000000')
@@ -68,6 +69,7 @@ describe('NFTService', () => {
                 }),
                 SequelizeModule.forFeature([
                     NftRepo,
+                    PurchaseTransactionRepo,
                 ]),
                 NFTModule,
                 CollectionModule,

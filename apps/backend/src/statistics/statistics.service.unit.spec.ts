@@ -9,14 +9,13 @@ import UserEntity from '../account/entities/user.entity';
 import NftEventFilterEntity from './entities/nft-event-filter.entity';
 import NftEventEntity, { NftTransferHistoryEventType } from './entities/nft-event.entity';
 import { createBasicMintedNft, createBasicNftMintEvent, createBasicNftSaleEvent, createBasicNftTransferEvent, createBasicUser, createMegaWalletEventFilterEntity, createNftEventPlatformFilterEntity, createNftEventSessionAccountFilterEntity } from './utils/test.utils';
-import { CollectionDenomNotFoundError, DataServiceError, ERROR_TYPES } from '../common/errors/errors';
+import { ERROR_TYPES } from '../common/errors/errors';
 import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
 import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
 import ChainMarketplaceCollectionEntity from '../collection/entities/chain-marketplace-collection.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
 import { NOT_EXISTS_STRING } from '../common/utils';
-import { HttpException } from '@nestjs/common';
 
 const SequelizeMock = require('sequelize-mock');
 
@@ -34,7 +33,7 @@ describe('NFTService', () => {
     const CollectionPaymentAllocationRepo = dbMock.define('nfts', {}, { timestamps: false });
 
     const service = new StatisticsService(
-        new NFTService(null, null, null, null, null),
+        new NFTService(null, null, null, null, null, null),
         new CollectionService(null, null, null, null, null, null),
         new FarmService(null, null, null, null, null, null, null, null, null, null, null),
         new ConfigService(),

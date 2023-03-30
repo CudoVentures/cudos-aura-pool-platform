@@ -1,7 +1,5 @@
-import BigNumber from 'bignumber.js';
 import Config from '../../config/Config';
 import Logger from '../../config/Logger';
-import CoinGeckoServiceApiRepo from '../../src/data/CoinGeckoServiceApiRepo';
 import ContractEventWorker from '../../src/workers/ContractEventWorker';
 import { AuraContractHappyPathMockRepo, AuraContractLowBlockHeightMockRepo, AuraContractPaymentReturnedMockRepo, AuraContractWrongAmountMockRepo } from '../mocks/AuraContractMockRepo';
 import { CudosAuraPoolServiceHappyPathApiRepo, CudosAuraPoolServiceHighBlockCheckedMockRepo } from '../mocks/CudosAuraPoolServiceApiMockRepo';
@@ -10,7 +8,6 @@ import { CudosChainRpcFailToMintMockRepo, CudosChainRpcHappyPathMockRepo, CudosC
 describe('ContractEventWorker (e2e)', () => {
     const logErrorSpy = jest.spyOn(ContractEventWorker, 'error');
     const logWarn = jest.spyOn(ContractEventWorker, 'warn');
-    const coinGeckoServiceApi = new CoinGeckoServiceApiRepo();
 
     beforeAll(async () => {
         Config.EXPECTED_PRICE_USD = 1;
@@ -27,7 +24,7 @@ describe('ContractEventWorker (e2e)', () => {
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
         const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(coinGeckoServiceApi, chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -49,7 +46,7 @@ describe('ContractEventWorker (e2e)', () => {
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
         const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(coinGeckoServiceApi, chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -72,7 +69,7 @@ describe('ContractEventWorker (e2e)', () => {
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
         const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(coinGeckoServiceApi, chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -95,7 +92,7 @@ describe('ContractEventWorker (e2e)', () => {
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
         const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(coinGeckoServiceApi, chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -117,7 +114,7 @@ describe('ContractEventWorker (e2e)', () => {
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
         const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(coinGeckoServiceApi, chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -139,7 +136,7 @@ describe('ContractEventWorker (e2e)', () => {
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
         const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(coinGeckoServiceApi, chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -161,7 +158,7 @@ describe('ContractEventWorker (e2e)', () => {
         const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
         const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(coinGeckoServiceApi, chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();

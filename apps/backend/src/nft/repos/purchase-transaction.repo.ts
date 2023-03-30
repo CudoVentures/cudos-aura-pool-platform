@@ -35,7 +35,7 @@ export class PurchaseTransactionRepo extends Model {
         recipientAddress: string;
 
     @AllowNull(false)
-    @Column({ type: DataType.NUMBER })
+    @Column({ type: DataType.BIGINT })
         timestamp: number;
 
     @AllowNull(false)

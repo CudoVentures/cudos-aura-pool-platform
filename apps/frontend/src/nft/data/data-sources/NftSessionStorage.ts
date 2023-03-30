@@ -2,7 +2,7 @@ import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity'
 import NftEntity from '../../entities/NftEntity';
 
 const STORAGE_KEY = 'cudos_aura_service_storage_nfts'
-const PURCHASE_TRANSACTIONs_KEY = 'cudos_aura_service_storage_purcahse_transactions'
+const PURCHASE_TRANSACTIONS_KEY = 'cudos_aura_service_storage_purcahse_transactions'
 
 export default class NftSessionStorage {
 
@@ -55,7 +55,7 @@ export default class NftSessionStorage {
     }
 
     clearPurchaseMap() {
-        sessionStorage.removeItem(PURCHASE_TRANSACTIONs_KEY);
+        sessionStorage.removeItem(PURCHASE_TRANSACTIONS_KEY);
     }
 
     updatePurchaseTxsMap(purchaseTransactionEntities: PurchaseTransactionEntity[]): void {
@@ -73,7 +73,7 @@ export default class NftSessionStorage {
     }
 
     getPurchaseTxsMap(): Map<string, PurchaseTransactionEntity> {
-        const mapJson = sessionStorage.getItem(PURCHASE_TRANSACTIONs_KEY);
+        const mapJson = sessionStorage.getItem(PURCHASE_TRANSACTIONS_KEY);
 
         if (!mapJson) {
             return new Map<string, PurchaseTransactionEntity>();
@@ -95,6 +95,6 @@ export default class NftSessionStorage {
             entry[1] = PurchaseTransactionEntity.toJson(entry[1]);
         });
 
-        sessionStorage.setItem(PURCHASE_TRANSACTIONs_KEY, JSON.stringify(jsonEntities));
+        sessionStorage.setItem(PURCHASE_TRANSACTIONS_KEY, JSON.stringify(jsonEntities));
     }
 }
