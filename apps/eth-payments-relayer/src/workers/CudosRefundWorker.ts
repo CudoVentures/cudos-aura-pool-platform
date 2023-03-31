@@ -62,11 +62,11 @@ export default class CudosRefundWorker {
                 // for each tx
                 for (let i = 0; i < refundTransactionEntities.length; i++) {
                     const refundTransactionEntity = refundTransactionEntities[i];
-
                     // get original payment transactions by txHash in the refund transactions
                     CudosRefundWorker.log('Fetching original payment transaction...');
                     const paymentTxHash = refundTransactionEntity.refundedTxHash;
                     const paymentTransactionEntity = await this.cudosChainRepo.fetchPaymentTransactionByTxhash(paymentTxHash);
+
                     if (!paymentTransactionEntity || (await paymentTransactionEntity.isValid()) === false) {
                         CudosRefundWorker.warn(`Invalid transaction parsed:\n\tTxHash: ${paymentTxHash}\n\tParsed entity: ${JSON.stringify(paymentTransactionEntity)}`);
                         continue;
