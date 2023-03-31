@@ -1,12 +1,14 @@
 import axios from 'axios';
 import Config from '../../config/Config';
+import CudosPriceDataEntity from '../entities/CudosPriceDataEntity';
+import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
 import CudosAuraPoolServiceRepo from '../workers/repos/CudosAuraPoolServiceRepo';
-import { ReqUpdateLastCheckedBlocks } from './dto/Requests';
-import { ResFetchLastCheckedBlocks } from './dto/Responses';
+import { ReqCreditPurchaseTransactionEntities, ReqUpdateLastCheckedBlocks } from './dto/Requests';
+import { ResFetchCudosPriceData, ResFetchLastCheckedBlocks } from './dto/Responses';
 
 const HEARTBEAT_ENDPOINT = '/api/v1/general/heartbeat';
 const LAST_BLOCK_ENDPOINT = '/api/v1/general/last-checked-payment-relayer-blocks';
-
+const CREDIT_PURCHASE_TX_ENDPOINT = '/api/v1/nft/creditPurchaseTransactions'
 export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolServiceRepo {
     api_url: string;
 
@@ -79,4 +81,27 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
             },
         );
     }
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise<void> {
+        const req = new ReqCreditPurchaseTransactionEntities(purchaseTransactionEntities);
+        await axios.put(
+            `${this.api_url}${CREDIT_PURCHASE_TX_ENDPOINT}`,
+            req,
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
+        );
+    }
+
+    async fetchCudosPriceData(): Promise<CudosPriceDataEntity> {
+        const { data } = await axios.post(
+            `${this.api_url}/api/v1/crypto-compare/fetchCudosData`,
+        );
+        const res = new ResFetchCudosPriceData(data);
+
+        return res.cudosPriceDataEntity;
+    }
+
 }

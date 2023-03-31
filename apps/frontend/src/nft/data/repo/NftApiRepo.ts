@@ -15,11 +15,13 @@ import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAura
 import MintMemo from '../../entities/MintMemo';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import { Coin } from 'cudosjs/build/stargate/modules/marketplace/proto-types/coin';
+import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 
 export default class NftApiRepo implements NftRepo {
 
     nftApi: NftApi;
-    nftSessioNStorage: NftSessionStorage;
+    nftSessionStorage: NftSessionStorage;
 
     enableActions: () => void;
     disableActions: () => void;
@@ -27,7 +29,7 @@ export default class NftApiRepo implements NftRepo {
 
     constructor() {
         this.nftApi = new NftApi();
-        this.nftSessioNStorage = new NftSessionStorage();
+        this.nftSessionStorage = new NftSessionStorage();
 
         this.enableActions = null;
         this.disableActions = null;
@@ -59,6 +61,20 @@ export default class NftApiRepo implements NftRepo {
 
         const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
+    }
+
+    async fetchPurchaseTransactions(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel): Promise<{ purchaseTransactionEntities: PurchaseTransactionEntity[], total: number }> {
+        try {
+            this.disableActions?.();
+            const sessionStoragePurchaseTransactionEntities = [];
+            this.nftSessionStorage.getPurchaseTxsMap().forEach((value, key) => {
+                sessionStoragePurchaseTransactionEntities.push(value);
+            })
+
+            return await this.nftApi.fetchPurchaseTransactions(purchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities)
+        } finally {
+            this.enableActions?.();
+        }
     }
 
     async fetchPresaleAmounts(): Promise < { totalPresaleNftCount: number, presaleMintedNftCount } > {
@@ -123,12 +139,14 @@ export default class NftApiRepo implements NftRepo {
                 const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntityResult.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
-                // const memo = `{"uuid":"${nftEntity.id}"}`;
                 const memo = new MintMemo(nftEntity.id, ledger.accountAddress).toJsonString();
 
                 // sign transaction and send it to backend
                 const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
                 txHash = tx.transactionHash;
+
+                // set tx hash in storage until processed by the observer
+                this.nftSessionStorage.onNewPurchase(txHash);
             } else {
                 const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
                 txHash = tx.transactionHash;
@@ -136,7 +154,7 @@ export default class NftApiRepo implements NftRepo {
 
             nftEntity.markAsMinted();
             nftEntity.setPricesZero();
-            this.nftSessioNStorage.updateNftsMap([nftEntity]);
+            this.nftSessionStorage.updateNftsMap([nftEntity]);
 
             return txHash;
         } catch (ex) {
@@ -145,6 +163,10 @@ export default class NftApiRepo implements NftRepo {
         } finally {
             this.enableActions?.();
         }
+    }
+
+    clearPurchaseTransactionsSessionStorage() {
+        this.nftSessionStorage.clearPurchaseMap();
     }
 
     async buyPresaleNft(currency: BuyingCurrency, amount: BigNumber, ledger: Ledger): Promise < string > {
@@ -184,6 +206,9 @@ export default class NftApiRepo implements NftRepo {
                 txHash = tx.transactionHash;
             }
 
+            // set tx hash in storage until processed by the observer
+            this.nftSessionStorage.onNewPurchase(txHash);
+
             return txHash;
         } catch (e) {
             console.log(e);
@@ -202,7 +227,7 @@ export default class NftApiRepo implements NftRepo {
             const txHash = tx.transactionHash;
 
             nftEntity.priceInAcudos = priceInCudos;
-            this.nftSessioNStorage.updateNftsMap([nftEntity]);
+            this.nftSessionStorage.updateNftsMap([nftEntity]);
             return txHash;
         } finally {
             this.enableActions?.();
@@ -278,7 +303,7 @@ export default class NftApiRepo implements NftRepo {
     }
 
     private checkNftsVersusSessionStorage(nftEntities: NftEntity[]): NftEntity[] {
-        const nftsMap = this.nftSessioNStorage.getNftsMap();
+        const nftsMap = this.nftSessionStorage.getNftsMap();
         return nftEntities.map((nftEntity) => {
             const storageNft = nftsMap.get(nftEntity.id);
             if (storageNft !== undefined && nftEntity.updatedAt === storageNft.updatedAt) {

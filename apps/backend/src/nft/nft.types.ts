@@ -173,3 +173,33 @@ export class AddressMintJsonValidations {
         workflowRunId: string;
 
 }
+
+export enum PurchaseTransactionStatus {
+    PENDING = '1',
+    SUCCESS = '2',
+    REFUNDED = '3',
+}
+
+export class PurchaseTransactionJsonValidations {
+    @IsString()
+    @IsNotEmpty()
+        txhash: string;
+
+    @IsString()
+        recipientAddress: string;
+
+    @IsNumber()
+        timestamp: number;
+
+    @IsEnum(PurchaseTransactionStatus)
+        status: PurchaseTransactionStatus;
+}
+
+export class PurchaseTransactionsFilterJsonValidation {
+    @IsNumber()
+        from: number;
+
+    @IsNumber()
+    @IsPositive()
+        count: number;
+}

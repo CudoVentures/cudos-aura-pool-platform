@@ -1,8 +1,10 @@
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import axios from '../../../core/utilities/AxiosWrapper';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
-import { ReqFetchNftsByFilter, ReqUpdateNftCudosPrice } from '../dto/Requests';
-import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResUpdateNftCudosPrice } from '../dto/Responses';
+import { ReqFetchNftsByFilter, ReqFetchPurchaseTransactions, ReqMintPresaleNfts, ReqUpdateNftCudosPrice } from '../dto/Requests';
+import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResFetchPurchaseTransactions, ResMintPresaleNfts, ResUpdateNftCudosPrice } from '../dto/Responses';
 
 export default class NftApi {
 
@@ -38,4 +40,15 @@ export default class NftApi {
 
         return { totalPresaleNftCount: res.totalPresaleNftCount, presaleMintedNftCount: res.presaleMintedNftCount };
     }
+
+    async fetchPurchaseTransactions(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities: PurchaseTransactionEntity[]): Promise<{ purchaseTransactionEntities: PurchaseTransactionEntity[]; total: number; }> {
+        const req = new ReqFetchPurchaseTransactions(purchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities);
+
+        const { data } = await axios.put(`${NftApi.nftModuleUrl}/fetchPurchaseTransactions`, req);
+
+        const res = new ResFetchPurchaseTransactions(data);
+
+        return { purchaseTransactionEntities: res.purchaseTransactionEntities, total: res.total };
+    }
+
 }

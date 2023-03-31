@@ -4,9 +4,9 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { NftStatus } from './nft.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
-import { ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
+import { ReqCreditPurchaseTransactionEntities, ReqFetchPurchaseTransactions, ReqNftsByFilter, ReqUpdateNftChainData, ReqUpdateNftCudosPrice } from './dto/requests.dto';
 import NftFilterEntity from './entities/nft-filter.entity';
-import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResUpdateNftCudosPrice } from './dto/responses.dto';
+import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResFetchPurchaseTransactions, ResUpdateNftCudosPrice } from './dto/responses.dto';
 import NftEntity from './entities/nft.entity';
 import { CollectionService } from '../collection/collection.service';
 import BigNumber from 'bignumber.js';
@@ -18,6 +18,8 @@ import AccountService from '../account/account.service';
 import AllowlistService from '../allowlist/allowlist.service';
 import { KycService } from '../kyc/kyc.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
+import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
+import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
 
 @Controller('nft')
 export class NFTController {
@@ -227,5 +229,32 @@ export class NFTController {
     ): Promise<ResFetchPresaleAmounts> {
         const { totalPresaleNftCount, presaleMintedNftCount } = await this.nftService.fetchPresaleAmounts(req.transaction);
         return new ResFetchPresaleAmounts(totalPresaleNftCount, presaleMintedNftCount);
+    }
+
+    @Put('creditPurchaseTransactions')
+    @UseGuards(ApiKeyGuard)
+    @UseInterceptors(TransactionInterceptor)
+    @HttpCode(200)
+    async creditPurchaseTransactions(
+        @Req() req: AppRequest,
+        @Body() reqCreditPurchaseTransactionEntities: ReqCreditPurchaseTransactionEntities,
+    ): Promise<void> {
+        const purcahseTransactionEntities = reqCreditPurchaseTransactionEntities.purchaseTransactionEntitiesJson.map((purchaseTransactionEntityJson) => PurchaseTransactionEntity.fromJson(purchaseTransactionEntityJson));
+
+        await this.nftService.creditPurchaseTransactions(purcahseTransactionEntities, req.transaction);
+    }
+
+    @Put('fetchPurchaseTransactions')
+    @UseInterceptors(TransactionInterceptor)
+    @HttpCode(200)
+    async fetchPurchaseTransactions(
+        @Req() req: AppRequest,
+        @Body() reqFetchPurchaseTransactionEntities: ReqFetchPurchaseTransactions,
+    ): Promise<ResFetchPurchaseTransactions> {
+        const purchaseTransactionEntitiesFilterEntity = PurchaseTransactionsFilterEntity.fromJson(reqFetchPurchaseTransactionEntities.purchaseTransactionsFilterJson)
+        const unsavedPurchaseTransactionEntities = reqFetchPurchaseTransactionEntities.sessionStoragePurchaseTransactionEntitiesJson.map((purchaseTransactionEntityJson) => PurchaseTransactionEntity.fromJson(purchaseTransactionEntityJson));
+        const { purchaseTransactionEntities, total } = await this.nftService.fetchPurchaseTransactions(req.sessionUserEntity.cudosWalletAddress, purchaseTransactionEntitiesFilterEntity, unsavedPurchaseTransactionEntities, req.transaction);
+
+        return new ResFetchPurchaseTransactions(purchaseTransactionEntities, total);
     }
 }

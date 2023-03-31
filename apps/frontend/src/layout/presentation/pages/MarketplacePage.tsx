@@ -390,8 +390,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                             className={'PresaleNftPictureGallery'}
                             picture={nftPresaleStore.getPresaleNftPicture()}
                             onClickNext={nftPresaleStore.onClickNextPresaleNftPicture}
-                            onClickPrevious={nftPresaleStore.onClickPreviousPresaleNftPicture}
-                        />
+                            onClickPrevious={nftPresaleStore.onClickPreviousPresaleNftPicture} />
                     </RowLayout>
                 )}
             </div>

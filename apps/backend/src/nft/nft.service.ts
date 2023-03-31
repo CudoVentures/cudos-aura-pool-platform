@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { NftRepo, NftRepoColumn } from './repos/nft.repo';
-import { NftGroup, NftOrderBy, NftStatus } from './nft.types';
+import { NftGroup, NftOrderBy, NftStatus, PurchaseTransactionStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
@@ -16,6 +16,9 @@ import { CURRENCY_DECIMALS } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
 import { randomInt } from 'crypto';
 import { FIFTEEN_MINUTES_IN_MILIS } from '../common/utils';
+import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
+import { PurchaseTransactionRepo, PurchaseTransactionsRepoColumn } from './repos/purchase-transaction.repo';
+import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
 
 enum Tier {
     TIER_1 = 1, // cheapest
@@ -46,6 +49,8 @@ export class NFTService {
     constructor(
         @InjectModel(NftRepo)
         private nftRepo: typeof NftRepo,
+        @InjectModel(PurchaseTransactionRepo)
+        private purchaseTransactionRepo: typeof PurchaseTransactionRepo,
         @Inject(forwardRef(() => CollectionService))
         private collectionService: CollectionService,
         private visitorService: VisitorService,
@@ -186,7 +191,6 @@ export class NFTService {
 
             // get nft in price by random
             const nftTierEntities = await this.findAllPresaleByCollectionAndPriceUsd(collectionId, priceUsd, dbTx, dbLock);
-
             if (nftTierEntities.length > 0) {
                 const nftIndex = randomInt(0, nftTierEntities.length);
 
@@ -250,6 +254,53 @@ export class NFTService {
         const presaleMintedNftCount = nftEntities.filter((nftEntity: NftEntity) => nftEntity.isMinted() === true).length;
 
         return { totalPresaleNftCount, presaleMintedNftCount }
+    }
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < void > {
+        const txHashes = purchaseTransactionEntities.map((purchaseTransactionEntity) => purchaseTransactionEntity.txhash);
+        const purchaseTransactionEntitiesToUpdate = await this.fetchPurchasesTransactionsByTxHashes(txHashes, dbTx, dbTx.LOCK.UPDATE);
+        const purchaseTransactionEntitiesToUpdateMap = new Map < string, PurchaseTransactionEntity >();
+        purchaseTransactionEntitiesToUpdate.forEach((purchaseTransactionEntityToUpdate) => {
+            purchaseTransactionEntitiesToUpdateMap.set(purchaseTransactionEntityToUpdate.txhash, purchaseTransactionEntityToUpdate);
+        });
+
+        for (let i = purchaseTransactionEntities.length; i-- > 0;) {
+            const purchaseTransactionEntity = purchaseTransactionEntities[i];
+            const purchaseTransactionEntityToUpdate = purchaseTransactionEntitiesToUpdateMap.get(purchaseTransactionEntity.txhash);
+
+            if (purchaseTransactionEntityToUpdate !== undefined) {
+                if (purchaseTransactionEntityToUpdate.isPending() === false) {
+                    return;
+                }
+                purchaseTransactionEntityToUpdate.status = purchaseTransactionEntity.status;
+                await this.creditPurchaseTransaction(purchaseTransactionEntityToUpdate, dbTx);
+            } else {
+                await this.creditPurchaseTransaction(purchaseTransactionEntity, dbTx);
+            }
+        }
+    }
+
+    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFIlterModel: PurchaseTransactionsFilterEntity, unsavedPurchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
+        const totalPurchaseTransactionEntities = await this.fetchPurchasesTransactionsByRecipientAddress(cudosAddress, dbTx);
+        const savedTransactionsMap = new Map < string, PurchaseTransactionEntity >();
+        totalPurchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
+            savedTransactionsMap.set(purchaseTransactionEntity.txhash, purchaseTransactionEntity);
+        });
+
+        unsavedPurchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
+            if (savedTransactionsMap.has(purchaseTransactionEntity.txhash) === false) {
+                totalPurchaseTransactionEntities.push(purchaseTransactionEntity);
+            }
+        });
+
+        const sortedPurchaseTransactionEntities = totalPurchaseTransactionEntities.sort((a, b) => {
+            return b.timestamp - a.timestamp;
+        });
+
+        return {
+            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(purchaseTransactionFIlterModel.from, purchaseTransactionFIlterModel.from + purchaseTransactionFIlterModel.count),
+            total: sortedPurchaseTransactionEntities.length,
+        }
     }
 
     // utilty functions
@@ -366,6 +417,56 @@ export class NFTService {
             },
             transaction: dbTx,
         });
+    }
+
+    async fetchPurchasesTransactionsByTxHashes(txHashes: string[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < PurchaseTransactionEntity[] > {
+        const purchaseTransactionRepos = await this.purchaseTransactionRepo.findAll({
+            where: {
+                [PurchaseTransactionsRepoColumn.TX_HASH]: txHashes,
+            },
+            transaction: dbTx,
+            lock: dbLock,
+        });
+
+        return purchaseTransactionRepos.map((purchaseTransactionRepo) => {
+            return PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo);
+        });
+    }
+
+    async fetchPurchasesTransactionsByRecipientAddress(recipientAddress: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise < PurchaseTransactionEntity[] > {
+        const purchaseTransactionRepos = await this.purchaseTransactionRepo.findAll({
+            where: {
+                [PurchaseTransactionsRepoColumn.RECIPIENT_ADDRESS]: recipientAddress,
+            },
+            transaction: dbTx,
+            lock: dbLock,
+        });
+
+        return purchaseTransactionRepos.map((purchaseTransactionRepo) => {
+            return PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo);
+        });
+    }
+
+    async creditPurchaseTransaction(purchaseTransactionEntity: PurchaseTransactionEntity, dbTx: Transaction): Promise < PurchaseTransactionEntity > {
+        let purchaseTransactionRepo = PurchaseTransactionEntity.toRepo(purchaseTransactionEntity);
+        const exists = await this.purchaseTransactionRepo.findByPk(purchaseTransactionEntity.txhash) !== null;
+        if (exists === false) {
+            purchaseTransactionRepo = await this.purchaseTransactionRepo.create(purchaseTransactionRepo.toJSON(), {
+                returning: true,
+                transaction: dbTx,
+            })
+        } else {
+            const wherePurchaseTransactionRepo = new PurchaseTransactionRepo();
+            wherePurchaseTransactionRepo.txHash = purchaseTransactionEntity.txhash;
+            const sqlResult = await this.purchaseTransactionRepo.update(purchaseTransactionRepo.toJSON(), {
+                where: AppRepo.toJsonWhere(wherePurchaseTransactionRepo),
+                returning: true,
+                transaction: dbTx,
+            })
+            purchaseTransactionRepo = sqlResult[1].length === 1 ? sqlResult[1][0] : null;
+        }
+
+        return PurchaseTransactionEntity.fromRepo(purchaseTransactionRepo);
     }
 
 }

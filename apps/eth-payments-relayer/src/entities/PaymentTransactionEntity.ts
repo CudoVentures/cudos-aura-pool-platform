@@ -3,12 +3,7 @@ import { TxBody } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import Config from '../../config/Config';
-
-type PaymentMemo = {
-    uuid: string,
-    contractPaymentId: number,
-    recipientAddress: string
-}
+import MintMemo from './MintMemo';
 
 export default class PaymentTransactionEntity {
     txBody: TxBody;
@@ -17,6 +12,7 @@ export default class PaymentTransactionEntity {
     nftId: string;
     contractPaymentId: number;
     recipientAddress: string;
+    ethTxHash: string;
 
     constructor() {
         this.txBody = null;
@@ -25,6 +21,7 @@ export default class PaymentTransactionEntity {
         this.nftId = '';
         this.contractPaymentId = null;
         this.recipientAddress = '';
+        this.ethTxHash = '';
     }
 
     async isValid(): Promise < boolean > {
@@ -36,7 +33,8 @@ export default class PaymentTransactionEntity {
             && this.to === Config.MINTING_SERVICE_ADDRESS
             && this.nftId !== ''
             && this.contractPaymentId !== null
-            && this.recipientAddress !== '';
+            && this.recipientAddress !== ''
+            && this.ethTxHash !== '';
     }
 
     static fromChainIndexedTx(chainTx: IndexedTx): PaymentTransactionEntity {
@@ -56,9 +54,9 @@ export default class PaymentTransactionEntity {
             throw Error(`Failed to decode msg into send msg: \n\tTxBody: ${txBody}\n\tError: ${e}`);
         }
 
-        let memoJson: PaymentMemo
+        let memoJson: MintMemo
         try {
-            memoJson = JSON.parse(txBody.memo);
+            memoJson = MintMemo.fromJson(txBody.memo);
         } catch (e) {
             throw Error(`Failed parse payment send memo: \n\tMemo: ${txBody.memo}\n\tError: ${e}`);
         }
@@ -72,7 +70,8 @@ export default class PaymentTransactionEntity {
         entity.to = bankSendMessage.toAddress;
         entity.nftId = memoJson.uuid;
         entity.recipientAddress = memoJson.recipientAddress;
-        entity.contractPaymentId = memoJson.contractPaymentId;
+        entity.contractPaymentId = parseInt(memoJson.contractPaymentId);
+        entity.ethTxHash = memoJson.ethTxHash;
 
         return entity;
     }

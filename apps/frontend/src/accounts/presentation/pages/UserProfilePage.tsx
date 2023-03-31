@@ -30,6 +30,7 @@ import KycBadge from '../../../core/presentation/components/KycBadge';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-user-profile.css';
+import MyPurchasesTab from '../components/user-profile/MyPurchasesTab';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -52,10 +53,6 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
 
     const accountEntity = accountSessionStore.accountEntity;
     const userEntity = accountSessionStore.userEntity;
-
-    function onClickCheckForRefunds() {
-        checkForPresaleRefundsModalStore.showSignal();
-    }
 
     function onClickProfileImages() {
         editUserModalStore.showSignalWithDefaultCallback(userEntity);
@@ -80,12 +77,6 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
             <div className={'PageContent AppContent'} >
                 <ProfileHeader coverPictureUrl={userEntity.coverImgUrl} profilePictureUrl={userEntity.profileImgUrl} />
                 <Actions layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
-                    <Button
-                        onClick={onClickCheckForRefunds}
-                        color={ButtonColor.SCHEME_4} >
-                        <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                        Check For Presale ETH Refunds
-                    </Button>
                     <Button
                         onClick={onClickProfileImages}
                         color={ButtonColor.SCHEME_4} >
@@ -117,6 +108,7 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
                         createNavRowTab('My NFTs', userProfilePageStore.isMyNftTab(), userProfilePageStore.markMyNftTab),
                         createNavRowTab('Earnings Info', userProfilePageStore.isMyEarningsTab(), userProfilePageStore.markMyEarningsTab),
                         createNavRowTab('History', userProfilePageStore.isMyHistoryTab(), userProfilePageStore.markMyHistoryTab),
+                        createNavRowTab('Purchases', userProfilePageStore.isPurchasesTab(), userProfilePageStore.markPurchasesTab),
                     ]} />
 
                 <AnimationContainer active = { userProfilePageStore.isMyNftTab() } >
@@ -137,6 +129,11 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
                     ) }
                 </AnimationContainer>
 
+                <AnimationContainer active = { userProfilePageStore.isPurchasesTab() } >
+                    {userProfilePageStore.isPurchasesTab() === true && (
+                        <MyPurchasesTab />
+                    ) }
+                </AnimationContainer>
             </div>
 
             <PageFooter />

@@ -3,6 +3,7 @@ import CudosChainRepo from './repos/CudosChainRepo';
 import AuraContractRepo from './repos/AuraContractRepo';
 import Logger from '../../config/Logger';
 import { PaymentStatus } from '../entities/PaymentEventEntity';
+import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
 
 export default class CudosRefundWorker {
     static WORKER_NAME = 'CUDOS_REFUND_WORKER';
@@ -61,11 +62,11 @@ export default class CudosRefundWorker {
                 // for each tx
                 for (let i = 0; i < refundTransactionEntities.length; i++) {
                     const refundTransactionEntity = refundTransactionEntities[i];
-
                     // get original payment transactions by txHash in the refund transactions
                     CudosRefundWorker.log('Fetching original payment transaction...');
                     const paymentTxHash = refundTransactionEntity.refundedTxHash;
                     const paymentTransactionEntity = await this.cudosChainRepo.fetchPaymentTransactionByTxhash(paymentTxHash);
+
                     if (!paymentTransactionEntity || (await paymentTransactionEntity.isValid()) === false) {
                         CudosRefundWorker.warn(`Invalid transaction parsed:\n\tTxHash: ${paymentTxHash}\n\tParsed entity: ${JSON.stringify(paymentTransactionEntity)}`);
                         continue;
@@ -80,6 +81,15 @@ export default class CudosRefundWorker {
                     } else {
                         CudosRefundWorker.log('Payment ALREADY unlocked.');
                     }
+
+                    // mark purchase transaction as refunded
+                    const originalSendTx = await this.cudosChainRepo.fetchPaymentTransactionByTxhash(refundTransactionEntity.refundedTxHash);
+                    const purchaseTransactionEntity = new PurchaseTransactionEntity();
+                    purchaseTransactionEntity.txhash = originalSendTx.ethTxHash;
+                    purchaseTransactionEntity.status = PurchaseTransactionStatus.REFUNDED;
+
+                    CudosRefundWorker.log('Updating purchase transaction with status refunded...');
+                    await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
                 }
             } else {
                 CudosRefundWorker.log(`No events found until curren block. Block number: ${currentCudosBlock}`);

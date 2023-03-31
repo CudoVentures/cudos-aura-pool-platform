@@ -1,3 +1,5 @@
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
+
 export default interface CudosAuraPoolServiceRepo {
 
     fetchHeartbeat(): Promise< void >;
@@ -7,4 +9,6 @@ export default interface CudosAuraPoolServiceRepo {
     triggerUpdateMarketplaceModuleNfts(nftDtos: {tokenId: string, denomId: string}[], height: number): Promise < void >;
     triggerUpdateNftModuleCollections(denomIds: string[], height: number): Promise < void >;
     triggerUpdateNftModuleNfts(tokenIds: string[], height: number): Promise < void >;
+
+    creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise < void >;
 }

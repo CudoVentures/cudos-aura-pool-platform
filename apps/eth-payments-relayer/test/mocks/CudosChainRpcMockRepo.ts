@@ -22,6 +22,7 @@ function createPaymentTransactionEntity(): PaymentTransactionEntity {
     entity.nftId = 'nftId1';
     entity.recipientAddress = 'address1';
     entity.txBody = TxBody.fromPartial({});
+    entity.ethTxHash = 'ethTxHash';
     entity.txBody.messages = [{
         typeUrl: 'test',
         value: Uint8Array.from([12]),

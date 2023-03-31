@@ -11,10 +11,11 @@ import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
 import { AccountModule } from '../account/account.module';
 import { AllowlistModule } from '../allowlist/allowlist.module';
 import { KycModule } from '../kyc/kyc.module';
+import { PurchaseTransactionRepo } from './repos/purchase-transaction.repo';
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([NftRepo]),
+        SequelizeModule.forFeature([NftRepo, PurchaseTransactionRepo]),
         VisitorModule,
         forwardRef(() => GraphqlModule),
         forwardRef(() => CollectionModule),

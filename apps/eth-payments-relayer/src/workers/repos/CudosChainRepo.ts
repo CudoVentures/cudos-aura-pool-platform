@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import AddressbookEntryEntity from '../../entities/AddressbookEntryEntity';
-import NftEntity from '../../entities/NftEntity';
 import PaymentEventEntity from '../../entities/PaymentEventEntity';
 import PaymentTransactionEntity from '../../entities/PaymentTransactionEntity';
 import RefundTransactionEntity from '../../entities/RefundTransactionEntity';

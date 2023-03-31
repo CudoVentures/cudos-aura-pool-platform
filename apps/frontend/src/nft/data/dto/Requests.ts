@@ -1,3 +1,5 @@
+import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
+import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import NftFilterModel from '../../utilities/NftFilterModel';
 
 export class ReqFetchNftsByFilter {
@@ -14,5 +16,15 @@ export class ReqUpdateNftCudosPrice {
 
     constructor(id: string) {
         this.id = id;
+    }
+}
+
+export class ReqFetchPurchaseTransactions {
+    purchaseTransactionsFilterJson: PurchaseTransactionsFilterModel;
+    sessionStoragePurchaseTransactionEntitiesJson: any[];
+
+    constructor(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel, sessionStoragePurchaseTransactionEntities: PurchaseTransactionEntity[]) {
+        this.purchaseTransactionsFilterJson = PurchaseTransactionsFilterModel.toJson(purchaseTransactionsFilterModel);
+        this.sessionStoragePurchaseTransactionEntitiesJson = sessionStoragePurchaseTransactionEntities.map((purchaseTransactionEntity) => PurchaseTransactionEntity.toJson(purchaseTransactionEntity));
     }
 }

@@ -1,4 +1,5 @@
 import NftEntity from '../entities/nft.entity';
+import PurchaseTransactionEntity from '../entities/purchase-transaction-entity';
 import { NftJsonValidator } from '../nft.types';
 
 export class ResFetchNftsByFilter {
@@ -26,5 +27,15 @@ export class ResFetchPresaleAmounts {
     constructor(totalPresaleNftCount: number, presaleMintedNftCount: number) {
         this.totalPresaleNftCount = totalPresaleNftCount;
         this.presaleMintedNftCount = presaleMintedNftCount;
+    }
+}
+
+export class ResFetchPurchaseTransactions {
+    purchaseTransactionEntities: any[];
+    total: number;
+
+    constructor(purchaseTransactionEntities: PurchaseTransactionEntity[], total: number) {
+        this.purchaseTransactionEntities = purchaseTransactionEntities.map((entity) => PurchaseTransactionEntity.toJson(entity));
+        this.total = total;
     }
 }

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import Config from '../../config/Config';
+import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
 import CudosAuraPoolServiceRepo from '../workers/repos/CudosAuraPoolServiceRepo';
+import { ReqCreditPurchaseTransactionEntities } from './dto/Requests';
 
 const HEARTBEAT_ENDPOINT = '/api/v1/general/heartbeat';
 const LAST_BLOCK_ENDPOINT = '/api/v1/general/last-checked-block';
@@ -10,11 +12,26 @@ const TRIGGER_COLLECTION_UPDATES = '/api/v1/collection/trigger-updates';
 const MARKETPLACE_MODULE = 'marketplace';
 const NFT_MODULE = 'nft';
 
+const CREDIT_PURCHASE_TRANSACTIONS = '/api/v1/nft/creditPurchaseTransactions'
+
 export default class CudosAuraPoolServiceApi implements CudosAuraPoolServiceRepo {
     api_url: string;
 
     constructor() {
         this.api_url = Config.AURA_POOL_API;
+    }
+
+    async creditPurchaseTransactions(purchaseTransactionEntities: PurchaseTransactionEntity[]): Promise<void> {
+        const req = new ReqCreditPurchaseTransactionEntities(purchaseTransactionEntities);
+        await axios.put(
+            `${this.api_url}${CREDIT_PURCHASE_TRANSACTIONS}`,
+            req,
+            {
+                headers: {
+                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                },
+            },
+        );
     }
 
     async fetchHeartbeat(): Promise< void > {

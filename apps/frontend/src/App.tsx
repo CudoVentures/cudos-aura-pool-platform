@@ -102,7 +102,7 @@ const alertStore = new AlertStore();
 const snackStore = new SnackStore();
 const progressStore = new ProgressStore();
 const exampleModalStore = new ExampleModalStore();
-const walletStore = new WalletStore(alertStore, walletRepo);
+const walletStore = new WalletStore(alertStore, walletRepo, nftRepo);
 const generalStore = new GeneralStore(settingsRepo);
 const presaleStore = new PresaleStore();
 
@@ -120,7 +120,7 @@ const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
 const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, generalStore, accountSessionStore, presaleStore, nftRepo, collectionRepo, miningFarmRepo, statisticsRepo, accountRepo);
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo, walletStore, alertStore, accountSessionStore);
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo, accountSessionStore, alertStore, walletStore);
-const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, statisticsRepo);
+const userProfilePageStore = new UserProfilePageStore(walletStore, nftRepo, collectionRepo, statisticsRepo, accountRepo);
 const analyticsPageStore = new AnalyticsPageStore(bitcoinStore, cudosStore, statisticsRepo, nftRepo, collectionRepo, miningFarmRepo);
 const superAdminAnalyticsPageStore = new SuperAdminAnalyticsPageStore(bitcoinStore, cudosStore, miningFarmRepo, collectionRepo, statisticsRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo, alertStore);
