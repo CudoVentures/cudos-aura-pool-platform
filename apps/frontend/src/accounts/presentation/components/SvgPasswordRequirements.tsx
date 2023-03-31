@@ -34,7 +34,7 @@ function SvgPasswordRequirements({ inputValidation }: Props) {
                 open={anchor !== null}
                 anchorEl={anchor}
                 onClose={onMouseLeave}>
-                • At least 8 characters<br />
+                • At least 12 characters<br />
                 • At least an uppercase letter<br />
                 • At least a lowercase letter<br />
                 • At least a number<br />

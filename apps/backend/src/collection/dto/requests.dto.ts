@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsDefined, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { NftJsonValidator } from '../../nft/nft.types';
@@ -70,6 +69,5 @@ export class ReqFetchTopCollections {
 export class ReqFetchCollectionDetails {
     @IsArray()
     @IsNotEmpty()
-    @ApiProperty({ required: true, example: ['denom_id1', 'denom_id2'] })
         collectionIds: string[];
 }

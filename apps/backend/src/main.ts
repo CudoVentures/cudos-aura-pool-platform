@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+// import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
@@ -30,17 +30,17 @@ async function bootstrap() {
         }),
     );
 
-    const config = new DocumentBuilder()
-        .setTitle('Cudos Aura Pool')
-        .setDescription('Cudos Aura Pool')
-        .setVersion('1.0')
-        .addBearerAuth(
-            { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-            'access-token',
-        )
-        .build();
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+    // const config = new DocumentBuilder()
+    //     .setTitle('Cudos Aura Pool')
+    //     .setDescription('Cudos Aura Pool')
+    //     .setVersion('1.0')
+    //     .addBearerAuth(
+    //         { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+    //         'access-token',
+    //     )
+    //     .build();
+    // const document = SwaggerModule.createDocument(app, config);
+    // SwaggerModule.setup('api', app, document);
 
     await app.listen(appPort);
 
