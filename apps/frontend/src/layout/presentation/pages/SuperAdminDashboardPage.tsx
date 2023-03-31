@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
-import numeral from 'numeral';
 
 import ViewCollectionModal from '../../../collection/presentation/components/ViewCollectionModal';
 import ViewMiningFarmModal from '../../../mining-farm/presentation/components/ViewMiningFarmModal';
@@ -32,6 +31,7 @@ import ChartInfo from '../../../analytics/presentation/components/ChartInfo';
 
 import '../styles/page-super-admin-dashboard.css';
 import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
+import { formatCudos, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 type Props = {
     superAdminDashboardPageStore?: SuperAdminDashboardPageStore
@@ -73,9 +73,9 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 )),
                 createTableCell((
                     <div className = { 'Bold' } >
-                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{CudosStore.formatAcudosInCudosWithPrecision(miningFarmPerformanceEntity.volumePer24HoursInAcudos, 4)}</div>
+                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{formatCudos(CudosStore.convertAcudosInCudos(miningFarmPerformanceEntity.volumePer24HoursInAcudos), true)}</div>
                         <div className={'B3 FlexRow FarmVolumePriceRow'}>
-                            <div className={'SemiBold ColorNeutral060'}>{numeral(miningFarmPerformanceEntity.volumePer24HoursInUsd).format(ProjectUtils.NUMERAL_USD)}</div>
+                            <div className={'SemiBold ColorNeutral060'}>{formatUsd(miningFarmPerformanceEntity.volumePer24HoursInUsd)}</div>
                             {/* <div className={'ColorSuccess060'}>+39.1%</div> */}
                         </div>
                     </div>
@@ -122,7 +122,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                                     <>
                                         <ChartInfo
                                             label = { <TextWithTooltip text={'Total Platform Sales'} tooltipText={'Platform fee + NFTs resale royalties converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
-                                            value = { ProjectUtils.formatUsd(superAdminDashboardPageStore.getTotalSalesInUsd()) } />
+                                            value = { formatUsd(superAdminDashboardPageStore.getTotalSalesInUsd().toNumber()) } />
                                     </>
                                 ) } />
                             <DailyChart

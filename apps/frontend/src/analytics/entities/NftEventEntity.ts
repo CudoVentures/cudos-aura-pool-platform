@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
-import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
+import { formatCudos, formatUsd } from '../../core/utilities/NumberFormatter';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
 
 export enum NftEventType {
@@ -43,11 +43,11 @@ export default class NftEventEntity {
     }
 
     formatTransferPriceInCudos(): string {
-        return `${this.transferPriceInAcudos.div(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(2)} CUDOS`;
+        return formatCudos(this.transferPriceInAcudos.div(ProjectUtils.CUDOS_CURRENCY_DIVIDER), true);
     }
 
     formatTransferPriceInUsd(): string {
-        return numeral(this.transferPriceInUsd).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(this.transferPriceInUsd)
     }
 
     getTimePassedDisplay(): string {

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import numeral from 'numeral';
+import { formatBtc } from '../../core/utilities/NumberFormatter';
 
 export default class MiningFarmMaintenanceFeeEntity {
 
@@ -11,7 +11,7 @@ export default class MiningFarmMaintenanceFeeEntity {
 
     formatMaintenanceFeeDepositedInBtcInt(): string {
         const value = this.maintenanceFeeInBtc.toFixed(0)
-        return numeral(value).format('0,0');
+        return formatBtc(Number(value), false, 0)
     }
 
     formatMaintenanceFeeDepositedInBtcFraction(): string {

@@ -23,6 +23,7 @@ import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import PresaleStore from '../../../app-routes/presentation/PresaleStore';
+import { formatBtc } from '../../../core/utilities/NumberFormatter';
 
 enum StatsTabs {
     EARNINGS = 0,
@@ -212,13 +213,6 @@ export default class ViewNftPageStore {
         this.statsTab = StatsTabs.HISTORY;
     }
 
-    // formatPricePlusMintFeeInEth(): string {
-    //     const cudosPrice = this.cudosStore.getNftCudosPriceForNft(this.nftEntity).plus(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS);
-    //     const ethPrice = this.cudosStore.convertCudosToEth(cudosPrice);
-
-    //     return `${ethPrice.toFixed(6)} ETH`;
-    // }
-
     formatNftPriceInUsd() {
         if (this.nftEntity.isStatusListed() === false) {
             return 'Not for sale';
@@ -333,23 +327,23 @@ export default class ViewNftPageStore {
     }
 
     formatNetProfitPerDay(): string {
-        return `${this.calculateNetProfitPerDay().toFixed(5)} BTC`;
+        return formatBtc(this.calculateNetProfitPerDay(), true);
     }
 
     formatNetProfitPerWeek(): string {
-        return `${this.calculateNetProfitPerWeek().toFixed(5)} BTC`;
+        return formatBtc(this.calculateNetProfitPerWeek(), true);
     }
 
     formatNetProfitPerMonth(): string {
-        return `${this.calculateNetProfitPerMonth().toFixed(5)} BTC`;
+        return formatBtc(this.calculateNetProfitPerMonth(), true);
     }
 
     formatNetProfitPerYear(): string {
-        return `${this.calculateNetProfitPerYear().toFixed(5)} BTC`;
+        return formatBtc(this.calculateNetProfitPerYear(), true);
     }
 
     formatMontlyMaintenanceFee(): string {
-        return `${this.getMonthlyMaintenanceFee().toFixed(5)} BTC`;
+        return formatBtc(this.getMonthlyMaintenanceFee(), true);
     }
 
 }

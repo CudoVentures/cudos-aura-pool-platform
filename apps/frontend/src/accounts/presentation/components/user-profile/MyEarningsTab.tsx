@@ -13,6 +13,7 @@ import DefaultIntervalPicker from '../../../../analytics/presentation/components
 import DailyChart from '../../../../analytics/presentation/components/DailyChart';
 
 import '../../styles/my-earnings-tab.css';
+import { formatTHs } from '../../../../core/utilities/NumberFormatter';
 
 type Props = {
     bitcoinStore?: BitcoinStore
@@ -72,7 +73,7 @@ function MyEarningsTab({ bitcoinStore, cudosStore, userProfilePageStore, walletS
                     <div className={'B1 SemiBold'}>Total Hash Power</div>
                     <div className={'FlexColumn ValueColumn'}>
                         <div>
-                            <span className={'H2 Bold'}>{userEarningsEntity.totalContractHashPowerInTh}</span>
+                            <span className={'H2 Bold'}>{formatTHs(userEarningsEntity.totalContractHashPowerInTh, false)}</span>
                             <span className={'H3 SecondaryColor'}> TH/s</span>
                         </div>
                     </div>

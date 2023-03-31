@@ -27,6 +27,7 @@ import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator.css';
+import { formatBtc, formatPercent, formatTHs } from '../../../core/utilities/NumberFormatter';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -110,7 +111,7 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
                                 { rewardsCalculatorStore.selectedMiningFarmEntity !== null && (
                                     <div className = { 'B3 Bold FlexSplit' } >
                                         <div>0 TH/s</div>
-                                        <div className = { 'StartRight' }>{rewardsCalculatorStore.selectedMiningFarmEntity?.hashPowerInTh ?? 1} TH/s</div>
+                                        <div className = { 'StartRight' }>{formatTHs(rewardsCalculatorStore.selectedMiningFarmEntity?.hashPowerInTh ?? 1, true)}</div>
                                     </div>
                                 ) }
                             </div>
@@ -169,21 +170,21 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
                                     className={'DataRowHeading'}
                                     text={'Pool Fee'}
                                     tooltipText={'The percentage from BTC payouts kept by Aura pool as Protocol fee.'} />
-                                <div className={'DataRowValue StartRight'}>{generalStore.settingsEntity.globalCudosFeesPercent.toFixed(4)} %</div>
+                                <div className={'DataRowValue StartRight'}>{formatPercent(generalStore.settingsEntity.globalCudosFeesPercent, true)}</div>
                             </div>
                             <div className={'DataRow FlexRow FlexSplit'}>
                                 <TextWithTooltip
                                     className={'DataRowHeading'}
                                     text={'Block Reward'}
                                     tooltipText={'The total BTC amount received by miners for each block mined on the network.'} />
-                                <div className={'DataRowValue StartRight'}>{bitcoinStore.getBlockReward()}</div>
+                                <div className={'DataRowValue StartRight'}>{formatBtc(bitcoinStore.getBlockReward(), true)}</div>
                             </div>
                         </StyledContainer>
                         <div className = { 'RewardsEstimateContainer' } >
                             <div className={'RewardsEstimateHeading H3 Bold'}>Your Monthly Rewards</div>
                             <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } containerBackground = { ContainerBackground.NEUTRAL_100 }>
-                                <div className={'H2 Bold RewardsInBtc'}>{rewardsCalculatorStore.calculateNetRewardPetMonth().toFixed(5)} <span className = { 'B1' }>BTC</span></div>
-                                <div className={'H3 SemiBold MonthlyRewardUsd'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.calculateNetRewardPetMonth())} USD</div>
+                                <div className={'H2 Bold RewardsInBtc'}>{formatBtc(rewardsCalculatorStore.calculateNetRewardPetMonth())} <span className = { 'B1' }>BTC</span></div>
+                                <div className={'H3 SemiBold MonthlyRewardUsd'}>{bitcoinStore.formatBtcInUsd(rewardsCalculatorStore.calculateNetRewardPetMonth())}</div>
                                 <div className={'B3 SemiBold Discretion'}>Based on Today’s BTC Price</div>
                             </StyledContainer>
                         </div>

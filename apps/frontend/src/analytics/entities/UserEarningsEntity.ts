@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
+import { formatBtc } from '../../core/utilities/NumberFormatter';
 
 export default class UserEarningsEntity {
 
@@ -20,7 +21,7 @@ export default class UserEarningsEntity {
     }
 
     formatBtcEarnedInBtc(): string {
-        return this.btcEarnedInBtc.toString(10);
+        return formatBtc(this.btcEarnedInBtc);
     }
 
     getEarningsPerDayInBtcAsNumber(): number[] {

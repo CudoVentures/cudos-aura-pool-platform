@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 import BitcoinBlockchainInfoEntity from '../../../bitcoin-data/entities/BitcoinBlockchainInfoEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import { formatBtc } from '../../../core/utilities/NumberFormatter';
 
 export default class RewardsCalculatorStore {
 
@@ -162,6 +163,6 @@ export default class RewardsCalculatorStore {
     }
 
     formatNetRewardPerMonth(): string {
-        return `${this.calculateNetRewardPetMonth().toFixed(5)} BTC`;
+        return formatBtc(this.calculateNetRewardPetMonth(), true);
     }
 }

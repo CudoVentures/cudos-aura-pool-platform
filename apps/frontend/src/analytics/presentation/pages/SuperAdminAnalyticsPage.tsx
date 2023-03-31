@@ -27,6 +27,7 @@ import RowLayout from '../../../core/presentation/components/RowLayout';
 import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 import '../styles/page-super-admin-analytics.css'
+import { formatBtc, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 type Props = {
     superAdminAnalyticsPageStore?: SuperAdminAnalyticsPageStore;
@@ -96,7 +97,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 return (
                     <ChartInfo
                         label = { <TextWithTooltip text={'Total Platform Sales'} tooltipText={'Platform fee + NFTs resale royalties converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
-                        value = { ProjectUtils.formatUsd(totalInUsd) } />
+                        value = { formatUsd(totalInUsd.toNumber()) } />
                 )
             }
         } else {
@@ -105,7 +106,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 return (
                     <ChartInfo
                         label = { <TextWithTooltip text={'Unsold NFT earnings'} tooltipText={'Earnings from unsold NFTs'} /> }
-                        value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0))} />
+                        value = { formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0))} />
                 )
             }
 
@@ -139,7 +140,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 return (
                     <ChartInfo
                         label = { <TextWithTooltip text={'Total Sales'} tooltipText={'Unsold NFTs earnings + NFTs resale royalties + initial NFTs sales converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
-                        value = { ProjectUtils.formatUsd(totalInUsd) } />
+                        value = { formatUsd(totalInUsd.toNumber()) } />
                 )
             }
         }

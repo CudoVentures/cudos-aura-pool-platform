@@ -8,6 +8,7 @@ import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAura
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import AppStore from '../../../core/presentation/stores/AppStore';
 import { CURRENCY_DECIMALS } from 'cudosjs';
+import { formatEth } from '../../../core/utilities/NumberFormatter';
 
 export enum RefundModalStage {
     INITIAL,
@@ -101,9 +102,7 @@ export default class CheckForPresaleRefundsModalStore extends ModalStore {
     }
 
     getAvailableRefundFormatted() {
-        const amountString = this.availableRefundAmount?.shiftedBy(-CURRENCY_DECIMALS).toFixed(4) || 0;
-
-        return `${amountString} ETH`;
+        return formatEth(this.availableRefundAmount?.shiftedBy(-CURRENCY_DECIMALS) || new BigNumber(0), true);
     }
 
     getTxLink() {

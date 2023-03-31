@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { runInAction } from 'mobx';
-import numeral from 'numeral';
 import AppRoutes from '../../app-routes/entities/AppRoutes';
 import { CHAIN_DETAILS } from './Constants';
 import S from './Main';
@@ -15,7 +14,6 @@ export default class ProjectUtils {
     static MOMENT_FORMAT_DATE = 'DD.MM.yyyy';
     static DATEPICKER_FORMAT_DATE_AND_TIME = 'dd.MM.yyyy, HH:mm';
     static DATEPICKER_FORMAT_DATE = 'dd.MM.yyyy';
-    static NUMERAL_USD = '$0,0.00';
     static CUDOS_CURRENCY_DIVIDER = new BigNumber(1).shiftedBy(CURRENCY_DECIMALS);
     static ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS = new BigNumber(1);
     static ON_DEMAND_MINTING_SERVICE_FEE_IN_ACUDOS = ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS.shiftedBy(CURRENCY_DECIMALS);
@@ -213,10 +211,6 @@ export default class ProjectUtils {
         const timestampFrom = date.getTime() + 1;
 
         return { timestampFrom, timestampTo };
-    }
-
-    static formatUsd(usd: BigNumber): string {
-        return numeral(usd.toFixed(4)).format(ProjectUtils.NUMERAL_USD);
     }
 
     static getEndOfTodaysTimestamp() {

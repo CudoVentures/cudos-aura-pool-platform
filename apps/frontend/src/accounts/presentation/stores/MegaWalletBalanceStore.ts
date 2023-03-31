@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
-import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import AccountSessionStore from './AccountSessionStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import { formatCudos } from '../../../core/utilities/NumberFormatter';
 
 export default class MegaWalletBalanceStore {
 
@@ -32,7 +32,7 @@ export default class MegaWalletBalanceStore {
     }
 
     formatSuperAdminBalance(): string {
-        return numeral(CudosStore.convertAcudosInCudos(this.getSuperAdminBalanceInAcudos()).toFixed(6)).format('0,0.000000');
+        return formatCudos(CudosStore.convertAcudosInCudos(this.getSuperAdminBalanceInAcudos()));
     }
 
 }
