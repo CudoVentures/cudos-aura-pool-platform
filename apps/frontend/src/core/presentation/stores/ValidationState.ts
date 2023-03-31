@@ -179,7 +179,7 @@ export class InputValidation {
 
         validation.setErrorMessage(errorMessage);
         validation.checkValidInput = action((value) => {
-            if (value.length < 8) {
+            if (value.length < 12) {
                 return false;
             }
 
