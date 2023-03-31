@@ -18,6 +18,8 @@ import AccountService from '../account/account.service';
 import AllowlistService from '../allowlist/allowlist.service';
 import { KycService } from '../kyc/kyc.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
+import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
+import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
 
 @Controller('nft')
 export class NFTController {
@@ -243,7 +245,6 @@ export class NFTController {
     }
 
     @Put('fetchPurchaseTransactions')
-    @ApiBearerAuth('access-token')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     async fetchPurchaseTransactions(
