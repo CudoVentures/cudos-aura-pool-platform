@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Param, Post, ValidationPipe, Req, Put, UseInterceptors, HttpCode, Inject, forwardRef, NotFoundException, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NFTService } from './nft.service';
 import { GraphqlService } from '../graphql/graphql.service';
 import { NftStatus } from './nft.types';
@@ -19,10 +18,7 @@ import AccountService from '../account/account.service';
 import AllowlistService from '../allowlist/allowlist.service';
 import { KycService } from '../kyc/kyc.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
-import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
-import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
 
-@ApiTags('NFT')
 @Controller('nft')
 export class NFTController {
     constructor(
@@ -212,7 +208,6 @@ export class NFTController {
         }
     }
 
-    @ApiBearerAuth('access-token')
     @Post('updatePrice')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)

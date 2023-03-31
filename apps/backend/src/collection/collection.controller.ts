@@ -11,7 +11,6 @@ import {
     UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ModuleName, ReqCreditCollection, ReqEditCollection, ReqFetchCollectionDetails, ReqFetchCollectionsByFilter, ReqFetchTopCollections, ReqUpdateCollectionChainData } from './dto/requests.dto';
 import { CollectionService } from './collection.service';
 import { NFTService } from '../nft/nft.service';
@@ -33,7 +32,6 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
 
-@ApiTags('Collection')
 @Controller('collection')
 export class CollectionController {
 
@@ -92,7 +90,6 @@ export class CollectionController {
         return new ResFetchCollectionDetails(collectionDetails);
     }
 
-    @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Put()
@@ -205,7 +202,6 @@ export class CollectionController {
         return new ResCreditCollection(collectionEntityResult, nftEntityResults, nftsToDelete.length);
     }
 
-    @ApiBearerAuth('access-token')
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @Put('editCollection')

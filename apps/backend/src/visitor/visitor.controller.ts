@@ -1,5 +1,4 @@
 import { Body, Controller, HttpCode, Put, Req, UseInterceptors, ValidationPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
@@ -8,7 +7,6 @@ import { ReqSignalVisitMiningFarm, ReqSignalVisitNft } from './dto/requests.dto'
 import { VisitorService } from './visitor.service';
 import { UUID_COOKIE_KEY } from './visitor.types';
 
-@ApiTags('Visitor')
 @Controller('visitor')
 export class VisitorController {
 

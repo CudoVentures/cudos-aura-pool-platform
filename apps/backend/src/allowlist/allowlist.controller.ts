@@ -1,12 +1,10 @@
 import { Controller, Get, HttpCode, Req, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 
 import AllowlistService from './allowlist.service';
 import { ResFetchAllowlist, ResFetchAllowlistUserBySessionAccount } from './dto/responses.dto';
 
-@ApiTags('Allowlist')
 @Controller('allowlist')
 export class AllowlistController {
 
@@ -24,7 +22,6 @@ export class AllowlistController {
         return new ResFetchAllowlist(allowlistEntity);
     }
 
-    @ApiBearerAuth('access-token')
     @Get('fetchAllowlistUserBySessionAccount')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)

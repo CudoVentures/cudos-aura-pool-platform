@@ -10,7 +10,6 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
 import { AppRequest } from '../common/commont.types';
 import { ReqFetchEarningsPerDay, ReqFetchMiningFarmTotalBtcEarnings, ReqFetchMiningFarmMaintenanceFee, ReqFetchMiningFarmTotalEarningsCudos, ReqFetchNftEarningsByNftId, ReqFetchNftEarningsBySessionAccount, ReqMegaWalletEventsByFilter, ReqNftEventsByFilter } from './dto/requests.dto';
@@ -33,7 +32,6 @@ import { EarningsPerDayGuard } from './guards/earnings-per-day.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { FarmService } from '../farm/farm.service';
 
-@ApiTags('Statistics')
 @Controller('statistics')
 export class StatisticsController {
 
@@ -77,7 +75,6 @@ export class StatisticsController {
         return new ResMegaWalletEventsByFilter(megaWalletEventEntities, nftEntities, total);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchNftEarningsBySessionAccount')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
@@ -101,7 +98,6 @@ export class StatisticsController {
         return new ResFetchNftEarningsByNftId(nftEarningsEntity);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchEarningsPerDay')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
@@ -119,7 +115,6 @@ export class StatisticsController {
         return new ResFetchEarningsPerDay(earningsEntity);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchFarmMaintenanceFee')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
@@ -150,7 +145,6 @@ export class StatisticsController {
         return new ResFetchMiningFarmMaintenanceFee(miningFarmMaintenanceFeeEntity);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchFarmTotalBtcEarnings')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
@@ -181,7 +175,6 @@ export class StatisticsController {
         return new ResFetchFarmTotalBtcEarnings(miningFarmMaintenanceFeeEntity);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchFarmTotalCudosEarnings')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
@@ -204,7 +197,6 @@ export class StatisticsController {
         return new ResFetchMiningFarmTotalEarningsCudos(miningFarmMaintenanceFeeEntity);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchPlatformTotalBtcEarnings')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
@@ -223,7 +215,6 @@ export class StatisticsController {
         return new ResFetchPlatformTotalEarningsBtc(platformEarningsBtcEntity);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchPlatformMaintenanceFees')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
@@ -242,7 +233,6 @@ export class StatisticsController {
         return new ResFetchPlatformMaintenanceFee(platformMaintenanceFees);
     }
 
-    @ApiBearerAuth('access-token')
     @Post('fetchPlatformTotalCudosEarnings')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
