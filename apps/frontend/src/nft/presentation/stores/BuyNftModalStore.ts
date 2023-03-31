@@ -2,15 +2,14 @@ import S from '../../../core/utilities/Main';
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import NftEntity from '../../entities/NftEntity';
-import { CHAIN_DETAILS, getEthChainEtherscanLink } from '../../../core/utilities/Constants';
-import NftRepo, { BuyingCurrency } from '../repos/NftRepo';
+import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
+import NftRepo from '../repos/NftRepo';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
-import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
-import BigNumber from 'bignumber.js';
 
 export enum ModalStage {
     PREVIEW,

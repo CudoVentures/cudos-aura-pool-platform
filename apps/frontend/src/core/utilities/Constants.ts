@@ -48,11 +48,11 @@ export const CHAIN_DETAILS = {
 export function getEthChainEtherscanLink() {
     switch (ETH_CONSTS.ETH_CHAIN_ID) {
         case '11155111':
-            return 'sepolia.etherscan.io/';
+            return 'https://sepolia.etherscan.io/';
         case '5':
-            return 'goerli.etherscan.io/';
+            return 'https://goerli.etherscan.io/';
         case '1':
         default:
-            return 'etherscan.io/';
+            return 'https://etherscan.io/';
     }
 }

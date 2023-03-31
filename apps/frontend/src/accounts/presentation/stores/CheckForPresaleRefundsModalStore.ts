@@ -106,6 +106,6 @@ export default class CheckForPresaleRefundsModalStore extends ModalStore {
     }
 
     getTxLink() {
-        return `https://${getEthChainEtherscanLink()}tx/${this.txHash}`;
+        return `${getEthChainEtherscanLink()}tx/${this.txHash}`;
     }
 }
