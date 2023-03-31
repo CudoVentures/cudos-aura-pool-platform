@@ -72,19 +72,26 @@ export enum ButtonRadius {
     MAX = 'RadiusMax'
 }
 
+/* each member of the enum corresponds to a CSS class */
+export enum ButtonBorder {
+    DEFAULT = '',
+    NO_BORDER = 'NoBorder'
+}
+
 type Props = {
     className?: string;
     type?: ButtonType;
     color?: ButtonColor;
     padding?: ButtonPadding;
     radius?: ButtonRadius;
+    border?: ButtonBorder;
     disabled?: boolean;
     href?: string,
     target?: string;
     onClick?: () => void;
 }
 
-export default function Button({ className, type, color, padding, radius, href, onClick, disabled, target, children }: React.PropsWithChildren < Props >) {
+export default function Button({ className, type, color, padding, radius, border, href, onClick, disabled, target, children }: React.PropsWithChildren < Props >) {
 
     function cssMuiClassColor() {
         switch (color) {
@@ -121,7 +128,7 @@ export default function Button({ className, type, color, padding, radius, href, 
                 <ThemeProvider theme={muiTheme()} >
                     <MuiButton
                         disabled={disabled}
-                        className={`Button Transition ${padding} ${radius} ${className}`}
+                        className={`Button Transition ${padding} ${radius} ${border} ${className}`}
                         onClick={onClick}
                         variant={type}
                         color={cssMuiClassColor()}
@@ -143,6 +150,7 @@ Button.defaultProps = {
     color: ButtonColor.SCHEME_1,
     padding: ButtonPadding.DEFAULT,
     radius: ButtonRadius.RADIUS_16,
+    border: ButtonBorder.DEFAULT,
     disabled: false,
     href: undefined,
     target: undefined,

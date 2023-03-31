@@ -29,7 +29,7 @@ export default function PageFooter() {
     }
 
     return (
-        <footer className='FooterContainer'>
+        <footer className='FooterContainer AppContent'>
             <div className={'PageFooter FlexRow FlexSplit'}>
                 <Svg className={'SVG'} svg={SvgAuraPoolLogoLight} />
                 <div className={'StartRightBlock FooterNav'}>

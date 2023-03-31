@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
-import numeral from 'numeral';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import NftEntity from '../../../nft/entities/NftEntity';
 import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../repos/CudosRepo';
 import S from '../../../core/utilities/Main';
-import { BIG_NUMBER_0 } from '../../../../../backend/src/common/utils';
+import { formatCudos, formatPercent, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 export default class CudosStore {
 
@@ -66,11 +65,11 @@ export default class CudosStore {
     }
 
     convertAcudosToEth(acudosPrice: BigNumber): BigNumber {
-        return acudosPrice.shiftedBy(-CURRENCY_DECIMALS).multipliedBy(this.getCudosPriceInEth());
+        return CudosStore.convertAcudosInCudos(acudosPrice).multipliedBy(this.getCudosPriceInEth());
     }
 
     convertAcudosInUsd(acudosPrice: BigNumber): BigNumber {
-        return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).multipliedBy(this.getCudosPriceInUsd());
+        return CudosStore.convertAcudosInCudos(acudosPrice).multipliedBy(this.getCudosPriceInUsd());
     }
 
     convertCudosInUsd(cudosPrice: BigNumber): BigNumber {
@@ -98,35 +97,24 @@ export default class CudosStore {
         return acudosPrice.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER);
     }
 
-    formatConvertedUsdInEth(usdPrice: number, precision?: number): string {
-        const cudosPrice = this.convertUsdInCudos(usdPrice);
-        const ethPrice = this.convertCudosToEth(cudosPrice);
-        return `${precision !== undefined ? ethPrice.toFixed(precision) : ethPrice.toString(10)} ETH`;
-    }
-
-    formatConvertedUsdInCudos(usdPrice: number, precision?: number): string {
-        const cudosPrice = this.convertUsdInCudos(usdPrice);
-        return `${precision !== undefined ? cudosPrice.toFixed(precision) : cudosPrice.toString(10)} CUDOS`;
-    }
-
     formatCudosPriceChangeInPercentage(): string {
-        return `${this.getCudosPriceChangeInPercentage().toFixed(2)} %`;
+        return formatPercent(this.getCudosPriceChangeInPercentage(), true);
     }
 
     formatAcudosInUsd(acudosPrice: BigNumber): string {
-        return numeral(this.convertAcudosInUsdAsString(acudosPrice)).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(this.convertAcudosInUsd(acudosPrice).toNumber());
     }
 
     formatCudosInUsd(cudosPrice: BigNumber): string {
-        return numeral(this.convertCudosInUsd(cudosPrice).toFixed(4)).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(this.convertCudosInUsd(cudosPrice).toNumber());
     }
 
     static formatAcudosInCudos(acudosPrice: BigNumber): string {
-        return `${CudosStore.convertAcudosInCudos(acudosPrice).toString(10)} CUDOS`;
+        return formatCudos(CudosStore.convertAcudosInCudos(acudosPrice), true);
     }
 
     static formatAcudosInCudosWithPrecision(acudosPrice: BigNumber, decimals: number): string {
-        return `${CudosStore.convertAcudosInCudos(acudosPrice).toFixed(decimals)} CUDOS`;
+        return formatCudos(CudosStore.convertAcudosInCudos(acudosPrice), true, decimals);
     }
 
     getNftEthPriceForNft(nftEntity: NftEntity): BigNumber {
@@ -190,23 +178,24 @@ export default class CudosStore {
     formatPriceInCudosForNft(nftEntity: NftEntity): string {
         const price = this.getNftCudosPriceForNft(nftEntity);
         const prefix = nftEntity.isMinted() === true ? '' : '~';
-        return `${prefix}${price.toFixed(2)} CUDOS`;
+        return `${prefix}${formatCudos(price, true)}`;
     }
 
     formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
         const price = this.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity);
         const prefix = nftEntity.isMinted() === true ? '' : '~';
-        return `${prefix}${price.toFixed(2)} CUDOS`;
+
+        return `${prefix}${formatCudos(price, true)}`;
     }
 
     formatPriceInUsdForNft(nftEntity: NftEntity): string {
         const price = this.getNftUsdPrice(nftEntity);
-        return numeral(price.toString()).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(price);
     }
 
     formatPriceInUsdForNftPlusOnDemandMintFeeIfNeeded(nftEntity: NftEntity): string {
         const price = this.getNftUsdPricePlusOnDemandMintFeeIfNeeded(nftEntity);
-        return numeral(price.toString()).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(price);
     }
 
     // formatExistingPriceForNft(nftEntity: NftEntity): string {

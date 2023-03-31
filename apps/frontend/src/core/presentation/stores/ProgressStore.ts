@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import React from 'react';
 import S from '../../utilities/Main';
+import { formatPercent } from '../../utilities/NumberFormatter';
 
 export default class ProgressStore {
 
@@ -19,7 +20,7 @@ export default class ProgressStore {
     }
 
     formatProgressInPercentage(): string {
-        return `${(this.progress * 100).toFixed(2)} %`;
+        return formatPercent(this.progress * 100, true);
     }
 
     onProgress = (title: string, progress: number) => {

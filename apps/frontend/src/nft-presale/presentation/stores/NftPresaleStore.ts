@@ -16,7 +16,7 @@ import AllowlistUserEntity from '../../../allowlist/entities/AllowlistUserEntity
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
 import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
-import numeral from 'numeral';
+import { formatUsd } from '../../../core/utilities/NumberFormatter';
 
 declare let Config;
 
@@ -380,7 +380,7 @@ export default class NftPresaleStore {
     getPresalePriceUsdFormatted(): string {
         const onDemandMintingFeeInUsd = this.cudosStore.convertCudosInUsd(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS);
         const presalePriceInUsd = onDemandMintingFeeInUsd.plus(new BigNumber(PRESALE_CONSTS.PRICE_USD));
-        return numeral(presalePriceInUsd.toFixed(2)).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(presalePriceInUsd.toNumber());
     }
 
     async onClickBuyWithCudos(): Promise < boolean > {

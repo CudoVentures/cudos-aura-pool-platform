@@ -25,7 +25,7 @@ function MyHistoryTab({ userProfilePageStore }: Props) {
                 <Select
                     className={'TableFilter'}
                     onChange={userProfilePageStore.onChangeTableFilter}
-                    value={userProfilePageStore.nftEventFilterModel.eventType} >
+                    value={userProfilePageStore.nftEventFilterModel.eventTypes ? userProfilePageStore.nftEventFilterModel.eventTypes[0] : S.NOT_EXISTS} >
                     <MenuItem value = { S.NOT_EXISTS }> All Event Types </MenuItem>
                     <MenuItem value = { NftEventType.TRANSFER }> Transfer </MenuItem>
                     <MenuItem value = { NftEventType.MINT }> Mint </MenuItem>

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
+import { formatBtc, formatPercent, formatTHs } from '../../core/utilities/NumberFormatter';
 
 export enum MiningFarmStatus {
     APPROVED = 'approved',
@@ -126,15 +127,16 @@ export default class MiningFarmEntity {
     }
 
     formatHashPowerInTh(): string {
-        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`
+        return formatTHs(this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0, true);
     }
 
     formatMaintenanceFeesInBtc(): string {
-        return `${this.maintenanceFeeInBtc !== null ? this.maintenanceFeeInBtc.toFixed(5) : '0.00'} BTC`;
+        return formatBtc(this.maintenanceFeeInBtc ?? new BigNumber(0), true);
     }
 
     formatResaleNftRoyaltiesPercent(): string {
-        return `${this.isCudosResaleNftRoyaltiesPercentSet() === true ? this.cudosResaleNftRoyaltiesPercent.toFixed(2) : '0.00'} %`;
+        const percent = this.isCudosResaleNftRoyaltiesPercentSet() === true ? this.cudosResaleNftRoyaltiesPercent : 0;
+        return formatPercent(percent, true);
     }
 
     clone(): MiningFarmEntity {

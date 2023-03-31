@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
-import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
+import { format } from 'path';
 import { NOT_EXISTS_INT } from '../../../../backend/src/common/utils';
 import S from '../../core/utilities/Main';
+import { formatTHs, formatUsd } from '../../core/utilities/NumberFormatter';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
 
 export enum NftTier {
@@ -146,11 +147,11 @@ export default class NftEntity {
     }
 
     formatHashPowerInTh(): string {
-        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`;
+        return formatTHs(this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0, true);
     }
 
     formatPriceInUsd(): string {
-        return numeral(this.priceUsd).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(this.priceUsd);
     }
 
     cloneDeep(): NftEntity {

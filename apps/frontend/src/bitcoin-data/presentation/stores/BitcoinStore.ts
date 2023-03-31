@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
-import numeral from 'numeral';
 import { makeAutoObservable } from 'mobx';
 import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
 import BitcoinRepo from '../repos/BitcoinRepo';
 import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
+import { formatBtc, formatPercent, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 export const BLOCKS_PER_DAY = 6 * 24
 export const BLOCKS_PER_WEEK = 6 * 24 * 7;
@@ -68,19 +68,11 @@ export default class BitcoinStore {
     }
 
     formatBtcInUsd(btc: BigNumber): string {
-        return numeral(btc.multipliedBy(this.bitcoinDataEntity?.priceInUsd ?? 0).toFixed(4)).format(ProjectUtils.NUMERAL_USD);
+        return formatUsd(btc.multipliedBy(this.bitcoinDataEntity?.priceInUsd ?? 0).toNumber());
     }
 
     formatBitcoinPriceChangeInPercentage(): string {
-        return `${this.getBitcoinPriceChangeInPercentage().toFixed(2)} %`;
-    }
-
-    static formatBtc(btc: BigNumber): string {
-        return `${btc.toFixed(8, BigNumber.ROUND_FLOOR)} BTC`;
-    }
-
-    static formatBtcWithPrecision(btc: BigNumber, decimals: number): string {
-        return `${btc.toFixed(decimals)} BTC`;
+        return formatPercent(this.getBitcoinPriceChangeInPercentage(), true);
     }
 
     getNetworkDifficulty(): string {

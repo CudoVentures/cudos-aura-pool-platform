@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import S from '../../core/utilities/Main';
+import { formatTHs } from '../../core/utilities/NumberFormatter';
 
 export default class MiningFarmDetailsEntity {
 
@@ -26,7 +27,7 @@ export default class MiningFarmDetailsEntity {
     }
 
     formatHashPowerInTh(): string {
-        return `${this.averageHashPowerInTh} TH/s`;
+        return formatTHs(this.averageHashPowerInTh, true);
     }
 
     static toJson(entity: MiningFarmDetailsEntity) {

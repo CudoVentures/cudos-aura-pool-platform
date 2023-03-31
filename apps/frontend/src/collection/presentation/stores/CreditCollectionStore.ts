@@ -14,6 +14,7 @@ import MiningFarmEntity, { MiningFarmStatus } from '../../../mining-farm/entitie
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import { formatTHs } from '../../../core/utilities/NumberFormatter';
 
 enum CreditCollectionDetailsSteps {
     COLLECTION_DETAILS = 1,
@@ -239,7 +240,7 @@ export default class CreditCollectionStore {
     }
 
     formatCollectionRemainingHashPowerForSelectedNft(): string {
-        return this.getCollectionRemainingHashPowerForSelectedNft().toFixed(5);
+        return formatTHs(this.getCollectionRemainingHashPowerForSelectedNft(), false);
     }
 
     // on change collection

@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
 import S from '../../core/utilities/Main';
+import { formatCudos } from '../../core/utilities/NumberFormatter';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
+import CudosStore from '../../cudos-data/presentation/stores/CudosStore';
 
 export default class CollectionDetailsEntity {
 
@@ -21,11 +23,11 @@ export default class CollectionDetailsEntity {
     }
 
     formatFloorPriceInCudos(): string {
-        return `${this.floorPriceInAcudos?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0) ?? '0'} CUDOS`;
+        return formatCudos(CudosStore.convertAcudosInCudos(this.floorPriceInAcudos ?? new BigNumber(0)), true, 0);
     }
 
     formatVolumeInCudos(): string {
-        return `${this.volumeInAcudos?.dividedBy(ProjectUtils.CUDOS_CURRENCY_DIVIDER).toFixed(0) ?? '0'} CUDOS`;
+        return formatCudos(CudosStore.convertAcudosInCudos(this.volumeInAcudos ?? new BigNumber(0)), true, 0)
     }
 
     static toJson(entity: CollectionDetailsEntity) {

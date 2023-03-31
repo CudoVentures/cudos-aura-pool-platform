@@ -27,6 +27,7 @@ import BigNumber from 'bignumber.js';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import RowLayout from '../../../core/presentation/components/RowLayout';
 import { EarningsPerDayCurrency } from '../../entities/EarningsPerDayFilterEntity';
+import { formatBtc, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 type Props = {
     analyticsPageStore?: AnalyticsPageStore,
@@ -66,7 +67,7 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
             return (
                 <ChartInfo
                     label = { <TextWithTooltip text={'Unsold NFT earnings'} tooltipText={'Earnings from unsold NFTs'} /> }
-                    value = { BitcoinStore.formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0))} />
+                    value = { formatBtc(miningFarmTotalEarningsBtcEntity?.unsoldNftsTotalEarningsInBtc ?? new BigNumber(0), true)} />
             )
         }
 
@@ -100,7 +101,7 @@ function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletSto
             return (
                 <ChartInfo
                     label = { <TextWithTooltip text={'Total Sales'} tooltipText={'Unsold NFTs earnings + NFTs resale royalties + initial NFTs sales converted to USD using today\'s exchange rate for both BTC and CUDOS'} /> }
-                    value = { ProjectUtils.formatUsd(totalInUsd) } />
+                    value = { formatUsd(totalInUsd.toNumber()) } />
             )
         }
 

@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
 import { KeplrWallet, Ledger, CosmostationWallet, StdSignature, CURRENCY_DECIMALS } from 'cudosjs';
 import S from '../../../core/utilities/Main';
 import { CHAIN_DETAILS, ETH_CONSTS, SIGN_NONCE } from '../../../core/utilities/Constants';
@@ -9,6 +9,7 @@ import WalletRepo from '../repos/WalletRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import Web3 from 'web3';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
+import { formatCudos } from '../../../core/utilities/NumberFormatter';
 
 const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
 
@@ -212,7 +213,7 @@ export default class WalletStore {
     }
 
     formatBalance(): string {
-        return `${this.balance?.toFixed(2) ?? '0'} CUDOS`;
+        return formatCudos(this.balance, true);
     }
 
     getName(): string {
@@ -220,11 +221,11 @@ export default class WalletStore {
     }
 
     formatBalanceInCudosInt(): string {
-        return this.balance?.toFixed(0) ?? '0';
+        return formatCudos(this.balance.integerValue(BigNumber.ROUND_FLOOR) ?? new BigNumber(0), false, 0)
     }
 
     formatBalanceInCudosFraction(): string {
-        return this.balance?.minus(this.balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0) ?? '0000';
+        return this.balance?.minus(this.balance.integerValue(BigNumber.ROUND_FLOOR)).shiftedBy(4).toFixed(0) ?? '0';
     }
 
     sendCudos(destiantionAddress: string, amount: BigNumber): Promise<string> {

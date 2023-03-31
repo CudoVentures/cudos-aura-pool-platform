@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
+import { formatPercent, formatTHs, formatUsd } from '../../core/utilities/NumberFormatter';
 
 export enum CollectionStatus {
     QUEUED = 'queued',
@@ -102,7 +103,7 @@ export default class CollectionEntity {
     }
 
     formatHashPowerInTh(): string {
-        return `${this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0} TH/s`;
+        return formatTHs(this.hashPowerInTh !== S.NOT_EXISTS ? this.hashPowerInTh : 0, true);
     }
 
     formatStatusName(): string {
@@ -110,15 +111,15 @@ export default class CollectionEntity {
     }
 
     formatRoyaltiesInPercentage(): string {
-        return `${this.royalties !== S.NOT_EXISTS ? this.royalties.toFixed(2) : '0.00'} %`;
+        return formatPercent(this.royalties !== S.NOT_EXISTS ? this.royalties : 0, true);
     }
 
     formatDefaultPricePerNftInUsd(): string {
-        return `$ ${this.defaultPricePerNftInUsd !== null ? this.defaultPricePerNftInUsd : '0.00'}`;
+        return formatUsd(this.defaultPricePerNftInUsd !== null ? this.defaultPricePerNftInUsd : 0);
     }
 
     formatDefaultHashPowerPerNftInTh(): string {
-        return `${this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? this.defaultHashPowerPerNftInTh.toString() : '0.00'} TH/s`;
+        return formatTHs(this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? this.defaultHashPowerPerNftInTh : 0, true)
     }
 
     static formatStatusName(status: CollectionStatus): string {
