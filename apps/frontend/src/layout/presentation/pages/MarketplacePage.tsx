@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ import NftEntity from '../../../nft/entities/NftEntity';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
 
 import PageLayout from '../../../core/presentation/components/PageLayout';
-import Button, { ButtonPadding, ButtonType } from '../../../core/presentation/components/Button';
+import Button, { ButtonBorder, ButtonColor, ButtonPadding, ButtonType } from '../../../core/presentation/components/Button';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
 import TopCollections from '../../../collection/presentation/components/TopCollections';
 import PageHeader from '../../../layout/presentation/components/PageHeader';
@@ -51,8 +51,6 @@ type Props = {
 function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore }: Props) {
     const { presaleCollectionEntity } = nftPresaleStore;
 
-    const marketplaceHeadingRef = useRef(null);
-
     useEffect(() => {
         const interval = setInterval(() => {
             runInAction(() => {
@@ -81,12 +79,6 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
     function onClickSeeAllFarms() {
         navigate(AppRoutes.EXPLORE_MINING_FARMS);
-    }
-
-    function onClickExploreMarketplace() {
-        marketplaceHeadingRef?.current?.scrollIntoView({
-            'behavior': 'smooth',
-        });
     }
 
     function checkBtcAddressRegistered(): boolean {
@@ -181,10 +173,11 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                             <label>Mine on real bitcoin</label>
                             <label>Simple process</label>
                         </div>
-                        {nftPresaleStore.isPresaleOver() === true
-                            && (<Actions>
-                                <Button onClick = { onClickExploreMarketplace }>Explore Marketplace</Button>
-                            </Actions>)}
+                        {nftPresaleStore.isPresaleOver() === true && (
+                            <Actions>
+                                <Button onClick = { onClickSeeAllNfts }>Explore Marketplace</Button>
+                            </Actions>
+                        )}
                     </div>
                     <div className = { 'MarketplaceHeroBg' }>
                         <div className = { 'HeroCircle HeroCircle03' } />
@@ -195,7 +188,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     </div>
                 </div>
                 {nftPresaleStore.isPresaleOver() === true && (<>
-                    <div ref = { marketplaceHeadingRef } className={'MarketplaceHeading'}>
+                    <div className = { 'MarketplaceHeading ' }>
                         <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
                         <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
                     </div>
@@ -224,7 +217,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 padding={ButtonPadding.PADDING_24}
                                 type={ButtonType.ROUNDED}
                                 onClick={onClickSeeAllNfts} >
-                            See All NFTs
+                                See All NFTs
                             </Button>
                         </Actions>
                     </div>
@@ -234,7 +227,12 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                             <div className = { 'H2 ExtraBold' } >New Hash Rate NFT Drops</div>
                             <div className = { 'B1' } >Powered by AuraPool Protocol</div>
                             <Actions className = { 'HashRateDropsInfoActions' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL } >
-                                <Button onClick = { onClickSeeAllNfts }>Explore NFTs</Button>
+                                <Button
+                                    border = { ButtonBorder.NO_BORDER }
+                                    color = { ButtonColor.SCHEME_4 }
+                                    onClick = { onClickSeeAllNfts }>
+                                    Explore NFTs
+                                </Button>
                             </Actions>
                         </div>
 
@@ -273,7 +271,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                             <Button
                                 onClick={onClickSeeAllCollections}
                                 padding={ButtonPadding.PADDING_24}>
-                            See All Collections
+                                See All Collections
                             </Button>
                         </Actions>
                     </div>
@@ -302,7 +300,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 onClick={onClickSeeAllFarms}
                                 padding={ButtonPadding.PADDING_24}
                                 type={ButtonType.ROUNDED}>
-                        See All Farms
+                                See All Farms
                             </Button>
                         </Actions>
                     </div>

@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeAutoObservable, makeObservable, observable } from 'mobx';
 import { KeplrWallet, Ledger, CosmostationWallet, StdSignature, CURRENCY_DECIMALS } from 'cudosjs';
 import S from '../../../core/utilities/Main';
 import { CHAIN_DETAILS, ETH_CONSTS, SIGN_NONCE } from '../../../core/utilities/Constants';
@@ -221,7 +221,7 @@ export default class WalletStore {
     }
 
     formatBalanceInCudosInt(): string {
-        return this.balance?.toFixed(0) ?? '0';
+        return formatCudos(this.balance ?? new BigNumber(0), false, 0)
     }
 
     formatBalanceInCudosFraction(): string {

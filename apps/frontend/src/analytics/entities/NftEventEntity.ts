@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 import { formatCudos, formatUsd } from '../../core/utilities/NumberFormatter';
 import ProjectUtils from '../../core/utilities/ProjectUtils';
+import CudosStore from '../../cudos-data/presentation/stores/CudosStore';
 
 export enum NftEventType {
     TRANSFER = 1,
@@ -43,7 +44,7 @@ export default class NftEventEntity {
     }
 
     formatTransferPriceInCudos(): string {
-        return formatCudos(this.transferPriceInAcudos.div(ProjectUtils.CUDOS_CURRENCY_DIVIDER), true);
+        return formatCudos(CudosStore.convertAcudosInCudos(this.transferPriceInAcudos), true);
     }
 
     formatTransferPriceInUsd(): string {

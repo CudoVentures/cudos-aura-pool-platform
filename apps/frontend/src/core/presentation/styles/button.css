@@ -30,3 +30,7 @@
 .Button.Padding48 {
     padding: 0 48px;
 }
+
+.Button.NoBorder {
+    border: none !important;
+}
