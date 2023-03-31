@@ -102,7 +102,7 @@ export default class CheckForPresaleRefundsModalStore extends ModalStore {
     }
 
     getAvailableRefundFormatted() {
-        return formatEth(this.availableRefundAmount?.shiftedBy(-CURRENCY_DECIMALS) || new BigNumber(0), true);
+        return formatEth(this.availableRefundAmount?.shiftedBy(-CURRENCY_DECIMALS) ?? new BigNumber(0), true);
     }
 
     getTxLink() {

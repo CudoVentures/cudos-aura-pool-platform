@@ -221,11 +221,11 @@ export default class WalletStore {
     }
 
     formatBalanceInCudosInt(): string {
-        return formatCudos(this.balance ?? new BigNumber(0), false, 0)
+        return formatCudos(this.balance.integerValue(BigNumber.ROUND_FLOOR) ?? new BigNumber(0), false, 0)
     }
 
     formatBalanceInCudosFraction(): string {
-        return this.balance?.minus(this.balance.integerValue(BigNumber.ROUND_DOWN)).shiftedBy(4).toFixed(0) ?? '0';
+        return this.balance?.minus(this.balance.integerValue(BigNumber.ROUND_FLOOR)).shiftedBy(4).toFixed(0) ?? '0';
     }
 
     sendCudos(destiantionAddress: string, amount: BigNumber): Promise<string> {

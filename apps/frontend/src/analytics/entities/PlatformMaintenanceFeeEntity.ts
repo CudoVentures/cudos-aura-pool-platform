@@ -10,7 +10,7 @@ export default class PlatformMaintenanceFeeEntity {
     }
 
     formatMaintenanceFeeDepositedInBtcInt(): string {
-        return formatBtc(this.maintenanceFeeInBtc, false, 0);
+        return formatBtc(this.maintenanceFeeInBtc.integerValue(BigNumber.ROUND_FLOOR), false, 0);
     }
 
     formatMaintenanceFeeDepositedInBtcFraction(): string {

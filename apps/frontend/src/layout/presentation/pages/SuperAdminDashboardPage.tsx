@@ -73,7 +73,7 @@ function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: P
                 )),
                 createTableCell((
                     <div className = { 'Bold' } >
-                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{formatCudos(CudosStore.convertAcudosInCudos(miningFarmPerformanceEntity.volumePer24HoursInAcudos), true)}</div>
+                        <div className={'B2 Bold TopPerformingMiningFarmsCellTitle'}>{formatCudos(CudosStore.convertAcudosInCudos(miningFarmPerformanceEntity.volumePer24HoursInAcudos), true, 4)}</div>
                         <div className={'B3 FlexRow FarmVolumePriceRow'}>
                             <div className={'SemiBold ColorNeutral060'}>{formatUsd(miningFarmPerformanceEntity.volumePer24HoursInUsd)}</div>
                             {/* <div className={'ColorSuccess060'}>+39.1%</div> */}

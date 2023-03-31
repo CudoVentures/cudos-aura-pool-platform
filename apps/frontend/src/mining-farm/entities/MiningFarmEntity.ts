@@ -131,7 +131,7 @@ export default class MiningFarmEntity {
     }
 
     formatMaintenanceFeesInBtc(): string {
-        return formatBtc(this.maintenanceFeeInBtc || new BigNumber(0), true);
+        return formatBtc(this.maintenanceFeeInBtc ?? new BigNumber(0), true);
     }
 
     formatResaleNftRoyaltiesPercent(): string {

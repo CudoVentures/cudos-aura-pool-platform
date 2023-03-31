@@ -10,12 +10,11 @@ export default class MiningFarmMaintenanceFeeEntity {
     }
 
     formatMaintenanceFeeDepositedInBtcInt(): string {
-        const value = this.maintenanceFeeInBtc.toFixed(0)
-        return formatBtc(Number(value), false, 0)
+        return formatBtc(this.maintenanceFeeInBtc.integerValue(BigNumber.ROUND_FLOOR), false, 0)
     }
 
     formatMaintenanceFeeDepositedInBtcFraction(): string {
-        return this.maintenanceFeeInBtc.minus(this.maintenanceFeeInBtc.integerValue()).shiftedBy(4).toFixed(0);
+        return this.maintenanceFeeInBtc.minus(this.maintenanceFeeInBtc.integerValue(BigNumber.ROUND_FLOOR)).shiftedBy(4).toFixed(0);
     }
 
     static fromJson(json: any): MiningFarmMaintenanceFeeEntity {
