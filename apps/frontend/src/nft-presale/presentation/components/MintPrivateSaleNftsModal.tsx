@@ -95,7 +95,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                                 await mintPrivateSaleNftsModalStore.parseMintDataEntity(json);
                                             } catch (e) {
                                                 console.error(e);
-                                                alertStore.show('Invalid JSON file.');
+                                                alertStore.show(e.message);
                                             }
                                         }),
                                     } } />
