@@ -6,6 +6,7 @@ import { AppModule } from './app.module';
 import { json } from 'express';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
+import { ResponseAddHeadersInterceptor } from './common/common.interceptors';
 
 declare const module: any;
 
@@ -23,7 +24,7 @@ async function bootstrap() {
     app.use(json({ limit: '256mb' }))
     app.use(cookieParser(appCookiesSecret));
     app.use(compression());
-
+    app.useGlobalInterceptors(new ResponseAddHeadersInterceptor());
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
