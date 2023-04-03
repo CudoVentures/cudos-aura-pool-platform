@@ -21,7 +21,7 @@ import { jwtConstants } from '../auth/auth.types';
         ]),
         JwtModule.register({
             secret: jwtConstants.secret,
-            signOptions: { expiresIn: '7d' },
+            signOptions: { expiresIn: '20m' },
         }),
         DataModule,
         EmailModule,

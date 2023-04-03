@@ -54,7 +54,7 @@ describe('StatisticsService', () => {
             imports: [
                 JwtModule.register({
                     secret: jwtConstants.secret,
-                    signOptions: { expiresIn: '7d' },
+                    signOptions: { expiresIn: '20m' },
                 }),
                 ConfigModule.forRoot({
                     isGlobal: true,
