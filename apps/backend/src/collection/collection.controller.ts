@@ -31,6 +31,7 @@ import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('collection')
 export class CollectionController {
@@ -52,6 +53,7 @@ export class CollectionController {
 
     @Post()
     @UseInterceptors(TransactionInterceptor)
+    @Throttle(20, 30)
     @HttpCode(200)
     async findAll(
         @Req() req: AppRequest,
@@ -67,6 +69,7 @@ export class CollectionController {
     @Post('fetchTopCollections')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchTopCollections(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchTopCollections: ReqFetchTopCollections,
@@ -78,6 +81,7 @@ export class CollectionController {
     @Post('details')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async getDetails(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchCollectionDetails: ReqFetchCollectionDetails,
@@ -94,6 +98,7 @@ export class CollectionController {
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
+    @Throttle(5, 30)
     async creditCollection(
         @Req() req: AppRequest,
         @Body() reqCreditCollection: ReqCreditCollection,
@@ -206,6 +211,7 @@ export class CollectionController {
     @UseInterceptors(TransactionInterceptor)
     @Put('editCollection')
     @HttpCode(200)
+    @Throttle(5, 30)
     async edit(
         @Req() req: AppRequest,
         @Body() reqEditCollection: ReqEditCollection,
@@ -266,6 +272,7 @@ export class CollectionController {
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
+    @Throttle(20, 30)
     async updateCollectionsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,

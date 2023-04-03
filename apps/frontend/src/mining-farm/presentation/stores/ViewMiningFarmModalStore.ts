@@ -61,10 +61,10 @@ export default class ViewMiningFarmModalStore extends ModalStore {
 
     @action
     async showSignal(miningFarmEntity: MiningFarmEntity, onSave: () => void) {
-        await this.generalStore.init();
-
         this.miningFarmEntity = miningFarmEntity;
         this.onSave = onSave;
+
+        await this.generalStore.init();
 
         const manufacturerEntities = await this.miningFarmRepo.fetchManufacturers();
         const manufacturerEntitiesMap = new Map();

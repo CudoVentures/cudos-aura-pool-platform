@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, Post, Put, Req, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AccountType } from '../account/account.types';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
 import RoleGuard from '../auth/guards/role.guard';
@@ -16,6 +17,7 @@ export class GeneralController {
     @Get('heartbeat')
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
+    @Throttle(20, 30)
     async getAlive(): Promise<string> {
         return 'running';
     }
@@ -24,6 +26,7 @@ export class GeneralController {
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
+    @Throttle(20, 30)
     async getLastCheckedBlock(
         @Req() req: AppRequest,
     ): Promise<{height: number}> {
@@ -35,6 +38,7 @@ export class GeneralController {
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
+    @Throttle(20, 30)
     async updateLastCheckedBlock(
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedBlockRequest,
@@ -46,6 +50,7 @@ export class GeneralController {
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
+    @Throttle(20, 30)
     async getLastCheckedPaymentRelayerBlock(
         @Req() req: AppRequest,
     ): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
@@ -60,6 +65,7 @@ export class GeneralController {
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
+    @Throttle(20, 30)
     async updateLastCheckedPaymentRelayerBlock(
         @Req() req: AppRequest,
         @Body() reqUpdateLastCheckedBlockRequest: ReqUpdateLastCheckedPaymentRelayerBlocksRequest,
@@ -70,6 +76,7 @@ export class GeneralController {
     @Get('fetchSettings')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchSettings(
         @Req() req: AppRequest,
     ): Promise < ResFetchSettings > {
@@ -81,6 +88,7 @@ export class GeneralController {
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async creditSettings(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditSettings: ReqCreditSettings,

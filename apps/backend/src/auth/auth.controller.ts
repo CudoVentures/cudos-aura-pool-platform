@@ -34,6 +34,7 @@ export class AuthController {
     @UseInterceptors(TransactionInterceptor)
     @Post('register')
     @HttpCode(200)
+    @Throttle(5, 30)
     async register(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqRegister: ReqRegister,
@@ -44,6 +45,7 @@ export class AuthController {
     @Get('fetchSessionAccounts')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(5, 30)
     async fetchSessionAccounts(@Req() req: AppRequest): Promise < ResFetchSessionAccounts > {
         const shouldChangePassword = req.sessionAccountEntity?.isDefaultSuperAdminPassword() ?? false;
 
@@ -58,6 +60,7 @@ export class AuthController {
     @Post('createPresaleAccounts')
     @HttpCode(200)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    @Throttle(5, 30)
     async createPresaleAccounts(
         @Req() req: AppRequest,
         @Body() reqCreatePresaleAccounts: ReqCreatePresaleAccounts,

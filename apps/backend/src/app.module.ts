@@ -24,6 +24,9 @@ import { KycModule } from './kyc/kyc.module';
 import { AllowlistModule } from './allowlist/allowlist.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { CONFIG_SERVICE_ROOT_PATH_KEY } from './common/utils';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerBehindProxyGuard } from './app.guards';
 
 @Module({
     imports: [
@@ -96,7 +99,13 @@ import { CONFIG_SERVICE_ROOT_PATH_KEY } from './common/utils';
             }],
         }),
     ],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerBehindProxyGuard,
+        },
+    ],
 })
 
 export class AppModule implements NestModule {

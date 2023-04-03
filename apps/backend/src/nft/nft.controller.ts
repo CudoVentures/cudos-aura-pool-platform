@@ -20,6 +20,7 @@ import { KycService } from '../kyc/kyc.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
 import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
 import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('nft')
 export class NFTController {
@@ -40,6 +41,7 @@ export class NFTController {
     @Post()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(30, 30)
     async fetchByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqNftsByFilter: ReqNftsByFilter,
@@ -55,6 +57,7 @@ export class NFTController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
     @HttpCode(200)
+    @Throttle(20, 30)
     async findOne(
         @Req() req: AppRequest,
         @Param('id') id: string,
@@ -165,6 +168,7 @@ export class NFTController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
     @HttpCode(200)
+    @Throttle(20, 30)
     async updateNftsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
@@ -213,6 +217,7 @@ export class NFTController {
     @Post('updatePrice')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async updatePrice(
         @Req() req: AppRequest,
         @Body() reqUpdateNftCudosPrice: ReqUpdateNftCudosPrice,
@@ -224,6 +229,7 @@ export class NFTController {
     @Get('fetchPresaleAmounts')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchPresaleAmounts(
         @Req() req: AppRequest,
     ): Promise<ResFetchPresaleAmounts> {
@@ -235,6 +241,7 @@ export class NFTController {
     @UseGuards(ApiKeyGuard)
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async creditPurchaseTransactions(
         @Req() req: AppRequest,
         @Body() reqCreditPurchaseTransactionEntities: ReqCreditPurchaseTransactionEntities,
@@ -247,6 +254,7 @@ export class NFTController {
     @Put('fetchPurchaseTransactions')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchPurchaseTransactions(
         @Req() req: AppRequest,
         @Body() reqFetchPurchaseTransactionEntities: ReqFetchPurchaseTransactions,

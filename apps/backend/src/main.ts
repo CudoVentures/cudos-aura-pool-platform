@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express'
 // import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
@@ -11,7 +12,7 @@ import { ResponseAddHeadersInterceptor } from './common/common.interceptors';
 declare const module: any;
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
     const configService = app.get(ConfigService);
     const appPort = configService.get < number >('APP_PORT');
     const appCookiesSecret = configService.get < string >('APP_COOKIES_SECRET') ?? undefined;
@@ -22,6 +23,7 @@ async function bootstrap() {
         defaultVersion: '1',
     })
     app.use(json({ limit: '256mb' }))
+    app.set('trust proxy', 1);
     app.use(cookieParser(appCookiesSecret));
     app.use(compression());
     app.useGlobalInterceptors(new ResponseAddHeadersInterceptor());

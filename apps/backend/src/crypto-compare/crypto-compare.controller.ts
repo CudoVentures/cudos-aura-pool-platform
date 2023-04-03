@@ -1,4 +1,5 @@
 import { Controller, HttpCode, Post, Req, UseInterceptors } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import CryptoCompareService from './crypto-compare.service';
@@ -12,6 +13,7 @@ export class CryptoCompareController {
     @Post('fetchCudosData')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchCudosData(
         @Req() req: AppRequest,
     ): Promise < ResFetchCudosData > {
@@ -22,6 +24,7 @@ export class CryptoCompareController {
     @Post('fetchBitcoinData')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchBitcoinData(
         @Req() req: AppRequest,
     ): Promise < ResFetchBitcoinData > {

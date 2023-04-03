@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import TableState from '../../../core/presentation/stores/TableState';
 import StatisticsRepo from '../repos/StatisticsRepo';
 import NftEventFilterModel from '../../entities/NftEventFilterModel';
@@ -213,7 +213,7 @@ export default class SuperAdminAnalyticsPageStore {
         }
     }
 
-    fetchNftEvents = async () => {
+    fetchNftEvents = action(async () => {
         if (this.eventType !== S.NOT_EXISTS) {
             this.nftEventFilterModel.eventTypes = [this.eventType];
         }
@@ -222,17 +222,19 @@ export default class SuperAdminAnalyticsPageStore {
         this.nftEventFilterModel.count = this.analyticsTableState.tableFilterState.itemsPerPage;
         const { nftEventEntities, nftEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
 
-        const nftEntitiesMap = this.nftEntitiesMap;
-        nftEntities.forEach((nftEntity) => {
-            nftEntitiesMap.set(nftEntity.id, nftEntity);
-        });
-
         await runInActionAsync(() => {
+            const nftEntitiesMap = this.nftEntitiesMap;
+            this.nftEntitiesMap = null;
+
+            nftEntities.forEach((nftEntity) => {
+                nftEntitiesMap.set(nftEntity.id, nftEntity);
+            });
+
             this.nftEntitiesMap = nftEntitiesMap;
             this.nftEventEntities = nftEventEntities;
             this.analyticsTableState.tableFilterState.total = total;
         });
-    }
+    })
 
     getNftById = (nftId: string): NftEntity => {
         return this.nftEntitiesMap.get(nftId) ?? null;

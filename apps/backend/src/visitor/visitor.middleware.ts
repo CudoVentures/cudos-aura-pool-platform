@@ -15,6 +15,8 @@ export class VisitorMiddleware implements NestMiddleware {
         const uuid = req.signedCookies[UUID_COOKIE_KEY];
         if (uuid === undefined) {
             res.cookie(UUID_COOKIE_KEY, crypto.randomUUID(), {
+                secure: true,
+                httpOnly: true,
                 signed: appCookiesSecret !== undefined,
             });
         }

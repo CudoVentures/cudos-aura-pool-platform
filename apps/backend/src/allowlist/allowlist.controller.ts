@@ -1,4 +1,5 @@
 import { Controller, Get, HttpCode, Req, UseInterceptors } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 
@@ -15,6 +16,7 @@ export class AllowlistController {
     @Get()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchAllowlist(
         @Req() req: AppRequest,
     ): Promise < ResFetchAllowlist > {
@@ -25,6 +27,7 @@ export class AllowlistController {
     @Get('fetchAllowlistUserBySessionAccount')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchAllowlistUserBySessionAccount(
         @Req() req: AppRequest,
     ): Promise < ResFetchAllowlistUserBySessionAccount > {
