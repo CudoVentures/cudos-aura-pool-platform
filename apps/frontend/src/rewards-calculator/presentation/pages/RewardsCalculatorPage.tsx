@@ -28,6 +28,7 @@ import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator.css';
 import { formatBtc, formatPercent, formatTHs } from '../../../core/utilities/NumberFormatter';
+import { useSearchParams } from 'react-router-dom';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -41,11 +42,19 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
 
     const [networkDifficultyEditEnabled, setNetworkDifficultyEditEnabled] = useState(false);
 
+    const [searchParams] = useSearchParams();
+    const urlFarmId = searchParams.get('farmId')
+    const urlHashRate = searchParams.get('hashPower')
+
     useEffect(() => {
         async function run() {
             await bitcoinStore.init();
             await generalStore.init();
             await rewardsCalculatorStore.init();
+            if (urlFarmId !== null && urlHashRate !== null) {
+                rewardsCalculatorStore.onChangeMiningFarm(urlFarmId);
+                rewardsCalculatorStore.onChangeHashPowerInInput(urlHashRate)
+            }
         }
         run();
     }, []);

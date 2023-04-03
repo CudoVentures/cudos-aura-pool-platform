@@ -92,7 +92,10 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
     }
 
     function onClickCalculateRewards() {
-        navigate(AppRoutes.REWARDS_CALCULATOR)
+        navigate({
+            pathname: AppRoutes.REWARDS_CALCULATOR,
+            search: `?farmId=${miningFarmEntity.id}&hashPower=${nftEntity.hashPowerInTh}`,
+        })
     }
 
     function onClickBuyNft() {
