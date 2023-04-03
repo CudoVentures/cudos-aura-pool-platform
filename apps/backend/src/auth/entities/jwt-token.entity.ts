@@ -14,7 +14,7 @@ export default class JwtToken {
     }
 
     static newInstance(accountEntity: AccountEntity) {
-        const derivedKey = pbkdf2Sync(accountEntity.hashedPass.substring(0, 10), 'salt', 100000, 64, 'sha512');
+        const derivedKey = pbkdf2Sync(accountEntity.hashedPass.substring(0, 10), accountEntity.tokenSalt, 100000, 64, 'sha512');
         const entity = new JwtToken();
 
         entity.id = accountEntity.accountId;
@@ -43,7 +43,7 @@ export default class JwtToken {
         return entity;
     }
 
-    static getConfig(expiresIn = '7d') {
+    static getConfig(expiresIn = '20m') {
         return {
             secret: jwtConstants.secret,
             expiresIn,

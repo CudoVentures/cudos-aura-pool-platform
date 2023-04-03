@@ -5,6 +5,7 @@ import UserEntity from '../../entities/UserEntity';
 
 export class ResFetchSessionAccounts {
 
+    accessToken: string;
     accountEntity: AccountEntity;
     userEntity: UserEntity;
     adminEntity: AdminEntity;
@@ -12,6 +13,7 @@ export class ResFetchSessionAccounts {
     shouldChangePassword: number;
 
     constructor(axiosData: any) {
+        this.accessToken = axiosData.accessToken;
         this.accountEntity = AccountEntity.fromJson(axiosData.accountEntity);
         this.userEntity = UserEntity.fromJson(axiosData.userEntity);
         this.adminEntity = AdminEntity.fromJson(axiosData.adminEntity);

@@ -1,6 +1,7 @@
 import { IntBoolValue, NOT_EXISTS_INT } from '../../common/utils';
 import { AccountJsonValidator, AccountType } from '../account.types';
 import AccountRepo from '../repos/account.repo';
+import crypto from 'crypto';
 
 export default class AccountEntity {
 
@@ -13,6 +14,7 @@ export default class AccountEntity {
     timestampLastLogin: number;
     timestampRegister: number;
     salt: string;
+    tokenSalt: string;
     hashedPass: string;
 
     constructor() {
@@ -25,7 +27,12 @@ export default class AccountEntity {
         this.timestampLastLogin = NOT_EXISTS_INT;
         this.timestampRegister = NOT_EXISTS_INT;
         this.salt = '';
+        this.tokenSalt = '';
         this.hashedPass = '';
+    }
+
+    static generateTokenSalt(): string {
+        return crypto.randomBytes(16).toString('base64');
     }
 
     static newInstanceAdmin(): AccountEntity {
@@ -92,6 +99,7 @@ export default class AccountEntity {
             repoJson.salt = entity.salt;
             repoJson.hashedPass = entity.hashedPass;
         }
+        repoJson.tokenSalt = entity.tokenSalt;
 
         return repoJson;
     }
@@ -112,6 +120,7 @@ export default class AccountEntity {
         entity.timestampLastLogin = repoJson?.lastLoginAt?.getTime() ?? NOT_EXISTS_INT;
         entity.timestampRegister = repoJson?.createdAt?.getTime() ?? NOT_EXISTS_INT;
         entity.salt = repoJson.salt ?? entity.salt;
+        entity.tokenSalt = repoJson.tokenSalt ?? entity.tokenSalt;
         entity.hashedPass = repoJson.hashedPass ?? entity.hashedPass;
 
         return entity;

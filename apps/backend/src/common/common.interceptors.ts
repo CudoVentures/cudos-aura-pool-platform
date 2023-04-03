@@ -37,6 +37,7 @@ export class ResponseAddHeadersInterceptor implements NestInterceptor {
     intercept(context:ExecutionContext, next:CallHandler): Observable<any> {
 
         const ResponseObj:ExpressResponse = context.switchToHttp().getResponse();
+
         ResponseObj.setHeader('Content-Security-Policy', 'script-src \'self\'');
         ResponseObj.setHeader('X-Frame-Option', 'DENY');
 

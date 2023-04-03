@@ -2,7 +2,7 @@ import { Body, Controller, Post, Get, ValidationPipe, Req, UseInterceptors, Http
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AccountType } from '../account/account.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
-import { AppRequest, RequestWithSessionAccounts } from '../common/commont.types';
+import { AppRequest } from '../common/commont.types';
 import { parseIntBoolValue } from '../common/utils';
 import { KycService } from '../kyc/kyc.service';
 import AddressMintDataEntity from '../nft/entities/address-mint-data.entity';
@@ -44,9 +44,14 @@ export class AuthController {
     @Get('fetchSessionAccounts')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    async fetchSessionAccounts(@Req() req: RequestWithSessionAccounts): Promise < ResFetchSessionAccounts > {
+    async fetchSessionAccounts(@Req() req: AppRequest): Promise < ResFetchSessionAccounts > {
         const shouldChangePassword = req.sessionAccountEntity?.isDefaultSuperAdminPassword() ?? false;
-        return new ResFetchSessionAccounts(req.sessionAccountEntity, req.sessionUserEntity, req.sessionAdminEntity, req.sessionSuperAdminEntity, parseIntBoolValue(shouldChangePassword));
+
+        const accessToken = req.sessionAccountEntity !== null
+            ? await this.authService.regenerateToken(req.sessionAccountEntity, req.transaction)
+            : '';
+
+        return new ResFetchSessionAccounts(accessToken, req.sessionAccountEntity, req.sessionUserEntity, req.sessionAdminEntity, req.sessionSuperAdminEntity, parseIntBoolValue(shouldChangePassword));
     }
 
     @UseInterceptors(TransactionInterceptor)

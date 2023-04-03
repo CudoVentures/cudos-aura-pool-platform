@@ -5,14 +5,15 @@ import UserEntity from '../../account/entities/user.entity';
 import { IntBoolValue } from '../../common/utils';
 
 export class ResFetchSessionAccounts {
-
+    accessToken: string;
     accountEntity: any;
     userEntity: any;
     adminEntity: any;
     superAdminEntity: any;
     shouldChangePassword: IntBoolValue;
 
-    constructor(accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: IntBoolValue) {
+    constructor(accessToken, accountEntity: AccountEntity, userEntity: UserEntity, adminEntity: AdminEntity, superAdminEntity: SuperAdminEntity, shouldChangePassword: IntBoolValue) {
+        this.accessToken = accessToken;
         this.accountEntity = AccountEntity.toJson(accountEntity);
         this.userEntity = UserEntity.toJson(userEntity);
         this.adminEntity = AdminEntity.toJson(adminEntity);

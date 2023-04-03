@@ -29,6 +29,10 @@ export default class AccountApi {
         const { data } = await axios.get('/api/v1/auth/fetchSessionAccounts');
         const res = new ResFetchSessionAccounts(data);
 
+        if (res.accessToken !== '') {
+            setTokenInStorage(res.accessToken);
+        }
+
         return {
             accountEntity: res.accountEntity,
             userEntity: res.userEntity,

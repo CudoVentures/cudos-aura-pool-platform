@@ -33,12 +33,18 @@ export class AuthService {
 
         // update last login time
         accountEntity.timestampLastLogin = Date.now();
+
+        return this.regenerateToken(accountEntity, dbTx);
+    }
+
+    async regenerateToken(accountEntity: AccountEntity, dbTx: Transaction): Promise < string > {
+        // update salt to generate new unique token later
+        accountEntity.tokenSalt = AccountEntity.generateTokenSalt();
         await this.accountService.creditAccount(accountEntity, false, dbTx);
 
         const jwtToken = JwtToken.newInstance(accountEntity);
         return this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig());
     }
-
     async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, dbTx: Transaction): Promise < void > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature);
         if (!isSigner) {

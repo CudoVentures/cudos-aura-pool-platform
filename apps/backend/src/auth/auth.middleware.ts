@@ -29,7 +29,8 @@ export class AuthMiddleware implements NestMiddleware {
             this.jwtService.verify(encodedToken, JwtToken.getConfig());
             const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
             const accounts = await this.accountService.findAccounts(jwtToken.id, transaction);
-            const derivedKey = pbkdf2Sync(accounts.accountEntity.hashedPass.substring(0, 10), 'salt', 100000, 64, 'sha512');
+
+            const derivedKey = pbkdf2Sync(accounts.accountEntity.hashedPass.substring(0, 10), accounts.accountEntity.tokenSalt, 100000, 64, 'sha512');
 
             if (derivedKey.toString('hex') !== jwtToken.derivedKey) {
                 throw new Error();

@@ -189,7 +189,9 @@ const App = () => {
 
         async function run() {
             await accountSessionStore.loadSessionAccountsAndSync();
+            setTimeout(run, 5 * 60 * 1000); // refrech token each 5 minutes
         }
+
         run();
     }, []);
 

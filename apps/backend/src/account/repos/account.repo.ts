@@ -69,4 +69,8 @@ export default class AccountRepo extends Model {
     @Column({ type: DataType.STRING })
         hashedPass: string;
 
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        tokenSalt: string;
+
 }
