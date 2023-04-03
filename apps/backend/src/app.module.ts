@@ -42,7 +42,7 @@ import { CONFIG_SERVICE_ROOT_PATH_KEY } from './common/utils';
         AllowlistModule,
         JwtModule.register({
             secret: jwtConstants.secret,
-            signOptions: { expiresIn: '7d' },
+            signOptions: { expiresIn: '20m' },
         }),
         SequelizeModule.forRootAsync({
             inject: [ConfigService],

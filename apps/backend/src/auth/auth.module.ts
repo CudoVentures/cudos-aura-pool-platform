@@ -17,7 +17,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         KycModule,
         JwtModule.register({
             secret: jwtConstants.secret,
-            signOptions: { expiresIn: '7d' },
+            signOptions: { expiresIn: '20m' },
         }),
         ThrottlerModule.forRoot({
             ttl: 30,
