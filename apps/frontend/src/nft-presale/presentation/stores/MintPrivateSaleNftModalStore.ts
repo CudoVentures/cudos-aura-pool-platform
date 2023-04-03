@@ -10,6 +10,7 @@ import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import AddressMintDataEntity from '../../entities/AddressMintDataEntity';
+import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
 export enum ModalStage {
     UPLOAD_FILE,
@@ -91,22 +92,27 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
             throw Error('Invalid JSON');
         }
 
-        // check if any addresses are not present in the addressbook
-        const bitcoinPayoutAddresses = await this.cudosRepo.fetchBitcoinPayoutAddresses(addressMintDataEntities.map((addressMintDataEntity) => addressMintDataEntity.cudosAddress));
-        const bitcoinPayoutAddressesMap = new Map<string, string>();
-        bitcoinPayoutAddresses.forEach((bitcoinPayoutAddress, index) => {
-            bitcoinPayoutAddressesMap.set(addressMintDataEntities[index].cudosAddress, bitcoinPayoutAddress);
-        });
-
-        const missingCudosAddressesInAddressbook = [];
+        const addressMintDataAddressMapping = new Map();
         addressMintDataEntities.forEach((addressMintDataEntity) => {
-            if (bitcoinPayoutAddressesMap.get(addressMintDataEntity.cudosAddress) !== addressMintDataEntity.btcAddress) {
-                missingCudosAddressesInAddressbook.push(addressMintDataEntity.cudosAddress);
+            const mappedAddress = addressMintDataAddressMapping.get(addressMintDataEntity.cudosAddress);
+            if (mappedAddress === undefined) {
+                addressMintDataAddressMapping.set(addressMintDataEntity.cudosAddress, addressMintDataEntity.btcAddress);
+            } else if (mappedAddress !== addressMintDataEntity.btcAddress) {
+                throw Error(`Address ${addressMintDataEntity.cudosAddress} has more than single BTC wallet address - ${addressMintDataEntity.btcAddress} and ${mappedAddress}`);
+            }
+        })
+
+        // check if any addresses are not present in the addressbook
+        const bitcoinPayoutAddressesMap = await this.cudosRepo.fetchBitcoinPayoutAddresses(addressMintDataEntities.map((addressMintDataEntity) => addressMintDataEntity.cudosAddress));
+        const missingCudosAddressedInAddressBookSet = new Set();
+        bitcoinPayoutAddressesMap.forEach((btcAddress, cudosAddress) => {
+            if (BitcoinStore.isValidBtcAddress(btcAddress) === false || addressMintDataAddressMapping.get(cudosAddress) !== btcAddress) {
+                missingCudosAddressedInAddressBookSet.add(cudosAddress);
             }
         });
 
-        if (missingCudosAddressesInAddressbook.length > 0) {
-            throw Error(`The following addresses are missing (or with different BTC address) in the addressbook: ${missingCudosAddressesInAddressbook.join(', ')}`);
+        if (missingCudosAddressedInAddressBookSet.size > 0) {
+            throw Error(`The following addresses are missing/invalid (or with different BTC address) in the addressbook: ${Array.from(missingCudosAddressedInAddressBookSet).join(', ')}`);
         }
 
         await runInActionAsync(() => {
