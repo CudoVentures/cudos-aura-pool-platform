@@ -1,4 +1,5 @@
 import { Body, Controller, Post, ValidationPipe, Req, UseInterceptors, UseGuards, Patch, Get, Param, Res, HttpCode } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
@@ -27,6 +28,7 @@ export class AccountController {
     @UseInterceptors(TransactionInterceptor)
     @Post('editSessionAccount')
     @HttpCode(200)
+    @Throttle(10, 60)
     async editSessionAccount(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqEditSessionAccount: ReqEditSessionAccount,
@@ -51,6 +53,7 @@ export class AccountController {
     @UseInterceptors(TransactionInterceptor)
     @Post('editSessionUser')
     @HttpCode(200)
+    @Throttle(10, 60)
     async editSessionUser(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqEditSessionUser: ReqEditSessionUser,
@@ -66,6 +69,7 @@ export class AccountController {
     @UseInterceptors(TransactionInterceptor)
     @Post('editSessionSuperAdmin')
     @HttpCode(200)
+    @Throttle(10, 60)
     async editSessionSuperAdmin(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqEditSessionSuperAdmin: ReqEditSessionSuperAdmin,
@@ -81,6 +85,7 @@ export class AccountController {
     @UseGuards(EditSessionAccountPassGuard)
     @Patch('editSessionAccountPass')
     @HttpCode(200)
+    @Throttle(10, 60)
     async editSessionAccountPass(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqEditSessionAccountPass: ReqEditSessionAccountPass,
@@ -97,6 +102,7 @@ export class AccountController {
     @UseGuards(RoleGuard([AccountType.ADMIN, AccountType.SUPER_ADMIN]))
     @Patch('sendSessionAccountVerificationEmail')
     @HttpCode(200)
+    @Throttle(10, 60)
     async sendSessionAccountVerificationEmail(
         @Req() req: AppRequest,
     ): Promise < void > {
@@ -106,6 +112,7 @@ export class AccountController {
     @UseInterceptors(TransactionInterceptor)
     @Get('verifyEmail/:token')
     @HttpCode(200)
+    @Throttle(10, 60)
     async verifyEmail(
         @Req() req: AppRequest,
         @Res() res,
@@ -121,6 +128,7 @@ export class AccountController {
     @Patch('forgottenPassword')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(10, 60)
     async forgottenPassword(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqForgottenPassword: ReqForgottenPassword,
@@ -136,6 +144,7 @@ export class AccountController {
     @UseGuards(FetchFarmOwnerAccountGuard)
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(10, 60)
     async fetchFarmOwnerAccount(
         @Req() req: AppRequest,
         @Param('accountId') accountId: number,

@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, Put, Req, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AppRequest } from '../common/commont.types';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
@@ -15,6 +16,7 @@ export class VisitorController {
     @Put('signalVisitMiningFarm')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async signalVisitMiningFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqSignalVisitMiningFarm: ReqSignalVisitMiningFarm,
@@ -31,6 +33,7 @@ export class VisitorController {
     @Put('signalVisitNft')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async signalVisitNft(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqSignalVisitNft: ReqSignalVisitNft,

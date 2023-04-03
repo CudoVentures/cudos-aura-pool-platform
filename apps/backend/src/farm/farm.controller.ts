@@ -25,6 +25,7 @@ import EnergySourceEntity from './entities/energy-source.entity';
 import MinerEntity from './entities/miner.entity';
 import ManufacturerEntity from './entities/manufacturer.entity';
 import { FarmCreationError } from '../common/errors/errors';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('farm')
 export class FarmController {
@@ -40,6 +41,7 @@ export class FarmController {
     @Post()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchMiningFarmsByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
@@ -51,6 +53,7 @@ export class FarmController {
     @Post('fetchBestPerformingMiningFarm')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchBestPerformingMiningFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
@@ -62,6 +65,7 @@ export class FarmController {
     @Post('fetchMiningFarmsDetailsByIds')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchMiningFarmsDetailsByIds(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmDetails: ReqFetchMiningFarmDetails,
@@ -76,6 +80,7 @@ export class FarmController {
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
+    @Throttle(5, 60)
     async creditFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditMiningFarm: ReqCreditMiningFarm,
@@ -100,6 +105,7 @@ export class FarmController {
     @Get('miners')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async findMiners(
         @Req() req: AppRequest,
     ): Promise < ResFetchMiners > {
@@ -110,6 +116,7 @@ export class FarmController {
     @Get('energy-sources')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async findEnergySources(
         @Req() req: AppRequest,
     ): Promise < ResFetchEnergySources > {
@@ -120,6 +127,7 @@ export class FarmController {
     @Get('manufacturers')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async findManufacturers(
         @Req() req: AppRequest,
     ): Promise < ResFetchManufacturers > {
@@ -130,6 +138,7 @@ export class FarmController {
     @Put('miners')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async creditMiners(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditMiner: ReqCreditMiner,
@@ -142,6 +151,7 @@ export class FarmController {
     @Put('energy-sources')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async creditEnergySources(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditEnergySource: ReqCreditEnergySource,
@@ -154,6 +164,7 @@ export class FarmController {
     @Put('manufacturers')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async creditManufacturers(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditManufacturer: ReqCreditManufacturer,

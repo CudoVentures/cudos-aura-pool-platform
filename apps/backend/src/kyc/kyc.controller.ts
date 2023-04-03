@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, Post, Req, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AccountType } from '../account/account.types';
 import RoleGuard from '../auth/guards/role.guard';
 import { TransactionInterceptor } from '../common/common.interceptors';
@@ -21,6 +22,7 @@ export class KycController {
     @Post('fetchKyc')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
+    @Throttle(20, 30)
     async fetchKyc(
         @Req() req: AppRequest,
     ): Promise < ResFetchKyc > {
@@ -40,6 +42,7 @@ export class KycController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.USER]))
     @HttpCode(200)
+    @Throttle(20, 30)
     async creditKyc(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditKyc: ReqCreditKyc,
@@ -59,6 +62,7 @@ export class KycController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.USER]))
     @HttpCode(200)
+    @Throttle(20, 30)
     async createWorkflowRun(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreateWorkflowRun: ReqCreateWorkflowRun,
