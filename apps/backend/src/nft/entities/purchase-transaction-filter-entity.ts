@@ -1,4 +1,3 @@
-import { makeAutoObservable } from 'mobx';
 import { PurchaseTransactionsFilterJsonValidation } from '../nft.types';
 
 export default class PurchaseTransactionsFilterEntity {
@@ -9,8 +8,6 @@ export default class PurchaseTransactionsFilterEntity {
     constructor() {
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
-
-        makeAutoObservable(this);
     }
 
     static fromJson(json: PurchaseTransactionsFilterJsonValidation) {

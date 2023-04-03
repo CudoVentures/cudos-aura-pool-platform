@@ -1,5 +1,3 @@
-import { makeAutoObservable } from 'mobx';
-
 export enum PurchaseTransactionStatus {
     PENDING = '1',
     SUCCESS = '2',
@@ -17,8 +15,6 @@ export default class PurchaseTransactionEntity {
         this.recipientAddress = '';
         this.timestamp = 0;
         this.status = PurchaseTransactionStatus.PENDING;
-
-        makeAutoObservable(this);
     }
 
     static toJson(entity: PurchaseTransactionEntity) {
