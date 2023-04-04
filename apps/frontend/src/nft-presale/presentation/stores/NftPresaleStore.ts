@@ -46,7 +46,6 @@ export default class NftPresaleStore {
         this.allowlistRepo = allowlistRepo;
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
-
         this.cudosStore = cudosStore;
         this.presaleStore = presaleStore;
         this.alertStore = alertStore;
