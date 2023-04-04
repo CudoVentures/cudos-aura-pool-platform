@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { FarmStatus, MiningFarmJsonValidator } from '../farm.types';
 import { MiningFarmRepo } from '../repos/mining-farm.repo';
+import AccountEntity from '../../account/entities/account.entity';
 
 export default class MiningFarmEntity {
 
@@ -145,9 +146,18 @@ export default class MiningFarmEntity {
         return entity;
     }
 
-    static toJson(entity: MiningFarmEntity): MiningFarmJsonValidator {
+    static toJson(entity: MiningFarmEntity, currentUser: AccountEntity): MiningFarmJsonValidator {
         if (entity === null) {
             return null;
+        }
+
+        let hideData;
+        if (currentUser?.isSuperAdmin() === true) {
+            hideData = false;
+        } else if (currentUser?.isAdmin() === true) {
+            hideData = entity.accountId !== currentUser.accountId;
+        } else {
+            hideData = true;
         }
 
         return {
@@ -156,8 +166,8 @@ export default class MiningFarmEntity {
             'name': entity.name,
             'legalName': entity.legalName,
             'rewardsFromPoolBtcWalletName': entity.rewardsFromPoolBtcWalletName,
-            'primaryAccountOwnerName': entity.primaryAccountOwnerName,
-            'primaryAccountOwnerEmail': entity.primaryAccountOwnerEmail,
+            'primaryAccountOwnerName': hideData === false ? entity.primaryAccountOwnerName : '',
+            'primaryAccountOwnerEmail': hideData === false ? entity.primaryAccountOwnerEmail : '',
             'description': entity.description,
             'manufacturerIds': entity.manufacturerIds,
             'minerIds': entity.minerIds,

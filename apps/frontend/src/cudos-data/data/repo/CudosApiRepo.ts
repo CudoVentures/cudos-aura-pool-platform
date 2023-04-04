@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import S from '../../../core/utilities/Main';
-import { GasPrice, StargateClient } from 'cudosjs';
+import { GasPrice, PageRequest, StargateClient } from 'cudosjs';
 import { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK, CHAIN_DETAILS } from '../../../core/utilities/Constants';
 import { CudosSigningStargateClient } from 'cudosjs/build/stargate/cudos-signingstargateclient';
 import CudosDataEntity from '../../entities/CudosDataEntity';
@@ -104,13 +104,24 @@ export default class CudosApiRepo implements CudosRepo {
         const cudosAddressesMap = new Map();
         try {
             const cudosClient = await StargateClient.connect(CHAIN_DETAILS.RPC_ADDRESS);
-            const res = await cudosClient.addressbookModule.getAllAddresses();
+
+            let total = Number.MAX_SAFE_INTEGER;
+            const pagination = PageRequest.fromPartial({ offset: 0, limit: 1000, countTotal: true });
+
+            const fetchedAdresses = [];
+            while (total > fetchedAdresses.length) {
+                const res = await cudosClient.addressbookModule.getAllAddresses(pagination);
+                res.address.forEach((address) => fetchedAdresses.push(address));
+
+                total = res.pagination?.total.toNumber()
+                pagination.offset = pagination.offset.add(res.address.length);
+            }
 
             cudosAddresses.forEach((cudosAddress) => {
                 cudosAddressesMap.set(cudosAddress, '');
             });
 
-            res.address.forEach((addressBookEntity) => {
+            fetchedAdresses.forEach((addressBookEntity) => {
                 if (addressBookEntity.network !== ADDRESSBOOK_NETWORK || addressBookEntity.label !== ADDRESSBOOK_LABEL) {
                     return;
                 }
@@ -122,6 +133,5 @@ export default class CudosApiRepo implements CudosRepo {
         } catch (e) {
         }
         return cudosAddressesMap;
-
     }
 }
