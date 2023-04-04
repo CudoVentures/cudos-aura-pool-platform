@@ -41,31 +41,31 @@ export class FarmController {
     @Post()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(4, 1)
     async fetchMiningFarmsByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
     ): Promise < ResFetchMiningFarmsByFilter > {
         const { miningFarmEntities, total } = await this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel, req.transaction);
-        return new ResFetchMiningFarmsByFilter(miningFarmEntities, total);
+        return new ResFetchMiningFarmsByFilter(miningFarmEntities, total, req.sessionAccountEntity);
     }
 
     @Post('fetchBestPerformingMiningFarm')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(4, 1)
     async fetchBestPerformingMiningFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
     ): Promise < ResFetchBestPerformingMiningFarms > {
         const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo, req.transaction);
-        return new ResFetchBestPerformingMiningFarms(miningFarmEntities, miningFarmPerformanceEntities);
+        return new ResFetchBestPerformingMiningFarms(miningFarmEntities, miningFarmPerformanceEntities, req.sessionAccountEntity);
     }
 
     @Post('fetchMiningFarmsDetailsByIds')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(4, 1)
     async fetchMiningFarmsDetailsByIds(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmDetails: ReqFetchMiningFarmDetails,
@@ -80,7 +80,7 @@ export class FarmController {
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
-    @Throttle(5, 60)
+    @Throttle(5, 30)
     async creditFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditMiningFarm: ReqCreditMiningFarm,
@@ -99,7 +99,7 @@ export class FarmController {
 
         miningFarmEntity = await this.miningFarmService.creditMiningFarm(miningFarmEntity, req.sessionAccountEntity !== null, req.transaction);
 
-        return new ResCreditMiningFarm(miningFarmEntity);
+        return new ResCreditMiningFarm(miningFarmEntity, req.sessionAccountEntity);
     }
 
     @Get('miners')

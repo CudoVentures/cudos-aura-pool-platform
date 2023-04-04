@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -51,6 +51,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
 
     const { collectionId } = useParams();
     const navigate = useNavigate();
+    const [hasAccess, setHasAccess] = useState(false);
 
     useEffect(() => {
         async function run() {
@@ -59,9 +60,12 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
             if (creditCollectionPageStore.hasAccess() === false) {
                 navigate(AppRoutes.HOME);
             }
+            setHasAccess(true);
         }
+
+        setHasAccess(false);
         run();
-    }, []);
+    }, [collectionId]);
 
     function onClickNavigateMarketplace() {
         navigate(AppRoutes.MARKETPLACE)
@@ -104,7 +108,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
             ) } >
             <PageHeader />
 
-            { collectionEntity === null || miningFarmEntity === null || nftEntities === null ? (
+            { (collectionEntity === null || miningFarmEntity === null || nftEntities === null || hasAccess === false) ? (
                 <LoadingIndicator />
             ) : (
                 <div className={'PageContent AppContent'} >

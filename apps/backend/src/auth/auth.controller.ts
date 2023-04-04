@@ -22,7 +22,7 @@ export class AuthController {
     @Post('login')
     @HttpCode(200)
     @UseGuards(ThrottlerGuard)
-    @Throttle(5, 30)
+    @Throttle(10, 30)
     async login(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqLogin: ReqLogin,
@@ -34,7 +34,7 @@ export class AuthController {
     @UseInterceptors(TransactionInterceptor)
     @Post('register')
     @HttpCode(200)
-    @Throttle(5, 30)
+    @Throttle(10, 30)
     async register(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqRegister: ReqRegister,
@@ -45,7 +45,7 @@ export class AuthController {
     @Get('fetchSessionAccounts')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(5, 30)
+    @Throttle(4, 1)
     async fetchSessionAccounts(@Req() req: AppRequest): Promise < ResFetchSessionAccounts > {
         const shouldChangePassword = req.sessionAccountEntity?.isDefaultSuperAdminPassword() ?? false;
 

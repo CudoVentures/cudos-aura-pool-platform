@@ -5,11 +5,16 @@ import BitcoinRepo from '../repos/BitcoinRepo';
 import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import BitcoinBlockchainInfoEntity from '../../entities/BitcoinBlockchainInfoEntity';
 import { formatBtc, formatPercent, formatUsd } from '../../../core/utilities/NumberFormatter';
+import { Network, validate } from 'bitcoin-address-validation';
 
 export const BLOCKS_PER_DAY = 6 * 24
 export const BLOCKS_PER_WEEK = 6 * 24 * 7;
 export const BLOCKS_PER_MONTH = BLOCKS_PER_DAY * 30;
 export const BLOCKS_PER_YEAR = BLOCKS_PER_DAY * 365;
+
+// CONFIGURATIONS
+declare let Config;
+const BTC_NETWORK = Config.APP_BTC_NETWORK === 'testnet' ? Network.testnet : Network.mainnet;
 
 export default class BitcoinStore {
 
@@ -111,6 +116,10 @@ export default class BitcoinStore {
 
     calculateRewardsPerYear(targetHashPowerInTh: number, bitcoinHashPower: BigNumber = null): BigNumber {
         return this.calculateRewardsPerBlock(targetHashPowerInTh, bitcoinHashPower).multipliedBy(BLOCKS_PER_YEAR);
+    }
+
+    static isValidBtcAddress(value) {
+        return validate(value, BTC_NETWORK);
     }
 
 }

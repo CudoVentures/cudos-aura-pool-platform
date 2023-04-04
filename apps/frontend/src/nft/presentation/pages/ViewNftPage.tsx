@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -57,6 +57,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
 
     const { nftId } = useParams();
     const navigate = useNavigate();
+    const [hasAccess, setHasAccess] = useState(false);
 
     const nftEntity = viewNftPageStore.nftEntity;
     const collectionEntity = viewNftPageStore.collectionEntity;
@@ -71,11 +72,13 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                 navigate(AppRoutes.HOME);
                 return;
             }
+            setHasAccess(true);
             if (nftId !== undefined) {
                 visitorStore.signalVisitNft(viewNftPageStore.nftEntity); // no need to wait for it
             }
         }
 
+        setHasAccess(false);
         run();
     }, [nftId]);
 
@@ -209,11 +212,9 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
             } >
             <PageHeader />
 
-            { (nftEntity === null || collectionEntity === null) && (
+            { (nftEntity === null || collectionEntity === null || hasAccess === false) ? (
                 <LoadingIndicator />
-            ) }
-
-            { nftEntity !== null && collectionEntity !== null && (
+            ) : (
                 <div className={'PageContent AppContent'} >
 
                     <Breadcrumbs crumbs={ [
