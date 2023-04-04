@@ -35,6 +35,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const validationState = useRef(new ValidationState()).current;
     const validationPerNftState = useRef(new ValidationState()).current;
     const collectionNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const collectionArtistNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     // const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty Maintenance Fee')).current;
@@ -45,6 +46,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const [hashPowerInTh, setHashPowerInTh] = useState(collectionEntity.hashPowerInTh !== S.NOT_EXISTS ? collectionEntity.hashPowerInTh : '');
     // const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString(10) : '')
     const [defaultPricePerNftInUsd, setDefaultPricePerNftInUsd] = useState(collectionEntity.defaultPricePerNftInUsd !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInUsd.toString() : '');
+    const [defaultArtistNamePerNft, setDefaultArtistNamePerNft] = useState(collectionEntity.defaultArtistName);
     const [defaultHashPowerPerNftInTh, setDefaultHashPowerPerNftInTh] = useState(collectionEntity.defaultHashPowerPerNftInTh !== S.NOT_EXISTS ? collectionEntity.defaultHashPowerPerNftInTh : '');
     const [secondarySaleRoyalties, setSecondarySaleRoyalties] = useState(collectionEntity.royalties !== S.NOT_EXISTS ? collectionEntity.royalties.toString() : '');
 
@@ -91,6 +93,13 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
         runInAction(() => {
             setDefaultHashPowerPerNftInTh(value);
             collectionEntity.defaultHashPowerPerNftInTh = value !== '' ? parseFloat(value) : S.NOT_EXISTS;
+        });
+    }
+
+    function onChangeDefaultArtistNamePerNft(value) {
+        runInAction(() => {
+            setDefaultArtistNamePerNft(value);
+            collectionEntity.defaultArtistName = value;
         });
     }
 
@@ -291,9 +300,15 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             <Checkbox
                 value={creditCollectionStore.defaultHashAndPriceValues}
                 onChange={onChangeAcceptDefaultHashPowerCheckboxValue}
-                label={'Set default hashing power and nft price values for all items in the collection.'} />
+                label={'Set default artist name, hashing power and nft price values for all items in the collection.'} />
             { creditCollectionStore.defaultHashAndPriceValues === S.INT_TRUE && (
                 <>
+                    <Input
+                        label={'Artist Name'}
+                        placeholder={'Enter name...'}
+                        value={defaultArtistNamePerNft}
+                        inputValidation={collectionArtistNameValidation}
+                        onChange={onChangeDefaultArtistNamePerNft} />
                     <Input
                         label={<TextWithTooltip text={'Hashing Power per NFT'} tooltipText={'The hashing power represented by each individual NFT.'} />}
                         placeholder={'Enter hash power...'}

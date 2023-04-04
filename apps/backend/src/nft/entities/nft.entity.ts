@@ -23,6 +23,7 @@ export default class NftEntity {
     updatedAt: number;
     deletedAt: number;
     createdAt: number;
+    artistName: string;
 
     constructor() {
         this.id = '';
@@ -43,6 +44,7 @@ export default class NftEntity {
         this.updatedAt = NOT_EXISTS_INT;
         this.deletedAt = NOT_EXISTS_INT;
         this.createdAt = NOT_EXISTS_INT;
+        this.artistName = '';
     }
 
     isListed(): boolean {
@@ -121,6 +123,7 @@ export default class NftEntity {
         entity.updatedAt = json.updatedAt ?? entity.updatedAt;
         entity.deletedAt = json.deletedAt ?? entity.deletedAt;
         entity.createdAt = json.createdAt ?? entity.createdAt;
+        entity.artistName = json.artistName ?? entity.artistName;
 
         return entity;
     }
@@ -145,11 +148,11 @@ export default class NftEntity {
             'updatedAt': entity.updatedAt,
             'deletedAt': entity.deletedAt,
             'createdAt': entity.createdAt,
+            'artistName': entity.artistName,
         }
     }
 
     static fromRepo(repoJson: NftRepo): NftEntity {
-
         if (repoJson === null) {
             return null;
         }
@@ -174,6 +177,7 @@ export default class NftEntity {
         entity.updatedAt = repoJson.updatedAt?.getTime() ?? entity.updatedAt;
         entity.deletedAt = repoJson.deletedAt?.getTime() ?? entity.deletedAt;
         entity.createdAt = repoJson.createdAt?.getTime() ?? entity.createdAt;
+        entity.artistName = repoJson.artistName ?? entity.artistName;
 
         return entity;
     }
@@ -203,6 +207,7 @@ export default class NftEntity {
         repoJson.creatorId = entity.creatorId;
         repoJson.priceUsd = entity.priceUsd.toString();
         repoJson.priceAcudosValidUntil = entity.priceAcudosValidUntil.toString();
+        repoJson.artistName = entity.artistName;
         // repoJson.updatedAt = new Date(entity.updatedAt);
         // repoJson.deletedAt = new Date(entity.deletedAt);
         // repoJson.createdAt = new Date(entity.createdAt);

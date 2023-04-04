@@ -159,6 +159,7 @@ export class NFTController {
             data: JSON.stringify({
                 expiration_date: nftEntity.expirationDateTimestamp,
                 hash_rate_owned: nftEntity.hashingPower,
+                artist_name: nftEntity.artistName,
             }) };
     }
 

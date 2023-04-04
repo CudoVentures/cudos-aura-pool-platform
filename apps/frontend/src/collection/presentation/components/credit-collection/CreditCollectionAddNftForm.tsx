@@ -45,6 +45,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, cudosSt
 
     const validationState = useRef(new ValidationState()).current;
     const nftNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const nftArtistNameValidation = useRef(validationState.addEmptyValidation('Empty artist name')).current;
     const nftHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hash power')).current;
     const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
     // const nftRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
@@ -131,6 +132,13 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, cudosSt
                 }
                 helperText = { `Available TH/s: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
             </FieldColumnWrapper>
+            <Input
+                label={'NFT Artist name'}
+                placeholder={'Enter artist name...'}
+                disabled = { selectedNftEntity === null }
+                value={creditCollectionStore.getSelectedNftArtistName()}
+                inputValidation={nftArtistNameValidation}
+                onChange={creditCollectionStore.onChangeSelectedNftArtistName} />
             <FieldColumnWrapper
                 field = {
                     <Input
