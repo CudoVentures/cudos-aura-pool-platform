@@ -109,6 +109,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             if (creditCollectionStore.defaultHashAndPriceValues === S.INT_FALSE) {
                 onChangeDefaultPricePerNftInUsd('');
                 onChangeDefaultHashPowerPerNftInTh('');
+                onChangeDefaultArtistNamePerNft('');
             }
         });
     }
