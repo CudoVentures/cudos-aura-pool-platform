@@ -1,5 +1,23 @@
+.NftEventTable .EventTypeCell .SvgEventType {
+    color: var(--color-primary-060);
+    margin-right: 4px;
+}
+
+.NftEventTable .PriceCell .SvgCudosPrice {
+    width: 12px; height: 12px;
+    margin-right: 4px;
+}
+
 .NftEventTable .AddressCell {
     padding-right: 20px;
+}
+
+.NftEventTable .TimeAndTxLinkCell {
+    gap: 4px;
+}
+
+.NftEventTable .TimeAndTxLinkCell a {
+    font-size: 0; /* instead of making inner SVG display: flex */
 }
 
 .NftEventTable .ItemCell {

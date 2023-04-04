@@ -71,6 +71,10 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         navigate(AppRoutes.MARKETPLACE)
     }
 
+    function onClickExploreNfts() {
+        navigate(AppRoutes.EXPLORE_NFTS)
+    }
+
     function onClickFarmLink() {
         navigate(ProjectUtils.makeUrlMiningFarm(miningFarmEntity.id));
     }
@@ -95,17 +99,17 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
     function onClickMintPrivateSaleNfts() {
         alertStore.show('You are about to mint the GIVEAWAYS and PRIVATE SALE NFTs alongside corresponding users accounts. Continue with uploading the JSON data file?', () => {
             mintPrivateSaleNftsModalStore.showSignal(collectionEntity)
-        }, () => {});
+        }, () => { });
     }
 
     return (
         <PageLayout
-            className = { 'PageCreditCollection' }
-            modals = { (
+            className={'PageCreditCollection'}
+            modals={(
                 <>
                     <MintPrivateSaleNftsModal />
                 </>
-            ) } >
+            )} >
             <PageHeader />
 
             { (collectionEntity === null || miningFarmEntity === null || nftEntities === null || hasAccess === false) ? (
@@ -113,36 +117,36 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
             ) : (
                 <div className={'PageContent AppContent'} >
 
-                    <Breadcrumbs crumbs={ [
-                        createBreadcrumb('Marketplace', onClickNavigateMarketplace),
+                    <Breadcrumbs crumbs={[
+                        createBreadcrumb('Marketplace', onClickExploreNfts),
                         createBreadcrumb('Collection Details'),
-                    ] } />
+                    ]} />
 
                     <ProfileHeader
-                        className = { 'CollectionImagesCnt' }
+                        className={'CollectionImagesCnt'}
                         coverPictureUrl={collectionEntity.coverImgUrl}
                         profilePictureUrl={collectionEntity.profileImgUrl} />
 
-                    { isCollectionEditable() === true && (
+                    {isCollectionEditable() === true && (
                         <Actions layout={ActionsLayout.LAYOUT_ROW_RIGHT}>
                             <Button
                                 onClick={onClickCreditCollectionDetailsEdit} >
-                                <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
+                                <Svg size={SvgSize.CUSTOM} svg={BorderColorIcon} />
                                 Edit Collection Details
                             </Button>
                         </Actions>
-                    ) }
+                    )}
 
                     <div className={'FlexRow NameStatusRow'}>
                         <div className={'H2 CollectionHeadingName'}>{collectionEntity.name}</div>
-                        <CollectionStatusBadge className = { 'CollectionStatusBadge' } collectionEntity = { collectionEntity } />
+                        <CollectionStatusBadge className={'CollectionStatusBadge'} collectionEntity={collectionEntity} />
                     </div>
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
-                            <div className={'Clickable'} onClick={onClickFarmLink}>Collection Owner:  <b className={ 'ColorPrimary060' }>{miningFarmEntity.name}</b></div>
+                            <div className={'Clickable'} onClick={onClickFarmLink}>Collection Owner:  <b className={'ColorPrimary060'}>{miningFarmEntity.name}</b></div>
                             <div className={'CollectionDescription'}>{collectionEntity.description}</div>
                         </div>
-                        { collectionDetailsEntity !== null && (
+                        {collectionDetailsEntity !== null && (
                             <DataPreviewLayout dataPreviews={[
                                 createDataPreview('Floor', collectionDetailsEntity.formatFloorPriceInCudos()),
                                 createDataPreview('Volume', collectionDetailsEntity.formatVolumeInCudos()),
@@ -153,9 +157,9 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 createDataPreview('Blockchain', CHAIN_DETAILS.CHAIN_NAME),
                                 createDataPreview(
                                     'Address',
-                                    <a href = { ProjectUtils.makeUrlExplorer(collectionDetailsEntity.cudosAddress) } target = '_blank' rel = 'noreferrer' className={'DataPreviewAddressCnt FlexRow'}>
+                                    <a href={ProjectUtils.makeUrlExplorer(collectionDetailsEntity.cudosAddress)} target='_blank' rel='noreferrer' className={'DataPreviewAddressCnt FlexRow'}>
                                         <div className={'Dots ColorPrimary060'}>{collectionDetailsEntity.cudosAddress}</div>
-                                        <Svg svg={LaunchIcon}/>
+                                        <Svg svg={LaunchIcon} />
                                     </a>,
                                 ),
                             ]} >
@@ -174,53 +178,53 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                                 padding={ButtonPadding.PADDING_48}
                                                 color={ButtonColor.SCHEME_4}
                                                 onClick={creditCollectionPageStore.rejectCollection} >
-                                                <Svg svg={HighlightOffIcon}/>
+                                                <Svg svg={HighlightOffIcon} />
                                                 Reject Collection
                                             </Button>
                                             <Button
                                                 padding={ButtonPadding.PADDING_48}
                                                 onClick={creditCollectionPageStore.approveCollection} >
-                                                <Svg svg={CheckCircleOutlineIcon}/>
+                                                <Svg svg={CheckCircleOutlineIcon} />
                                                 Approve Collection
                                             </Button>
                                         </>)}
                                     </Actions>
-                                ) }
+                                )}
                             </DataPreviewLayout>
                         )}
                     </div>
-                    <div className = { 'SectionDivider' } />
+                    <div className={'SectionDivider'} />
                     <div className={'FlexRow FlexSplit'}>
                         <div className={'H2 Bold'}>Collection Items</div>
-                        { isCollectionEditable() === true && (
-                            <Actions className = { 'StartRight' }>
+                        {isCollectionEditable() === true && (
+                            <Actions className={'StartRight'}>
                                 <Button onClick={onClickAddMoreNfts} >
-                                    <Svg svg={AddIcon}/>
+                                    <Svg svg={AddIcon} />
                                     Add More NFTs
                                 </Button>
                             </Actions>
                         )}
                     </div>
-                    <DataGridLayout className = { 'NftsCnt' } >
+                    <DataGridLayout className={'NftsCnt'} >
 
-                        { nftEntities === null && (
+                        {nftEntities === null && (
                             <LoadingIndicator />
-                        ) }
+                        )}
 
-                        { nftEntities !== null && (
+                        {nftEntities !== null && (
                             <GridView
                                 gridViewState={creditCollectionPageStore.gridViewState}
                                 defaultContent={nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
-                                { nftEntities.map((nftEntity: NftEntity) => {
+                                {nftEntities.map((nftEntity: NftEntity) => {
                                     return (
                                         <NftPreview
                                             key={nftEntity.id}
                                             nftEntity={nftEntity}
                                             collectionName={collectionEntity.name} />
                                     )
-                                }) }
+                                })}
                             </GridView>
-                        ) }
+                        )}
 
                     </DataGridLayout>
                 </div>

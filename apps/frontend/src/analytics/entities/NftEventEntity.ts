@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 import { formatCudos, formatUsd } from '../../core/utilities/NumberFormatter';
-import ProjectUtils from '../../core/utilities/ProjectUtils';
 import CudosStore from '../../cudos-data/presentation/stores/CudosStore';
 
 export enum NftEventType {
@@ -23,6 +22,7 @@ export default class NftEventEntity {
     transferPriceInBtc: BigNumber;
     transferPriceInUsd: number;
     timestamp: number;
+    txHash: string;
 
     constructor() {
         this.nftId = S.Strings.NOT_EXISTS;
@@ -35,6 +35,7 @@ export default class NftEventEntity {
         this.transferPriceInBtc = new BigNumber(S.NOT_EXISTS);
         this.transferPriceInUsd = S.NOT_EXISTS;
         this.timestamp = S.NOT_EXISTS;
+        this.txHash = '';
 
         makeAutoObservable(this);
     }
@@ -86,6 +87,10 @@ export default class NftEventEntity {
         }
     }
 
+    formatFromAddress(): string {
+        return this.fromAddress === '0x0' ? '-' : this.fromAddress;
+    }
+
     static toJson(entity: NftEventEntity) {
         if (entity === null) {
             return null;
@@ -102,6 +107,7 @@ export default class NftEventEntity {
             'transferPriceInBtc': entity.transferPriceInBtc.toString(10),
             'transferPriceInUsd': entity.transferPriceInUsd,
             'timestamp': entity.timestamp,
+            'txHash': entity.txHash,
         }
     }
 
@@ -122,6 +128,7 @@ export default class NftEventEntity {
         entity.transferPriceInBtc = new BigNumber(json.transferPriceInBtc ?? entity.transferPriceInBtc);
         entity.transferPriceInUsd = parseFloat(json.transferPriceInUsd ?? entity.transferPriceInUsd);
         entity.timestamp = parseInt(json.timestamp ?? entity.timestamp);
+        entity.txHash = json.txHash ?? entity.txHash;
 
         return entity;
     }
