@@ -82,6 +82,10 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
         navigate(AppRoutes.MARKETPLACE)
     }
 
+    function onClickExploreNfts() {
+        navigate(AppRoutes.EXPLORE_NFTS)
+    }
+
     function onClickNavigateExploreMiningFarms() {
         navigate(AppRoutes.EXPLORE_MINING_FARMS)
     }
@@ -279,7 +283,7 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
                         <>
                             { farmId !== undefined && (
                                 <Breadcrumbs crumbs={ [
-                                    createBreadcrumb('Marketplace', onClickNavigateMarketplace),
+                                    createBreadcrumb('Marketplace', onClickExploreNfts),
                                     createBreadcrumb('Explore Farms', onClickNavigateExploreMiningFarms),
                                     createBreadcrumb(`Farm Owner: ${miningFarmEntity?.name ?? ''}`),
                                 ] } />

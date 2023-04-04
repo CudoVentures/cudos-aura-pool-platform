@@ -91,6 +91,10 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         navigate(AppRoutes.MARKETPLACE);
     }
 
+    function onClickExploreNfts() {
+        navigate(AppRoutes.EXPLORE_NFTS)
+    }
+
     function onClickCalculateRewards() {
         navigate({
             pathname: AppRoutes.REWARDS_CALCULATOR,
@@ -217,7 +221,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                 <div className={'PageContent AppContent'} >
 
                     <Breadcrumbs crumbs={ [
-                        createBreadcrumb('Marketplace', onClickNavigateMarketplace),
+                        createBreadcrumb('Marketplace', onClickExploreNfts),
                         createBreadcrumb('NFT Details'),
                     ] }/>
 
