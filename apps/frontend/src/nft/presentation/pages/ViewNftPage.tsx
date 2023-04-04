@@ -234,7 +234,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                     dataPreviews={getGeneralDataPreviews()}
                                     gap={DataRowsGap.GAP_10}
                                     styledContainerProps = { {
-                                        containerBackground: ContainerBackground.GRAY,
+                                        containerBackground: ContainerBackground.WHITE,
                                     } } />
                             </div>
                             <div className={'H2 Bold'}>Description</div>
