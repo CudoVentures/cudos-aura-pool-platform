@@ -203,6 +203,7 @@ export default class CreditCollectionStore {
         const nftEntity = new NftEntity();
 
         if (this.collectionEntity.hasDefaultValuesPerNft() === true) {
+            nftEntity.artistName = this.collectionEntity.defaultArtistName;
             nftEntity.priceUsd = this.collectionEntity.defaultPricePerNftInUsd;
             nftEntity.hashPowerInTh = this.collectionEntity.defaultHashPowerPerNftInTh;
         }
@@ -257,6 +258,10 @@ export default class CreditCollectionStore {
         this.selectedNftEntity.name = nftName;
     }
 
+    onChangeSelectedNftArtistName = (artistName: string) => {
+        this.selectedNftEntity.artistName = artistName;
+    }
+
     onChangeSelectedNftHashPowerInTh = (inputValue: string) => {
         this.selectedNftHashingPowerInThInputValue = inputValue;
         this.selectedNftEntity.hashPowerInTh = inputValue !== '' ? parseFloat(inputValue) : S.NOT_EXISTS;
@@ -278,6 +283,10 @@ export default class CreditCollectionStore {
     // nft get input value
     getSelectedNftName() {
         return this.selectedNftEntity?.name ?? '';
+    }
+
+    getSelectedNftArtistName() {
+        return this.selectedNftEntity?.artistName ?? '';
     }
 
     getSelectedNftPriceDisplayInCudos(): string {

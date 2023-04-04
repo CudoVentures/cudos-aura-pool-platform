@@ -21,6 +21,7 @@ export default class CollectionEntity {
     coverImgUrl: string;
     status: CollectionStatus;
     royalties: number;
+    defaultArtistName: string;
     defaultPricePerNftInUsd: number;
     defaultHashPowerPerNftInTh: number;
     timestampDeletedAt: number;
@@ -38,6 +39,7 @@ export default class CollectionEntity {
         this.coverImgUrl = '';
         this.status = CollectionStatus.QUEUED;
         this.royalties = S.NOT_EXISTS;
+        this.defaultArtistName = '';
         this.defaultPricePerNftInUsd = S.NOT_EXISTS;
         this.defaultHashPowerPerNftInTh = S.NOT_EXISTS;
         this.timestampDeletedAt = S.NOT_EXISTS;
@@ -162,6 +164,7 @@ export default class CollectionEntity {
             'bannerImage': entity.coverImgUrl,
             'status': entity.status,
             'royalties': entity.royalties,
+            'defaultArtistName': entity.defaultArtistName,
             'defaultPricePerNftInUsd': entity.defaultPricePerNftInUsd?.toString(10) ?? null,
             'defaultHashPowerPerNftInTh': entity.defaultHashPowerPerNftInTh,
             'timestampDeletedAt': entity.timestampDeletedAt,
@@ -187,6 +190,7 @@ export default class CollectionEntity {
         model.coverImgUrl = json.bannerImage ?? model.coverImgUrl;
         model.status = json.status ?? model.status;
         model.royalties = Number(json.royalties ?? model.royalties);
+        model.defaultArtistName = json.defaultArtistName ?? model.defaultArtistName;
         model.defaultPricePerNftInUsd = Number(json.defaultPricePerNftInUsd ?? model.defaultPricePerNftInUsd);
         model.defaultHashPowerPerNftInTh = Number(json.defaultHashPowerPerNftInTh ?? model.defaultHashPowerPerNftInTh);
         model.timestampDeletedAt = Number(json.timestampDeletedAt ?? model.timestampDeletedAt);

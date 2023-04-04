@@ -28,6 +28,9 @@ export class NftJsonValidator {
         name: string;
 
     @IsString()
+        artistName: string;
+
+    @IsString()
     @IsNotEmpty()
         uri: string;
 

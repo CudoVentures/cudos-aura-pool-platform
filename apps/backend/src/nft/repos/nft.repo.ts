@@ -52,6 +52,10 @@ export class NftRepo extends Model {
     @Column({ type: DataType.STRING })
         name: string;
 
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
+        artistName: string;
+
     @AllowNull(true)
     @Column({ type: DataType.TEXT })
         uri: string;

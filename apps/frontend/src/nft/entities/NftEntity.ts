@@ -55,6 +55,7 @@ export default class NftEntity {
     updatedAt: number;
     deletedAt: number;
     createdAt: number;
+    artistName: string;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -75,6 +76,7 @@ export default class NftEntity {
         this.updatedAt = S.NOT_EXISTS;
         this.deletedAt = S.NOT_EXISTS;
         this.createdAt = S.NOT_EXISTS;
+        this.artistName = '';
 
         makeAutoObservable(this);
     }
@@ -190,6 +192,7 @@ export default class NftEntity {
             'updatedAt': entity.updatedAt,
             'deletedAt': entity.deletedAt,
             'createdAt': entity.createdAt,
+            'artistName': entity.artistName,
         }
     }
 
@@ -218,6 +221,7 @@ export default class NftEntity {
         model.updatedAt = new Date(json.updatedAt ?? model.updatedAt).getTime();
         model.deletedAt = new Date(json.deletedAt ?? model.deletedAt).getTime();
         model.createdAt = new Date(json.createdAt ?? model.createdAt).getTime();
+        model.artistName = json.artistName ?? model.artistName;
 
         return model;
     }
