@@ -64,6 +64,10 @@ export default class ProjectUtils {
         return `${CHAIN_DETAILS.EXPLORER_URL}/accounts/${cudosWalletAddress}`;
     }
 
+    static makeUrlExplorerByTxHash(txHash: string) {
+        return `${CHAIN_DETAILS.EXPLORER_URL}/transactions/${txHash}`;
+    }
+
     static makeUrlMiningFarm(miningFarmId: string) {
         return `${AppRoutes.CREDIT_MINING_FARM}/${miningFarmId}`;
     }

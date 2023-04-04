@@ -23,6 +23,7 @@ export default class NftEventEntity {
     transferPriceInUsd: number;
     transferPriceInBtc: BigNumber;
     transferPriceInAcudos: BigNumber;
+    txHash: string;
 
     constructor() {
         this.nftId = '';
@@ -35,6 +36,7 @@ export default class NftEventEntity {
         this.transferPriceInUsd = NOT_EXISTS_INT;
         this.transferPriceInBtc = new BigNumber(NOT_EXISTS_INT);
         this.transferPriceInAcudos = new BigNumber(NOT_EXISTS_INT);
+        this.txHash = '';
     }
 
     hasPrice(): boolean {
@@ -62,6 +64,7 @@ export default class NftEventEntity {
         entity.fromAddress = nftModuleTransferHostoryEntity.oldOwner ?? entity.fromAddress;
         entity.toAddress = nftModuleTransferHostoryEntity.newOwner ?? entity.toAddress;
         entity.timestamp = nftModuleTransferHostoryEntity.timestamp ?? entity.timestamp;
+        entity.txHash = nftModuleTransferHostoryEntity.transactionHash ?? entity.txHash;
 
         return entity;
     }
@@ -82,6 +85,7 @@ export default class NftEventEntity {
         if (nftMarketplaceTradeHistoryEntity.usdPrice) {
             entity.transferPriceInUsd = Number(new BigNumber(nftMarketplaceTradeHistoryEntity.usdPrice).multipliedBy(entity.transferPriceInAcudos.shiftedBy(-CURRENCY_DECIMALS)).toFixed(2));
         }
+        entity.txHash = nftMarketplaceTradeHistoryEntity.transactionHash ?? entity.txHash;
 
         return entity;
     }
@@ -98,6 +102,7 @@ export default class NftEventEntity {
             'transferPriceInUsd': entity.transferPriceInUsd,
             'transferPriceInBtc': entity.transferPriceInBtc.toString(10),
             'transferPriceInAcudos': entity.transferPriceInAcudos.toString(10),
+            'txHash': entity.txHash,
         }
     }
 }
