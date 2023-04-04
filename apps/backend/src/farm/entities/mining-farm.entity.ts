@@ -151,14 +151,23 @@ export default class MiningFarmEntity {
             return null;
         }
 
+        let hideData;
+        if (currentUser?.isSuperAdmin() === true) {
+            hideData = false;
+        } else if (currentUser?.isAdmin() === true) {
+            hideData = entity.accountId !== currentUser.accountId;
+        } else {
+            hideData = true;
+        }
+
         return {
             'id': entity.id.toString(),
             'accountId': entity.accountId.toString(),
             'name': entity.name,
             'legalName': entity.legalName,
             'rewardsFromPoolBtcWalletName': entity.rewardsFromPoolBtcWalletName,
-            'primaryAccountOwnerName': currentUser?.email === entity.primaryAccountOwnerEmail ? entity.primaryAccountOwnerName : '',
-            'primaryAccountOwnerEmail': currentUser?.email === entity.primaryAccountOwnerEmail ? entity.primaryAccountOwnerEmail : '',
+            'primaryAccountOwnerName': hideData === false ? entity.primaryAccountOwnerName : '',
+            'primaryAccountOwnerEmail': hideData === false ? entity.primaryAccountOwnerEmail : '',
             'description': entity.description,
             'manufacturerIds': entity.manufacturerIds,
             'minerIds': entity.minerIds,
