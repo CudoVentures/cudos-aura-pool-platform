@@ -47,7 +47,7 @@ export class FarmController {
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
     ): Promise < ResFetchMiningFarmsByFilter > {
         const { miningFarmEntities, total } = await this.miningFarmService.findByFilter(req.sessionAccountEntity, miningFarmFilterModel, req.transaction);
-        return new ResFetchMiningFarmsByFilter(miningFarmEntities, total);
+        return new ResFetchMiningFarmsByFilter(miningFarmEntities, total, req.sessionAccountEntity);
     }
 
     @Post('fetchBestPerformingMiningFarm')
@@ -59,7 +59,7 @@ export class FarmController {
         @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
     ): Promise < ResFetchBestPerformingMiningFarms > {
         const { miningFarmEntities, miningFarmPerformanceEntities } = await this.miningFarmService.findBestPerformingMiningFarms(reqFetchBestPerformingMiningFarm.timestampFrom, reqFetchBestPerformingMiningFarm.timestampTo, req.transaction);
-        return new ResFetchBestPerformingMiningFarms(miningFarmEntities, miningFarmPerformanceEntities);
+        return new ResFetchBestPerformingMiningFarms(miningFarmEntities, miningFarmPerformanceEntities, req.sessionAccountEntity);
     }
 
     @Post('fetchMiningFarmsDetailsByIds')
@@ -99,7 +99,7 @@ export class FarmController {
 
         miningFarmEntity = await this.miningFarmService.creditMiningFarm(miningFarmEntity, req.sessionAccountEntity !== null, req.transaction);
 
-        return new ResCreditMiningFarm(miningFarmEntity);
+        return new ResCreditMiningFarm(miningFarmEntity, req.sessionAccountEntity);
     }
 
     @Get('miners')
