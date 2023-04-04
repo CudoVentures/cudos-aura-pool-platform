@@ -26,6 +26,7 @@ for (let i = 1; i <= 8; i++) {
         name: `nft${i}`,
         uri: 'someuri', // So far changing them won't affect anything
         // data: 'somestring', // So far changing them won't affect anything
+        artistName: 'someartistname',
         group: NftGroup.PUBLIC_SALE,
         hashingPower: i,
         priceInAcudos: `${i}00`,
@@ -47,6 +48,7 @@ for (let i = 1; i <= 8; i++) {
         id: uuidv4(),
         name: `nftqueued${i}`,
         uri: 'someuri', // So far changing them won't affect anything
+        artistName: 'someartistname',
         // data: 'somestring', // So far changing them won't affect anything
         group: NftGroup.PUBLIC_SALE,
         hashingPower: i,

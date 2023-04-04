@@ -17,6 +17,7 @@ export default class PresaleStore {
     }
 
     isInPresale(): boolean {
+        return false;
         return this.timeLeftToPresale > 0;
     }
 

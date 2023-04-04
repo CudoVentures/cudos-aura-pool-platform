@@ -35,11 +35,11 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const validationState = useRef(new ValidationState()).current;
     const validationPerNftState = useRef(new ValidationState()).current;
     const collectionNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
-    const collectionArtistNameValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hashing power')).current;
     const collectionRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     // const collectionMainteannceFeesValidation = useRef(validationState.addEmptyValidation('Empty Maintenance Fee')).current;
     // const collectionPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Empty payout address')).current;
+    const collectionArtistNameValidation = useRef(validationPerNftState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerPerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
 
