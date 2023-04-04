@@ -17,6 +17,7 @@ export default {
             hashPowerInTh: 5,
             expirationDateTimestamp: 1798754400000,
             priceUsd: tierPriceMap.get(NftTier.TIER_1),
+            artistName: 'Delux3',
         },
         ruby: {
             totalCount: 7500,
@@ -28,6 +29,7 @@ export default {
             hashPowerInTh: 10,
             expirationDateTimestamp: 1798754400000,
             priceUsd: tierPriceMap.get(NftTier.TIER_2),
+            artistName: 'Delux3',
         },
         emerald: {
             totalCount: 500,
@@ -39,6 +41,7 @@ export default {
             hashPowerInTh: 33,
             expirationDateTimestamp: 1798754400000,
             priceUsd: tierPriceMap.get(NftTier.TIER_3),
+            artistName: 'Delux3',
         },
         diamond: {
             totalCount: 50,
@@ -50,6 +53,7 @@ export default {
             hashPowerInTh: 100,
             expirationDateTimestamp: 1798754400000,
             priceUsd: tierPriceMap.get(NftTier.TIER_4),
+            artistName: 'Delux3',
         },
         blueDiamond: {
             totalCount: 20,
@@ -61,6 +65,7 @@ export default {
             hashPowerInTh: 170,
             expirationDateTimestamp: 1798754400000,
             priceUsd: tierPriceMap.get(NftTier.TIER_5),
+            artistName: 'Delux3',
         },
     },
 }
@@ -74,6 +79,7 @@ export function createNft(index, presaleImage, nftData, group: NftGroup): NftEnt
     nftEntity.expirationDateTimestamp = nftData.expirationDateTimestamp;
     nftEntity.priceUsd = nftData.priceUsd;
     nftEntity.group = group;
+    nftEntity.artistName = nftData.artistName;
 
     return nftEntity
 }
