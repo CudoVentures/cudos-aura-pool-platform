@@ -22,21 +22,22 @@ type Props = {
 function NftEventTable({ className, tableState, nftEventEntities, getNftEntityById, showItem }: Props) {
 
     function getLegend() {
-        const legend = ['Wallet Address', 'Last Activity'];
+
+        const legend = ['Event', 'Price', 'From', 'To', 'Time']
 
         if (showItem === true) {
-            legend.push('Item');
+            legend.splice(2, 0, 'Item');
         }
 
-        return legend.concat(['Price', 'To', 'Time']);
+        return legend;
     }
 
     function getWidths() {
         if (showItem === true) {
-            return ['20%', '12%', '18%', '14%', '20%', '16%'];
+            return ['12%', '14%', '18%', '20%', '20%', '16%'];
         }
 
-        return ['24%', '15%', '18%', '24%', '19%'];
+        return ['15%', '18%', '24%', '24%', '19%'];
     }
 
     function getAligns() {
@@ -52,42 +53,45 @@ function NftEventTable({ className, tableState, nftEventEntities, getNftEntityBy
     function renderCollectionsRows() {
         return nftEventEntities ? nftEventEntities.map((nftEventEntity: NftEventEntity) => {
             const tableCells = [
-                createTableCell((
-                    <div className={'Bold Dots AddressCell'} title = { nftEventEntity.fromAddress }>{nftEventEntity.fromAddress}</div>
-                )),
+                //EVENT
                 createTableCellString(nftEventEntity.getEventActivityDisplayName()),
+                //PRICE
+                createTableCell((
+                    <div className={'FlexColumn'}>
+                        {nftEventEntity.hasPrice() === true && (<>
+                            <div className={'B2 Bold'}>{nftEventEntity.formatTransferPriceInCudos()}</div>
+                            <div className={'B3 SemiBold'}>{nftEventEntity.formatTransferPriceInUsd()}</div>
+                        </>)}
+                        {nftEventEntity.hasPrice() === false && (
+                            'N/A'
+                        )}
+                    </div>
+                )),
+                //FROM
+                createTableCell((
+                    <div className={'Bold Dots AddressCell'} title={nftEventEntity.fromAddress}>{nftEventEntity.fromAddress}</div>
+                )),
+                //TO
+                createTableCell((
+                    <div className={'Bold Dots AddressCell'} title={nftEventEntity.toAddress}>{nftEventEntity.toAddress}</div>
+                )),
+                //TIME
+                createTableCellString(nftEventEntity.getTimePassedDisplay()),
+
             ]
 
+            //ITEM
             if (showItem === true) {
                 const nftEntity = getNftEntityById(nftEventEntity.nftId);
-
-                tableCells.push(createTableCell((
+                tableCells.splice(2, 0, createTableCell((
                     <div className={'FlexRow ItemCell'}>
-                        <div className={'PicturePreview'} style={ ProjectUtils.makeBgImgStyle(nftEntity?.imageUrl) } />
+                        <div className={'PicturePreview'} style={ProjectUtils.makeBgImgStyle(nftEntity?.imageUrl)} />
                         <div>{nftEntity?.name}</div>
                     </div>
-                )))
+                )));
             }
 
-            return createTableRow(
-                tableCells.concat([
-                    createTableCell((
-                        <div className={'FlexColumn'}>
-                            {nftEventEntity.hasPrice() === true && (<>
-                                <div className={'B2 Bold'}>{nftEventEntity.formatTransferPriceInCudos()}</div>
-                                <div className={'B3 SemiBold'}>{nftEventEntity.formatTransferPriceInUsd()}</div>
-                            </>)}
-                            {nftEventEntity.hasPrice() === false && (
-                                'N/A'
-                            )}
-                        </div>
-                    )),
-                    createTableCell((
-                        <div className={'Bold Dots AddressCell'} title = { nftEventEntity.toAddress }>{nftEventEntity.toAddress}</div>
-                    )),
-                    createTableCellString(nftEventEntity.getTimePassedDisplay()),
-                ]),
-            );
+            return createTableRow(tableCells);
         }) : [];
     }
 
