@@ -1,3 +1,4 @@
+import AccountEntity from '../../account/entities/account.entity';
 import EnergySourceEntity from '../entities/energy-source.entity';
 import ManufacturerEntity from '../entities/manufacturer.entity';
 import MinerEntity from '../entities/miner.entity';
@@ -11,8 +12,8 @@ export class ResFetchMiningFarmsByFilter {
     miningFarmEntities: MiningFarmJsonValidator[];
     total: number;
 
-    constructor(miningFarmEntities: MiningFarmEntity[], total: number) {
-        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e));
+    constructor(miningFarmEntities: MiningFarmEntity[], total: number, currentUser: AccountEntity) {
+        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e, currentUser));
         this.total = total;
     }
 
@@ -23,8 +24,8 @@ export class ResFetchBestPerformingMiningFarms {
     miningFarmEntities: MiningFarmJsonValidator[];
     miningFarmPerformanceEntities: MiningFarmPerformanceJsonValidator[];
 
-    constructor(miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[]) {
-        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e));
+    constructor(miningFarmEntities: MiningFarmEntity[], miningFarmPerformanceEntities: MiningFarmPerformanceEntity[], currentUser: AccountEntity) {
+        this.miningFarmEntities = miningFarmEntities.map((e) => MiningFarmEntity.toJson(e, currentUser));
         this.miningFarmPerformanceEntities = miningFarmPerformanceEntities.map((e) => MiningFarmPerformanceEntity.toJson(e));
     }
 
@@ -34,8 +35,8 @@ export class ResCreditMiningFarm {
 
     miningFarmEntity: MiningFarmJsonValidator;
 
-    constructor(miningFarmEntity: MiningFarmEntity) {
-        this.miningFarmEntity = MiningFarmEntity.toJson(miningFarmEntity);
+    constructor(miningFarmEntity: MiningFarmEntity, currentUser: AccountEntity) {
+        this.miningFarmEntity = MiningFarmEntity.toJson(miningFarmEntity, currentUser);
     }
 
 }
