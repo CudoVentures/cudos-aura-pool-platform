@@ -53,7 +53,7 @@ function NftStats({ viewNftPageStore }: Props) {
         <div className={'NftStats FlexColumn'}>
             <NavRowTabs navTabs={[
                 createNavRowTab('Reward Statistics', viewNftPageStore.isTabEarnings(), viewNftPageStore.onChangeTabEarnings),
-                createNavRowTab('Earnings Info', viewNftPageStore.isTabInfo(), viewNftPageStore.onChangeTabInfo),
+                // createNavRowTab('Earnings Info', viewNftPageStore.isTabInfo(), viewNftPageStore.onChangeTabInfo),
                 createNavRowTab('History', viewNftPageStore.isTabHistory(), viewNftPageStore.onChangeTabHistory),
             ]} />
             <div className={'HistoryContainer FlexColumn'}>
