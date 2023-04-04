@@ -52,7 +52,7 @@ export class StatisticsController {
     @Post('events/nft')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async getNftEvents(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqNftEventsByFilter: ReqNftEventsByFilter,
@@ -66,7 +66,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async getMegaWalletEvents(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqMegaWalletEventsByFilter: ReqMegaWalletEventsByFilter,
@@ -81,7 +81,7 @@ export class StatisticsController {
     @Post('fetchNftEarningsBySessionAccount')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchNftEarningsBySessionAccount(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchNftEarningsBySessionAccount: ReqFetchNftEarningsBySessionAccount,
@@ -94,7 +94,7 @@ export class StatisticsController {
     @Post('fetchNftEarningsByNftId')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchNftEarningsByNftId(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchNftEarningsByNftId: ReqFetchNftEarningsByNftId,
@@ -107,7 +107,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchEarningsPerDay(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchEarningsPerDay: ReqFetchEarningsPerDay,
@@ -125,7 +125,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchFarmMaintenanceFee(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchEarningsPerDay: ReqFetchMiningFarmMaintenanceFee,
@@ -156,7 +156,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchFarmTotalBtcEarnings(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchFarmTotalBtcEarnings: ReqFetchMiningFarmTotalBtcEarnings,
@@ -187,7 +187,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN, AccountType.ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchFarmTotalCudosEarnings(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmTotalEarningsCudos: ReqFetchMiningFarmTotalEarningsCudos,
@@ -210,7 +210,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchPlatformTotalBtcEarnings(
         @Req() req: AppRequest,
     ): Promise <ResFetchPlatformTotalEarningsBtc> {
@@ -229,7 +229,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchPlatformMaintenanceFees(
         @Req() req: AppRequest,
     ): Promise <ResFetchPlatformMaintenanceFee> {
@@ -248,7 +248,7 @@ export class StatisticsController {
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(2, 1)
     async fetchPlatformTotalCudosEarnings(
         @Req() req: AppRequest,
     ): Promise <ResFetchPlatformTotalEarningsCudos> {

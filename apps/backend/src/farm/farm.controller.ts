@@ -41,7 +41,7 @@ export class FarmController {
     @Post()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(4, 1)
     async fetchMiningFarmsByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) miningFarmFilterModel: MiningFarmFilterModel,
@@ -53,7 +53,7 @@ export class FarmController {
     @Post('fetchBestPerformingMiningFarm')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(4, 1)
     async fetchBestPerformingMiningFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchBestPerformingMiningFarm: ReqFetchBestPerformingMiningFarms,
@@ -65,7 +65,7 @@ export class FarmController {
     @Post('fetchMiningFarmsDetailsByIds')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(20, 30)
+    @Throttle(4, 1)
     async fetchMiningFarmsDetailsByIds(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchMiningFarmDetails: ReqFetchMiningFarmDetails,
@@ -80,7 +80,7 @@ export class FarmController {
     @UseInterceptors(TransactionInterceptor)
     @Put()
     @HttpCode(200)
-    @Throttle(5, 60)
+    @Throttle(5, 30)
     async creditFarm(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqCreditMiningFarm: ReqCreditMiningFarm,
