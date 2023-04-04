@@ -56,7 +56,7 @@ function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
                                     id = { this }
                                     params = { {
                                         'maxSize': 1 << 20, // 1 MB
-                                        'fileExt': '.png, .jpg',
+                                        'fileExt': '.jpg, .jpeg, .png',
                                         'onExceedLimit': () => {
                                             alertStore.show('Max file size is 1MB!');
                                         },
@@ -75,7 +75,7 @@ function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
                                     id = { this }
                                     params = { {
                                         'maxSize': 1 << 20, // 1 MB
-                                        'fileExt': '.png, .jpg',
+                                        'fileExt': '.jpg, .jpeg, .png',
                                         'onExceedLimit': () => {
                                             alertStore.show('Max file size is 1MB!');
                                         },
