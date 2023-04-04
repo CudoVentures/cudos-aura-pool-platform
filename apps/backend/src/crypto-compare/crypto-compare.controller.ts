@@ -13,7 +13,7 @@ export class CryptoCompareController {
     @Post('fetchCudosData')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(4, 1)
+    @Throttle(100, 1)
     async fetchCudosData(
         @Req() req: AppRequest,
     ): Promise < ResFetchCudosData > {
@@ -24,7 +24,7 @@ export class CryptoCompareController {
     @Post('fetchBitcoinData')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(4, 1)
+    @Throttle(100, 1)
     async fetchBitcoinData(
         @Req() req: AppRequest,
     ): Promise < ResFetchBitcoinData > {
