@@ -232,7 +232,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                 <div className={'NftImg'} style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
                                 <DataPreviewLayout
                                     dataPreviews={getGeneralDataPreviews()}
-                                    gap={DataRowsGap.GAP_25}
+                                    gap={DataRowsGap.GAP_10}
                                     styledContainerProps = { {
                                         containerBackground: ContainerBackground.GRAY,
                                     } } />
