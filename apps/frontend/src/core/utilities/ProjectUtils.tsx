@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { runInAction } from 'mobx';
 import AppRoutes from '../../app-routes/entities/AppRoutes';
-import { CHAIN_DETAILS } from './Constants';
+import { BTC_CONSTS, CHAIN_DETAILS } from './Constants';
 import S from './Main';
 
 const QUERY_PATTERN = '?p=';
@@ -58,6 +58,10 @@ export default class ProjectUtils {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    }
+
+    static makeUrlBtcExplorer(btcAddress: string) {
+        return `${BTC_CONSTS.BTC_EXPLORER_URL}/${btcAddress}`;
     }
 
     static makeUrlExplorer(cudosWalletAddress: string) {

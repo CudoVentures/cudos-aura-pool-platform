@@ -4,6 +4,7 @@
 
 .PageUserProfile .PageContent .ProfileHeaderDataRow {
     margin-top: 24px;
+    gap: 5px;
 }
 
 .PageUserProfile .PageContent .ProfileHeaderDataRow .AccountNameWrapper {
@@ -14,6 +15,11 @@
 .PageUserProfile .PageContent .ProfileHeaderDataRow .CudosWalletAddrees {
     max-width: 180px;
     margin-left: 4px;
+}
+
+.PageUserProfile .PageContent .ProfileHeaderDataRow .SVG {
+    width: 20px;
+    height: 20px;
 }
 
 .PageUserProfile .PageContent .ProfileHeaderDataRow .JoinDate {

@@ -34,8 +34,6 @@ export default class EditUserBtcModalStore extends ModalStore {
 
     @action
     async showSignal(userEntity: UserEntity, onFinish: () => void) {
-        const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
-
         runInAction(() => {
             if (recipient !== userEntity.bitcoinPayoutWalletAddress) {
                 userEntity.bitcoinPayoutWalletAddress = '' // in order to force user to enter the BTC address

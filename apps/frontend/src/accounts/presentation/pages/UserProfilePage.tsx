@@ -9,8 +9,6 @@ import EditUserBtcModal from '../components/EditUserBtcModal';
 import EditUserBtcModalStore from '../stores/EditUserBtcModalStore';
 import EditUserModalStore from '../stores/EditUserModalStore';
 import CheckForPresaleRefundsModal from '../components/CheckForPresaleRefundsModal';
-import CheckForPresaleRefundsModalStore from '../stores/CheckForPresaleRefundsModalStore';
-import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 
 import ProfileHeader from '../../../collection/presentation/components/ProfileHeader';
 import PageLayout from '../../../core/presentation/components/PageLayout';
@@ -22,15 +20,18 @@ import MyHistoryTab from '../components/user-profile/MyHistoryTab';
 import NavRowTabs, { createNavRowTab } from '../../../core/presentation/components/NavRowTabs';
 import MyNftsTab from '../components/user-profile/MyNftsTab';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
-import Actions, { ActionsLayout } from '../../../core/presentation/components/Actions';
-import Button, { ButtonColor } from '../../../core/presentation/components/Button';
+import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
+import Button, { ButtonColor, ButtonType } from '../../../core/presentation/components/Button';
 import EditUserModal from '../components/EditUserModal';
 import KycBadge from '../../../core/presentation/components/KycBadge';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
+import SvgBtcLogo from '../../../public/assets/vectors/bitcoin-btc-logo.svg';
+
 import '../styles/page-user-profile.css';
 import MyPurchasesTab from '../components/user-profile/MyPurchasesTab';
+import AddIcon from '@mui/icons-material/Add';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -38,15 +39,14 @@ type Props = {
     userProfilePageStore?: UserProfilePageStore,
     editUserModalStore?: EditUserModalStore;
     editUserBtcModalStore?: EditUserBtcModalStore;
-    checkForPresaleRefundsModalStore?: CheckForPresaleRefundsModalStore;
-    presaleStore?: PresaleStore;
 }
 
-function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore, editUserBtcModalStore, checkForPresaleRefundsModalStore }: Props) {
+function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore, editUserBtcModalStore }: Props) {
     useEffect(() => {
         async function init() {
             await bitcoinStore.init();
             await userProfilePageStore.init();
+            await accountSessionStore.fetchBtcPayoutAddress();
         }
         init();
     }, []);
@@ -87,10 +87,10 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
                         onClick={onClickEditBtcAddres}
                         color={ButtonColor.SCHEME_4} >
                         <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                        Edit BTC Address
+                        {userEntity.hasBitcoinPayoutWalletAddress() === true ? 'Edit BTC Address' : 'Add BTC Address'}
                     </Button>
                 </Actions>
-                <div className={'ProfileHeaderDataRow'}>
+                <div className={'ProfileHeaderDataRow FlexColumn'}>
                     <div className = { 'AccountNameWrapper FlexRow' } >
                         <div className={'H2 Bold'}> {accountEntity.name} </div>
                         <KycBadge />
@@ -100,6 +100,24 @@ function UserProfilePage({ presaleStore, bitcoinStore, userProfilePageStore, acc
                         <a href={ProjectUtils.makeUrlExplorer(userEntity.cudosWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</a>
                         <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div>
                     </div>
+                    {userEntity.hasBitcoinPayoutWalletAddress() === false && (
+                        <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT} height={ActionsHeight.HEIGHT_32}>
+                            <Button
+                                type={ButtonType.TEXT_INLINE}
+                                onClick={onClickEditBtcAddres}
+                            >
+                                <Svg svg = { AddIcon } />
+                                Add BTC Address
+                            </Button>
+                        </Actions>
+                    )}
+                    {userEntity.hasBitcoinPayoutWalletAddress() === true && (
+                        <div className={'FlexRow'}>
+                            <Svg svg = { SvgBtcLogo } size={SvgSize.CUSTOM}/>
+                            <a href={ProjectUtils.makeUrlBtcExplorer(userEntity.bitcoinPayoutWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.bitcoinPayoutWalletAddress}</a>
+                            {/* <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div> */}
+                        </div>
+                    )}
                 </div>
                 <div className = { 'SectionDivider' } />
                 <NavRowTabs

@@ -11,6 +11,7 @@ import UserEntity from '../../entities/UserEntity';
 import AccountRepo from '../repos/AccountRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
+import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
 
 export default class AccountSessionStore {
 
@@ -18,6 +19,7 @@ export default class AccountSessionStore {
     kycStore: KycStore;
     accountRepo: AccountRepo;
     miningFarmRepo: MiningFarmRepo;
+    cudosRepo: CudosRepo;
 
     inited: boolean;
     approvedMiningFarm: boolean;
@@ -27,11 +29,12 @@ export default class AccountSessionStore {
     superAdminEntity: SuperAdminEntity;
     shouldChangePassword: number;
 
-    constructor(walletStore: WalletStore, kycStore: KycStore, accountRepo: AccountRepo, miningFarmRepo: MiningFarmRepo) {
+    constructor(walletStore: WalletStore, kycStore: KycStore, accountRepo: AccountRepo, miningFarmRepo: MiningFarmRepo, cudosRepo: CudosRepo) {
         this.walletStore = walletStore;
         this.kycStore = kycStore;
         this.accountRepo = accountRepo;
         this.miningFarmRepo = miningFarmRepo;
+        this.cudosRepo = cudosRepo;
 
         this.inited = false;
         this.approvedMiningFarm = false;
@@ -278,6 +281,11 @@ export default class AccountSessionStore {
 
     isInited(): boolean {
         return this.inited;
+    }
+
+    async fetchBtcPayoutAddress() {
+        const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
+        this.userEntity.bitcoinPayoutWalletAddress = recipient;
     }
 
 }
