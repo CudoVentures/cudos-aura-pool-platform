@@ -2,7 +2,7 @@ import { Column, Model, Table, AllowNull, PrimaryKey, Unique, AutoIncrement, Dat
 
 const GENERAL_TABLE_NAME = 'general';
 
-export const GENERAL_REPO_PK = 1;
+export const GENERAL_REPO_PK = 3;
 
 export const enum GeneralRepoColumn {
     ID = 'id',

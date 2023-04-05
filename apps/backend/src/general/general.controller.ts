@@ -9,10 +9,14 @@ import { ReqCreditSettings, ReqUpdateLastCheckedBlockRequest, ReqUpdateLastCheck
 import { ResCreditSettings, ResFetchLastCheckedPaymenrRelayerBlocks, ResFetchSettings } from './dto/responses.dto';
 import SettingsEntity from './entities/settings.entity';
 import GeneralService from './general.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('general')
 export class GeneralController {
-    constructor(private generalService: GeneralService) {}
+    constructor(
+        private generalService: GeneralService,
+        private configService: ConfigService,
+    ) {}
 
     @Get('heartbeat')
     @HttpCode(200)
@@ -31,7 +35,7 @@ export class GeneralController {
         @Req() req: AppRequest,
     ): Promise<{height: number}> {
         const height = await this.generalService.getLastCheckedBlock(req.transaction);
-        return { height: height === 0 ? parseInt(process.env.APP_CUDOS_INIT_BLOCK) : height };
+        return { height: height === 0 ? parseInt(this.configService.get('APP_CUDOS_INIT_BLOCK')) : height };
     }
 
     @Put('last-checked-block')
@@ -55,8 +59,10 @@ export class GeneralController {
         @Req() req: AppRequest,
     ): Promise<ResFetchLastCheckedPaymenrRelayerBlocks> {
         const generalEntity = await this.generalService.fetchGeneral(req.transaction);
-
-        const res = new ResFetchLastCheckedPaymenrRelayerBlocks(generalEntity.lastCheckedPaymentRelayerEthBlock, generalEntity.lastCheckedPaymentRelayerCudosBlock);
+        const res = new ResFetchLastCheckedPaymenrRelayerBlocks(
+            generalEntity.lastCheckedPaymentRelayerEthBlock === 1 ? parseInt(this.configService.get('APP_ETH_RELAYER_ETH_BLOCK_START')) : generalEntity.lastCheckedPaymentRelayerEthBlock,
+            generalEntity.lastCheckedPaymentRelayerCudosBlock === 1 ? parseInt(this.configService.get('APP_CUDOS_INIT_BLOCK')) : generalEntity.lastCheckedPaymentRelayerCudosBlock,
+        );
 
         return res;
     }
