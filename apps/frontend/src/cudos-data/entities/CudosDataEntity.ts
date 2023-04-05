@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import S from '../../core/utilities/Main';
+import ProjectUtils from '../../core/utilities/ProjectUtils';
 
 export default class CudosDataEntity {
 
@@ -20,7 +21,7 @@ export default class CudosDataEntity {
     }
 
     shouldUpdate(): boolean {
-        return this.timestampLastUpdate + 15 * 60 * 1000 < Date.now();
+        return this.timestampLastUpdate + ProjectUtils.FIVE_MINUTES_IN_MILIS < Date.now();
     }
 
     static toJson(entity: CudosDataEntity): any {
