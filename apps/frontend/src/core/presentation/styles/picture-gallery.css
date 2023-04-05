@@ -1,5 +1,5 @@
 .PictureGallery {
-    width: 100%; height: 100%;
+    width: 526px; height: 526px;
     background-size: cover;
     border-radius: 16px;
     position: relative;
@@ -14,10 +14,10 @@
     border-radius: 16px;
 }
 
-.PictureGallery .PreviousButton {
+/* .PictureGallery .PreviousButton {
     margin-left: -24px;
 }
 
 .PictureGallery .NextButton {
     margin-right: -24px;
-}
+} */
