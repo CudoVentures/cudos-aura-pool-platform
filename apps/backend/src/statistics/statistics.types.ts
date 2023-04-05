@@ -2,6 +2,8 @@ import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator
 import { EarningsPerDayCurrency } from './entities/earnings-per-day-filter.entity';
 import { MegaWalletEventSortBy } from './entities/mega-wallet-event-filter.entity';
 import { NftTransferHistoryEventType } from './entities/nft-event.entity';
+import sanitizeHtml from 'sanitize-html';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class EarningsPerDayFilterJsonValidator {
     @IsNumber()
@@ -16,6 +18,7 @@ export class EarningsPerDayFilterJsonValidator {
         currency: EarningsPerDayCurrency;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         farmId: string
 
@@ -32,10 +35,12 @@ export class NftEventFilterValidationJson {
         sessionAccount: number;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         nftId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         miningFarmId: string;
 

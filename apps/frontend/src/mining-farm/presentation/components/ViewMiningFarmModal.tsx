@@ -33,6 +33,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     const resaleRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const farmLegalNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
     const farmLegalNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
+    const notNegativeValidation = useRef(validationState.addNotNegativeValidation('Value must be greater or equal to 0.')).current;
     // checks if legal name has only letters and numbers
     const regex = /\W+/;
 
@@ -148,7 +149,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     onChange = { setEditedCudosMintRoyalties }
                                     inputType = {InputType.REAL}
                                     decimalLength={2}
-                                    inputValidation={mintRoyaltiesValidation}
+                                    inputValidation={[mintRoyaltiesValidation, notNegativeValidation]}
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end" >
                                             %
@@ -164,7 +165,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     onChange = { setEditedCudosResaleRoyalties }
                                     inputType = {InputType.REAL}
                                     decimalLength={2}
-                                    inputValidation={resaleRoyaltiesValidation}
+                                    inputValidation={[resaleRoyaltiesValidation, notNegativeValidation]}
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end" >
                                             %

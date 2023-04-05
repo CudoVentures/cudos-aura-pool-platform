@@ -54,7 +54,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
     // const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const farmLeftoversAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const farmMainteannceFeesAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
-
+    const notNegativeValidation = useRef(validationState.addNotNegativeValidation('Value must be greater than or equal to 0.')).current;
     const [hashPowerInTh, setHashPowerInTh] = useState(miningFarmEntity.hashPowerInTh !== S.NOT_EXISTS ? miningFarmEntity.hashPowerInTh : '');
     const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(miningFarmEntity.maintenanceFeeInBtc !== null ? miningFarmEntity.maintenanceFeeInBtc.toString(10) : '')
 
@@ -251,7 +251,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                             value={hashPowerInTh}
                             onChange={ onChangeHashPowerInTh }
                             inputType = { InputType.INTEGER }
-                            inputValidation={farmHashrateValidation}
+                            inputValidation={[farmHashrateValidation, notNegativeValidation]}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end" > TH/s </InputAdornment>
@@ -268,7 +268,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                             value={maintenanceFeeInBtc}
                             inputType={InputType.REAL}
                             decimalLength = { 7 }
-                            inputValidation={farmMainteannceFeesValidation}
+                            inputValidation={[farmMainteannceFeesValidation, notNegativeValidation]}
                             onChange={onChangeMaintenanceFees}
                             InputProps={{
                                 endAdornment: (

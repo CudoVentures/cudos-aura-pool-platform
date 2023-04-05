@@ -213,7 +213,7 @@ export default class WalletStore {
     }
 
     formatBalance(): string {
-        return formatCudos(this.balance, true);
+        return formatCudos(this.balance ?? new BigNumber(0), true);
     }
 
     getName(): string {

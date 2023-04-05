@@ -1,6 +1,7 @@
-import { Type } from 'class-transformer';
+import { Transform, TransformFnParams, Type } from 'class-transformer';
 import { IsDefined, IsNotEmptyObject, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { EarningsPerDayFilterJsonValidator, MegaWalletEventFilterValidationJson, NftEventFilterValidationJson } from '../statistics.types'
+import sanitizeHtml from 'sanitize-html';
 
 export class ReqNftEventsByFilter {
     @IsDefined()
@@ -33,6 +34,7 @@ export class ReqFetchNftEarningsBySessionAccount {
 export class ReqFetchNftEarningsByNftId {
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         nftId: string;
 
     @IsNumber()
@@ -55,12 +57,14 @@ export class ReqFetchEarningsPerDay {
 export class ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         miningFarmId: string;
 }
 
 export class ReqFetchMiningFarmMaintenanceFee extends ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         collectionId: string;
 }
@@ -68,6 +72,7 @@ export class ReqFetchMiningFarmMaintenanceFee extends ReqWithMiningFarmId {
 export class ReqFetchMiningFarmTotalBtcEarnings extends ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         collectionId: string;
 }
@@ -75,6 +80,7 @@ export class ReqFetchMiningFarmTotalBtcEarnings extends ReqWithMiningFarmId {
 export class ReqFetchMiningFarmTotalEarningsCudos extends ReqWithMiningFarmId {
     @IsDefined()
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         collectionId: string;
 }

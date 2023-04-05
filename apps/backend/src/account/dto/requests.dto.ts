@@ -1,6 +1,7 @@
-import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmptyObject, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { IsDefined, IsEmail, IsNotEmptyObject, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { AccountJsonValidator, SuperAdminJsonValidator, UserJsonValidator } from '../account.types';
+import sanitizeHtml from 'sanitize-html';
 
 export class ReqEditSessionAccount {
 
@@ -38,13 +39,16 @@ export class ReqEditSessionSuperAdmin {
 export class ReqEditSessionAccountPass {
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         oldPass: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         newPass: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         token: string;
 
@@ -58,8 +62,7 @@ export class ReqEditSessionAccountPass {
 }
 
 export class ReqForgottenPassword {
-
     @IsString()
+    @IsEmail()
         email: string;
-
 }

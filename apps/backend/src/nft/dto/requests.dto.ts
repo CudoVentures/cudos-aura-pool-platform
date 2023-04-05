@@ -1,7 +1,7 @@
-import { Type } from 'class-transformer';
-import { IsArray, IsDefined, IsEnum, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
-import PurchaseTransactionsFilterModel from '../../../../frontend/src/nft/entities/PurchaseTransactionsFilterModel';
+import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { IsArray, IsDefined, IsEnum, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsPositive, IsString, ValidateNested } from 'class-validator';
 import { NftFilterJsonValidation, PurchaseTransactionJsonValidations, PurchaseTransactionsFilterJsonValidation, UpdateNftJsonValidations } from '../nft.types';
+import sanitizeHtml from 'sanitize-html';
 
 export class ReqNftsByFilter {
     @IsDefined()
@@ -19,6 +19,7 @@ export enum ModuleName {
 
 export class ReqUpdateNftChainData {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
     @IsEnum(ModuleName)
         module: ModuleName;
@@ -29,11 +30,13 @@ export class ReqUpdateNftChainData {
         nftDtos: UpdateNftJsonValidations[];
 
     @IsNumber()
+    @IsPositive()
         height: number;
 }
 
 export class ReqUpdateNftCudosPrice {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         id: string;
 }

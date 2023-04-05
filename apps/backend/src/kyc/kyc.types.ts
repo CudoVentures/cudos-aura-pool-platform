@@ -1,4 +1,6 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import sanitizeHtml from 'sanitize-html';
 
 export const KYC_TABLE_NAME = 'kyc'
 
@@ -12,20 +14,27 @@ export enum KycStatus {
 export class KycJsonValidator {
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         kycId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         accountId: string;
 
     @IsString()
+    @IsNotEmpty()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         firstName: string;
 
     @IsString()
+    @IsNotEmpty()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         lastName: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         applicantId: string;
 

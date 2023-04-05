@@ -24,6 +24,14 @@ export default class ValidationState {
         return inputValidation;
     }
 
+    addNotNegativeValidation(errorMessage?: string): InputValidation {
+        const inputValidation = InputValidation.notNegativeValidation(errorMessage);
+
+        this.inputValidations.push(inputValidation);
+
+        return inputValidation;
+    }
+
     addEmptyValidation(errorMessage?: string): InputValidation {
         const inputValidation = InputValidation.emptyValidation(errorMessage);
 
@@ -136,6 +144,15 @@ export class InputValidation {
         if (errorMessage !== undefined) {
             this.errorMessage = errorMessage;
         }
+    }
+
+    static notNegativeValidation(errorMessage?: string): InputValidation {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = action((value) => Number(value) >= 0);
+
+        return validation;
     }
 
     static emptyValidation(errorMessage?: string): InputValidation {

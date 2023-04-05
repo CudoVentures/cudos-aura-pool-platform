@@ -42,7 +42,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
     const collectionArtistNameValidation = useRef(validationPerNftState.addEmptyValidation('Empty name')).current;
     const collectionHashPowerPerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty hashing power per nft')).current;
     const collectionPricePerNftValidation = useRef(validationPerNftState.addEmptyValidation('Empty price per nft')).current;
-
+    const notNegativeValidation = useRef(validationState.addNotNegativeValidation('Value must be greater than or equal to 0.')).current;
     const [hashPowerInTh, setHashPowerInTh] = useState(collectionEntity.hashPowerInTh !== S.NOT_EXISTS ? collectionEntity.hashPowerInTh : '');
     // const [maintenanceFeeInBtc, setMaintenanceFeeInBtc] = useState(collectionEntity.maintenanceFeeInBtc !== null ? collectionEntity.maintenanceFeeInBtc.toString(10) : '')
     const [defaultPricePerNftInUsd, setDefaultPricePerNftInUsd] = useState(collectionEntity.defaultPricePerNftInUsd !== S.NOT_EXISTS ? collectionEntity.defaultPricePerNftInUsd.toString() : '');
@@ -246,7 +246,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                     <Input
                         label={'Hashing Power for collection'}
                         placeholder={'Enter hashing power...'}
-                        inputValidation={collectionHashPowerValidation}
+                        inputValidation={[collectionHashPowerValidation, notNegativeValidation]}
                         value={hashPowerInTh}
                         onChange={onChangeHashPowerInTh}
                         inputType = { InputType.REAL }
@@ -264,7 +264,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         placeholder={'Enter royalties...'}
                         value={secondarySaleRoyalties}
                         inputType={InputType.POSITIVE_REAL}
-                        inputValidation={collectionRoyaltiesValidation}
+                        inputValidation={[collectionRoyaltiesValidation, notNegativeValidation]}
                         onChange={onChangeRoyalties}
                         InputProps={{
                             endAdornment: (
@@ -315,7 +315,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         placeholder={'Enter hash power...'}
                         value={defaultHashPowerPerNftInTh}
                         inputType = { InputType.REAL }
-                        inputValidation={collectionHashPowerPerNftValidation}
+                        inputValidation={[collectionHashPowerPerNftValidation, notNegativeValidation]}
                         onChange={onChangeDefaultHashPowerPerNftInTh}
                         InputProps={{
                             endAdornment: (
@@ -327,7 +327,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
                         placeholder={'Enter price...'}
                         inputType = { InputType.REAL }
                         value={defaultPricePerNftInUsd}
-                        inputValidation={collectionPricePerNftValidation}
+                        inputValidation={[collectionPricePerNftValidation, notNegativeValidation]}
                         onChange={onChangeDefaultPricePerNftInUsd}
                         InputProps={{
                             startAdornment: (

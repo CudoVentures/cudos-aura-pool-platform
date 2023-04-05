@@ -1,7 +1,8 @@
-import { Type } from 'class-transformer';
+import { Transform, TransformFnParams, Type } from 'class-transformer';
 import { IsArray, IsDefined, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { NftJsonValidator } from '../../nft/nft.types';
 import { CollectionFilterJsonValidator, CollectionJsonValidator } from '../collection.types';
+import sanitizeHtml from 'sanitize-html';
 
 export class ReqCreditCollection {
     @IsDefined()
@@ -33,6 +34,7 @@ export enum ModuleName {
 
 export class ReqUpdateCollectionChainData {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         module: string;
 

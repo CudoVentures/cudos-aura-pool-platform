@@ -1,5 +1,7 @@
 import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { IntBoolValue } from '../common/utils';
+import sanitizeHtml from 'sanitize-html';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export enum AccountType {
     USER = 1,
@@ -8,8 +10,8 @@ export enum AccountType {
 }
 
 export class AccountJsonValidator {
-
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         accountId: string;
 
     @IsEnum(AccountType)
@@ -22,9 +24,11 @@ export class AccountJsonValidator {
         emailVerified: IntBoolValue;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         name: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         email: string;
 
     @IsNumber()
@@ -38,33 +42,42 @@ export class AccountJsonValidator {
 export class UserJsonValidator {
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         userId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         accountId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         cudosWalletAddress: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         bitcoinPayoutWalletAddress: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         profileImgUrl: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         coverImgUrl: string;
 
 }
 
 export class SuperAdminJsonValidator {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         superAdminId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         accountId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         cudosRoyalteesAddress: string;
 
 }

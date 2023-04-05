@@ -1,6 +1,8 @@
 import { IsArray, IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { IntBoolValue } from '../../common/utils';
 import { FarmStatus } from '../farm.types';
+import { Transform, TransformFnParams } from 'class-transformer';
+import sanitizeHtml from 'sanitize-html';
 
 export enum MiningFarmOrderBy {
     POPULAR_ASC = 1,
@@ -20,6 +22,7 @@ export default class MiningFarmFilterModel {
         status: FarmStatus[];
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         searchString: string;
 

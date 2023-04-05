@@ -1,6 +1,8 @@
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min } from 'class-validator';
 import { CollectionStatus } from '../collection/utils';
 import { IntBoolValue } from '../common/utils';
+import { Transform, TransformFnParams } from 'class-transformer';
+import sanitizeHtml from 'sanitize-html';
 
 export enum NftStatus {
     QUEUED = 'queued',
@@ -22,15 +24,19 @@ export type MarketplaceNftFilters = {
 
 export class NftJsonValidator {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         id: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         name: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         artistName: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         uri: string;
 
@@ -38,26 +44,30 @@ export class NftJsonValidator {
         group: NftGroup;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         tokenId: string;
 
     @IsNumber()
-    @IsNotEmpty()
+    @Min(0)
         hashingPower: number;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         priceInAcudos: string;
 
     @IsNumber()
-    @IsNotEmpty()
+    @Min(0)
         expirationDateTimestamp: number;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         collectionId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         marketplaceNftId: string;
 
     @IsEnum(NftStatus)
@@ -65,12 +75,15 @@ export class NftJsonValidator {
         status: NftStatus;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         currentOwner: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         creatorId: string;
 
     @IsNumber()
+    @Min(0)
         priceUsd: number;
 
     @IsNumber()
@@ -130,6 +143,7 @@ export class NftFilterJsonValidation {
         collectionIds: string[];
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         searchString: string;
 
@@ -149,10 +163,12 @@ export class NftFilterJsonValidation {
 
 export class UpdateNftJsonValidations {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         denomId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         tokenId: string;
 
@@ -161,18 +177,23 @@ export class UpdateNftJsonValidations {
 export class AddressMintJsonValidations {
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         cudosAddress: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         firstName: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         lastName: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         applicantId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         workflowRunId: string;
 
 }
@@ -185,10 +206,12 @@ export enum PurchaseTransactionStatus {
 
 export class PurchaseTransactionJsonValidations {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         txhash: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         recipientAddress: string;
 
     @IsNumber()

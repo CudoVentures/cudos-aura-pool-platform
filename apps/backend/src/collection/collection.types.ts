@@ -1,11 +1,15 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, IsEnum, IsPositive } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, IsEnum, IsPositive, Min } from 'class-validator';
 import { CollectionStatus } from './utils';
+import { Transform, TransformFnParams } from 'class-transformer';
+import sanitizeHtml from 'sanitize-html';
 
 export class CollectionJsonValidator {
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         id: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         name: string;
 
@@ -14,34 +18,42 @@ export class CollectionJsonValidator {
         status: CollectionStatus;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         description: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         denomId: string;
 
     @IsNumber()
+    @Min(0)
     @IsNotEmpty()
         hashingPower: number;
 
     @IsNumber()
+    @Min(0)
     @IsNotEmpty()
         royalties: number;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         mainImage: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         bannerImage: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         farmId: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
     @IsOptional()
         creatorId: string;
@@ -78,10 +90,12 @@ export class CollectionFilterJsonValidator {
         status: CollectionStatus[];
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         searchString: string;
 
     @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         farmId: string;
 
     @IsNumber()

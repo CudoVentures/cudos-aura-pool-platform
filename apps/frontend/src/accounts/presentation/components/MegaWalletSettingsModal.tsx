@@ -33,6 +33,7 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
 
     const validationStateNotEmpty = useRef(new ValidationState()).current;
     const validationNotEmpty = useRef(validationStateNotEmpty.addEmptyValidation('Must be a value between 0 and 10 inclusive')).current;
+    const numberValueValidation = useRef(validationStateNotEmpty.addValidation('Must be a value between 0 and 10 inclusive', (value) => Number(value) >= 0 && Number(value) <= 10)).current;
 
     return (
         <ModalWindow
@@ -54,7 +55,7 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     label={'Global Royalties %'}
                     inputType={InputType.REAL}
                     validationState = { validationStateNotEmpty }
-                    inputValidation={ [validationNotEmpty] }
+                    inputValidation={ [validationNotEmpty, numberValueValidation] }
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeGlobalFees() === true && (
@@ -64,7 +65,7 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     label={'Pool Fee %'}
                     inputType={InputType.REAL}
                     validationState = { validationStateNotEmpty }
-                    inputValidation={ [validationNotEmpty] }
+                    inputValidation={ [validationNotEmpty, numberValueValidation] }
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeResaleFees() === true && (
@@ -74,7 +75,7 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     label={'Resale Fee %'}
                     inputType={InputType.REAL}
                     validationState = { validationStateNotEmpty }
-                    inputValidation={ [validationNotEmpty] }
+                    inputValidation={ [validationNotEmpty, numberValueValidation] }
                 />
             )}
             {megaWalletSettingsModalStore.isSettingTypeFirstSaleFees() === true && (
@@ -84,7 +85,7 @@ function MegaWalletSettingsModal({ megaWalletSettingsModalStore }: Props) {
                     label={'First Sale Fee %'}
                     inputType={InputType.REAL}
                     validationState = { validationStateNotEmpty }
-                    inputValidation={ [validationNotEmpty] }
+                    inputValidation={ [validationNotEmpty, numberValueValidation] }
                 />
             )}
         </ModalWindow>

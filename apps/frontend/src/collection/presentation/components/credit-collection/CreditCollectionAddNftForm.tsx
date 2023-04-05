@@ -48,6 +48,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, cudosSt
     const nftArtistNameValidation = useRef(validationState.addEmptyValidation('Empty artist name')).current;
     const nftHashPowerValidation = useRef(validationState.addEmptyValidation('Empty hash power')).current;
     const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
+    const notNegativeValidation = useRef(validationState.addNotNegativeValidation('Value must be greater than or equal to 0')).current;
     // const nftRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty royalties')).current;
     // const nftMaintenanceFeeValidation = useRef(validationState.addEmptyValidation('Empty maintenance fee')).current;
 
@@ -127,7 +128,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, cudosSt
                         disabled = { selectedNftEntity === null }
                         value={creditCollectionStore.selectedNftHashingPowerInThInputValue}
                         inputType={InputType.POSITIVE_INTEGER}
-                        inputValidation={nftHashPowerValidation}
+                        inputValidation={[nftHashPowerValidation, notNegativeValidation]}
                         onChange={creditCollectionStore.onChangeSelectedNftHashPowerInTh} />
                 }
                 helperText = { `Available TH/s: ${creditCollectionStore.formatCollectionRemainingHashPowerForSelectedNft()}` }>
@@ -147,7 +148,7 @@ function CreditCollectionAddNftForm({ alertStore, creditCollectionStore, cudosSt
                         disabled = { selectedNftEntity === null }
                         inputType = { InputType.POSITIVE_INTEGER }
                         value={creditCollectionStore.selectedNftPriceInDollarsInputValue}
-                        inputValidation={nftPriceValidation}
+                        inputValidation={[nftPriceValidation, notNegativeValidation]}
                         onChange={creditCollectionStore.onChangeSelectedNftPriceInDollars}
                         InputProps={{
                             startAdornment: (
