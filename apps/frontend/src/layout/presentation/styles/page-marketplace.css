@@ -1,3 +1,22 @@
+.Flex {
+    display: flex !important;
+}
+
+.SpaceBetween {
+    justify-content: space-between !important;
+}
+
+.RespectWidth {
+    min-width: max-content;
+}
+
+.Column {
+    flex-direction: column;
+}
+
+.ReducedFontSize {
+    font-size: 10px;
+}
 
 .PageMarketplace .PageContent {
     padding: 70px var(--page-spacing-h);
@@ -9,7 +28,8 @@
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo {
-    display: inline-flex; flex-direction: column;
+    display: inline-flex;
+    flex-direction: column;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine1 {
@@ -38,7 +58,8 @@
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoCons {
     color: var(--color-neutral-080);
-    font-weight: 700; font-size: 10px;
+    font-weight: 700;
+    font-size: 10px;
     text-transform: uppercase;
     margin-bottom: 52px;
 }
@@ -50,23 +71,27 @@
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg {
     position: absolute;
-    bottom: -122px; right: 0;
+    bottom: -122px;
+    right: 0;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg01 {
     width: 576px;
     position: absolute;
-    right: 125px; bottom: 55px;
+    right: 125px;
+    bottom: 55px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg02 {
     width: 576px;
     position: absolute;
-    right: 0; bottom: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle {
-    width: 427px; height: 427px;
+    width: 427px;
+    height: 427px;
     position: absolute;
     filter: blur(75px);
     border-radius: 50%;
@@ -74,15 +99,18 @@
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle01 {
-    right: 270px; bottom: 90px;
+    right: 270px;
+    bottom: 90px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle02 {
-    right: 120px; bottom: 290px;
+    right: 120px;
+    bottom: 290px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle03 {
-    right: 0px; bottom: 150px;
+    right: 0px;
+    bottom: 150px;
 }
 
 .PageMarketplace .MarketplaceHeading {
@@ -102,8 +130,10 @@
 .PageMarketplace .SectionWrapper .SectionHeadingCnt .CenterCnt {
     width: 50%;
     position: absolute;
-    left: 0; right: 0;
-    top: 0; bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     margin: auto;
 }
 
@@ -157,14 +187,15 @@
 }
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .TimeNumberBox {
-    width: 24px; height: 24px;
+    width: 48px;
+    height: 48px;
     background: #E6E9F2;
     border-radius: 6px;
     align-items: center;
     justify-content: center;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow{
+.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow {
     justify-content: space-between;
 }
 
@@ -180,7 +211,8 @@
 }
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow .PriceInfo .PriceWithIcon .SVG {
-    width: 24px; height: 24px;
+    width: 24px;
+    height: 24px;
 }
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .AmountMintedRow {
