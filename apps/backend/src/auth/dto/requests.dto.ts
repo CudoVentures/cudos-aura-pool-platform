@@ -11,7 +11,6 @@ export class ReqLogin {
         email: string;
 
     @IsString()
-    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         password: string;
 
     @IsString()
@@ -45,7 +44,6 @@ export class ReqRegister {
         email: string;
 
     @IsString()
-    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         password: string;
 
     @IsString()

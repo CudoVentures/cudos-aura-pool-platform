@@ -39,12 +39,10 @@ export class ReqEditSessionSuperAdmin {
 export class ReqEditSessionAccountPass {
 
     @IsString()
-    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsOptional()
         oldPass: string;
 
     @IsString()
-    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         newPass: string;
 
     @IsString()
