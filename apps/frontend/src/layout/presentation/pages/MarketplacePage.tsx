@@ -315,8 +315,8 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 <StyledContainer
                                     className={ 'PhaseInfoContainer' }
                                     containerPadding={ContainerPadding.PADDING_16}
-                                    containerBorder={ContainerBorder.PRIMARY_60}>
-                                    <ColumnLayout className={ 'PhaseInfoColumn' } gap={8}>
+                                    containerBorder={ContainerBorder.GRADIENT}>
+                                    <ColumnLayout className={ 'PhaseInfoColumn' } gap={32}>
                                         <RowLayout className={ 'PhaseHeader' } numColumns={2}>
                                             <div className={'PhaseName B3 SemiBold'}>Presale Phase</div>
                                             <div className={ 'FlexRow PhaseEta B2 SemiBold' }>

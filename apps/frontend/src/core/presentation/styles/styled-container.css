@@ -1,7 +1,14 @@
+.gradientBorder {
+    background: linear-gradient(white, white) padding-box,
+        linear-gradient(to right, #67D271, #08BDDC) border-box;
+    border-radius: 16px;
+    border: 1px solid transparent;
+}
+
 .StyledContainer {
     box-sizing: border-box;
     margin: 0 auto;
-    border:1px solid transparent;
+    border: 1px solid transparent;
     border-radius: var(--border-radius);
 }
 
