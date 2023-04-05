@@ -3,6 +3,8 @@ import { AccountJsonValidator, AccountType } from '../account.types';
 import AccountRepo from '../repos/account.repo';
 import crypto from 'crypto';
 
+const MAX_XONSEQUITIVE_WRONG_PASSWORD_ATTEMPS = 5;
+
 export default class AccountEntity {
 
     accountId: number;
@@ -16,6 +18,7 @@ export default class AccountEntity {
     salt: string;
     tokenSalt: string;
     hashedPass: string;
+    consequitiveWrongPasswordAttemps: number;
 
     constructor() {
         this.accountId = NOT_EXISTS_INT;
@@ -29,6 +32,7 @@ export default class AccountEntity {
         this.salt = '';
         this.tokenSalt = '';
         this.hashedPass = '';
+        this.consequitiveWrongPasswordAttemps = NOT_EXISTS_INT;
     }
 
     static generateTokenSalt(): string {
@@ -41,6 +45,14 @@ export default class AccountEntity {
         entity.type = AccountType.ADMIN;
 
         return entity;
+    }
+
+    resetConsequitiveWrongPasswordAttempts(): void {
+        this.consequitiveWrongPasswordAttemps = 0;
+    }
+
+    passedConsequitiveWrongPasswordAttemptsLimit(): boolean {
+        return this.consequitiveWrongPasswordAttemps >= MAX_XONSEQUITIVE_WRONG_PASSWORD_ATTEMPS;
     }
 
     isNew(): boolean {
@@ -100,6 +112,7 @@ export default class AccountEntity {
             repoJson.hashedPass = entity.hashedPass;
         }
         repoJson.tokenSalt = entity.tokenSalt;
+        repoJson.consequitiveWrongPasswordAttemps = entity.consequitiveWrongPasswordAttemps;
 
         return repoJson;
     }
@@ -122,6 +135,7 @@ export default class AccountEntity {
         entity.salt = repoJson.salt ?? entity.salt;
         entity.tokenSalt = repoJson.tokenSalt ?? entity.tokenSalt;
         entity.hashedPass = repoJson.hashedPass ?? entity.hashedPass;
+        entity.consequitiveWrongPasswordAttemps = repoJson.consequitiveWrongPasswordAttemps ?? entity.consequitiveWrongPasswordAttemps;
 
         return entity;
     }

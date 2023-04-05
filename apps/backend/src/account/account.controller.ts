@@ -124,6 +124,21 @@ export class AccountController {
         }
         return res.redirect('/');
     }
+    @UseInterceptors(TransactionInterceptor)
+    @Get('unlockAccount/:token')
+    @HttpCode(200)
+    @Throttle(10, 60)
+    async unlockAccount(
+        @Req() req: AppRequest,
+        @Res() res,
+        @Param('token') encodedToken: string,
+    ): Promise < void > {
+        try {
+            await this.accountService.unlockAccount(encodedToken, req.transaction);
+        } catch (ex) {
+        }
+        return res.redirect('/login');
+    }
 
     @Patch('forgottenPassword')
     @UseInterceptors(TransactionInterceptor)
