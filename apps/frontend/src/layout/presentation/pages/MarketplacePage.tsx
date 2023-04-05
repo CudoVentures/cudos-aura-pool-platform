@@ -306,7 +306,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     </div>
                 </>)}
                 {nftPresaleStore.isPresaleOver() === false && (
-                    <RowLayout className={ 'PresaleContainer' } numColumns={2} gap={100}>
+                    <RowLayout className={ 'PresaleContainer MarketplaceHero' } numColumns={2} gap={100}>
                         <ColumnLayout className={ 'PresaleInfoColumn' } gap={24}>
                             <div className={ 'Primary60 B2 SemiBold' }>PRESALE COLLECTION</div>
                             <div className={ 'ColorNeutral100 B1 Bold'}>{presaleCollectionEntity?.name ?? ''}</div>
