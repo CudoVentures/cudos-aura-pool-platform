@@ -22,7 +22,7 @@ import { CollectionStatus } from './utils';
 import { AppRequest } from '../common/commont.types';
 import { TransactionInterceptor } from '../common/common.interceptors';
 import { AccountType } from '../account/account.types';
-import { CollectionCreationError, DataServiceError, ERROR_TYPES } from '../common/errors/errors';
+import { CollectionCreationError, CollectionDenomExistsError, DataServiceError, ERROR_TYPES } from '../common/errors/errors';
 import { CollectionEntity } from './entities/collection.entity';
 import NftEntity from '../nft/entities/nft.entity';
 import { ResFetchCollectionsByFilter, ResCreditCollection, ResFetchCollectionDetails, ResEditCollection, ResFetchTopCollections } from './dto/responses.dto';
@@ -133,18 +133,33 @@ export class CollectionController {
 
         let oldUris = [];
         if (collectionDbEntity !== null) {
+            if (collectionEntity.isNew() === true) {
+                throw new CollectionCreationError(); // cannot be new and with a db ref at the same time
+            }
+
+            collectionEntity.denomId = collectionDbEntity.denomId; // to ensure that denomId is not changed once the collection is created
+
             oldUris = [collectionDbEntity.mainImage, collectionDbEntity.bannerImage];
             collectionNftDbEntities.forEach((nft) => {
                 oldUris.push(nft.uri);
             });
+        } else {
+            if (collectionEntity.isNew() === false) {
+                throw new CollectionCreationError(); // cannot be old and without a db ref at the same time
+            }
+
+            collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(/ /g, '');
+
+            const collectionEntityByDenomId = await this.collectionService.findOneByDenomId(collectionEntity.denomId, req.transaction, req.transaction.LOCK.UPDATE);
+            if (collectionEntityByDenomId !== null) {
+                throw new CollectionDenomExistsError();
+            }
         }
 
         const newUris = [collectionEntity.mainImage, collectionEntity.bannerImage];
         nftEntities.forEach((nftEntity) => {
             newUris.push(nftEntity.uri);
         });
-
-        collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(/ /g, '');
 
         let collectionEntityResult: CollectionEntity, nftEntityResults: NftEntity[] = [], nftsToDelete: NftEntity[] = [];
         try {
