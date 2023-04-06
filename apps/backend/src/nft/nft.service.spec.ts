@@ -5,8 +5,6 @@ import { NFTModule } from './nft.module';
 import { FarmModule } from '../farm/farm.module';
 import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/auth.types';
 import compose from 'docker-compose';
 import Path from 'path';
 import { NftRepo } from './repos/nft.repo';
@@ -17,6 +15,7 @@ import NftEntity from './entities/nft.entity';
 import CryptoCompareService from '../crypto-compare/crypto-compare.service';
 import BigNumber from 'bignumber.js';
 import { PurchaseTransactionRepo } from './repos/purchase-transaction.repo';
+import { JwtCudoModule } from '../jwt/jwt.module';
 
 describe('NFTService', () => {
     const oneCudosInAcudos = new BigNumber('1000000000000000000')
@@ -33,10 +32,7 @@ describe('NFTService', () => {
 
         module = await Test.createTestingModule({
             imports: [
-                JwtModule.register({
-                    secret: jwtConstants.secret,
-                    signOptions: { expiresIn: '20m' },
-                }),
+                JwtCudoModule,
                 ConfigModule.forRoot({
                     isGlobal: true,
                     envFilePath: ['./config/.env'],

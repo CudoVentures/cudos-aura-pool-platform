@@ -5,8 +5,6 @@ import { NFTModule } from '../nft/nft.module';
 import { FarmModule } from './farm.module';
 import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/auth.types';
 import compose from 'docker-compose';
 import Path from 'path';
 import { GraphqlService } from '../graphql/graphql.service';
@@ -56,10 +54,6 @@ describe('FarmService', () => {
 
         module = await Test.createTestingModule({
             imports: [
-                JwtModule.register({
-                    secret: jwtConstants.secret,
-                    signOptions: { expiresIn: '20m' },
-                }),
                 ConfigModule.forRoot({
                     isGlobal: true,
                     envFilePath: ['./config/.env'],

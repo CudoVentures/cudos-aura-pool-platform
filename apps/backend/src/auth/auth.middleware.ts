@@ -1,19 +1,18 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 import { ExtractJwt } from 'passport-jwt';
-import { JwtService } from '@nestjs/jwt';
-import JwtToken from './entities/jwt-token.entity';
 import AccountService from '../account/account.service';
 import { RequestWithSessionAccounts } from '../common/commont.types';
 import { pbkdf2Sync } from 'node:crypto';
 import { Sequelize, Transaction } from 'sequelize';
 import { InjectConnection } from '@nestjs/sequelize';
+import JwtCudoService from '../jwt/jwt.service';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
 
     constructor(
-        private jwtService: JwtService,
+        private jwtService: JwtCudoService,
         private accountService: AccountService,
         @InjectConnection()
         private readonly sequelizeInstance: Sequelize,
@@ -26,8 +25,7 @@ export class AuthMiddleware implements NestMiddleware {
         const transaction: Transaction = await this.sequelizeInstance.transaction();
 
         try {
-            this.jwtService.verify(encodedToken, JwtToken.getConfig());
-            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+            const jwtToken = this.jwtService.decodeToken(encodedToken);
             const accounts = await this.accountService.findAccounts(jwtToken.id, transaction);
 
             const derivedKey = pbkdf2Sync(accounts.accountEntity.hashedPass.substring(0, 10), accounts.accountEntity.tokenSalt, 100000, 64, 'sha512');

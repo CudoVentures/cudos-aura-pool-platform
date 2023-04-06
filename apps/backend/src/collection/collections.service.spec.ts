@@ -3,8 +3,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { GraphqlModule } from '../graphql/graphql.module';
 import { NFTModule } from '../nft/nft.module';
 import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/auth.types';
 import compose from 'docker-compose';
 import Path from 'path';
 import { CollectionRepo } from './repos/collection.repo';
@@ -38,10 +36,6 @@ describe('CollectionService', () => {
 
         module = await Test.createTestingModule({
             imports: [
-                JwtModule.register({
-                    secret: jwtConstants.secret,
-                    signOptions: { expiresIn: '20m' },
-                }),
                 ConfigModule.forRoot({
                     isGlobal: true,
                     envFilePath: ['./config/.env'],

@@ -8,8 +8,6 @@ import { NFTModule } from '../nft/nft.module';
 import { FarmModule } from '../farm/farm.module';
 import { CollectionModule } from '../collection/collection.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/auth.types';
 import { emptyStatisticsTestData, fillStatisticsTestData, getGraphQlmarketplaceCollections, getGraphQlMarketplaceNftEvents, getGraphQlNftNftEvents, getZeroDatePlusDaysTimestamp, nftTestEntitities } from './utils/test.utils';
 import compose from 'docker-compose';
 import Path from 'path';
@@ -35,6 +33,7 @@ import MegaWalletEventEntity from './entities/mega-wallet-event.entity';
 import { miningFarmEntities } from '../../test/data/farm.data';
 import MiningFarmEntity from '../farm/entities/mining-farm.entity';
 import { CollectionEntity } from '../collection/entities/collection.entity';
+import { JwtCudoModule } from '../jwt/jwt.module';
 
 describe('StatisticsService', () => {
     const testDbDockerPath = Path.join(process.cwd(), 'docker/test');
@@ -52,10 +51,7 @@ describe('StatisticsService', () => {
 
         module = await Test.createTestingModule({
             imports: [
-                JwtModule.register({
-                    secret: jwtConstants.secret,
-                    signOptions: { expiresIn: '20m' },
-                }),
+                JwtCudoModule,
                 ConfigModule.forRoot({
                     isGlobal: true,
                     envFilePath: ['./config/.env'],

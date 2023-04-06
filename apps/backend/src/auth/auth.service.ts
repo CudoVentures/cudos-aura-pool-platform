@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { decodeSignature, StdSignature } from 'cudosjs';
 import { LOCK, Transaction } from 'sequelize';
 import AccountService from '../account/account.service';
@@ -9,16 +8,16 @@ import UserEntity from '../account/entities/user.entity';
 import { AccountLockedException, EmailAlreadyInUseException, WrongNonceSignatureException, WrongUserOrPasswordException } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
-import JwtToken from './entities/jwt-token.entity';
 import { SIGN_NONCE } from './auth.types';
 import { verifyADR36Amino } from '@keplr-wallet/cosmos';
 import AddressMintDataEntity from '../nft/entities/address-mint-data.entity';
+import JwtCudoService from '../jwt/jwt.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private accountService: AccountService,
-        private jwtService: JwtService,
+        private jwtService: JwtCudoService,
         private emailService: EmailService,
     ) {}
 
@@ -42,8 +41,7 @@ export class AuthService {
         accountEntity.tokenSalt = AccountEntity.generateTokenSalt();
         await this.accountService.creditAccount(accountEntity, false, dbTx);
 
-        const jwtToken = JwtToken.newInstance(accountEntity);
-        return this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig());
+        return this.jwtService.fromAccount(accountEntity);
     }
     async register(email: string, pass: string, cudosWalletAddress: string, name: string, pubKeyType: string, pubKeyValue: string, signature: string, dbTx: Transaction): Promise < void > {
         const isSigner = await this.verifySignature(cudosWalletAddress, pubKeyType, pubKeyValue, signature);

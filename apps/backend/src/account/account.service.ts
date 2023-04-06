@@ -11,10 +11,9 @@ import AdminEntity from './entities/admin.entity';
 import SuperAdminEntity from './entities/super-admin.entity';
 import UserEntity from './entities/user.entity';
 import { LOCK, Transaction } from 'sequelize';
-import { JwtService } from '@nestjs/jwt';
-import JwtToken from '../auth/entities/jwt-token.entity';
 import { DataServiceError, NotFoundException, WrongOldPasswordException, WrongVerificationTokenException } from '../common/errors/errors';
 import DataService from '../data/data.service';
+import JwtCudoService from '../jwt/jwt.service';
 
 @Injectable()
 export default class AccountService {
@@ -28,7 +27,7 @@ export default class AccountService {
         private adminRepo: typeof AdminRepo,
         @InjectModel(SuperAdminRepo)
         private superAdminRepo: typeof SuperAdminRepo,
-        private jwtService: JwtService,
+        private jwtService: JwtCudoService,
         private dataService: DataService,
     ) {}
 
@@ -59,8 +58,8 @@ export default class AccountService {
 
     async editAccountPassByToken(encodedToken: string, newPass: string, dbTx: Transaction) {
         try {
-            this.jwtService.verify(encodedToken, JwtToken.getConfig());
-            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+            const jwtToken = this.jwtService.decodeToken(encodedToken);
+
             const accountEntity = await this.findAccountById(jwtToken.id, dbTx, dbTx.LOCK.UPDATE);
             accountEntity.salt = AccountService.generateSalt();
             accountEntity.hashedPass = AccountService.generateHashedPass(newPass, accountEntity.salt);
@@ -72,8 +71,7 @@ export default class AccountService {
 
     async unlockAccount(encodedToken: string, dbTx: Transaction) {
         try {
-            this.jwtService.verify(encodedToken, JwtToken.getConfig());
-            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+            const jwtToken = this.jwtService.decodeToken(encodedToken);
 
             const accountEntity = await this.findAccountById(jwtToken.id, dbTx, dbTx.LOCK.UPDATE);
             accountEntity.resetConsequitiveWrongPasswordAttempts();
@@ -85,8 +83,7 @@ export default class AccountService {
 
     async verifyEmailByToken(encodedToken: string, dbTx: Transaction) {
         try {
-            this.jwtService.verify(encodedToken, JwtToken.getConfig());
-            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+            const jwtToken = this.jwtService.decodeToken(encodedToken);
 
             const accountEntity = await this.findAccountById(jwtToken.id, dbTx, dbTx.LOCK.UPDATE);
             accountEntity.markAsEmailVerified();

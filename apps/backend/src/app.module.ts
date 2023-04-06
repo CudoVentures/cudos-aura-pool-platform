@@ -13,8 +13,6 @@ import { GraphqlModule } from './graphql/graphql.module';
 import { VisitorMiddleware } from './visitor/visitor.middleware';
 import { VisitorModule } from './visitor/visitor.module';
 import { AuthMiddleware } from './auth/auth.middleware';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './auth/auth.types';
 import { DataModule } from './data/data.module';
 import DataService from './data/data.service';
 import { GeneralModule } from './general/general.module';
@@ -24,9 +22,9 @@ import { KycModule } from './kyc/kyc.module';
 import { AllowlistModule } from './allowlist/allowlist.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { CONFIG_SERVICE_ROOT_PATH_KEY } from './common/utils';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerBehindProxyGuard } from './app.guards';
+import { JwtCudoModule } from './jwt/jwt.module';
 
 @Module({
     imports: [
@@ -43,10 +41,7 @@ import { ThrottlerBehindProxyGuard } from './app.guards';
         EmailModule,
         KycModule,
         AllowlistModule,
-        JwtModule.register({
-            secret: jwtConstants.secret,
-            signOptions: { expiresIn: '20m' },
-        }),
+        JwtCudoModule,
         SequelizeModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
