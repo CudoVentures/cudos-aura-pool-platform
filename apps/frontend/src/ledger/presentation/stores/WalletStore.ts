@@ -221,7 +221,7 @@ export default class WalletStore {
     }
 
     formatBalanceInCudosInt(): string {
-        return formatCudos(this.balance.integerValue(BigNumber.ROUND_FLOOR) ?? new BigNumber(0), false, 0)
+        return formatCudos(this.balance?.integerValue(BigNumber.ROUND_FLOOR) ?? new BigNumber(0), false, 0)
     }
 
     formatBalanceInCudosFraction(): string {
