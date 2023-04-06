@@ -49,6 +49,10 @@ export class NFTController {
         const nftFilterEntity = NftFilterEntity.fromJson(reqNftsByFilter.nftFilterJson);
         const { nftEntities, total } = await this.nftService.findByFilter(req.sessionUserEntity, nftFilterEntity, req.transaction);
 
+        if (nftFilterEntity.inOnlyForSessionAccount() === true && req.sessionUserEntity === null) {
+            req.logger.info('Request for session nfts without logged account');
+        }
+
         return new ResFetchNftsByFilter(nftEntities, total);
     }
 
