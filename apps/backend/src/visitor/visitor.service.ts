@@ -17,12 +17,12 @@ export class VisitorService {
 
     async signalVisitFarm(miningFarmId: number, visitorUuid: string, dbTx: Transaction) {
         const visitorEntity = VisitorEntity.newInstanceForMiningFarm(miningFarmId, visitorUuid);
-        await this.credit(visitorEntity, dbTx);
+        await this.credit(visitorEntity, dbTx, dbTx.LOCK.UPDATE);
     }
 
     async signalVisitNft(nftId: string, visitorUuid: string, dbTx: Transaction) {
         const visitorEntity = VisitorEntity.newInstanceForNft(nftId, visitorUuid);
-        await this.credit(visitorEntity, dbTx);
+        await this.credit(visitorEntity, dbTx, dbTx.LOCK.UPDATE);
     }
 
     async fetchMiningFarmVisitsCount(miningFarmIds: number[], dbTx: Transaction, dbLock: LOCK = undefined): Promise < Map < number, number > > {
