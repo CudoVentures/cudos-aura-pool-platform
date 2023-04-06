@@ -1,7 +1,7 @@
 import NftEntity, { NftGroup, NftTier, tierPriceMap } from '../../../nft/entities/NftEntity';
 
 export default {
-    name: 'Bradd 01',
+    name: 'Bradd 02',
     description: 'The first collection from the renowed Bradd Styx and also the first collection for this platform. And some fantastic artwork attached. A bargain.',
     royalties: 3,
     totalNfts: 3333,
