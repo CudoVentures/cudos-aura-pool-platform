@@ -14,6 +14,7 @@ export default class MiningFarmEntity {
     accountId: string;
     name: string;
     legalName: string;
+    subAccountName: string;
     rewardsFromPoolBtcWalletName: string;
     primaryAccountOwnerName: string;
     primaryAccountOwnerEmail: string;
@@ -44,6 +45,7 @@ export default class MiningFarmEntity {
         this.accountId = S.Strings.NOT_EXISTS;
         this.name = '';
         this.legalName = '';
+        this.subAccountName = '';
         this.rewardsFromPoolBtcWalletName = '';
         this.primaryAccountOwnerName = '';
         this.primaryAccountOwnerEmail = '';
@@ -157,6 +159,7 @@ export default class MiningFarmEntity {
             'accountId': entity.accountId,
             'name': entity.name,
             'legalName': entity.legalName,
+            'subAccountName': entity.subAccountName,
             'rewardsFromPoolBtcWalletName': entity.rewardsFromPoolBtcWalletName,
             'primaryAccountOwnerName': entity.primaryAccountOwnerName,
             'primaryAccountOwnerEmail': entity.primaryAccountOwnerEmail,
@@ -190,6 +193,7 @@ export default class MiningFarmEntity {
         entity.accountId = (json.accountId ?? entity.accountId).toString();
         entity.name = json.name ?? entity.name;
         entity.legalName = json.legalName ?? entity.legalName;
+        entity.subAccountName = json.subAccountName ?? entity.subAccountName;
         entity.rewardsFromPoolBtcWalletName = json.rewardsFromPoolBtcWalletName ?? entity.rewardsFromPoolBtcWalletName;
         entity.primaryAccountOwnerName = json.primaryAccountOwnerName ?? entity.primaryAccountOwnerName;
         entity.primaryAccountOwnerEmail = json.primaryAccountOwnerEmail ?? entity.primaryAccountOwnerEmail;

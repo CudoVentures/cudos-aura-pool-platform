@@ -152,7 +152,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         value={miningFarmEntity.description}
                         onChange={action((string) => { miningFarmEntity.description = string })} />
                     <Input
-                        label={'BTC Wallet Name (Foundry legal name)'}
+                        label={'Legal name'}
                         placeholder={'e.g Cool Farm Inc.'}
                         value={miningFarmEntity.legalName}
                         inputValidation={[

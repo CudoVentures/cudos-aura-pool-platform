@@ -233,12 +233,12 @@ export default class StorageHelper {
     }
 }
 
-function jsonMiningFarm(id, accountId, name, legalName, primaryAccountOwnerName, primaryAccountOwnerEmail, description, manufacturerIds, minerIds, energySourceIds, hashPowerInTh, ownerAddress, machinesLocation, profileImgUrl, coverImgUrl, status) {
+function jsonMiningFarm(id, accountId, name, subAccountName, primaryAccountOwnerName, primaryAccountOwnerEmail, description, manufacturerIds, minerIds, energySourceIds, hashPowerInTh, ownerAddress, machinesLocation, profileImgUrl, coverImgUrl, status) {
     return {
         id,
         accountId,
         name,
-        legalName,
+        subAccountName,
         primaryAccountOwnerName,
         primaryAccountOwnerEmail,
         description,

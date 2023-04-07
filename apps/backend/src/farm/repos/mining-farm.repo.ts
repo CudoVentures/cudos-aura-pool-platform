@@ -57,6 +57,10 @@ export class MiningFarmRepo extends Model {
 
     @AllowNull(false)
     @Column({ type: DataType.STRING })
+        legalName: string;
+
+    @AllowNull(false)
+    @Column({ type: DataType.STRING })
         subAccountName: string;
 
     @AllowNull(false)

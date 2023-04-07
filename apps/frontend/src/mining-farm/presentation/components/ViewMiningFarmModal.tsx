@@ -139,6 +139,22 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     onChange = { onChangeRewardsFromPoolBtcWalletName }
                                 />,
                             ),
+                            createDataPreview(
+                                'Sub account name',
+                                <Input
+                                    label = {
+                                        <TextWithTooltip text={'Sub account name on Foundry'} tooltipText={'The sub account name, given by Foundry.'} />
+                                    }
+                                    placeholder={'walletname123...'}
+                                    className={'FlexRow'}
+                                    value = { miningFarmEntity.rewardsFromPoolBtcWalletName }
+                                    inputValidation={[
+                                        farmLegalNameValidationNoEmpty,
+                                        farmLegalNameLettersAndNumbersOnly,
+                                    ]}
+                                    onChange = { onChangeRewardsFromPoolBtcWalletName }
+                                />,
+                            ),
                             createDataPreview('Leftover rewards address', miningFarmEntity.leftoverRewardsBtcAddress),
                             createDataPreview('Maintenance fee address', miningFarmEntity.maintenanceFeePayoutBtcAddress),
                             createDataPreview(
