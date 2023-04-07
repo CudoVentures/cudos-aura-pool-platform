@@ -75,6 +75,13 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
         })
     }
 
+    function onChangeSubAccounttName(value) {
+        runInAction(() => {
+            miningFarmEntity.subAccountName = value;
+            setAreChangesMade(true);
+        })
+    }
+
     function onSave() {
         if (validationState.getIsErrorPresent() === true) {
             validationState.setShowErrors(true);
@@ -147,12 +154,12 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     }
                                     placeholder={'walletname123...'}
                                     className={'FlexRow'}
-                                    value = { miningFarmEntity.rewardsFromPoolBtcWalletName }
+                                    value = { miningFarmEntity.subAccountName }
                                     inputValidation={[
                                         farmLegalNameValidationNoEmpty,
                                         farmLegalNameLettersAndNumbersOnly,
                                     ]}
-                                    onChange = { onChangeRewardsFromPoolBtcWalletName }
+                                    onChange = { onChangeSubAccounttName }
                                 />,
                             ),
                             createDataPreview('Leftover rewards address', miningFarmEntity.leftoverRewardsBtcAddress),
