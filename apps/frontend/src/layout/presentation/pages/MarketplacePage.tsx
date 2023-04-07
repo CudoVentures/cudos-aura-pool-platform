@@ -309,8 +309,8 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     <RowLayout className={'PresaleContainer MarketplaceHero'} numColumns={2} gap={100}>
                         <ColumnLayout className={'PresaleInfoColumn'} gap={24}>
                             <div className={'Primary60 B2 SemiBold'}>PRESALE COLLECTION</div>
-                            <div className={'ColorNeutral100 B1 Bold'}>{presaleCollectionEntity?.name ?? ''}</div>
-                            <div className={'B2 SemiBold'}>{presaleCollectionEntity?.description ?? ''}</div>
+                            <div className={'ColorNeutral100 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
+                            <div className={'ColorNeutral100 CollectionDescription'}>{presaleCollectionEntity?.description ?? ''}</div>
                             <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
                                 <StyledContainer
                                     className={'PhaseInfoContainer'}
