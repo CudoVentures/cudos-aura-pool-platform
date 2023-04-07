@@ -150,7 +150,7 @@ export class CollectionController {
 
             collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(/ /g, '');
 
-            const collectionEntityByDenomId = await this.collectionService.findOneByDenomId(collectionEntity.denomId, req.transaction, req.transaction.LOCK.UPDATE);
+            const collectionEntityByDenomId = await this.collectionService.findFirstByDenomId(collectionEntity.denomId, req.transaction, req.transaction.LOCK.UPDATE);
             if (collectionEntityByDenomId !== null) {
                 throw new CollectionDenomExistsError();
             }
@@ -327,7 +327,7 @@ export class CollectionController {
                 const chainMarketplaceCollectionEntity = chainMarketplaceCollectionEntities[i];
                 const denomId = chainMarketplaceCollectionEntity.denomId;
 
-                const collectionEntity = await this.collectionService.findOneByDenomId(denomId, req.transaction, req.transaction.LOCK.UPDATE);
+                const collectionEntity = await this.collectionService.findFirstByDenomId(denomId, req.transaction, req.transaction.LOCK.UPDATE);
                 if (!collectionEntity) {
                     return;
                 }
@@ -336,9 +336,10 @@ export class CollectionController {
                 // updateCollectionDto.denom_id = denomId;
                 // updateCollectionDto.royalties = chainMarketplaceCollectionEntity.;
                 // updateCollectionDto.creator = chainMarketplaceCollectionEntity.creator;
-                collectionEntity.status = chainMarketplaceCollectionEntity.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
-
-                await this.collectionService.updateOneByDenomId(denomId, collectionEntity, req.transaction);
+                if (collectionEntity.isRejected() === false) {
+                    collectionEntity.status = chainMarketplaceCollectionEntity.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
+                    await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
+                }
             }
         } else if (module === ModuleName.NFT) {
             const chainNftCollectionEntities = await this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
@@ -350,7 +351,7 @@ export class CollectionController {
             for (let i = 0; i < chainNftCollectionEntities.length; i++) {
                 const chainNftCollectionEntity = chainNftCollectionEntities[i];
                 const denomId = chainNftCollectionEntity.id;
-                const collectionEntity = await this.collectionService.findOneByDenomId(denomId, req.transaction, req.transaction.LOCK.UPDATE);
+                const collectionEntity = await this.collectionService.findFirstByDenomId(denomId, req.transaction, req.transaction.LOCK.UPDATE);
 
                 if (!collectionEntity) {
                     return;
@@ -359,7 +360,7 @@ export class CollectionController {
                 collectionEntity.name = chainNftCollectionEntity.name;
                 collectionEntity.description = chainNftCollectionEntity.description;
 
-                await this.collectionService.updateOneByDenomId(denomId, collectionEntity, req.transaction);
+                await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
             }
         }
     }
