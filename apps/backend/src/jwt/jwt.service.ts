@@ -42,7 +42,7 @@ export default class JwtCudoService {
     private getConfig(expiresIn = '20m'): any {
         return {
             expiresIn,
-            secret: this.configService.get('APP_JWT_SECRET'),
+            secret: this.configService.getOrThrow('APP_JWT_SECRET'),
         };
     }
 }
