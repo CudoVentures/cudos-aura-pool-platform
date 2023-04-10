@@ -17,6 +17,12 @@ export const enum BackendErrorType {
     DATA_SERVICE_ERROR = '10',
 
     FARM_CREATION_ERROR = '11',
+
+    WRONG_SERVICE_PARAMETERS = '12',
+    GRAPHQL_COLLECTION_DENOM_NOT_FOUND_ERROR = '13',
+    COLLECTION_DENOM_NOT_FOUND_ERROR = '14',
+
+    ACCOUNT_LOCKED = '15',
 }
 
 export function parseBackendErrorType(axiosError): BackendErrorType {

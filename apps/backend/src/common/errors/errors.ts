@@ -19,6 +19,14 @@ export enum ERROR_TYPES {
     WRONG_SERVICE_PARAMETERS = '12',
     GRAPHQL_COLLECTION_DENOM_NOT_FOUND_ERROR = '13',
     COLLECTION_DENOM_NOT_FOUND_ERROR = '14',
+
+    ACCOUNT_LOCKED = '15',
+}
+
+export class AccountLockedException extends BadRequestException {
+    constructor() {
+        super(ERROR_TYPES.ACCOUNT_LOCKED)
+    }
 }
 
 export class WrongUserOrPasswordException extends BadRequestException {

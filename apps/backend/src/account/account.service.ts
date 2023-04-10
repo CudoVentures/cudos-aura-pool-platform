@@ -70,6 +70,19 @@ export default class AccountService {
         }
     }
 
+    async unlockAccount(encodedToken: string, dbTx: Transaction) {
+        try {
+            this.jwtService.verify(encodedToken, JwtToken.getConfig());
+            const jwtToken = JwtToken.fromJson(this.jwtService.decode(encodedToken));
+
+            const accountEntity = await this.findAccountById(jwtToken.id, dbTx, dbTx.LOCK.UPDATE);
+            accountEntity.resetConsequitiveWrongPasswordAttempts();
+            await this.creditAccount(accountEntity, false, dbTx);
+        } catch (ex) {
+            throw new WrongVerificationTokenException();
+        }
+    }
+
     async verifyEmailByToken(encodedToken: string, dbTx: Transaction) {
         try {
             this.jwtService.verify(encodedToken, JwtToken.getConfig());

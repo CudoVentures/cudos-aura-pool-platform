@@ -6,7 +6,7 @@ import AccountService from '../account/account.service';
 import AccountEntity from '../account/entities/account.entity';
 import AdminEntity from '../account/entities/admin.entity';
 import UserEntity from '../account/entities/user.entity';
-import { EmailAlreadyInUseException, WrongNonceSignatureException, WrongUserOrPasswordException } from '../common/errors/errors';
+import { AccountLockedException, EmailAlreadyInUseException, WrongNonceSignatureException, WrongUserOrPasswordException } from '../common/errors/errors';
 import { IntBoolValue } from '../common/utils';
 import EmailService from '../email/email.service';
 import JwtToken from './entities/jwt-token.entity';
@@ -83,8 +83,26 @@ export class AuthService {
             throw new WrongUserOrPasswordException();
         }
 
+        if (accountEntity.passedConsequitiveWrongPasswordAttemptsLimit()) {
+            await this.emailService.sendLockedAccountEmail(accountEntity);
+            throw new AccountLockedException();
+        }
+
         if (AccountService.isPassValid(accountEntity, pass) === false) {
+            accountEntity.consequitiveWrongPasswordAttemps++;
+            await this.accountService.creditAccount(accountEntity, false, dbTx);
+
+            if (accountEntity.passedConsequitiveWrongPasswordAttemptsLimit()) {
+                await this.emailService.sendLockedAccountEmail(accountEntity);
+                throw new AccountLockedException();
+            }
+
             throw new WrongUserOrPasswordException();
+        }
+
+        if (accountEntity.consequitiveWrongPasswordAttemps !== 0) {
+            accountEntity.resetConsequitiveWrongPasswordAttempts();
+            await this.accountService.creditAccount(accountEntity, false, dbTx);
         }
 
         return accountEntity;

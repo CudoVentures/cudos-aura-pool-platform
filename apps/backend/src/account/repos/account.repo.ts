@@ -73,4 +73,8 @@ export default class AccountRepo extends Model {
     @Column({ type: DataType.STRING })
         tokenSalt: string;
 
+    @AllowNull(false)
+    @Column({ type: DataType.INTEGER })
+        consequitiveWrongPasswordAttemps: number;
+
 }

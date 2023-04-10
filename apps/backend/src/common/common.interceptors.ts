@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { Sequelize, Transaction } from 'sequelize';
 
 import { Response as ExpressResponse } from 'express';
+import { AccountLockedException, WrongUserOrPasswordException } from './errors/errors';
 
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {
@@ -25,7 +26,11 @@ export class TransactionInterceptor implements NestInterceptor {
                 transaction.commit();
             }),
             catchError((err) => {
-                transaction.rollback();
+                if (err instanceof AccountLockedException || err instanceof WrongUserOrPasswordException) {
+                    transaction.commit();
+                } else {
+                    transaction.rollback();
+                }
                 return throwError(() => err);
             }),
         );
