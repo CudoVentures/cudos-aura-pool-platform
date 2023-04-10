@@ -149,7 +149,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         generalDatapreviews.push(createDataPreview('Collection', <span className = { 'Clickable' } onClick = { onClickCollectionLink }>{collectionEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
         generalDatapreviews.push(createDataPreview('Collection royalties', collectionEntity.formatRoyaltiesInPercentage()));
-        generalDatapreviews.push(createDataPreview('Aura Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()));
+        generalDatapreviews.push(createDataPreview('CUDOS Markets Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()));
 
         return generalDatapreviews;
     }

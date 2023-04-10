@@ -34,8 +34,8 @@ async function bootstrap() {
     );
 
     // const config = new DocumentBuilder()
-    //     .setTitle('Cudos Aura Pool')
-    //     .setDescription('Cudos Aura Pool')
+    //     .setTitle('CUDOS Markets')
+    //     .setDescription('CUDOS Markets')
     //     .setVersion('1.0')
     //     .addBearerAuth(
     //         { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },

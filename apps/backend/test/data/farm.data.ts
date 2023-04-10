@@ -17,7 +17,7 @@ export const miningFarmEntities = [
         id: '1',
         accountId: '1',
         name: 'string', // So far changing them won't affect anything
-        legalName: 'string', // So far changing them won't affect anything
+        subAccountName: 'string', // So far changing them won't affect anything
         rewardsFromPoolBtcWalletName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerEmail: 'string', // So far changing them won't affect anything
@@ -42,7 +42,7 @@ export const miningFarmEntities = [
         id: '2',
         accountId: '1',
         name: 'string', // So far changing them won't affect anything
-        legalName: 'string', // So far changing them won't affect anything
+        subAccountName: 'string', // So far changing them won't affect anything
         rewardsFromPoolBtcWalletName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerEmail: 'string', // So far changing them won't affect anything
@@ -67,7 +67,7 @@ export const miningFarmEntities = [
         id: '3',
         accountId: '1',
         name: 'string', // So far changing them won't affect anything
-        legalName: 'string', // So far changing them won't affect anything
+        subAccountName: 'string', // So far changing them won't affect anything
         rewardsFromPoolBtcWalletName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerEmail: 'string', // So far changing them won't affect anything
@@ -92,7 +92,7 @@ export const miningFarmEntities = [
         id: '4',
         accountId: '1',
         name: 'string', // So far changing them won't affect anything
-        legalName: 'string', // So far changing them won't affect anything
+        subAccountName: 'string', // So far changing them won't affect anything
         rewardsFromPoolBtcWalletName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerEmail: 'string', // So far changing them won't affect anything
@@ -117,7 +117,7 @@ export const miningFarmEntities = [
         id: '5',
         accountId: '2',
         name: 'string', // So far changing them won't affect anything
-        legalName: 'string', // So far changing them won't affect anything
+        subAccountName: 'string', // So far changing them won't affect anything
         rewardsFromPoolBtcWalletName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerName: 'string', // So far changing them won't affect anything
         primaryAccountOwnerEmail: 'string', // So far changing them won't affect anything

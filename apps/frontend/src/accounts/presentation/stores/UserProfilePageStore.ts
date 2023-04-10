@@ -38,7 +38,7 @@ export default class UserProfilePageStore {
 
     // my nfts tab
     nftEntities: NftEntity[];
-    collectionEntitiesMap: Map < string, CollectionEntity >;
+    collectionEntitiesMap: Map<string, CollectionEntity>;
 
     // earnings tab
     defaultIntervalPickerState: DefaultIntervalPickerState;
@@ -47,7 +47,7 @@ export default class UserProfilePageStore {
     // history tab
     nftEventFilterModel: NftEventFilterModel;
     nftEventEntities: NftEventEntity[];
-    nftEntitiesMap: Map < string, NftEntity >;
+    nftEntitiesMap: Map<string, NftEntity>;
     historyTableState: TableState;
 
     // purchases tab
@@ -231,5 +231,10 @@ export default class UserProfilePageStore {
 
     getNftEntityById = (nftId: string): NftEntity => {
         return this.nftEntitiesMap.get(nftId);
+    }
+
+    onChangeSearchWord = async (value) => {
+        this.nftFilterModel.searchString = value;
+        await this.fetchMyNfts();
     }
 }

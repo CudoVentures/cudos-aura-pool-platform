@@ -58,7 +58,7 @@ function ExploreMiningFarmsPage({ exploreMiningFarmsPageStore }: Props) {
                 <ExplorePageLayout
                     header = { (
                         <>
-                            <div className={'H2 Bold'}>Explore AuraPool</div>
+                            <div className={'H2 Bold'}>Explore CUDOS Markets</div>
                             <NavRowTabs navTabs = {[
                                 createNavRowTab('NFTs', false, onClickExploreNfts),
                                 createNavRowTab('Collections', false, onClickExploreCollections),

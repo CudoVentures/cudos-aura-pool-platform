@@ -27,7 +27,7 @@ export class VisitorController {
         }
 
         const miningFarmEntity = MiningFarmEntity.fromJson(reqSignalVisitMiningFarm.miningFarmEntity);
-        this.visitorService.signalVisitFarm(miningFarmEntity.id, uuid, req.transaction);
+        this.visitorService.signalVisitFarm(miningFarmEntity.id, uuid.toString(), req.transaction);
     }
 
     @Put('signalVisitNft')
@@ -44,7 +44,7 @@ export class VisitorController {
         }
 
         const nftEntity = NftEntity.fromJson(reqSignalVisitNft.nftEntity);
-        this.visitorService.signalVisitNft(nftEntity.id, uuid, req.transaction);
+        this.visitorService.signalVisitNft(nftEntity.id, uuid.toString(), req.transaction);
     }
 
 }

@@ -37,7 +37,7 @@ function StepReview({ accountSessionStore }: Props) {
                         <Svg svg={CheckIcon} className={ 'SuccessCheck' }/>
                         <div className={'H3 Bold'}>Great! Your Farm Profile is sent for review.</div>
                     </div>
-                    <div className={'B1 SubTitle'}>Your farm will be reviewed by Aura Pool and you will receive an email with the results.<br />You can explore the Marketplace while waiting.</div>
+                    <div className={'B1 SubTitle'}>Your farm will be reviewed by CUDOS Markets and you will receive an email with the results.<br />You can explore the Marketplace while waiting.</div>
                 </div>
 
                 <Actions className={'ButtonRow'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} height={ActionsHeight.HEIGHT_48}>

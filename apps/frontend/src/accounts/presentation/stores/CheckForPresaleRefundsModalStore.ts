@@ -4,7 +4,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
 import { ETH_CONSTS, getEthChainEtherscanLink } from '../../../core/utilities/Constants';
 import { Contract } from 'web3-eth-contract';
-import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAuraPool.json';
+import contractABI from '../../../ethereum/contracts/CudosMarkets.sol/CudosMarkets.json';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import AppStore from '../../../core/presentation/stores/AppStore';
 import { CURRENCY_DECIMALS } from 'cudosjs';

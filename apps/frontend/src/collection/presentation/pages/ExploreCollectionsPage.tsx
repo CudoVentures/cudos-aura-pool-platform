@@ -57,7 +57,7 @@ function ExploreCollectionsPage({ exploreCollectionsPageStore }: Props) {
                 <ExplorePageLayout
                     header = { (
                         <>
-                            <div className={'H1 Bold'}>Explore AuraPool</div>
+                            <div className={'H1 Bold'}>Explore CUDOS Markets</div>
                             <NavRowTabs navTabs = {[
                                 createNavRowTab('NFTs', false, onClickExploreNfts),
                                 createNavRowTab('Collections', true),

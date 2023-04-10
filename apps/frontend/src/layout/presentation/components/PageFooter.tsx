@@ -5,7 +5,7 @@ import PackageJson from '../../../../../../package.json'
 import Svg from '../../../core/presentation/components/Svg';
 import { TERMS_AND_CONDITIONS, PRIVACY_POLICY, WEBSITE, TELEGRAM, LINKEDIN, TWITTER, DISCORD, FACEBOOK, MEDIUM, SPOTIFY, YOUTUBE } from '../../../core/utilities/Links';
 
-import SvgAuraPoolLogoLight from '../../../public/assets/vectors/aura-pool-logo-light.svg'
+import SvgAuraPoolLogoLight from '../../../public/assets/vectors/cudos-markets-logo-light.svg'
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 // import SvgLinkedin from '../../../public/assets/vectors/linkedin.svg';
 // import SvgTwitter from '../../../public/assets/vectors/twitter.svg';
@@ -55,7 +55,7 @@ export default function PageFooter() {
                         <div className='H3 Bold'>Marketplace</div>
                         <a className={'Clickable'} onClick={onClickExploreNfts} >Explore</a>
                         <a className={'Clickable'} onClick={onClickCalculator} >Calculator</a>
-                        {/* <a href={'#'} target={'_blank'} rel={'noreferrer'} >What is AuraPool</a> */}
+                        {/* <a href={'#'} target={'_blank'} rel={'noreferrer'} >What is CUDOS Markets</a> */}
                     </div>
                     {/* <div className={ 'LinksColumn' }>
                         <div className='H3 Bold'>Link</div>

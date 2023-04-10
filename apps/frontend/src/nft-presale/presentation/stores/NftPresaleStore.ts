@@ -16,7 +16,7 @@ import AllowlistUserEntity from '../../../allowlist/entities/AllowlistUserEntity
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
 import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
-import { formatUsd } from '../../../core/utilities/NumberFormatter';
+import { formatCudos, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 declare let Config;
 
@@ -369,7 +369,7 @@ export default class NftPresaleStore {
     }
 
     getPresalePriceCudosFormatted(): string {
-        return this.getPresalePriceInCudos().toFixed(2);
+        return formatCudos(this.getPresalePriceInCudos())
     }
 
     getPresalePriceEthFormatted(): string {

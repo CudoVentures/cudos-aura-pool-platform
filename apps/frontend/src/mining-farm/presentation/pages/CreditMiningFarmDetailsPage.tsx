@@ -45,7 +45,7 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore }: Props
     function renderCreditHeading() {
         const content = creditMiningFarmDetailsPageStore.miningFarmEntity.isNew() === true ? (
             <>
-                <div className={'H2 ExtraBold'}>Welcome to AuraPool</div>
+                <div className={'H2 ExtraBold'}>Welcome to CUDOS Markets</div>
                 <div className={'B1'}>Follow the steps to create your Farm Profile</div>
             </>
         ) : (
@@ -73,10 +73,12 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore }: Props
 
                 { creditMiningFarmDetailsPageStore.miningFarmEntity !== null && (
                     <>
-                        <Breadcrumbs crumbs={ [
-                            createBreadcrumb('Farm Profile', onClickCreditMiningFarm),
-                            createBreadcrumb('Farm Details'),
-                        ] } />
+                        {creditMiningFarmDetailsPageStore.miningFarmEntity.isNew() === false && (
+                            <Breadcrumbs crumbs={[
+                                createBreadcrumb('Farm Profile', onClickCreditMiningFarm),
+                                createBreadcrumb('Farm Details'),
+                            ] } />
+                        )}
 
                         {/* <StyledContainer className={'FormContainer FlexColumn'} containerWidth = { ContainerWidth.MEDIUM } > */}
                         <div className = { 'FormContainer' } >

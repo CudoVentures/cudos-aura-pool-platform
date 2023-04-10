@@ -113,7 +113,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                     )}
                     {userEntity.hasBitcoinPayoutWalletAddress() === true && (
                         <div className={'FlexRow'}>
-                            <Svg svg = { SvgBtcLogo } size={SvgSize.CUSTOM}/>
+                            <Svg className = { 'IconBtc' } svg = { SvgBtcLogo } size={SvgSize.CUSTOM}/>
                             <a href={ProjectUtils.makeUrlBtcExplorer(userEntity.bitcoinPayoutWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.bitcoinPayoutWalletAddress}</a>
                             {/* <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div> */}
                         </div>

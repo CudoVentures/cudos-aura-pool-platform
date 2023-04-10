@@ -4,6 +4,8 @@ import { isValidAddress } from 'cudosjs';
 import S from '../../utilities/Main';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
 
+const LOWERCASE_AND_NUMBERS_REGEX = /^[a-z0-9]+$/;
+
 export default class ValidationState {
 
     inputValidations: InputValidation[];
@@ -99,6 +101,14 @@ export default class ValidationState {
 
     addBitcoinAddressValidation(errorMessage?: string) {
         const inputValidation = InputValidation.bitcoinAddressValidation(errorMessage);
+
+        this.inputValidations.push(inputValidation);
+
+        return inputValidation;
+    }
+
+    addLowercaseAndNumbersValidation(errorMessage?: string) {
+        const inputValidation = InputValidation.lowercaseAndNumbersValidation(errorMessage);
 
         this.inputValidations.push(inputValidation);
 
@@ -229,6 +239,15 @@ export class InputValidation {
 
         validation.setErrorMessage(errorMessage);
         validation.checkValidInput = action((value) => BitcoinStore.isValidBtcAddress(value));
+
+        return validation;
+    }
+
+    static lowercaseAndNumbersValidation(errorMessage?: string) {
+        const validation = new InputValidation();
+
+        validation.setErrorMessage(errorMessage);
+        validation.checkValidInput = action((value) => value.match(LOWERCASE_AND_NUMBERS_REGEX) !== null);
 
         return validation;
     }

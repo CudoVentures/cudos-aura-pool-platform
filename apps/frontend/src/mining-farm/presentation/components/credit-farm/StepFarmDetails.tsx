@@ -152,7 +152,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         value={miningFarmEntity.description}
                         onChange={action((string) => { miningFarmEntity.description = string })} />
                     <Input
-                        label={'BTC Wallet Name (Foundry legal name)'}
+                        label={'Legal name'}
                         placeholder={'e.g Cool Farm Inc.'}
                         value={miningFarmEntity.legalName}
                         inputValidation={[
@@ -275,13 +275,13 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                                     <InputAdornment position="end" >BTC</InputAdornment>
                                 ),
                             }} />
-                        <div className={'B3 SemiBold FullLine'}> Maintenance fee calculation formula:</div>
+                        {/* <div className={'B3 SemiBold FullLine'}> Maintenance fee calculation formula:</div>
                         <div className={'FormulaBox B3 Bold'}>
                             •&nbsp;&nbsp;Maintenance fee amount/current hashing power = fee per Th/s<br />
                             •&nbsp;&nbsp;Fee per Th/s / Payout period = Daily fee<br />
                             •&nbsp;&nbsp;Daily fee / 24 = Hourly fee<br />
                             •&nbsp;&nbsp;Total user payout hours * hourly fee = Maintenance fee amount
-                        </div>
+                        </div> */}
                     </div>
                     <Input
                         label = {
@@ -301,7 +301,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         onChange={action((string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string })} /> */}
                     <Input
                         label = {
-                            <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on Aura Pool.'} />
+                            <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on CUDOS Markets.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.leftoverRewardsBtcAddress}

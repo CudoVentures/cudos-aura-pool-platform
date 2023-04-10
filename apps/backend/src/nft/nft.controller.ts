@@ -41,13 +41,17 @@ export class NFTController {
     @Post()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(4, 1)
+    @Throttle(40, 1)
     async fetchByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqNftsByFilter: ReqNftsByFilter,
     ): Promise < ResFetchNftsByFilter > {
         const nftFilterEntity = NftFilterEntity.fromJson(reqNftsByFilter.nftFilterJson);
         const { nftEntities, total } = await this.nftService.findByFilter(req.sessionUserEntity, nftFilterEntity, req.transaction);
+
+        if (nftFilterEntity.inOnlyForSessionAccount() === true && req.sessionUserEntity === null) {
+            req.logger.info('Request for session nfts without logged account');
+        }
 
         return new ResFetchNftsByFilter(nftEntities, total);
     }

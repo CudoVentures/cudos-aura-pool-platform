@@ -13,6 +13,7 @@ export default class EmailService {
     lockedAccountEmailSentTimestamps: Map < string, number >;
     appPublicUrl: string;
     emailFrom: string;
+    serviceEmail: string;
     transport: any;
 
     constructor(
@@ -24,6 +25,7 @@ export default class EmailService {
 
         this.appPublicUrl = this.configService.get < string >('APP_PUBLIC_URL') ?? '';
         this.emailFrom = this.configService.get < string >('APP_EMAIL_FROM') ?? '';
+        this.serviceEmail = this.configService.get < string >('APP_SERVICE_EMAIL') ?? '';
 
         if (this.generalService.isProduction() === true) {
             sgMail.setApiKey(this.configService.get < string >('APP_SENDGRID_API_KEY') ?? '');
@@ -71,8 +73,7 @@ export default class EmailService {
     async sendVerificationEmail(accountEntity: AccountEntity): Promise < void > {
         try {
             const verificationToken = this.jwtService.fromAccount(accountEntity, '1d');
-
-            const emailTemplateEntity = new EmailTemplateEntity(`Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email.`, 'Verify', `${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`);
+            const emailTemplateEntity = new EmailTemplateEntity(`Hello ${accountEntity.name}! Welcome to CUDOS Markets. Please verify your email.`, 'Verify', `${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`);
 
             const verificationEmail = {
                 from: this.emailFrom,
@@ -98,6 +99,21 @@ export default class EmailService {
                 to: accountEntity.email,
                 subject: 'Forgotten password',
                 html: emailTemplateEntity.build(),
+            };
+
+            await this.sendEmail(verificationEmail);
+        } catch (ex) {
+            console.error(ex);
+        }
+    }
+
+    async sendCryptoCompareApiWarningEmail(xRateLimitRemainingString: string): Promise < void > {
+        try {
+            const verificationEmail = {
+                from: this.emailFrom,
+                to: this.serviceEmail,
+                subject: 'Check CryptoCompare Api',
+                text: `CryptoCompare Api - remaining ratelimit: ${xRateLimitRemainingString}`,
             };
 
             await this.sendEmail(verificationEmail);

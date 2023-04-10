@@ -2,7 +2,7 @@ import Config from '../config/Config';
 import { DirectSecp256k1HdWallet, GasPrice, SigningStargateClient, StargateClient } from 'cudosjs';
 import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApiRepo';
 import { ethers } from 'ethers';
-import AuraPoolContract from '../contracts/CudosAuraPool.sol/CudosAuraPool.json'
+import CudosMarketsContract from '../contracts/CudosMarkets.sol/CudosMarkets.json'
 import CudosChainRpcRepo from './data/CudosChainRpcRepo';
 import ContractEventWorker from './workers/ContractEventWorker';
 import AuraContractRpcRepo from './data/AuraContractRpcRepo';
@@ -88,7 +88,7 @@ export default class App {
             try {
                 const provider = new ethers.providers.JsonRpcProvider(Config.ETH_NODE_URL);
                 const wallet = new ethers.Wallet(Config.CONTRACT_ADMIN_RPIVATE_KEY || '', provider);
-                const contract = ethers.ContractFactory.getContract(Config.AURA_POOL_CONTRACT_ADDRESS || '', AuraPoolContract.abi, wallet);
+                const contract = ethers.ContractFactory.getContract(Config.AURA_POOL_CONTRACT_ADDRESS || '', CudosMarketsContract.abi, wallet);
                 return await contract.deployed();
             } catch (e) {
                 Logger.error(`Failed to get a chain client using ${Config.ETH_NODE_URL}. Retrying...`);
@@ -115,5 +115,5 @@ export default class App {
 
         return null;
     }
-    
+
 }

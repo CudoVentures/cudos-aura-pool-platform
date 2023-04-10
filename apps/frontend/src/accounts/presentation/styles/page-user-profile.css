@@ -17,9 +17,8 @@
     margin-left: 4px;
 }
 
-.PageUserProfile .PageContent .ProfileHeaderDataRow .SVG {
-    width: 20px;
-    height: 20px;
+.PageUserProfile .PageContent .ProfileHeaderDataRow .IconBtc {
+    width: 20px; height: 20px;
 }
 
 .PageUserProfile .PageContent .ProfileHeaderDataRow .JoinDate {

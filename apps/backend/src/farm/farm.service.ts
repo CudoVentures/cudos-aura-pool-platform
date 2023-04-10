@@ -434,7 +434,7 @@ export class FarmService {
             for (let i = miningFarmDetailsEntities.length; i-- > 0;) {
                 const miningFarmDetailsEntity = miningFarmDetailsEntities[i];
                 const miningFarmEntity = miningFarmEntitiesMap.get(miningFarmDetailsEntity.miningFarmId);
-                const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.legalName);
+                const { activeWorkersCount, averageHashRateH1 } = await this.getFoundryFarmWorkersDetails(miningFarmEntity.subAccountName);
                 miningFarmDetailsEntity.averageHashPowerInTh = averageHashRateH1;
                 miningFarmDetailsEntity.activeWorkers = activeWorkersCount;
             }

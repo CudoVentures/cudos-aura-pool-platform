@@ -225,7 +225,7 @@ export default class CollectionApiRepo implements CollectionRepo {
                 creatorCudosAddress,
                 collectionEntity.denomId,
                 collectionEntity.name,
-                'CudosAuraPoolSchema',
+                'CudosMarketsSchema',
                 collectionEntity.name,
                 'NotEditable',
                 '',
@@ -242,10 +242,10 @@ export default class CollectionApiRepo implements CollectionRepo {
                 true,
                 gasPrice,
                 undefined,
-                `Minted by Cudos Aura Pool Service, approved by Super Admin: ${creatorCudosAddress}`,
+                `Minted by CUDOS Markets Service, approved by Super Admin: ${creatorCudosAddress}`,
             )
 
-            this.showAlert('You have approved the collection and now it is been processed by the chain and aura pool. Once the processing is finished then the collection\'s status will be changed to APPROVED.');
+            this.showAlert('You have approved the collection and now it is been processed by the chain and CUDOS Markets. Once the processing is finished then the collection\'s status will be changed to APPROVED.');
 
             collectionEntity.markApproved();
             this.collectionSessionStorage.updateCollectionsMap([collectionEntity]);

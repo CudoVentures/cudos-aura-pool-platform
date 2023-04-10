@@ -10,6 +10,7 @@ export default class MiningFarmEntity {
     accountId: number;
     name: string;
     legalName: string;
+    subAccountName: string;
     rewardsFromPoolBtcWalletName: string;
     primaryAccountOwnerName: string;
     primaryAccountOwnerEmail: string;
@@ -40,6 +41,7 @@ export default class MiningFarmEntity {
         this.accountId = NOT_EXISTS_INT;
         this.name = '';
         this.legalName = '';
+        this.subAccountName = '';
         this.rewardsFromPoolBtcWalletName = '';
         this.primaryAccountOwnerName = '';
         this.primaryAccountOwnerEmail = '';
@@ -84,9 +86,11 @@ export default class MiningFarmEntity {
         if (entity.isNew() === false) {
             repoJson.id = entity.id;
         }
+
         repoJson.name = entity.name;
         repoJson.description = entity.description;
-        repoJson.subAccountName = entity.legalName;
+        repoJson.legalName = entity.legalName;
+        repoJson.subAccountName = entity.subAccountName;
         repoJson.rewardsFromPoolBtcWalletName = entity.rewardsFromPoolBtcWalletName;
         repoJson.location = entity.machinesLocation;
         repoJson.primaryAccountOwnerName = entity.primaryAccountOwnerName;
@@ -120,7 +124,8 @@ export default class MiningFarmEntity {
 
         entity.id = repoJson.id ?? entity.id;
         entity.description = repoJson.description ?? entity.description;
-        entity.legalName = repoJson.subAccountName ?? entity.legalName;
+        entity.legalName = repoJson.legalName ?? entity.legalName;
+        entity.subAccountName = repoJson.subAccountName ?? entity.subAccountName;
         entity.rewardsFromPoolBtcWalletName = repoJson.rewardsFromPoolBtcWalletName ?? entity.rewardsFromPoolBtcWalletName;
         entity.machinesLocation = repoJson.location ?? entity.machinesLocation;
         entity.name = repoJson.name ?? entity.name;
@@ -165,6 +170,7 @@ export default class MiningFarmEntity {
             'accountId': entity.accountId.toString(),
             'name': entity.name,
             'legalName': entity.legalName,
+            'subAccountName': entity.subAccountName,
             'rewardsFromPoolBtcWalletName': entity.rewardsFromPoolBtcWalletName,
             'primaryAccountOwnerName': hideData === false ? entity.primaryAccountOwnerName : '',
             'primaryAccountOwnerEmail': hideData === false ? entity.primaryAccountOwnerEmail : '',
@@ -199,6 +205,7 @@ export default class MiningFarmEntity {
         entity.accountId = parseInt(json.accountId ?? entity.accountId.toString());
         entity.name = json.name ?? entity.name;
         entity.legalName = json.legalName ?? entity.legalName;
+        entity.subAccountName = json.subAccountName ?? entity.subAccountName;
         entity.rewardsFromPoolBtcWalletName = json.rewardsFromPoolBtcWalletName ?? entity.rewardsFromPoolBtcWalletName;
         entity.primaryAccountOwnerName = json.primaryAccountOwnerName ?? entity.primaryAccountOwnerName;
         entity.primaryAccountOwnerEmail = json.primaryAccountOwnerEmail ?? entity.primaryAccountOwnerEmail;

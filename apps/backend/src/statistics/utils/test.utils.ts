@@ -134,6 +134,7 @@ export const miningFarmTestEntities = [MiningFarmEntity.fromJson({
     accountId: '1',
     name: 'testFarmName', // So far changing them won't affect anything
     legalName: 'testFarmNameLtd', // So far changing them won't affect anything
+    subAccountName: 'testFarmNameLtd', // So far changing them won't affect anything
     rewardsFromPoolBtcWalletName: '', // So far changing them won't affect anything
     primaryAccountOwnerName: 'Test Testov', // So far changing them won't affect anything
     primaryAccountOwnerEmail: 'test@test.com', // So far changing them won't affect anything
@@ -160,6 +161,7 @@ MiningFarmEntity.fromJson({
     accountId: '1',
     name: 'testFarmName', // So far changing them won't affect anything
     legalName: 'testFarmNameLtd', // So far changing them won't affect anything
+    subAccountName: 'testFarmNameLtd', // So far changing them won't affect anything
     rewardsFromPoolBtcWalletName: '', // So far changing them won't affect anything
     primaryAccountOwnerName: 'Test Testov', // So far changing them won't affect anything
     primaryAccountOwnerEmail: 'test@test.com', // So far changing them won't affect anything

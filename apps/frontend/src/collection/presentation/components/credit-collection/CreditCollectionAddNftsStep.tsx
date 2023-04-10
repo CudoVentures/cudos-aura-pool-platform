@@ -44,7 +44,7 @@ function CreditCollectionAddNftsStep({ alertStore, creditCollectionStore }: Prop
                 <ColumnLayout>
                     <StyledContainer containerPadding = { ContainerPadding.PADDING_24 } >
                         <div className={'H3 Bold ColorNeutral100'}>NFT Preview</div>
-                        <div className={'H3 ColorNeutral060'}>This is how your NFT would look like in AuraPool’s Marketplace</div>
+                        <div className={'H3 ColorNeutral060'}>This is how your NFT would look like in CUDOS Markets’ Marketplace</div>
                         { selectedNftEntity !== null && (
                             <StyledContainer
                                 className = { 'NftPreviewCnt' }

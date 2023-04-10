@@ -35,6 +35,10 @@ export class MiningFarmJsonValidator {
 
     @IsString()
     @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
+        subAccountName: string;
+
+    @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         rewardsFromPoolBtcWalletName: string;
 
     @IsString()
