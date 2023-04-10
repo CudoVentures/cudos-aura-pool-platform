@@ -233,7 +233,7 @@ export default class AccountSessionStore {
                 }
             }
 
-            console.log('Logged as user => wallet:', this.walletStore.isConnected())
+            // console.log('Logged as user => wallet:', this.walletStore.isConnected())
         } else if (accountEntity?.isAdmin() === true && adminEntity !== null) {
             await this.walletStore.tryConnect();
 
@@ -246,7 +246,7 @@ export default class AccountSessionStore {
 
             await this.loadAdminMiningFarmApproval();
 
-            console.log('Logged as admin => wallet:', this.walletStore.isConnected())
+            // console.log('Logged as admin => wallet:', this.walletStore.isConnected())
         } else if (accountEntity?.isSuperAdmin() === true && superAdminEntity !== null) {
             await this.walletStore.tryConnect();
 
@@ -257,7 +257,7 @@ export default class AccountSessionStore {
                 // }
             }
 
-            console.log('Logged as super => wallet:', this.walletStore.isConnected())
+            // console.log('Logged as super => wallet:', this.walletStore.isConnected())
         }
 
         await this.kycStore.fetchKyc();

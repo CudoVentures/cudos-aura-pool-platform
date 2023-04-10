@@ -13,6 +13,7 @@ export default class EmailService {
 
     appPublicUrl: string;
     emailFrom: string;
+    serviceEmail: string;
     transport: any;
 
     constructor(
@@ -22,6 +23,7 @@ export default class EmailService {
     ) {
         this.appPublicUrl = this.configService.get < string >('APP_PUBLIC_URL') ?? '';
         this.emailFrom = this.configService.get < string >('APP_EMAIL_FROM') ?? '';
+        this.serviceEmail = this.configService.get < string >('APP_SERVICE_EMAIL') ?? '';
 
         if (this.generalService.isProduction() === true) {
             sgMail.setApiKey(this.configService.get < string >('APP_SENDGRID_API_KEY') ?? '');
@@ -65,6 +67,21 @@ export default class EmailService {
                 to: accountEntity.email,
                 subject: 'Forgotten password',
                 html: emailTemplateEntity.build(),
+            };
+
+            await this.sendEmail(verificationEmail);
+        } catch (ex) {
+            console.error(ex);
+        }
+    }
+
+    async sendCryptoCompareApiWarningEmail(xRateLimitRemainingString: string): Promise < void > {
+        try {
+            const verificationEmail = {
+                from: this.emailFrom,
+                to: this.serviceEmail,
+                subject: 'Check CryptoCompare Api',
+                text: `CryptoCompare Api - remaining ratelimit: ${xRateLimitRemainingString}`,
             };
 
             await this.sendEmail(verificationEmail);
