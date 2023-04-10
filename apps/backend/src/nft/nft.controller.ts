@@ -41,7 +41,7 @@ export class NFTController {
     @Post()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(4, 1)
+    @Throttle(40, 1)
     async fetchByFilter(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqNftsByFilter: ReqNftsByFilter,
