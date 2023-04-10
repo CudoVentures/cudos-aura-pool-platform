@@ -30,6 +30,8 @@ export default class CreditCollectionPageStore {
     miningFarmEntity: MiningFarmEntity;
     nftEntities: NftEntity[];
 
+    searchTimeout: any;
+
     constructor(nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, walletStore: WalletStore, alertStore: AlertStore, accountSessionStore: AccountSessionStore) {
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
@@ -45,6 +47,8 @@ export default class CreditCollectionPageStore {
         this.collectionDetailsEntity = null;
         this.miningFarmEntity = null;
         this.nftEntities = null;
+
+        this.searchTimeout = null;
 
         makeAutoObservable(this);
     }
@@ -131,4 +135,12 @@ export default class CreditCollectionPageStore {
             || this.isOwner()
             || this.isShowable();
     }
+
+    onChangeSearchWord = action((searchWord: string) => {
+        this.nftFilterModel.searchString = searchWord;
+
+        clearTimeout(this.searchTimeout);
+
+        this.searchTimeout = setTimeout(() => this.fetchNfts(), 500);
+    })
 }

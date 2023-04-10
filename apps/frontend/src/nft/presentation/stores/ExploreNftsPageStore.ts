@@ -17,6 +17,7 @@ export default class ExploreNftsPageStore {
 
     nftEntities: NftEntity[];
     collectionEntitiesMap: Map < string, CollectionEntity >;
+    searchTimeout: any;
 
     constructor(nftRepo: NftRepo, collectionRepo: CollectionRepo) {
         this.nftRepo = nftRepo;
@@ -28,6 +29,7 @@ export default class ExploreNftsPageStore {
         this.nftEntities = null;
         this.collectionEntitiesMap = null;
 
+        this.searchTimeout = null;
         makeAutoObservable(this);
     }
 
@@ -65,7 +67,8 @@ export default class ExploreNftsPageStore {
 
     onChangeSearchWord = async (value) => {
         this.nftFilterModel.searchString = value;
-        await this.fetch();
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => this.fetch(), 500);
     }
 
 }

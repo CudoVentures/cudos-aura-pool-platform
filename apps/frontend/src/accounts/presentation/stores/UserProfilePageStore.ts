@@ -55,6 +55,8 @@ export default class UserProfilePageStore {
     purchasesTableState: TableState;
     purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel;
 
+    searchTimeout: any;
+
     constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, statisticsRepo: StatisticsRepo) {
         this.walletStore = walletStore;
         this.nftRepo = nftRepo;
@@ -89,6 +91,8 @@ export default class UserProfilePageStore {
         this.purchaseTransactionEntities = null;
         this.purchasesTableState = new TableState(0, [], this.fetchPurchases, 10);
         this.purchaseTransactionsFilterModel = new PurchaseTransactionsFilterModel();
+
+        this.searchTimeout = null;
     }
 
     async init() {
@@ -235,6 +239,8 @@ export default class UserProfilePageStore {
 
     onChangeSearchWord = async (value) => {
         this.nftFilterModel.searchString = value;
-        await this.fetchMyNfts();
+
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => this.fetchMyNfts(), 500);
     }
 }
