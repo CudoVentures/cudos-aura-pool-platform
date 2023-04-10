@@ -2,6 +2,11 @@
     width: 100%;
 }
 
+.StepMiningFarmPreview .TermsAgreeRow span a {
+    color: var(--color-primary-060);
+    text-decoration: underline;
+}
+
 .StepMiningFarmPreview .MiningFarmName {
     margin-bottom: 16px;
 }

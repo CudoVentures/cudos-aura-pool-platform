@@ -15,6 +15,7 @@ import ColumnLayout from '../../../../core/presentation/components/ColumnLayout'
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import '../../styles/step-review.css';
+import { PRIVACY_POLICY } from '../../../../core/utilities/Links';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -58,7 +59,7 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
                     ] } />
                 <div className={'TermsAgreeRow'}>
                     <Checkbox
-                        label={'I agree to allow CUDOS Markets to store and process the personal information submitted above to provide me the service requested.'}
+                        label={<span>I agree to allow CUDOS Markets to store and process the personal information submitted above to provide me the service requested according to the <a href={PRIVACY_POLICY}>privacy policy</a>.</span>}
                         value={acceptedTerms}
                         onChange={setAcceptedTerms}
                     />
