@@ -55,7 +55,7 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
                     ] } />
                 <div className={'TermsAgreeRow'}>
                     <Checkbox
-                        label={'I agree to allow Aura Pool to store and process the personal information submitted above to provide me the service requested.'}
+                        label={'I agree to allow CUDOS Markets to store and process the personal information submitted above to provide me the service requested.'}
                         value={acceptedTerms}
                         onChange={setAcceptedTerms}
                     />

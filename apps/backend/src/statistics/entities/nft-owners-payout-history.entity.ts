@@ -36,7 +36,7 @@ export class NftOwnersPayoutHistoryEntity {
     // }
 
     static toRepo(entity: NftOwnersPayoutHistoryEntity): NftOwnersPayoutHistoryRepo {
-        throw Error('Aura pool platfor must not write to this table');
+        throw Error('CUDOS Markets platform must not write to this table');
         // if (entity === null) {
         //     return null;
         // }

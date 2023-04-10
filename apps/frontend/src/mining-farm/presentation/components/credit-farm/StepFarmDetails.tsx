@@ -301,7 +301,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         onChange={action((string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string })} /> */}
                     <Input
                         label = {
-                            <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on Aura Pool.'} />
+                            <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on CUDOS Markets.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.leftoverRewardsBtcAddress}

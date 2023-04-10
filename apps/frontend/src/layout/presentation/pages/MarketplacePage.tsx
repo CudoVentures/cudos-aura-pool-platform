@@ -225,7 +225,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     <div className = { 'SectionWrapper SectionHashRateDrops' } >
                         <div className = { 'HashRateDropsInfo FlexColumn' } >
                             <div className = { 'H2 ExtraBold' } >New Hash Rate NFT Drops</div>
-                            <div className = { 'B1' } >Powered by AuraPool Protocol</div>
+                            <div className = { 'B1' } >Powered by CUDOS Markets Protocol</div>
                             <Actions className = { 'HashRateDropsInfoActions' } layout = { ActionsLayout.LAYOUT_COLUMN_FULL } >
                                 <Button
                                     border = { ButtonBorder.NO_BORDER }
@@ -363,7 +363,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                                 <div className={'TimeNumberBox FlexRow'}>{presaleTimesLeft.presaleSecondsleft}</div>
                                             </div>
                                         </RowLayout>
-                                        <div className={'B2 ColorNeutral050'}>Once the Public Sale starts the Aura Pool Platform will be open for everyone. This will allow whitelisted users to list their minted NFTs for sale.</div>
+                                        <div className={'B2 ColorNeutral050'}>Once the Public Sale starts the CUDOS Markets Platform will be open for everyone. This will allow whitelisted users to list their minted NFTs for sale.</div>
                                     </ColumnLayout>
                                 </StyledContainer>
                             </ColumnLayout>

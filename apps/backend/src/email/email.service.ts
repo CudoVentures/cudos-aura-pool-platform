@@ -39,7 +39,7 @@ export default class EmailService {
         try {
             const jwtToken = JwtToken.newInstance(accountEntity);
             const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('1d'));
-            const emailTemplateEntity = new EmailTemplateEntity(`Hello ${accountEntity.name}! Welcome to Aura Pool. Please verify your email.`, 'Verify', `${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`);
+            const emailTemplateEntity = new EmailTemplateEntity(`Hello ${accountEntity.name}! Welcome to CUDOS Markets. Please verify your email.`, 'Verify', `${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`);
 
             const verificationEmail = {
                 from: this.emailFrom,

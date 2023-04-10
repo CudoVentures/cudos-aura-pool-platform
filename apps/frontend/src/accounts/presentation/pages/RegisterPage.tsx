@@ -265,7 +265,7 @@ function RegisterPage({ walletStore, accountSessionStore, walletSelectModalStore
                 ) }
                 actions = { (
                     <Checkbox
-                        label = { 'I agree to allow Aura Pool to store and process the personal information submitted above to provide me the service requested.' }
+                        label = { 'I agree to allow CUDOS Markets to store and process the personal information submitted above to provide me the service requested.' }
                         value = { personalInfo }
                         onChange = { setPersonalInfo } />
                 ) }

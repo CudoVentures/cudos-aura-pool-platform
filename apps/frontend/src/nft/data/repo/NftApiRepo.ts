@@ -11,7 +11,7 @@ import BigNumber from 'bignumber.js';
 import { coin } from 'cudosjs/build/proto-signing';
 import NftSessionStorage from '../data-sources/NftSessionStorage';
 import Web3 from 'web3';
-import contractABI from '../../../ethereum/contracts/CudosAuraPool.sol/CudosAuraPool.json';
+import contractABI from '../../../ethereum/contracts/CudosMarkets.sol/CudosMarkets.json';
 import MintMemo from '../../entities/MintMemo';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
 import { Coin } from 'cudosjs/build/stargate/modules/marketplace/proto-types/coin';

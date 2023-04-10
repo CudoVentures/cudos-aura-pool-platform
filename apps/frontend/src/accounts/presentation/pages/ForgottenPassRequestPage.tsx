@@ -66,7 +66,7 @@ function ForgottenPassRequestPage({ alertStore, accountSessionStore }: Props) {
         return (
             <AuthBlockLayout
                 title = { 'Restore Password' }
-                subtitle = { 'Enter your email, then check your inbox for email from AuraPool. We’ll send you a link to restore your password.' }
+                subtitle = { 'Enter your email, then check your inbox for email from CUDOS Markets. We’ll send you a link to restore your password.' }
                 content = { (
                     <Input
                         label={'Email'}

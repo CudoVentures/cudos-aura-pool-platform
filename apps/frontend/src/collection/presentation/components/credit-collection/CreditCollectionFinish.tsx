@@ -46,13 +46,13 @@ function CreditCollectionFinish({ creditCollectionStore, creditCollectionSuccess
                 <ul>
                     {creditCollectionStore.isCreateMode() === true
                         ? <>
-                            <li>Review the collection and hash rate  information before sending it for approval to Aura Pool.</li>
+                            <li>Review the collection and hash rate  information before sending it for approval to CUDOS Markets.</li>
                             <li>Once your collection is reviewed and approved you'll receive a notification on your email address.</li>
-                            <li>Once Aura Pool verifies and approves this NFT will go on sale immediately.</li>
+                            <li>Once CUDOS Markets verifies and approves this NFT will go on sale immediately.</li>
                         </>
                         : <>
                             <li>Once your NFTs are reviewed and approved you'll receive a notification on your email address. </li>
-                            <li>Once Aura Pool verifies and approves this NFT will go on sale immediately. </li>
+                            <li>Once CUDOS Markets verifies and approves this NFT will go on sale immediately. </li>
                         </>}
                 </ul>
             </StyledContainer>

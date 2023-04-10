@@ -69,7 +69,7 @@ export class CollectionController {
     @Post('fetchTopCollections')
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(1, 1)
+    @Throttle(10, 1)
     async fetchTopCollections(
         @Req() req: AppRequest,
         @Body(new ValidationPipe({ transform: true })) reqFetchTopCollections: ReqFetchTopCollections,

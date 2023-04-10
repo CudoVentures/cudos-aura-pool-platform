@@ -229,7 +229,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                     <StyledContainer className={'FlexColumn'} containerPadding={ContainerPadding.PADDING_24}>
                         <div className={'B1 SemiBold'}>
                             { earningsPerDayFilterEntity.isPlatform() === true
-                                ? 'Aura Maintenance Fee'
+                                ? 'CUDOS Markets Maintenance Fee'
                                 : (
                                     <>
                                     Maintenance Fee collected { earningsPerDayFilterEntity.isCollection() === true ? ' by Collection' : ' by Farm' }

@@ -13,7 +13,7 @@ import Svg from '../../../core/presentation/components/Svg';
 import Actions from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
 
-import SvgAuraPoolLogo from '../../../public/assets/vectors/aura-pool-logo.svg';
+import SvgAuraPoolLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
 import '../styles/page-super-admin-header.css'
 
 type Props = {

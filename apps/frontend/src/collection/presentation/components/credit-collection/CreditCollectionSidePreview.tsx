@@ -37,7 +37,7 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
     return (
         <div className={'CreditCollectionSidePreview FlexColumn'}>
             <div className={'H3 Bold CreditCollectionSidePreviewTitle'}>Collection Preview</div>
-            <div className={'B1 CreditCollectionSidePreviewSubtitle'}>This is how your collection details view would look like in AuraPool</div>
+            <div className={'B1 CreditCollectionSidePreviewSubtitle'}>This is how your collection details view would look like in CUDOS Markets</div>
             <StyledContainer
                 className = { 'PreviewBorderContainer FlexColumn' }
                 containerPadding = { ContainerPadding.PADDING_24 } >

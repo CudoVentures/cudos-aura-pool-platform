@@ -223,7 +223,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
                     <div className = { 'ModalWalletSubtitle' } >
                         Select your preferred wallet to connect with.<br />
-                        By connecting your wallet you are agreeing to Aura Pool’s <Link to = { AppRoutes.TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
+                        By connecting your wallet you are agreeing to CUDOS Markets’ <Link to = { AppRoutes.TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
                     </div>
 
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError')}` } onClick = { onClickToggleKeplr } >

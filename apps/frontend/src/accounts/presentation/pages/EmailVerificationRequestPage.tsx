@@ -46,7 +46,7 @@ function EmailVerificationRequestPage({ alertStore, accountSessionStore }: Props
             <div className = { 'PageContent AppContent' } >
 
                 <AuthBlockLayout
-                    confirmationTitle = { 'Please verify your email for AuraPool!' }
+                    confirmationTitle = { 'Please verify your email for CUDOS Markets!' }
                     confirmationTitleSvg = { MailOutlineIcon }
                     subtitle = { 'In order to create farm and collections you need to verify your email address.' }
                     content = { (
