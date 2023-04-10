@@ -26,7 +26,6 @@ function EditUserBtcModal({ snackStore, editUserBtcModalStore }: Props) {
 
         try {
             await editUserBtcModalStore.creditBitcoinPayoutAddress();
-            await editUserBtcModalStore.editSessionUser();
             editUserBtcModalStore.onFinish();
             editUserBtcModalStore.hide();
             snackStore.showSuccess('Btc address was udpated');

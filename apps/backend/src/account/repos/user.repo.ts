@@ -37,10 +37,6 @@ export default class UserRepo extends Model {
         cudosWalletAddress: string;
 
     @AllowNull(false)
-    @Column({ type: DataType.STRING, defaultValue: '' })
-        bitcoinPayoutWalletAddress: string;
-
-    @AllowNull(false)
     @Column({ type: DataType.STRING })
         profileImgUrl: string;
 
