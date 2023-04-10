@@ -78,14 +78,16 @@ export default class CryptoCompareService {
         return floorPriceInAcudos ?? BIG_NUMBER_0;
     }
 
-    private async fetchCudosData(): Promise < CudosDataEntity > {
+    // private but cannot use annotation, because of the tests
+    async fetchCudosData(): Promise < CudosDataEntity > {
         this.loggerService.info(`Making request for cudos to crypto-compare using paid api: ${this.cryptoComparePaidApiKey === this.cryptoCompareApiKey}`);
         const axiosRes = await this.httpService.axiosRef.get(CryptoCompareService.cryptoCompareCudosApiUrl, this.getCryptoCompareRequestHeader());
         this.invalidateCryptoCompareApiKey(axiosRes);
         return new CudosDataEntity(axiosRes.data.RAW.CUDOS.USD.PRICE, new BigNumber(axiosRes.data.RAW.CUDOS.ETH.PRICE), axiosRes.data.RAW.CUDOS.USD.CHANGE24HOUR);
     }
 
-    private async fetchBitcoinData(): Promise < BitcoinDataEntity > {
+    // private but cannot use annotation, because of the tests
+    async fetchBitcoinData(): Promise < BitcoinDataEntity > {
         this.loggerService.info(`Making request for bitcoin to crypto-compare using paid api: ${this.cryptoComparePaidApiKey === this.cryptoCompareApiKey}`);
         const axiosRes = await this.httpService.axiosRef.get(CryptoCompareService.cryptoCompareBitcoinApiUrl, this.getCryptoCompareRequestHeader());
         this.invalidateCryptoCompareApiKey(axiosRes);
