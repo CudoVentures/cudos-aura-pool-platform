@@ -45,7 +45,7 @@ export default class AccountApiRepo implements AccountRepo {
                     this.showAlert?.('Wrong nonce signature');
                     break;
                 case BackendErrorType.ACCOUNT_LOCKED:
-                    this.showAlert?.('You have reached the limit for unsuccessful login attempts. An email have been sent to your inbox from which you will be able to unlock you accountss');
+                    this.showAlert?.('You have reached the limit for unsuccessful login attempts. An email have been sent to your inbox from which you will be able to unlock you account.');
                     break;
                 default:
             }
