@@ -61,7 +61,7 @@ export class GeneralController {
         const generalEntity = await this.generalService.fetchGeneral(req.transaction);
         const res = new ResFetchLastCheckedPaymenrRelayerBlocks(
             generalEntity.lastCheckedPaymentRelayerEthBlock === 1 ? parseInt(this.configService.get('APP_ETH_RELAYER_ETH_BLOCK_START')) : generalEntity.lastCheckedPaymentRelayerEthBlock,
-            generalEntity.lastCheckedPaymentRelayerCudosBlock === 1 ? parseInt(this.configService.get('APP_CUDOS_INIT_BLOCK')) : generalEntity.lastCheckedPaymentRelayerCudosBlock,
+            generalEntity.lastCheckedPaymentRelayerCudosBlock === 1 ? parseInt(this.configService.get('APP_ETH_RELAYER_CUDOS_BLOCK_START')) : generalEntity.lastCheckedPaymentRelayerCudosBlock,
         );
 
         return res;

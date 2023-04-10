@@ -91,7 +91,8 @@ export class NFTService {
         }
 
         if (nftFilterEntity.inOnlyForSessionAccount() === true) {
-            whereClause.current_owner = userEntity.cudosWalletAddress;
+            // if this function was called without user but with SessionAccount filter then then current_owner to some imaginary value in order to make an emtpy result
+            whereClause.current_owner = userEntity?.cudosWalletAddress ?? '0x';
         }
 
         if (nftFilterEntity.hasSearchString() === true) {
@@ -149,7 +150,7 @@ export class NFTService {
 
     async getRandomPresaleNft(paidAmountAcudos: BigNumber, dbTx: Transaction, dbLock: LOCK = undefined): Promise <NftEntity> {
         // check if paid price is within epsilon of expected
-        const { cudosUsdPrice } = await this.cryptoCompareService.fetchCudosData();
+        const { cudosUsdPrice } = await this.cryptoCompareService.getCachedCudosData();
         const paidAmountCudos = paidAmountAcudos.shiftedBy(-CURRENCY_DECIMALS);
         const paidAmountUsd = paidAmountCudos.multipliedBy(cudosUsdPrice);
 
@@ -231,7 +232,7 @@ export class NFTService {
             throw new NotFoundException();
         }
 
-        const { cudosUsdPrice } = await this.cryptoCompareService.fetchCudosData();
+        const { cudosUsdPrice } = await this.cryptoCompareService.getCachedCudosData();
         const cudosPrice = (new BigNumber(nftEntity.priceUsd)).dividedBy(cudosUsdPrice);
         const acudosPrice = cudosPrice.shiftedBy(CURRENCY_DECIMALS)
 

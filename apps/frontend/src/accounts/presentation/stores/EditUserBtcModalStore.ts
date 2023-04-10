@@ -34,17 +34,11 @@ export default class EditUserBtcModalStore extends ModalStore {
 
     @action
     async showSignal(userEntity: UserEntity, onFinish: () => void) {
-        runInAction(() => {
-            if (recipient !== userEntity.bitcoinPayoutWalletAddress) {
-                userEntity.bitcoinPayoutWalletAddress = '' // in order to force user to enter the BTC address
-            }
+        this.userEntity = userEntity;
+        this.bitcoinPayoutWalletAddress = userEntity.bitcoinPayoutWalletAddress;
+        this.onFinish = onFinish;
 
-            this.userEntity = userEntity;
-            this.bitcoinPayoutWalletAddress = userEntity.bitcoinPayoutWalletAddress;
-            this.onFinish = onFinish;
-
-            this.show();
-        });
+        this.show();
     }
 
     @action
@@ -86,15 +80,11 @@ export default class EditUserBtcModalStore extends ModalStore {
 
         try {
             await this.cudosRepo.creditBitcoinPayoutAddress(client, walletAddress, this.bitcoinPayoutWalletAddress);
+            this.userEntity.bitcoinPayoutWalletAddress = this.bitcoinPayoutWalletAddress;
         } catch (ex) {
             this.alertStore.show('Unable to update BTC payout address');
             throw Error('Unable to confirm bitcoin address');
         }
     }
 
-    @action
-    async editSessionUser() {
-        this.userEntity.bitcoinPayoutWalletAddress = this.bitcoinPayoutWalletAddress;
-        await this.accountRepo.editSessionUser(this.userEntity);
-    }
 }

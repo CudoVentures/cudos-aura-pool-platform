@@ -216,7 +216,7 @@ export class CollectionService {
         return CollectionEntity.fromRepo(collectionRepo);
     }
 
-    async findOneByDenomId(denomId: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise<CollectionEntity> {
+    async findFirstByDenomId(denomId: string, dbTx: Transaction, dbLock: LOCK = undefined): Promise<CollectionEntity> {
         const collectionRepo = await this.collectionRepo.findOne({
             where: {
                 [CollectionRepoColumn.DENOM_ID]: denomId,
@@ -291,9 +291,10 @@ export class CollectionService {
         return CollectionEntity.fromRepo(collection);
     }
 
-    async updateOneByDenomId(denomId: string, collectionEntity: CollectionEntity, dbTx: Transaction): Promise < CollectionEntity > {
+    async updateOneByIdAndDenomId(denomId: string, collectionEntity: CollectionEntity, dbTx: Transaction): Promise < CollectionEntity > {
         const [count, [collectionRepo]] = await this.collectionRepo.update(CollectionEntity.toRepo(collectionEntity).toJSON(), {
             where: {
+                [CollectionRepoColumn.ID]: collectionEntity.id,
                 [CollectionRepoColumn.DENOM_ID]: denomId,
             },
             returning: true,

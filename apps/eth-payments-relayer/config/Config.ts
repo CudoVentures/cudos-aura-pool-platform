@@ -20,8 +20,6 @@ const config = {
     EXPECTED_PRICE_EPSILON_PERCENT: Number(process.env.APP_PRESALE_EXPECTED_PRICE_EPSILON),
     APP_AURA_POOL_API_KEY: process.env.App_Aura_Pool_Api_Key,
     CRYPTO_COMPARE_API_KEY: process.env.App_Crypto_Compare_Api_Key,
-    CUDOS_BLOCK_START: Number(process.env.App_Eth_Relayer_Cudos_Block_start),
-    ETH_BLOCK_START: Number(process.env.App_Eth_Relayer_ETH_Block_start),
 
     async getCudosSignerAddress() {
         if (CUDOS_SIGNER_ADDRESS === null) {

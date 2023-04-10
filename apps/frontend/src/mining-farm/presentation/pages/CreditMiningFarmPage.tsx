@@ -112,7 +112,7 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
 
     function onClickMintPresaleNfts() {
         alertStore.show(`You are about to mint ALL presale NFTs and its collection with name ${CudosCollectionData.name}`, () => {
-            nftPresaleStore.createPresaleCollection(creditMiningFarmPageStore.miningFarmEntity.id, creditMiningFarmPageStore.approvedCollectionEntities);
+            nftPresaleStore.createPresaleCollection(creditMiningFarmPageStore.miningFarmEntity.id, creditMiningFarmPageStore.approvedCollectionEntities.concat(creditMiningFarmPageStore.queuedCollectionEntities));
         }, () => {});
     }
 

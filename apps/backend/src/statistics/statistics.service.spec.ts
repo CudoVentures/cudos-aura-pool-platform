@@ -296,7 +296,6 @@ describe('StatisticsService', () => {
             userId: '1',
             accountId: '1',
             cudosWalletAddress: 'testowner',
-            bitcoinPayoutWalletAddress: 'payoutaddress',
             profileImgUrl: 'someuri',
             coverImgUrl: 'someuri',
         });
@@ -365,7 +364,6 @@ describe('StatisticsService', () => {
             userId: '1',
             accountId: '1',
             cudosWalletAddress: 'testowner',
-            bitcoinPayoutWalletAddress: 'payoutaddress',
             profileImgUrl: 'someuri',
             coverImgUrl: 'someuri',
         });

@@ -50,6 +50,14 @@ export class CollectionEntity {
         return this.status === CollectionStatus.APPROVED;
     }
 
+    isQueued(): boolean {
+        return this.status === CollectionStatus.QUEUED;
+    }
+
+    isRejected(): boolean {
+        return this.status === CollectionStatus.REJECTED;
+    }
+
     markAsQueued() {
         this.status = CollectionStatus.QUEUED;
     }

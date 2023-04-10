@@ -1,4 +1,5 @@
 import S from '../../core/utilities/Main';
+import ProjectUtils from '../../core/utilities/ProjectUtils';
 
 export default class BitcoinDataEntity {
 
@@ -17,7 +18,7 @@ export default class BitcoinDataEntity {
     }
 
     shouldUpdate(): boolean {
-        return this.timestampLastUpdate + 15 * 60 * 1000 < Date.now();
+        return this.timestampLastUpdate + ProjectUtils.FIVE_MINUTES_IN_MILIS < Date.now();
     }
 
     static toJson(entity: BitcoinDataEntity): any {

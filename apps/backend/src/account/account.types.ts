@@ -55,10 +55,6 @@ export class UserJsonValidator {
 
     @IsString()
     @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
-        bitcoinPayoutWalletAddress: string;
-
-    @IsString()
-    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         profileImgUrl: string;
 
     @IsString()
