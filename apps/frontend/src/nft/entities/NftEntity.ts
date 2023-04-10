@@ -90,7 +90,11 @@ export default class NftEntity {
     }
 
     isStatusListed(): boolean {
-        return (this.isMinted() && this.priceInAcudos.gt(new BigNumber(0))) || (this.isMinted() === false && this.priceUsd !== NOT_EXISTS_INT);
+        return (this.isMinted() && this.hasMarketplaceId() && this.priceInAcudos.gt(new BigNumber(0))) || (this.isMinted() === false && this.priceUsd !== NOT_EXISTS_INT);
+    }
+
+    hasMarketplaceId(): boolean {
+        return this.marketplaceNftId !== '';
     }
 
     isStatusNotListed(): boolean {

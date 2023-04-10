@@ -7,7 +7,7 @@ import ViewNftPageStore from '../stores/ViewNftPageStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import BuyNftModalStore from '../stores/BuyNftModalStore';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
-import ResellNftModalStore from '../stores/ResellNftModalStore';
+import ResellNftModalStore, { ModalType } from '../stores/ResellNftModalStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftEntity from '../../entities/NftEntity';
 import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
@@ -138,7 +138,11 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
     }
 
     function onClickResellNft() {
-        resellNftModalStore.showSignal(nftEntity, viewNftPageStore.cudosPrice, collectionEntity);
+        resellNftModalStore.showSignal(ModalType.RESELL, nftEntity, viewNftPageStore.cudosPrice, collectionEntity, miningFarmEntity);
+    }
+
+    function onClickEditListing() {
+        resellNftModalStore.showSignal(ModalType.EDIT_RESELL, nftEntity, viewNftPageStore.cudosPrice, collectionEntity, miningFarmEntity);
     }
 
     function getGeneralDataPreviews() {
@@ -288,7 +292,11 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                                     ) }
                                                 </>
                                             ) }
-
+                                            { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (
+                                                <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                                                    <Button onClick={onClickEditListing}>Edit Listing</Button>
+                                                </Actions>
+                                            )}
                                         </>
                                     ) }
                                 </DataPreviewLayout>

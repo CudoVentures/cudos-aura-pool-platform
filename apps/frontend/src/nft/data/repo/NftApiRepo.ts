@@ -17,6 +17,7 @@ import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintData
 import { Coin } from 'cudosjs/build/stargate/modules/marketplace/proto-types/coin';
 import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
+import { runInAction } from 'mobx';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -59,7 +60,7 @@ export default class NftApiRepo implements NftRepo {
             nftFilterModel.collectionStatus = [status];
         }
 
-        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
+        const { nftEntities } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
     }
 
@@ -67,7 +68,7 @@ export default class NftApiRepo implements NftRepo {
         try {
             this.disableActions?.();
             const sessionStoragePurchaseTransactionEntities = [];
-            this.nftSessionStorage.getPurchaseTxsMap().forEach((value, key) => {
+            this.nftSessionStorage.getPurchaseTxsMap().forEach((value) => {
                 sessionStoragePurchaseTransactionEntities.push(value);
             })
 
@@ -94,7 +95,7 @@ export default class NftApiRepo implements NftRepo {
         nftFilterModel.from = 0;
         nftFilterModel.count = 10;
 
-        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
+        const { nftEntities } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
     }
 
@@ -106,7 +107,7 @@ export default class NftApiRepo implements NftRepo {
         nftFilterModel.from = 0;
         nftFilterModel.count = 10;
 
-        const { nftEntities, total } = await this.fetchNftsByFilter(nftFilterModel);
+        const { nftEntities } = await this.fetchNftsByFilter(nftFilterModel);
         return nftEntities;
     }
 
@@ -223,10 +224,68 @@ export default class NftApiRepo implements NftRepo {
             this.disableActions?.();
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
-            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(priceInCudos.shiftedBy(CURRENCY_DECIMALS).toFixed(0), 'acudos'), gasPrice);
+
+            const priceInAcudos = priceInCudos.shiftedBy(CURRENCY_DECIMALS);
+            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(priceInAcudos.toFixed(0), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;
 
-            nftEntity.priceInAcudos = priceInCudos;
+            const parsedRawLog = JSON.parse(tx.rawLog);
+            const id = parsedRawLog[0]?.events[1]?.attributes?.find((a: any) => a.key === 'nft_id');
+
+            runInAction(() => {
+                nftEntity.marketplaceNftId = id?.value ?? '';
+                nftEntity.priceInAcudos = priceInAcudos;
+            })
+            this.nftSessionStorage.updateNftsMap([nftEntity]);
+            return txHash;
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async editNftListing(nftEntity: NftEntity, priceInCudos: BigNumber, ledger: Ledger): Promise< string > {
+        try {
+            this.disableActions?.();
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
+
+            if (nftEntity.marketplaceNftId === '') {
+                throw Error('NFT is not listed for sale yet. Please list it first.');
+            }
+
+            const priceInAcudos = priceInCudos.shiftedBy(CURRENCY_DECIMALS);
+
+            const tx = await signingClient.marketplaceUpdatePrice(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), coin(priceInAcudos.toFixed(0), 'acudos'), gasPrice);
+            const txHash = tx.transactionHash;
+
+            runInAction(() => {
+                nftEntity.priceInAcudos = priceInAcudos;
+            });
+
+            this.nftSessionStorage.updateNftsMap([nftEntity]);
+            return txHash;
+        } finally {
+            this.enableActions?.();
+        }
+    }
+
+    async cancelNftListing(nftEntity: NftEntity, ledger: Ledger): Promise< string > {
+        try {
+            this.disableActions?.();
+            const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner);
+            const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
+
+            if (nftEntity.marketplaceNftId === '') {
+                throw Error('NFT is not listed for sale yet. Please list it first.');
+            }
+
+            const tx = await signingClient.marketplaceRemoveNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
+            const txHash = tx.transactionHash;
+
+            runInAction(() => {
+                nftEntity.marketplaceNftId = '';
+                nftEntity.priceInAcudos = new BigNumber(0);
+            });
             this.nftSessionStorage.updateNftsMap([nftEntity]);
             return txHash;
         } finally {

@@ -25,7 +25,9 @@ export default interface NftRepo {
     fetchPresaleAmounts(nftFilterModel: NftFilterModel): Promise < { totalPresaleNftCount: number, presaleMintedNftCount } >;
     buyNft(nftEntity: NftEntity, ledger: Ledger): Promise < string >;
     buyPresaleNft(currency: BuyingCurrency, amount: BigNumber, ledger: Ledger): Promise < string >;
-    listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, price: BigNumber, ledger: Ledger): Promise < string >;
+    listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, priceInCudos: BigNumber, ledger: Ledger): Promise < string >;
+    editNftListing(nftEntity: NftEntity, priceInCudos: BigNumber, ledger: Ledger): Promise < string >;
+    cancelNftListing(nftEntity: NftEntity, ledger: Ledger): Promise < string >;
     mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger, cudosPriceInUsd: number): Promise < string >;
     fetchPurchaseTransactions(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel): Promise < { purchaseTransactionEntities: PurchaseTransactionEntity[], total: number } >;
     clearPurchaseTransactionsSessionStorage(): void;

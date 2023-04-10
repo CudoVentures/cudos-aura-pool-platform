@@ -346,6 +346,11 @@ function UiKitPage({ appStore, alertStore, exampleModalStore }: Props) {
                             Button rounded color 4 48 padding
                         </Button>
                         <Button
+                            color = { ButtonColor.SCHEME_RED_BORDER }
+                            padding = { ButtonPadding.PADDING_48 } >
+                            Button rounded color_RED_BORDER 48 padding
+                        </Button>
+                        <Button
                             color = { ButtonColor.SCHEME_GREEN }
                             padding = { ButtonPadding.PADDING_24 }
                             radius = { ButtonRadius.MAX }>
