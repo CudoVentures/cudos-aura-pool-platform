@@ -73,11 +73,12 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore }: Props
 
                 { creditMiningFarmDetailsPageStore.miningFarmEntity !== null && (
                     <>
-                        {creditMiningFarmDetailsPageStore.miningFarmEntity.isNew() === false && (<Breadcrumbs crumbs={
-                            [
+                        {creditMiningFarmDetailsPageStore.miningFarmEntity.isNew() === false && (
+                            <Breadcrumbs crumbs={[
                                 createBreadcrumb('Farm Profile', onClickCreditMiningFarm),
                                 createBreadcrumb('Farm Details'),
-                            ] } />)}
+                            ] } />
+                        )}
 
                         {/* <StyledContainer className={'FormContainer FlexColumn'} containerWidth = { ContainerWidth.MEDIUM } > */}
                         <div className = { 'FormContainer' } >

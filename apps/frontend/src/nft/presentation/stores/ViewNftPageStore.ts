@@ -21,7 +21,7 @@ import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
 import AdminEntity from '../../../accounts/entities/AdminEntity';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
-import ProjectUtils, { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import PresaleStore from '../../../app-routes/presentation/PresaleStore';
 import { formatBtc } from '../../../core/utilities/NumberFormatter';
 

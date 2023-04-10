@@ -20,6 +20,7 @@ module.exports = {
     async down(queryInterface, Sequelize) {
         const transaction = await queryInterface.sequelize.transaction();
         try {
+            await queryInterface.sequelize.query('UPDATE farms SET legal_name = sub_account_name', { transaction });
             await queryInterface.removeColumn('farms', 'sub_account_name', { transaction });
             await queryInterface.renameColumn('farms', 'legal_name', 'sub_account_name', { transaction });
 
