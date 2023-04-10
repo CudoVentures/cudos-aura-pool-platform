@@ -18,6 +18,8 @@ export default class ExploreCollectionsPageStore {
     collectionEntities: CollectionEntity[];
     miningFarmEntitiesMap: Map < string, MiningFarmEntity >;
 
+    searchTimeout: any;
+
     constructor(collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
         this.collectionRepo = collectionRepo;
         this.miningFarmRepo = miningFarmRepo;
@@ -27,6 +29,8 @@ export default class ExploreCollectionsPageStore {
 
         this.collectionEntities = null;
         this.miningFarmEntitiesMap = new Map();
+
+        this.searchTimeout = null;
 
         makeAutoObservable(this);
     }
@@ -68,7 +72,8 @@ export default class ExploreCollectionsPageStore {
 
     onChangeSearchWord = async (value) => {
         this.collectionFilterModel.searchString = value;
-        await this.fetch();
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => this.fetch(), 500);
     }
 
 }

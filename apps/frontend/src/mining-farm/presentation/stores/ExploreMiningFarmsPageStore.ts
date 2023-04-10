@@ -16,6 +16,7 @@ export default class ExploreMiningFarmsPageStore {
     miningFarmEntities: MiningFarmEntity[];
     miningFarmDetailsEntities: MiningFarmDetailsEntity[];
 
+    searchTimeout: any;
     constructor(miningFarmRepo: MiningFarmRepo) {
         this.miningFarmRepo = miningFarmRepo;
 
@@ -26,6 +27,7 @@ export default class ExploreMiningFarmsPageStore {
         this.miningFarmEntities = [];
         this.miningFarmDetailsEntities = [];
 
+        this.searchTimeout = null;
         makeAutoObservable(this);
     }
 
@@ -54,7 +56,8 @@ export default class ExploreMiningFarmsPageStore {
 
     onChangeSearchWord = async (value) => {
         this.miningFarmFilterModel.searchString = value;
-        await this.fetch();
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => this.fetch(), 500);
     }
 
 }

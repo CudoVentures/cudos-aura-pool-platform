@@ -30,10 +30,13 @@ import DataPreviewLayout, { createDataPreview } from '../../../core/presentation
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CollectionStatusBadge from '../components/CollectionStatusBadge';
+import SearchIcon from '@mui/icons-material/Search';
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import '../styles/page-credit-collection.css';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
+import Input, { InputType } from '../../../core/presentation/components/Input';
+import { InputAdornment } from '@mui/material';
 
 type Props = {
     walletStore?: WalletStore
@@ -205,7 +208,24 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             </Actions>
                         )}
                     </div>
-                    <DataGridLayout className={'NftsCnt'} >
+                    <DataGridLayout 
+                        className={'NftsCnt'} 
+                        headerLeft = { (
+                            <>
+                                <Input
+                                    inputType={InputType.TEXT}
+                                    className={'SearchBar'}
+                                    value = {creditCollectionPageStore.nftFilterModel.searchString}
+                                    onChange = { creditCollectionPageStore.onChangeSearchWord }
+                                    placeholder = {'Search for NFT...'}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start" >
+                                            <Svg svg={SearchIcon} />
+                                        </InputAdornment>,
+                                    }} />
+                            </>
+                        ) } >
+                        >
 
                         {nftEntities === null && (
                             <LoadingIndicator />

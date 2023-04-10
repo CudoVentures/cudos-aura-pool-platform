@@ -37,6 +37,8 @@ export default class CreditMiningFarmPageStore {
     approvedCollectionEntities: CollectionEntity[];
     collectionDetailsMap: Map<string, CollectionDetailsEntity>;
 
+    searchTimeout: any;
+
     constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, nftRepo: NftRepo, accountSessionStore: AccountSessionStore, alertStore: AlertStore, walletStore: WalletStore) {
         this.miningFarmRepo = miningFarmRepo;
         this.collectionRepo = collectionRepo;
@@ -57,6 +59,8 @@ export default class CreditMiningFarmPageStore {
         this.queuedCollectionEntities = null;
         this.approvedCollectionEntities = null;
         this.collectionDetailsMap = new Map<string, CollectionDetailsEntity>();
+
+        this.searchTimeout = null;
 
         makeAutoObservable(this);
     }
@@ -197,7 +201,8 @@ export default class CreditMiningFarmPageStore {
 
     onChangeSearchWord = action((searchString: string) => {
         this.collectionFilterModel.searchString = searchString;
-        this.fetchAnyCollections();
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => this.fetchAnyCollections(), 500);
     })
 
     async onClickApproveCollection(collectionEntity: CollectionEntity, ev) {
