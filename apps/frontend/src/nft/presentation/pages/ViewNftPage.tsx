@@ -243,7 +243,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                     } } />
                             </div>
                             <div className={'H2 Bold'}>Description</div>
-                            <div className={'Description B1'}>{collectionEntity.description}</div>
+                            <div className={'Description B1'}>{collectionEntity.getFormattedDescription()}</div>
                             <NftStats viewNftPageStore = {viewNftPageStore}/>
                         </div>
 

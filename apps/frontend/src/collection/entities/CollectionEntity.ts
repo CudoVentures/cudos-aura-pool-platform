@@ -64,6 +64,10 @@ export default class CollectionEntity {
         }
     }
 
+    getFormattedDescription(): string {
+        return this.description.replace(new RegExp('\n', 'g'), '</br>')
+    }
+
     hasDefaultValuesPerNft(): boolean {
         return this.defaultPricePerNftInUsd !== S.NOT_EXISTS && this.defaultHashPowerPerNftInTh !== S.NOT_EXISTS;
     }

@@ -24,7 +24,6 @@ type Props = {
 
 function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageStore }: Props) {
     const [acceptedTerms, setAcceptedTerms] = useState(S.INT_FALSE);
-
     const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
 
     return (
@@ -33,7 +32,9 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
                 { header }
                 <StyledContainer containerPadding = { ContainerPadding.PADDING_24 }>
                     <div className={'B1 Bold MiningFarmName ColorNeutral100'}>{miningFarmEntity.name}</div>
-                    <div className={'B3 Bold ColorNeutral060'}>{miningFarmEntity.description}</div>
+                    <div className={'B3 Bold ColorNeutral060'}
+                        dangerouslySetInnerHTML = {{ __html: miningFarmEntity.getFormattedDescription() as string }} />
+
                 </StyledContainer>
                 <DataPreviewLayout
                     dataPreviews = { [

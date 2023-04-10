@@ -39,7 +39,7 @@ function RejectedCollections({ rejectedCollectionsStore, viewCollectionModalStor
                         {collectionEntity.name}
                     </div>
                 )),
-                createTableCellString(collectionEntity.description),
+                createTableCellString(collectionEntity.getFormattedDescription()),
                 createTableCellString(collectionDetailsEntity?.formatFloorPriceInCudos() ?? ''),
             ]);
         });

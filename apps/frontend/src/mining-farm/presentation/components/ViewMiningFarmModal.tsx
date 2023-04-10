@@ -106,7 +106,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                     <DataPreviewLayout
                         dataPreviews = { [
                             createDataPreview('Farm Name', miningFarmEntity.name),
-                            createDataPreview('Description', miningFarmEntity.description),
+                            createDataPreview('Description', miningFarmEntity.getFormattedDescription()),
                             createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
                             createDataPreview('Primary Account Owner Full Name', miningFarmEntity.primaryAccountOwnerName),
                             createDataPreview('Primary Account Owner Email', miningFarmEntity.primaryAccountOwnerEmail),

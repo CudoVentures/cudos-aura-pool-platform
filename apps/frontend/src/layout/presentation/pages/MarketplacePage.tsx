@@ -310,7 +310,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                         <ColumnLayout className={'PresaleInfoColumn'} gap={24}>
                             <div className={'Primary60 B2 SemiBold'}>PRESALE COLLECTION</div>
                             <div className={'ColorNeutral100 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
-                            <div className={'ColorNeutral100 CollectionDescription'}>{presaleCollectionEntity?.description ?? ''}</div>
+                            <div className={'ColorNeutral100 CollectionDescription'}>{presaleCollectionEntity?.getFormattedDescription() ?? ''}</div>
                             <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
                                 <StyledContainer
                                     className={'PhaseInfoContainer'}

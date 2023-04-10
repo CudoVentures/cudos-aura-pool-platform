@@ -76,6 +76,10 @@ export default class MiningFarmEntity {
         return entity;
     }
 
+    getFormattedDescription(): string {
+        return this.description.replace(new RegExp('\n', 'g'), '</br>')
+    }
+
     isCudosMintNftRoyaltiesPercentSet(): boolean {
         return this.cudosMintNftRoyaltiesPercent !== S.NOT_EXISTS;
     }

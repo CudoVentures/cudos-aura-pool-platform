@@ -147,7 +147,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
                             <div className={'Clickable'} onClick={onClickFarmLink}>Collection Owner:  <b className={'ColorPrimary060'}>{miningFarmEntity.name}</b></div>
-                            <div className={'CollectionDescription'}>{collectionEntity.description}</div>
+                            <div className={'CollectionDescription'}>{collectionEntity.getFormattedDescription()}</div>
                         </div>
                         {collectionDetailsEntity !== null && (
                             <DataPreviewLayout dataPreviews={[

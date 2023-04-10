@@ -331,7 +331,7 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
                                 <MiningFarmStatusBadge className = { 'MiningFarmStatusBadge' } miningFarmEntity = { miningFarmEntity } />
                             </div>
                             <div className={'MiningFarmDataCnt Grid GridColumns2'}>
-                                <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
+                                <div className={'FarmDescription'}>{miningFarmEntity.getFormattedDescription()}</div>
                                 { miningFarmDetailsEntity !== null && (
                                     <DataPreviewLayout
                                         dataPreviews = { [

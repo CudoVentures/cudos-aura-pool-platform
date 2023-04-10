@@ -32,7 +32,7 @@ function ViewCollectionModal({ cudosStore, viewCollectionModalStore }: Props) {
                     <DataPreviewLayout
                         dataPreviews = { [
                             createDataPreview('Collection Name', collectionEntity.name),
-                            createDataPreview('Description', collectionEntity.description),
+                            createDataPreview('Description', collectionEntity.getFormattedDescription()),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
                             createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInPercentage()),
                         ] } />

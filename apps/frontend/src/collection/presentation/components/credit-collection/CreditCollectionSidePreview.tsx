@@ -54,7 +54,7 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
                     </div>
                 </div>
                 <div className={'H3 ExtraBold ColorNeutral100 CollectionPreviewName'}>{collectionEntity.name || 'No Name'}</div>
-                <div className={'B1 ColorNeutral060 CollectionPreviewDesc'}>{collectionEntity.description || 'No Description'}</div>
+                <div className={'B1 ColorNeutral060 CollectionPreviewDesc'}>{collectionEntity.getFormattedDescription() || 'No Description'}</div>
                 {size === CreditCollectionSidePreviewSize.FULL && (<DataPreviewLayout dataPreviews={createDataPreviews()}/>)}
             </StyledContainer>
         </div>

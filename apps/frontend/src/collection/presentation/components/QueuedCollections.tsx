@@ -65,7 +65,7 @@ function QueuedCollections({ queuedCollectionsStore, viewCollectionModalStore, d
                         { collectionEntity.name }
                     </div>
                 )),
-                createTableCellString(collectionEntity.description),
+                createTableCellString(collectionEntity.getFormattedDescription()),
                 createTableCellString(collectionDetailsEntity?.formatFloorPriceInCudos() ?? ''),
                 createTableCell((
                     <Actions height = { ActionsHeight.HEIGHT_32 }>
