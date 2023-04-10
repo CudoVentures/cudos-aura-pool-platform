@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AccountController } from './account.controller';
 import AccountService from './account.service';
@@ -9,7 +8,7 @@ import SuperAdminRepo from './repos/super-admin.repo';
 import UserRepo from './repos/user.repo';
 import { DataModule } from '../data/data.module';
 import { EmailModule } from '../email/email.module';
-import { jwtConstants } from '../auth/auth.types';
+import { JwtCudoModule } from '../jwt/jwt.module';
 
 @Module({
     imports: [
@@ -19,10 +18,7 @@ import { jwtConstants } from '../auth/auth.types';
             AdminRepo,
             SuperAdminRepo,
         ]),
-        JwtModule.register({
-            secret: jwtConstants.secret,
-            signOptions: { expiresIn: '20m' },
-        }),
+        JwtCudoModule,
         DataModule,
         EmailModule,
     ],

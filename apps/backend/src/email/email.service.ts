@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import nodemailer from 'nodemailer';
 import AccountEntity from '../account/entities/account.entity';
-import JwtToken from '../auth/entities/jwt-token.entity';
 import { EmailTemplateEntity } from './entities/email-template.entity';
 import sgMail from '@sendgrid/mail';
 import GeneralService from '../general/general.service';
+import JwtCudoService from '../jwt/jwt.service';
 
 @Injectable()
 export default class EmailService {
@@ -19,7 +18,7 @@ export default class EmailService {
 
     constructor(
         private configService: ConfigService,
-        private jwtService: JwtService,
+        private jwtService: JwtCudoService,
         private generalService: GeneralService,
     ) {
         this.lockedAccountEmailSentTimestamps = new Map();
@@ -49,8 +48,7 @@ export default class EmailService {
         }
 
         try {
-            const jwtToken = JwtToken.newInstance(accountEntity);
-            const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('30m'));
+            const verificationToken = this.jwtService.fromAccount(accountEntity, '30m');
             const emailTemplateEntity = new EmailTemplateEntity(
                 `Hello ${accountEntity.name}! There have been multiple unsuccessful login attempts in Aura Pool with your email. If this was you, please proceed to unlock your account. If this was not an action performed by you, please contact us.`,
                 'Unlock account',
@@ -74,8 +72,7 @@ export default class EmailService {
 
     async sendVerificationEmail(accountEntity: AccountEntity): Promise < void > {
         try {
-            const jwtToken = JwtToken.newInstance(accountEntity);
-            const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('1d'));
+            const verificationToken = this.jwtService.fromAccount(accountEntity, '1d');
             const emailTemplateEntity = new EmailTemplateEntity(`Hello ${accountEntity.name}! Welcome to CUDOS Markets. Please verify your email.`, 'Verify', `${this.appPublicUrl}/api/v1/accounts/verifyEmail/${verificationToken}`);
 
             const verificationEmail = {
@@ -93,8 +90,8 @@ export default class EmailService {
 
     async sendForgottenPasswordEmail(accountEntity: AccountEntity): Promise < void > {
         try {
-            const jwtToken = JwtToken.newInstance(accountEntity);
-            const verificationToken = this.jwtService.sign(JwtToken.toJson(jwtToken), JwtToken.getConfig('1d'));
+            const verificationToken = this.jwtService.fromAccount(accountEntity, '1d');
+
             const emailTemplateEntity = new EmailTemplateEntity('You have requested a password change. Please follow the link below.', 'Reset password', `${this.appPublicUrl}/forgotten-pass-edit/${verificationToken}`);
 
             const verificationEmail = {

@@ -1,7 +1,6 @@
 import AccountEntity from '../../account/entities/account.entity';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { pbkdf2Sync } from 'node:crypto';
-import { jwtConstants } from '../auth.types';
 
 export default class JwtToken {
 
@@ -42,12 +41,4 @@ export default class JwtToken {
 
         return entity;
     }
-
-    static getConfig(expiresIn = '20m') {
-        return {
-            secret: jwtConstants.secret,
-            expiresIn,
-        }
-    }
-
 }
