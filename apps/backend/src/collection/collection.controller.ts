@@ -53,7 +53,7 @@ export class CollectionController {
 
     @Post()
     @UseInterceptors(TransactionInterceptor)
-    @Throttle(4, 1)
+    @Throttle(40, 1)
     @HttpCode(200)
     async findAll(
         @Req() req: AppRequest,

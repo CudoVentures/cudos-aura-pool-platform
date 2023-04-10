@@ -23,7 +23,7 @@ export enum ContainerPadding {
 export enum ContainerBorder {
     NEUTRAL_20 = 'BorderNeutral20',
     PRIMARY_60 = 'BorderPrimary60',
-    GRADIENT = 'gradientBorder'
+    GRADIENT = 'BorderGradient'
 }
 
 export type Props = {

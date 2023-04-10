@@ -14,7 +14,7 @@ type Props = {
 
 export default function PictureGallery({ picture, onClickPrevious, onClickNext }: Props) {
     return (
-        <div className={'PictureGallery FlexRow'} style={ProjectUtils.makeBgImgStyle(picture)}>
+        <div className={'PictureGallery FlexRow ImgContainNode'} style={ProjectUtils.makeBgImgStyle(picture)}>
             <Svg svg={ArrowBackIcon} onClick={onClickPrevious} className={'PreviousButton Clickable'} />
             <Svg svg={ArrowForwardIcon} onClick={onClickNext} className={'NextButton Clickable'} />
         </div>

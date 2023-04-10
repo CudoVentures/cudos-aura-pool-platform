@@ -306,7 +306,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     </div>
                 </>)}
                 {nftPresaleStore.isPresaleOver() === false && (
-                    <RowLayout className={'PresaleContainer MarketplaceHero'} numColumns={2} gap={100}>
+                    <RowLayout className={'PresaleContainer'} numColumns={2} gap={100}>
                         <ColumnLayout className={'PresaleInfoColumn'} gap={24}>
                             <div className={'Primary60 B2 SemiBold'}>PRESALE COLLECTION</div>
                             <div className={'ColorNeutral100 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
@@ -317,25 +317,25 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                     containerPadding={ContainerPadding.PADDING_16}
                                     containerBorder={ContainerBorder.GRADIENT}>
                                     <ColumnLayout className={'PhaseInfoColumn'} gap={32}>
-                                        <RowLayout className={'PhaseHeader Flex SpaceBetween'} numColumns={2} gap={0}>
+                                        <RowLayout className={'PhaseHeader'} numColumns={2} gap={0}>
                                             <div className={'PhaseName B3 SemiBold'}>Presale Phase</div>
-                                            <div className={'FlexRow PhaseEta B2 SemiBold RespectWidth'}>
+                                            <div className={'FlexRow PhaseEta B2 SemiBold'}>
                                                 <div className={'ColorNeutral050'}>Ends in:</div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleDaysLeft}
-                                                    <span className='ReducedFontSize'>DAYS</span>
+                                                    <span>DAYS</span>
                                                 </div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleHoursLeft}
-                                                    <span className='ReducedFontSize'>HRS</span>
+                                                    <span>HRS</span>
                                                 </div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleMinutesLeft}
-                                                    <span className='ReducedFontSize'>MINS</span>
+                                                    <span>MINS</span>
                                                 </div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleSecondsleft}
-                                                    <span className='ReducedFontSize'>SECS</span>
+                                                    <span>SECS</span>
                                                 </div>
                                             </div>
                                         </RowLayout>
@@ -365,25 +365,25 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                     className={'PhaseInfoContainer'}
                                     containerPadding={ContainerPadding.PADDING_16} >
                                     <ColumnLayout className={'PhaseInfoColumn'}>
-                                        <RowLayout className={'PhaseHeader Flex SpaceBetween'} numColumns={2} gap={0}>
+                                        <RowLayout className={'PhaseHeader'} numColumns={2} gap={0}>
                                             <div className={'PhaseName B3 SemiBold'}>Public Sale</div>
-                                            <div className={'B2 SemiBold PhaseEta FlexRow RespectWidth'}>
+                                            <div className={'B2 SemiBold PhaseEta FlexRow'}>
                                                 <div className={'ColorNeutral050'}>Starts in:</div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleDaysLeft}
-                                                    <span className='ReducedFontSize'>DAYS</span>
+                                                    <span>DAYS</span>
                                                 </div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleHoursLeft}
-                                                    <span className='ReducedFontSize'>HRS</span>
+                                                    <span>HRS</span>
                                                 </div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleMinutesLeft}
-                                                    <span className='ReducedFontSize'>MINS</span>
+                                                    <span>MINS</span>
                                                 </div>
-                                                <div className={'TimeNumberBox FlexRow Column'}>
+                                                <div className={'TimeNumberBox FlexColumn'}>
                                                     {presaleTimesLeft.presaleSecondsleft}
-                                                    <span className='ReducedFontSize'>SECS</span>
+                                                    <span>SECS</span>
                                                 </div>
                                             </div>
                                         </RowLayout>
