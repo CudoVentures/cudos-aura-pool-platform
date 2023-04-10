@@ -31,13 +31,13 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
     const mintRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
     const resaleRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
-    const farmLegalNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
-    const farmLegalNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
+    const farmBtcWalletNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const farmBtcWalletNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
+    const farmBtcWalletNameLowercaseAndNumber = useRef(validationState.addLowercaseAndNumbersValidation('Must contains only lowercase letters and numbers')).current;
+    const farmSubAccountNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const farmSubAccountNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
+    const farmSubAccountNameLowercaseAndNumber = useRef(validationState.addLowercaseAndNumbersValidation('Must contains only lowercase letters and numbers')).current;
     const notNegativeValidation = useRef(validationState.addNotNegativeValidation('Value must be greater or equal to 0.')).current;
-    // checks if legal name has only letters and numbers
-    const regex = /\W+/;
-
-    const farmLegalNameLettersAndNumbersOnly = useRef(validationState.addValidation('Contains special characters', (input) => input.match(regex) == null)).current;
 
     const [areChangesMade, setAreChangesMade] = useState(false);
 
@@ -139,9 +139,9 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     className={'FlexRow'}
                                     value = { miningFarmEntity.rewardsFromPoolBtcWalletName }
                                     inputValidation={[
-                                        farmLegalNameValidationNoEmpty,
-                                        farmLegalNameValidationNoSpace,
-                                        farmLegalNameLettersAndNumbersOnly,
+                                        farmBtcWalletNameValidationNoEmpty,
+                                        farmBtcWalletNameValidationNoSpace,
+                                        farmBtcWalletNameLowercaseAndNumber,
                                     ]}
                                     onChange = { onChangeRewardsFromPoolBtcWalletName }
                                 />,
@@ -156,8 +156,9 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     className={'FlexRow'}
                                     value = { miningFarmEntity.subAccountName }
                                     inputValidation={[
-                                        farmLegalNameValidationNoEmpty,
-                                        farmLegalNameLettersAndNumbersOnly,
+                                        farmSubAccountNameValidationNoEmpty,
+                                        farmSubAccountNameValidationNoSpace,
+                                        farmSubAccountNameLowercaseAndNumber,
                                     ]}
                                     onChange = { onChangeSubAccounttName }
                                 />,
