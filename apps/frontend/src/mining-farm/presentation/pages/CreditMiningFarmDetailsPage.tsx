@@ -73,13 +73,9 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore }: Props
 
                 { creditMiningFarmDetailsPageStore.miningFarmEntity !== null && (
                     <>
-                        {creditMiningFarmDetailsPageStore.miningFarmEntity.isNew() === false ? (
+                        {creditMiningFarmDetailsPageStore.miningFarmEntity.isNew() === false && (
                             <Breadcrumbs crumbs={[
                                 createBreadcrumb('Farm Profile', onClickCreditMiningFarm),
-                                createBreadcrumb('Farm Details'),
-                            ] } />
-                        ) : (
-                            <Breadcrumbs crumbs={[
                                 createBreadcrumb('Farm Details'),
                             ] } />
                         )}
