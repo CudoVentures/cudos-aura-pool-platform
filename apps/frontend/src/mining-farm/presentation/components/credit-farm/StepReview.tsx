@@ -9,7 +9,7 @@ import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presenta
 import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
 import Checkbox from '../../../../core/presentation/components/Checkbox';
 import Svg from '../../../../core/presentation/components/Svg';
-import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
+import DataPreviewLayout, { DataRowsGap, DataRowsLayout, createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 import StyledContainer, { ContainerPadding, ContainerWidth } from '../../../../core/presentation/components/StyledContainer';
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
 
@@ -37,6 +37,8 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
 
                 </StyledContainer>
                 <DataPreviewLayout
+                    dataRowsLayout={DataRowsLayout.COLUMN}
+                    gap={DataRowsGap.GAP_25}
                     dataPreviews = { [
                         createDataPreview('Account Email', accountSessionStore?.accountEntity?.email),
                         createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
