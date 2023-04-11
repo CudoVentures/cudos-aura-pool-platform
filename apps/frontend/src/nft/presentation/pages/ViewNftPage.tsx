@@ -118,6 +118,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                 navigate(AppRoutes.USER_PROFILE);
             };
             alertStore.msg = 'You must register BTC payout adress first';
+            alertStore.negativeLabel = 'Cancel';
             alertStore.visible = true;
             return;
         }
