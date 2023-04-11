@@ -14,6 +14,11 @@ export enum DataRowsSize {
     LARGE = 'SizeLarge',
 }
 
+export enum DataRowsLayout {
+    COLUMN = 'LayoutColumn',
+    ROW = 'LayoutRow',
+}
+
 type DataPreview = {
     key: string; /* do not set it to React.ReactNode unless we remove it as a key from render function */
     value: React.ReactNode | string;
@@ -22,6 +27,7 @@ type DataPreview = {
 type Props = {
     className?: string;
     dataPreviews: DataPreview[];
+    dataRowsLayout: DataRowsLayout;
     gap?: DataRowsGap;
     size?: DataRowsSize;
     styledContainerProps?: StyledContainerProps;
@@ -33,7 +39,17 @@ export function createDataPreview(key: string, value: React.ReactNode | string):
     }
 }
 
-export default function DataPreviewLayout({ className, dataPreviews, gap, size, styledContainerProps, children }: React.PropsWithChildren < Props >) {
+export default function DataPreviewLayout({ className, dataPreviews, dataRowsLayout, gap, size, styledContainerProps, children }: React.PropsWithChildren < Props >) {
+
+    function getRowDataPreviewLayoutClassName(): string {
+        switch (dataRowsLayout) {
+            case DataRowsLayout.COLUMN:
+                return 'FlexColumn';
+            case DataRowsLayout.ROW:
+            default:
+                return 'FlexRow';
+        }
+    }
 
     if (styledContainerProps.containerPadding === undefined) {
         styledContainerProps.containerPadding = ContainerPadding.PADDING_24;
@@ -45,7 +61,7 @@ export default function DataPreviewLayout({ className, dataPreviews, gap, size, 
             { ...styledContainerProps } >
             { dataPreviews.map((dataPreview: DataPreview) => {
                 return (
-                    <div key = { dataPreview.key } className = { 'DataPreview FlexRow' } >
+                    <div key = { dataPreview.key } className = { `DataPreview ${getRowDataPreviewLayoutClassName()}` } >
                         <div className = { 'DataPreviewKey' } > { dataPreview.key } </div>
                         <div className = { 'DataPreviewValue Dots' } > { dataPreview.value } </div>
                     </div>
@@ -60,6 +76,7 @@ export default function DataPreviewLayout({ className, dataPreviews, gap, size, 
 DataPreviewLayout.defaultProps = {
     className: '',
     gap: DataRowsGap.GAP_10,
+    dataRowsLayout: DataRowsLayout.ROW,
     size: DataRowsSize.LARGE,
     styledContainerProps: {},
 }

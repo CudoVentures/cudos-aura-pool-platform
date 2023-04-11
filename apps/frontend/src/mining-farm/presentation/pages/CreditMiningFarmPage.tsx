@@ -45,6 +45,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-credit-mining-farm.css';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 type Props = {
     creditMiningFarmPageStore?: CreditMiningFarmPageStore,
@@ -331,7 +332,7 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
                                 <MiningFarmStatusBadge className = { 'MiningFarmStatusBadge' } miningFarmEntity = { miningFarmEntity } />
                             </div>
                             <div className={'MiningFarmDataCnt Grid GridColumns2'}>
-                                <div className={'FarmDescription'}>{miningFarmEntity.description}</div>
+                                <div className={'FarmDescription'}><NewLine text = {miningFarmEntity.description} /></div>
                                 { miningFarmDetailsEntity !== null && (
                                     <DataPreviewLayout
                                         dataPreviews = { [

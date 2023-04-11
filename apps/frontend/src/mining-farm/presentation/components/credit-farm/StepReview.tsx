@@ -9,12 +9,14 @@ import Actions, { ActionsHeight, ActionsLayout } from '../../../../core/presenta
 import Button, { ButtonPadding, ButtonType } from '../../../../core/presentation/components/Button';
 import Checkbox from '../../../../core/presentation/components/Checkbox';
 import Svg from '../../../../core/presentation/components/Svg';
-import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
+import DataPreviewLayout, { DataRowsGap, DataRowsLayout, createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 import StyledContainer, { ContainerPadding, ContainerWidth } from '../../../../core/presentation/components/StyledContainer';
 import ColumnLayout from '../../../../core/presentation/components/ColumnLayout';
+import { PRIVACY_POLICY } from '../../../../core/utilities/Links';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import '../../styles/step-review.css';
+import NewLine from '../../../../core/presentation/components/NewLine';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -24,7 +26,6 @@ type Props = {
 
 function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageStore }: Props) {
     const [acceptedTerms, setAcceptedTerms] = useState(S.INT_FALSE);
-
     const miningFarmEntity = creditMiningFarmDetailsPageStore.miningFarmEntity;
 
     return (
@@ -33,9 +34,12 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
                 { header }
                 <StyledContainer containerPadding = { ContainerPadding.PADDING_24 }>
                     <div className={'B1 Bold MiningFarmName ColorNeutral100'}>{miningFarmEntity.name}</div>
-                    <div className={'B3 Bold ColorNeutral060'}>{miningFarmEntity.description}</div>
+                    <div className={'B3 Bold ColorNeutral060'}><NewLine text = { miningFarmEntity.description }/></div>
+
                 </StyledContainer>
                 <DataPreviewLayout
+                    dataRowsLayout={DataRowsLayout.COLUMN}
+                    gap={DataRowsGap.GAP_25}
                     dataPreviews = { [
                         createDataPreview('Account Email', accountSessionStore?.accountEntity?.email),
                         createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
@@ -55,10 +59,9 @@ function StepReview({ accountSessionStore, header, creditMiningFarmDetailsPageSt
                     ] } />
                 <div className={'TermsAgreeRow'}>
                     <Checkbox
-                        label={'I agree to allow CUDOS Markets to store and process the personal information submitted above to provide me the service requested.'}
+                        label={<span>I agree to allow CUDOS Markets to store and process the personal information submitted above to provide me the service requested according to the <a href={PRIVACY_POLICY} target='_blank' rel="noreferrer" onClick = { S.stopPropagation }>privacy policy</a>.</span>}
                         value={acceptedTerms}
-                        onChange={setAcceptedTerms}
-                    />
+                        onChange={setAcceptedTerms} />
                 </div>
                 <Actions className={'ButtonRow'} layout={ActionsLayout.LAYOUT_ROW_ENDS} height={ActionsHeight.HEIGHT_48}>
                     <Button

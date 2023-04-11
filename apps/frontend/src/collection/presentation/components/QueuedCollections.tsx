@@ -15,6 +15,7 @@ import StyledLayout from '../../../core/presentation/components/StyledLayout';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../core/presentation/components/Table';
 import { ALIGN_LEFT, ALIGN_RIGHT } from '../../../core/presentation/components/TableDesktop';
 import Svg from '../../../core/presentation/components/Svg';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -65,7 +66,7 @@ function QueuedCollections({ queuedCollectionsStore, viewCollectionModalStore, d
                         { collectionEntity.name }
                     </div>
                 )),
-                createTableCellString(collectionEntity.description),
+                createTableCell(<NewLine text = { collectionEntity.description } />),
                 createTableCellString(collectionDetailsEntity?.formatFloorPriceInCudos() ?? ''),
                 createTableCell((
                     <Actions height = { ActionsHeight.HEIGHT_32 }>

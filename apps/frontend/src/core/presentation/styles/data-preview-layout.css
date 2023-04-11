@@ -1,3 +1,16 @@
+.DataPreviewLayout .DataPreview.FlexColumn {
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.DataPreviewLayout .DataPreview.FlexColumn .DataPreviewValue {
+    display: flex;
+    margin-left: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .DataPreviewLayout .DataPreviewKey {
     color: var(--color-neutral-060);
     white-space: nowrap;

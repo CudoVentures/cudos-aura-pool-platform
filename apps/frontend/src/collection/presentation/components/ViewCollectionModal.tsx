@@ -7,6 +7,7 @@ import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview, DataRowsSize } from '../../../core/presentation/components/DataPreviewLayout';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 import '../styles/view-collection-modal.css';
 
@@ -32,7 +33,7 @@ function ViewCollectionModal({ cudosStore, viewCollectionModalStore }: Props) {
                     <DataPreviewLayout
                         dataPreviews = { [
                             createDataPreview('Collection Name', collectionEntity.name),
-                            createDataPreview('Description', collectionEntity.description),
+                            createDataPreview('Description', <NewLine text = { collectionEntity.description } />),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
                             createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInPercentage()),
                         ] } />

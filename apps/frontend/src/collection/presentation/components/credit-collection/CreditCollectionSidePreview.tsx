@@ -7,6 +7,7 @@ import S from '../../../../core/utilities/Main';
 import DataPreviewLayout, { createDataPreview } from '../../../../core/presentation/components/DataPreviewLayout';
 import ProjectUtils from '../../../../core/utilities/ProjectUtils';
 import StyledContainer, { ContainerPadding } from '../../../../core/presentation/components/StyledContainer';
+import NewLine from '../../../../core/presentation/components/NewLine';
 
 export enum CreditCollectionSidePreviewSize {
     SMALL = 1,
@@ -54,7 +55,7 @@ function CreditCollectionSidePreview({ size, creditCollectionStore }: Props) {
                     </div>
                 </div>
                 <div className={'H3 ExtraBold ColorNeutral100 CollectionPreviewName'}>{collectionEntity.name || 'No Name'}</div>
-                <div className={'B1 ColorNeutral060 CollectionPreviewDesc'}>{collectionEntity.description || 'No Description'}</div>
+                <div className={'B1 ColorNeutral060 CollectionPreviewDesc'}><NewLine text = {collectionEntity.description || 'No Description'} /></div>
                 {size === CreditCollectionSidePreviewSize.FULL && (<DataPreviewLayout dataPreviews={createDataPreviews()}/>)}
             </StyledContainer>
         </div>
