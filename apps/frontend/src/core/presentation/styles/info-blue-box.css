@@ -5,3 +5,15 @@
     background-color: var(--color-primary-010);
     color: var(--color-primary-060);
 }
+
+.InfoBlueBox.Top {
+    align-items: flex-start;
+}
+
+.InfoBlueBox.Center {
+    align-items: center;
+}
+
+.InfoBlueBox.Bottom {
+    align-items: flex-end;
+}

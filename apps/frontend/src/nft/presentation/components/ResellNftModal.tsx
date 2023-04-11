@@ -1,15 +1,13 @@
 import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import S from '../../../core/utilities/Main';
 import ResellNftModalStore from '../stores/ResellNftModalStore';
 
 import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import Input, { InputType } from '../../../core/presentation/components/Input';
-import Checkbox from '../../../core/presentation/components/Checkbox';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
-import Button from '../../../core/presentation/components/Button';
+import Button, { ButtonColor } from '../../../core/presentation/components/Button';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import AnimationContainer from '../../../core/presentation/components/AnimationContainer';
 
@@ -18,17 +16,15 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import ReportIcon from '@mui/icons-material/Report';
 import '../styles/resell-nft-modal.css';
 import ValidationState from '../../../core/presentation/stores/ValidationState';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import BigNumber from 'bignumber.js';
-import InfoBlueBox from '../../../core/presentation/components/InfoBlueBox';
+import InfoBlueBox, { InfoAlignment } from '../../../core/presentation/components/InfoBlueBox';
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 
 type Props = {
-    walletStore?: WalletStore;
     resellNftModalStore?: ResellNftModalStore;
 }
 
-function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
+function ResellNftModal({ resellNftModalStore }: Props) {
     const nftEntity = resellNftModalStore.nftEntity;
     const validationState = useRef(new ValidationState()).current;
     const nftPriceValidation = useRef(validationState.addEmptyValidation('Empty price')).current;
@@ -43,6 +39,23 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
         resellNftModalStore.onClickSubmitForSell();
     }
 
+    function onClickCancelListing() {
+        resellNftModalStore.onClickCancelListing();
+    }
+
+    function onClickDeclineCancelListing() {
+        resellNftModalStore.hide();
+    }
+
+    function onClickSaveEditListing() {
+        if (validationState.getIsErrorPresent() === true) {
+            validationState.setShowErrors(true);
+            return;
+        }
+
+        resellNftModalStore.onClickSaveEditListing();
+    }
+
     return (
         <ModalWindow
             className = { 'ResellNftPopup' }
@@ -52,11 +65,11 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
             <AnimationContainer className = { 'Stage Preview FlexColumn' } active = { resellNftModalStore.isStagePreview() } >
                 { resellNftModalStore.isStagePreview() === true && nftEntity !== null && (
                     <>
-                        <div className={'H3 Bold'}>Resell NFT</div>
+                        <div className={'H3 Bold'}>{resellNftModalStore.getModelWindowName()}</div>
                         <div className={'BorderContainer FlexRow'}>
                             <div className={'NftPicture'} style={ ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
                             <div className={'NftInfo FlexColumnt'}>
-                                <div className={'CollectionName B2 SemiBold Gray'}>{resellNftModalStore.collectionEntity.name}</div>
+                                <div className={'CollectionName B2 SemiBold Gray'}>{resellNftModalStore.collectionEntity?.name}</div>
                                 <div className={'NftName H2 Bold'}>{nftEntity.name}</div>
                                 <div className={'Address FlexColumn'}>
                                     <div className={'B2 SemiBold Gray'}>Current Rewards Recipient</div>
@@ -64,20 +77,32 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                                 </div>
                             </div>
                         </div>
-                        <Input inputType={InputType.REAL}
-                            value={resellNftModalStore.priceDisplay}
-                            onChange={resellNftModalStore.setPrice}
-                            label={'Set NFT Price'}
-                            placeholder={'0'}
-                            inputValidation={[nftPriceValidation, nftPriceValidationNotZero]}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start" > $ </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <InfoBlueBox text={ `${resellNftModalStore.getResellpriceInCudosDisplay()} CUDOS based on Today’s CUDOS Price` } />
+                        {resellNftModalStore.shouldShowPriceInput() === true && (<>
+                            <Input inputType={InputType.REAL}
+                                value={resellNftModalStore.priceDisplay}
+                                onChange={resellNftModalStore.setPrice}
+                                label={'Set NFT Price'}
+                                placeholder={'0'}
+                                inputValidation={[nftPriceValidation, nftPriceValidationNotZero]}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start" > $ </InputAdornment>
+                                    ),
+                                }}
+                            />
 
+                        </>)}
+                        <InfoBlueBox alignment={InfoAlignment.TOP}>
+                            {resellNftModalStore.isTypeCancelResell() === false && (<div>
+                                <b>Resale fees</b><br/>
+                                    - {resellNftModalStore.miningFarmEntity.cudosResaleNftRoyaltiesPercent}% secondary sales fee for Cudos<br/>
+                                    - {resellNftModalStore.collectionEntity.royalties}% secondary sale farm royalty
+                            </div>)}
+                            {resellNftModalStore.isTypeCancelResell() === true && (<div>
+                                You are about to cancel your listing. Are you sure you want proceed? You&aposll be asked to sign this cancelation from your wallet.<br/><br/>
+                                <b>Note</b>: You can list your NFTs for Sale at any time.
+                            </div>)}
+                        </InfoBlueBox>
                         {/* <div className={'CheckBoxText B2 SemiBold'}>Do you want to have immediate auto pay on sale or disperse as per the original payment schedule?</div>
                     <div className={'FlexRow CheckBoxRow'}>
                         <Checkbox
@@ -89,9 +114,19 @@ function ResellNftModal({ resellNftModalStore, walletStore }: Props) {
                             value={resellNftModalStore.originalPaymentSchedule}
                             onChange={resellNftModalStore.toggleOriginalPaymentSchedule} />
                     </div> */}
-                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
+                        {resellNftModalStore.isTypeResell() === true && (<Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                             <Button onClick={onClickSubmitForSell}>Submit for sell</Button>
-                        </Actions>
+                        </Actions>)}
+                        {resellNftModalStore.isTypeEditResell() === true && (
+                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_FULL}>
+                                <Button color={ButtonColor.SCHEME_RED_BORDER} onClick={resellNftModalStore.setModalTypeCancel}>Cancel Listing</Button>
+                                <Button onClick={onClickSaveEditListing}>Save Changes</Button>
+                            </Actions>)}
+                        {resellNftModalStore.isTypeCancelResell() === true && (
+                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_FULL}>
+                                <Button color={ButtonColor.SCHEME_4} onClick={onClickDeclineCancelListing}>No</Button>
+                                <Button color={ButtonColor.SCHEME_RED_BORDER} onClick={onClickCancelListing}>Yes, cancel</Button>
+                            </Actions>)}
                     </>
                 ) }
             </AnimationContainer>

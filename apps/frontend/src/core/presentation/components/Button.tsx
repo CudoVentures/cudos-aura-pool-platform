@@ -44,6 +44,19 @@ const theme03 = createTheme({
     },
 });
 
+const theme04 = createTheme({
+    palette: {
+        primary: {
+            main: '#fff',
+            contrastText: '#EA4E4E',
+        },
+        secondary: {
+            main: '#EA4E4E',
+            contrastText: '#fff',
+        },
+    },
+});
+
 export enum ButtonType {
     ROUNDED = 'contained',
     TEXT_INLINE = 'text',
@@ -56,6 +69,7 @@ export enum ButtonColor {
     SCHEME_4,
     SCHEME_GREEN,
     SCHEME_RED,
+    SCHEME_RED_BORDER,
 }
 
 /* each member of the enum corresponds to a CSS class */
@@ -102,6 +116,7 @@ export default function Button({ className, type, color, padding, radius, border
             case ButtonColor.SCHEME_1:
             case ButtonColor.SCHEME_3:
             case ButtonColor.SCHEME_GREEN:
+            case ButtonColor.SCHEME_RED_BORDER:
             default:
                 return 'primary';
         }
@@ -115,6 +130,8 @@ export default function Button({ className, type, color, padding, radius, border
             case ButtonColor.SCHEME_GREEN:
             case ButtonColor.SCHEME_RED:
                 return theme03;
+            case ButtonColor.SCHEME_RED_BORDER:
+                return theme04;
             case ButtonColor.SCHEME_1:
             case ButtonColor.SCHEME_2:
             default:
@@ -122,21 +139,37 @@ export default function Button({ className, type, color, padding, radius, border
         }
     }
 
+    function cssBorder() {
+        if (type !== ButtonType.ROUNDED) {
+            return null;
+        }
+
+        switch (color) {
+            case ButtonColor.SCHEME_4:
+            case ButtonColor.SCHEME_RED_BORDER:
+                return { 'border': `1px solid ${muiTheme().palette[cssMuiClassColor()].contrastText}` };
+            default:
+                return null;
+        }
+    }
+
     return (
         <ThemeProvider theme={theme01} >
             <ThemeProvider theme={theme02} >
-                <ThemeProvider theme={muiTheme()} >
-                    <MuiButton
-                        disabled={disabled}
-                        className={`Button Transition ${padding} ${radius} ${border} ${className}`}
-                        onClick={onClick}
-                        variant={type}
-                        color={cssMuiClassColor()}
-                        href={href}
-                        target={target}
-                        style = { color !== ButtonColor.SCHEME_4 || type !== ButtonType.ROUNDED ? null : { 'border': `1px solid ${theme02.palette.secondary.contrastText}` } } >
-                        <div className={'ButtonContent FlexRow'} > {children} </div>
-                    </MuiButton>
+                <ThemeProvider theme={theme03} >
+                    <ThemeProvider theme={muiTheme()} >
+                        <MuiButton
+                            disabled={disabled}
+                            className={`Button Transition ${padding} ${radius} ${border} ${className}`}
+                            onClick={onClick}
+                            variant={type}
+                            color={cssMuiClassColor()}
+                            href={href}
+                            target={target}
+                            style = { cssBorder() } >
+                            <div className={'ButtonContent FlexRow'} > {children} </div>
+                        </MuiButton>
+                    </ThemeProvider>
                 </ThemeProvider>
             </ThemeProvider>
         </ThemeProvider>

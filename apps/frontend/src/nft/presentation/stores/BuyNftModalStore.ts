@@ -58,16 +58,6 @@ export default class BuyNftModalStore extends ModalStore {
         this.txHash = S.Strings.EMPTY;
     }
 
-    @action
-    nullateValues() {
-        this.nftEntity = null;
-        this.collectionEntity = null;
-        this.cudosPrice = null;
-        this.recipient = null;
-        this.modalStage = null;
-        this.txHash = null;
-    }
-
     async showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
         const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
         this.cudosStore.init();
@@ -86,7 +76,7 @@ export default class BuyNftModalStore extends ModalStore {
     }
 
     hide = action(() => {
-        this.nullateValues();
+        this.resetValues();
         super.hide();
     })
 
