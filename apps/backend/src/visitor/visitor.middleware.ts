@@ -18,6 +18,7 @@ export class VisitorMiddleware implements NestMiddleware {
                 secure: true,
                 httpOnly: true,
                 signed: appCookiesSecret !== undefined,
+                sameSite: true,
             });
         }
 
