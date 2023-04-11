@@ -6,6 +6,7 @@ import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionFilterModel from '../../utilities/CollectionFilterModel';
 import CollectionRepo from '../repos/CollectionRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import TimeoutHelper from '../../../core/helpers/TimeoutHelper';
 
 export default class ExploreCollectionsPageStore {
 
@@ -18,7 +19,7 @@ export default class ExploreCollectionsPageStore {
     collectionEntities: CollectionEntity[];
     miningFarmEntitiesMap: Map < string, MiningFarmEntity >;
 
-    searchTimeout: any;
+    searchTimeoutHelper: TimeoutHelper;
 
     constructor(collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo) {
         this.collectionRepo = collectionRepo;
@@ -30,7 +31,7 @@ export default class ExploreCollectionsPageStore {
         this.collectionEntities = null;
         this.miningFarmEntitiesMap = new Map();
 
-        this.searchTimeout = null;
+        this.searchTimeoutHelper = new TimeoutHelper();
 
         makeAutoObservable(this);
     }
@@ -72,8 +73,7 @@ export default class ExploreCollectionsPageStore {
 
     onChangeSearchWord = async (value) => {
         this.collectionFilterModel.searchString = value;
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => this.fetch(), 500);
+        this.searchTimeoutHelper.signal(this.fetch);
     }
 
 }

@@ -16,7 +16,7 @@ import DefaultIntervalPickerState from '../../../analytics/presentation/stores/D
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import PurchaseTransactionEntity from '../../../nft/entities/PurchaseTransactionEntity';
 import PurchaseTransactionsFilterModel from '../../../nft/entities/PurchaseTransactionsFilterModel';
-import AccountRepo from '../repos/AccountRepo';
+import TimeoutHelper from '../../../core/helpers/TimeoutHelper';
 
 export enum ProfilePages {
     NFTS = 1,
@@ -55,7 +55,7 @@ export default class UserProfilePageStore {
     purchasesTableState: TableState;
     purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel;
 
-    searchTimeout: any;
+    searchTimeoutHelper: TimeoutHelper;
 
     constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, statisticsRepo: StatisticsRepo) {
         this.walletStore = walletStore;
@@ -92,7 +92,7 @@ export default class UserProfilePageStore {
         this.purchasesTableState = new TableState(0, [], this.fetchPurchases, 10);
         this.purchaseTransactionsFilterModel = new PurchaseTransactionsFilterModel();
 
-        this.searchTimeout = null;
+        this.searchTimeoutHelper = new TimeoutHelper();
     }
 
     async init() {
@@ -239,8 +239,6 @@ export default class UserProfilePageStore {
 
     onChangeSearchWord = async (value) => {
         this.nftFilterModel.searchString = value;
-
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => this.fetchMyNfts(), 500);
+        this.searchTimeoutHelper.signal(this.fetchMyNfts);
     }
 }

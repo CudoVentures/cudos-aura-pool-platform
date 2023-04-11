@@ -14,6 +14,7 @@ import CollectionDetailsEntity from '../../../collection/entities/CollectionDeta
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import TimeoutHelper from '../../../core/helpers/TimeoutHelper';
 
 export default class CreditMiningFarmPageStore {
 
@@ -37,7 +38,7 @@ export default class CreditMiningFarmPageStore {
     approvedCollectionEntities: CollectionEntity[];
     collectionDetailsMap: Map<string, CollectionDetailsEntity>;
 
-    searchTimeout: any;
+    searchTimeoutHelper: TimeoutHelper;
 
     constructor(miningFarmRepo: MiningFarmRepo, collectionRepo: CollectionRepo, nftRepo: NftRepo, accountSessionStore: AccountSessionStore, alertStore: AlertStore, walletStore: WalletStore) {
         this.miningFarmRepo = miningFarmRepo;
@@ -60,7 +61,7 @@ export default class CreditMiningFarmPageStore {
         this.approvedCollectionEntities = null;
         this.collectionDetailsMap = new Map<string, CollectionDetailsEntity>();
 
-        this.searchTimeout = null;
+        this.searchTimeoutHelper = new TimeoutHelper();
 
         makeAutoObservable(this);
     }
@@ -201,8 +202,7 @@ export default class CreditMiningFarmPageStore {
 
     onChangeSearchWord = action((searchString: string) => {
         this.collectionFilterModel.searchString = searchString;
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => this.fetchAnyCollections(), 500);
+        this.searchTimeoutHelper.signal(this.fetchAnyCollections);
     })
 
     async onClickApproveCollection(collectionEntity: CollectionEntity, ev) {

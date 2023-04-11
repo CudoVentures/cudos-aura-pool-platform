@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import CollectionEntity from '../../entities/CollectionEntity';
 import CollectionRepo from '../repos/CollectionRepo';
 import MiningFarmEntity from '../../../mining-farm/entities/MiningFarmEntity';
@@ -12,6 +12,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import TimeoutHelper from '../../../core/helpers/TimeoutHelper';
 
 export default class CreditCollectionPageStore {
 
@@ -30,7 +31,7 @@ export default class CreditCollectionPageStore {
     miningFarmEntity: MiningFarmEntity;
     nftEntities: NftEntity[];
 
-    searchTimeout: any;
+    searchTimeoutHelper: TimeoutHelper;
 
     constructor(nftRepo: NftRepo, collectionRepo: CollectionRepo, miningFarmRepo: MiningFarmRepo, walletStore: WalletStore, alertStore: AlertStore, accountSessionStore: AccountSessionStore) {
         this.nftRepo = nftRepo;
@@ -48,7 +49,7 @@ export default class CreditCollectionPageStore {
         this.miningFarmEntity = null;
         this.nftEntities = null;
 
-        this.searchTimeout = null;
+        this.searchTimeoutHelper = new TimeoutHelper();
 
         makeAutoObservable(this);
     }
@@ -138,9 +139,6 @@ export default class CreditCollectionPageStore {
 
     onChangeSearchWord = action((searchWord: string) => {
         this.nftFilterModel.searchString = searchWord;
-
-        clearTimeout(this.searchTimeout);
-
-        this.searchTimeout = setTimeout(() => this.fetchNfts(), 500);
+        this.searchTimeoutHelper.signal(this.fetchNfts);
     })
 }
