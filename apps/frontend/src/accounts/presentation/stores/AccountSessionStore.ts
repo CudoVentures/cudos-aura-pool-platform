@@ -147,12 +147,12 @@ export default class AccountSessionStore {
         return this.shouldChangePassword === S.INT_TRUE;
     }
 
-    shouldUserRegisterBtcAddress(): boolean {
+    async shouldUserRegisterBtcAddress(): Promise<boolean> {
         if (this.isUser() === false) {
             return false;
         }
 
-        return this.userEntity.hasBitcoinPayoutWalletAddress() === false;
+        return await this.hasBitcoinPayoutWalletAddress() === false;
     }
 
     async loginWithCredentials(username: string, password: string) {
@@ -220,10 +220,21 @@ export default class AccountSessionStore {
         });
     }
 
+    async hasBitcoinPayoutWalletAddress(): Promise < boolean > {
+        const btcAddress = await this.fetchUserBitcoinPayoutWalletAddress();
+
+        return btcAddress !== '';
+    }
+
+    async fetchUserBitcoinPayoutWalletAddress(): Promise < string > {
+        return this.cudosRepo.fetchBitcoinPayoutAddress(this.userEntity.cudosWalletAddress);
+    }
+
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity, shouldChangePassword } = await this.accountRepo.fetchSessionAccounts();
 
         if (accountEntity?.isUser() === true && userEntity !== null) {
+
             await this.walletStore.tryConnect();
 
             if (this.walletStore.isConnected() === true) {
@@ -282,10 +293,4 @@ export default class AccountSessionStore {
     isInited(): boolean {
         return this.inited;
     }
-
-    async fetchBtcPayoutAddress() {
-        const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
-        this.userEntity.bitcoinPayoutWalletAddress = recipient;
-    }
-
 }

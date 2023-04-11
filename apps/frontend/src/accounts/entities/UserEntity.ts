@@ -6,7 +6,6 @@ export default class UserEntity {
     userId: string;
     accountId: string;
     cudosWalletAddress: string;
-    bitcoinPayoutWalletAddress: string; // this variable is not stored in the backend
     profileImgUrl: string;
     coverImgUrl: string;
 
@@ -14,7 +13,6 @@ export default class UserEntity {
         this.userId = S.Strings.NOT_EXISTS;
         this.accountId = S.Strings.NOT_EXISTS;
         this.cudosWalletAddress = '';
-        this.bitcoinPayoutWalletAddress = '';
         this.profileImgUrl = '/assets/profile/profile.png';
         this.coverImgUrl = '/assets/profile/cover.png';
 
@@ -31,10 +29,6 @@ export default class UserEntity {
 
     copy(source: UserEntity) {
         Object.assign(this, source)
-    }
-
-    hasBitcoinPayoutWalletAddress(): boolean {
-        return this.bitcoinPayoutWalletAddress !== '';
     }
 
     static toJson(entity: UserEntity): any {

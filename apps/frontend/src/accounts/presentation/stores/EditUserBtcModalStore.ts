@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import CudosRepo from '../../../cudos-data/presentation/repos/CudosRepo';
@@ -15,8 +15,9 @@ export default class EditUserBtcModalStore extends ModalStore {
     walletStore: WalletStore;
 
     @observable userEntity: UserEntity;
-    @observable bitcoinPayoutWalletAddress: string;
-    @observable onFinish: () => void;
+    bitcoinPayoutWalletAddress: string;
+    @observable displaybitcoinPayoutWalletAddress: string;
+    @observable onFinish: (btcPayoutAddress: string) => void;
 
     constructor(accountRepo: AccountRepo, cudosRepo: CudosRepo, alertStore: AlertStore, walletStore: WalletStore) {
         super();
@@ -28,38 +29,41 @@ export default class EditUserBtcModalStore extends ModalStore {
 
         this.userEntity = null;
         this.bitcoinPayoutWalletAddress = '';
+        this.displaybitcoinPayoutWalletAddress = '';
 
         makeObservable(this);
     }
 
     @action
-    async showSignal(userEntity: UserEntity, onFinish: () => void) {
+    async showSignal(userEntity: UserEntity, bitcoinPayoutAddress: string, onFinish: (btcPayoutAddress: string) => void) {
         this.userEntity = userEntity;
-        this.bitcoinPayoutWalletAddress = userEntity.bitcoinPayoutWalletAddress;
+        this.bitcoinPayoutWalletAddress = bitcoinPayoutAddress
+        this.displaybitcoinPayoutWalletAddress = bitcoinPayoutAddress
         this.onFinish = onFinish;
 
         this.show();
     }
 
     @action
-    showSignalWithDefaultCallback(userEntity: UserEntity) {
+    showSignalWithDefaultCallback(userEntity: UserEntity, bitcoinPayoutAddress: string) {
         const clonedUserEntity = userEntity.clone();
-        this.showSignal(clonedUserEntity, action(() => {
+        this.showSignal(clonedUserEntity, bitcoinPayoutAddress, action(() => {
             userEntity.copy(clonedUserEntity);
         }));
     }
 
     onChangeBitcoinPayoutWalletAddress = action((value: string) => {
-        this.bitcoinPayoutWalletAddress = value;
+        this.displaybitcoinPayoutWalletAddress = value;
     })
 
     isBtcAddressChanged(): boolean {
-        return this.bitcoinPayoutWalletAddress !== this.userEntity.bitcoinPayoutWalletAddress;
+        return this.bitcoinPayoutWalletAddress !== this.displaybitcoinPayoutWalletAddress;
     }
 
     hide = action(() => {
         this.userEntity = null;
         this.bitcoinPayoutWalletAddress = '';
+        this.displaybitcoinPayoutWalletAddress = '';
         super.hide();
     })
 
@@ -79,8 +83,8 @@ export default class EditUserBtcModalStore extends ModalStore {
         }
 
         try {
-            await this.cudosRepo.creditBitcoinPayoutAddress(client, walletAddress, this.bitcoinPayoutWalletAddress);
-            this.userEntity.bitcoinPayoutWalletAddress = this.bitcoinPayoutWalletAddress;
+            await this.cudosRepo.creditBitcoinPayoutAddress(client, walletAddress, this.displaybitcoinPayoutWalletAddress);
+            this.onFinish(this.displaybitcoinPayoutWalletAddress);
         } catch (ex) {
             this.alertStore.show('Unable to update BTC payout address');
             throw Error('Unable to confirm bitcoin address');

@@ -17,6 +17,7 @@ import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import PurchaseTransactionEntity from '../../../nft/entities/PurchaseTransactionEntity';
 import PurchaseTransactionsFilterModel from '../../../nft/entities/PurchaseTransactionsFilterModel';
 import AccountRepo from '../repos/AccountRepo';
+import AccountSessionStore from './AccountSessionStore';
 
 export enum ProfilePages {
     NFTS = 1,
@@ -28,6 +29,8 @@ export enum ProfilePages {
 export default class UserProfilePageStore {
 
     walletStore: WalletStore;
+    accountSessionStore: AccountSessionStore;
+
     nftRepo: NftRepo;
     collectionRepo: CollectionRepo;
     statisticsRepo: StatisticsRepo;
@@ -35,6 +38,7 @@ export default class UserProfilePageStore {
     profilePage: number;
     gridViewState: GridViewState;
     nftFilterModel: NftFilterModel;
+    userBtcPayoutAddress: string;
 
     // my nfts tab
     nftEntities: NftEntity[];
@@ -55,8 +59,10 @@ export default class UserProfilePageStore {
     purchasesTableState: TableState;
     purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel;
 
-    constructor(walletStore: WalletStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, statisticsRepo: StatisticsRepo) {
+    constructor(walletStore: WalletStore, accountSessionStore: AccountSessionStore, nftRepo: NftRepo, collectionRepo: CollectionRepo, statisticsRepo: StatisticsRepo) {
         this.walletStore = walletStore;
+        this.accountSessionStore = accountSessionStore;
+
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
         this.statisticsRepo = statisticsRepo;
@@ -73,6 +79,8 @@ export default class UserProfilePageStore {
         this.gridViewState = new GridViewState(this.fetchMyNfts, 3, 4, 6)
         this.nftFilterModel = new NftFilterModel();
         this.nftFilterModel.sessionAccount = S.INT_TRUE;
+
+        this.userBtcPayoutAddress = '';
 
         this.nftEntities = null;
         this.collectionEntitiesMap = new Map();
@@ -98,6 +106,12 @@ export default class UserProfilePageStore {
         await this.fetchEarnings();
         await this.fetchHistory();
         await this.fetchPurchases();
+
+        const btcPayoutAddress = await this.accountSessionStore.fetchUserBitcoinPayoutWalletAddress();
+
+        await runInActionAsync(() => {
+            this.userBtcPayoutAddress = btcPayoutAddress;
+        })
     }
 
     fetchMyNfts = async () => {
@@ -236,5 +250,9 @@ export default class UserProfilePageStore {
     onChangeSearchWord = async (value) => {
         this.nftFilterModel.searchString = value;
         await this.fetchMyNfts();
+    }
+
+    hasBitcoinPayoutWalletAddress(): boolean {
+        return this.userBtcPayoutAddress !== '';
     }
 }
