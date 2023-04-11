@@ -43,7 +43,7 @@ function EditUserBtcModal({ snackStore, editUserBtcModalStore }: Props) {
                     <Input
                         label = { 'Your BTC Payout Address' }
                         placeholder={'bc1qxy...'}
-                        value = { editUserBtcModalStore.bitcoinPayoutWalletAddress }
+                        value = { editUserBtcModalStore.displayBitcoinPayoutWalletAddress }
                         onChange = { editUserBtcModalStore.onChangeBitcoinPayoutWalletAddress }
                         inputValidation = { bitcoinPayoutWalletAddressValidation } />
 
