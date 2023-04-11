@@ -5,7 +5,7 @@ import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import ViewMiningFarmModalStore from '../stores/ViewMiningFarmModalStore';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
-import DataPreviewLayout, { createDataPreview } from '../../../core/presentation/components/DataPreviewLayout';
+import DataPreviewLayout, { DataRowsGap, DataRowsLayout, createDataPreview } from '../../../core/presentation/components/DataPreviewLayout';
 
 import '../styles/view-mining-farm-modal.css';
 import Input, { InputType } from '../../../core/presentation/components/Input';
@@ -104,6 +104,8 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
             { viewMiningFarmModalStore.visible === true && (
                 <>
                     <DataPreviewLayout
+                        dataRowsLayout={DataRowsLayout.COLUMN}
+                        gap={DataRowsGap.GAP_25}
                         dataPreviews = { [
                             createDataPreview('Farm Name', miningFarmEntity.name),
                             createDataPreview('Description', miningFarmEntity.getFormattedDescription()),
@@ -117,11 +119,13 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                             createDataPreview('Hashrate', miningFarmEntity.formatHashPowerInTh()),
                             createDataPreview('Resale royalties address', miningFarmEntity.resaleFarmRoyaltiesCudosAddress),
                             createDataPreview(
-                                'Pool rewards Address',
+                                // 'Pool rewards Address',
+                                <TextWithTooltip text={'Pool rewards Address'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />,
                                 <Input
-                                    label = {
-                                        <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />
-                                    }
+                                    // label = {
+                                    //     <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />
+                                    // }
+                                    stretch={true}
                                     placeholder={'bc1qxy...'}
                                     className={'FlexRow'}
                                     value = { miningFarmEntity.rewardsFromPoolBtcAddress }
@@ -130,11 +134,12 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                 />,
                             ),
                             createDataPreview(
-                                'Pool BTC wallet name',
+                                // 'Pool BTC wallet name',
+                                <TextWithTooltip text={'Pool BTC wallet name'} tooltipText={'The BTC wallet which will collect all sales proceeds from sold NFTs.'} />,
                                 <Input
-                                    label = {
-                                        <TextWithTooltip text={'BTC Wallet name on the BTC node'} tooltipText={'The BTC wallet which will collect all sales proceeds from sold NFTs.'} />
-                                    }
+                                    // label = {
+                                    //     <TextWithTooltip text={'BTC Wallet name on the BTC node'} tooltipText={'The BTC wallet which will collect all sales proceeds from sold NFTs.'} />
+                                    // }
                                     placeholder={'walletname123...'}
                                     className={'FlexRow'}
                                     value = { miningFarmEntity.rewardsFromPoolBtcWalletName }
@@ -147,11 +152,12 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                 />,
                             ),
                             createDataPreview(
-                                'Sub account name',
+                                // 'Sub account name',
+                                <TextWithTooltip text={'Sub account name'} tooltipText={'The sub account name, given by Foundry.'} />,
                                 <Input
-                                    label = {
-                                        <TextWithTooltip text={'Sub account name on Foundry'} tooltipText={'The sub account name, given by Foundry.'} />
-                                    }
+                                    // label = {
+                                    //     <TextWithTooltip text={'Sub account name on Foundry'} tooltipText={'The sub account name, given by Foundry.'} />
+                                    // }
                                     placeholder={'walletname123...'}
                                     className={'FlexRow'}
                                     value = { miningFarmEntity.subAccountName }
