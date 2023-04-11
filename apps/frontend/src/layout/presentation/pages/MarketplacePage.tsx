@@ -88,6 +88,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 navigate(AppRoutes.USER_PROFILE);
             };
             alertStore.msg = 'You must register BTC payout adress first';
+            alertStore.negativeLabel = 'Cancel';
             alertStore.visible = true;
             return false;
         }

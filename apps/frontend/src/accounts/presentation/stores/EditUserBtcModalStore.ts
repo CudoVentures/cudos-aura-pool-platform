@@ -44,14 +44,6 @@ export default class EditUserBtcModalStore extends ModalStore {
         this.show();
     }
 
-    @action
-    showSignalWithDefaultCallback(userEntity: UserEntity, bitcoinPayoutAddress: string) {
-        const clonedUserEntity = userEntity.clone();
-        this.showSignal(clonedUserEntity, bitcoinPayoutAddress, action(() => {
-            userEntity.copy(clonedUserEntity);
-        }));
-    }
-
     onChangeBitcoinPayoutWalletAddress = action((value: string) => {
         this.displayBitcoinPayoutWalletAddress = value;
     })
