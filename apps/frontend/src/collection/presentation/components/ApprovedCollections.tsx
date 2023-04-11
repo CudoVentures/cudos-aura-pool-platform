@@ -14,6 +14,7 @@ import StyledLayout from '../../../core/presentation/components/StyledLayout';
 import Table, { createTableCell, createTableCellString, createTableRow } from '../../../core/presentation/components/Table';
 import { ALIGN_LEFT, ALIGN_RIGHT } from '../../../core/presentation/components/TableDesktop';
 import Svg from '../../../core/presentation/components/Svg';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import '../styles/queued-collections.css';
@@ -50,7 +51,7 @@ function ApprovedCollections({ approvedCollectionsStore, viewCollectionModalStor
                         {collectionEntity.name}
                     </div>
                 )),
-                createTableCellString(collectionEntity.getFormattedDescription()),
+                createTableCell(<NewLine text = { collectionEntity.description } />),
                 createTableCellString(collectionDetailsEntity?.formatFloorPriceInCudos() ?? ''),
                 // createTableCell((
                 //     <Actions height={ActionsHeight.HEIGHT_32}>

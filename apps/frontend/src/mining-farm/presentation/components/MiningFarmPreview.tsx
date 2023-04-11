@@ -10,6 +10,7 @@ import StyledContainer, { ContainerPadding } from '../../../core/presentation/co
 import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
 
 import '../styles/mining-farm-preview.css';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 type Props = {
     className?: string,
@@ -42,7 +43,7 @@ export default function MiningFarmPeview({ className, miningFarmEntity, miningFa
                 <div className="MiningFarmPreviewProfileImage ImgCoverNode" style={ProjectUtils.makeBgImgStyle(miningFarmEntity.profileImgUrl)} />
             </div>
             <div className={'MiningFarmName H3 ExtraBold'}>{miningFarmEntity.name}</div>
-            <div className={'MiningFarmDesc B1'}>{miningFarmEntity.getFormattedDescription()}</div>
+            <div className={'MiningFarmDesc B1'}><NewLine text = { miningFarmEntity.description } /></div>
             <div className = { 'HorizontalSeparator' } />
             <ColumnLayout gap = { 8 } className = { 'MiningFarmInfo' } >
                 { renderMiningFarmProperties('Total hashrate', miningFarmEntity.formatHashPowerInTh()) }

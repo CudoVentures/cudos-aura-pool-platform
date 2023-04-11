@@ -38,6 +38,7 @@ import TextWithTooltip from '../../../core/presentation/components/TextWithToolt
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -243,7 +244,7 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
                                     } } />
                             </div>
                             <div className={'H2 Bold'}>Description</div>
-                            <div className={'Description B1'}>{collectionEntity.getFormattedDescription()}</div>
+                            <div className={'Description B1'}><NewLine text = {collectionEntity.description} /></div>
                             <NftStats viewNftPageStore = {viewNftPageStore}/>
                         </div>
 

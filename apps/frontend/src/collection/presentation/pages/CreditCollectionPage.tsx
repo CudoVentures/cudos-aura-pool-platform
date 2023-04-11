@@ -37,6 +37,7 @@ import '../styles/page-credit-collection.css';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import Input, { InputType } from '../../../core/presentation/components/Input';
 import { InputAdornment } from '@mui/material';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 type Props = {
     walletStore?: WalletStore
@@ -147,7 +148,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                     <div className={'ProfileInfo Grid'}>
                         <div className={'FlexColumn B1'}>
                             <div className={'Clickable'} onClick={onClickFarmLink}>Collection Owner:  <b className={'ColorPrimary060'}>{miningFarmEntity.name}</b></div>
-                            <div className={'CollectionDescription'}>{collectionEntity.getFormattedDescription()}</div>
+                            <div className={'CollectionDescription'}><NewLine text = { collectionEntity.description } /></div>
                         </div>
                         {collectionDetailsEntity !== null && (
                             <DataPreviewLayout dataPreviews={[

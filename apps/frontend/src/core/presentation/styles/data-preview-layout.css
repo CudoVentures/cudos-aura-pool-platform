@@ -3,7 +3,7 @@
     gap: 5px;
 }
 
-.DataPreviewLayout .DataPreview.FlexColumn .DataPreviewValue{
+.DataPreviewLayout .DataPreview.FlexColumn .DataPreviewValue {
     display: flex;
     margin-left: 0;
     width: 100%;

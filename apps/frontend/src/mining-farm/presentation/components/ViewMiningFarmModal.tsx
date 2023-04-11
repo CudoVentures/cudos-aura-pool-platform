@@ -17,6 +17,7 @@ import TextWithTooltip from '../../../core/presentation/components/TextWithToolt
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import S from '../../../core/utilities/Main';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 type Props = {
     alertStore?: AlertStore;
@@ -108,7 +109,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                         gap={DataRowsGap.GAP_25}
                         dataPreviews = { [
                             createDataPreview('Farm Name', miningFarmEntity.name),
-                            createDataPreview('Description', miningFarmEntity.getFormattedDescription()),
+                            createDataPreview('Description', <NewLine text = { miningFarmEntity.description } />),
                             createDataPreview('Legal Entity Name', miningFarmEntity.legalName),
                             createDataPreview('Primary Account Owner Full Name', miningFarmEntity.primaryAccountOwnerName),
                             createDataPreview('Primary Account Owner Email', miningFarmEntity.primaryAccountOwnerEmail),
