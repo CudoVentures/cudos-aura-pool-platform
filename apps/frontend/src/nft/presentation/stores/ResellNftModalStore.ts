@@ -69,21 +69,6 @@ export default class ResellNftModalStore extends ModalStore {
     }
 
     @action
-    nullateValues() {
-        this.nftEntity = null;
-        this.collectionEntity = null;
-        this.miningFarmEntity = null;
-        this.cudosPriceUsd = null;
-        this.nftPriceInUsd = null;
-        this.priceDisplay = null;
-        this.modalStage = null;
-        this.autoPay = null;
-        this.originalPaymentSchedule = null;
-        this.txHash = null;
-        this.modalType = null;
-    }
-
-    @action
     showSignal(mdoalType: ModalType, nftEntity: NftEntity, cudosPriceUsd: number, collectionEntity: CollectionEntity, miningFarmEntity: MiningFarmEntity) {
         this.resetValues();
         this.nftEntity = nftEntity;
@@ -99,7 +84,7 @@ export default class ResellNftModalStore extends ModalStore {
     }
 
     hide = action(() => {
-        this.nullateValues();
+        this.resetValues();
         super.hide();
     })
 
@@ -116,15 +101,15 @@ export default class ResellNftModalStore extends ModalStore {
         this.originalPaymentSchedule = this.originalPaymentSchedule === S.INT_TRUE ? S.INT_FALSE : S.INT_TRUE;
     })
 
-    async onClickSubmitForSell() {
+    onClickSubmitForSell() {
         this.runTransaction(() => this.nftRepo.listNftForSale(this.nftEntity, this.collectionEntity, this.getResellPriceInCudos(), this.walletStore.ledger));
     }
 
-    async onClickSaveEditListing() {
+    onClickSaveEditListing() {
         this.runTransaction(() => this.nftRepo.editNftListing(this.nftEntity, this.getResellPriceInCudos(), this.walletStore.ledger));
     }
 
-    async onClickCancelListing() {
+    onClickCancelListing() {
         this.runTransaction(() => this.nftRepo.cancelNftListing(this.nftEntity, this.walletStore.ledger));
     }
 
@@ -202,6 +187,8 @@ export default class ResellNftModalStore extends ModalStore {
         return this.modalType === ModalType.CANCEL_RESELL;
     }
 
-    setModalTypeCancel = action(() => { this.modalType = ModalType.CANCEL_RESELL });
+    setModalTypeCancel = action(() => {
+        this.modalType = ModalType.CANCEL_RESELL
+    });
 
 }

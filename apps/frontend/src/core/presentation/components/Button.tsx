@@ -156,18 +156,20 @@ export default function Button({ className, type, color, padding, radius, border
     return (
         <ThemeProvider theme={theme01} >
             <ThemeProvider theme={theme02} >
-                <ThemeProvider theme={muiTheme()} >
-                    <MuiButton
-                        disabled={disabled}
-                        className={`Button Transition ${padding} ${radius} ${border} ${className}`}
-                        onClick={onClick}
-                        variant={type}
-                        color={cssMuiClassColor()}
-                        href={href}
-                        target={target}
-                        style = { cssBorder() } >
-                        <div className={'ButtonContent FlexRow'} > {children} </div>
-                    </MuiButton>
+                <ThemeProvider theme={theme03} >
+                    <ThemeProvider theme={muiTheme()} >
+                        <MuiButton
+                            disabled={disabled}
+                            className={`Button Transition ${padding} ${radius} ${border} ${className}`}
+                            onClick={onClick}
+                            variant={type}
+                            color={cssMuiClassColor()}
+                            href={href}
+                            target={target}
+                            style = { cssBorder() } >
+                            <div className={'ButtonContent FlexRow'} > {children} </div>
+                        </MuiButton>
+                    </ThemeProvider>
                 </ThemeProvider>
             </ThemeProvider>
         </ThemeProvider>

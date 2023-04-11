@@ -17,7 +17,7 @@ import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintData
 import { Coin } from 'cudosjs/build/stargate/modules/marketplace/proto-types/coin';
 import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
-import { runInAction } from 'mobx';
+import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
 export default class NftApiRepo implements NftRepo {
 
@@ -232,7 +232,7 @@ export default class NftApiRepo implements NftRepo {
             const parsedRawLog = JSON.parse(tx.rawLog);
             const id = parsedRawLog[0]?.events[1]?.attributes?.find((a: any) => a.key === 'nft_id');
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 nftEntity.marketplaceNftId = id?.value ?? '';
                 nftEntity.priceInAcudos = priceInAcudos;
             })
@@ -258,10 +258,9 @@ export default class NftApiRepo implements NftRepo {
             const tx = await signingClient.marketplaceUpdatePrice(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), coin(priceInAcudos.toFixed(0), 'acudos'), gasPrice);
             const txHash = tx.transactionHash;
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 nftEntity.priceInAcudos = priceInAcudos;
             });
-
             this.nftSessionStorage.updateNftsMap([nftEntity]);
             return txHash;
         } finally {
@@ -282,7 +281,7 @@ export default class NftApiRepo implements NftRepo {
             const tx = await signingClient.marketplaceRemoveNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
             const txHash = tx.transactionHash;
 
-            runInAction(() => {
+            await runInActionAsync(() => {
                 nftEntity.marketplaceNftId = '';
                 nftEntity.priceInAcudos = new BigNumber(0);
             });
