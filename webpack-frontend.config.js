@@ -97,6 +97,9 @@ module.exports = function () {
             new HtmlWebpackPlugin({
                 filename: Path.join(distPublicPath, 'index.html'),
                 template: Path.join(srcPublicPath, 'index.html'),
+                templateParameters: {
+                    'visualDebugToken': envs.parsed.App_Visual_Debug_Token,
+                },
             }),
             new CleanWebpackPlugin(),
         ],
