@@ -71,6 +71,7 @@ export class NFTController {
         const userEntity = await this.accountService.findUserByCudosWalletAddress(recipient, req.transaction);
         if (userEntity === null) {
             console.log('Getting NFT from OnDemandMinting', 'user not found', recipient);
+            req.logger.info(`Getting NFT from OnDemandMinting user not found ${recipient}`);
             throw new NotFoundException();
         }
 
@@ -81,13 +82,15 @@ export class NFTController {
             const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp < Date.now()) {
                 console.log('Getting NFT from OnDemandMinting', 'presale has ended at', presaleEndTimestamp);
+                req.logger.info(`Getting NFT from OnDemandMinting presale has ended at ${presaleEndTimestamp}`);
                 throw new Error('Presale ended.')
             }
 
             const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient, req.transaction);
 
             if (allowlistUser === null) {
-                console.log(`Address ${recipient} not found in allowlist`);
+                console.log('Getting NFT from OnDemandMinting', `Address ${recipient} not found in allowlist`);
+                req.logger.info(`Getting NFT from OnDemandMinting Address ${recipient} not found in allowlist`);
                 throw new Error('Recipient not in allowlist.')
             }
 
@@ -99,6 +102,7 @@ export class NFTController {
             const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp > Date.now()) {
                 console.log('Getting NFT from OnDemandMinting', 'public sale has not started yet', presaleEndTimestamp);
+                req.logger.info(`Getting NFT from OnDemandMinting public sale has not started yet ${presaleEndTimestamp}`);
                 throw new Error('Presale ended.')
             }
 
@@ -111,50 +115,59 @@ export class NFTController {
 
             if (nftEntity.acudosPrice.lt(expectedAcudosLowerBand) === true && nftEntity.acudosPrice.gt(expectedAcudosUpperband) === true) {
                 console.log('Getting NFT from OnDemandMinting', 'not enough funds', expectedAcudosLowerBand, nftEntity.acudosPrice, expectedAcudosUpperband);
-                nftEntity = null
+                req.logger.info(`Getting NFT from OnDemandMinting not enough funds ${expectedAcudosLowerBand} ${nftEntity.acudosPrice} ${expectedAcudosUpperband}`);
+                nftEntity = null;
             }
         }
 
         if (nftEntity === null) {
-            console.log('Nft is null');
+            console.log('Getting NFT from OnDemandMinting', 'Nft is null');
+            req.logger.info('Getting NFT from OnDemandMinting Nft is null');
             throw new NotFoundException();
         }
 
         if (nftEntity.hasPrice() === false) {
-            console.log('nft does not have price in acudos');
+            console.log('Getting NFT from OnDemandMinting', 'nft does not have price in acudos');
+            req.logger.info('Getting NFT from OnDemandMinting nft does not have price in acudos');
             throw new NotFoundException();
         }
 
         if (nftEntity.isPriceInAcudosValidForMinting() === false) {
             console.log('Getting NFT from OnDemandMinting', 'price not valid for minting');
+            req.logger.info('Getting NFT from OnDemandMinting price not valid for minting');
             throw new NotFoundException();
         }
 
         if (nftEntity.isQueued() === false) {
             console.log('Getting NFT from OnDemandMinting', 'is not queued');
+            req.logger.info('Getting NFT from OnDemandMinting is not queued');
             throw new NotFoundException();
         }
 
         const canBuyNft = await this.kycService.canBuyAnNft(accountEntity, userEntity, nftEntity, req.transaction);
         if (canBuyNft === false) {
-            console.log('The user does not meet KYC creteria');
+            console.log('Getting NFT from OnDemandMinting', 'The user does not meet KYC creteria');
+            req.logger.info('Getting NFT from OnDemandMinting The user does not meet KYC creteria');
             throw new NotFoundException();
         }
 
         const collectionEntity = await this.collectionService.findOne(nftEntity.collectionId, req.transaction);
         if (collectionEntity === null || collectionEntity.isApproved() === false) {
             console.log('Getting NFT from OnDemandMinting', 'wrong collection', nftEntity.collectionId);
+            req.logger.info(`Getting NFT from OnDemandMinting wrong collection ${nftEntity.collectionId}`);
             throw new NotFoundException();
         }
 
         const miningFarmEntity = await this.miningFarmService.findMiningFarmById(collectionEntity.farmId, req.transaction);
         if (miningFarmEntity === null || miningFarmEntity.isApproved() === false) {
             console.log('Getting NFT from OnDemandMinting', 'wrong mining farm', collectionEntity.farmId);
+            req.logger.info(`Getting NFT from OnDemandMinting wrong mining farm ${collectionEntity.farmId}`);
             throw new NotFoundException();
         }
 
         if (nftEntity.expirationDateTimestamp < Date.now()) {
             console.log('Getting NFT from OnDemandMinting', 'expired nft');
+            req.logger.info('Getting NFT from OnDemandMinting expired nft');
             throw new NotFoundException();
         }
 
