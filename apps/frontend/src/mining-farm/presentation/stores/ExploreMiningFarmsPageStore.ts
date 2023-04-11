@@ -1,10 +1,11 @@
 import GridViewState from '../../../core/presentation/stores/GridViewState';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
 import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
 import MiningFarmDetailsEntity from '../../entities/MiningFarmDetailsEntity';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
+import TimeoutHelper from '../../../core/helpers/TimeoutHelper';
 
 export default class ExploreMiningFarmsPageStore {
 
@@ -16,7 +17,7 @@ export default class ExploreMiningFarmsPageStore {
     miningFarmEntities: MiningFarmEntity[];
     miningFarmDetailsEntities: MiningFarmDetailsEntity[];
 
-    searchTimeout: any;
+    searchTimeoutHelper: TimeoutHelper;
     constructor(miningFarmRepo: MiningFarmRepo) {
         this.miningFarmRepo = miningFarmRepo;
 
@@ -27,7 +28,7 @@ export default class ExploreMiningFarmsPageStore {
         this.miningFarmEntities = [];
         this.miningFarmDetailsEntities = [];
 
-        this.searchTimeout = null;
+        this.searchTimeoutHelper = new TimeoutHelper();
         makeAutoObservable(this);
     }
 
@@ -56,8 +57,7 @@ export default class ExploreMiningFarmsPageStore {
 
     onChangeSearchWord = async (value) => {
         this.miningFarmFilterModel.searchString = value;
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => this.fetch(), 500);
+        this.searchTimeoutHelper.signal(this.fetch);
     }
 
 }
