@@ -20,7 +20,7 @@ import { KycService } from '../kyc/kyc.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
 import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
 import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
-import { Throttle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Controller('nft')
 export class NFTController {
@@ -60,6 +60,7 @@ export class NFTController {
     @Get('on-demand-minting-nft/:id/:recipient/:paidAmountAcudosStr')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
+    @SkipThrottle()
     @HttpCode(200)
     async findOne(
         @Req() req: AppRequest,
@@ -184,8 +185,8 @@ export class NFTController {
     @Put('trigger-updates')
     @UseInterceptors(TransactionInterceptor)
     @UseGuards(ApiKeyGuard)
+    @SkipThrottle()
     @HttpCode(200)
-    @Throttle(20, 30)
     async updateNftsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
@@ -256,9 +257,9 @@ export class NFTController {
 
     @Put('creditPurchaseTransactions')
     @UseGuards(ApiKeyGuard)
+    @SkipThrottle()
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
-    @Throttle(4, 1)
     async creditPurchaseTransactions(
         @Req() req: AppRequest,
         @Body() reqCreditPurchaseTransactionEntities: ReqCreditPurchaseTransactionEntities,

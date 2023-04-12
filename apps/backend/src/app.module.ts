@@ -25,6 +25,7 @@ import { CONFIG_SERVICE_ROOT_PATH_KEY } from './common/utils';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerBehindProxyGuard } from './app.guards';
 import { JwtCudoModule } from './jwt/jwt.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
     imports: [
@@ -42,6 +43,7 @@ import { JwtCudoModule } from './jwt/jwt.module';
         KycModule,
         AllowlistModule,
         JwtCudoModule,
+        ThrottlerModule.forRoot(),
         SequelizeModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
