@@ -31,7 +31,7 @@ import NftFilterEntity from '../nft/entities/nft-filter.entity';
 import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
-import { Throttle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Controller('collection')
 export class CollectionController {
@@ -287,7 +287,7 @@ export class CollectionController {
     @UseInterceptors(TransactionInterceptor)
     @HttpCode(200)
     @UseGuards(ApiKeyGuard)
-    @Throttle(20, 30)
+    @SkipThrottle()
     async updateCollectionsChainData(
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,
