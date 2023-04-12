@@ -74,6 +74,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', 'frontend', 'src', 'public'),
             serveStaticOptions: {
+                index: false,
                 cacheControl: true,
                 maxAge: 2592000000,
             },
