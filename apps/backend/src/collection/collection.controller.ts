@@ -137,7 +137,12 @@ export class CollectionController {
                 throw new CollectionCreationError(); // cannot be new and with a db ref at the same time
             }
 
-            collectionEntity.denomId = collectionDbEntity.denomId; // to ensure that denomId is not changed once the collection is created
+            // if collection is still queued, we can change the denomId
+            if (collectionDbEntity.isQueued()) {
+                collectionEntity.denomId = collectionEntity.name.toLowerCase().replace(/ /g, '');
+            } else {
+                collectionEntity.denomId = collectionDbEntity.denomId; // to ensure that denomId is not changed once the collection is created
+            }
 
             oldUris = [collectionDbEntity.mainImage, collectionDbEntity.bannerImage];
             collectionNftDbEntities.forEach((nft) => {
@@ -311,13 +316,18 @@ export class CollectionController {
                 throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by collectionIds) looking for ${collectionIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByIds.join(', ')}`);
             }
 
+            // map is used to filter by denom ids so we don't make duplicated queries later
             const chainMarketplaceCollectionEntitiesMap = new Map();
             const chainMarketplaceCollectionEntities = [];
             chainMarketplaceCollectionEntitiesByDenoms.forEach((chainMarketplaceCollectionEntity) => {
-                chainMarketplaceCollectionEntitiesMap.set(chainMarketplaceCollectionEntity.denomId, chainMarketplaceCollectionEntity);
+                if (chainMarketplaceCollectionEntity.isPlatformCollection() === true) {
+                    chainMarketplaceCollectionEntitiesMap.set(chainMarketplaceCollectionEntity.denomId, chainMarketplaceCollectionEntity);
+                }
             });
             chainMarketplaceCollectionEntitiesByIds.forEach((chainMarketplaceCollectionEntity) => {
-                chainMarketplaceCollectionEntitiesMap.set(chainMarketplaceCollectionEntity.denomId, chainMarketplaceCollectionEntity);
+                if (chainMarketplaceCollectionEntity.isPlatformCollection() === true) {
+                    chainMarketplaceCollectionEntitiesMap.set(chainMarketplaceCollectionEntity.denomId, chainMarketplaceCollectionEntity);
+                }
             });
             chainMarketplaceCollectionEntitiesMap.forEach((chainMarketplaceCollectionEntity) => {
                 chainMarketplaceCollectionEntities.push(chainMarketplaceCollectionEntity);
@@ -332,10 +342,6 @@ export class CollectionController {
                     return;
                 }
 
-                // TODO: those shouldnt be changeable?
-                // updateCollectionDto.denom_id = denomId;
-                // updateCollectionDto.royalties = chainMarketplaceCollectionEntity.;
-                // updateCollectionDto.creator = chainMarketplaceCollectionEntity.creator;
                 if (collectionEntity.isRejected() === false) {
                     collectionEntity.status = chainMarketplaceCollectionEntity.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
                     await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
@@ -350,6 +356,11 @@ export class CollectionController {
 
             for (let i = 0; i < chainNftCollectionEntities.length; i++) {
                 const chainNftCollectionEntity = chainNftCollectionEntities[i];
+
+                if (chainNftCollectionEntity.isPlatformCollection() === false) {
+                    continue;
+                }
+
                 const denomId = chainNftCollectionEntity.id;
                 const collectionEntity = await this.collectionService.findFirstByDenomId(denomId, req.transaction, req.transaction.LOCK.UPDATE);
 

@@ -9,6 +9,12 @@ export type GraphQlNftCollection = {
     symbol: string;
     traits?: string;
     transaction_hash: string;
+    data_json?: {
+        farm_id: string,
+        platform_royalties_address: string,
+        farm_mint_royalties_address: string,
+        farm_resale_royalties_address: string
+    }
 }
 
 export default class ChainNftCollectionEntity {
@@ -22,6 +28,10 @@ export default class ChainNftCollectionEntity {
     symbol: string;
     traits: string;
     transactionHash: string;
+    farmId: string;
+    platformRoyaltiesAddress: string;
+    farmMintRoyaltiesAddress: string;
+    farmResaleRoyaltiesAddress: string;
 
     constructor() {
         this.data = '';
@@ -34,6 +44,14 @@ export default class ChainNftCollectionEntity {
         this.symbol = '';
         this.traits = '';
         this.transactionHash = '';
+        this.farmId = '';
+        this.platformRoyaltiesAddress = '';
+        this.farmMintRoyaltiesAddress = '';
+        this.farmResaleRoyaltiesAddress = '';
+    }
+
+    isPlatformCollection(): boolean {
+        return this.farmId !== '';
     }
 
     static fromGraphQl(queryCollection: GraphQlNftCollection): ChainNftCollectionEntity {
@@ -49,6 +67,13 @@ export default class ChainNftCollectionEntity {
         collectionDto.symbol = queryCollection.symbol ?? collectionDto.symbol;
         collectionDto.traits = queryCollection.traits ?? collectionDto.traits;
         collectionDto.transactionHash = queryCollection.transaction_hash ?? collectionDto.transactionHash;
+
+        const dataJson = queryCollection.data_json;
+
+        collectionDto.farmId = dataJson?.farm_id ?? collectionDto.farmId;
+        collectionDto.platformRoyaltiesAddress = dataJson?.platform_royalties_address ?? collectionDto.platformRoyaltiesAddress;
+        collectionDto.farmMintRoyaltiesAddress = dataJson?.farm_mint_royalties_address ?? collectionDto.farmMintRoyaltiesAddress;
+        collectionDto.farmResaleRoyaltiesAddress = dataJson?.farm_resale_royalties_address ?? collectionDto.farmResaleRoyaltiesAddress;
 
         return collectionDto;
 

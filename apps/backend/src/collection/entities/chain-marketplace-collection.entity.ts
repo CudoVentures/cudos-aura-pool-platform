@@ -52,6 +52,10 @@ export default class ChainMarketplaceCollectionEntity {
         this.farmResaleRoyaltiesAddress = '';
     }
 
+    isPlatformCollection(): boolean {
+        return this.farmId !== '';
+    }
+
     getMintRoyaltiesPercent(address: string): number {
         const percentString = this.mintRoyalties.find((royalty: Royalty) => royalty.address === address)?.percent;
         return Number(percentString ?? 0);
