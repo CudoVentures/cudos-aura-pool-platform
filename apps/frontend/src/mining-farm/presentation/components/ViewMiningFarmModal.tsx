@@ -118,6 +118,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                             createDataPreview('Energy sources', viewMiningFarmModalStore.getSelectedEnergySourcesNames()),
                             createDataPreview('Machines Location', miningFarmEntity.machinesLocation),
                             createDataPreview('Hashrate', miningFarmEntity.formatHashPowerInTh()),
+                            createDataPreview('Farm Maintenance Fee', miningFarmEntity.formatMaintenanceFeesInBtc()),
                             createDataPreview('Resale royalties address', miningFarmEntity.resaleFarmRoyaltiesCudosAddress),
                             createDataPreview(
                                 // 'Pool rewards Address',
