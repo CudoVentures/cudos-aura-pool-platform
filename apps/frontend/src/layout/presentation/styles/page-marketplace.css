@@ -162,7 +162,7 @@
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader {
     display: flex; justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .PhaseName {
@@ -180,8 +180,8 @@
 }
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .TimeNumberBox {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
     background: #E6E9F2;
     border-radius: 6px;
     align-items: center;
