@@ -106,19 +106,20 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
         })
     }
 
-    function onClickBuyNft() {
+    async function onClickBuyNft() {
         const balance = walletStore.getBalanceSafe();
         if (balance.lt(cudosStore.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity))) {
             alertStore.show('Your balance is not enough to buy this.');
             return;
         }
 
-        if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
+        if (await accountSessionStore.shouldUserRegisterBtcAddress() === true) {
             alertStore.positiveLabel = 'Register';
             alertStore.positiveListener = () => {
                 navigate(AppRoutes.USER_PROFILE);
             };
             alertStore.msg = 'You must register BTC payout adress first';
+            alertStore.negativeLabel = 'Cancel';
             alertStore.visible = true;
             return;
         }

@@ -46,7 +46,6 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
         async function init() {
             await bitcoinStore.init();
             await userProfilePageStore.init();
-            await accountSessionStore.fetchBtcPayoutAddress();
         }
         init();
     }, []);
@@ -59,7 +58,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
     }
 
     function onClickEditBtcAddres() {
-        editUserBtcModalStore.showSignalWithDefaultCallback(userEntity);
+        editUserBtcModalStore.showSignal(userEntity, userProfilePageStore.userBtcPayoutAddress, (editedBtcAddress) => { userProfilePageStore.userBtcPayoutAddress = editedBtcAddress });
     }
 
     return (
@@ -87,7 +86,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                         onClick={onClickEditBtcAddres}
                         color={ButtonColor.SCHEME_4} >
                         <Svg size = { SvgSize.CUSTOM } svg={BorderColorIcon} />
-                        {userEntity.hasBitcoinPayoutWalletAddress() === true ? 'Edit BTC Address' : 'Add BTC Address'}
+                        {userProfilePageStore.hasBitcoinPayoutWalletAddress() === true ? 'Edit BTC Address' : 'Add BTC Address'}
                     </Button>
                 </Actions>
                 <div className={'ProfileHeaderDataRow FlexColumn'}>
@@ -100,7 +99,7 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                         <a href={ProjectUtils.makeUrlExplorer(userEntity.cudosWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</a>
                         <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div>
                     </div>
-                    {userEntity.hasBitcoinPayoutWalletAddress() === false && (
+                    {userProfilePageStore.hasBitcoinPayoutWalletAddress() === false && (
                         <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT} height={ActionsHeight.HEIGHT_32}>
                             <Button
                                 type={ButtonType.TEXT_INLINE}
@@ -111,10 +110,10 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                             </Button>
                         </Actions>
                     )}
-                    {userEntity.hasBitcoinPayoutWalletAddress() === true && (
+                    {userProfilePageStore.hasBitcoinPayoutWalletAddress() === true && (
                         <div className={'FlexRow'}>
                             <Svg className = { 'IconBtc' } svg = { SvgBtcLogo } size={SvgSize.CUSTOM}/>
-                            <a href={ProjectUtils.makeUrlBtcExplorer(userEntity.bitcoinPayoutWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.bitcoinPayoutWalletAddress}</a>
+                            <a href={ProjectUtils.makeUrlBtcExplorer(userProfilePageStore.userBtcPayoutAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userProfilePageStore.userBtcPayoutAddress}</a>
                             {/* <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div> */}
                         </div>
                     )}

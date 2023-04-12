@@ -82,13 +82,14 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
         navigate(AppRoutes.EXPLORE_MINING_FARMS);
     }
 
-    function checkBtcAddressRegistered(): boolean {
-        if (accountSessionStore.shouldUserRegisterBtcAddress() === true) {
+    async function checkBtcAddressRegistered(): Promise<boolean> {
+        if (await accountSessionStore.shouldUserRegisterBtcAddress() === true) {
             alertStore.positiveLabel = 'Register';
             alertStore.positiveListener = () => {
                 navigate(AppRoutes.USER_PROFILE);
             };
             alertStore.msg = 'You must register BTC payout adress first';
+            alertStore.negativeLabel = 'Cancel';
             alertStore.visible = true;
             return false;
         }
@@ -113,7 +114,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }
 
     async function onClickBuyWithCudos() {
-        if (checkBtcAddressRegistered() === false || checkKyc() === false) {
+        if (await checkBtcAddressRegistered() === false || checkKyc() === false) {
             return;
         }
 
@@ -124,7 +125,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }
 
     async function onClickBuyWithEth() {
-        if (checkBtcAddressRegistered() === false || checkKyc() === false) {
+        if (await checkBtcAddressRegistered() === false || checkKyc() === false) {
             return;
         }
 
