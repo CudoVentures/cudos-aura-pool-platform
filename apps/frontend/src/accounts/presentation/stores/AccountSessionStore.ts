@@ -147,13 +147,13 @@ export default class AccountSessionStore {
         return this.shouldChangePassword === S.INT_TRUE;
     }
 
-    async shouldUserRegisterBtcAddress(): Promise<boolean> {
-        if (this.isUser() === false) {
-            return false;
-        }
+    // async shouldUserRegisterBtcAddress(): Promise<boolean> {
+    //     if (this.isUser() === false) {
+    //         return false;
+    //     }
 
-        return await this.hasBitcoinPayoutWalletAddress() === false;
-    }
+    //     return await this.hasBitcoinPayoutWalletAddress() === false;
+    // }
 
     async loginWithCredentials(username: string, password: string) {
         await this.login(username, password, '', '', null, S.NOT_EXISTS, S.NOT_EXISTS);

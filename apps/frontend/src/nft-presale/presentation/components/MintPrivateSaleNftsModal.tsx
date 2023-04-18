@@ -52,7 +52,6 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                             'addressMints': [
                                 {
                                     'cudosAddress': 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0',
-                                    'btcAddress': 'bc1qj3q3yq3q3yq3yq3yq3yq3yq3yq3yq3yq3yq3yq',
                                     'firstName': 'Name',
                                     'lastName': 'Name',
                                     'applicantId': '314-14-31-421-3',
@@ -63,7 +62,6 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                 },
                                 {
                                     'cudosAddress': 'cudos1wpzqe0jkyz3xc7dywtqnu2rd4gdys6a6npx2pk',
-                                    'btcAddress': 'bc1qj3q3yq3q3yq3yq3yq3yq3yq3yq3yq3yq3yq3yq',
                                     'firstName': 'Name',
                                     'lastName': 'Name',
                                     'applicantId': '314-14-31-421-3',
@@ -142,7 +140,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
 
                         {walletStore.isConnected() === true && walletStore.address === CHAIN_DETAILS.MINTING_SERVICE_ADDRESS ? (
                             <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                <Button onClick={onClickSubmitForSell}>Mint giveaways/private sale NFTs</Button>
+                                <Button onClick={onClickSubmitForSell}>Mint NFTs</Button>
                             </Actions>
                         ) : (
                             <div className = { 'Bold ColorError060 WrongWalletInfo' }>Connect OnDemandMintingService's wallet with address: {CHAIN_DETAILS.MINTING_SERVICE_ADDRESS}</div>

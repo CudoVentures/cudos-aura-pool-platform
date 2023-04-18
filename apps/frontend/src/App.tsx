@@ -71,6 +71,7 @@ import PresaleStore from './app-routes/presentation/PresaleStore';
 import AllowlistApiRepo from './allowlist/data/repo/AllowlistApiRepo';
 import NftPresaleStore from './nft-presale/presentation/stores/NftPresaleStore';
 import MintPrivateSaleNftModalStore from './nft-presale/presentation/stores/MintPrivateSaleNftModalStore';
+import PresaleCollectionModalStore from './nft-presale/presentation/stores/PresaleCollectionModalStore';
 
 // @ts-ignore
 declare global {
@@ -120,7 +121,7 @@ const exploreNftsPageStore = new ExploreNftsPageStore(nftRepo, collectionRepo);
 const viewNftPageStore = new ViewNftPageStore(bitcoinStore, cudosStore, generalStore, accountSessionStore, presaleStore, nftRepo, collectionRepo, miningFarmRepo, statisticsRepo, accountRepo);
 const creditCollectionPageStore = new CreditCollectionPageStore(nftRepo, collectionRepo, miningFarmRepo, walletStore, alertStore, accountSessionStore);
 const creditMiningFarmPageStore = new CreditMiningFarmPageStore(miningFarmRepo, collectionRepo, nftRepo, accountSessionStore, alertStore, walletStore);
-const userProfilePageStore = new UserProfilePageStore(walletStore, accountSessionStore, nftRepo, collectionRepo, statisticsRepo, accountRepo);
+const userProfilePageStore = new UserProfilePageStore(walletStore, accountSessionStore, nftRepo, collectionRepo, statisticsRepo);
 const analyticsPageStore = new AnalyticsPageStore(bitcoinStore, cudosStore, statisticsRepo, nftRepo, collectionRepo, miningFarmRepo);
 const superAdminAnalyticsPageStore = new SuperAdminAnalyticsPageStore(bitcoinStore, cudosStore, miningFarmRepo, collectionRepo, statisticsRepo);
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo, alertStore);
@@ -150,6 +151,7 @@ const megaWalletBalanceStore = new MegaWalletBalanceStore(cudosRepo, accountSess
 const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(appStore, walletStore);
 const nftPresaleStore = new NftPresaleStore(nftRepo, collectionRepo, allowlistRepo, alertStore, cudosStore, presaleStore, walletStore);
 const mintPrivateSaleNftsModalStore = new MintPrivateSaleNftModalStore(cudosRepo, nftRepo, accountRepo, alertStore, walletStore, cudosStore);
+const presaleCollectionModalStore = new PresaleCollectionModalStore(alertStore, collectionRepo);
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -250,6 +252,7 @@ const App = () => {
                 presaleStore={presaleStore}
                 nftPresaleStore={nftPresaleStore}
                 mintPrivateSaleNftsModalStore={mintPrivateSaleNftsModalStore}
+                presaleCollectionModalStore = { presaleCollectionModalStore }
             >
                 <BrowserRouter>
                     <AppRouter />

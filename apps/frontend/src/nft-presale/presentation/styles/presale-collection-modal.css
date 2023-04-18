@@ -1,0 +1,36 @@
+.PresaleCollectionModal .Stage {
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.PresaleCollectionModal .Stage.Preview .AddressLine {
+    width: 100%;
+    gap: 16px;
+}
+
+.PresaleCollectionModal .Stage.Preview .WrongWalletInfo {
+    text-align: center;
+}
+
+/* .PresaleCollectionModal .Stage.Success .TransactionView {
+    gap: 10px;
+    color: var(--color-primary-060);
+}
+
+.PresaleCollectionModal .Stage .Info {
+    color: var(--color-neutral-060);
+    text-align: center;
+}
+
+.PresaleCollectionModal .Stage .BigSvg {
+    width: 70px; height: 70px;
+}
+
+.PresaleCollectionModal .Stage.Success .BigSvg {
+    color: var(--color-success-050);
+}
+
+.PresaleCollectionModal .Stage.Fail .BigSvg {
+    color: var(--color-error-060);
+} */

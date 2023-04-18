@@ -11,6 +11,7 @@ import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import AddressMintDataEntity from '../../entities/AddressMintDataEntity';
 import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
+import { NftGroup } from '../../../nft/entities/NftEntity';
 
 export enum ModalStage {
     UPLOAD_FILE,
@@ -33,6 +34,7 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
     addressMintDataEntities: AddressMintDataEntity[];
     @observable modalStage: ModalStage;
     @observable txHash: string;
+    @observable nftGroup: NftGroup;
 
     constructor(cudosRepo: CudosRepo, nftRepo: NftRepo, accountRepo: AccountRepo, alertStore: AlertStore, walletStore: WalletStore, cudosStore: CudosStore) {
         super();
@@ -40,14 +42,10 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
         this.cudosRepo = cudosRepo;
         this.nftRepo = nftRepo;
         this.accountRepo = accountRepo;
-        this.modalStage = null;
         this.alertStore = alertStore;
         this.walletStore = walletStore;
         this.cudosStore = cudosStore;
-        this.collectionEntity = null;
-        this.addressMintDataEntities = null;
 
-        this.txHash = null;
         this.resetValues();
 
         makeObservable(this);
@@ -60,28 +58,32 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
     @action
     resetValues() {
         this.modalStage = ModalStage.UPLOAD_FILE;
-        this.txHash = '';
-    }
-
-    @action
-    nullateValues() {
-        this.modalStage = null;
         this.collectionEntity = null;
         this.addressMintDataEntities = null;
-        this.txHash = null;
+        this.txHash = '';
+        this.nftGroup = NftGroup.GIVEAWAY;
+    }
+
+    showSignalForGiveawayNfts(collectionEntity: CollectionEntity) {
+        this.showSignal(NftGroup.GIVEAWAY, collectionEntity);
+    }
+
+    showSignalForPrivateSaleNfts(collectionEntity: CollectionEntity) {
+        this.showSignal(NftGroup.PRIVATE_SALE, collectionEntity);
     }
 
     @action
-    showSignal(collectionEntity: CollectionEntity) {
+    showSignal(nftGroup: NftGroup, collectionEntity: CollectionEntity) {
         this.resetValues();
 
+        this.nftGroup = nftGroup;
         this.collectionEntity = collectionEntity;
 
         this.show();
     }
 
     hide = action(() => {
-        this.nullateValues();
+        this.resetValues();
         super.hide();
     })
 
@@ -92,28 +94,28 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
             throw Error('Invalid JSON');
         }
 
-        const addressMintDataAddressMapping = new Map();
-        addressMintDataEntities.forEach((addressMintDataEntity) => {
-            const mappedAddress = addressMintDataAddressMapping.get(addressMintDataEntity.cudosAddress);
-            if (mappedAddress === undefined) {
-                addressMintDataAddressMapping.set(addressMintDataEntity.cudosAddress, addressMintDataEntity.btcAddress);
-            } else if (mappedAddress !== addressMintDataEntity.btcAddress) {
-                throw Error(`Address ${addressMintDataEntity.cudosAddress} has more than single BTC wallet address - ${addressMintDataEntity.btcAddress} and ${mappedAddress}`);
-            }
-        })
+        // const addressMintDataAddressMapping = new Map();
+        // addressMintDataEntities.forEach((addressMintDataEntity) => {
+        //     const mappedAddress = addressMintDataAddressMapping.get(addressMintDataEntity.cudosAddress);
+        //     if (mappedAddress === undefined) {
+        //         addressMintDataAddressMapping.set(addressMintDataEntity.cudosAddress, addressMintDataEntity.btcAddress);
+        //     } else if (mappedAddress !== addressMintDataEntity.btcAddress) {
+        //         throw Error(`Address ${addressMintDataEntity.cudosAddress} has more than single BTC wallet address - ${addressMintDataEntity.btcAddress} and ${mappedAddress}`);
+        //     }
+        // })
 
-        // check if any addresses are not present in the addressbook
-        const bitcoinPayoutAddressesMap = await this.cudosRepo.fetchBitcoinPayoutAddresses(addressMintDataEntities.map((addressMintDataEntity) => addressMintDataEntity.cudosAddress));
-        const missingCudosAddressedInAddressBookSet = new Set();
-        bitcoinPayoutAddressesMap.forEach((btcAddress, cudosAddress) => {
-            if (BitcoinStore.isValidBtcAddress(btcAddress) === false || addressMintDataAddressMapping.get(cudosAddress) !== btcAddress) {
-                missingCudosAddressedInAddressBookSet.add(cudosAddress);
-            }
-        });
+        // // check if any addresses are not present in the addressbook
+        // const bitcoinPayoutAddressesMap = await this.cudosRepo.fetchBitcoinPayoutAddresses(addressMintDataEntities.map((addressMintDataEntity) => addressMintDataEntity.cudosAddress));
+        // const missingCudosAddressedInAddressBookSet = new Set();
+        // bitcoinPayoutAddressesMap.forEach((btcAddress, cudosAddress) => {
+        //     if (BitcoinStore.isValidBtcAddress(btcAddress) === false || addressMintDataAddressMapping.get(cudosAddress) !== btcAddress) {
+        //         missingCudosAddressedInAddressBookSet.add(cudosAddress);
+        //     }
+        // });
 
-        if (missingCudosAddressedInAddressBookSet.size > 0) {
-            throw Error(`The following addresses are missing/invalid (or with different BTC address) in the addressbook: ${Array.from(missingCudosAddressedInAddressBookSet).join(', ')}`);
-        }
+        // if (missingCudosAddressedInAddressBookSet.size > 0) {
+        //     throw Error(`The following addresses are missing/invalid (or with different BTC address) in the addressbook: ${Array.from(missingCudosAddressedInAddressBookSet).join(', ')}`);
+        // }
 
         await runInActionAsync(() => {
             this.addressMintDataEntities = addressMintDataEntities;
@@ -126,7 +128,7 @@ export default class MintPrivateSaleNftModalStore extends ModalStore {
 
         try {
             await this.accountRepo.createPresaleAccounts(this.addressMintDataEntities);
-            this.txHash = await this.nftRepo.mintPresaleNfts(this.collectionEntity, this.addressMintDataEntities, this.walletStore.ledger, this.cudosStore.getCudosPriceInUsd());
+            this.txHash = await this.nftRepo.mintNftsByGroup(this.nftGroup, this.collectionEntity, this.addressMintDataEntities, this.walletStore.ledger, this.cudosStore.getCudosPriceInUsd());
 
             await runInActionAsync(() => {
                 this.modalStage = ModalStage.SUCCESS;

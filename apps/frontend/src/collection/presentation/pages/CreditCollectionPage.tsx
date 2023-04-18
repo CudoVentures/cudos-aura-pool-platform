@@ -100,9 +100,15 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
         navigate(`${AppRoutes.CREDIT_COLLECTION_DETAILS_EDIT}/${collectionEntity.id}`);
     }
 
+    function onClickMintGiveawayNfts() {
+        alertStore.show('You are about to mint the GIVEAWAYS alongside corresponding users accounts. Continue with uploading the JSON data file?', () => {
+            mintPrivateSaleNftsModalStore.showSignalForGiveawayNfts(collectionEntity)
+        }, () => { });
+    }
+
     function onClickMintPrivateSaleNfts() {
-        alertStore.show('You are about to mint the GIVEAWAYS and PRIVATE SALE NFTs alongside corresponding users accounts. Continue with uploading the JSON data file?', () => {
-            mintPrivateSaleNftsModalStore.showSignal(collectionEntity)
+        alertStore.show('You are about to mint the PRIVATE SALE NFTs alongside corresponding users accounts. Continue with uploading the JSON data file?', () => {
+            mintPrivateSaleNftsModalStore.showSignalForPrivateSaleNfts(collectionEntity)
         }, () => { });
     }
 
@@ -168,31 +174,41 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                                 ),
                             ]} >
                                 {accountSessionStore.isSuperAdmin() === true && (
-                                    <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} >
+                                    <>
                                         {collectionEntity.isStatusApproved() && (
-                                            <Button
-                                                padding={ButtonPadding.PADDING_48}
-                                                color={ButtonColor.SCHEME_4}
-                                                onClick={onClickMintPrivateSaleNfts} >
-                                                Mint Giveaways/Private Sale Nfts and Users
-                                            </Button>
+                                            <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL} >
+                                                <Button
+                                                    padding={ButtonPadding.PADDING_48}
+                                                    color={ButtonColor.SCHEME_4}
+                                                    onClick={onClickMintGiveawayNfts} >
+                                                    Mint Giveaways Nfts and Users
+                                                </Button>
+                                                <Button
+                                                    padding={ButtonPadding.PADDING_48}
+                                                    color={ButtonColor.SCHEME_4}
+                                                    onClick={onClickMintPrivateSaleNfts} >
+                                                    Mint Private Sale Nfts and Users
+                                                </Button>
+                                            </Actions>
                                         )}
-                                        {collectionEntity.isStatusQueued() && (<>
-                                            <Button
-                                                padding={ButtonPadding.PADDING_48}
-                                                color={ButtonColor.SCHEME_4}
-                                                onClick={creditCollectionPageStore.rejectCollection} >
-                                                <Svg svg={HighlightOffIcon} />
-                                                Reject Collection
-                                            </Button>
-                                            <Button
-                                                padding={ButtonPadding.PADDING_48}
-                                                onClick={creditCollectionPageStore.approveCollection} >
-                                                <Svg svg={CheckCircleOutlineIcon} />
-                                                Approve Collection
-                                            </Button>
-                                        </>)}
-                                    </Actions>
+                                        {collectionEntity.isStatusQueued() && (
+                                            <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} >
+                                                <Button
+                                                    padding={ButtonPadding.PADDING_48}
+                                                    color={ButtonColor.SCHEME_4}
+                                                    onClick={creditCollectionPageStore.rejectCollection} >
+                                                    <Svg svg={HighlightOffIcon} />
+                                                    Reject Collection
+                                                </Button>
+                                                <Button
+                                                    padding={ButtonPadding.PADDING_48}
+                                                    onClick={creditCollectionPageStore.approveCollection} >
+                                                    <Svg svg={CheckCircleOutlineIcon} />
+                                                    Approve Collection
+                                                </Button>
+                                            </Actions>
+                                        )}
+                                    </>
                                 )}
                             </DataPreviewLayout>
                         )}

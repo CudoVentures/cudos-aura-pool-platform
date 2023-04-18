@@ -8,7 +8,6 @@ type NftMintData = {
 
 export default class AddressMintDataEntity {
     cudosAddress: string;
-    btcAddress: string;
     firstName: string;
     lastName: string;
     applicantId: string;
@@ -17,7 +16,6 @@ export default class AddressMintDataEntity {
 
     constructor() {
         this.cudosAddress = S.Strings.EMPTY;
-        this.btcAddress = S.Strings.EMPTY;
         this.firstName = S.Strings.EMPTY;
         this.lastName = S.Strings.EMPTY;
         this.applicantId = S.Strings.EMPTY;
@@ -32,7 +30,6 @@ export default class AddressMintDataEntity {
     static toJson(entity: AddressMintDataEntity): any {
         return {
             'cudosAddress': entity.cudosAddress,
-            'btcAddress': entity.btcAddress,
             'firstName': entity.firstName,
             'lastName': entity.lastName,
             'applicantId': entity.applicantId,
@@ -46,9 +43,6 @@ export default class AddressMintDataEntity {
         }
         if (typeof (json.cudosAddress) !== 'string') {
             throw Error(`Missing cudosAddress. Invalid JSON ${JSON.stringify(json)}`);
-        }
-        if (typeof (json.btcAddress) !== 'string') {
-            throw Error(`Missing btcAddress. Invalid JSON ${JSON.stringify(json)}`);
         }
         if (typeof (json.firstName) !== 'string') {
             throw Error(`Missing firstName. Invalid JSON ${JSON.stringify(json)}`);
@@ -69,7 +63,6 @@ export default class AddressMintDataEntity {
         const entity = new AddressMintDataEntity();
 
         entity.cudosAddress = json.cudosAddress ?? entity.cudosAddress;
-        entity.btcAddress = json.btcAddress ?? entity.btcAddress;
         entity.firstName = json.firstName ?? entity.firstName;
         entity.lastName = json.lastName ?? entity.lastName;
         entity.applicantId = json.applicantId ?? entity.applicantId;

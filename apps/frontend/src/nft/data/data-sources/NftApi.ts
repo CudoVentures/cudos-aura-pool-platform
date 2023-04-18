@@ -3,8 +3,8 @@ import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactions
 import axios from '../../../core/utilities/AxiosWrapper';
 import NftEntity from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
-import { ReqFetchNftsByFilter, ReqFetchPurchaseTransactions, ReqMintPresaleNfts, ReqUpdateNftCudosPrice } from '../dto/Requests';
-import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResFetchPurchaseTransactions, ResMintPresaleNfts, ResUpdateNftCudosPrice } from '../dto/Responses';
+import { ReqFetchNftsByFilter, ReqFetchPurchaseTransactions, ReqUpdateNftCudosPrice } from '../dto/Requests';
+import { ResFetchNftsByFilter, ResFetchPresaleAmounts, ResFetchPurchaseTransactions, ResUpdateNftCudosPrice } from '../dto/Responses';
 
 export default class NftApi {
 

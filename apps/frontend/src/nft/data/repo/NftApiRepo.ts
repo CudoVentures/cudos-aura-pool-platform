@@ -292,7 +292,7 @@ export default class NftApiRepo implements NftRepo {
         }
     }
 
-    async mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger, cudosPriceInUsd: number): Promise < string > {
+    async mintNftsByGroup(nftGroup: NftGroup, collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger, cudosPriceInUsd: number): Promise < string > {
         try {
             this.disableActions?.();
 
@@ -304,7 +304,8 @@ export default class NftApiRepo implements NftRepo {
             const nftFilter = new NftFilterModel();
             nftFilter.collectionIds = [collectionEntity.id];
             nftFilter.nftStatus = [NftStatus.QUEUED];
-            nftFilter.nftGroup = [NftGroup.GIVEAWAY, NftGroup.PRIVATE_SALE];
+            // nftFilter.nftGroup = [NftGroup.GIVEAWAY, NftGroup.PRIVATE_SALE];
+            nftFilter.nftGroup = [nftGroup];
             const { nftEntities } = await this.nftApi.fetchNftsByFilter(nftFilter);
 
             const tierMap = new Map<NftTier, NftEntity[]>();

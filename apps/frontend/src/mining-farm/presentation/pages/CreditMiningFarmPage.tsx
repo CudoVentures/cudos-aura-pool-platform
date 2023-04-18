@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
-import CudosCollectionData from '../../../nft-presale/data/data-sources/CudoCollectionData';
 import CreditMiningFarmPageStore from '../stores/CreditMiningFarmPageStore';
 import VisitorStore from '../../../visitor/presentation/stores/VisitorStore';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
@@ -46,6 +45,8 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../styles/page-credit-mining-farm.css';
 import NewLine from '../../../core/presentation/components/NewLine';
+import PresaleCollectionModal from '../../../nft-presale/presentation/components/PresaleCollectionModal';
+import PresaleCollectionModalStore from '../../../nft-presale/presentation/stores/PresaleCollectionModalStore';
 
 type Props = {
     creditMiningFarmPageStore?: CreditMiningFarmPageStore,
@@ -54,9 +55,10 @@ type Props = {
     editMiningFarmModalStore?: EditMiningFarmModalStore
     visitorStore?: VisitorStore
     alertStore?: AlertStore,
+    presaleCollectionModalStore?: PresaleCollectionModalStore,
 }
 
-function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore, visitorStore, alertStore }: Props) {
+function CreditMiningFarmPage({ nftPresaleStore, presaleCollectionModalStore, creditMiningFarmPageStore, accountSessionStore, editMiningFarmModalStore, visitorStore, alertStore }: Props) {
     const { farmId } = useParams();
     const navigate = useNavigate();
 
@@ -112,8 +114,8 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
     }
 
     function onClickMintPresaleNfts() {
-        alertStore.show(`You are about to mint ALL presale NFTs and its collection with name ${CudosCollectionData.name}`, () => {
-            nftPresaleStore.createPresaleCollection(creditMiningFarmPageStore.miningFarmEntity.id, creditMiningFarmPageStore.approvedCollectionEntities.concat(creditMiningFarmPageStore.queuedCollectionEntities));
+        alertStore.show('You are about to create the presale collection. Continue with uploading the JSON data file?', () => {
+            presaleCollectionModalStore.showSignal(creditMiningFarmPageStore.miningFarmEntity.id, creditMiningFarmPageStore.approvedCollectionEntities.concat(creditMiningFarmPageStore.queuedCollectionEntities));
         }, () => {});
     }
 
@@ -257,6 +259,7 @@ function CreditMiningFarmPage({ nftPresaleStore, creditMiningFarmPageStore, acco
             modals = {
                 <>
                     <EditMiningFarmModal />
+                    <PresaleCollectionModal />
                 </>
             }
             className = { 'PageCreditMiningFarm' } >

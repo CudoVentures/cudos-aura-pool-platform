@@ -4,7 +4,7 @@ import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity'
 import PurchaseTransactionsFilterModel from '../../entities/PurchaseTransactionsFilterModel';
 import CollectionEntity, { CollectionStatus } from '../../../collection/entities/CollectionEntity';
 import AddressMintDataEntity from '../../../nft-presale/entities/AddressMintDataEntity';
-import NftEntity from '../../entities/NftEntity';
+import NftEntity, { NftGroup } from '../../entities/NftEntity';
 import NftFilterModel from '../../utilities/NftFilterModel';
 
 export enum BuyingCurrency {
@@ -28,7 +28,7 @@ export default interface NftRepo {
     listNftForSale(nftEntity: NftEntity, collectionEntity: CollectionEntity, priceInCudos: BigNumber, ledger: Ledger): Promise < string >;
     editNftListing(nftEntity: NftEntity, priceInCudos: BigNumber, ledger: Ledger): Promise < string >;
     cancelNftListing(nftEntity: NftEntity, ledger: Ledger): Promise < string >;
-    mintPresaleNfts(collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger, cudosPriceInUsd: number): Promise < string >;
+    mintNftsByGroup(nftGroup: NftGroup, collectionEntity: CollectionEntity, addressMintDataEntities: AddressMintDataEntity[], ledger: Ledger, cudosPriceInUsd: number): Promise < string >;
     fetchPurchaseTransactions(purchaseTransactionsFilterModel: PurchaseTransactionsFilterModel): Promise < { purchaseTransactionEntities: PurchaseTransactionEntity[], total: number } >;
     clearPurchaseTransactionsSessionStorage(): void;
 }
