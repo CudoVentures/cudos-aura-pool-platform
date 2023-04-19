@@ -4,6 +4,11 @@
     gap: 16px;
 }
 
+.MintPrivateSaleNftsModal .Stage .JsonPretty {
+    width: 100%;
+    color: var(--color-neutral-060);
+}
+
 .MintPrivateSaleNftsModal .Stage.Preview .AddressLine {
     width: 100%;
     gap: 16px;

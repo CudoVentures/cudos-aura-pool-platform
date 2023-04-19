@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import JSONPretty from 'react-json-pretty';
+import { action } from 'mobx';
+
+import MintPrivateSaleNftModalStore from '../stores/MintPrivateSaleNftModalStore';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
+import AddressMintDataEntity from '../../entities/AddressMintDataEntity';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
+import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview } from '../../../core/presentation/components/DataPreviewLayout';
@@ -9,19 +16,13 @@ import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentatio
 import Button, { ButtonColor } from '../../../core/presentation/components/Button';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import AnimationContainer from '../../../core/presentation/components/AnimationContainer';
+import UploaderComponent from '../../../core/presentation/components/UploaderComponent';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ReportIcon from '@mui/icons-material/Report';
-import '../styles/mint-private-sale-nfts.modal.css';
-import MintPrivateSaleNftModalStore from '../stores/MintPrivateSaleNftModalStore';
-import UploaderComponent from '../../../core/presentation/components/UploaderComponent';
-import AlertStore from '../../../core/presentation/stores/AlertStore';
-import { action } from 'mobx';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import AddressMintDataEntity from '../../entities/AddressMintDataEntity';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
+import '../styles/mint-private-sale-nfts.modal.css';
 
 type Props = {
     alertStore?: AlertStore
@@ -48,7 +49,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                 { mintPrivateSaleNftsModalStore.isStageUploadFile() === true && (
                     <>
                         <div className = { 'H3 Bold' }>Upload a json file with the following structure:</div>
-                        <JSONPretty mainStyle = { 'color: var(--color-neutral-060)'} data={{
+                        <JSONPretty className = { 'JsonPretty' } data={{
                             'addressMints': [
                                 {
                                     'cudosAddress': 'cudos14h7pdf8g2kkjgum5dntz80s5lhtrw3lk2uswk0',
@@ -108,7 +109,7 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                     <>
                         {mintPrivateSaleNftsModalStore.addressMintDataEntities.map((addressMintDataEntity: AddressMintDataEntity, i: number) => (
                             <div key = { i } className={'FlexRow AddressLine'}>
-                                <div className={'AddressField'}>
+                                <div>
                                     { addressMintDataEntity.hasAccountData() === true ? (
                                         <>
                                             <strong>{ addressMintDataEntity.firstName } { addressMintDataEntity.lastName }</strong><br />
@@ -124,7 +125,6 @@ function MintPrivateSaleNftsModal({ mintPrivateSaleNftsModalStore, alertStore, w
                                             <em className = { 'ColorWarning060' }>No KYC found for this address</em>
                                         </>
                                     ) }
-
                                 </div>
                                 <DataPreviewLayout
                                     styledContainerProps = { {

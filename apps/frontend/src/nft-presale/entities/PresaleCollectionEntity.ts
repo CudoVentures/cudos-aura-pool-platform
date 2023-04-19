@@ -8,6 +8,7 @@ export class PresaleCollectionEntity {
     royalties: number;
     totalNfts: number;
     expectedTotalHashPower: number;
+    denomId: string;
     nfts: PresaleCollectionTrirObj;
 
     constructor() {
@@ -15,6 +16,7 @@ export class PresaleCollectionEntity {
         this.description = '';
         this.royalties = S.NOT_EXISTS;
         this.totalNfts = 0;
+        this.denomId = '';
         this.nfts = null;
     }
 
@@ -59,6 +61,7 @@ export class PresaleCollectionEntity {
         entity.totalNfts = parseInt(json.totalNfts ?? entity.totalNfts.toString());
         entity.expectedTotalHashPower = parseInt(json.expectedTotalHashPower ?? entity.expectedTotalHashPower.toString());
         entity.nfts = PresaleCollectionTrirObj.fromJson(json.nfts);
+        entity.denomId = entity.name.toLowerCase().replace(/ /g, '');
 
         return entity;
     }
@@ -119,7 +122,7 @@ class PresaleCollectionTrirObj {
 
 }
 
-class PresaleCollectionTier {
+export class PresaleCollectionTier {
 
     totalCount: number;
     giveawayCount: number;
@@ -131,6 +134,8 @@ class PresaleCollectionTier {
     expirationDateTimestamp: number;
     priceUsd: number;
     artistName: string;
+    defaultImgUrl: string;
+    uniqueImgUrl: string;
 
     constructor() {
         this.totalCount = 0;
@@ -143,24 +148,36 @@ class PresaleCollectionTier {
         this.expirationDateTimestamp = S.NOT_EXISTS;
         this.priceUsd = S.NOT_EXISTS;
         this.artistName = '';
+        this.defaultImgUrl = '';
+        this.uniqueImgUrl = '';
     }
 
-    makePrice() {
+    populateDataBasedOnName() {
         switch (this.name) {
             case 'Opal':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_1);
+                this.defaultImgUrl = '/assets/presale-nft-images/level1-01.png';
+                this.uniqueImgUrl = '/assets/presale-nft-images/level1-02.png';
                 break;
             case 'Ruby':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_2);
+                this.defaultImgUrl = '/assets/presale-nft-images/level2-01.png';
+                this.uniqueImgUrl = '/assets/presale-nft-images/level2-02.png';
                 break;
             case 'Emerald':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_3);
+                this.defaultImgUrl = '/assets/presale-nft-images/level3-01.png';
+                this.uniqueImgUrl = '/assets/presale-nft-images/level3-02.png';
                 break;
             case 'Diamond':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_4);
+                this.defaultImgUrl = '/assets/presale-nft-images/level4-01.png';
+                this.uniqueImgUrl = '/assets/presale-nft-images/level4-02.png';
                 break;
             case 'Blue Diamond':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_5);
+                this.defaultImgUrl = '/assets/presale-nft-images/level5-01.png';
+                this.uniqueImgUrl = '/assets/presale-nft-images/level5-02.png';
                 break;
             default:
                 throw new Error(`Invalid name. ${this.name}`)
@@ -220,7 +237,7 @@ class PresaleCollectionTier {
         entity.expirationDateTimestamp = parseInt(json.expirationDateTimestamp ?? entity.expirationDateTimestamp.toString());
         entity.artistName = json.artistName ?? entity.artistName;
 
-        entity.makePrice();
+        entity.populateDataBasedOnName();
 
         return entity;
     }

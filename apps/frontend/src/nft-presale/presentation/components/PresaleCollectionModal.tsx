@@ -1,27 +1,27 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import JSONPretty from 'react-json-pretty';
+import moment from 'moment';
+import { action } from 'mobx';
+
+import PresaleCollectionModalStore from '../stores/PresaleCollectionModalStore';
+import AlertStore from '../../../core/presentation/stores/AlertStore';
+import ProjectUtils from '../../../core/utilities/ProjectUtils';
+import { PresaleCollectionTier } from '../../entities/PresaleCollectionEntity';
+import WalletStore from '../../../ledger/presentation/stores/WalletStore';
 
 import ModalWindow from '../../../core/presentation/components/ModalWindow';
 import DataPreviewLayout, { createDataPreview } from '../../../core/presentation/components/DataPreviewLayout';
 import { ContainerPadding } from '../../../core/presentation/components/StyledContainer';
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
 import Button, { ButtonColor } from '../../../core/presentation/components/Button';
-import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
+import Svg from '../../../core/presentation/components/Svg';
 import AnimationContainer from '../../../core/presentation/components/AnimationContainer';
-
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import LaunchIcon from '@mui/icons-material/Launch';
-import ReportIcon from '@mui/icons-material/Report';
-import '../styles/presale-collection-modal.css';
-import PresaleCollectionModalStore from '../stores/PresaleCollectionModalStore';
 import UploaderComponent from '../../../core/presentation/components/UploaderComponent';
-import AlertStore from '../../../core/presentation/stores/AlertStore';
-import { action } from 'mobx';
+import NewLine from '../../../core/presentation/components/NewLine';
+
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import AddressMintDataEntity from '../../entities/AddressMintDataEntity';
-import WalletStore from '../../../ledger/presentation/stores/WalletStore';
-import { CHAIN_DETAILS } from '../../../core/utilities/Constants';
+import '../styles/presale-collection-modal.css';
 
 type Props = {
     alertStore?: AlertStore
@@ -31,9 +31,40 @@ type Props = {
 
 function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walletStore }: Props) {
 
+    const presaleCollectionEntity = presaleCollectionModalStore.presaleCollectionEntity;
+
     function onClickCreatePresaleCollection() {
         presaleCollectionModalStore.onClickCreatePresaleCollection();
         presaleCollectionModalStore.hide();
+    }
+
+    function renderTier(tier: PresaleCollectionTier) {
+        return (
+            <div className={'FlexRow FlexSplit NftTierLine'}>
+                <div className = { 'H3 Bold ColorPrimary060' }>
+                    { tier.name }
+                </div>
+                <DataPreviewLayout
+                    className = { 'NftTierProps StartRight' }
+                    styledContainerProps = { {
+                        containerPadding: ContainerPadding.PADDING_16,
+                    } }
+                    dataPreviews = { [
+                        createDataPreview('Total count', tier.totalCount),
+                        createDataPreview('Giveaway count', tier.giveawayCount),
+                        createDataPreview('Private sale count', tier.privateSaleCount),
+                        createDataPreview('Presale count', tier.presaleCount),
+                        createDataPreview('Public count', tier.publicSaleCount),
+                        createDataPreview('Hash power in TH/s', tier.hashPowerInTh),
+                        createDataPreview('Expiration date', moment(tier.expirationDateTimestamp).format(ProjectUtils.MOMENT_FORMAT_DATE_AND_TIME)),
+                        createDataPreview('Price in USD', tier.priceUsd),
+                        createDataPreview('Artist name', tier.artistName),
+                        createDataPreview('Default image', <a href = { tier.defaultImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
+                        createDataPreview('Giveaway 1st NFT image', <a href = { tier.uniqueImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
+                        createDataPreview('Presale 1st NFT image', <a href = { tier.uniqueImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
+                    ] } />
+            </div>
+        )
     }
 
     return (
@@ -45,7 +76,7 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                 { presaleCollectionModalStore.isStageUploadFile() === true && (
                     <>
                         <div className = { 'H3 Bold' }>Upload a json file with the following structure:</div>
-                        <JSONPretty mainStyle = { 'color: var(--color-neutral-060)'} data={{
+                        <JSONPretty className = { 'JsonPretty' } data={{
                             name: 'Bradd 03',
                             description: 'The third collection from...',
                             royalties: 3,
@@ -142,37 +173,23 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
             <AnimationContainer className = { 'Stage Preview FlexColumn' } active = { presaleCollectionModalStore.isStagePreview() } >
                 { presaleCollectionModalStore.isStagePreview() === true && (
                     <>
-                        {/* {presaleCollectionModalStore.presaleCollectionEntity.nfts.map((addressMintDataEntity: AddressMintDataEntity, i: number) => (
-                            <div key = { i } className={'FlexRow AddressLine'}>
-                                <div className={'AddressField'}>
-                                    { addressMintDataEntity.hasAccountData() === true ? (
-                                        <>
-                                            <strong>{ addressMintDataEntity.firstName } { addressMintDataEntity.lastName }</strong><br />
-                                            {addressMintDataEntity.cudosAddress}<br />
-                                            <em className = { 'ColorNeutral060' }>
-                                                KYC applicant: {addressMintDataEntity.applicantId}<br />
-                                                KYC workflowRunId: {addressMintDataEntity.workflowRunId}
-                                            </em>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {addressMintDataEntity.cudosAddress}<br />
-                                            <em className = { 'ColorWarning060' }>No KYC found for this address</em>
-                                        </>
-                                    ) }
+                        <DataPreviewLayout
+                            styledContainerProps = { {
+                                containerPadding: ContainerPadding.PADDING_16,
+                            } }
+                            dataPreviews = { [
+                                createDataPreview('Name', presaleCollectionEntity.name),
+                                createDataPreview('Description', <NewLine text = { presaleCollectionEntity.description } />),
+                                createDataPreview('Royalties in %', presaleCollectionEntity.royalties),
+                                createDataPreview('Total NFTs', presaleCollectionEntity.totalNfts),
+                                createDataPreview('Denom id', presaleCollectionEntity.denomId),
+                            ] } />
 
-                                </div>
-                                <DataPreviewLayout
-                                    styledContainerProps = { {
-                                        containerPadding: ContainerPadding.PADDING_16,
-                                    } }
-                                    dataPreviews = {
-                                        addressMintDataEntity.nftMints.map((nftMintEntitty) => {
-                                            return createDataPreview(`Tier: ${nftMintEntitty.tier}`, `Count: ${nftMintEntitty.count}`);
-                                        })
-                                    } />
-                            </div>
-                        ))} */}
+                        { renderTier(presaleCollectionEntity.nfts.opal) }
+                        { renderTier(presaleCollectionEntity.nfts.ruby) }
+                        { renderTier(presaleCollectionEntity.nfts.emerald) }
+                        { renderTier(presaleCollectionEntity.nfts.diamond) }
+                        { renderTier(presaleCollectionEntity.nfts.blueDiamond) }
 
                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
                             <Button onClick={onClickCreatePresaleCollection}>Create presale collection</Button>
