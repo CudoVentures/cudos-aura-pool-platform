@@ -29,6 +29,10 @@ function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
         editUserModalStore.changeCoverImage(S.Strings.EMPTY);
     }
 
+    function onClickRemoveProfileImage() {
+        editUserModalStore.changeProfileImage(S.Strings.EMPTY);
+    }
+
     async function onClickSaveChanges() {
         await editUserModalStore.editSessionUser();
         editUserModalStore.onFinish();
@@ -46,27 +50,6 @@ function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
                     <div
                         className={'CoverPicture FlexColumn'}
                         style={ ProjectUtils.makeBgImgStyle(editUserModalStore.coverImage.base64) } >
-                        <div
-                            className={'ProfilePicture FlexColumn'}
-                            style={ ProjectUtils.makeBgImgStyle(editUserModalStore.profileImage.base64) } >
-                            <div className={'Overlay'} />
-                            <div className={'SvgButton FlexRow Clickable'}>
-                                <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={BorderColorIcon} />
-                                <UploaderComponent
-                                    id = { this }
-                                    params = { {
-                                        'maxSize': 1 << 20, // 1 MB
-                                        'fileExt': '.jpg, .jpeg, .png',
-                                        'onExceedLimit': () => {
-                                            alertStore.show('Max file size is 1MB!');
-                                        },
-                                        onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                                            editUserModalStore.changeProfileImage(base64File);
-                                        },
-                                    } } />
-                            </div>
-
-                        </div>
                         <div className={'Overlay'} />
                         <div className={'FlexRow ButtonsRow'}>
                             <div className={'SvgButton FlexRow Clickable'}>
@@ -85,6 +68,31 @@ function EditUserModal({ alertStore, snackStore, editUserModalStore }: Props) {
                                     } } />
                             </div>
                             <div className={'SvgButton FlexRow Clickable'} onClick={onClickRemoveCoverImage}>
+                                <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={ClearIcon} />
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        className={'ProfilePicture FlexColumn'}
+                        style={ ProjectUtils.makeBgImgStyle(editUserModalStore.profileImage.base64) } >
+                        <div className={'Overlay'} />
+                        <div className={'FlexRow ButtonsRow'}>
+                            <div className={'SvgButton FlexRow Clickable'}>
+                                <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={BorderColorIcon} />
+                                <UploaderComponent
+                                    id = { this }
+                                    params = { {
+                                        'maxSize': 1 << 20, // 1 MB
+                                        'fileExt': '.jpg, .jpeg, .png',
+                                        'onExceedLimit': () => {
+                                            alertStore.show('Max file size is 1MB!');
+                                        },
+                                        onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
+                                            editUserModalStore.changeProfileImage(base64File);
+                                        },
+                                    } } />
+                            </div>
+                            <div className={'SvgButton FlexRow Clickable'} onClick={onClickRemoveProfileImage}>
                                 <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={ClearIcon} />
                             </div>
                         </div>

@@ -28,6 +28,10 @@ function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore 
         editMiningFarmModalStore.changeCoverImage(S.Strings.EMPTY);
     }
 
+    function onClickRemoveProfileImage() {
+        editMiningFarmModalStore.changeProfileImage(S.Strings.EMPTY);
+    }
+
     async function onClickSaveChanges() {
         await editMiningFarmModalStore.executeMiningFarmEditEdit();
         editMiningFarmModalStore.onFinish();
@@ -45,26 +49,6 @@ function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore 
                     <div
                         className={'CoverPicture FlexColumn'}
                         style={ ProjectUtils.makeBgImgStyle(editMiningFarmModalStore.coverImage.base64) } >
-                        <div
-                            className={'ProfilePicture FlexColumn'}
-                            style={ ProjectUtils.makeBgImgStyle(editMiningFarmModalStore.profileImage.base64) } >
-                            <div className={'Overlay'} />
-                            <div className={'SvgButton FlexRow Clickable'}>
-                                <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={BorderColorIcon} />
-                                <UploaderComponent
-                                    id = { this }
-                                    params = { {
-                                        'maxSize': 73400320, // 70MB
-                                        'onExceedLimit': () => {
-                                            alertStore.show('File limit is 70MB!');
-                                        },
-                                        onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
-                                            editMiningFarmModalStore.changeProfileImage(base64File);
-                                        },
-                                    } } />
-                            </div>
-
-                        </div>
                         <div className={'Overlay'} />
                         <div className={'FlexRow ButtonsRow'}>
                             <div className={'SvgButton FlexRow Clickable'}>
@@ -82,6 +66,30 @@ function EditMiningFarmModal({ alertStore, snackStore, editMiningFarmModalStore 
                                     } } />
                             </div>
                             <div className={'SvgButton FlexRow Clickable'} onClick={onClickRemoveCoverImage}>
+                                <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={ClearIcon} />
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        className={'ProfilePicture FlexColumn'}
+                        style={ ProjectUtils.makeBgImgStyle(editMiningFarmModalStore.profileImage.base64) } >
+                        <div className={'Overlay'} />
+                        <div className={'FlexRow ButtonsRow'}>
+                            <div className={'SvgButton FlexRow Clickable'}>
+                                <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={BorderColorIcon} />
+                                <UploaderComponent
+                                    id = { this }
+                                    params = { {
+                                        'maxSize': 73400320, // 70MB
+                                        'onExceedLimit': () => {
+                                            alertStore.show('File limit is 70MB!');
+                                        },
+                                        onReadFileAsBase64: (base64File, responseData, files: any[], i: number) => {
+                                            editMiningFarmModalStore.changeProfileImage(base64File);
+                                        },
+                                    } } />
+                            </div>
+                            <div className={'SvgButton FlexRow Clickable'} onClick={onClickRemoveProfileImage}>
                                 <Svg className={'SvgButtonSvg'} size={SvgSize.CUSTOM} svg={ClearIcon} />
                             </div>
                         </div>
