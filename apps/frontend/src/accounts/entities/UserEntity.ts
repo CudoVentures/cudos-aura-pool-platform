@@ -1,6 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 
+const DEFAULT_PROFILE_IMG_URL = '/assets/profile/profile.png';
+
 export default class UserEntity {
 
     userId: string;
@@ -13,10 +15,14 @@ export default class UserEntity {
         this.userId = S.Strings.NOT_EXISTS;
         this.accountId = S.Strings.NOT_EXISTS;
         this.cudosWalletAddress = '';
-        this.profileImgUrl = '/assets/profile/profile.png';
+        this.profileImgUrl = DEFAULT_PROFILE_IMG_URL;
         this.coverImgUrl = '/assets/profile/cover.png';
 
         makeAutoObservable(this);
+    }
+
+    hasProfileImg(): boolean {
+        return this.profileImgUrl !== DEFAULT_PROFILE_IMG_URL;
     }
 
     isNew(): boolean {

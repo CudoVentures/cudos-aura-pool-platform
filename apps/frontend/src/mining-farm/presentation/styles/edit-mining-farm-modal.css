@@ -20,31 +20,42 @@
     align-items: center;
     justify-content: center;
     z-index: 1;
-    margin-bottom: 40px;
 }
 
-.EditMiningFarmModal .CoverPicture .ProfilePicture {
+.EditMiningFarmModal .ProfilePicture {
     background-size: contain;
-    position: absolute;
-    left: 10px;
-    bottom: -20px;
-    width: 70px; height: 70px;
+    position: relative;
+    width: 80px; height: 80px;
     border: 2px solid #FFFFFF;
     border-radius: 8px;
     align-items: center;
     justify-content: center;
     z-index: 3;
+    margin-top: -60px;
+    margin-left: 10px;
+    margin-bottom: 40px;
 }
 
-.EditMiningFarmModal .CoverPicture .ProfilePicture .Overlay {
+.EditMiningFarmModal .ProfilePicture .Overlay {
     z-index: 4;
 }
 
-.EditMiningFarmModal .CoverPicture .ButtonsRow {
+.EditMiningFarmModal .CoverPicture .ButtonsRow,
+.EditMiningFarmModal .ProfilePicture .ButtonsRow {
     gap: 10px;
+    display: none;
 }
 
-.EditMiningFarmModal .CoverPicture .SvgButton {
+.EditMiningFarmModal .CoverPicture:hover .ButtonsRow {
+    display: flex;
+}
+
+.EditMiningFarmModal .ProfilePicture:hover .ButtonsRow {
+    display: flex;
+}
+
+.EditMiningFarmModal .CoverPicture .SvgButton,
+.EditMiningFarmModal .ProfilePicture .SvgButton {
     width: 25px; height: 25px;
     background-color: #fff;
     justify-content: center;
@@ -53,6 +64,7 @@
     z-index: 5;
 }
 
-.EditMiningFarmModal .CoverPicture .SvgButton .SvgButtonSvg {
+.EditMiningFarmModal .CoverPicture .SvgButton .SvgButtonSvg,
+.EditMiningFarmModal .ProfilePicture .SvgButton .SvgButtonSvg {
     width: 15px; height: 15px;
 }

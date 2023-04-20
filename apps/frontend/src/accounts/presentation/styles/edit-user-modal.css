@@ -16,31 +16,46 @@
     align-items: center;
     justify-content: center;
     z-index: 1;
-    margin-bottom: 40px;
 }
 
-.EditUserModal .CoverPicture .ProfilePicture {
+.EditUserModal .ProfilePicture {
     background-size: contain;
-    position: absolute;
-    left: 10px;
-    bottom: -20px;
-    width: 70px; height: 70px;
+    position: relative;
+    width: 80px; height: 80px;
     border: 2px solid #FFFFFF;
     border-radius: 8px;
     align-items: center;
     justify-content: center;
     z-index: 3;
+    margin-top: -60px;
+    margin-left: 10px;
+    margin-bottom: 40px;
 }
 
-.EditUserModal .CoverPicture .ProfilePicture .Overlay {
+.EditUserModal .ProfilePicture .Overlay {
     z-index: 4;
 }
 
 .EditUserModal .CoverPicture .ButtonsRow {
     gap: 10px;
+    display: none;
 }
 
-.EditUserModal .CoverPicture .SvgButton {
+.EditUserModal .CoverPicture:hover .ButtonsRow {
+    display: flex;
+}
+
+.EditUserModal .ProfilePicture .ButtonsRow {
+    gap: 10px;
+    display: none;
+}
+
+.EditUserModal .ProfilePicture:hover .ButtonsRow {
+    display: flex;
+}
+
+.EditUserModal .CoverPicture .SvgButton,
+.EditUserModal .ProfilePicture .SvgButton {
     width: 25px; height: 25px;
     background-color: #fff;
     justify-content: center;
@@ -49,6 +64,7 @@
     z-index: 5;
 }
 
-.EditUserModal .CoverPicture .SvgButton .SvgButtonSvg {
+.EditUserModal .CoverPicture .SvgButton .SvgButtonSvg,
+.EditUserModal .ProfilePicture .SvgButton .SvgButtonSvg {
     width: 15px; height: 15px;
 }

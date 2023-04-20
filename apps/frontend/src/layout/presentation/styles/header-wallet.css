@@ -21,12 +21,32 @@
 
 .HeaderWalletAddressPopover {
     align-items: center;
-    gap: 20px;
+    gap: 24px;
     padding: 20px;
+}
+
+.HeaderWalletAddressPopover .ProfilePicture {
+    width: 64px;
+    height: 64px;
+    border-radius: 51px;
+    background-position: center;
+    background-size: cover;
+}
+
+.HeaderWalletAddressPopover .ProfilePicture.Empty {
+    background: linear-gradient(270deg, #67D271 0%, #08BDDC 100%);
 }
 
 .HeaderWalletAddressPopover .ButtonRow {
     gap: 10px;
+}
+
+.HeaderWalletAddressPopover .ButtonRow .SvgButton {
+    width: 48px; height: 48px;
+    border-radius: 51px;
+    background-color: #F4F4F5;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 1870px) {
