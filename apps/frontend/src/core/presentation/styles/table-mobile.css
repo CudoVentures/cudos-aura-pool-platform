@@ -52,6 +52,7 @@
     color: #515D79;
     text-transform: uppercase;
     font-size: 12px; font-weight: 700;
+    border-radius: 8px;
     /* background: var(--color-neutral-060-minus-02); */
 }
 
