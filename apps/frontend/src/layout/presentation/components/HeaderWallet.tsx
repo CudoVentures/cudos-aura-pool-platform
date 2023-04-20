@@ -20,6 +20,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import '../styles/header-wallet.css'
+import S from '../../../core/utilities/Main';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -110,12 +111,19 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
                                 horizontal: 'right',
                             }} >
                             <div className={'HeaderWalletAddressPopover FlexColumn'}>
+                                <div className={`ProfilePicture ${S.CSS.getClassName(accountSessionStore.userEntity.hasProfileImg() === false, 'Empty')}`}
+                                    style={ accountSessionStore.userEntity.hasProfileImg() ? ProjectUtils.makeBgImgStyle(accountSessionStore.userEntity.profileImgUrl) : null }
+                                />
                                 <div className={'Address B2'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
                                 <div className={'ButtonRow FlexRow'}>
-                                    <Svg className={'Clickable'} svg={FileCopyIcon} onClick={onClickCopyAddress}/>
-                                    <a href={`${CHAIN_DETAILS.EXPLORER_URL}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
+                                    <div className={'SvgButton FlexRow'}>
+                                        <Svg className={'Clickable'} svg={FileCopyIcon} onClick={onClickCopyAddress}/>
+                                    </div>
+                                    <div className={'SvgButton FlexRow'}>
+                                        <a href={`${CHAIN_DETAILS.EXPLORER_URL}/accounts/${walletStore.getAddress()}`} target={'_blank'} rel="noreferrer"><Svg svg={LaunchIcon} /></a>
+                                    </div>
                                 </div>
-                                <Actions layout={ActionsLayout.LAYOUT_COLUMN_CENTER} height={ActionsHeight.HEIGHT_48}>
+                                <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL} height={ActionsHeight.HEIGHT_48}>
                                     <Button radius={ButtonRadius.RADIUS_16} onClick={onClickDisconnect}>Logout</Button>
                                 </Actions>
                             </div>
