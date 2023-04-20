@@ -23,8 +23,8 @@ function MyNftsTab({ userProfilePageStore }: Props) {
 
     return (
         <DataGridLayout
-            headerLeft={(
-                <>
+            headerLeft={(userProfilePageStore.nftEntities?.length !== 0 || nftFilterModel.searchString !== '')
+                ? <>
                     <Input
                         inputType={InputType.TEXT}
                         className={'SearchBar'}
@@ -37,7 +37,7 @@ function MyNftsTab({ userProfilePageStore }: Props) {
                             </InputAdornment>,
                         }} />
                 </>
-            )} >
+                : null} >
 
             {userProfilePageStore.nftEntities === null && (
                 <LoadingIndicator />
@@ -46,7 +46,7 @@ function MyNftsTab({ userProfilePageStore }: Props) {
             {userProfilePageStore.nftEntities !== null && (
                 <GridView
                     gridViewState={userProfilePageStore.gridViewState}
-                    defaultContent={userProfilePageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null} >
+                    defaultContent={userProfilePageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No NFTs found</div> : null} >
                     {userProfilePageStore.nftEntities.map((nftEntity: NftEntity) => {
                         return (
                             <NftPreview

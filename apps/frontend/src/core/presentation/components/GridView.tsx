@@ -22,7 +22,7 @@ function GridView({ gridViewState, defaultContent, children }: React.PropsWithCh
 
     return (
         <div className={'GridView'}>
-            <div className={'GridHeader FlexRow FlexGrow'}>
+            {gridViewState.getItemCount() !== 0 && (<div className={'GridHeader FlexRow FlexGrow'}>
                 <div className={'TotalItems B2 SemiBold'}>{gridViewState.getItemCount()} Items</div>
                 <div className={'GridLayoutButtons FlexRow'}>
                     <Svg svg={GridViewIcon}
@@ -34,7 +34,7 @@ function GridView({ gridViewState, defaultContent, children }: React.PropsWithCh
                         onClick={() => gridViewState.setGridSettingAndPreviewCount(GRID_SETTING.DENSE)}
                     />
                 </div>
-            </div>
+            </div>)}
 
             { gridViewState.isFetching === true && (
                 <LoadingIndicator margin={'16px'}/>
