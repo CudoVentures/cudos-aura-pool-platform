@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 
 const DEFAULT_PROFILE_IMG_URL = '/assets/profile/profile.png';
+const DEFAULT_COVER_IMG_URL = '/assets/profile/cover.png';
 
 export default class UserEntity {
 
@@ -16,7 +17,7 @@ export default class UserEntity {
         this.accountId = S.Strings.NOT_EXISTS;
         this.cudosWalletAddress = '';
         this.profileImgUrl = DEFAULT_PROFILE_IMG_URL;
-        this.coverImgUrl = '/assets/profile/cover.png';
+        this.coverImgUrl = DEFAULT_COVER_IMG_URL;
 
         makeAutoObservable(this);
     }
@@ -27,6 +28,22 @@ export default class UserEntity {
 
     isNew(): boolean {
         return this.userId === S.Strings.NOT_EXISTS;
+    }
+
+    setCoverImgUrlAsBase64(base64: string) {
+        if (base64 === '') {
+            this.coverImgUrl = DEFAULT_COVER_IMG_URL;
+        } else {
+            this.coverImgUrl = base64;
+        }
+    }
+
+    setProfileImgUrlAsBase64(base64: string) {
+        if (base64 === '') {
+            this.profileImgUrl = DEFAULT_PROFILE_IMG_URL;
+        } else {
+            this.profileImgUrl = base64;
+        }
     }
 
     clone(): UserEntity {

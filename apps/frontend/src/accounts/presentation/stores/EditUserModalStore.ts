@@ -65,8 +65,8 @@ export default class EditUserModalStore extends ModalStore {
 
     @action
     async editSessionUser() {
-        this.userEntity.coverImgUrl = this.coverImage.base64;
-        this.userEntity.profileImgUrl = this.profileImage.base64;
+        this.userEntity.setCoverImgUrlAsBase64(this.coverImage.base64);
+        this.userEntity.setProfileImgUrlAsBase64(this.profileImage.base64);
         await this.accountRepo.editSessionUser(this.userEntity);
     }
 }

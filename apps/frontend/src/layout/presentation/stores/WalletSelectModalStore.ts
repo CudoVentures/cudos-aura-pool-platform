@@ -1,5 +1,5 @@
 import { StdSignature } from 'cudosjs';
-import { action, observable, makeObservable, computed } from 'mobx';
+import { action, observable, makeObservable } from 'mobx';
 import ModalStore from '../../../core/presentation/stores/ModalStore';
 import S from '../../../core/utilities/Main';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
@@ -231,7 +231,7 @@ export default class WalletSelectModal extends ModalStore {
     @action
     showSignal(walletSelectMode: WalletSelectMode, onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void) {
         this.walletSelectMode = walletSelectMode;
-        this.progressStep = ProgressSteps.KYC;
+        this.progressStep = ProgressSteps.CONNECT_WALLET;
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
         this.walletOption = SessionStorageWalletOptions.KEPLR;
         this.identityTx = TransactionStatus.NOT_INITIALIZED;

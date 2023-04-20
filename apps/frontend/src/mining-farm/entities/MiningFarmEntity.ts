@@ -3,6 +3,9 @@ import { makeAutoObservable } from 'mobx';
 import S from '../../core/utilities/Main';
 import { formatBtc, formatPercent, formatTHs } from '../../core/utilities/NumberFormatter';
 
+const DEFAULT_PROFILE_IMG_URL = '/assets/profile/profile.png';
+const DEFAULT_COVER_IMG_URL = '/assets/profile/cover.png';
+
 export enum MiningFarmStatus {
     APPROVED = 'approved',
     QUEUED = 'queued',
@@ -55,8 +58,8 @@ export default class MiningFarmEntity {
         this.energySourceIds = [];
         this.hashPowerInTh = S.NOT_EXISTS;
         this.machinesLocation = '';
-        this.profileImgUrl = '/assets/profile/profile.png';
-        this.coverImgUrl = '/assets/profile/cover.png';
+        this.profileImgUrl = DEFAULT_PROFILE_IMG_URL;
+        this.coverImgUrl = DEFAULT_COVER_IMG_URL;
         this.farmPhotoUrls = [];
         this.status = MiningFarmStatus.QUEUED;
         this.maintenanceFeeInBtc = null;
@@ -118,6 +121,22 @@ export default class MiningFarmEntity {
 
     markRejected() {
         this.status = MiningFarmStatus.REJECTED;
+    }
+
+    setCoverImgUrlAsBase64(base64: string) {
+        if (base64 === '') {
+            this.coverImgUrl = DEFAULT_COVER_IMG_URL;
+        } else {
+            this.coverImgUrl = base64;
+        }
+    }
+
+    setProfileImgUrlAsBase64(base64: string) {
+        if (base64 === '') {
+            this.profileImgUrl = DEFAULT_PROFILE_IMG_URL;
+        } else {
+            this.profileImgUrl = base64;
+        }
     }
 
     getMaintenanceFeePerThInBtc(): BigNumber {
