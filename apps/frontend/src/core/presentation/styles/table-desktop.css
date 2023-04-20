@@ -59,6 +59,7 @@
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 14px; font-weight: 600;
+    border-radius: 8px;
     /* background: var(--color-neutral-060-minus-02); */
 }
 
