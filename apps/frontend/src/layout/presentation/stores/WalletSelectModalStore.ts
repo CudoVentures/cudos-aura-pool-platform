@@ -231,7 +231,7 @@ export default class WalletSelectModal extends ModalStore {
     @action
     showSignal(walletSelectMode: WalletSelectMode, onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void) {
         this.walletSelectMode = walletSelectMode;
-        this.progressStep = ProgressSteps.CONNECT_WALLET;
+        this.progressStep = ProgressSteps.KYC;
         this.walletConnectionStep = WalletConnectionSteps.NOT_INITIALIZED;
         this.walletOption = SessionStorageWalletOptions.KEPLR;
         this.identityTx = TransactionStatus.NOT_INITIALIZED;

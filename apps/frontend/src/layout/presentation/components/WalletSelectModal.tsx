@@ -288,7 +288,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
             </AnimationContainer>
 
             <AnimationContainer className = { 'ProgressStep ProgressStepKyc FlexColumn' } active = { walletSelectModalStore.isProgressStepKyc() } >
-                <div className = { 'H3 Bold' } >
+                <div className = { 'H3' } >
                     Verify your account
                     <InfoBlueBox
                         className = { 'KycInfo' }
