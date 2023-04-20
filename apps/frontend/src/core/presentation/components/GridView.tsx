@@ -22,19 +22,21 @@ function GridView({ gridViewState, defaultContent, children }: React.PropsWithCh
 
     return (
         <div className={'GridView'}>
-            {gridViewState.getItemCount() !== 0 && (<div className={'GridHeader FlexRow FlexGrow'}>
-                <div className={'TotalItems B2 SemiBold'}>{gridViewState.getItemCount()} Items</div>
-                <div className={'GridLayoutButtons FlexRow'}>
-                    <Svg svg={GridViewIcon}
-                        className={`Clickable ${S.CSS.getActiveClassName(gridViewState.checkIsGridSettingSelected(GRID_SETTING.LOOSE))}`}
-                        onClick={() => gridViewState.setGridSettingAndPreviewCount(GRID_SETTING.LOOSE)}
-                    />
-                    <Svg svg={GridOnIcon}
-                        className={`Clickable ${S.CSS.getActiveClassName(gridViewState.checkIsGridSettingSelected(GRID_SETTING.DENSE))}`}
-                        onClick={() => gridViewState.setGridSettingAndPreviewCount(GRID_SETTING.DENSE)}
-                    />
+            {gridViewState.getItemCount() !== 0 && (
+                <div className={'GridHeader FlexRow FlexGrow'}>
+                    <div className={'TotalItems B2 SemiBold'}>{gridViewState.getItemCount()} Items</div>
+                    <div className={'GridLayoutButtons FlexRow'}>
+                        <Svg svg={GridViewIcon}
+                            className={`Clickable ${S.CSS.getActiveClassName(gridViewState.checkIsGridSettingSelected(GRID_SETTING.LOOSE))}`}
+                            onClick={() => gridViewState.setGridSettingAndPreviewCount(GRID_SETTING.LOOSE)}
+                        />
+                        <Svg svg={GridOnIcon}
+                            className={`Clickable ${S.CSS.getActiveClassName(gridViewState.checkIsGridSettingSelected(GRID_SETTING.DENSE))}`}
+                            onClick={() => gridViewState.setGridSettingAndPreviewCount(GRID_SETTING.DENSE)}
+                        />
+                    </div>
                 </div>
-            </div>)}
+            )}
 
             { gridViewState.isFetching === true && (
                 <LoadingIndicator margin={'16px'}/>

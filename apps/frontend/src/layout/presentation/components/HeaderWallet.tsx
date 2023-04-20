@@ -111,9 +111,9 @@ function HeaderWallet({ accountSessionStore, walletStore, walletSelectModalStore
                                 horizontal: 'right',
                             }} >
                             <div className={'HeaderWalletAddressPopover FlexColumn'}>
-                                <div className={`ProfilePicture ${S.CSS.getClassName(accountSessionStore.userEntity.hasProfileImg() === false, 'Empty')}`}
-                                    style={ accountSessionStore.userEntity.hasProfileImg() ? ProjectUtils.makeBgImgStyle(accountSessionStore.userEntity.profileImgUrl) : null }
-                                />
+                                <div
+                                    className={`ProfilePicture ${S.CSS.getClassName(accountSessionStore.userEntity?.hasProfileImg() === false, 'Empty')}`}
+                                    style={ accountSessionStore.userEntity?.hasProfileImg() === true ? ProjectUtils.makeBgImgStyle(accountSessionStore.userEntity.profileImgUrl) : null } />
                                 <div className={'Address B2'}>{ProjectUtils.shortenAddressString(walletStore.getAddress(), 20)}</div>
                                 <div className={'ButtonRow FlexRow'}>
                                     <div className={'SvgButton FlexRow'}>
