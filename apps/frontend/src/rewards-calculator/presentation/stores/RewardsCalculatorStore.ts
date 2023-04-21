@@ -58,9 +58,11 @@ export default class RewardsCalculatorStore {
     }
 
     async init() {
-        await this.bitcoinStore.init();
-        await this.generalStore.init();
-        const miningFarmsEntities = await this.miningFarmRepo.fetchAllMiningFarms();
+        const [miningFarmsEntities] = await Promise.all([
+            this.miningFarmRepo.fetchAllMiningFarms(),
+            this.bitcoinStore.init(),
+            this.generalStore.init(),
+        ])
 
         await runInActionAsync(() => {
             this.miningFarmsEntities = miningFarmsEntities

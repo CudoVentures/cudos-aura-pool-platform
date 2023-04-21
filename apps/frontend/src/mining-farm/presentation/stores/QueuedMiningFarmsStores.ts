@@ -41,12 +41,15 @@ export default class QueuedMiningFarmsStores {
         this.miningFarmsTableState.tableFilterState.from = 0;
         this.miningFarmsTableState.tableFilterState.itemsPerPage = itemsPerPage;
 
-        await this.fetchManufacturers();
-        await this.fetchMiners();
-        await this.fetchEnergySources();
-        await this.generalStore.init();
+        const promises = [];
+        promises.push(this.fetchManufacturers());
+        promises.push(this.fetchMiners());
+        promises.push(this.fetchEnergySources());
+        promises.push(this.generalStore.init());
 
-        await this.fetchMiningFarms();
+        promises.push(this.fetchMiningFarms());
+
+        await Promise.all(promises);
     }
 
     fetchMiningFarms = async () => {

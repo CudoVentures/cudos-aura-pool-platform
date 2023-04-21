@@ -54,8 +54,8 @@ export default class MarketplacePageStore {
     }
 
     async init() {
-        await this.fetchTopCollections();
-        await this.fetchNewNftDrops();
+        this.fetchTopCollections();
+        this.fetchNewNftDrops();
         this.fetchTrendingNfts();
         this.fetchPopularFarms();
     }

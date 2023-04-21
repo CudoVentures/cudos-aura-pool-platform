@@ -60,25 +60,27 @@ export default class CreditMiningFarmDetailsPageStore {
     async init() {
         this.setStepFarmDetails();
 
-        const manufacturerEntities = await this.miningFarmRepo.fetchManufacturers();
+        const manufacturerEntitiesPromise = this.miningFarmRepo.fetchManufacturers();
+        const minerEntitiesPromise = this.miningFarmRepo.fetchMiners();
+        const energySourceEntitiesPromise = this.miningFarmRepo.fetchEnergySources();
+        const miningFarmEntityPromise = this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
+
+        const [manufacturerEntities, minerEntities, energySourceEntities, miningFarmEntity] = await Promise.all([manufacturerEntitiesPromise, minerEntitiesPromise, energySourceEntitiesPromise, miningFarmEntityPromise]);
+
         const manufacturerEntitiesMap = new Map();
         manufacturerEntities.forEach((manufacturerEntity) => {
             manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
         });
 
-        const minerEntities = await this.miningFarmRepo.fetchMiners();
         const minerEntitiesMap = new Map();
         minerEntities.forEach((minerEntity) => {
             minerEntitiesMap.set(minerEntity.minerId, minerEntity);
         });
 
-        const energySourceEntities = await this.miningFarmRepo.fetchEnergySources();
         const energySourceEntitiesMap = new Map();
         energySourceEntities.forEach((energySourceEntity) => {
             energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);
         });
-
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
 
         await runInActionAsync(() => {
             this.manufacturerEntities = manufacturerEntities;

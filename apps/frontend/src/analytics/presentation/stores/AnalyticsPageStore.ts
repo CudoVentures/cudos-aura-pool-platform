@@ -73,16 +73,20 @@ export default class AnalyticsPageStore {
     }
 
     async init() {
-        await this.bitcoinStore.init();
-        await this.cudosStore.init();
+        const promises = [];
+        promises.push(this.bitcoinStore.init());
+        promises.push(this.cudosStore.init());
 
         const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId();
         this.earningsPerDayFilterEntity.farmId = miningFarmEntity.id;
         this.nftEventFilterModel.miningFarmId = miningFarmEntity.id;
-        await this.fetchFilterCollections();
-        await this.fetchEarnings();
-        await this.fetchAggregatedStatistics();
-        await this.fetchNftEvents();
+
+        promises.push(this.fetchFilterCollections());
+        promises.push(this.fetchEarnings());
+        promises.push(this.fetchAggregatedStatistics());
+        promises.push(this.fetchNftEvents());
+
+        await Promise.all(promises);
     }
 
     async fetchFilterCollections() {

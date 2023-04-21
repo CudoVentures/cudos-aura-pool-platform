@@ -111,16 +111,21 @@ export default class ViewNftPageStore {
             this.nftEventFilterModel.nftId = S.Strings.NOT_EXISTS;
         });
 
-        await this.bitcoinStore.init();
-        await this.cudosStore.init();
-        await this.generalStore.init();
+        const promises = [];
+        promises.push(this.bitcoinStore.init());
+        promises.push(this.cudosStore.init());
+        promises.push(this.generalStore.init());
 
-        const cudosPrice = this.cudosStore.getCudosPriceInUsd();
-        const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
+        const cudosPricePromies = this.cudosStore.getCudosPriceInUsd();
+        const bitcoinPricePromies = this.bitcoinStore.getBitcoinPriceInUsd();
+
         const nftEntity = await this.nftRepo.fetchNftById(nftId);
-        const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
+
+        const adminEntityPromies = this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
         const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+        const miningFarmEntityPromies = this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+
+        const [cudosPrice, bitcoinPrice, adminEntity, miningFarmEntity] = await Promise.all([cudosPricePromies, bitcoinPricePromies, adminEntityPromies, miningFarmEntityPromies, ...promises]);
 
         await runInActionAsync(() => {
             this.cudosPrice = cudosPrice
@@ -132,9 +137,11 @@ export default class ViewNftPageStore {
             this.nftEventFilterModel.nftId = this.nftEntity.id;
         });
 
-        await this.fetchNftsInTheCollection();
-        await this.fetchEarnings();
-        await this.fetchHistory();
+        await Promise.all([
+            this.fetchNftsInTheCollection(),
+            this.fetchEarnings(),
+            this.fetchHistory(),
+        ])
     }
 
     hasAccess(): boolean {
@@ -283,7 +290,7 @@ export default class ViewNftPageStore {
             return new BigNumber(0);
         }
 
-        const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(7 * 1 / 30));
+        const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(7 * (1 / 30)));
         const grossProfit = this.calculateGrossProfitPerWeek();
         let profit = grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
 
