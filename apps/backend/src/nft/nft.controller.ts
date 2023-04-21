@@ -53,8 +53,7 @@ export class NFTController {
             req.logger.info('Request for session nfts without logged account');
         }
 
-        return new ResFetchNftsByFilter([], 0);
-        // return new ResFetchNftsByFilter(nftEntities, total);
+        return new ResFetchNftsByFilter(nftEntities, total);
     }
 
     // used by on-demand-minting
