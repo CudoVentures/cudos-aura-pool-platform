@@ -114,18 +114,30 @@ export default class QueuedMiningFarmsStore {
     }
 
     getManufacturersNames(miningFarmEntity: MiningFarmEntity): string {
+        if (this.manufacturerEntitiesMap === null) {
+            return '';
+        }
+
         return miningFarmEntity.manufacturerIds.map((manufacturerId) => {
             return this.manufacturerEntitiesMap.get(manufacturerId).name;
         }).join(', ');
     }
 
     getMinersNames(miningFarmEntity: MiningFarmEntity): string {
+        if (this.minerEntitiesMap === null) {
+            return '';
+        }
+
         return miningFarmEntity.minerIds.map((minerId) => {
             return this.minerEntitiesMap.get(minerId).name;
         }).join(', ');
     }
 
     getEnergySourcesNames(miningFarmEntity: MiningFarmEntity): string {
+        if (this.energySourceEntitiesMap === null) {
+            return '';
+        }
+
         return miningFarmEntity.energySourceIds.map((energySourceId) => {
             return this.energySourceEntitiesMap.get(energySourceId).name;
         }).join(', ');
