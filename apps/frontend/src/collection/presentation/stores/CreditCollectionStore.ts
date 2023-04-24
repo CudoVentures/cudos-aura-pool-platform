@@ -99,13 +99,12 @@ export default class CreditCollectionStore {
     async initAsEdit(collectionId: string) {
         this.initCreditValues();
 
-        const promises = [];
-        promises.push(this.fetchCollectionData(collectionId));
-
         await this.fetchMiningFarm();
-        promises.push(this.fetchMiningFarmDetails());
 
-        await Promise.all(promises);
+        await Promise.all([
+            this.fetchCollectionData(collectionId),
+            this.fetchMiningFarmDetails(),
+        ]);
 
         await runInActionAsync(() => {
             this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -116,15 +115,13 @@ export default class CreditCollectionStore {
     async initAsAddNfts(collectionId: string) {
         this.initCreditValues();
 
-        const promises = [];
-
-        promises.push(this.cudosStore.init());
-        promises.push(this.fetchCollectionData(collectionId));
-
         await this.fetchMiningFarm();
-        promises.push(this.fetchMiningFarmDetails());
 
-        await Promise.all(promises);
+        await Promise.all([
+            this.cudosStore.init(),
+            this.fetchCollectionData(collectionId),
+            this.fetchMiningFarmDetails(),
+        ]);
 
         await runInActionAsync(() => {
             this.initNewNftEntity();

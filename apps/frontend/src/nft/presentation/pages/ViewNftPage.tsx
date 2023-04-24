@@ -35,15 +35,14 @@ import GridView from '../../../core/presentation/components/GridView';
 import DataPreviewLayout, { createDataPreview, DataRowsGap } from '../../../core/presentation/components/DataPreviewLayout';
 import { ContainerBackground } from '../../../core/presentation/components/StyledContainer';
 import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
+import NewLine from '../../../core/presentation/components/NewLine';
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import NewLine from '../../../core/presentation/components/NewLine';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
     walletStore?: WalletStore;
-    cudosStore?: CudosStore;
     bitcoinStore?: BitcoinStore;
     viewNftPageStore?: ViewNftPageStore;
     buyNftModalStore?: BuyNftModalStore;
@@ -54,12 +53,13 @@ type Props = {
     presaleStore?: PresaleStore
 }
 
-function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore, kycStore, presaleStore }: Props) {
+function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPageStore, buyNftModalStore, resellNftModalStore, visitorStore, alertStore, kycStore, presaleStore }: Props) {
 
     const { nftId } = useParams();
     const navigate = useNavigate();
     const [hasAccess, setHasAccess] = useState(false);
 
+    const cudosStore = viewNftPageStore.cudosStore;
     const nftEntity = viewNftPageStore.nftEntity;
     const collectionEntity = viewNftPageStore.collectionEntity;
     const miningFarmEntity = viewNftPageStore.miningFarmEntity;
@@ -67,7 +67,6 @@ function ViewNftPage({ cudosStore, accountSessionStore, walletStore, bitcoinStor
 
     useEffect(() => {
         async function run() {
-            await cudosStore.init();
             await viewNftPageStore.init(nftId);
             if (viewNftPageStore.hasAccess() === false) {
                 navigate(AppRoutes.HOME);

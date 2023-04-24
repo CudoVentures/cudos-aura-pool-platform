@@ -20,7 +20,7 @@ export enum DataRowsLayout {
 }
 
 type DataPreview = {
-    key: string | React.ReactNode; /* do not set it to React.ReactNode unless we remove it as a key from render function */
+    key: string | React.ReactNode;
     value: React.ReactNode;
 }
 
@@ -61,7 +61,7 @@ export default function DataPreviewLayout({ className, dataPreviews, dataRowsLay
             { ...styledContainerProps } >
             { dataPreviews.map((dataPreview: DataPreview, index: number) => {
                 return (
-                    <div key = { dataPreview.key.toString() + index} className = { `DataPreview ${getRowDataPreviewLayoutClassName()}` } >
+                    <div key = { typeof (dataPreview.key) === 'string' ? dataPreview.key : index } className = { `DataPreview ${getRowDataPreviewLayoutClassName()}` } >
                         <div className = { 'DataPreviewKey' } > { dataPreview.key } </div>
                         <div className = { 'DataPreviewValue Dots' } > { dataPreview.value } </div>
                     </div>

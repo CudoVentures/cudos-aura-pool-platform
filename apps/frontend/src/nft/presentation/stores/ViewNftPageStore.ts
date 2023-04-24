@@ -111,25 +111,20 @@ export default class ViewNftPageStore {
             this.nftEventFilterModel.nftId = S.Strings.NOT_EXISTS;
         });
 
-        const promises = [];
-        promises.push(this.bitcoinStore.init());
-        promises.push(this.cudosStore.init());
-        promises.push(this.generalStore.init());
-
-        const cudosPricePromies = this.cudosStore.getCudosPriceInUsd();
-        const bitcoinPricePromies = this.bitcoinStore.getBitcoinPriceInUsd();
-
         const nftEntity = await this.nftRepo.fetchNftById(nftId);
-
-        const adminEntityPromies = this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
         const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
-        const miningFarmEntityPromies = this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
-        const [cudosPrice, bitcoinPrice, adminEntity, miningFarmEntity] = await Promise.all([cudosPricePromies, bitcoinPricePromies, adminEntityPromies, miningFarmEntityPromies, ...promises]);
+        const [adminEntity, miningFarmEntity] = await Promise.all([
+            this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId),
+            this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId),
+            this.bitcoinStore.init(),
+            this.cudosStore.init(),
+            this.generalStore.init(),
+        ]);
 
         await runInActionAsync(() => {
-            this.cudosPrice = cudosPrice
-            this.bitcoinPrice = bitcoinPrice
+            this.cudosPrice = this.cudosStore.getCudosPriceInUsd()
+            this.bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd()
             this.nftEntity = nftEntity
             this.adminEntity = adminEntity;
             this.collectionEntity = collectionEntity;

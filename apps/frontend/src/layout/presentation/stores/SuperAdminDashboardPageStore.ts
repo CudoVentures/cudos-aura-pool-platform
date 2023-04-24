@@ -62,12 +62,13 @@ export default class SuperAdminDashboardPageStore {
     }
 
     async init(): Promise < void > {
-        await this.bitcoinStore.init();
-        await this.cudosStore.init();
-
-        this.fetchEarnings();
-        this.fetchTopPerformingFarmEntities();
-        this.fetchAggregatedStatistics();
+        await Promise.all([
+            this.bitcoinStore.init(),
+            this.cudosStore.init(),
+            this.fetchEarnings(),
+            this.fetchTopPerformingFarmEntities(),
+            this.fetchAggregatedStatistics(),
+        ]);
     }
 
     private async fetchEarnings() {

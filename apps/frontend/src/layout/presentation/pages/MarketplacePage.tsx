@@ -148,16 +148,17 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }
 
     useEffect(() => {
-        async function run() {
-            nftPresaleStore.presaleStore.update();
+        nftPresaleStore.presaleStore.update();
 
-            if (nftPresaleStore.isPresaleOver() === false) {
-                await nftPresaleStore.init();
-            } else {
-                await marketplacePageStore.init();
-            }
+        if (nftPresaleStore.isPresaleOver() === false) {
+            nftPresaleStore.init();
+        } else {
+            marketplacePageStore.init();
         }
-        run();
+        // async function run() {
+
+        // }
+        // run();
     }, []);
 
     const presaleTimesLeft = nftPresaleStore.getPresaleTimeLeft();

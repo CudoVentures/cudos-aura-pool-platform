@@ -59,20 +59,22 @@ export default class CreditCollectionPageStore {
             this.nftFilterModel.collectionIds = [collectionId];
         });
 
-        this.fetchNfts();
+        const fetchNftPromise = this.fetchNfts();
 
-        const collectionDetailsEntityPromise = this.collectionRepo.fetchCollectionDetailsById(collectionId);
         const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
-        const miningFarmEntityPromise = this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
-        const [collectionDetailsEntity, miningFarmEntity] = await Promise.all([collectionDetailsEntityPromise, miningFarmEntityPromise]);
+        const [collectionDetailsEntity, miningFarmEntity] = await Promise.all([
+            this.collectionRepo.fetchCollectionDetailsById(collectionId),
+            this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId),
+        ]);
 
         await runInActionAsync(() => {
             this.collectionEntity = collectionEntity;
             this.miningFarmEntity = miningFarmEntity;
             this.collectionDetailsEntity = collectionDetailsEntity;
-        })
+        });
 
+        await fetchNftPromise;
     }
 
     fetchNfts = async () => {

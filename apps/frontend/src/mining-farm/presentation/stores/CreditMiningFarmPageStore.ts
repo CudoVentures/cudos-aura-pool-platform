@@ -84,12 +84,12 @@ export default class CreditMiningFarmPageStore {
                 this.miningFarmEntity = miningFarmEntity;
                 this.collectionFilterModel.farmId = this.miningFarmEntity.id;
             });
-            const promises = [];
-            promises.push(this.fetchMiningFarmDetails());
-            promises.push(this.fetchApprovedCollections());
-            promises.push(this.fetchAnyCollections());
-            promises.push(this.fetchQueuedCollections());
-            await Promise.all(promises);
+            await Promise.all([
+                this.fetchMiningFarmDetails(),
+                this.fetchApprovedCollections(),
+                this.fetchAnyCollections(),
+                this.fetchQueuedCollections(),
+            ]);
         }
 
         await runInActionAsync(() => {

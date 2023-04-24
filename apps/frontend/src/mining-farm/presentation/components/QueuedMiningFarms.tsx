@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import MiningFarmEntity from '../../entities/MiningFarmEntity';
-import QueuedMiningFarmsStores from '../stores/QueuedMiningFarmsStores'
+import QueuedMiningFarmsStore from '../stores/QueuedMiningFarmsStore'
 import ViewMiningFarmModalStore from '../stores/ViewMiningFarmModalStore';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 
@@ -22,7 +22,7 @@ import '../styles/queued-mining-farms.css';
 
 type Props = {
     alertStore?: AlertStore;
-    queuedMiningFarmsStore?: QueuedMiningFarmsStores;
+    queuedMiningFarmsStore?: QueuedMiningFarmsStore;
     viewMiningFarmModalStore?: ViewMiningFarmModalStore;
     dashboardMode: boolean;
 };

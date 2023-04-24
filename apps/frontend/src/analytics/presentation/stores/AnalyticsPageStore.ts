@@ -166,12 +166,13 @@ export default class AnalyticsPageStore {
         this.nftEventFilterModel.count = this.analyticsTableState.tableFilterState.itemsPerPage;
         const { nftEventEntities, nftEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
 
-        const nftEntitiesMap = this.nftEntitiesMap;
-        nftEntities.forEach((nftEntity) => {
-            nftEntitiesMap.set(nftEntity.id, nftEntity);
-        });
-
         await runInActionAsync(() => {
+            const nftEntitiesMap = this.nftEntitiesMap;
+            this.nftEntitiesMap = null;
+            nftEntities.forEach((nftEntity) => {
+                nftEntitiesMap.set(nftEntity.id, nftEntity);
+            });
+
             this.nftEntitiesMap = nftEntitiesMap;
             this.nftEventEntities = nftEventEntities;
             this.analyticsTableState.tableFilterState.total = total;

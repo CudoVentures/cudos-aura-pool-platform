@@ -24,7 +24,6 @@ import '../styles/analytics-page.css';
 import RangeDatepicker, { RangeDatepickerState } from '../../../core/presentation/components/RangeDatepicker';
 import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 import BigNumber from 'bignumber.js';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import RowLayout from '../../../core/presentation/components/RowLayout';
 import { EarningsPerDayCurrency } from '../../entities/EarningsPerDayFilterEntity';
 import { formatBtc, formatUsd } from '../../../core/utilities/NumberFormatter';
@@ -36,17 +35,18 @@ type Props = {
     walletStore?: WalletStore
 }
 
-function AnalyticsPage({ analyticsPageStore, cudosStore, bitcoinStore, walletStore }: Props) {
-    const { filterCollectionEntities, earningsPerDayFilterEntity, earningsPerDayEntity } = analyticsPageStore;
+function AnalyticsPage({ analyticsPageStore, walletStore }: Props) {
+    const { cudosStore, bitcoinStore, filterCollectionEntities, earningsPerDayFilterEntity, earningsPerDayEntity } = analyticsPageStore;
     const miningFarmMaintenanceFeeEntity = analyticsPageStore.getMiningFarmMaintenanceFee();
 
     useEffect(() => {
-        async function run() {
-            await cudosStore.init();
-            await bitcoinStore.init();
-            await analyticsPageStore.init();
-        }
-        run();
+        analyticsPageStore.init();
+        // async function run() {
+        //     await cudosStore.init();
+        //     await bitcoinStore.init();
+        //     await analyticsPageStore.init();
+        // }
+        // run();
     }, []);
 
     function onChangeEarningsRange(startTimestamp, endTimestamp) {

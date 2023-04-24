@@ -47,7 +47,7 @@ import VisitorStore from './visitor/presentation/stores/VisitorStore';
 import StatisticsApiRepo from './analytics/data/repo/StatisticsApiRepo';
 import SuperAdminDashboardPageStore from './layout/presentation/stores/SuperAdminDashboardPageStore';
 import QueuedCollectionsStore from './collection/presentation/stores/QueuedCollectionsStore';
-import QueuedMiningFarmsStores from './mining-farm/presentation/stores/QueuedMiningFarmsStores';
+import QueuedMiningFarmsStore from './mining-farm/presentation/stores/QueuedMiningFarmsStore';
 import SuperAdminMegaWalletPageStore from './accounts/presentation/stores/SuperAdminMegaWalletPageStore';
 import ValueChangeModalStore from './core/presentation/stores/ValueChangeModalStore';
 import WalletApiRepo from './ledger/data/repo/WalletApiRepo';
@@ -127,7 +127,7 @@ const superAdminAnalyticsPageStore = new SuperAdminAnalyticsPageStore(bitcoinSto
 const creditMiningFarmDetailsPageStore = new CreditMiningFarmDetailsPageStore(accountSessionStore, miningFarmRepo, alertStore);
 const creditCollectionStore = new CreditCollectionStore(cudosStore, accountSessionStore, collectionRepo, nftRepo, miningFarmRepo);
 const visitorStore = new VisitorStore(visitorRepo);
-const queuedMiningFarmsStore = new QueuedMiningFarmsStores(miningFarmRepo, accountSessionStore, generalStore);
+const queuedMiningFarmsStore = new QueuedMiningFarmsStore(miningFarmRepo, accountSessionStore, generalStore);
 const queuedCollectionsStore = new QueuedCollectionsStore(collectionRepo, miningFarmRepo, nftRepo, walletStore, accountSessionStore, alertStore);
 const approvedCollectionsStore = new ApprovedCollectionsStore(collectionRepo, nftRepo, walletStore, accountSessionStore, alertStore);
 const rejectedCollectionsStore = new RejectedCollectionsStore(collectionRepo, nftRepo, accountSessionStore, alertStore);

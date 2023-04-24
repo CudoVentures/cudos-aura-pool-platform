@@ -31,22 +31,18 @@ import { formatBtc, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 type Props = {
     superAdminAnalyticsPageStore?: SuperAdminAnalyticsPageStore;
-    bitcoinStore?: BitcoinStore;
-    cudosStore?: CudosStore,
 }
 
-function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, cudosStore }: Props) {
-    const { filterMiningFarmEntities, filterCollectionEntities, earningsPerDayFilterEntity, earningsPerDayEntity, nftEventEntities } = superAdminAnalyticsPageStore;
+function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore }: Props) {
+    const { cudosStore, bitcoinStore, filterMiningFarmEntities, filterCollectionEntities, earningsPerDayFilterEntity, earningsPerDayEntity, nftEventEntities } = superAdminAnalyticsPageStore;
     const maintenanceFeeEntity = superAdminAnalyticsPageStore.getMaintenanceFeeEntity();
 
     useEffect(() => {
-        async function run() {
-            cudosStore.init();
-            bitcoinStore.init();
-            superAdminAnalyticsPageStore.init();
-        }
+        superAdminAnalyticsPageStore.init();
+        // async function run() {
+        // }
 
-        run();
+        // run();
     }, []);
 
     function onChangeEarningsRange(startTimestamp, endTimestamp) {
