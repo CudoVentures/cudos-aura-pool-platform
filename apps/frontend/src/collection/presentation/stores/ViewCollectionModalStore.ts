@@ -41,14 +41,15 @@ export default class ViewCollectionModalStore extends ModalStore {
     }
 
     async showSignal(collectionEntity: CollectionEntity) {
+        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
 
         const nftFilterModel = new NftFilterModel();
         nftFilterModel.collectionIds = [collectionEntity.id];
 
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
-        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilterModel);
-
-        const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(miningFarmEntity.accountId)
+        const [{ nftEntities }, adminEntity] = await Promise.all([
+            this.nftRepo.fetchNftsByFilter(nftFilterModel),
+            this.accountRepo.fetchFarmOwnerAccount(miningFarmEntity.accountId),
+        ]);
 
         runInAction(() => {
             this.collectionEntity = collectionEntity;

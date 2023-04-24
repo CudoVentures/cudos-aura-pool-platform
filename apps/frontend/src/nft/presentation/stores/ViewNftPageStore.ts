@@ -111,20 +111,20 @@ export default class ViewNftPageStore {
             this.nftEventFilterModel.nftId = S.Strings.NOT_EXISTS;
         });
 
-        await this.bitcoinStore.init();
-        await this.cudosStore.init();
-        await this.generalStore.init();
-
-        const cudosPrice = this.cudosStore.getCudosPriceInUsd();
-        const bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd();
         const nftEntity = await this.nftRepo.fetchNftById(nftId);
-        const adminEntity = await this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId);
         const collectionEntity = await this.collectionRepo.fetchCollectionById(nftEntity.collectionId);
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
+
+        const [adminEntity, miningFarmEntity] = await Promise.all([
+            this.accountRepo.fetchFarmOwnerAccount(nftEntity.creatorId),
+            this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId),
+            this.bitcoinStore.init(),
+            this.cudosStore.init(),
+            this.generalStore.init(),
+        ]);
 
         await runInActionAsync(() => {
-            this.cudosPrice = cudosPrice
-            this.bitcoinPrice = bitcoinPrice
+            this.cudosPrice = this.cudosStore.getCudosPriceInUsd()
+            this.bitcoinPrice = this.bitcoinStore.getBitcoinPriceInUsd()
             this.nftEntity = nftEntity
             this.adminEntity = adminEntity;
             this.collectionEntity = collectionEntity;
@@ -132,9 +132,11 @@ export default class ViewNftPageStore {
             this.nftEventFilterModel.nftId = this.nftEntity.id;
         });
 
-        await this.fetchNftsInTheCollection();
-        await this.fetchEarnings();
-        await this.fetchHistory();
+        await Promise.all([
+            this.fetchNftsInTheCollection(),
+            this.fetchEarnings(),
+            this.fetchHistory(),
+        ])
     }
 
     hasAccess(): boolean {
@@ -283,7 +285,7 @@ export default class ViewNftPageStore {
             return new BigNumber(0);
         }
 
-        const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(7 * 1 / 30));
+        const maintenanceFee = this.getMonthlyMaintenanceFee().multipliedBy(new BigNumber(7 * (1 / 30)));
         const grossProfit = this.calculateGrossProfitPerWeek();
         let profit = grossProfit.multipliedBy(this.generalStore.getPercentRemainderAfterCudosFee()).minus(maintenanceFee);
 

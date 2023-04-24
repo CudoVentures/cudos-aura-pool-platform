@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import TableState from '../../../core/presentation/stores/TableState';
 import AccountSessionStore from '../../../accounts/presentation/stores/AccountSessionStore';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
@@ -10,7 +10,7 @@ import MiningFarmFilterModel from '../../utilities/MiningFarmFilterModel';
 import MiningFarmRepo from '../repos/MiningFarmRepo';
 import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 
-export default class QueuedMiningFarmsStores {
+export default class QueuedMiningFarmsStore {
 
     miningFarmRepo: MiningFarmRepo;
     accountSessionStore: AccountSessionStore;
@@ -41,12 +41,13 @@ export default class QueuedMiningFarmsStores {
         this.miningFarmsTableState.tableFilterState.from = 0;
         this.miningFarmsTableState.tableFilterState.itemsPerPage = itemsPerPage;
 
-        await this.fetchManufacturers();
-        await this.fetchMiners();
-        await this.fetchEnergySources();
-        await this.generalStore.init();
-
-        await this.fetchMiningFarms();
+        await Promise.all([
+            this.fetchManufacturers(),
+            this.fetchMiners(),
+            this.fetchEnergySources(),
+            this.generalStore.init(),
+            this.fetchMiningFarms(),
+        ]);
     }
 
     fetchMiningFarms = async () => {

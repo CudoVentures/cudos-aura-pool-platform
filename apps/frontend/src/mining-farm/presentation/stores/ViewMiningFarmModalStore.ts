@@ -1,8 +1,6 @@
 import { action, makeObservable, observable, runInAction } from 'mobx';
 
 import ModalStore from '../../../core/presentation/stores/ModalStore';
-import S from '../../../core/utilities/Main';
-import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import GeneralStore from '../../../general/presentation/stores/GeneralStore';
 import EnergySourceEntity from '../../entities/EnergySourceEntity';
 import ManufacturerEntity from '../../entities/ManufacturerEntity';
@@ -64,21 +62,23 @@ export default class ViewMiningFarmModalStore extends ModalStore {
         this.miningFarmEntity = miningFarmEntity;
         this.onSave = onSave;
 
-        await this.generalStore.init();
+        const [manufacturerEntities, minerEntities, energySourceEntities] = await Promise.all([
+            this.miningFarmRepo.fetchManufacturers(),
+            this.miningFarmRepo.fetchMiners(),
+            this.miningFarmRepo.fetchEnergySources(),
+            this.generalStore.init(),
+        ]);
 
-        const manufacturerEntities = await this.miningFarmRepo.fetchManufacturers();
         const manufacturerEntitiesMap = new Map();
         manufacturerEntities.forEach((manufacturerEntity) => {
             manufacturerEntitiesMap.set(manufacturerEntity.manufacturerId, manufacturerEntity);
         });
 
-        const minerEntities = await this.miningFarmRepo.fetchMiners();
         const minerEntitiesMap = new Map();
         minerEntities.forEach((minerEntity) => {
             minerEntitiesMap.set(minerEntity.minerId, minerEntity);
         });
 
-        const energySourceEntities = await this.miningFarmRepo.fetchEnergySources();
         const energySourceEntitiesMap = new Map();
         energySourceEntities.forEach((energySourceEntity) => {
             energySourceEntitiesMap.set(energySourceEntity.energySourceId, energySourceEntity);

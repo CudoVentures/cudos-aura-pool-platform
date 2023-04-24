@@ -55,25 +55,26 @@ export default class CreditCollectionPageStore {
     }
 
     async init(collectionId: string) {
-        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
-        const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId);
-
         await runInActionAsync(() => {
             this.nftFilterModel.collectionIds = [collectionId];
-            this.collectionEntity = collectionEntity;
-            this.miningFarmEntity = miningFarmEntity;
-        })
+        });
 
-        await this.fetchCollectionDetails();
-        await this.fetchNfts();
-    }
+        const fetchNftPromise = this.fetchNfts();
 
-    async fetchCollectionDetails() {
-        const collectionDetailsEntity = await this.collectionRepo.fetchCollectionDetailsById(this.collectionEntity.id);
+        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
+
+        const [collectionDetailsEntity, miningFarmEntity] = await Promise.all([
+            this.collectionRepo.fetchCollectionDetailsById(collectionId),
+            this.miningFarmRepo.fetchMiningFarmById(collectionEntity.farmId),
+        ]);
 
         await runInActionAsync(() => {
+            this.collectionEntity = collectionEntity;
+            this.miningFarmEntity = miningFarmEntity;
             this.collectionDetailsEntity = collectionDetailsEntity;
-        })
+        });
+
+        await fetchNftPromise;
     }
 
     fetchNfts = async () => {

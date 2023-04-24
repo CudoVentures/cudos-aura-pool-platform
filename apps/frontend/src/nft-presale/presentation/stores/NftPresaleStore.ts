@@ -67,9 +67,11 @@ export default class NftPresaleStore {
         this.inited = false;
 
         this.presaleStore.update();
-        this.cudosStore.init();
-        this.fetchPresaleCollectionWithDetails();
-        this.fetchTotalWhitelistedCount();
+        await Promise.all([
+            this.cudosStore.init(),
+            this.fetchPresaleCollectionWithDetails(),
+            this.fetchTotalWhitelistedCount(),
+        ])
 
         await runInActionAsync(() => {
             this.inited = true;

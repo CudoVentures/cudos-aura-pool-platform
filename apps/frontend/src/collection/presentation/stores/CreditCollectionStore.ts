@@ -99,9 +99,12 @@ export default class CreditCollectionStore {
     async initAsEdit(collectionId: string) {
         this.initCreditValues();
 
-        await this.fetchCollectionData(collectionId);
         await this.fetchMiningFarm();
-        await this.fetchMiningFarmDetails();
+
+        await Promise.all([
+            this.fetchCollectionData(collectionId),
+            this.fetchMiningFarmDetails(),
+        ]);
 
         await runInActionAsync(() => {
             this.creditStep = CreditCollectionDetailsSteps.COLLECTION_DETAILS;
@@ -112,10 +115,13 @@ export default class CreditCollectionStore {
     async initAsAddNfts(collectionId: string) {
         this.initCreditValues();
 
-        await this.cudosStore.init();
-        await this.fetchCollectionData(collectionId);
         await this.fetchMiningFarm();
-        await this.fetchMiningFarmDetails();
+
+        await Promise.all([
+            this.cudosStore.init(),
+            this.fetchCollectionData(collectionId),
+            this.fetchMiningFarmDetails(),
+        ]);
 
         await runInActionAsync(() => {
             this.initNewNftEntity();
@@ -124,25 +130,27 @@ export default class CreditCollectionStore {
         });
     }
 
-    async fetchCollectionData(collectionId: string) {
-        const collectionEntity = await this.collectionRepo.fetchCollectionById(collectionId);
-
-        const nftFilter = new NftFilterModel();
-        nftFilter.collectionIds = [collectionId];
-        nftFilter.count = Number.MAX_SAFE_INTEGER;
-        const { nftEntities } = await this.nftRepo.fetchNftsByFilter(nftFilter);
-
-        await runInActionAsync(() => {
-            this.nftEntities = nftEntities;
-            this.collectionEntity = collectionEntity;
-        });
-    }
-
     async fetchMiningFarm() {
         const miningFarmEntity = await this.miningFarmRepo.fetchMiningFarmBySessionAccountId(MiningFarmStatus.APPROVED);
 
         await runInActionAsync(() => {
             this.miningFarmEntity = miningFarmEntity;
+        });
+    }
+
+    async fetchCollectionData(collectionId: string) {
+        const collectionEntityPromise = this.collectionRepo.fetchCollectionById(collectionId);
+
+        const nftFilter = new NftFilterModel();
+        nftFilter.collectionIds = [collectionId];
+        nftFilter.count = Number.MAX_SAFE_INTEGER;
+        const fetchNftPromise = this.nftRepo.fetchNftsByFilter(nftFilter);
+
+        const [collectionEntity, { nftEntities }] = await Promise.all([collectionEntityPromise, fetchNftPromise]);
+
+        await runInActionAsync(() => {
+            this.nftEntities = nftEntities;
+            this.collectionEntity = collectionEntity;
         });
     }
 
