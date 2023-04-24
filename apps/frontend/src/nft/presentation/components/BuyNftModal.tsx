@@ -40,10 +40,10 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
     }, []);
 
     function onClickPurchaseNft() {
-        if (buyNftModalStore.recipient === '') {
-            alertStore.show('You must specify BTC reward adress in your profile');
-            return;
-        }
+        // if (buyNftModalStore.recipient === '') {
+        //     alertStore.show('You must specify BTC reward adress in your profile');
+        //     return;
+        // }
 
         buyNftModalStore.buyNft();
     }
@@ -72,7 +72,11 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
                         </div>
                         <div>
                             <TextWithTooltip text={'Rewards Recepient Address'} tooltipText={'You can change this from Profile page'} />
-                            <div className = { 'ColorPrimary060 Bold' } >{buyNftModalStore.recipient}</div>
+                            { buyNftModalStore.recipient !== '' ? (
+                                <div className = { 'ColorPrimary060 Bold' } > { buyNftModalStore.recipient } </div>
+                            ) : (
+                                <div className = { 'ColorError060 Bold' } > You have not registered BTC reward address </div>
+                            ) }
                         </div>
 
                         <Checkbox

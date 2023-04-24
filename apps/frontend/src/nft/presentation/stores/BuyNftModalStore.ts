@@ -59,8 +59,10 @@ export default class BuyNftModalStore extends ModalStore {
     }
 
     async showSignal(nftEntity: NftEntity, cudosPrice: number, collectionEntity: CollectionEntity) {
-        const recipient = await this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress());
-        this.cudosStore.init();
+        const [recipient] = await Promise.all([
+            this.cudosRepo.fetchBitcoinPayoutAddress(this.walletStore.getAddress()),
+            this.cudosStore.init(),
+        ]);
 
         runInAction(() => {
             this.nftEntity = nftEntity;
