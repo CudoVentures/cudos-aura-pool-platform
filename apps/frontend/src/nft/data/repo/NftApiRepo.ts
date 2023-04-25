@@ -339,7 +339,7 @@ export default class NftApiRepo implements NftRepo {
                             ledger.accountAddress,
                             collectionEntity.denomId,
                             receiverAddress,
-                            Coin.fromPartial({ denom: CHAIN_DETAILS.NATIVE_TOKEN_DENOM, amount: usdPriceInAcudos.multipliedBy(new BigNumber(nftEntity.priceUsd)).toFixed(0) }),
+                            Coin.fromPartial({ denom: CHAIN_DETAILS.NATIVE_TOKEN_DENOM, amount: '1' }),
                             nftEntity.name,
                             nftEntity.imageUrl,
                             JSON.stringify({
