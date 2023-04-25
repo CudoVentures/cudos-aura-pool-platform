@@ -40,6 +40,10 @@ export default class NftFilterModel {
         makeAutoObservable(this);
     }
 
+    markApprovedCollections() {
+        this.collectionStatus = [CollectionStatus.APPROVED];
+    }
+
     static toJson(entity: NftFilterModel) {
         if (entity === null) {
             return null;

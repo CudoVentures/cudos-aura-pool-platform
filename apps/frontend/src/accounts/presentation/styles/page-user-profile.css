@@ -26,6 +26,20 @@
     margin-left: 16px;
 }
 
+.PageUserProfile .PageContent .MissingBtcAddressWarning {
+    margin-top: 16px;
+}
+
+.PageUserProfile .PageContent .MissingBtcAddressWarning .WarningLabel {
+    color: var(--color-warning-060);
+    gap: 8px;
+    margin-right: 16px;
+}
+
+.PageUserProfile .PageContent .MissingBtcAddressWarning .WarningLabel b {
+    text-transform: uppercase;
+}
+
 .PageUserProfile .SectionDivider {
     height: 1px;
     margin: 110px 0 24px 0;

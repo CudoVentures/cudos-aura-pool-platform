@@ -15,7 +15,7 @@ import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentatio
 import Button from '../../../core/presentation/components/Button';
 import Svg, { SvgSize } from '../../../core/presentation/components/Svg';
 import AnimationContainer from '../../../core/presentation/components/AnimationContainer';
-import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
+import TextWithTooltip, { TextWithTooltipType } from '../../../core/presentation/components/TextWithTooltip';
 import Checkbox from '../../../core/presentation/components/Checkbox';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -40,11 +40,6 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
     }, []);
 
     function onClickPurchaseNft() {
-        // if (buyNftModalStore.recipient === '') {
-        //     alertStore.show('You must specify BTC reward adress in your profile');
-        //     return;
-        // }
-
         buyNftModalStore.buyNft();
     }
 
@@ -71,11 +66,13 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
                             </div>
                         </div>
                         <div>
-                            <TextWithTooltip text={'Rewards Recepient Address'} tooltipText={'You can change this from Profile page'} />
                             { buyNftModalStore.recipient !== '' ? (
-                                <div className = { 'ColorPrimary060 Bold' } > { buyNftModalStore.recipient } </div>
+                                <>
+                                    <TextWithTooltip className = { 'FlexInline' } text={'Rewards Recepient Address'} tooltipText={'You can change this from Profile page'} />
+                                    <div className = { 'ColorPrimary060 Bold' } > { buyNftModalStore.recipient } </div>
+                                </>
                             ) : (
-                                <div className = { 'ColorError060 Bold' } > You have not registered BTC reward address </div>
+                                <TextWithTooltip className = { 'FlexInline' } type = { TextWithTooltipType.WARNING } text={'Bitcoin Address Not Added'} tooltipText={'We noticed you have not set your Bitcoin address yet. You can set it from your Profile page at any time.'} />
                             ) }
                         </div>
 

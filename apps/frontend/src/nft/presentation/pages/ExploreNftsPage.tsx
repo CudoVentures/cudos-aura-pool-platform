@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
-import NftEntity from '../../entities/NftEntity';
+import NftEntity, { tierPriceMap, NftTier } from '../../entities/NftEntity';
 import ExploreNftsPageStore from '../stores/ExploreNftsPageStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import { formatUsd } from '../../../core/utilities/NumberFormatter';
 
 import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
@@ -19,6 +20,7 @@ import LoadingIndicator from '../../../core/presentation/components/LoadingIndic
 import ExplorePageLayout from '../../../core/presentation/components/ExplorePageLayout';
 import DataGridLayout from '../../../core/presentation/components/DataGridLayout';
 import NavRowTabs, { createNavRowTab } from '../../../core/presentation/components/NavRowTabs';
+import StyledContainer, { ContainerPadding } from '../../../core/presentation/components/StyledContainer';
 
 import '../styles/page-explore-nfts.css';
 
@@ -68,19 +70,29 @@ function ExploreNftsPage({ exploreNftsPageStore }: Props) {
 
                     <DataGridLayout
                         headerLeft = { (
-                            <>
-                                <Input
-                                    inputType={InputType.TEXT}
-                                    className={'SearchBar'}
-                                    value = {nftFilterModel.searchString}
-                                    onChange = { exploreNftsPageStore.onChangeSearchWord }
-                                    placeholder = {'Search for NFT...'}
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" >
-                                            <Svg svg={SearchIcon} />
-                                        </InputAdornment>,
-                                    }} />
-                            </>
+                            <Input
+                                inputType={InputType.TEXT}
+                                className={'SearchBar'}
+                                value = {nftFilterModel.searchString}
+                                onChange = { exploreNftsPageStore.onChangeSearchWord }
+                                placeholder = {'Search for NFT...'}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start" >
+                                        <Svg svg={SearchIcon} />
+                                    </InputAdornment>,
+                                }} />
+                        ) }
+                        headerRight = { (
+                            <StyledContainer className = { 'InitialPublicPricesCnt' } containerPadding = { ContainerPadding.PADDING_16 } >
+                                <div><b>Initial Public Prices:</b></div>
+                                <div>
+                                    Opal: {formatUsd(tierPriceMap.get(NftTier.TIER_1))},
+                                    Ruby: {formatUsd(tierPriceMap.get(NftTier.TIER_2))},
+                                    Emerald: {formatUsd(tierPriceMap.get(NftTier.TIER_3))},
+                                    Diamond: {formatUsd(tierPriceMap.get(NftTier.TIER_4))},
+                                    Blue Diamond: {formatUsd(tierPriceMap.get(NftTier.TIER_5))}
+                                </div>
+                            </StyledContainer>
                         ) } >
 
                         { exploreNftsPageStore.nftEntities === null && (

@@ -24,14 +24,16 @@ import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentatio
 import Button, { ButtonColor, ButtonType } from '../../../core/presentation/components/Button';
 import EditUserModal from '../components/EditUserModal';
 import KycBadge from '../../../core/presentation/components/KycBadge';
+import MyPurchasesTab from '../components/user-profile/MyPurchasesTab';
+import StyledContainer, { ContainerPadding } from '../../../core/presentation/components/StyledContainer';
 
+import AddIcon from '@mui/icons-material/Add';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
 import SvgBtcLogo from '../../../public/assets/vectors/bitcoin-btc-logo.svg';
+import SvgWarning from '../../../public/assets/vectors/warning.svg';
 
 import '../styles/page-user-profile.css';
-import MyPurchasesTab from '../components/user-profile/MyPurchasesTab';
-import AddIcon from '@mui/icons-material/Add';
 
 type Props = {
     bitcoinStore?: BitcoinStore;
@@ -45,11 +47,6 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
     useEffect(() => {
         bitcoinStore.init();
         userProfilePageStore.init();
-        // async function init() {
-        //     await bitcoinStore.init();
-        //     await userProfilePageStore.init();
-        // }
-        // init();
     }, []);
 
     const accountEntity = accountSessionStore.accountEntity;
@@ -101,22 +98,24 @@ function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionSto
                         <a href={ProjectUtils.makeUrlExplorer(userEntity.cudosWalletAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userEntity.cudosWalletAddress}</a>
                         <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div>
                     </div>
-                    {userProfilePageStore.hasBitcoinPayoutWalletAddress() === false && (
-                        <Actions layout={ActionsLayout.LAYOUT_ROW_LEFT} height={ActionsHeight.HEIGHT_32}>
-                            <Button
-                                type={ButtonType.TEXT_INLINE}
-                                onClick={onClickEditBtcAddres}
-                            >
-                                <Svg svg = { AddIcon } />
-                                Add BTC Address
-                            </Button>
-                        </Actions>
-                    )}
-                    {userProfilePageStore.hasBitcoinPayoutWalletAddress() === true && (
+                    { userProfilePageStore.hasBitcoinPayoutWalletAddress() === false ? (
+                        <StyledContainer className = { 'MissingBtcAddressWarning FlexSplit FlexRow' } containerPadding = { ContainerPadding.PADDING_16 } >
+                            <div className = { 'WarningLabel FlexRow' }>
+                                <Svg className = { 'WarningSvg' } svg = { SvgWarning } />
+                                <b>Caution!</b> In order to receive rewards for the NFTs you have purchased, you must first add your BTC address.
+                            </div>
+                            <Actions className = { 'StartRight' } layout={ActionsLayout.LAYOUT_ROW_RIGHT} height={ActionsHeight.HEIGHT_42}>
+                                <Button
+                                    onClick={onClickEditBtcAddres}
+                                    color={ButtonColor.SCHEME_ORANGE_BORDER} >
+                                    <Svg svg = { AddIcon } /> Add BTC Address
+                                </Button>
+                            </Actions>
+                        </StyledContainer>
+                    ) : (
                         <div className={'FlexRow'}>
                             <Svg className = { 'IconBtc' } svg = { SvgBtcLogo } size={SvgSize.CUSTOM}/>
                             <a href={ProjectUtils.makeUrlBtcExplorer(userProfilePageStore.userBtcPayoutAddress)} target = "_blank" rel = 'noreferrer' className={'CudosWalletAddrees Dots Bold B1 ColorPrimary060'}>{userProfilePageStore.userBtcPayoutAddress}</a>
-                            {/* <div className={'JoinDate B3'}>Joined {accountEntity.formatDateJoined()}</div> */}
                         </div>
                     )}
                 </div>

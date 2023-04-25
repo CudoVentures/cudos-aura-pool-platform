@@ -51,8 +51,8 @@ const theme04 = createTheme({
             contrastText: '#EA4E4E',
         },
         secondary: {
-            main: '#EA4E4E',
-            contrastText: '#fff',
+            main: '#fff',
+            contrastText: '#F17400',
         },
     },
 });
@@ -70,6 +70,7 @@ export enum ButtonColor {
     SCHEME_GREEN,
     SCHEME_RED,
     SCHEME_RED_BORDER,
+    SCHEME_ORANGE_BORDER,
 }
 
 /* each member of the enum corresponds to a CSS class */
@@ -112,6 +113,7 @@ export default function Button({ className, type, color, padding, radius, border
             case ButtonColor.SCHEME_2:
             case ButtonColor.SCHEME_4:
             case ButtonColor.SCHEME_RED:
+            case ButtonColor.SCHEME_ORANGE_BORDER:
                 return 'secondary';
             case ButtonColor.SCHEME_1:
             case ButtonColor.SCHEME_3:
@@ -131,6 +133,7 @@ export default function Button({ className, type, color, padding, radius, border
             case ButtonColor.SCHEME_RED:
                 return theme03;
             case ButtonColor.SCHEME_RED_BORDER:
+            case ButtonColor.SCHEME_ORANGE_BORDER:
                 return theme04;
             case ButtonColor.SCHEME_1:
             case ButtonColor.SCHEME_2:
@@ -147,6 +150,7 @@ export default function Button({ className, type, color, padding, radius, border
         switch (color) {
             case ButtonColor.SCHEME_4:
             case ButtonColor.SCHEME_RED_BORDER:
+            case ButtonColor.SCHEME_ORANGE_BORDER:
                 return { 'border': `1px solid ${muiTheme().palette[cssMuiClassColor()].contrastText}` };
             default:
                 return null;
