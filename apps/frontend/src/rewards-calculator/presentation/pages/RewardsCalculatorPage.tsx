@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
+import { useSearchParams } from 'react-router-dom';
 
 import Actions, { ActionsHeight, ActionsLayout } from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
 import PageFooter from '../../../layout/presentation/components/PageFooter';
 import PageHeader from '../../../layout/presentation/components/PageHeader';
-import BitcoinStore from '../../../bitcoin-data/presentation/stores/BitcoinStore';
-import GeneralStore from '../../../general/presentation/stores/GeneralStore';
+import { formatBtc, formatPercent, formatTHs } from '../../../core/utilities/NumberFormatter';
 
 import Input, { InputType } from '../../../core/presentation/components/Input';
 import RewardsCalculatorStore from '../stores/RewardsCalculatorStore';
@@ -27,17 +27,13 @@ import ColumnLayout from '../../../core/presentation/components/ColumnLayout';
 import SvgReplayIcon from '@mui/icons-material/Replay';
 import SvgDriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import '../styles/page-rewards-calculator.css';
-import { formatBtc, formatPercent, formatTHs } from '../../../core/utilities/NumberFormatter';
-import { useSearchParams } from 'react-router-dom';
 
 type Props = {
-    bitcoinStore?: BitcoinStore;
-    generalStore?: GeneralStore;
     rewardsCalculatorStore?: RewardsCalculatorStore
 }
 
-function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorStore }: Props) {
-
+function RewardsCalculatorPage({ rewardsCalculatorStore }: Props) {
+    const { bitcoinStore, generalStore } = rewardsCalculatorStore;
     const bitcoinPriceChange = rewardsCalculatorStore.bitcoinStore.getBitcoinPriceChangeInUsd();
 
     const [networkDifficultyEditEnabled, setNetworkDifficultyEditEnabled] = useState(false);
@@ -48,8 +44,6 @@ function RewardsCalculatorPage({ bitcoinStore, generalStore, rewardsCalculatorSt
 
     useEffect(() => {
         async function run() {
-            await bitcoinStore.init();
-            await generalStore.init();
             await rewardsCalculatorStore.init();
             if (urlFarmId !== null && urlHashRate !== null) {
                 rewardsCalculatorStore.onChangeMiningFarm(urlFarmId);

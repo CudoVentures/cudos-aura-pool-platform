@@ -233,6 +233,7 @@ export default class AccountSessionStore {
     async loadSessionAccountsAndSync() {
         const { accountEntity, userEntity, adminEntity, superAdminEntity, shouldChangePassword } = await this.accountRepo.fetchSessionAccounts();
 
+        const promises = [];
         if (accountEntity?.isUser() === true && userEntity !== null) {
 
             await this.walletStore.tryConnect();
@@ -255,7 +256,7 @@ export default class AccountSessionStore {
                 }
             }
 
-            await this.loadAdminMiningFarmApproval();
+            promises.push(this.loadAdminMiningFarmApproval());
 
             // console.log('Logged as admin => wallet:', this.walletStore.isConnected())
         } else if (accountEntity?.isSuperAdmin() === true && superAdminEntity !== null) {
@@ -271,7 +272,9 @@ export default class AccountSessionStore {
             // console.log('Logged as super => wallet:', this.walletStore.isConnected())
         }
 
-        await this.kycStore.fetchKyc();
+        promises.push(this.kycStore.fetchKyc());
+
+        await Promise.all(promises);
         await runInActionAsync(() => {
             this.accountEntity = accountEntity;
             this.userEntity = userEntity;

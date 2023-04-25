@@ -26,11 +26,11 @@ function CreditMiningFarmDetailsPage({ creditMiningFarmDetailsPageStore }: Props
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function run() {
-            creditMiningFarmDetailsPageStore.init();
-        }
+        creditMiningFarmDetailsPageStore.init();
+        // async function run() {
+        // }
 
-        run();
+        // run();
     }, []);
 
     const navSteps: NavStep[] = [

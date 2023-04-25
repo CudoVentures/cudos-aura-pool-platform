@@ -58,7 +58,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
                     synchronize: false,
                     logging: false,
                     pool: {
-                        max: 8,
+                        max: 24,
                     },
                 }
             },

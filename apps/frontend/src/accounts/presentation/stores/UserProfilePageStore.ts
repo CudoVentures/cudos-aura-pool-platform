@@ -107,16 +107,19 @@ export default class UserProfilePageStore {
     async init() {
         this.initVariables();
 
-        await this.fetchMyNfts();
-        await this.fetchEarnings();
-        await this.fetchHistory();
-        await this.fetchPurchases();
+        const promises = [
+            this.fetchMyNfts(),
+            this.fetchEarnings(),
+            this.fetchHistory(),
+            this.fetchPurchases(),
+        ];
 
         const btcPayoutAddress = await this.accountSessionStore.fetchUserBitcoinPayoutWalletAddress();
-
         await runInActionAsync(() => {
             this.userBtcPayoutAddress = btcPayoutAddress;
-        })
+        });
+
+        await Promise.all(promises);
     }
 
     fetchMyNfts = async () => {

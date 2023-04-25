@@ -43,11 +43,13 @@ type Props = {
 
 function UserProfilePage({ bitcoinStore, userProfilePageStore, accountSessionStore, editUserModalStore, editUserBtcModalStore }: Props) {
     useEffect(() => {
-        async function init() {
-            await bitcoinStore.init();
-            await userProfilePageStore.init();
-        }
-        init();
+        bitcoinStore.init();
+        userProfilePageStore.init();
+        // async function init() {
+        //     await bitcoinStore.init();
+        //     await userProfilePageStore.init();
+        // }
+        // init();
     }, []);
 
     const accountEntity = accountSessionStore.accountEntity;

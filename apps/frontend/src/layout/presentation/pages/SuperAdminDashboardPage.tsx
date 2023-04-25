@@ -9,6 +9,7 @@ import SuperAdminDashboardPageStore from '../stores/SuperAdminDashboardPageStore
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
+import { formatCudos, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 import PageLayout from '../../../core/presentation/components/PageLayout';
 import PageFooter from '../../../layout/presentation/components/PageFooter';
@@ -28,23 +29,20 @@ import MegaWalletBalance from '../../../accounts/presentation/components/MegaWal
 import ChartHeading from '../../../analytics/presentation/components/ChartHeading';
 import DailyChart from '../../../analytics/presentation/components/DailyChart';
 import ChartInfo from '../../../analytics/presentation/components/ChartInfo';
+import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
 
 import '../styles/page-super-admin-dashboard.css';
-import TextWithTooltip from '../../../core/presentation/components/TextWithTooltip';
-import { formatCudos, formatUsd } from '../../../core/utilities/NumberFormatter';
 
 type Props = {
     superAdminDashboardPageStore?: SuperAdminDashboardPageStore
-    cudosStore?: CudosStore;
 }
 
-function SuperAdminDashboardPage({ superAdminDashboardPageStore, cudosStore }: Props) {
-    const { farmsDefaultIntervalPickerState, bestPerformingMiningFarms, earningsPerDayFilterEntity } = superAdminDashboardPageStore;
+function SuperAdminDashboardPage({ superAdminDashboardPageStore }: Props) {
+    const { cudosStore, farmsDefaultIntervalPickerState, bestPerformingMiningFarms, earningsPerDayFilterEntity } = superAdminDashboardPageStore;
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        cudosStore.init();
         superAdminDashboardPageStore.init();
     }, []);
 

@@ -73,7 +73,7 @@ export default class BitcoinStore {
     }
 
     formatBtcInUsd(btc: BigNumber): string {
-        return formatUsd(btc.multipliedBy(this.bitcoinDataEntity?.priceInUsd ?? 0).toNumber());
+        return formatUsd(btc.multipliedBy(this.getBitcoinPriceInUsd()).toNumber());
     }
 
     formatBitcoinPriceChangeInPercentage(): string {

@@ -83,12 +83,14 @@ export default class SuperAdminAnalyticsPageStore {
     }
 
     async init() {
-        await this.bitcoinStore.init();
-        await this.cudosStore.init();
-        await this.fetchFilterMiningFarms();
-        await this.fetchEarnings();
-        await this.fetchAggregatedStatistics();
-        await this.fetchNftEvents();
+        await Promise.all([
+            this.bitcoinStore.init(),
+            this.cudosStore.init(),
+            this.fetchFilterMiningFarms(),
+            this.fetchEarnings(),
+            this.fetchAggregatedStatistics(),
+            this.fetchNftEvents(),
+        ])
     }
 
     async fetchFilterMiningFarms() {
