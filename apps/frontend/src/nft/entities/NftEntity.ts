@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { makeAutoObservable } from 'mobx';
-import { format } from 'path';
 import { NOT_EXISTS_INT } from '../../../../backend/src/common/utils';
 import S from '../../core/utilities/Main';
 import { formatTHs, formatUsd } from '../../core/utilities/NumberFormatter';

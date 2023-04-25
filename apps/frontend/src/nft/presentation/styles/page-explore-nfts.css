@@ -1,4 +1,8 @@
-
 .PageExploreNfts .PageContent {
     padding: 48px  var(--page-spacing-h);
+}
+
+.PageExploreNfts .PageContent .InitialPublicPricesCnt {
+    width: auto;
+    text-align: right;
 }
