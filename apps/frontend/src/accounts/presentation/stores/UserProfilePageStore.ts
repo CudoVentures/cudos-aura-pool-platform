@@ -17,7 +17,6 @@ import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import PurchaseTransactionEntity from '../../../nft/entities/PurchaseTransactionEntity';
 import PurchaseTransactionsFilterModel from '../../../nft/entities/PurchaseTransactionsFilterModel';
 import TimeoutHelper from '../../../core/helpers/TimeoutHelper';
-import AccountRepo from '../repos/AccountRepo';
 import AccountSessionStore from './AccountSessionStore';
 
 export enum ProfilePages {
