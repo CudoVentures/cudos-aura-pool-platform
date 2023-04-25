@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react'
 import BigNumber from 'bignumber.js';
 
 import S from '../../../core/utilities/Main';
-import ProjectUtils from '../../../core/utilities/ProjectUtils';
 import SuperAdminAnalyticsPageStore from '../stores/SuperAdminAnalyticsPageStore';
 import CudosStore from '../../../cudos-data/presentation/stores/CudosStore';
 import { EarningsPerDayCurrency } from '../../entities/EarningsPerDayFilterEntity';
@@ -72,7 +71,7 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                 return (
                     <ChartInfo
                         label = { <TextWithTooltip text={'Total Platform NFT fees'} tooltipText={'Platform fee'} /> }
-                        value = { BitcoinStore.formatBtc(platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0))} />
+                        value = { formatBtc(platformTotalEarningsBtcEntity?.nftFeesTotalEarningsInBtc ?? new BigNumber(0))} />
                 )
             }
 
@@ -218,7 +217,10 @@ function SuperAdminAnalyticsPage({ superAdminAnalyticsPageStore, bitcoinStore, c
                         <DailyChart
                             timestampFrom = { superAdminAnalyticsPageStore.earningRangeState.startDate }
                             timestampTo = { superAdminAnalyticsPageStore.earningRangeState.endDate }
-                            data = { superAdminAnalyticsPageStore.getEarnings() } />
+                            data = { superAdminAnalyticsPageStore.getEarnings() }
+                            yAxisFormatter = { superAdminAnalyticsPageStore.earningsPerDayFilterEntity.isBtc() === true
+                                ? (value) => formatBtc(value, false, 8)
+                                : null } />
                     ) }
 
                 </StyledContainer>

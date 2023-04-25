@@ -20,7 +20,7 @@ import NftEntity from '../nft/entities/nft.entity';
 import { NFTService } from '../nft/nft.service';
 import { AddressPayoutHistoryEntity } from './entities/address-payout-history.entity';
 import CollectionPaymentAllocationStatisticsFilter from './entities/collection-payment-allocation-statistics-filter.entity';
-import { CollectionPaymentAllocationEntity } from './entities/collection-payment-allocation.entity';
+import { CollectionPaymentAllocationEntity, CollectionPaymontAllocationEarningType } from './entities/collection-payment-allocation.entity';
 import EarningsPerDayFilterEntity from './entities/earnings-per-day-filter.entity';
 import EarningsPerDayEntity, { EarningWithTimestampEntity } from './entities/earnings-per-day.entity';
 import MegaWalletEventFilterEntity from './entities/mega-wallet-event-filter.entity';
@@ -690,6 +690,19 @@ export class StatisticsService {
 
     private async fetchBtcEarnings(earningsPerDayFilterEntity: EarningsPerDayFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < BigNumber[] > {
         let address = null;
+
+        if (earningsPerDayFilterEntity.isCollectionIdSet() === true) {
+            const collectionpaymentAllocationFilterEntity = new CollectionPaymentAllocationStatisticsFilter();
+            collectionpaymentAllocationFilterEntity.collectionId = Number(earningsPerDayFilterEntity.collectionIds[0]);
+            collectionpaymentAllocationFilterEntity.timestampFrom = earningsPerDayFilterEntity.timestampFrom;
+            collectionpaymentAllocationFilterEntity.timestampTo = earningsPerDayFilterEntity.timestampTo;
+
+            const collectionPaymentAllocations = await this.fetchCollectionPaymentStatistics(collectionpaymentAllocationFilterEntity, dbTx, dbLock);
+            const earningsPerDayEntity = new EarningsPerDayEntity(earningsPerDayFilterEntity.timestampFrom, earningsPerDayFilterEntity.timestampTo);
+            earningsPerDayEntity.calculateEarningsByCollectionPaymentAllocations(collectionPaymentAllocations, CollectionPaymontAllocationEarningType.FARM_UNSOLD_LEFTOVER_FEE);
+
+            return earningsPerDayEntity.earningsPerDay;
+        }
 
         if (earningsPerDayFilterEntity.isEarningsReceiverFarm() === true) {
             const farm = await this.farmService.findMiningFarmById(parseInt(earningsPerDayFilterEntity.farmId), dbTx, dbLock);

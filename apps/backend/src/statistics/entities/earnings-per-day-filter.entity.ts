@@ -53,7 +53,7 @@ export default class EarningsPerDayFilterEntity {
         entity.timestampTo = json.timestampTo ?? entity.timestampTo;
         entity.currency = json.currency ?? entity.currency;
         entity.farmId = json.farmId ?? entity.farmId;
-        entity.collectionIds = null;
+        entity.collectionIds = json.collectionIds ?? entity.collectionIds;
 
         return entity;
     }

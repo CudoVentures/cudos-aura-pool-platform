@@ -2,6 +2,10 @@ import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { CollectionPaymentAllocationRepo } from '../repos/collection-payment-allocation.repo';
 
+export enum CollectionPaymontAllocationEarningType {
+    FARM_UNSOLD_LEFTOVER_FEE = 'FARM_UNSOLD_LEFTOVER_FEE'
+}
+
 export class CollectionPaymentAllocationEntity {
 
     id: number;

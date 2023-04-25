@@ -115,7 +115,6 @@ export class StatisticsController {
         this.earningsPerDayGuard.canActivate(req, reqFetchEarningsPerDay);
 
         const earningsPerDayEntity = EarningsPerDayFilterEntity.fromJson(reqFetchEarningsPerDay.earningsPerDayFilterEntity);
-
         const earningsEntity = await this.statisticsService.fetchEarningsPerDay(earningsPerDayEntity, req.transaction);
 
         return new ResFetchEarningsPerDay(earningsEntity);
