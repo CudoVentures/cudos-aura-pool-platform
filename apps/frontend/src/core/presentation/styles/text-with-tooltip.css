@@ -1,3 +1,10 @@
+.TextWithTooltip.TextWithTooltipTypeWarning {
+    color: var(--color-warning-060);
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: var(--color-warning-010);
+}
+
 .TextWithTooltip .TooltipText {
     margin-right: 10px;
 }

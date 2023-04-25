@@ -198,6 +198,10 @@ label {
     display:flex; flex-direction:column;
 }
 
+.FlexInline {
+    display:inline-flex;
+}
+
 .FlexGrow {
     flex: 1 1 auto;
 }
