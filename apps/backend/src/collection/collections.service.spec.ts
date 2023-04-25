@@ -123,7 +123,7 @@ describe('CollectionService', () => {
 
         const topCollectionsData = collectionEntities.sort((a, b) => {
             return b.id - a.id
-        });
+        }).filter((entity) => entity.isApproved());
 
         // Act
         const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo, undefined);
@@ -143,7 +143,7 @@ describe('CollectionService', () => {
 
         const topCollectionsData = collectionEntities.sort((a, b) => {
             return b.id - a.id
-        }).slice(0, -3);
+        }).filter((entity) => entity.isApproved()).slice(0, -3);
 
         // Act
         const topCollectionsResult = await service.findTopCollections(timestampFrom, timestampTo, undefined);

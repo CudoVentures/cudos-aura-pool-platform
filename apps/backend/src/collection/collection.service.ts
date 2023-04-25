@@ -110,6 +110,7 @@ export class CollectionService {
         const denomIds = nftEventEntities.map((nftEventEntity) => nftEventEntity.denomId);
         let collectionEntities = await this.findByDenomIds(denomIds, dbTx);
 
+        console.log(collectionEntities)
         collectionEntities = collectionEntities.filter((collectionEntity) => {
             return collectionEntity.isApproved() === true;
         });
