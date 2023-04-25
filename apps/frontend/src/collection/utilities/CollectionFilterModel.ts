@@ -41,7 +41,7 @@ export default class CollectionFilterModel {
         this.status = null;
     }
 
-    markApprovedCollectins() {
+    markApprovedCollections() {
         this.status = [CollectionStatus.APPROVED];
     }
 

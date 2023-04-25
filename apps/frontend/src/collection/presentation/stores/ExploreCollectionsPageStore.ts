@@ -27,6 +27,7 @@ export default class ExploreCollectionsPageStore {
 
         this.gridViewState = new GridViewState(this.fetch, 3, 4, 6);
         this.collectionFilterModel = new CollectionFilterModel();
+        this.collectionFilterModel.markApprovedCollections();
 
         this.collectionEntities = null;
         this.miningFarmEntitiesMap = new Map();

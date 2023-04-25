@@ -170,7 +170,7 @@ export default class CreditMiningFarmPageStore {
         if (this.accountSessionStore.accountEntity?.accountId === this.miningFarmEntity.accountId) {
             this.collectionFilterModel.markAnyCollectins();
         } else {
-            this.collectionFilterModel.markApprovedCollectins();
+            this.collectionFilterModel.markApprovedCollections();
         }
         const { collectionEntities, total } = await this.collectionRepo.fetchCollectionsByFilter(this.collectionFilterModel);
         await this.fetchCollectionDetails(collectionEntities);

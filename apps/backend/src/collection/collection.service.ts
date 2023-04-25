@@ -108,7 +108,11 @@ export class CollectionService {
 
         const { nftEventEntities } = await this.statisticsService.fetchNftEventsByFilter(null, nftEventFilterEntity, dbTx);
         const denomIds = nftEventEntities.map((nftEventEntity) => nftEventEntity.denomId);
-        const collectionEntities = await this.findByDenomIds(denomIds, dbTx);
+        let collectionEntities = await this.findByDenomIds(denomIds, dbTx);
+
+        collectionEntities = collectionEntities.filter((collectionEntity) => {
+            return collectionEntity.isApproved() === true;
+        });
 
         nftEventEntities.forEach((nftEventEntity) => {
             const value = turnoversMap.get(nftEventEntity.denomId) ?? 0;
