@@ -10,9 +10,10 @@ type Props = {
     timestampFrom: number,
     timestampTo: number,
     data: number[],
+    yAxisFormatter?: (label: number | string) => string;
 }
 
-export default function DailyChart({ className, timestampFrom, timestampTo, data }: Props) {
+export default function DailyChart({ className, timestampFrom, timestampTo, data, yAxisFormatter }: Props) {
 
     function calculatedLabels() {
         return data.map((number, i) => {
@@ -29,7 +30,8 @@ export default function DailyChart({ className, timestampFrom, timestampTo, data
             datasets = { [
                 createBarChartDataSet('', data, '#BEE9FF'),
             ] }
-            type = { ChartType.BAR } />
+            type = { ChartType.BAR }
+            yAxisFormatter = { yAxisFormatter } />
     )
 
 }

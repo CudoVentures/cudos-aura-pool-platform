@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Chart as ChartJs, Color, registerables } from 'chart.js';
 
 import '../styles/chart.css';
+import { formatBtc } from '../../utilities/NumberFormatter';
 
 ChartJs.register(...registerables);
 
@@ -23,6 +24,7 @@ type Props = {
     labels: any;
     datasets: any;
     type: ChartType;
+    yAxisFormatter?: (label: number | string) => string;
 }
 
 export function createChartDataSet(label, data, backgroundColor) {
@@ -59,7 +61,7 @@ export function createBarChartDataSet(label: string, data: number[], colors: Col
     }
 }
 
-export default function Chart({ className, labels, datasets, type }: Props) {
+export default function Chart({ className, labels, datasets, type, yAxisFormatter }: Props) {
 
     const rootNode = useRef(null);
     const canvasNode = useRef(null);
@@ -83,6 +85,17 @@ export default function Chart({ className, labels, datasets, type }: Props) {
 
         self.chart.data.labels = labels;
         self.chart.data.datasets = datasets;
+        self.chart.options.scales.y = {
+            ticks: {
+                callback(label, index, labels) {
+                    if (yAxisFormatter !== null) {
+                        return yAxisFormatter(label);
+                    }
+
+                    return label;
+                },
+            },
+        };
 
         self.chart.update();
     });
@@ -104,4 +117,5 @@ export default function Chart({ className, labels, datasets, type }: Props) {
 
 Chart.defaultProps = {
     'className': '',
+    'yAxisFormatter': null,
 };

@@ -119,6 +119,7 @@ export default class SuperAdminAnalyticsPageStore {
         this.earningsPerDayFilterEntity.timestampTo = this.earningRangeState.endDate;
 
         const earningsPerDayEntity = await this.statisticsRepo.fetchEarningsPerDay(this.earningsPerDayFilterEntity);
+        console.log(earningsPerDayEntity)
         await runInActionAsync(() => {
             this.earningsPerDayEntity = earningsPerDayEntity;
         })

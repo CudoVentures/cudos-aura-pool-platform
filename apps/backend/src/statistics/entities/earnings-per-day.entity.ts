@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { NOT_EXISTS_INT } from '../../common/utils';
 import { AddressPayoutHistoryEntity } from './address-payout-history.entity';
 import { NftOwnersPayoutHistoryEntity } from './nft-owners-payout-history.entity';
+import { CollectionPaymentAllocationEntity, CollectionPaymontAllocationEarningType } from './collection-payment-allocation.entity';
 
 export default class EarningsPerDayEntity {
 
@@ -19,6 +20,17 @@ export default class EarningsPerDayEntity {
 
         this.days = days;
         this.earningsPerDay = this.days.map(() => new BigNumber(0));
+    }
+
+    calculateEarningsByCollectionPaymentAllocations(collectionPaymentAllocations: CollectionPaymentAllocationEntity[], earningType: CollectionPaymontAllocationEarningType) {
+        collectionPaymentAllocations.forEach((collectionPaymentAllocationEntity) => {
+            const dayIndex = EarningsPerDayEntity.findIndexInDays(this.days, collectionPaymentAllocationEntity.createdAt);
+            if (dayIndex !== NOT_EXISTS_INT) {
+                if (earningType === CollectionPaymontAllocationEarningType.FARM_UNSOLD_LEFTOVER_FEE) {
+                    this.earningsPerDay[dayIndex] = this.earningsPerDay[dayIndex].plus(collectionPaymentAllocationEntity.farmUnsoldLeftoverFeeBtc);
+                }
+            }
+        });
     }
 
     calculateEarningsByAddressPayoutHistory(addressPayoutHistoryEntities: AddressPayoutHistoryEntity[]) {

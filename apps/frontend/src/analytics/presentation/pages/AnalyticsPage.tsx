@@ -156,7 +156,11 @@ function AnalyticsPage({ analyticsPageStore, walletStore }: Props) {
                         <DailyChart
                             timestampFrom = { analyticsPageStore.earningRangeState.startDate }
                             timestampTo = { analyticsPageStore.earningRangeState.endDate }
-                            data = { analyticsPageStore.getEarnings() } />
+                            data = { analyticsPageStore.getEarnings() }
+                            yAxisFormatter={ analyticsPageStore.earningsPerDayFilterEntity.isBtc()
+                                ? (value) => formatBtc(value, false, 8)
+                                : null }
+                        />
                     ) }
                 </StyledContainer>
 
