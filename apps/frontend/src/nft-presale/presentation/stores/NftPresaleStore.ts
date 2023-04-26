@@ -209,7 +209,7 @@ export default class NftPresaleStore {
             const cudosPrice = this.getPresalePriceInCudos()
 
             if (cudosBalance.lt(cudosPrice)) {
-                this.alertStore.show('Your balance is not enough to buy this.');
+                this.alertStore.show('You don’t have enough funds to purchase another NFT.');
                 return false;
             }
 
@@ -228,7 +228,7 @@ export default class NftPresaleStore {
             const ethPrice = this.getPresalePriceInEth()
 
             if (ethBalance.lt(ethPrice)) {
-                this.alertStore.show('Your balance is not enough to buy this.');
+                this.alertStore.show('You don’t have enough funds to purchase another NFT.');
                 return false;
             }
 

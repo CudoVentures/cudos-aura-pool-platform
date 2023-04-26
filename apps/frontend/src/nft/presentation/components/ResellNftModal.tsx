@@ -99,8 +99,8 @@ function ResellNftModal({ resellNftModalStore }: Props) {
                                     - {resellNftModalStore.collectionEntity.royalties}% secondary sale farm royalty
                             </div>)}
                             {resellNftModalStore.isTypeCancelResell() === true && (<div>
-                                You are about to cancel your listing. Are you sure you want proceed? You&aposll be asked to sign this cancelation from your wallet.<br/><br/>
-                                <b>Note</b>: You can list your NFTs for Sale at any time.
+                                You are about to cancel your listing. Are you sure you want proceed? You will be asked to sign this cancellation from your wallet.<br/><br/>
+                                <b>Note</b>: You can list your NFTs for sale at any time.
                             </div>)}
                         </InfoBlueBox>
                         {/* <div className={'CheckBoxText B2 SemiBold'}>Do you want to have immediate auto pay on sale or disperse as per the original payment schedule?</div>

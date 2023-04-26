@@ -108,7 +108,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
     async function onClickBuyNft() {
         const balance = walletStore.getBalanceSafe();
         if (balance.lt(cudosStore.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity))) {
-            alertStore.show('Your balance is not enough to buy this.');
+            alertStore.show('You don’t have enough funds to purchase this NFT.');
             return;
         }
 
@@ -117,7 +117,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         //     alertStore.positiveListener = () => {
         //         navigate(AppRoutes.USER_PROFILE);
         //     };
-        //     alertStore.msg = 'You must register BTC payout adress first';
+        //     alertStore.msg = 'You must register a BTC payout address first';
         //     alertStore.negativeLabel = 'Cancel';
         //     alertStore.visible = true;
         //     return;

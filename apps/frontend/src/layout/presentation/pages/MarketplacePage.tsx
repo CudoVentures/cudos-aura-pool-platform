@@ -88,7 +88,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     //         alertStore.positiveListener = () => {
     //             navigate(AppRoutes.USER_PROFILE);
     //         };
-    //         alertStore.msg = 'You must register BTC payout adress first';
+    //         alertStore.msg = 'You must register a BTC payout address first';
     //         alertStore.negativeLabel = 'Cancel';
     //         alertStore.visible = true;
     //         return false;
@@ -138,7 +138,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }
 
     function showSuccessAlert() {
-        alertStore.msg = 'You have successfully bought the NFTs. It should appear it your Profile page shortly. In case of an error you will be able to widthdraw your funds from Profile page as well.';
+        alertStore.msg = 'You have successfully bought the NFT. It should appear on your Profile page shortly, please check the status there. If there is an error, you will either be automatically refunded or you will be able to claim a refund from your Profile page.';
         alertStore.positiveLabel = 'Profile';
         alertStore.positiveListener = () => {
             navigate(AppRoutes.USER_PROFILE);
