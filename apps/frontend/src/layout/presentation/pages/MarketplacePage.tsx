@@ -170,13 +170,13 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
                 <div className={'MarketplaceHero'} >
                     <div className={'MarketplaceHeroInfo'} >
-                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >Mine BTC</div>
-                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Sustainably</div>
-                        <div className={'H3 MarketplaceHeroInfoDesc'} >Enabling mining power access to the next million miners</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The World's first Marketplace for</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Hashrate Collectibles</div>
+                        <div className={'H3 MarketplaceHeroInfoDesc'} >Mine Bitcoin, effortlessly</div>
                         <div className={'MarketplaceHeroInfoCons FlexRow'} >
-                            <label>Daily payments</label>
-                            <label>Mine on real bitcoin</label>
-                            <label>Simple process</label>
+                            <label>Sustainable mining</label>
+                            <label>Real bitcoin</label>
+                            <label>No hardware needed</label>
                         </div>
                         {nftPresaleStore.isPresaleOver() === true && (
                             <Actions>

@@ -15,14 +15,14 @@
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine1 {
     color: var(--color-neutral-100);
     text-transform: uppercase;
-    font-size: 80px;
+    font-size: 25px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine2 {
-    font-size: 80px;
+    font-size: 65px;
     margin-bottom: 16px;
 
-    background: linear-gradient(270deg, #67D271 0%, #08BDDC 100%);
+    background: linear-gradient(270deg, #050142  0%, #15f8e9 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
