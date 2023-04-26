@@ -122,7 +122,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                             createDataPreview('Resale royalties address', miningFarmEntity.resaleFarmRoyaltiesCudosAddress),
                             createDataPreview(
                                 // 'Pool rewards Address',
-                                <TextWithTooltip text={'Pool rewards Address'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />,
+                                <TextWithTooltip text={'Pool rewards Address'} tooltipText={'The BTC address which will receive the BTC from the mining pool.'} />,
                                 <Input
                                     // label = {
                                     //     <TextWithTooltip text={'BTC Address to receive awards'} tooltipText={'The BTC address which will collect all sales proceeds from sold NFTs.'} />
@@ -137,7 +137,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                             ),
                             createDataPreview(
                                 // 'Pool BTC wallet name',
-                                <TextWithTooltip text={'Pool BTC wallet name'} tooltipText={'The BTC wallet which will collect all sales proceeds from sold NFTs.'} />,
+                                <TextWithTooltip text={'Pool BTC wallet name'} tooltipText={'The BTC address which will receive the BTC from the mining pool.'} />,
                                 <Input
                                     // label = {
                                     //     <TextWithTooltip text={'BTC Wallet name on the BTC node'} tooltipText={'The BTC wallet which will collect all sales proceeds from sold NFTs.'} />
