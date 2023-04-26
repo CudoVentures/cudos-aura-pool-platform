@@ -95,8 +95,8 @@ function ResellNftModal({ resellNftModalStore }: Props) {
                         <InfoBlueBox alignment={InfoAlignment.TOP}>
                             {resellNftModalStore.isTypeCancelResell() === false && (<div>
                                 <b>Resale fees</b><br/>
-                                    - {resellNftModalStore.miningFarmEntity.cudosResaleNftRoyaltiesPercent}% secondary sales fee for Cudos<br/>
-                                    - {resellNftModalStore.collectionEntity.royalties}% secondary sale farm royalty
+                                    - {resellNftModalStore.miningFarmEntity.cudosResaleNftRoyaltiesPercent}% CUDOS Markets Secondary Resale Royalty<br/>
+                                    - {resellNftModalStore.collectionEntity.royalties}% Secondary NFT Sale Platform Fee
                             </div>)}
                             {resellNftModalStore.isTypeCancelResell() === true && (<div>
                                 You are about to cancel your listing. Are you sure you want proceed? You will be asked to sign this cancellation from your wallet.<br/><br/>

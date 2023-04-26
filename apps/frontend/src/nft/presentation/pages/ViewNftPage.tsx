@@ -153,7 +153,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         generalDatapreviews.push(createDataPreview('Mining Farm', <span className = { 'Clickable' } onClick = { onClickFarmLink }>{miningFarmEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Collection', <span className = { 'Clickable' } onClick = { onClickCollectionLink }>{collectionEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
-        generalDatapreviews.push(createDataPreview('Collection royalties', collectionEntity.formatRoyaltiesInPercentage()));
+        generalDatapreviews.push(createDataPreview('Secondary NFT Sale Platform Fee', collectionEntity.formatRoyaltiesInPercentage()));
         generalDatapreviews.push(createDataPreview('CUDOS Markets Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()));
 
         return generalDatapreviews;

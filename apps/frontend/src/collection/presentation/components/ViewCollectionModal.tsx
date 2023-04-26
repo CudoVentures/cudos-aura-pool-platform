@@ -35,7 +35,7 @@ function ViewCollectionModal({ cudosStore, viewCollectionModalStore }: Props) {
                             createDataPreview('Collection Name', collectionEntity.name),
                             createDataPreview('Description', <NewLine text = { collectionEntity.description } />),
                             createDataPreview('Hashing Power for collection', collectionEntity.formatHashPowerInTh()),
-                            createDataPreview('Collection Royalties', collectionEntity.formatRoyaltiesInPercentage()),
+                            createDataPreview('Secondary NFT Sale Platform Fee', collectionEntity.formatRoyaltiesInPercentage()),
                         ] } />
                     { nftEntities.map((nftEntity) => {
                         return (

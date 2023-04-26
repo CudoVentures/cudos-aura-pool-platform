@@ -260,7 +260,7 @@ function CreditCollectionDetailsForm({ alertStore, creditCollectionStore }: Prop
             <FieldColumnWrapper
                 field = {
                     <Input
-                        label={<TextWithTooltip text={'Secondary Sale Royalties'} tooltipText={'Secondary Sale Royalties'} />}
+                        label={<TextWithTooltip text={'Secondary NFT Sale Platform Fee'} tooltipText={'Fees charged on secondary sales of the NFTs.'} />}
                         placeholder={'Enter royalties...'}
                         value={secondarySaleRoyalties}
                         inputType={InputType.POSITIVE_REAL}
