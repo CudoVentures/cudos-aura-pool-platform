@@ -39,6 +39,25 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
     }
 
     function renderTier(tier: PresaleCollectionTier) {
+        const dataPreviews = [
+            createDataPreview('Total count', tier.totalCount),
+            createDataPreview('Giveaway count', tier.giveawayCount),
+            createDataPreview('Private sale count', tier.privateSaleCount),
+            createDataPreview('Presale count', tier.presaleCount),
+            createDataPreview('Public count', tier.publicSaleCount),
+            createDataPreview('Hash power in TH/s', tier.hashPowerInTh),
+            createDataPreview('Expiration date', moment(tier.expirationDateTimestamp).format(ProjectUtils.MOMENT_FORMAT_DATE_AND_TIME)),
+            createDataPreview('Price in USD', tier.priceUsd),
+            createDataPreview('Artist name', tier.artistName),
+            createDataPreview('Default image', <a href = { tier.defaultImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
+        ]
+
+        if (tier.hasUniqueImgUrl() === true) {
+            dataPreviews.push(
+                createDataPreview('Presale 1st NFT image', <a href = { tier.uniqueImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
+            );
+        }
+
         return (
             <div className={'FlexRow FlexSplit NftTierLine'}>
                 <div className = { 'H3 Bold ColorPrimary060' }>
@@ -49,20 +68,7 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                     styledContainerProps = { {
                         containerPadding: ContainerPadding.PADDING_16,
                     } }
-                    dataPreviews = { [
-                        createDataPreview('Total count', tier.totalCount),
-                        createDataPreview('Giveaway count', tier.giveawayCount),
-                        createDataPreview('Private sale count', tier.privateSaleCount),
-                        createDataPreview('Presale count', tier.presaleCount),
-                        createDataPreview('Public count', tier.publicSaleCount),
-                        createDataPreview('Hash power in TH/s', tier.hashPowerInTh),
-                        createDataPreview('Expiration date', moment(tier.expirationDateTimestamp).format(ProjectUtils.MOMENT_FORMAT_DATE_AND_TIME)),
-                        createDataPreview('Price in USD', tier.priceUsd),
-                        createDataPreview('Artist name', tier.artistName),
-                        createDataPreview('Default image', <a href = { tier.defaultImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
-                        createDataPreview('Giveaway 1st NFT image', <a href = { tier.uniqueImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
-                        createDataPreview('Presale 1st NFT image', <a href = { tier.uniqueImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
-                    ] } />
+                    dataPreviews = { dataPreviews } />
             </div>
         )
     }
@@ -82,6 +88,8 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                             royalties: 3,
                             totalNfts: 3333,
                             expectedTotalHashPower: 123,
+                            coverImgUrl: 'https://...',
+                            profileImgUrl: 'https://...',
                             nfts: {
                                 opal: {
                                     totalCount: 643,
@@ -93,6 +101,7 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                                     hashPowerInTh: 5,
                                     expirationDateTimestamp: 1811804400000,
                                     artistName: 'Delux3',
+                                    defaultImgUrl: 'https://...',
                                 },
                                 ruby: {
                                     totalCount: 2500,
@@ -104,6 +113,8 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                                     hashPowerInTh: 10,
                                     expirationDateTimestamp: 1811804400000,
                                     artistName: 'Delux3',
+                                    defaultImgUrl: 'https://...',
+                                    uniqueImgUrl: 'https://...',
                                 },
                                 emerald: {
                                     totalCount: 167,
@@ -115,6 +126,8 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                                     hashPowerInTh: 33,
                                     expirationDateTimestamp: 1811804400000,
                                     artistName: 'Delux3',
+                                    defaultImgUrl: 'https://...',
+                                    uniqueImgUrl: 'https://...',
                                 },
                                 diamond: {
                                     totalCount: 17,
@@ -126,6 +139,8 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                                     hashPowerInTh: 100,
                                     expirationDateTimestamp: 1811804400000,
                                     artistName: 'Delux3',
+                                    defaultImgUrl: 'https://...',
+                                    uniqueImgUrl: 'https://...',
                                 },
                                 blueDiamond: {
                                     totalCount: 6,
@@ -137,6 +152,7 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                                     hashPowerInTh: 170,
                                     expirationDateTimestamp: 1811804400000,
                                     artistName: 'Delux3',
+                                    defaultImgUrl: 'https://...',
                                 },
                             },
                         }} />
@@ -184,6 +200,8 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                                 createDataPreview('Royalties in %', presaleCollectionEntity.royalties),
                                 createDataPreview('Total NFTs', presaleCollectionEntity.totalNfts),
                                 createDataPreview('Denom id', presaleCollectionEntity.denomId),
+                                createDataPreview('Cover image', <a href = { presaleCollectionEntity.coverImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
+                                createDataPreview('Profile image', <a href = { presaleCollectionEntity.profileImgUrl } target='_blank' rel="noreferrer" className = { 'ColorPrimary060' }>View</a>),
                             ] } />
 
                         { renderTier(presaleCollectionEntity.nfts.opal) }
