@@ -195,11 +195,9 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 {nftPresaleStore.isPresaleOver() === true && (<>
                     <div className={'MarketplaceHeading '}>
                         <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
-                        <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
                     </div>
 
                     <div className={'SectionWrapper'} >
-                        <div className={'H2 ExtraBold SectionHeadingCnt'}>Trending NFTs</div>
                         {marketplacePageStore.trendingNftEntities.length === 0 ? (
                             <div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>
                         ) : (
@@ -230,7 +228,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     <div className={'SectionWrapper SectionHashRateDrops'} >
                         <div className={'HashRateDropsInfo FlexColumn'} >
                             <div className={'H2 ExtraBold'} >New Hash Rate NFT Drops</div>
-                            <div className={'B1'} >Powered by CUDOS Markets Protocol</div>
+                            <div className={'B1'} >Powered by CUDOS Markets</div>
                             <Actions className={'HashRateDropsInfoActions'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} >
                                 <Button
                                     border={ButtonBorder.NO_BORDER}
