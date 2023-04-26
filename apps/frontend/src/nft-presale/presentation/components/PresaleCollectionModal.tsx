@@ -81,6 +81,7 @@ function PresaleCollectionModal({ presaleCollectionModalStore, alertStore, walle
                             description: 'The third collection from...',
                             royalties: 3,
                             totalNfts: 3333,
+                            expectedTotalHashPower: 123,
                             nfts: {
                                 opal: {
                                     totalCount: 643,
