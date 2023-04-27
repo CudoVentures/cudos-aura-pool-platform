@@ -9,6 +9,8 @@ export class PresaleCollectionEntity {
     totalNfts: number;
     expectedTotalHashPower: number;
     denomId: string;
+    coverImgUrl: string;
+    profileImgUrl: string;
     nfts: PresaleCollectionTrirObj;
 
     constructor() {
@@ -17,6 +19,8 @@ export class PresaleCollectionEntity {
         this.royalties = S.NOT_EXISTS;
         this.totalNfts = 0;
         this.denomId = '';
+        this.coverImgUrl = '';
+        this.profileImgUrl = '';
         this.nfts = null;
     }
 
@@ -45,8 +49,20 @@ export class PresaleCollectionEntity {
             throw Error(`Missing expectedTotalHashPower. Invalid JSON ${JSON.stringify(json)}`);
         }
 
-        if (typeof (json.nfts) !== 'object') {
-            throw Error(`Missing nfts. Invalid JSON ${JSON.stringify(json)}`);
+        if (typeof (json.coverImgUrl) !== 'string') {
+            throw Error(`Missing coverImgUrl. Invalid JSON ${JSON.stringify(json)}`);
+        }
+
+        if (typeof (json.profileImgUrl) !== 'string') {
+            throw Error(`Missing profileImgUrl. Invalid JSON ${JSON.stringify(json)}`);
+        }
+
+        if (json.coverImgUrl === '') {
+            throw Error(`Empty coverImgUrl. Invalid JSON ${JSON.stringify(json)}`);
+        }
+
+        if (json.profileImgUrl === '') {
+            throw Error(`Empty profileImgUrl. Invalid JSON ${JSON.stringify(json)}`);
         }
 
         if (typeof (json.nfts) !== 'object') {
@@ -61,6 +77,8 @@ export class PresaleCollectionEntity {
         entity.totalNfts = parseInt(json.totalNfts ?? entity.totalNfts.toString());
         entity.expectedTotalHashPower = parseInt(json.expectedTotalHashPower ?? entity.expectedTotalHashPower.toString());
         entity.nfts = PresaleCollectionTrirObj.fromJson(json.nfts);
+        entity.coverImgUrl = json.coverImgUrl ?? entity.coverImgUrl;
+        entity.profileImgUrl = json.profileImgUrl ?? entity.profileImgUrl;
         entity.denomId = entity.name.toLowerCase().replace(/ /g, '');
 
         return entity;
@@ -156,32 +174,45 @@ export class PresaleCollectionTier {
         switch (this.name) {
             case 'Opal':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_1);
-                this.defaultImgUrl = '/assets/presale-nft-images/level1-01.png';
-                this.uniqueImgUrl = '/assets/presale-nft-images/level1-02.png';
+                // this.defaultImgUrl = '/assets/presale-nft-images/level1-01.png';
+                // this.uniqueImgUrl = '/assets/presale-nft-images/level1-02.png';
                 break;
             case 'Ruby':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_2);
-                this.defaultImgUrl = '/assets/presale-nft-images/level2-01.png';
-                this.uniqueImgUrl = '/assets/presale-nft-images/level2-02.png';
+                if (this.presaleCount < 1) {
+                    throw Error('Ruby\'s presale count cannot be less than 1');
+                }
+                // this.defaultImgUrl = '/assets/presale-nft-images/level2-01.png';
+                // this.uniqueImgUrl = '/assets/presale-nft-images/level2-02.png';
                 break;
             case 'Emerald':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_3);
-                this.defaultImgUrl = '/assets/presale-nft-images/level3-01.png';
-                this.uniqueImgUrl = '/assets/presale-nft-images/level3-02.png';
+                if (this.presaleCount < 1) {
+                    throw Error('Emerald\'s presale count cannot be less than 1');
+                }
+                // this.defaultImgUrl = '/assets/presale-nft-images/level3-01.png';
+                // this.uniqueImgUrl = '/assets/presale-nft-images/level3-02.png';
                 break;
             case 'Diamond':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_4);
-                this.defaultImgUrl = '/assets/presale-nft-images/level4-01.png';
-                this.uniqueImgUrl = '/assets/presale-nft-images/level4-02.png';
+                if (this.presaleCount < 1) {
+                    throw Error('Diamond\'s presale count cannot be less than 1');
+                }
+                // this.defaultImgUrl = '/assets/presale-nft-images/level4-01.png';
+                // this.uniqueImgUrl = '/assets/presale-nft-images/level4-02.png';
                 break;
             case 'Blue Diamond':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_5);
-                this.defaultImgUrl = '/assets/presale-nft-images/level5-01.png';
-                this.uniqueImgUrl = '/assets/presale-nft-images/level5-02.png';
+                // this.defaultImgUrl = '/assets/presale-nft-images/level5-01.png';
+                // this.uniqueImgUrl = '/assets/presale-nft-images/level5-02.png';
                 break;
             default:
                 throw new Error(`Invalid name. ${this.name}`)
         }
+    }
+
+    hasUniqueImgUrl(): boolean {
+        return this.uniqueImgUrl !== '';
     }
 
     static fromJson(json: any): PresaleCollectionTier {
@@ -225,6 +256,24 @@ export class PresaleCollectionTier {
             throw Error(`Missing artistName. Invalid JSON ${JSON.stringify(json)}`);
         }
 
+        if (typeof (json.defaultImgUrl) !== 'string') {
+            throw Error(`Missing defaultImgUrl. Invalid JSON ${JSON.stringify(json)}`);
+        }
+
+        if (json.defaultImgUrl === '') {
+            throw Error(`Empty defaultImgUrl. Invalid JSON ${JSON.stringify(json)}`);
+        }
+
+        if (json.uniqueImgUrl !== undefined) {
+            if (typeof (json.uniqueImgUrl) !== 'string') {
+                throw Error(`Missing uniqueImgUrl. Invalid JSON ${JSON.stringify(json)}`);
+            }
+
+            if (json.uniqueImgUrl === '') {
+                throw Error(`Empty uniqueImgUrl. Invalid JSON ${JSON.stringify(json)}`);
+            }
+        }
+
         const entity = new PresaleCollectionTier();
 
         entity.totalCount = parseInt(json.totalCount ?? entity.totalCount.toString());
@@ -236,6 +285,8 @@ export class PresaleCollectionTier {
         entity.hashPowerInTh = parseInt(json.hashPowerInTh ?? entity.hashPowerInTh.toString());
         entity.expirationDateTimestamp = parseInt(json.expirationDateTimestamp ?? entity.expirationDateTimestamp.toString());
         entity.artistName = json.artistName ?? entity.artistName;
+        entity.defaultImgUrl = json.defaultImgUrl ?? entity.defaultImgUrl;
+        entity.uniqueImgUrl = json.uniqueImgUrl ?? entity.uniqueImgUrl;
 
         entity.populateDataBasedOnName();
 

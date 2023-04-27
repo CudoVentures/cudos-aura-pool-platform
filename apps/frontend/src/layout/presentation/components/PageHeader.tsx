@@ -16,6 +16,7 @@ import KycBadge from '../../../core/presentation/components/KycBadge';
 
 import SvgAuraPoolLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
 import '../styles/page-header.css'
+import { REWARDS_CALCULATOR } from '../../../core/utilities/Links';
 
 type Props = {
     accountSessionStore?: AccountSessionStore,
@@ -39,9 +40,9 @@ function PageHeader({ accountSessionStore, walletStore, presaleStore }: Props) {
         navigate(AppRoutes.MARKETPLACE);
     }
 
-    function onClickRewardsCalculator() {
-        navigate(AppRoutes.REWARDS_CALCULATOR);
-    }
+    // function onClickRewardsCalculator() {
+    //     navigate(AppRoutes.REWARDS_CALCULATOR);
+    // }
 
     function onClickAdminPortal() {
         navigate(AppRoutes.HOME);
@@ -62,7 +63,8 @@ function PageHeader({ accountSessionStore, walletStore, presaleStore }: Props) {
                 { presaleStore.isInPresale() === true && (
                     <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>{ presaleStore.isInPresale() === true ? 'Presale' : 'Marketplace' }</div>
                 ) }
-                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div>
+                {/* <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div> */}
+                <a className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} href={REWARDS_CALCULATOR} target='_blank' rel="noreferrer">Rewards Calculator</a>
 
                 { accountSessionStore.isUser() === true && (
                     <div
