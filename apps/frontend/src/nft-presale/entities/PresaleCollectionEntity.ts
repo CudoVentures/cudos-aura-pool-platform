@@ -179,16 +179,25 @@ export class PresaleCollectionTier {
                 break;
             case 'Ruby':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_2);
+                if (this.presaleCount < 1) {
+                    throw Error('Ruby\'s presale count cannot be less than 1');
+                }
                 // this.defaultImgUrl = '/assets/presale-nft-images/level2-01.png';
                 // this.uniqueImgUrl = '/assets/presale-nft-images/level2-02.png';
                 break;
             case 'Emerald':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_3);
+                if (this.presaleCount < 1) {
+                    throw Error('Emerald\'s presale count cannot be less than 1');
+                }
                 // this.defaultImgUrl = '/assets/presale-nft-images/level3-01.png';
                 // this.uniqueImgUrl = '/assets/presale-nft-images/level3-02.png';
                 break;
             case 'Diamond':
                 this.priceUsd = tierPriceMap.get(NftTier.TIER_4);
+                if (this.presaleCount < 1) {
+                    throw Error('Diamond\'s presale count cannot be less than 1');
+                }
                 // this.defaultImgUrl = '/assets/presale-nft-images/level4-01.png';
                 // this.uniqueImgUrl = '/assets/presale-nft-images/level4-02.png';
                 break;
