@@ -19,6 +19,7 @@
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine2 {
+    line-height: 110%;
     font-size: 65px;
     margin-bottom: 16px;
 

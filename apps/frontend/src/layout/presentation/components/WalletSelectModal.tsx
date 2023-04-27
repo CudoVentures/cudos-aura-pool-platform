@@ -301,7 +301,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     { walletSelectModalStore.isProgressStepConnectWallet() === true ? (
                         <div className = { 'WalletInfo FlexColumn' }>
                             <div>Can’t see your wallet here?</div>
-                            <a className={'ColorPrimary060'} href = { 'https://discord.gg/7DPZ45C4ms' }>Let us know</a>
+                            <a className={'ColorPrimary060'} href = { 'https://discord.gg/7DPZ45C4ms' } target='_blank' rel="noreferrer">Let us know</a>
                         </div>
                     ) : (
                         <>

@@ -171,7 +171,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 <div className={'MarketplaceHero'} >
                     <div className={'MarketplaceHeroInfo'} >
                         <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The World's first Marketplace for</div>
-                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Hashrate Collectibles</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Hashrate<br />Collectibles</div>
                         <div className={'H3 MarketplaceHeroInfoDesc'} >Mine Bitcoin, effortlessly</div>
                         <div className={'MarketplaceHeroInfoCons FlexRow'} >
                             <label>Sustainable mining</label>
@@ -355,6 +355,13 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                                     <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
                                                 </div>
                                             </div>
+                                            {/* <div className={'WhitelistedInfo B2 SemiBold ColorNeutral060'}>Whitelisted: <span className={'ColorNeutral100'}>{nftPresaleStore.totalWhitelistedUsersCount}</span></div> */}
+                                        </div>
+                                        {/* <Progressbar fillPercent={nftPresaleStore.getPresaleMintedPercent()} />
+                                        <div className={'AmountMintedRow FlexRow'}>
+                                            <div className={'B3 ColorNeutral60'}>Minted so far</div>
+                                            <div className={'B3 ColorNeutral60'}>{nftPresaleStore.getPresaleMintedPercent().toFixed(2)}% ({nftPresaleStore.getPresaleMintedAmount()}/{nftPresaleStore.getPresaleTotalAmount()})</div>
+                                        </div> */}
                                     </ColumnLayout>
                                 </StyledContainer>
                                 <StyledContainer

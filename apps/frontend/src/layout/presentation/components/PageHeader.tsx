@@ -59,7 +59,9 @@ function PageHeader({ accountSessionStore, walletStore, presaleStore }: Props) {
             </div>
 
             <div className={'NavCnt FlexRow'}>
-                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>{ presaleStore.isInPresale() === true ? 'Presale' : '' }</div>
+                { presaleStore.isInPresale() === true && (
+                    <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>{ presaleStore.isInPresale() === true ? 'Presale' : 'Marketplace' }</div>
+                ) }
                 <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div>
 
                 { accountSessionStore.isUser() === true && (
