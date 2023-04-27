@@ -109,7 +109,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
     async function onClickBuyNft() {
         const balance = walletStore.getBalanceSafe();
         if (balance.lt(cudosStore.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity))) {
-            alertStore.show('Your balance is not enough to buy this.');
+            alertStore.show('You don’t have enough funds to purchase this NFT.');
             return;
         }
 
@@ -118,7 +118,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         //     alertStore.positiveListener = () => {
         //         navigate(AppRoutes.USER_PROFILE);
         //     };
-        //     alertStore.msg = 'You must register BTC payout adress first';
+        //     alertStore.msg = 'You must register a BTC payout address first';
         //     alertStore.negativeLabel = 'Cancel';
         //     alertStore.visible = true;
         //     return;
@@ -154,7 +154,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         generalDatapreviews.push(createDataPreview('Mining Farm', <span className = { 'Clickable' } onClick = { onClickFarmLink }>{miningFarmEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Collection', <span className = { 'Clickable' } onClick = { onClickCollectionLink }>{collectionEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
-        generalDatapreviews.push(createDataPreview('Collection royalties', collectionEntity.formatRoyaltiesInPercentage()));
+        generalDatapreviews.push(createDataPreview('Secondary NFT Sale Platform Fee', collectionEntity.formatRoyaltiesInPercentage()));
         generalDatapreviews.push(createDataPreview('CUDOS Markets Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()));
 
         return generalDatapreviews;

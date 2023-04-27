@@ -39,17 +39,9 @@ export default function PageFooter() {
                 <div className={'StartRightBlock FooterNav'}>
                     <div className={'LinksColumn'}>
                         <div className='H3 Bold'>Join Us</div>
-                        <a href={LINKEDIN} target={'_blank'} rel={'noreferrer'} >LinkedIn</a>
+                        <a href={DISCORD} target={'_blank'} rel={'noreferrer'} >Discord</a>
                         <a href={TWITTER} target={'_blank'} rel={'noreferrer'} >Twitter</a>
                         <a href={MEDIUM} target={'_blank'} rel={'noreferrer'} >Medium</a>
-                        <a href={FACEBOOK} target={'_blank'} rel={'noreferrer'} >Facebook</a>
-                    </div>
-                    <div className={'LinksColumn'}>
-                        <div className='H3 Bold VisibilityHidden'>Join Us</div>
-                        <a href={TELEGRAM} target={'_blank'} rel={'noreferrer'} >Telegram</a>
-                        <a href={DISCORD} target={'_blank'} rel={'noreferrer'} >Discord</a>
-                        <a href={SPOTIFY} target={'_blank'} rel={'noreferrer'} >Spotify</a>
-                        <a href={YOUTUBE} target={'_blank'} rel={'noreferrer'} >Youtube</a>
                     </div>
                     <div className={'LinksColumn'}>
                         <div className='H3 Bold'>Marketplace</div>
@@ -68,8 +60,8 @@ export default function PageFooter() {
             <div className={'FooterNav FlexRow TermsContainer'} >
                 <a href={TERMS_AND_CONDITIONS} target='_blank' rel="noreferrer" >Terms &amp; Conditions</a>
                 <a href={PRIVACY_POLICY} target='_blank' rel="noreferrer" >Privacy Policy</a>
-                <a href={WEBSITE} target={'_blank'} rel={'noreferrer'} >Cudos.org</a>
-                <a>License &copy; 2018 - {new Date().getFullYear()}</a>
+                <a href={WEBSITE} target={'_blank'} rel={'noreferrer'} >CUDOSMarkets.com</a>
+                <a>License &copy; {new Date().getFullYear()}</a>
                 <a>v{PackageJson.version}</a>
             </div>
         </footer>

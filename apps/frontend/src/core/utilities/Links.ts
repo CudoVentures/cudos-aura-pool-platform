@@ -1,8 +1,8 @@
-export const WEBSITE = 'https://www.cudos.org/';
-export const DISCORD = 'https://discord.com/invite/t397SKqf4u';
-export const TELEGRAM = 'https://t.me/cudostelegram';
-export const TWITTER = 'https://twitter.com/CUDOS_';
+export const WEBSITE = 'https://www.cudosmarkets.com';
+export const DISCORD = 'https://discord.gg/7DPZ45C4ms';
+export const TWITTER = 'https://twitter.com/CudosMarkets';
 export const GITHUB = 'https://github.com/CudoVentures';
+export const MEDIUM = 'https://medium.com/cudos-markets';
 export const REDDIT = 'https://www.reddit.com/r/CUDOS/';
 export const LINKEDIN = 'https://www.linkedin.com/company/cudos1/';
 export const FACEBOOK = 'https://www.facebook.com/cudos.org/';

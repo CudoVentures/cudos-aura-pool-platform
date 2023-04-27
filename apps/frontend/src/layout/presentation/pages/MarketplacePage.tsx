@@ -88,7 +88,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     //         alertStore.positiveListener = () => {
     //             navigate(AppRoutes.USER_PROFILE);
     //         };
-    //         alertStore.msg = 'You must register BTC payout adress first';
+    //         alertStore.msg = 'You must register a BTC payout address first';
     //         alertStore.negativeLabel = 'Cancel';
     //         alertStore.visible = true;
     //         return false;
@@ -138,7 +138,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }
 
     function showSuccessAlert() {
-        alertStore.msg = 'You have successfully bought the NFTs. It should appear it your Profile page shortly. In case of an error you will be able to widthdraw your funds from Profile page as well.';
+        alertStore.msg = 'You have successfully bought the NFT. It should appear on your Profile page shortly, please check the status there. If there is an error, you will either be automatically refunded or you will be able to claim a refund from your Profile page.';
         alertStore.positiveLabel = 'Profile';
         alertStore.positiveListener = () => {
             navigate(AppRoutes.USER_PROFILE);
@@ -170,13 +170,13 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
                 <div className={'MarketplaceHero'} >
                     <div className={'MarketplaceHeroInfo'} >
-                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >Mine BTC</div>
-                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Sustainably</div>
-                        <div className={'H3 MarketplaceHeroInfoDesc'} >Enabling mining power access to the next million miners</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The World's first Marketplace for</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Hashrate<br />Collectibles</div>
+                        <div className={'H3 MarketplaceHeroInfoDesc'} >Mine Bitcoin, effortlessly</div>
                         <div className={'MarketplaceHeroInfoCons FlexRow'} >
-                            <label>Daily payments</label>
-                            <label>Mine on real bitcoin</label>
-                            <label>Simple process</label>
+                            <label>Sustainable mining</label>
+                            <label>Real bitcoin</label>
+                            <label>No hardware needed</label>
                         </div>
                         {nftPresaleStore.isPresaleOver() === true && (
                             <Actions>
@@ -195,11 +195,9 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 {nftPresaleStore.isPresaleOver() === true && (<>
                     <div className={'MarketplaceHeading '}>
                         <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
-                        <div className={'B1 ColorNeutral060'}>Farms, collections, and NFTs that accumulate value.</div>
                     </div>
 
                     <div className={'SectionWrapper'} >
-                        <div className={'H2 ExtraBold SectionHeadingCnt'}>Trending NFTs</div>
                         {marketplacePageStore.trendingNftEntities.length === 0 ? (
                             <div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>
                         ) : (
@@ -230,7 +228,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     <div className={'SectionWrapper SectionHashRateDrops'} >
                         <div className={'HashRateDropsInfo FlexColumn'} >
                             <div className={'H2 ExtraBold'} >New Hash Rate NFT Drops</div>
-                            <div className={'B1'} >Powered by CUDOS Markets Protocol</div>
+                            <div className={'B1'} >Powered by CUDOS Markets</div>
                             <Actions className={'HashRateDropsInfoActions'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} >
                                 <Button
                                     border={ButtonBorder.NO_BORDER}
@@ -357,13 +355,13 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                                     <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
                                                 </div>
                                             </div>
-                                            <div className={'WhitelistedInfo B2 SemiBold ColorNeutral060'}>Whitelisted: <span className={'ColorNeutral100'}>{nftPresaleStore.totalWhitelistedUsersCount}</span></div>
+                                            {/* <div className={'WhitelistedInfo B2 SemiBold ColorNeutral060'}>Whitelisted: <span className={'ColorNeutral100'}>{nftPresaleStore.totalWhitelistedUsersCount}</span></div> */}
                                         </div>
-                                        <Progressbar fillPercent={nftPresaleStore.getPresaleMintedPercent()} />
+                                        {/* <Progressbar fillPercent={nftPresaleStore.getPresaleMintedPercent()} />
                                         <div className={'AmountMintedRow FlexRow'}>
                                             <div className={'B3 ColorNeutral60'}>Minted so far</div>
                                             <div className={'B3 ColorNeutral60'}>{nftPresaleStore.getPresaleMintedPercent().toFixed(2)}% ({nftPresaleStore.getPresaleMintedAmount()}/{nftPresaleStore.getPresaleTotalAmount()})</div>
-                                        </div>
+                                        </div> */}
                                     </ColumnLayout>
                                 </StyledContainer>
                                 <StyledContainer

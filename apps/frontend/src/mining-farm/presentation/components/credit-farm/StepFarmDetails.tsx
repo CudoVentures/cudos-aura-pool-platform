@@ -285,7 +285,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                     </div>
                     <Input
                         label = {
-                            <TextWithTooltip text={'Cudos address to receive NFT resale royalties'} tooltipText={'The CUDOS address, which will collect royalties upon resale of an NFT from your farm. This royalty amount can be adjusted in the "Update Farm Details" screen.'} />
+                            <TextWithTooltip text={'Cudos address to receive NFT resale royalties (Secondary NFT Sale Platform Fee)'} tooltipText={'The CUDOS address which will collect royalties upon resale of an NFT from your farm. This address can be adjusted in the "Update Farm Details" screen.'} />
                         }
                         placeholder={'cudos1...'}
                         value={miningFarmEntity.resaleFarmRoyaltiesCudosAddress}
@@ -301,7 +301,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         onChange={action((string) => { miningFarmEntity.rewardsFromPoolBtcAddress = string })} /> */}
                     <Input
                         label = {
-                            <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from Farm\'s unsold NFTs on CUDOS Markets.'} />
+                            <TextWithTooltip text={'BTC Address to receive awards leftovers'} tooltipText={'The BTC address which will collect BTC payouts, generated from the Farm\'s unsold NFTs on CUDOS Markets.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.leftoverRewardsBtcAddress}
@@ -309,7 +309,7 @@ function StepFarmDetails({ alertStore, creditMiningFarmDetailsPageStore, header 
                         onChange={action((string) => { miningFarmEntity.leftoverRewardsBtcAddress = string })} />
                     <Input
                         label = {
-                            <TextWithTooltip text={'BTC Address to receive maintenance fee'} tooltipText={'Farm BTC address which will collect all maintenance fee.'} />
+                            <TextWithTooltip text={'BTC Address to receive the maintenance fee'} tooltipText={'Farm BTC address which will collect all maintenance fees.'} />
                         }
                         placeholder={'bc1qxy...'}
                         value={miningFarmEntity.maintenanceFeePayoutBtcAddress}
