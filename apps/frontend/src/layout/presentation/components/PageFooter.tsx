@@ -20,9 +20,9 @@ import '../styles/page-footer.css'
 export default function PageFooter() {
     const navigate = useNavigate();
 
-    function onClickExplore() {
-        navigate(AppRoutes.MARKETPLACE);
-    }
+    // function onClickExplore() {
+    //     navigate(AppRoutes.MARKETPLACE);
+    // }
 
     function onClickExploreNfts() {
         navigate(AppRoutes.EXPLORE_NFTS)

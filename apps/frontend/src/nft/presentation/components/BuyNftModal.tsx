@@ -22,6 +22,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ReportIcon from '@mui/icons-material/Report';
 import '../styles/buy-nft-modal.css';
+import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
 
 type Props = {
     cudosStore?: CudosStore,
@@ -78,7 +79,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
                         <Checkbox
                             label = { (
-                                <div>I accept the <Link to = { AppRoutes.TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</Link> of CUDOS Markets platform</div>
+                                <div>I accept the <Link to = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</Link> of CUDOS Markets platform</div>
                             ) }
                             value = { acceptTermsAndConditions }
                             onChange = { setAcceptTermsAndConditions } />

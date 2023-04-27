@@ -149,7 +149,7 @@ function AppRouter({ accountSessionStore, kycStore, presaleStore }: Props) {
                             <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
                         </>
                     ) }
-                    <Route path = { AppRoutes.TERMS_AND_CONDITIONS } element = { <TermsAndConditionsPage /> } />
+                    {/* <Route path = { AppRoutes.TERMS_AND_CONDITIONS } element = { <TermsAndConditionsPage /> } /> */}
 
                     {/* Auth */}
                     <Route path = { AppRoutes.LOGIN } element = { <LoginPage /> } />

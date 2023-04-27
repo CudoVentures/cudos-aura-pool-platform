@@ -6,7 +6,6 @@ export const MEDIUM = 'https://medium.com/cudos-markets';
 export const REDDIT = 'https://www.reddit.com/r/CUDOS/';
 export const LINKEDIN = 'https://www.linkedin.com/company/cudos1/';
 export const FACEBOOK = 'https://www.facebook.com/cudos.org/';
-export const MEDIUM = 'https://cudostoken.medium.com/';
 export const SPOTIFY = 'https://open.spotify.com/show/2lZuBXJ270g7taK06tnK35';
 export const YOUTUBE = 'https://www.youtube.com/c/CUDOS';
 export const TERMS_AND_CONDITIONS = 'https://www.cudosmarkets.com/terms-and-conditions';

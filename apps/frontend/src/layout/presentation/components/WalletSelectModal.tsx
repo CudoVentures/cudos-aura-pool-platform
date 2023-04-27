@@ -25,6 +25,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
+import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
@@ -223,7 +224,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
                     <div className = { 'ModalWalletSubtitle' } >
                         Select your preferred wallet to connect with.<br />
-                        By connecting your wallet you are agreeing to CUDOS Markets’ <Link to = { AppRoutes.TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
+                        By connecting your wallet you are agreeing to CUDOS Markets’ <Link to = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
                     </div>
 
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError')}` } onClick = { onClickToggleKeplr } >
