@@ -1,6 +1,7 @@
+import BigNumber from 'bignumber.js';
 import { CollectionStatus } from '../../collection/utils';
-import { IntBoolValue } from '../../common/utils';
-import { NftFilterJsonValidation, NftGroup, NftOrderBy, NftStatus } from '../nft.types';
+import { IntBoolValue, NOT_EXISTS_INT } from '../../common/utils';
+import { NftFilterJsonValidation, NftGroup, NftOrderBy, NftPriceType, NftStatus } from '../nft.types';
 
 export default class NftFilterEntity {
     nftIds: string[];
@@ -15,6 +16,16 @@ export default class NftFilterEntity {
     from: number;
     count: number;
 
+    hashRateMin: number;
+    hashRateMax: number;
+
+    priceFilterType: NftPriceType;
+    priceMin: BigNumber;
+    priceMax: BigNumber;
+
+    expiryMin: number;
+    expiryMax: number;
+
     constructor() {
         this.nftIds = null;
         this.tokenIds = null;
@@ -27,6 +38,17 @@ export default class NftFilterEntity {
         this.orderBy = NftOrderBy.TIMESTAMP_ASC;
         this.from = 0;
         this.count = Number.MAX_SAFE_INTEGER;
+
+        // default values so we don't have to check explicitly if they are set
+        this.hashRateMin = 0;
+        this.hashRateMax = Number.MAX_SAFE_INTEGER;
+
+        this.priceFilterType = NftPriceType.USD;
+        this.priceMin = new BigNumber(0);
+        this.priceMax = new BigNumber(Number.MAX_SAFE_INTEGER);
+
+        this.expiryMin = NOT_EXISTS_INT;
+        this.expiryMax = NOT_EXISTS_INT;
     }
 
     hasNftIds(): boolean {
@@ -69,6 +91,14 @@ export default class NftFilterEntity {
         return this.collectionStatus as unknown as CollectionStatus[];
     }
 
+    hasExpiryMin(): boolean {
+        return this.expiryMin !== NOT_EXISTS_INT;
+    }
+
+    hasExpiryMax(): boolean {
+        return this.expiryMax !== NOT_EXISTS_INT;
+    }
+
     static fromJson(json: NftFilterJsonValidation): NftFilterEntity {
         const entity = new NftFilterEntity();
 
@@ -83,6 +113,17 @@ export default class NftFilterEntity {
         entity.orderBy = json.orderBy ?? entity.orderBy;
         entity.from = json.from ?? entity.from;
         entity.count = json.count ?? entity.count;
+
+        // default values so we don't have to check explicitly if they are set
+        entity.hashRateMin = json.hashRateMin ?? entity.hashRateMin;
+        entity.hashRateMax = json.hashRateMax ?? entity.hashRateMax;
+
+        entity.priceFilterType = json.priceFilterType ?? entity.priceFilterType;
+        entity.priceMin = new BigNumber(json.priceMin ?? entity.priceMin);
+        entity.priceMax = new BigNumber(json.priceMax ?? entity.priceMax);
+
+        entity.expiryMin = json.expiryMin ?? entity.expiryMin;
+        entity.expiryMax = json.expiryMax ?? entity.expiryMax;
 
         return entity;
     }

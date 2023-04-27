@@ -16,12 +16,13 @@ import '../styles/grid-view.css';
 type Props = {
     gridViewState: GridViewState;
     defaultContent?: React.ReactNode;
+    className?: string;
 }
 
-function GridView({ gridViewState, defaultContent, children }: React.PropsWithChildren < Props >) {
+function GridView({ className, gridViewState, defaultContent, children }: React.PropsWithChildren < Props >) {
 
     return (
-        <div className={'GridView'}>
+        <div className={`GridView ${className}`}>
             {gridViewState.getItemCount() !== 0 && (
                 <div className={'GridHeader FlexRow FlexGrow'}>
                     <div className={'TotalItems B2 SemiBold'}>{gridViewState.getItemCount()} Items</div>
@@ -64,6 +65,7 @@ function GridView({ gridViewState, defaultContent, children }: React.PropsWithCh
 
 GridView.defaultProps = {
     defaultContent: null,
+    className: '',
 }
 
 export default observer(GridView);

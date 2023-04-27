@@ -1,11 +1,11 @@
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize, { LOCK, Op, Transaction } from 'sequelize';
+import sequelize, { LOCK, Op, Transaction, where } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 import { CollectionService } from '../collection/collection.service';
 import { VisitorService } from '../visitor/visitor.service';
 import { NftRepo, NftRepoColumn } from './repos/nft.repo';
-import { NftGroup, NftOrderBy, NftStatus } from './nft.types';
+import { NftGroup, NftOrderBy, NftPriceType, NftStatus } from './nft.types';
 import NftEntity from './entities/nft.entity';
 import NftFilterEntity from './entities/nft-filter.entity';
 import UserEntity from '../account/entities/user.entity';
@@ -109,13 +109,82 @@ export class NFTService {
                 break;
             case NftOrderBy.TIMESTAMP_ASC:
             case NftOrderBy.TIMESTAMP_DESC:
-            default:
                 orderByClause = [['createdAt']]
                 break;
+            case NftOrderBy.HASH_RATE_ASC:
+            case NftOrderBy.HASH_RATE_DESC:
+                orderByClause = [['hashing_power']]
+                break;
+            case NftOrderBy.EXPIRY_ASC:
+            case NftOrderBy.EXPIRY_DESC:
+            default:
+                orderByClause = [['expiration_date']]
+                break;
         }
+
         if (orderByClause !== null) {
             orderByClause[0].push(nftFilterEntity.orderBy > 0 ? 'ASC' : 'DESC');
         }
+
+        whereClause.hashing_power = {
+            [Op.gte]: nftFilterEntity.hashRateMin,
+            [Op.lte]: nftFilterEntity.hashRateMax,
+        };
+
+        if (nftFilterEntity.hasExpiryMin() === true) {
+            whereClause = [
+                whereClause,
+                sequelize.where(sequelize.fn('date', sequelize.col('expiration_date')), '>=', (new Date(nftFilterEntity.expiryMin)).toISOString()),
+            ]
+        }
+
+        if (nftFilterEntity.hasExpiryMax() === true) {
+            whereClause = [
+                whereClause,
+                sequelize.where(sequelize.fn('date', sequelize.col('expiration_date')), '<=', (new Date(nftFilterEntity.expiryMax)).toISOString()),
+            ]
+        }
+
+        const cudosData = await this.cryptoCompareService.getCachedCudosData();
+        const cudosPrice = cudosData.cudosUsdPrice;
+
+        console.log('cudosPrice', cudosPrice)
+
+        let priceCudosMin;
+        let priceCudosMax;
+        let priceUsdMin;
+        let priceUsdMax;
+
+        if (nftFilterEntity.priceFilterType === NftPriceType.CUDOS) {
+            priceCudosMin = nftFilterEntity.priceMin;
+            priceCudosMax = nftFilterEntity.priceMax;
+            priceUsdMin = priceCudosMin * cudosPrice;
+            priceUsdMax = priceCudosMax * cudosPrice;
+        } else {
+            priceUsdMin = nftFilterEntity.priceMin;
+            priceUsdMax = nftFilterEntity.priceMax;
+            priceCudosMin = priceUsdMin / cudosPrice;
+            priceCudosMax = priceUsdMax / cudosPrice;
+        }
+
+        whereClause[Op.or] = [
+            {
+                token_id: {
+                    [Op.ne]: '',
+                },
+                price: {
+                    [Op.gte]: priceCudosMin,
+                    [Op.lte]: priceCudosMax,
+                },
+            },
+            {
+                token_id: '',
+                price_usd: {
+                    [Op.gte]: priceUsdMin,
+                    [Op.lte]: priceUsdMax,
+                },
+            },
+        ]
 
         const nftRepos = await this.nftRepo.findAll({
             where: whereClause,

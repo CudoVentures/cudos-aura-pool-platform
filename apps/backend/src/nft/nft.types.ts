@@ -109,6 +109,15 @@ export enum NftOrderBy {
     TIMESTAMP_DESC = -NftOrderBy.TIMESTAMP_ASC,
     PRICE_ASC = 3,
     PRICE_DESC = -NftOrderBy.PRICE_ASC,
+    HASH_RATE_ASC = 4,
+    HASH_RATE_DESC = -NftOrderBy.HASH_RATE_ASC,
+    EXPIRY_ASC = 5,
+    EXPIRY_DESC = -NftOrderBy.EXPIRY_ASC,
+}
+
+export enum NftPriceType {
+    USD = 1,
+    CUDOS = 2,
 }
 
 export class NftFilterJsonValidation {
@@ -159,6 +168,31 @@ export class NftFilterJsonValidation {
     @IsNumber()
     @IsPositive()
         count: number;
+
+    @IsNumber()
+        hashRateMin: number;
+
+    @IsNumber()
+    @Min(0)
+        hashRateMax: number;
+
+    @IsEnum(NftPriceType)
+        priceFilterType: NftPriceType;
+
+    @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
+    @IsNotEmpty()
+        priceMin: string;
+    @IsString()
+    @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
+    @IsNotEmpty()
+        priceMax: string;
+
+    @IsNumber()
+        expiryMin: number;
+
+    @IsNumber()
+        expiryMax: number;
 }
 
 export class UpdateNftJsonValidations {
