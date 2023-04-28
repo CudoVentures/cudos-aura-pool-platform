@@ -91,7 +91,21 @@ export class CollectionService {
         let collectionEntities = collectionRepos.map((collectionRepo) => CollectionEntity.fromRepo(collectionRepo));
 
         const total = collectionEntities.length;
-        collectionEntities = collectionEntities.slice(collectionFitlerEntity.from, collectionFitlerEntity.from + collectionFitlerEntity.count);
+        const countPerPage = collectionFitlerEntity.count;
+        let from = collectionFitlerEntity.from;
+
+        if (from > total) {
+            from = Math.floor(total / countPerPage) * countPerPage;
+
+            if (total % countPerPage === 0) {
+                from = Math.max(0, from - countPerPage);
+            }
+        }
+
+        collectionEntities = collectionEntities.slice(
+            from,
+            from + collectionFitlerEntity.count,
+        );
 
         return {
             collectionEntities,

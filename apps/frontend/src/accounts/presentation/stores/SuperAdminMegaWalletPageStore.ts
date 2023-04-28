@@ -50,7 +50,7 @@ export default class SuperAdminMegaWalletPageStore {
 
         await runInActionAsync(() => {
             nftEntities.forEach((nftEntity) => this.nftEntitiesMap.set(nftEntity.id, nftEntity));
-            this.walletEventTableState.tableFilterState.total = total;
+            this.walletEventTableState.tableFilterState.setTotal(total);
             this.megaWalletEventEntities = megaWalletEventEntities;
         })
     }

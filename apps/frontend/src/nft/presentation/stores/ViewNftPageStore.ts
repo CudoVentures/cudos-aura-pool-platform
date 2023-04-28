@@ -187,7 +187,7 @@ export default class ViewNftPageStore {
 
         await runInActionAsync(() => {
             this.nftEventEntities = nftEventEntities;
-            this.historyTableState.tableFilterState.total = total;
+            this.historyTableState.tableFilterState.setTotal(total);
         });
     }
 

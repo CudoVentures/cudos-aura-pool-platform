@@ -109,8 +109,16 @@ export class TableFilterState {
         return this.to() < this.total;
     }
 
-    goToLastPossbilePage(total) {
-        this.from = Math.floor(total / this.total) * this.total;
-    }
+    setTotal(total: number) {
+        this.total = total;
 
+        if (this.from >= total) {
+            const countPerPage = this.itemsPerPage;
+            this.from = Math.floor(total / countPerPage) * countPerPage;
+
+            if (total % countPerPage === 0) {
+                this.from = Math.max(0, this.from - countPerPage);
+            }
+        }
+    }
 }

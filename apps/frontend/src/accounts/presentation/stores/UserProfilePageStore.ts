@@ -185,7 +185,7 @@ export default class UserProfilePageStore {
             this.nftEntitiesMap = nftEntitiesMap;
 
             this.nftEventEntities = nftEventEntities;
-            this.historyTableState.tableFilterState.total = total;
+            this.historyTableState.tableFilterState.setTotal(total);
         });
     }
 
@@ -196,7 +196,7 @@ export default class UserProfilePageStore {
 
         await runInActionAsync(() => {
             this.purchaseTransactionEntities = purchaseTransactionEntities;
-            this.purchasesTableState.tableFilterState.total = total;
+            this.purchasesTableState.tableFilterState.setTotal(total);
         })
     }
 

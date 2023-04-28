@@ -175,7 +175,7 @@ export default class AnalyticsPageStore {
 
             this.nftEntitiesMap = nftEntitiesMap;
             this.nftEventEntities = nftEventEntities;
-            this.analyticsTableState.tableFilterState.total = total;
+            this.analyticsTableState.tableFilterState.setTotal(total);
         });
     }
 

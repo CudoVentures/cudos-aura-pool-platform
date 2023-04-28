@@ -139,8 +139,18 @@ export class NFTService {
         }
 
         const total = nftEntities.length;
-        nftEntities = nftEntities.slice(nftFilterEntity.from, nftFilterEntity.from + nftFilterEntity.count);
+        const countPerPage = nftFilterEntity.count;
+        let from = nftFilterEntity.from;
 
+        if (from >= total) {
+            from = Math.floor(total / countPerPage) * countPerPage;
+
+            if (total % countPerPage === 0) {
+                from = Math.max(0, from - countPerPage);
+            }
+        }
+        nftEntities = nftEntities.slice(from, from + nftFilterEntity.count);
+        console.log('nftEntities', nftEntities.length, 'total', total, 'from', from, 'count', nftFilterEntity.count)
         return {
             nftEntities,
             total,
@@ -298,9 +308,20 @@ export class NFTService {
             return b.timestamp - a.timestamp;
         });
 
+        const total = sortedPurchaseTransactionEntities.length
+        const countPerPage = purchaseTransactionFIlterModel.count;
+        let from = purchaseTransactionFIlterModel.from;
+
+        if (from > total) {
+            from = Math.floor(total / countPerPage) * countPerPage;
+
+            if (total % countPerPage === 0) {
+                from = Math.max(0, from - countPerPage);
+            }
+        }
         return {
-            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(purchaseTransactionFIlterModel.from, purchaseTransactionFIlterModel.from + purchaseTransactionFIlterModel.count),
-            total: sortedPurchaseTransactionEntities.length,
+            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(from, from + purchaseTransactionFIlterModel.count),
+            total,
         }
     }
 
