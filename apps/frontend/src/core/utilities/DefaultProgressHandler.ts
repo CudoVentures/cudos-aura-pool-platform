@@ -25,14 +25,12 @@ export default class DefaultProgressHandler {
     }
 
     onProgress = (progressEvent: AxiosProgressEvent) => {
-        console.log('on progress 10', progressEvent)
         if (this.hasStart() === false) {
             this.start = Date.now();
         }
 
         this.presentationOnProgress(this.uploadingTitle, progressEvent.progress / 2);
         if (progressEvent.progress === 1) {
-            console.log('on progress 20', progressEvent)
             const end = Date.now();
             // const duration = Math.min(20, (end - this.start) * multiplier); // at least 20ms
             const transferToGcloudInBytesPerSecond = 22000;
