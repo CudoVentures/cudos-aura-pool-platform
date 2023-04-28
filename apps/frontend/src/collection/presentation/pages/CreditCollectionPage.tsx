@@ -227,21 +227,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                     </div>
                     <DataGridLayout
                         className={'NftsCnt'}
-                        headerLeft = { (
-                            <>
-                                <Input
-                                    inputType={InputType.TEXT}
-                                    className={'SearchBar'}
-                                    value = {creditCollectionPageStore.nftFilterModel.searchString}
-                                    onChange = { creditCollectionPageStore.onChangeSearchWord }
-                                    placeholder = {'Search for NFT...'}
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" >
-                                            <Svg svg={SearchIcon} />
-                                        </InputAdornment>,
-                                    }} />
-                            </>
-                        ) } >
+                    >
 
                         {nftEntities === null && (
                             <LoadingIndicator />
@@ -249,6 +235,22 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
 
                         {nftEntities !== null && (
                             <GridView
+                                headerLeft = { (
+                                    <>
+                                        <Input
+                                            inputType={InputType.TEXT}
+                                            className={'SearchBar'}
+                                            gray={true}
+                                            value = {creditCollectionPageStore.nftFilterModel.searchString}
+                                            onChange = { creditCollectionPageStore.onChangeSearchWord }
+                                            placeholder = {'Search for NFT...'}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start" >
+                                                    <Svg svg={SearchIcon} />
+                                                </InputAdornment>,
+                                            }} />
+                                    </>
+                                ) }
                                 gridViewState={creditCollectionPageStore.gridViewState}
                                 defaultContent={nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
                                 {nftEntities.map((nftEntity: NftEntity) => {

@@ -67,21 +67,7 @@ function ExploreCollectionsPage({ exploreCollectionsPageStore }: Props) {
                     ) }>
 
                     <DataGridLayout
-                        headerLeft = { (
-                            <>
-                                <Input
-                                    inputType={InputType.TEXT}
-                                    className={'SearchBar'}
-                                    value = {collectionFilterModel.searchString}
-                                    onChange = { exploreCollectionsPageStore.onChangeSearchWord }
-                                    placeholder = {'Search for Collection...'}
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" >
-                                            <Svg svg={SearchIcon} />
-                                        </InputAdornment>,
-                                    }} />
-                            </>
-                        ) } >
+                    >
 
                         { exploreCollectionsPageStore.collectionEntities === null && (
                             <LoadingIndicator />
@@ -89,6 +75,22 @@ function ExploreCollectionsPage({ exploreCollectionsPageStore }: Props) {
 
                         { exploreCollectionsPageStore.collectionEntities !== null && (
                             <GridView
+                                headerRight = { (
+                                    <>
+                                        <Input
+                                            inputType={InputType.TEXT}
+                                            className={'SearchBar'}
+                                            gray={true}
+                                            value = {collectionFilterModel.searchString}
+                                            onChange = { exploreCollectionsPageStore.onChangeSearchWord }
+                                            placeholder = {'Search for Collection...'}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start" >
+                                                    <Svg svg={SearchIcon} />
+                                                </InputAdornment>,
+                                            }} />
+                                    </>
+                                ) }
                                 gridViewState={exploreCollectionsPageStore.gridViewState}
                                 defaultContent={exploreCollectionsPageStore.collectionEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null} >
                                 { exploreCollectionsPageStore.collectionEntities.map((collectionEntity: CollectionEntity) => {

@@ -15,15 +15,22 @@
     margin-bottom: 20px;
 }
 
-.GridView .GridHeader .GridLayoutButtons {    
-    gap: 10px;
+
+.GridView .GridHeader .HeaderLeft,
+.GridView .GridHeader .HeaderRight {
+    gap: 24px;
 }
 
-.GridView .GridHeader .GridLayoutButtons .MuiSvgIcon-root {
-    background-color: var(--color-neutral-020);
+.GridView .GridHeader .GridLayoutButtons {    
+    gap: 8px;
+}
+
+.GridView .GridHeader .GridLayoutButtons .SvgBox {
     fill: var(--color-neutral-060);
-    border-radius: 8px;
-    padding: 5px;
+    width: 16px; height: 16px;
+    background-color: var(--color-neutral-020);
+    border-radius: 16px;
+    padding: 16px;
 }
 
 .GridView .GridHeader .GridLayoutButtons .Active .MuiSvgIcon-root{
@@ -32,5 +39,13 @@
 
 .GridView .PreviewsGrid {
     gap: 20px;
+    flex-grow: 1;
+}
+
+.GridView .ContentContainer {
+    align-items: flex-start;
+}
+
+.GridView .ContentContainer .MainContent {
     flex-grow: 1;
 }

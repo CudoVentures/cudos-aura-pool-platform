@@ -68,21 +68,7 @@ function ExploreMiningFarmsPage({ exploreMiningFarmsPageStore }: Props) {
                     ) }>
 
                     <DataGridLayout
-                        headerLeft = { (
-                            <>
-                                <Input
-                                    inputType={InputType.TEXT}
-                                    className={'SearchBar'}
-                                    value = {miningFarmFilterModel.searchString}
-                                    onChange = { exploreMiningFarmsPageStore.onChangeSearchWord}
-                                    placeholder = {'Search Collections name'}
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" >
-                                            <Svg svg={SearchIcon} />
-                                        </InputAdornment>,
-                                    }} />
-                            </>
-                        ) } >
+                    >
 
                         { miningFarmEntities === null && (
                             <LoadingIndicator />
@@ -90,6 +76,22 @@ function ExploreMiningFarmsPage({ exploreMiningFarmsPageStore }: Props) {
 
                         { miningFarmEntities !== null && (
                             <GridView
+                                headerRight = { (
+                                    <>
+                                        <Input
+                                            inputType={InputType.TEXT}
+                                            className={'SearchBar'}
+                                            gray={true}
+                                            value = {miningFarmFilterModel.searchString}
+                                            onChange = { exploreMiningFarmsPageStore.onChangeSearchWord}
+                                            placeholder = {'Search Collections name'}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start" >
+                                                    <Svg svg={SearchIcon} />
+                                                </InputAdornment>,
+                                            }} />
+                                    </>
+                                ) }
                                 gridViewState={exploreMiningFarmsPageStore.gridViewState}
                                 defaultContent={miningFarmEntities.length === 0 ? <div className={'NoContentFound'}>No Farms found</div> : null} >
                                 { miningFarmEntities.map((miningFarmEntity: MiningFarmEntity) => {

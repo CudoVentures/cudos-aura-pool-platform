@@ -23,21 +23,7 @@ function MyNftsTab({ userProfilePageStore }: Props) {
 
     return (
         <DataGridLayout
-            headerLeft={(userProfilePageStore.nftEntities?.length !== 0 || nftFilterModel.searchString !== '')
-                ? <>
-                    <Input
-                        inputType={InputType.TEXT}
-                        className={'SearchBar'}
-                        value={nftFilterModel.searchString}
-                        onChange={userProfilePageStore.onChangeSearchWord}
-                        placeholder={'Search for NFT...'}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start" >
-                                <Svg svg={SearchIcon} />
-                            </InputAdornment>,
-                        }} />
-                </>
-                : null} >
+        >
 
             {userProfilePageStore.nftEntities === null && (
                 <LoadingIndicator />
@@ -45,6 +31,22 @@ function MyNftsTab({ userProfilePageStore }: Props) {
 
             {userProfilePageStore.nftEntities !== null && (
                 <GridView
+                    headerRight={(userProfilePageStore.nftEntities?.length !== 0 || nftFilterModel.searchString !== '')
+                        ? <>
+                            <Input
+                                inputType={InputType.TEXT}
+                                className={'SearchBar'}
+                                gray={true}
+                                value={nftFilterModel.searchString}
+                                onChange={userProfilePageStore.onChangeSearchWord}
+                                placeholder={'Search for NFT...'}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start" >
+                                        <Svg svg={SearchIcon} />
+                                    </InputAdornment>,
+                                }} />
+                        </>
+                        : null}
                     gridViewState={userProfilePageStore.gridViewState}
                     defaultContent={userProfilePageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No NFTs found</div> : null} >
                     {userProfilePageStore.nftEntities.map((nftEntity: NftEntity) => {
