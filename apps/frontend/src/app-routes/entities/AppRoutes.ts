@@ -4,7 +4,7 @@ export default class AppRoutes {
     static HOME = '/';
     static NOT_FOUND = '/not-found';
     static UI_KIT = '/ui-kit';
-    static REWARDS_CALCULATOR = '/rewards-calculator';
+    // static REWARDS_CALCULATOR = '/rewards-calculator';
     static MARKETPLACE = '/marketplace';
     static EXPLORE_NFTS = '/explore-nfts';
     static EXPLORE_COLLECTIONS = '/explore-collections';
@@ -12,7 +12,7 @@ export default class AppRoutes {
     static VIEW_NFT = '/view-nft';
     static CREDIT_COLLECTION = '/credit-collection';
     static CREDIT_MINING_FARM = '/credit-mining-farm';
-    static TERMS_AND_CONDITIONS = '/terms-and-conditions';
+    // static TERMS_AND_CONDITIONS = '/terms-and-conditions';
 
     // auth
     static LOGIN = '/login';

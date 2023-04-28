@@ -39,6 +39,7 @@ import NewLine from '../../../core/presentation/components/NewLine';
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
+import { REWARDS_CALCULATOR } from '../../../core/utilities/Links';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -98,17 +99,17 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         navigate(AppRoutes.EXPLORE_NFTS)
     }
 
-    function onClickCalculateRewards() {
-        navigate({
-            pathname: AppRoutes.REWARDS_CALCULATOR,
-            search: `?farmId=${miningFarmEntity.id}&hashPower=${nftEntity.hashPowerInTh}`,
-        })
-    }
+    // function onClickCalculateRewards() {
+    //     navigate({
+    //         pathname: AppRoutes.REWARDS_CALCULATOR,
+    //         search: `?farmId=${miningFarmEntity.id}&hashPower=${nftEntity.hashPowerInTh}`,
+    //     })
+    // }
 
     async function onClickBuyNft() {
         const balance = walletStore.getBalanceSafe();
         if (balance.lt(cudosStore.getNftCudosPriceForNftPlusOnDemandMintFeeIfNeeded(nftEntity))) {
-            alertStore.show('Your balance is not enough to buy this.');
+            alertStore.show('You don’t have enough funds to purchase this NFT.');
             return;
         }
 
@@ -117,7 +118,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         //     alertStore.positiveListener = () => {
         //         navigate(AppRoutes.USER_PROFILE);
         //     };
-        //     alertStore.msg = 'You must register BTC payout adress first';
+        //     alertStore.msg = 'You must register a BTC payout address first';
         //     alertStore.negativeLabel = 'Cancel';
         //     alertStore.visible = true;
         //     return;
@@ -153,7 +154,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         generalDatapreviews.push(createDataPreview('Mining Farm', <span className = { 'Clickable' } onClick = { onClickFarmLink }>{miningFarmEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Collection', <span className = { 'Clickable' } onClick = { onClickCollectionLink }>{collectionEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
-        generalDatapreviews.push(createDataPreview('Collection royalties', collectionEntity.formatRoyaltiesInPercentage()));
+        generalDatapreviews.push(createDataPreview('Secondary NFT Sale Platform Fee', collectionEntity.formatRoyaltiesInPercentage()));
         generalDatapreviews.push(createDataPreview('CUDOS Markets Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()));
 
         return generalDatapreviews;
@@ -272,7 +273,8 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                             <div className={'FlexRow CalculateRewardsNav'}>
                                 <div className={'B3'}>You can calculate your rewards in our dynamic Calculator</div>
                                 <Actions height={ActionsHeight.HEIGHT_32}>
-                                    <Button onClick={onClickCalculateRewards}>Calculate Rewards</Button>
+                                    {/* <Button onClick={onClickCalculateRewards}>Calculate Rewards</Button> */}
+                                    <Button href={REWARDS_CALCULATOR}>Calculate Rewards</Button>
                                 </Actions>
                             </div>
                             { presaleStore.isInPresale() === false && (

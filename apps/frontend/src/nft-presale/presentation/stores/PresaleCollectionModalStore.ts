@@ -106,15 +106,17 @@ export default class PresaleCollectionModalStore extends ModalStore {
         }
 
         try {
-            const collectionCoverImage01 = await downloadNftImageAsBase64WithPrefix('/assets/presale-nft-images/collection.png');
-            const collectionProfileImage01 = await downloadNftImageAsBase64WithPrefix('/assets/presale-nft-images/collection-profile.png');
+            // const collectionCoverImage01 = await downloadNftImageAsBase64WithPrefix('/assets/presale-nft-images/collection.png');
+            // const collectionProfileImage01 = await downloadNftImageAsBase64WithPrefix('/assets/presale-nft-images/collection-profile.png');
 
             const collectionEntity = new CollectionEntity();
             collectionEntity.farmId = miningFarmId;
             collectionEntity.name = presaleCollectionEntity.name;
             collectionEntity.description = presaleCollectionEntity.description;
-            collectionEntity.profileImgUrl = collectionProfileImage01;
-            collectionEntity.coverImgUrl = collectionCoverImage01;
+            // collectionEntity.profileImgUrl = collectionProfileImage01;
+            // collectionEntity.coverImgUrl = collectionCoverImage01;
+            collectionEntity.profileImgUrl = await downloadNftImageAsBase64WithPrefix(presaleCollectionEntity.profileImgUrl);
+            collectionEntity.coverImgUrl = await downloadNftImageAsBase64WithPrefix(presaleCollectionEntity.coverImgUrl);
             collectionEntity.royalties = presaleCollectionEntity.royalties;
 
             const nftEntities = [];
@@ -122,17 +124,15 @@ export default class PresaleCollectionModalStore extends ModalStore {
             // add OPAL tier for all sales
             const opalNftData = presaleCollectionEntity.nfts.opal;
             const opalDefaultImageBase64 = await downloadNftImageAsBase64WithPrefix(opalNftData.defaultImgUrl);
-            const opalUniqueImageBase64 = await downloadNftImageAsBase64WithPrefix(opalNftData.uniqueImgUrl);
+            // const opalUniqueImageBase64 = await downloadNftImageAsBase64WithPrefix(opalNftData.uniqueImgUrl);
             let nftNameCounter = 0;
-            nftEntities.push(createNft(++nftNameCounter, opalUniqueImageBase64, opalNftData, NftGroup.GIVEAWAY));
-            for (let i = 2; i <= opalNftData.giveawayCount; i++) {
+            for (let i = 1; i <= opalNftData.giveawayCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, opalDefaultImageBase64, opalNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= opalNftData.privateSaleCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, opalDefaultImageBase64, opalNftData, NftGroup.PRIVATE_SALE));
             }
-            nftEntities.push(createNft(++nftNameCounter, opalUniqueImageBase64, opalNftData, NftGroup.PRESALE));
-            for (let i = 2; i <= opalNftData.presaleCount; i++) {
+            for (let i = 1; i <= opalNftData.presaleCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, opalDefaultImageBase64, opalNftData, NftGroup.PRESALE));
             }
             for (let i = 1; i <= opalNftData.publicSaleCount; i++) {
@@ -144,8 +144,7 @@ export default class PresaleCollectionModalStore extends ModalStore {
             const rubyDefaultImageBase64 = await downloadNftImageAsBase64WithPrefix(rubyNftData.defaultImgUrl);
             const rubyUniqueImageBase64 = await downloadNftImageAsBase64WithPrefix(rubyNftData.uniqueImgUrl);
             nftNameCounter = 0;
-            nftEntities.push(createNft(++nftNameCounter, rubyUniqueImageBase64, rubyNftData, NftGroup.GIVEAWAY));
-            for (let i = 2; i <= rubyNftData.giveawayCount; i++) {
+            for (let i = 1; i <= rubyNftData.giveawayCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, rubyDefaultImageBase64, rubyNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= rubyNftData.privateSaleCount; i++) {
@@ -164,8 +163,7 @@ export default class PresaleCollectionModalStore extends ModalStore {
             const emeraldDefaultImageBase64 = await downloadNftImageAsBase64WithPrefix(emeraldNftData.defaultImgUrl);
             const emeraldUniqueImageBase64 = await downloadNftImageAsBase64WithPrefix(emeraldNftData.uniqueImgUrl);
             nftNameCounter = 0;
-            nftEntities.push(createNft(++nftNameCounter, emeraldUniqueImageBase64, emeraldNftData, NftGroup.GIVEAWAY));
-            for (let i = 2; i <= emeraldNftData.giveawayCount; i++) {
+            for (let i = 1; i <= emeraldNftData.giveawayCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, emeraldDefaultImageBase64, emeraldNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= emeraldNftData.privateSaleCount; i++) {
@@ -179,13 +177,12 @@ export default class PresaleCollectionModalStore extends ModalStore {
                 nftEntities.push(createNft(++nftNameCounter, emeraldDefaultImageBase64, emeraldNftData, NftGroup.PUBLIC_SALE));
             }
 
-            // add EMERALD tier for all sales
+            // add DIAMOND tier for all sales
             const diamondNftData = presaleCollectionEntity.nfts.diamond;
             const diamondDefaultImageBase64 = await downloadNftImageAsBase64WithPrefix(diamondNftData.defaultImgUrl);
             const diamondUniqueImageBase64 = await downloadNftImageAsBase64WithPrefix(diamondNftData.uniqueImgUrl);
             nftNameCounter = 0;
-            nftEntities.push(createNft(++nftNameCounter, diamondUniqueImageBase64, diamondNftData, NftGroup.GIVEAWAY));
-            for (let i = 2; i <= diamondNftData.giveawayCount; i++) {
+            for (let i = 1; i <= diamondNftData.giveawayCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, diamondDefaultImageBase64, diamondNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= diamondNftData.privateSaleCount; i++) {
@@ -199,20 +196,18 @@ export default class PresaleCollectionModalStore extends ModalStore {
                 nftEntities.push(createNft(++nftNameCounter, diamondDefaultImageBase64, diamondNftData, NftGroup.PUBLIC_SALE));
             }
 
-            // add EMERALD tier for all sales
+            // add BLUE DIAMOND tier for all sales
             const blueDiamondNftData = presaleCollectionEntity.nfts.blueDiamond;
             const blueDiamondDefaultImageBase64 = await downloadNftImageAsBase64WithPrefix(blueDiamondNftData.defaultImgUrl);
-            const blueDiamondUniqueImageBase64 = await downloadNftImageAsBase64WithPrefix(blueDiamondNftData.uniqueImgUrl);
+            // const blueDiamondUniqueImageBase64 = await downloadNftImageAsBase64WithPrefix(blueDiamondNftData.uniqueImgUrl);
             nftNameCounter = 0;
-            nftEntities.push(createNft(++nftNameCounter, blueDiamondUniqueImageBase64, blueDiamondNftData, NftGroup.GIVEAWAY));
-            for (let i = 2; i <= blueDiamondNftData.giveawayCount; i++) {
+            for (let i = 1; i <= blueDiamondNftData.giveawayCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, blueDiamondDefaultImageBase64, blueDiamondNftData, NftGroup.GIVEAWAY));
             }
             for (let i = 1; i <= blueDiamondNftData.privateSaleCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, blueDiamondDefaultImageBase64, blueDiamondNftData, NftGroup.PRIVATE_SALE));
             }
-            nftEntities.push(createNft(++nftNameCounter, blueDiamondUniqueImageBase64, blueDiamondNftData, NftGroup.PRESALE));
-            for (let i = 2; i <= blueDiamondNftData.presaleCount; i++) {
+            for (let i = 1; i <= blueDiamondNftData.presaleCount; i++) {
                 nftEntities.push(createNft(++nftNameCounter, blueDiamondDefaultImageBase64, blueDiamondNftData, NftGroup.PRESALE));
             }
             for (let i = 1; i <= blueDiamondNftData.publicSaleCount; i++) {
@@ -292,7 +287,7 @@ function createNft(index, presaleImage, nftData, group: NftGroup): NftEntity {
 }
 
 async function downloadNftImageAsBase64WithPrefix(url: string): Promise < string > {
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-    const base64 = Buffer.from(response.data, 'binary').toString('base64');
-    return `data:image/png;base64,${base64}`;
+    const { data } = await axios.get(`/api/v1/general/downloadAsBase64?url=${encodeURIComponent(url)}`);
+    // const base64 = Buffer.from(response.data, 'binary').toString('base64');
+    return `data:image/png;base64,${data}`;
 }

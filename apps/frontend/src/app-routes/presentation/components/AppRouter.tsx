@@ -137,7 +137,7 @@ function AppRouter({ accountSessionStore, kycStore, presaleStore }: Props) {
                     <Route index = { true } element = { getIndexPage() } />
                     <Route path = { '*' } element = { <NotFoundPage /> } />
                     <Route path = { AppRoutes.UI_KIT } element = { <UiKitPage /> } />
-                    <Route path = { AppRoutes.REWARDS_CALCULATOR } element = { <RewardsCalculatorPage /> } />
+                    {/* <Route path = { AppRoutes.REWARDS_CALCULATOR } element = { <RewardsCalculatorPage /> } /> */}
                     <Route path = { AppRoutes.MARKETPLACE } element = { <MarketplacePage /> } />
                     <Route path = { `${AppRoutes.VIEW_NFT}/:nftId` } element = { <ViewNftPage /> } />
                     { presaleStore.isInPresale() === false && (
@@ -149,7 +149,7 @@ function AppRouter({ accountSessionStore, kycStore, presaleStore }: Props) {
                             <Route path = { `${AppRoutes.CREDIT_MINING_FARM}/:farmId` } element = { <CreditMiningFarmPage /> } />
                         </>
                     ) }
-                    <Route path = { AppRoutes.TERMS_AND_CONDITIONS } element = { <TermsAndConditionsPage /> } />
+                    {/* <Route path = { AppRoutes.TERMS_AND_CONDITIONS } element = { <TermsAndConditionsPage /> } /> */}
 
                     {/* Auth */}
                     <Route path = { AppRoutes.LOGIN } element = { <LoginPage /> } />

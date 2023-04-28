@@ -114,12 +114,17 @@ export default class NftApiRepo implements NftRepo {
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
         try {
             this.disableActions?.();
-            const { nftEntities, total } = await this.nftApi.fetchNftsByFilter(nftFilterModel);
-            const checkedNfts = this.checkNftsVersusSessionStorage(nftEntities);
+            let fetchedNftsResult = await this.nftApi.fetchNftsByFilter(nftFilterModel);
+            if (fetchedNftsResult.nftEntities.length === 0 && fetchedNftsResult.total !== 0) {
+                if (nftFilterModel.goToLastPossbilePage(fetchedNftsResult.total) === true) {
+                    fetchedNftsResult = await this.nftApi.fetchNftsByFilter(nftFilterModel);
+                }
+            }
+            const checkedNfts = this.checkNftsVersusSessionStorage(fetchedNftsResult.nftEntities);
 
             return {
                 nftEntities: checkedNfts,
-                total,
+                total: fetchedNftsResult.total,
             }
         } finally {
             this.enableActions?.();
@@ -296,7 +301,7 @@ export default class NftApiRepo implements NftRepo {
         try {
             this.disableActions?.();
 
-            const usdPriceInAcudos = new BigNumber(1).dividedBy(new BigNumber(cudosPriceInUsd)).shiftedBy(CURRENCY_DECIMALS);
+            // const usdPriceInAcudos = new BigNumber(1).dividedBy(new BigNumber(cudosPriceInUsd)).shiftedBy(CURRENCY_DECIMALS);
 
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
             const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });

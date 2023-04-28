@@ -45,6 +45,16 @@ export default class CollectionFilterModel {
         this.status = [CollectionStatus.APPROVED];
     }
 
+    goToLastPossbilePage(total): boolean {
+        const from = Math.floor(total / this.count) * this.count;
+        if (from !== this.from) {
+            this.from = from;
+            return true;
+        }
+
+        return false;
+    }
+
     static toJson(model) {
         if (model === null) {
             return null;

@@ -25,6 +25,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
+import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
@@ -223,7 +224,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
 
                     <div className = { 'ModalWalletSubtitle' } >
                         Select your preferred wallet to connect with.<br />
-                        By connecting your wallet you are agreeing to CUDOS Markets’ <Link to = { AppRoutes.TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
+                        By connecting your wallet you are agreeing to CUDOS Markets’ <Link to = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
                     </div>
 
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError')}` } onClick = { onClickToggleKeplr } >
@@ -252,7 +253,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     { renderLoading(
                         'Connecting', (
                             <>
-                              Please don’t close this window.<br />It will be ready in a second.
+                              Please don’t close this window.<br />Follow the instructions in your wallet.
                             </>
                         ),
                     ) }
@@ -280,7 +281,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     { renderLoading(
                         'Processing', (
                             <>
-                              Please don’t close this window.<br />It will be ready in a second.
+                              Please don’t close this window.<br />Follow the instructions in your wallet.
                             </>
                         ),
                     ) }
@@ -301,7 +302,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     { walletSelectModalStore.isProgressStepConnectWallet() === true ? (
                         <div className = { 'WalletInfo FlexColumn' }>
                             <div>Can’t see your wallet here?</div>
-                            <a className={'ColorPrimary060'} href = { '' }>Learn more about wallets</a>
+                            <a className={'ColorPrimary060'} href = { 'https://discord.gg/7DPZ45C4ms' } target='_blank' rel="noreferrer">Let us know</a>
                         </div>
                     ) : (
                         <>
@@ -334,9 +335,9 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                                 { accountSessionStore.isLoggedIn() === true && (
                                     <>
                                         { accountSessionStore.isUser() === true ? (
-                                            <Button onClick = { onClickLogout }>Logout with current account</Button>
+                                            <Button onClick = { onClickLogout }>Log out from the current account</Button>
                                         ) : (
-                                            <Button onClick = { onClickLogin }>Log in with other account</Button>
+                                            <Button onClick = { onClickLogin }>Log in with another account</Button>
                                         ) }
                                     </>
                                 ) }
