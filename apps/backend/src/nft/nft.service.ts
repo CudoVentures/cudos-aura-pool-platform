@@ -150,7 +150,7 @@ export class NFTService {
             }
         }
         nftEntities = nftEntities.slice(from, from + nftFilterEntity.count);
-        console.log('nftEntities', nftEntities.length, 'total', total, 'from', from, 'count', nftFilterEntity.count)
+
         return {
             nftEntities,
             total,
