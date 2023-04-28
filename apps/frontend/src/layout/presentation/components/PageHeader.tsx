@@ -40,6 +40,10 @@ function PageHeader({ accountSessionStore, walletStore, presaleStore }: Props) {
         navigate(AppRoutes.MARKETPLACE);
     }
 
+    function onClickExploreNfts() {
+        navigate(AppRoutes.EXPLORE_NFTS);
+    }
+
     // function onClickRewardsCalculator() {
     //     navigate(AppRoutes.REWARDS_CALCULATOR);
     // }
@@ -60,8 +64,10 @@ function PageHeader({ accountSessionStore, walletStore, presaleStore }: Props) {
             </div>
 
             <div className={'NavCnt FlexRow'}>
-                { presaleStore.isInPresale() === true && (
-                    <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>{ presaleStore.isInPresale() === true ? 'Presale' : 'Marketplace' }</div>
+                { presaleStore.isInPresale() === true ? (
+                    <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}> Presale </div>
+                ) : (
+                    <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickExploreNfts}> Marketplace </div>
                 ) }
                 {/* <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div> */}
                 <a className={'NavButton B1 SemiBold Clickable'} href={REWARDS_CALCULATOR} target='_blank' rel="noreferrer">Rewards Calculator</a>

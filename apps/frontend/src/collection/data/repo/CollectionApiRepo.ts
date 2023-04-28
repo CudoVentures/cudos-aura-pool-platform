@@ -133,13 +133,18 @@ export default class CollectionApiRepo implements CollectionRepo {
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[]) {
+        console.log('credit collection 10');
         const progressHandler = new DefaultProgressHandler('Uploading collection...', 'Processing collection...', this.onProgress);
+        console.log('credit collection 20');
         try {
             this.disableActions?.();
 
+            console.log('credit collection 30');
             const result = await this.collectionApi.creditCollection(collectionEntity, nftEntities, progressHandler.onProgress);
+            console.log('credit collection 40');
 
             await runInActionAsync(() => {
+                console.log('credit collection 50');
                 Object.assign(collectionEntity, result.collectionEntity);
                 result.nftEntities.forEach((nftEntity, i) => {
                     Object.assign(nftEntities[i], nftEntity);

@@ -257,7 +257,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                         </div>
                     </div>
 
-                    <div className={'SectionWrapper'} >
+                    {/* <div className={'SectionWrapper'} >
                         <div className={'SectionHeadingCnt'} >
                             <div className={'H2 ExtraBold'}>Top Collections</div>
                             <div className={'CenterCnt FlexSingleCenter'} >
@@ -277,7 +277,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 See All Collections
                             </Button>
                         </Actions>
-                    </div>
+                    </div> */}
 
                     <div className={'SectionWrapper'}>
                         <div className={'SectionHeadingCnt H2 ExtraBold'}>Popular Farms</div>

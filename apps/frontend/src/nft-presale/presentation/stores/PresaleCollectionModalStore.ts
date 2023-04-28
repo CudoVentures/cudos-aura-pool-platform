@@ -8,6 +8,7 @@ import NftEntity, { NftGroup } from '../../../nft/entities/NftEntity';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import { PresaleCollectionEntity } from '../../entities/PresaleCollectionEntity';
 import S from '../../../core/utilities/Main';
+import AppStore from '../../../core/presentation/stores/AppStore';
 
 export enum ModalStage {
     UPLOAD_FILE,
@@ -19,6 +20,7 @@ export enum ModalStage {
 
 export default class PresaleCollectionModalStore extends ModalStore {
 
+    appStore: AppStore;
     alertStore: AlertStore;
 
     collectionRepo: CollectionRepo;
@@ -28,9 +30,10 @@ export default class PresaleCollectionModalStore extends ModalStore {
     @observable miningFarmId: string;
     @observable approvedCollectionEntities: CollectionEntity[]
 
-    constructor(alertStore: AlertStore, collectionRepo: CollectionRepo) {
+    constructor(appStore: AppStore, alertStore: AlertStore, collectionRepo: CollectionRepo) {
         super();
 
+        this.appStore = appStore;
         this.alertStore = alertStore;
         this.collectionRepo = collectionRepo;
 
@@ -106,6 +109,7 @@ export default class PresaleCollectionModalStore extends ModalStore {
         }
 
         try {
+            this.appStore.disableActions();
             // const collectionCoverImage01 = await downloadNftImageAsBase64WithPrefix('/assets/presale-nft-images/collection.png');
             // const collectionProfileImage01 = await downloadNftImageAsBase64WithPrefix('/assets/presale-nft-images/collection-profile.png');
 
@@ -268,6 +272,8 @@ export default class PresaleCollectionModalStore extends ModalStore {
             this.alertStore.show('There was an error minting the NFTs', () => {
                 window.location.reload();
             });
+        } finally {
+            this.appStore.enableActions();
         }
     }
 }

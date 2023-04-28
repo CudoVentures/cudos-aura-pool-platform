@@ -31,12 +31,15 @@ export default class CollectionApi {
     }
 
     async creditCollection(collectionEntity: CollectionEntity, nftEntities: NftEntity[], onUploadProgress: (progressEvent: AxiosProgressEvent) => void = null): Promise < { collectionEntity: CollectionEntity, nftEntities: NftEntity[] } > {
+        console.log('credit collection 32');
         const req = new ReqCreditCollection(collectionEntity, nftEntities);
 
+        console.log('credit collection 34');
         const { data } = await axios.put(COLLECTION_URL, req, {
             onUploadProgress,
         })
 
+        console.log('credit collection 36');
         const res = new ResCreditCollection(data);
 
         return {
