@@ -79,5 +79,8 @@ export default class GridViewState {
 
     setTotalItems(count: number) {
         this.tableState.tableFilterState.total = count;
+        if (this.tableState.tableFilterState.from >= count) {
+            this.tableState.tableFilterState.goToLastPossbilePage(count)
+        }
     }
 }

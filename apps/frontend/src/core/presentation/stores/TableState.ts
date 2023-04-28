@@ -109,4 +109,8 @@ export class TableFilterState {
         return this.to() < this.total;
     }
 
+    goToLastPossbilePage(total) {
+        this.from = Math.floor(total / this.total) * this.total;
+    }
+
 }

@@ -103,7 +103,14 @@ export default class MiningFarmApiRepo implements MiningFarmRepo {
     async fetchMiningFarmsByFilter(miningFarmFilterModel: MiningFarmFilterModel): Promise < {miningFarmEntities: MiningFarmEntity[], total: number} > {
         try {
             this.disableActions?.();
-            return await this.miningFarmApi.fetchMiningFarmsByFilter(miningFarmFilterModel);
+            let fetchMiningFarmsResult = await this.miningFarmApi.fetchMiningFarmsByFilter(miningFarmFilterModel);
+            if (fetchMiningFarmsResult.miningFarmEntities.length === 0 && fetchMiningFarmsResult.total !== 0) {
+                if (miningFarmFilterModel.goToLastPossbilePage(fetchMiningFarmsResult.total) === true) {
+                    fetchMiningFarmsResult = await this.miningFarmApi.fetchMiningFarmsByFilter(miningFarmFilterModel);
+                }
+            }
+
+            return fetchMiningFarmsResult
         } finally {
             this.enableActions?.();
         }

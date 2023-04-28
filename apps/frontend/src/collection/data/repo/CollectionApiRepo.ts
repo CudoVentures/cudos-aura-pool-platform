@@ -100,12 +100,18 @@ export default class CollectionApiRepo implements CollectionRepo {
     async fetchCollectionsByFilter(collectionFilterModel: CollectionFilterModel): Promise < { collectionEntities: CollectionEntity[], total: number } > {
         try {
             this.disableActions?.();
-            const { collectionEntities, total } = await this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
-            const checkedCollectionEntities = this.checkCollectionsVersusSessionStorage(collectionEntities);
+            let fetchedCollectionResult = await this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
+            if (fetchedCollectionResult.collectionEntities.length === 0 && fetchedCollectionResult.total !== 0) {
+                if (collectionFilterModel.goToLastPossbilePage(fetchedCollectionResult.total) === true) {
+                    fetchedCollectionResult = await this.collectionApi.fetchCollectionsByFilter(collectionFilterModel);
+                }
+            }
+
+            const checkedCollectionEntities = this.checkCollectionsVersusSessionStorage(fetchedCollectionResult.collectionEntities);
 
             return {
                 collectionEntities: checkedCollectionEntities,
-                total,
+                total: fetchedCollectionResult.total,
             }
         } finally {
             this.enableActions?.();

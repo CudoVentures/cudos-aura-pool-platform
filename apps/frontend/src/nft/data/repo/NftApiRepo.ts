@@ -114,12 +114,17 @@ export default class NftApiRepo implements NftRepo {
     async fetchNftsByFilter(nftFilterModel: NftFilterModel): Promise < { nftEntities: NftEntity[], total: number } > {
         try {
             this.disableActions?.();
-            const { nftEntities, total } = await this.nftApi.fetchNftsByFilter(nftFilterModel);
-            const checkedNfts = this.checkNftsVersusSessionStorage(nftEntities);
+            let fetchedNftsResult = await this.nftApi.fetchNftsByFilter(nftFilterModel);
+            if (fetchedNftsResult.nftEntities.length === 0 && fetchedNftsResult.total !== 0) {
+                if (nftFilterModel.goToLastPossbilePage(fetchedNftsResult.total) === true) {
+                    fetchedNftsResult = await this.nftApi.fetchNftsByFilter(nftFilterModel);
+                }
+            }
+            const checkedNfts = this.checkNftsVersusSessionStorage(fetchedNftsResult.nftEntities);
 
             return {
                 nftEntities: checkedNfts,
-                total,
+                total: fetchedNftsResult.total,
             }
         } finally {
             this.enableActions?.();
