@@ -11,6 +11,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
 import { FarmModule } from '../farm/farm.module';
 import { DataModule } from '../data/data.module';
 import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { CryptoCompareModule } from '../crypto-compare/crypto-compare.module';
         CryptoCompareModule,
         forwardRef(() => FarmModule),
         forwardRef(() => StatisticsModule),
+        HttpModule,
     ],
     providers: [CollectionService],
     controllers: [CollectionController],

@@ -32,6 +32,7 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { HttpService } from '@nestjs/axios';
 
 @Controller('collection')
 export class CollectionController {
@@ -46,6 +47,7 @@ export class CollectionController {
         private dataService: DataService,
         private graphqlService: GraphqlService,
         private farmService: FarmService,
+        private readonly httpService: HttpService,
     ) {
         this.isCreatorOrSuperAdminGuard = new IsCreatorOrSuperAdminGuard(this.collectionService, this.farmService);
         this.isFarmApprovedGuard = new IsFarmApprovedGuard(this.farmService);
@@ -118,6 +120,19 @@ export class CollectionController {
         try {
             collectionEntity.bannerImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.bannerImage);
             collectionEntity.mainImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.mainImage);
+            const uniqueUrlsMap = new Map < string, string >();
+            for (let i = nftEntities.length; i-- > 0;) {
+                const nftEntity = nftEntities[i];
+                if (this.dataService.isUrlUploadedImage(nftEntity.uri) === true) {
+                    if (uniqueUrlsMap.has(nftEntity.uri) === false) {
+                        const response = await this.httpService.axiosRef.get(nftEntity.uri, { responseType: 'arraybuffer' });
+                        const base64 = Buffer.from(response.data, 'binary').toString('base64');
+                        const uri = `data:image/png;base64,${base64}`;
+                        uniqueUrlsMap.set(nftEntity.uri, uri);
+                    }
+                    nftEntity.uri = uniqueUrlsMap.get(nftEntity.uri);
+                }
+            }
             for (let i = nftEntities.length; i-- > 0;) {
                 nftEntities[i].uri = await this.dataService.trySaveUri(collectionOwnerAccountId, nftEntities[i].uri);
             }

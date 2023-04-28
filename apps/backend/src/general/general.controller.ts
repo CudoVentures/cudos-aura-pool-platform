@@ -10,14 +10,12 @@ import { ResCreditSettings, ResFetchLastCheckedPaymenrRelayerBlocks, ResFetchSet
 import SettingsEntity from './entities/settings.entity';
 import GeneralService from './general.service';
 import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
 
 @Controller('general')
 export class GeneralController {
     constructor(
         private generalService: GeneralService,
         private configService: ConfigService,
-        private readonly httpService: HttpService,
     ) {}
 
     @Get('heartbeat')
@@ -110,12 +108,12 @@ export class GeneralController {
         return new ResCreditSettings(settingsEntity);
     }
 
-    @Get('downloadAsBase64')
-    @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
-    @HttpCode(200)
-    @SkipThrottle()
-    async downloadAsBase64(@Query() query) {
-        const response = await this.httpService.axiosRef.get(query.url, { responseType: 'arraybuffer' });
-        return Buffer.from(response.data, 'binary').toString('base64');
-    }
+    // @Get('downloadAsBase64')
+    // @UseGuards(RoleGuard([AccountType.SUPER_ADMIN]))
+    // @HttpCode(200)
+    // @SkipThrottle()
+    // async downloadAsBase64(@Query() query) {
+    //     const response = await this.httpService.axiosRef.get(query.url, { responseType: 'arraybuffer' });
+    //     return Buffer.from(response.data, 'binary').toString('base64');
+    // }
 }
