@@ -114,7 +114,7 @@ describe('NFTService', () => {
     it('getRandomPresaleNft: should have expected distribution', async () => {
         // Arrange
         const totalFetches = 2000000;
-        const tiers = [150, 300, 1000, 3000, 5000];
+        const tiers = [165, 330, 1100, 3300, 5500];
         const propabilities = [0.1912, 0.7527, 0.0498, 0.0046, 0.0017];
         const expectedCounts = propabilities.map((probality) => totalFetches * probality);
 
@@ -146,13 +146,13 @@ describe('NFTService', () => {
     it('getRandomPresaleNft: tier2 finished, tier1 should be minted instead', async () => {
         // Arrange
         const totalFetches = 2000000;
-        const tiers = [150, 1000, 3000, 5000];
+        const tiers = [165, 1100, 3300, 5500];
         const propabilities = [0.1912 + 0.7527, 0.0498, 0.0046, 0.0017];
         const expectedCounts = propabilities.map((probality) => totalFetches * probality);
         const countE = 0.025;
 
         jest.spyOn(service, 'findAllPresaleByCollectionAndPriceUsd').mockImplementation(async (collectionId, price) => {
-            if (price === 300) {
+            if (price === 330) {
                 return [];
             }
 
@@ -181,13 +181,13 @@ describe('NFTService', () => {
     it('getRandomPresaleNft: tiers 2 and 1 finished, tier 3 should be minted instead of them', async () => {
         // Arrange
         const totalFetches = 2000000;
-        const tiers = [1000, 3000, 5000];
+        const tiers = [1100, 3300, 5500];
         const propabilities = [0.1912 + 0.7527 + 0.0498, 0.0046, 0.0017];
         const expectedCounts = propabilities.map((probality) => totalFetches * probality);
         const countE = 0.025;
 
         jest.spyOn(service, 'findAllPresaleByCollectionAndPriceUsd').mockImplementation(async (collectionId, price, dbTx, dbLock) => {
-            if (price === 150 || price === 300) {
+            if (price === 165 || price === 330) {
                 return [];
             }
 
