@@ -117,6 +117,38 @@ export class CollectionController {
         const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId, req.transaction);
         const collectionOwnerAccountId = miningFarmDb.accountId;
 
+        const collectionDbEntity = await this.collectionService.findOne(collectionId, req.transaction, req.transaction.LOCK.UPDATE);
+        const nftFilterEntity = new NftFilterEntity();
+        nftFilterEntity.collectionIds = [collectionId.toString()];
+        const { nftEntities: collectionNftDbEntities } = await this.nftService.findByFilter(null, nftFilterEntity, req.transaction, req.transaction.LOCK.UPDATE);
+
+        // check collection hasing power
+        const collectionDbEntities = await this.collectionService.findByFarmId(miningFarmDb.id, req.transaction, req.transaction.LOCK.UPDATE);
+        const miningFarmHashPowerSoFar = collectionDbEntities.reduce((accu, entity) => {
+            if (collectionDbEntity === null || collectionDbEntity.id !== entity.id) {
+                accu += entity.hashingPower;
+            }
+            return accu;
+        }, 0);
+        if (miningFarmHashPowerSoFar + collectionEntity.hashingPower > miningFarmDb.hashPowerInTh) {
+            throw new CollectionCreationError(); // exceed hashing power
+        }
+
+        // check nfts hasing power
+        const nftsHashingPower = nftEntities.reduce((accumulator, nftEntity) => {
+            return accumulator + nftEntity.hashingPower;
+        }, 0);
+        if (nftsHashingPower > collectionEntity.hashingPower) {
+            throw new CollectionCreationError(); // exceed hashing power
+        }
+
+        // check immutable fields
+        if (collectionDbEntity !== null) {
+            if (collectionEntity.farmId !== collectionDbEntity.farmId) {
+                throw new CollectionCreationError(); // exceed hashing power
+            }
+        }
+
         try {
             collectionEntity.bannerImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.bannerImage);
             collectionEntity.mainImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.mainImage);
@@ -140,11 +172,6 @@ export class CollectionController {
             console.log(e);
             throw new DataServiceError();
         }
-
-        const collectionDbEntity = await this.collectionService.findOne(collectionId, req.transaction, req.transaction.LOCK.UPDATE);
-        const nftFilterEntity = new NftFilterEntity();
-        nftFilterEntity.collectionIds = [collectionId.toString()];
-        const { nftEntities: collectionNftDbEntities } = await this.nftService.findByFilter(null, nftFilterEntity, req.transaction, req.transaction.LOCK.UPDATE);
 
         let oldUris = [];
         if (collectionDbEntity !== null) {
