@@ -80,19 +80,21 @@ export class NFTController {
         let nftEntity: NftEntity;
 
         if (id === 'presale') {
-            const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
+            const presaleEndTimestamp = this.configService.getOrThrow<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp < Date.now()) {
                 console.log('Getting NFT from OnDemandMinting', 'presale has ended at', presaleEndTimestamp);
                 req.logger.info(`Getting NFT from OnDemandMinting presale has ended at ${presaleEndTimestamp}`);
                 throw new Error('Presale ended.')
             }
 
-            const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient, req.transaction);
-
-            if (allowlistUser === null) {
-                console.log('Getting NFT from OnDemandMinting', `Address ${recipient} not found in allowlist`);
-                req.logger.info(`Getting NFT from OnDemandMinting Address ${recipient} not found in allowlist`);
-                throw new Error('Recipient not in allowlist.')
+            const respectAllowlist = this.configService.getOrThrow<string>('APP_RESPECT_ALLOWLIST');
+            if (respectAllowlist === 'true') {
+                const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient, req.transaction);
+                if (allowlistUser === null) {
+                    console.log('Getting NFT from OnDemandMinting', `Address ${recipient} not found in allowlist`);
+                    req.logger.info(`Getting NFT from OnDemandMinting Address ${recipient} not found in allowlist`);
+                    throw new Error('Recipient not in allowlist.')
+                }
             }
 
             nftEntity = await this.nftService.getRandomPresaleNft(paidAmountAcudos, req.transaction, req.transaction.LOCK.UPDATE);
@@ -100,7 +102,7 @@ export class NFTController {
                 nftEntity = await this.nftService.updatePremintNftPrice(nftEntity, paidAmountAcudos, req.transaction);
             }
         } else {
-            const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
+            const presaleEndTimestamp = this.configService.getOrThrow<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp > Date.now()) {
                 console.log('Getting NFT from OnDemandMinting', 'public sale has not started yet', presaleEndTimestamp);
                 req.logger.info(`Getting NFT from OnDemandMinting public sale has not started yet ${presaleEndTimestamp}`);
@@ -109,7 +111,7 @@ export class NFTController {
 
             nftEntity = await this.nftService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
 
-            const presaleExpectedPriceEpsilon = this.configService.get<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
+            const presaleExpectedPriceEpsilon = this.configService.getOrThrow<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
             const expectedAcudosEpsilonAbsolute = paidAmountAcudos.multipliedBy(presaleExpectedPriceEpsilon);
             const expectedAcudosLowerBand = expectedAcudosEpsilonAbsolute.minus(expectedAcudosEpsilonAbsolute);
             const expectedAcudosUpperband = expectedAcudosEpsilonAbsolute.plus(expectedAcudosEpsilonAbsolute);

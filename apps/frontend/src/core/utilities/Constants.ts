@@ -25,6 +25,7 @@ export const BTC_CONSTS = {
 export const PRESALE_CONSTS = {
     PRICE_USD: Number(Config.APP_PRESALE_PRICE_USD),
     PRESALE_ENDTIME: Config.APP_PRESALE_END_TIMESTAMP,
+    RESPECT_ALLOWLIST: Config.APP_RESPECT_ALLOWLIST,
 }
 
 export const ETH_CONSTS = {
