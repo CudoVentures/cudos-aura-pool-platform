@@ -53,7 +53,7 @@ export default class NftPresaleStore {
         this.presaleMintedNftCount = 0;
         this.totalPresaleNftCount = 0;
         this.presaleNftIndexSelected = 0;
-        this.presaleNftsUniqueImageUrls = ['/assets/presale-nft-images/level1-01.png', '/assets/presale-nft-images/level2-01.png', '/assets/presale-nft-images/level3-01.png', '/assets/presale-nft-images/level4-01.png', '/assets/presale-nft-images/level5-01.png'];
+        this.presaleNftsUniqueImageUrls = ['https://drive.google.com/uc?id=11_JbSqJS2iPlys4Ur0uWef8Egkk3x6v6', 'https://drive.google.com/uc?id=13Ru4WOuV5AUqtKyfPe8WAIGIrOVSTNyj', 'https://drive.google.com/uc?id=1LikApe9C-FqHmq9qWvhI2Edinl-SZtQl', 'https://drive.google.com/uc?id=1TpcGkSZ_DjlbPmej2GQ_7FEtD0k883Vu', 'https://drive.google.com/uc?id=11pSGruw5Fe2zViD247GtIJCtRRkyZQ8H'];
 
         this.allowlistUserEntity = null;
         this.totalWhitelistedUsersCount = 0;
