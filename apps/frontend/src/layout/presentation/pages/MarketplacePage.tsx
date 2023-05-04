@@ -364,7 +364,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                         </div> */}
                                     </ColumnLayout>
                                 </StyledContainer>
-                                <StyledContainer
+                                { /* <StyledContainer
                                     className={'PhaseInfoContainer'}
                                     containerPadding={ContainerPadding.PADDING_16} >
                                     <ColumnLayout className={'PhaseInfoColumn'}>
@@ -392,7 +392,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                         </RowLayout>
                                         <div className={'B2 ColorNeutral050'}>Once the Public Sale starts the CUDOS Markets Platform will be open for everyone. This will allow whitelisted users to list their minted NFTs for sale.</div>
                                     </ColumnLayout>
-                                </StyledContainer>
+                                    </StyledContainer> */}
                             </ColumnLayout>
 
                             {nftPresaleStore.isUserEligibleToBuy() === true && nftPresaleStore.getPresaleMintedPercent() !== 100 && (
