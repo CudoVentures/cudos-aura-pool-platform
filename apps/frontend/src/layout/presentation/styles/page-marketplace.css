@@ -148,6 +148,7 @@
 .PageMarketplace .PresaleContainer {
     gap: 50px;
     margin-bottom: 260px;
+    grid-template-columns: minmax(0px, 3fr) minmax(0px, 2fr) !important;
 }
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .CollectionDescription {
@@ -215,4 +216,15 @@
 
 .PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .AmountMintedRow {
     justify-content: space-between;
+}
+
+.PageMarketplace .PresaleContainer .PresaleNftPictureGalleryCnt {
+    height: 0; padding-bottom: 100%;
+    position: relative;
+}
+
+.PageMarketplace .PresaleContainer .PresaleNftPictureGalleryCnt .PresaleNftPictureGallery {
+    width: 100%; height: 100%;
+    position: absolute;
+    left: 0; top: 0;
 }
