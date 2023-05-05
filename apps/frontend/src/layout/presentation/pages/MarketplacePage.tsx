@@ -399,12 +399,12 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 <>
                                     {walletStore.isConnected() === false ? (
                                         <div className={'FlexSingleCenter ColorError060 Bold'} >
-                                            Connect your wallet to buy
+                                            Connect your wallet to mint
                                         </div>
                                     ) : (
                                         <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Buy now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
-                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Buy now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
                                         </Actions>
                                     )}
                                 </>
