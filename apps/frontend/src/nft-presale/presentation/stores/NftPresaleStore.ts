@@ -156,9 +156,9 @@ export default class NftPresaleStore {
     }
 
     isUserEligibleToBuy(): boolean {
-        if (this.walletStore.isConnected() === false) {
-            return false;
-        }
+        // if (this.walletStore.isConnected() === false) {
+        //     return false;
+        // }
 
         if (this.allowlistUserEntity === null) {
             return false;

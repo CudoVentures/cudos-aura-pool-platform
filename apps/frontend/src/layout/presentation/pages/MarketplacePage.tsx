@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 import MarketplacePageStore from '../stores/MarketplacePageStore';
@@ -36,6 +36,9 @@ import AlertStore from '../../../core/presentation/stores/AlertStore';
 import KycStore from '../../../kyc/presentation/stores/KycStore';
 import NftPresaleStore from '../../../nft-presale/presentation/stores/NftPresaleStore';
 import NewLine from '../../../core/presentation/components/NewLine';
+import Checkbox from '../../../core/presentation/components/Checkbox';
+import S from '../../../core/utilities/Main';
+import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
 
 declare let Config;
 
@@ -51,6 +54,8 @@ type Props = {
 
 function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore }: Props) {
     const { presaleCollectionEntity } = nftPresaleStore;
+
+    const [acceptTermsAndConditions, setAcceptTermsAndConditions] = useState(S.INT_FALSE);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -402,10 +407,18 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                             Connect your wallet to mint
                                         </div>
                                     ) : (
-                                        <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos}>Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
-                                            <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth}>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
-                                        </Actions>
+                                        <>
+                                            <Checkbox
+                                                label = { (
+                                                    <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
+                                                ) }
+                                                value = { acceptTermsAndConditions }
+                                                onChange = { setAcceptTermsAndConditions } />
+                                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                                                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos} disabled = { acceptTermsAndConditions !== S.INT_TRUE } >Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                                                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth} disabled = { acceptTermsAndConditions !== S.INT_TRUE }>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
+                                            </Actions>
+                                        </>
                                     )}
                                 </>
                             )}
