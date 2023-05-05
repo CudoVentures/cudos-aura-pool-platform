@@ -191,10 +191,10 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     </div>
                     <div className={'MarketplaceHeroBg'}>
                         <div className={'HeroCircle HeroCircle03'} />
-                        <img className={'HeroImg02'} src={'/assets/img/marketplace-hero-02.png'} />
+                        <img className={'HeroImg02'} src={'/assets/img/marketplace-hero-020.png'} />
                         <div className={'HeroCircle HeroCircle01'} />
                         <div className={'HeroCircle HeroCircle02'} />
-                        <img className={'HeroImg01'} src={'/assets/img/marketplace-hero-01.png'} />
+                        <img className={'HeroImg01'} src={'/assets/img/marketplace-hero-010.png'} />
                     </div>
                 </div>
                 {nftPresaleStore.isPresaleOver() === true && (<>
