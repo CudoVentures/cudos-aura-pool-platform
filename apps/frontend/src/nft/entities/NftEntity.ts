@@ -159,6 +159,14 @@ export default class NftEntity {
         return formatUsd(this.priceUsd);
     }
 
+    formatPurchaseTypeText(): string {
+        if (this.isMinted()) {
+            return 'Buy';
+        }
+
+        return 'Mint';
+    }
+
     cloneDeep(): NftEntity {
         const newNftEntity = Object.assign(new NftEntity(), this);
 
