@@ -80,10 +80,10 @@ export default class NftEventEntity {
         entity.timestamp = nftMarketplaceTradeHistoryEntity.timestamp ?? entity.timestamp;
         entity.transferPriceInAcudos = nftMarketplaceTradeHistoryEntity.acudosPrice ?? entity.transferPriceInAcudos;
         if (nftMarketplaceTradeHistoryEntity.btcPrice) {
-            entity.transferPriceInBtc = nftMarketplaceTradeHistoryEntity.btcPrice.multipliedBy(entity.transferPriceInAcudos.shiftedBy(-CURRENCY_DECIMALS));
+            entity.transferPriceInBtc = entity.transferPriceInAcudos.shiftedBy(-CURRENCY_DECIMALS).dividedBy(nftMarketplaceTradeHistoryEntity.btcPrice);
         }
         if (nftMarketplaceTradeHistoryEntity.usdPrice) {
-            entity.transferPriceInUsd = Number(new BigNumber(nftMarketplaceTradeHistoryEntity.usdPrice).multipliedBy(entity.transferPriceInAcudos.shiftedBy(-CURRENCY_DECIMALS)).toFixed(2));
+            entity.transferPriceInUsd = Number(entity.transferPriceInAcudos.shiftedBy(-CURRENCY_DECIMALS).dividedBy(nftMarketplaceTradeHistoryEntity.usdPrice).toFixed(2));
         }
         entity.txHash = nftMarketplaceTradeHistoryEntity.transactionHash ?? entity.txHash;
 

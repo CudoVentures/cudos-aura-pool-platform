@@ -5,7 +5,7 @@ import Logger from '../../config/Logger';
 import { PaymentStatus } from '../entities/PaymentEventEntity';
 import Config from '../../config/Config';
 import BigNumber from 'bignumber.js';
-import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
+import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
 
 export default class ContractEventWorker {
     static WORKER_NAME = 'CONTRACT_EVENT_WORKER';
@@ -102,15 +102,21 @@ export default class ContractEventWorker {
                         shouldRefund = true;
                     }
 
-                    if (shouldRefund === false) {
-                        // - is the given adress in addressbook with BTC address?
-                        ContractEventWorker.log('\tGetting addressbook entry for payment cudos address...');
-                        const addressbookEntry = await this.cudosChainRepo.fetchAddressbookEntry(paymentEventEntity.cudosAddress);
-                        if (!addressbookEntry || addressbookEntry.isValid() === false) {
-                            ContractEventWorker.warn(`\tAddressbook entry not found for payment nft id.\n\t\tPayment cudos address: ${paymentEventEntity.cudosAddress}`);
-                            shouldRefund = true;
-                        }
-                    }
+                    // no need to check it because we have allowed payments without BTC address
+                    // if (shouldRefund === false) {
+                    //     // - is the given adress in addressbook with BTC address?
+                    //     ContractEventWorker.log('\tGetting addressbook entry for payment cudos address...');
+                    //     const addressbookEntry = await this.cudosChainRepo.fetchAddressbookEntry(paymentEventEntity.cudosAddress);
+                    //     if (!addressbookEntry || addressbookEntry.isValid() === false) {
+                    //         ContractEventWorker.warn(`\tAddressbook entry not found for payment nft id.\n\t\tPayment cudos address: ${paymentEventEntity.cudosAddress}`);
+                    //         shouldRefund = true;
+                    //     }
+                    // }
+
+                    const purchaseTransactionEntity = new PurchaseTransactionEntity();
+                    purchaseTransactionEntity.txhash = paymentEventEntity.txHash;
+                    purchaseTransactionEntity.recipientAddress = paymentEventEntity.cudosAddress;
+                    purchaseTransactionEntity.timestamp = paymentEventEntity.timestamp * 1000; // eth timestamps are in seconds
 
                     // if check fails, unlock payment
                     if (shouldRefund === true) {
@@ -124,23 +130,18 @@ export default class ContractEventWorker {
                             ContractEventWorker.log(`\tPaymentId ${paymentEventEntity.id} is already not locked.`);
                         }
 
-                        // if the checks pass, send payment to on demand minting service
-                    } else {
+                        purchaseTransactionEntity.status = PurchaseTransactionStatus.REFUNDED;
+                    } else { // if the checks pass, send payment to on demand minting service
                         ContractEventWorker.log('\tGoing to mint an nft.');
                         const convertedPaymentToCudos = receivedEthAmount.dividedBy(this.cudosEthPrice);
                         ContractEventWorker.log(`\tReceived payment is ${receivedEthAmount.toString(10)} ETH = ${convertedPaymentToCudos.toString(10)} CUDOS in current prices`)
                         ContractEventWorker.log('\tSending on demand minting Tx...')
                         const txhash = await this.cudosChainRepo.sendOnDemandMintingTx(paymentEventEntity, convertedPaymentToCudos);
                         ContractEventWorker.log(`\tPaymentId ${paymentEventEntity.id} sent for mint to on demand minting service. TxHash: ${txhash}`);
-
-                        const purchaseTransactionEntity = new PurchaseTransactionEntity();
-                        purchaseTransactionEntity.txhash = paymentEventEntity.txHash;
-                        purchaseTransactionEntity.recipientAddress = paymentEventEntity.cudosAddress;
-                        purchaseTransactionEntity.timestamp = paymentEventEntity.timestamp * 1000; // eth timestamps are in seconds
-
-                        ContractEventWorker.log('\tSaving purchase transaction to database...');
-                        await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
                     }
+
+                    ContractEventWorker.log('\tSaving purchase transaction to database...');
+                    await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
                 }
 
             } else {
