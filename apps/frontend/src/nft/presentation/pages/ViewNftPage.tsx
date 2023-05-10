@@ -283,7 +283,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                         <>
                                             { nftEntity.isStatusListed() === true && nftEntity.isOwnedByAddress(walletStore.getAddress()) === false && (
                                                 <Actions layout={ActionsLayout.LAYOUT_COLUMN_FULL}>
-                                                    <Button onClick={onClickBuyNft}>Buy now for {cudosStore.formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity)} </Button>
+                                                    <Button onClick={onClickBuyNft}>{nftEntity.formatPurchaseTypeText()} now for {cudosStore.formatPriceInCudosForNftPlusOnDemandMintFeeIfNeeded(nftEntity)} </Button>
                                                 </Actions>
                                             )}
                                             { nftEntity.isStatusListed() === false && nftEntity.isOwnedByAddress(walletStore.getAddress()) === true && (

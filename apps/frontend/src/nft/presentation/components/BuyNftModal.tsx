@@ -54,7 +54,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
                 {buyNftModalStore.isStagePreview() === true && (
                     <>
-                        <div className={'H3 Bold'}>Buy NFT</div>
+                        <div className={'H3 Bold'}>{nftEntity.formatPurchaseTypeText()} NFT</div>
                         <div className={'BorderContainer FlexRow'}>
                             <div className={'NftPicture'} style = { ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
                             <div className={'NftInfo FlexColumnt'}>
