@@ -72,7 +72,7 @@ export default class WalletSelectModal extends ModalStore {
         this.accountNumber = S.NOT_EXISTS;
         this.onFinish = null;
 
-        this.termsAccepted = 0;
+        this.termsAccepted = S.INT_FALSE;
         this.termsAcceptedError = false;
 
         makeObservable(this);
@@ -197,7 +197,7 @@ export default class WalletSelectModal extends ModalStore {
     }
 
     isTermsAccepted(): boolean {
-        return this.termsAccepted === 1;
+        return this.termsAccepted === S.INT_TRUE;
     }
 
     hasNextStep(): boolean {
@@ -259,7 +259,7 @@ export default class WalletSelectModal extends ModalStore {
         this.identityTx = TransactionStatus.NOT_INITIALIZED;
         this.onFinish = onFinish;
 
-        this.termsAccepted = walletSelectMode === WalletSelectMode.SUPER_ADMIN ? 1 : 0;
+        this.termsAccepted = walletSelectMode === WalletSelectMode.SUPER_ADMIN ? S.INT_TRUE : S.INT_FALSE;
         this.termsAcceptedError = false;
 
         this.invalidateProgressSteps();

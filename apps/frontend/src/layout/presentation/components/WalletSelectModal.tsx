@@ -225,15 +225,16 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     <div className = { 'ModalWalletSubtitle FlexColumn' } >
                         Select your preferred wallet to connect with.<br />
 
-                        {walletSelectModalStore.isModeSuperAdmin() === false && (<Checkbox
-                            error={walletSelectModalStore.termsAcceptedError}
-                            label={
-                                <div>
-                                    I agree to CUDOS Markets’ <a href = { TERMS_OF_USE } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</a>
-                                </div>}
-                            value={walletSelectModalStore.termsAccepted}
-                            onChange={walletSelectModalStore.onChangeTermsAndConditions}
-                        />)}
+                        {walletSelectModalStore.isModeSuperAdmin() === false && (
+                            <Checkbox
+                                error={walletSelectModalStore.termsAcceptedError}
+                                label={
+                                    <div className = { 'ColorNeutral060' }>
+                                        I agree to CUDOS Markets’ <a href = { TERMS_OF_USE } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</a>
+                                    </div>}
+                                value={walletSelectModalStore.termsAccepted}
+                                onChange={walletSelectModalStore.onChangeTermsAndConditions} />
+                        )}
                     </div>
 
                     <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError ')}  ${S.CSS.getClassName(walletSelectModalStore.isTermsAccepted() === false, 'Disabled')}`}
