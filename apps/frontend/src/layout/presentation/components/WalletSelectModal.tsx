@@ -25,7 +25,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
-import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
 import Checkbox from '../../../core/presentation/components/Checkbox';
 
 type Props = {
@@ -229,7 +228,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                             error={walletSelectModalStore.termsAcceptedError}
                             label={
                                 <div>
-                                    I agree to CUDOS Markets’ <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</a>
+                                    I agree to CUDOS Markets’ <a href = { 'https://www.cudosmarkets.com/terms-and-conditions/#terms-of-use' } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</a>
                                 </div>}
                             value={walletSelectModalStore.termsAccepted}
                             onChange={walletSelectModalStore.onChangeTermsAndConditions}
