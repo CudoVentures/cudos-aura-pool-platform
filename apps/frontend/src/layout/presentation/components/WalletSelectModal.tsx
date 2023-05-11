@@ -229,7 +229,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                             error={walletSelectModalStore.termsAcceptedError}
                             label={
                                 <div>
-                                    I agree to CUDOS Markets’ <Link to = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
+                                    I agree to CUDOS Markets’ <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</a>
                                 </div>}
                             value={walletSelectModalStore.termsAccepted}
                             onChange={walletSelectModalStore.onChangeTermsAndConditions}
