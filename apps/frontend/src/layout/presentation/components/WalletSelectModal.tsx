@@ -25,7 +25,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import '../styles/wallet-select-modal.css';
-import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
+import Checkbox from '../../../core/presentation/components/Checkbox';
+import { TERMS_OF_USE } from '../../../core/utilities/Links';
 
 type Props = {
     walletSelectModalStore?: WalletSelectModalStore;
@@ -36,7 +37,6 @@ type Props = {
 }
 
 function WalletSelectModal({ walletSelectModalStore, walletStore, accountSessionStore, kycStore, alertStore }: Props) {
-
     const navigate = useNavigate();
 
     async function onClickToggleKeplr() {
@@ -222,12 +222,22 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                 <AnimationContainer active = {walletSelectModalStore.isWalletConnecting() === false } >
                     <div className = { 'H3 Bold' } >Connect Your Wallet</div>
 
-                    <div className = { 'ModalWalletSubtitle' } >
+                    <div className = { 'ModalWalletSubtitle FlexColumn' } >
                         Select your preferred wallet to connect with.<br />
-                        By connecting your wallet you are agreeing to CUDOS Markets’ <Link to = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</Link>
+
+                        {walletSelectModalStore.isModeSuperAdmin() === false && (<Checkbox
+                            error={walletSelectModalStore.termsAcceptedError}
+                            label={
+                                <div>
+                                    I agree to CUDOS Markets’ <a href = { TERMS_OF_USE } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' }>terms of use</a>
+                                </div>}
+                            value={walletSelectModalStore.termsAccepted}
+                            onChange={walletSelectModalStore.onChangeTermsAndConditions}
+                        />)}
                     </div>
 
-                    <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError')}` } onClick = { onClickToggleKeplr } >
+                    <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isKeplrConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isKeplrError(), 'ConnectButtonError ')}  ${S.CSS.getClassName(walletSelectModalStore.isTermsAccepted() === false, 'Disabled')}`}
+                        onClick = { walletSelectModalStore.isTermsAccepted() ? onClickToggleKeplr : walletSelectModalStore.showTermsAcceptedError } >
                         <img className = { 'WalletIcon' } src={'/assets/img/keplr-icon.png'} />
                         <div className = { 'FlexColumn' }>
                             Connect to Keplr
@@ -237,7 +247,8 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                         </div>
                         <Svg className = { 'IconWalletConnectionStatus' } size = { SvgSize.CUSTOM } svg = { walletSelectModalStore.isWalletConnectedSuccessfully() === true ? CheckIcon : ClearIcon } />
                     </div>
-                    <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isCosmostationConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isCosmostationError(), 'ConnectButtonError')}` } onClick = { onClickToggleCosmostation } >
+                    <div className = { `ConnectButton FlexRow Transition H3 SemiBold ${S.CSS.getClassName(walletSelectModalStore.isCosmostationConnectedSuccessfully(), 'ConnectButtonSuccess')} ${S.CSS.getClassName(walletSelectModalStore.isCosmostationError(), 'ConnectButtonError ')}  ${S.CSS.getClassName(walletSelectModalStore.isTermsAccepted() === false, 'Disabled')}`}
+                        onClick = { walletSelectModalStore.isTermsAccepted() ? onClickToggleCosmostation : walletSelectModalStore.showTermsAcceptedError} >
                         <img className = { 'WalletIcon' } src={'/assets/img/cosmostation-icon.png'} />
                         <div className = { 'FlexColumn' } >
                             Connect to Cosmostation

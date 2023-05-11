@@ -11,6 +11,7 @@
     color: var(--color-neutral-060);
     font-size: 16px;
     margin: 8px 0 32px 0;
+    gap: 20px;
 }
 
 .SelectWalletPopup .LoadingSection {
@@ -53,6 +54,12 @@
 
 .SelectWalletPopup .ModalWalletFooter .WalletInfo {
     gap: 7px
+}
+
+
+.SelectWalletPopup .ProgressStepConnectWallet .ConnectButton.Disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .SelectWalletPopup .ProgressStepConnectWallet .ConnectButton {
