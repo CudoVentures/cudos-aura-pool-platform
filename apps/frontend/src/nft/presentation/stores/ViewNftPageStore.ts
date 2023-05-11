@@ -14,7 +14,7 @@ import StatisticsRepo from '../../../analytics/presentation/repos/StatisticsRepo
 import NftEarningsEntity from '../../../analytics/entities/NftEarningsEntity';
 import DefaultIntervalPickerState from '../../../analytics/presentation/stores/DefaultIntervalPickerState';
 import TableState from '../../../core/presentation/stores/TableState';
-import NftEventEntity from '../../../analytics/entities/NftEventEntity';
+import NftEventEntity, { NftEventType } from '../../../analytics/entities/NftEventEntity';
 import NftEventFilterModel from '../../../analytics/entities/NftEventFilterModel';
 import BigNumber from 'bignumber.js';
 import AccountRepo from '../../../accounts/presentation/repos/AccountRepo';
@@ -183,6 +183,7 @@ export default class ViewNftPageStore {
     fetchHistory = async () => {
         this.nftEventFilterModel.from = this.historyTableState.tableFilterState.from;
         this.nftEventFilterModel.count = this.historyTableState.tableFilterState.itemsPerPage;
+        this.nftEventFilterModel.eventTypes = [NftEventType.SALE, NftEventType.TRANSFER]
         const { nftEventEntities, total } = await this.statisticsRepo.fetchNftEvents(this.nftEventFilterModel);
 
         await runInActionAsync(() => {
