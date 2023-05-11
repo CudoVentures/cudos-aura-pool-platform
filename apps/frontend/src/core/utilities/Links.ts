@@ -9,5 +9,6 @@ export const FACEBOOK = 'https://www.facebook.com/cudos.org/';
 export const SPOTIFY = 'https://open.spotify.com/show/2lZuBXJ270g7taK06tnK35';
 export const YOUTUBE = 'https://www.youtube.com/c/CUDOS';
 export const TERMS_AND_CONDITIONS = 'https://www.cudosmarkets.com/terms-and-conditions';
+export const TERMS_OF_USE = 'https://www.cudosmarkets.com/terms-and-conditions/#terms-of-use';
 export const PRIVACY_POLICY = 'https://www.cudosmarkets.com/privacy-policy';
 export const REWARDS_CALCULATOR = 'https://calculator.cudosmarkets.com';
