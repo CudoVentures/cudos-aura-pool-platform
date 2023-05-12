@@ -20,6 +20,11 @@ import MiningFarmPreview from '../../../mining-farm/presentation/components/Mini
 import DefaultIntervalPicker from '../../../analytics/presentation/components/DefaultIntervalPicker';
 import SvgCudosLogo from '../../../public/assets/vectors/cudos-logo.svg';
 import SvgEthereumLogo from '../../../public/assets/vectors/ethereum-logo.svg';
+import SvgBlueDiamond from '../../../public/assets/vectors/blue-diamond.svg';
+import SvgDiamond from '../../../public/assets/vectors/diamond.svg';
+import SvgEmerald from '../../../public/assets/vectors/emerald.svg';
+import SvgRuby from '../../../public/assets/vectors/ruby.svg';
+import SvgOpal from '../../../public/assets/vectors/opal.svg';
 
 import '../styles/page-marketplace.css';
 import RowLayout from '../../../core/presentation/components/RowLayout';
@@ -39,6 +44,9 @@ import NewLine from '../../../core/presentation/components/NewLine';
 import Checkbox from '../../../core/presentation/components/Checkbox';
 import S from '../../../core/utilities/Main';
 import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
+import MarketPresaleNftPreview from '../components/MarketplacePresaleNftPreview';
+import BuyPresaleNftModalStore from '../stores/BuyPresaleNftModalStore';
+import BuyPresaleNftModal from '../components/BuyPresaleNftModal';
 
 declare let Config;
 
@@ -50,9 +58,10 @@ type Props = {
     marketplacePageStore?: MarketplacePageStore
     presaleStore?: PresaleStore
     kycStore?: KycStore,
+    buyPresaleNftModalStore?: BuyPresaleNftModalStore;
 }
 
-function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore }: Props) {
+function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, marketplacePageStore, walletStore, presaleStore, kycStore, buyPresaleNftModalStore }: Props) {
     const { presaleCollectionEntity } = nftPresaleStore;
 
     const [acceptTermsAndConditions, setAcceptTermsAndConditions] = useState(S.INT_FALSE);
@@ -126,7 +135,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
         const success = await nftPresaleStore.onClickBuyWithCudos();
         if (success === true) {
-            showSuccessAlert();
+            buyPresaleNftModalStore.show();
         }
     }
 
@@ -138,18 +147,8 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
         const success = await nftPresaleStore.onClickBuyWithEth();
         if (success === true) {
-            showSuccessAlert();
+            buyPresaleNftModalStore.show();
         }
-    }
-
-    function showSuccessAlert() {
-        alertStore.msg = 'You have successfully bought the NFT. It should appear on your Profile page shortly, please check the status there. If there is an error, you will either be automatically refunded or you will be able to claim a refund from your Profile page.';
-        alertStore.positiveLabel = 'Profile';
-        alertStore.positiveListener = () => {
-            navigate(AppRoutes.USER_PROFILE);
-        };
-        alertStore.negativeLabel = 'Ok'
-        alertStore.visible = true;
     }
 
     useEffect(() => {
@@ -160,16 +159,12 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
         } else {
             marketplacePageStore.init();
         }
-        // async function run() {
-
-        // }
-        // run();
     }, []);
 
-    const presaleTimesLeft = nftPresaleStore.getPresaleTimeLeft();
-
     return (
-        <PageLayout className={'PageMarketplace'} >
+        <PageLayout
+            className={'PageMarketplace'}
+            modals = { <BuyPresaleNftModal /> } >
             <PageHeader />
             <div className={'PageContent AppContent'} >
 
@@ -314,93 +309,91 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                     </div>
                 </>)}
                 {nftPresaleStore.isPresaleOver() === false && (
-                    <RowLayout className={'PresaleContainer'} numColumns={2} gap={100}>
-                        <ColumnLayout className={'PresaleInfoColumn'} gap={24}>
-                            <div className={'Primary60 B2 SemiBold'}>PRESALE COLLECTION</div>
-                            <div className={'ColorNeutral100 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
-                            <div className={'ColorNeutral100 CollectionDescription'}><NewLine text = {presaleCollectionEntity?.description ?? ''} /></div>
-                            <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
-                                <StyledContainer
-                                    className={'PhaseInfoContainer'}
-                                    containerPadding={ContainerPadding.PADDING_16}
-                                    containerBorder={ContainerBorder.GRADIENT}>
-                                    <ColumnLayout className={'PhaseInfoColumn'} gap={32}>
-                                        {/* <RowLayout className={'PhaseHeader'} numColumns={2} gap={0}>
-                                            <div className={'PhaseName B3 SemiBold'}>Presale Phase</div>
-                                            <div className={'FlexRow PhaseEta B2 SemiBold'}>
-                                                <div className={'ColorNeutral050'}>Ends in:</div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleDaysLeft}
-                                                    <span>DAYS</span>
-                                                </div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleHoursLeft}
-                                                    <span>HRS</span>
-                                                </div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleMinutesLeft}
-                                                    <span>MINS</span>
-                                                </div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleSecondsleft}
-                                                    <span>SECS</span>
-                                                </div>
-                                            </div>
-                                       </RowLayout> */}
-                                        <div className={'PhasePriceRow FlexRow'}>
-                                            <div className={'PriceInfo FlexRow'}>
-                                                <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
-                                                <div className={'PriceWithIcon FlexRow'}>
-                                                    <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} />
-                                                    <div className={'B2 SemiBold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
-                                                </div>
-                                                <div className={'PriceWithIcon FlexRow'}>
-                                                    <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} />
-                                                    <div className={'B2 SemiBold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
-                                                    <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
-                                                </div>
-                                            </div>
-                                            {/* <div className={'WhitelistedInfo B2 SemiBold ColorNeutral060'}>Whitelisted: <span className={'ColorNeutral100'}>{nftPresaleStore.totalWhitelistedUsersCount}</span></div> */}
-                                        </div>
-                                        {/* <Progressbar fillPercent={nftPresaleStore.getPresaleMintedPercent()} />
-                                        <div className={'AmountMintedRow FlexRow'}>
-                                            <div className={'B3 ColorNeutral60'}>Minted so far</div>
-                                            <div className={'B3 ColorNeutral60'}>{nftPresaleStore.getPresaleMintedPercent().toFixed(2)}% ({nftPresaleStore.getPresaleMintedAmount()}/{nftPresaleStore.getPresaleTotalAmount()})</div>
-                                        </div> */}
-                                    </ColumnLayout>
-                                </StyledContainer>
-                                { /* <StyledContainer
-                                    className={'PhaseInfoContainer'}
-                                    containerPadding={ContainerPadding.PADDING_16} >
-                                    <ColumnLayout className={'PhaseInfoColumn'}>
-                                        <RowLayout className={'PhaseHeader'} numColumns={2} gap={0}>
-                                            <div className={'PhaseName B3 SemiBold'}>Public Sale</div>
-                                            <div className={'B2 SemiBold PhaseEta FlexRow'}>
-                                                <div className={'ColorNeutral050'}>Starts in:</div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleDaysLeft}
-                                                    <span>DAYS</span>
-                                                </div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleHoursLeft}
-                                                    <span>HRS</span>
-                                                </div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleMinutesLeft}
-                                                    <span>MINS</span>
-                                                </div>
-                                                <div className={'TimeNumberBox FlexColumn'}>
-                                                    {presaleTimesLeft.presaleSecondsleft}
-                                                    <span>SECS</span>
-                                                </div>
-                                            </div>
-                                        </RowLayout>
-                                        <div className={'B2 ColorNeutral050'}>Once the Public Sale starts the CUDOS Markets Platform will be open for everyone. This will allow whitelisted users to list their minted NFTs for sale.</div>
-                                    </ColumnLayout>
-                                    </StyledContainer> */}
+                    <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
+                        <div className={'Primary60 B2 SemiBold CollectionLabel'}>Presale collection</div>
+                        <div className={'ColorNeutral100 H2 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
+                        <div className={'ColorNeutral100 B2 CollectionDescription'}><NewLine text = {presaleCollectionEntity?.description ?? ''} /></div>
+                        <StyledContainer
+                            className={'PhaseInfoContainer FlexColumn'}
+                            containerPadding={ContainerPadding.PADDING_32}>
+
+                            <ColumnLayout className={'PhaseInfoColumn'} gap={32}>
+                                <div className={'PriceInfo FlexRow'}>
+                                    <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
+                                    <div className={'PriceWithIcon FlexRow'}>
+                                        <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} />
+                                        <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
+                                        <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                    </div>
+                                    <div className={'PriceWithIcon FlexRow'}>
+                                        <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} />
+                                        <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
+                                        <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                    </div>
+                                </div>
                             </ColumnLayout>
 
-                            {nftPresaleStore.isUserEligibleToBuy() === true && nftPresaleStore.getPresaleMintedPercent() !== 100 && (
+                            <RowLayout className = { 'NftPresalePreviewCnt' } numColumns = { 5 } gap = { 16 } >
+                                <MarketPresaleNftPreview
+                                    imgUrl = { '/assets/presale-nft-images/H-1_small.jpg' }
+                                    name = { 'Opal' }
+                                    hashRateInTh = { 5 }
+                                    svgPath = { SvgOpal }
+                                    whiteText = { false } />
+                                <MarketPresaleNftPreview
+                                    imgUrl = { '/assets/presale-nft-images/H-2_small.jpg' }
+                                    name = { 'Ruby' }
+                                    hashRateInTh = { 10 }
+                                    svgPath = { SvgRuby }
+                                    whiteText = { false } />
+                                <MarketPresaleNftPreview
+                                    imgUrl = { '/assets/presale-nft-images/H-3_small.jpg' }
+                                    name = { 'Emerald' }
+                                    hashRateInTh = { 33 }
+                                    svgPath = { SvgEmerald }
+                                    whiteText = { false } />
+                                <MarketPresaleNftPreview
+                                    imgUrl = { '/assets/presale-nft-images/H-4_small.jpg' }
+                                    name = { 'Diamond' }
+                                    hashRateInTh = { 100 }
+                                    svgPath = { SvgDiamond }
+                                    whiteText = { false } />
+                                <MarketPresaleNftPreview
+                                    imgUrl = { '/assets/presale-nft-images/H-5_small.jpg' }
+                                    name = { 'Blue Diamond' }
+                                    hashRateInTh = { 170 }
+                                    svgPath = { SvgBlueDiamond }
+                                    whiteText = { false } />
+                            </RowLayout>
+
+                            <div className = { 'NftPresaleLuckyCnt FlexRow' } >
+                                <div className = { 'LuckyDesc Bold' } >
+                                    If you are<br />super lucky,<br /> you may get
+                                    <div className={'LuckyGradient'} >one of these<br /> exclusive 1/1<br /> NFT’s</div>
+                                </div>
+                                <RowLayout className = { 'NftPresalePreviewLuckyCnt' } numColumns = { 3 } gap = { 16 } >
+                                    <MarketPresaleNftPreview
+                                        imgUrl = { '/assets/presale-nft-images/H-2_small.jpg' }
+                                        name = { 'Ruby' }
+                                        hashRateInTh = { 10 }
+                                        svgPath = { SvgRuby }
+                                        whiteText = { true } />
+                                    <MarketPresaleNftPreview
+                                        imgUrl = { '/assets/presale-nft-images/H-3_small.jpg' }
+                                        name = { 'Emerald' }
+                                        hashRateInTh = { 33 }
+                                        svgPath = { SvgEmerald }
+                                        whiteText = { true } />
+                                    <MarketPresaleNftPreview
+                                        imgUrl = { '/assets/presale-nft-images/H-4_small.jpg' }
+                                        name = { 'Diamond' }
+                                        hashRateInTh = { 100 }
+                                        svgPath = { SvgDiamond }
+                                        whiteText = { true } />
+                                </RowLayout>
+                            </div>
+
+                            {nftPresaleStore.isUserEligibleToBuy() === true && (
                                 <>
                                     {walletStore.isConnected() === false ? (
                                         <div className={'FlexSingleCenter ColorError060 Bold'} >
@@ -408,30 +401,23 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                         </div>
                                     ) : (
                                         <>
+                                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                                                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos} disabled = { acceptTermsAndConditions !== S.INT_TRUE } >Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                                                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth} disabled = { acceptTermsAndConditions !== S.INT_TRUE }>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
+                                            </Actions>
                                             <Checkbox
                                                 label = { (
                                                     <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
                                                 ) }
                                                 value = { acceptTermsAndConditions }
                                                 onChange = { setAcceptTermsAndConditions } />
-                                            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                                                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos} disabled = { acceptTermsAndConditions !== S.INT_TRUE } >Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
-                                                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth} disabled = { acceptTermsAndConditions !== S.INT_TRUE }>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
-                                            </Actions>
+
                                         </>
                                     )}
                                 </>
                             )}
-                        </ColumnLayout>
-
-                        <div className = { 'PresaleNftPictureGalleryCnt' } >
-                            <PictureGallery
-                                className = { 'PresaleNftPictureGallery' }
-                                picture={nftPresaleStore.getPresaleNftPicture()}
-                                onClickNext={nftPresaleStore.onClickNextPresaleNftPicture}
-                                onClickPrevious={nftPresaleStore.onClickPreviousPresaleNftPicture} />
-                        </div>
-                    </RowLayout>
+                        </StyledContainer>
+                    </ColumnLayout>
                 )}
             </div>
             <PageFooter />

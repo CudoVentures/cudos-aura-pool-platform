@@ -145,86 +145,85 @@
     flex: 1 1 auto;
 }
 
-.PageMarketplace .PresaleContainer {
-    gap: 50px;
-    margin-bottom: 260px;
-    grid-template-columns: minmax(0px, 3fr) minmax(0px, 2fr) !important;
+.PageMarketplace .PresaleInfoColumn {
+    align-items: center;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .CollectionDescription {
+.PageMarketplace .PresaleInfoColumn .CollectionLabel {
+    text-transform: uppercase;
+    text-align: center;
     font-family: "OpenSans";
-    font-size: 14px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .CollectionName {
+.PageMarketplace .PresaleInfoColumn .CollectionName {
+    max-width: 900px;
+    text-align: center;
     font-family: "Montserrat";
-    font-size: 32px;
     font-weight: 800;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader {
-    display: flex; justify-content: space-between;
-    align-items: flex-start;
+.PageMarketplace .PresaleInfoColumn .CollectionDescription {
+    max-width: 900px;
+    text-align: center;
+    font-family: "OpenSans";
+    margin-bottom: 24px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .PhaseName {
-    background: #000000;
-    border-radius: 6px;
-    padding: 3px 8px;
-    color: #f6f6f6;
-    width: fit-content;
-}
-
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .PhaseEta {
-    justify-content: flex-end;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer {
+    align-self: stretch;
     align-items: center;
-    gap: 4px;
+    gap: 32px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .TimeNumberBox {
-    width: 56px;
-    height: 56px;
-    background: #E6E9F2;
-    border-radius: 6px;
-    align-items: center;
-    justify-content: center;
-}
-
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .TimeNumberBox span {
-    font-size: 10px;
-}
-
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow {
-    justify-content: space-between;
-}
-
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow .PriceInfo {
-    gap: 4px;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo {
+    gap: 16px;
     align-items: center;
     justify-content: space-between;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow .PriceInfo .PriceWithIcon {
-    gap: 4px;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon {
+    gap: 6px;
     align-items: center;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow .PriceInfo .PriceWithIcon .SVG {
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon .SVG {
     width: 24px;
     height: 24px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .AmountMintedRow {
-    justify-content: space-between;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon .PriceItself {
+    font-size: 20px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleNftPictureGalleryCnt {
-    height: 0; padding-bottom: 100%;
-    position: relative;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresalePreviewCnt {
+    align-self: stretch;
 }
 
-.PageMarketplace .PresaleContainer .PresaleNftPictureGalleryCnt .PresaleNftPictureGallery {
-    width: 100%; height: 100%;
-    position: absolute;
-    left: 0; top: 0;
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt {
+    align-self: stretch;
+    padding: 32px 32px 32px 48px;
+    border-radius: 16px;
+    background-color: var(--color-neutral-100);
+}
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt .LuckyDesc {
+    width: 390px;
+    line-height: 100%;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 40px;
+    margin-right: 40px;
+}
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt .LuckyDesc .LuckyGradient {
+    background: linear-gradient(270deg, #67D271  0%, #08BDDC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt .NftPresalePreviewLuckyCnt {
+    flex: 1 1 auto;
 }

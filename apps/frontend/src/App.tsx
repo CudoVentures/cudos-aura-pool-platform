@@ -72,6 +72,7 @@ import AllowlistApiRepo from './allowlist/data/repo/AllowlistApiRepo';
 import NftPresaleStore from './nft-presale/presentation/stores/NftPresaleStore';
 import MintPrivateSaleNftModalStore from './nft-presale/presentation/stores/MintPrivateSaleNftModalStore';
 import PresaleCollectionModalStore from './nft-presale/presentation/stores/PresaleCollectionModalStore';
+import BuyPresaleNftModalStore from './layout/presentation/stores/BuyPresaleNftModalStore';
 
 // @ts-ignore
 declare global {
@@ -152,6 +153,7 @@ const checkForPresaleRefundsModalStore = new CheckForPresaleRefundsModalStore(ap
 const nftPresaleStore = new NftPresaleStore(nftRepo, collectionRepo, allowlistRepo, alertStore, cudosStore, presaleStore, walletStore);
 const mintPrivateSaleNftsModalStore = new MintPrivateSaleNftModalStore(cudosRepo, nftRepo, accountRepo, alertStore, walletStore, cudosStore);
 const presaleCollectionModalStore = new PresaleCollectionModalStore(appStore, alertStore, collectionRepo);
+const buyPresaleNftModalStore = new BuyPresaleNftModalStore();
 
 bitcoinRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
 cudosRepo.setPresentationActionsCallbacks(appStore.enableActions, appStore.disableActions);
@@ -253,6 +255,7 @@ const App = () => {
                 nftPresaleStore={nftPresaleStore}
                 mintPrivateSaleNftsModalStore={mintPrivateSaleNftsModalStore}
                 presaleCollectionModalStore = { presaleCollectionModalStore }
+                buyPresaleNftModalStore = { buyPresaleNftModalStore }
             >
                 <BrowserRouter>
                     <AppRouter />

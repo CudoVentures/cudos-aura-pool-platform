@@ -49,11 +49,15 @@
     width: 630px; max-width: 100%;
 }
 
-.ModalWindowWrapper > .ModalWindow .ModalWindowContent.LargeContent {
+.ModalWindowWrapper.LargeContent > .ModalWindow .ModalWindowContent {
     width: 1100px;
 }
 
-.ModalWindowWrapper > .ModalWindow .ModalWindowContent.SmallContent {
+.ModalWindowWrapper.MediumContent > .ModalWindow .ModalWindowContent {
+    width: 512px
+}
+
+.ModalWindowWrapper.SmallContent > .ModalWindow .ModalWindowContent {
     width: 310px;
 }
 

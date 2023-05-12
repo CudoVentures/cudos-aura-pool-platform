@@ -334,7 +334,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                                 { walletSelectModalStore.isProgressStepKyc() === true && (
                                     <Button type = { ButtonType.TEXT_INLINE } color = { ButtonColor.SCHEME_3 } onClick = { onClickSkip }>Skip</Button>
                                 ) }
-                                <Button onClick = { onClickNext }>
+                                <Button onClick = { onClickNext } disabled = { walletSelectModalStore.isTermsAccepted() === false } >
                                     { walletSelectModalStore.isProgressStepKyc() === false ? (
                                         'Next Step'
                                     ) : (
