@@ -373,19 +373,19 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 </div>
                                 <RowLayout className = { 'NftPresalePreviewLuckyCnt' } numColumns = { 3 } gap = { 16 } >
                                     <MarketPresaleNftPreview
-                                        imgUrl = { '/assets/presale-nft-images/H-2_small.jpg' }
+                                        imgUrl = { '/assets/presale-nft-images/H-11_small.jpg' }
                                         name = { 'Ruby' }
                                         hashRateInTh = { 10 }
                                         svgPath = { SvgRuby }
                                         whiteText = { true } />
                                     <MarketPresaleNftPreview
-                                        imgUrl = { '/assets/presale-nft-images/H-3_small.jpg' }
+                                        imgUrl = { '/assets/presale-nft-images/H-12_small.jpg' }
                                         name = { 'Emerald' }
                                         hashRateInTh = { 33 }
                                         svgPath = { SvgEmerald }
                                         whiteText = { true } />
                                     <MarketPresaleNftPreview
-                                        imgUrl = { '/assets/presale-nft-images/H-4_small.jpg' }
+                                        imgUrl = { '/assets/presale-nft-images/H-13_small.jpg' }
                                         name = { 'Diamond' }
                                         hashRateInTh = { 100 }
                                         svgPath = { SvgDiamond }
