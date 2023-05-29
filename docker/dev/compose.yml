@@ -135,7 +135,7 @@ services:
         GROUP_ID: "$GROUP_ID"
         GROUP_NAME: "$GROUP_NAME"
         ON_DEMAND_MINTING_STARTING_HEIGHT: "$ON_DEMAND_MINTING_STARTING_HEIGHT"
-        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev:$DOCKER_PORT"
+        CUDOS_MARKETS_BACKEND: "http://cudos-aura-platform-dev:$DOCKER_PORT"
         MINTER_WALLET_MNEMONIC: "$MINTER_WALLET_MNEMONIC"
         MINTER_MAX_RETRIES: "$MINTER_MAX_RETRIES"
         MINTER_RETRY_INTERVAL: "$MINTER_RETRY_INTERVAL"
@@ -145,7 +145,7 @@ services:
         CHAIN_ID: "$CHAIN_ID"
         CHAIN_RPC: "$CHAIN_RPC"
         CHAIN_GRPC: "$CHAIN_GRPC"
-        AURA_POOL_API_KEY: "$AURA_POOL_API_KEY"
+        CUDOS_MARKETS_API_KEY: "$AURA_POOL_API_KEY"
     restart: unless-stopped
     networks:
       - shared-cudos-network
