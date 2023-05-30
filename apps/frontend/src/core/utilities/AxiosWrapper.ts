@@ -1,7 +1,7 @@
 import axios from 'axios'
 import JwtDecode from 'jwt-decode'
 
-const LOCAL_STORAGE_ACCESS_TOKEN = 'cudos_aura_service_storage_access_token';
+const LOCAL_STORAGE_ACCESS_TOKEN = 'cudos_markets_service_storage_access_token';
 
 export const enum BackendErrorType {
     WRONG_USER_OR_PASSWORD = '1',

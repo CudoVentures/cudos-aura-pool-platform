@@ -33,7 +33,7 @@ export default class EmailService {
 
         if (this.generalService.isDev() === true) {
             this.transport = nodemailer.createTransport({
-                host: 'mailhog',
+                host: 'cudos-markets-mailhog',
                 port: 1025,
             });
         }
@@ -50,7 +50,7 @@ export default class EmailService {
         try {
             const verificationToken = this.jwtService.fromAccount(accountEntity, '30m');
             const emailTemplateEntity = new EmailTemplateEntity(
-                `Hello ${accountEntity.name}! There have been multiple unsuccessful login attempts in Aura Pool with your email. If this was you, please proceed to unlock your account. If this was not an action performed by you, please contact us.`,
+                `Hello ${accountEntity.name}! There have been multiple unsuccessful login attempts in CUDOS Markets with your email. If this was you, please proceed to unlock your account. If this was not an action performed by you, please contact us.`,
                 'Unlock account',
                 `${this.appPublicUrl}/api/v1/accounts/unlockAccount/${verificationToken}`,
             );

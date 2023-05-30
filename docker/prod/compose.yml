@@ -1,27 +1,27 @@
 version: '3.1'
 
 networks:
-  aurapool-prod-cudos-network:
-    name: aurapool-prod-cudos-network
+  cudosmarkets-prod-cudos-network:
+    name: cudosmarkets-prod-cudos-network
 
 volumes:
   cudosdappdata:
     driver: local
 
 services:
-  cudos-aura-platform-prod:
-    image: cudos-aura-platform-prod
-    container_name: cudos-aura-platform-prod
+  cudos-markets-platform-prod:
+    image: cudos-markets-platform-prod
+    container_name: cudos-markets-platform-prod
     build:
-      dockerfile: docker/prod/aura-pool-platform.dockerfile
+      dockerfile: docker/prod/cudos-markets-platform.dockerfile
       context: ../../
     restart: unless-stopped
     ports:
       - "$HOST_PORT:$DOCKER_PORT"
     volumes:
-      - ../../../cudosdappdata/aura-pool-platform:/usr/local/cudos-aura-platform/data
+      - ../../../cudosdappdata/cudos-markets-platform:/usr/local/cudos-markets-platform/data
     networks:
-      - aurapool-prod-cudos-network
+      - cudosmarkets-prod-cudos-network
     extra_hosts:
     - "host.docker.internal:host-gateway"
     logging:
@@ -30,9 +30,9 @@ services:
         max-size: "128m"
         max-file: "1"
 
-  cudos-aura-platform-chain-observer-prod:
-    image: cudos-aura-platform-chain-observer-prod
-    container_name: cudos-aura-platform-chain-observer-prod
+  cudos-markets-platform-chain-observer-prod:
+    image: cudos-markets-platform-chain-observer-prod
+    container_name: cudos-markets-platform-chain-observer-prod
     build:
       dockerfile: docker/prod/chain-observer.dockerfile
       context: ../../
@@ -42,7 +42,7 @@ services:
         CHAIN_GRPC: "$CHAIN_GRPC"
     restart: unless-stopped
     networks:
-      - aurapool-prod-cudos-network
+      - cudosmarkets-prod-cudos-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
     logging:
@@ -51,11 +51,11 @@ services:
         max-size: "128m"
         max-file: "1"
     depends_on: 
-      - cudos-aura-platform-prod
+      - cudos-markets-platform-prod
 
-  cudos-aura-platform-eth-payments-relayer-prod:
-    image: cudos-aura-platform-eth-payments-relayer-prod
-    container_name: cudos-aura-platform-eth-payments-relayer-prod
+  cudos-markets-platform-eth-payments-relayer-prod:
+    image: cudos-markets-platform-eth-payments-relayer-prod
+    container_name: cudos-markets-platform-eth-payments-relayer-prod
     build:
       dockerfile: docker/prod/eth-payments-relayer.dockerfile
       context: ../../
@@ -65,7 +65,7 @@ services:
         CHAIN_GRPC: "$CHAIN_GRPC"
     restart: unless-stopped
     networks:
-      - aurapool-prod-cudos-network
+      - cudosmarkets-prod-cudos-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
     logging:
@@ -74,4 +74,4 @@ services:
         max-size: "128m"
         max-file: "1"
     depends_on: 
-      - cudos-aura-platform-prod
+      - cudos-markets-platform-prod

@@ -40,7 +40,7 @@ const accounts = [
         active: 1,
         email_verified: 1,
         name: 'Super Admin',
-        email: 'admin@aurapool.io',
+        email: 'admin@cudosmarkets.io',
         last_login_at: '2022-11-11T14:10:18.473Z',
         salt: '41vWHvhcqEeaY03TPVliL+EcpM4w+jbWd4OavgxmvBMQpXpch/CkYxUzaIJjm58rw0qKD42dFCn0RQdZcvJpyc/vObYOGaR5jXyQc4rfahWaKHM2BklsDUMxtMfWOwaToKed1jV4vQpbBFLnZ8bDC80m6iQlY+OaxDdwt2jp4ag=',
         // pass is 123123

@@ -1,8 +1,8 @@
 import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 import NftEntity from '../../entities/NftEntity';
 
-const STORAGE_KEY = 'cudos_aura_service_storage_nfts'
-const PURCHASE_TRANSACTIONS_KEY = 'cudos_aura_service_storage_purcahse_transactions'
+const STORAGE_KEY = 'cudos_markets_service_storage_nfts'
+const PURCHASE_TRANSACTIONS_KEY = 'cudos_markets_service_storage_purcahse_transactions'
 
 export default class NftSessionStorage {
 

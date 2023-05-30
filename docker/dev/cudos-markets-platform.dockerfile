@@ -5,7 +5,7 @@ ARG USER_ID
 ARG USER_NAME
 ARG GROUP_ID
 ARG GROUP_NAME
-ARG WORKING_DIR="/usr/cudos-aura-platform"
+ARG WORKING_DIR="/usr/cudos-markets-platform"
 
 RUN if [ $USER_NAME != 'root' ]; then \
         groupmod -g 2000 node; \

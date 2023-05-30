@@ -5,7 +5,7 @@ import PackageJson from '../../../../../../package.json'
 import Svg from '../../../core/presentation/components/Svg';
 import { TERMS_AND_CONDITIONS, PRIVACY_POLICY, WEBSITE, FAQ, TWITTER, DISCORD, MEDIUM } from '../../../core/utilities/Links';
 
-import SvgAuraPoolLogoLight from '../../../public/assets/vectors/cudos-markets-logo-light.svg'
+import SvgCudosMarketsLogoLight from '../../../public/assets/vectors/cudos-markets-logo-light.svg'
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
 // import SvgLinkedin from '../../../public/assets/vectors/linkedin.svg';
 // import SvgTwitter from '../../../public/assets/vectors/twitter.svg';
@@ -35,7 +35,7 @@ export default function PageFooter() {
     return (
         <footer className='FooterContainer AppContent'>
             <div className={'PageFooter FlexRow FlexSplit'}>
-                <Svg className={'SVG'} svg={SvgAuraPoolLogoLight} />
+                <Svg className={'SVG'} svg={SvgCudosMarketsLogoLight} />
                 <div className={'StartRightBlock FooterNav'}>
                     <div className={'LinksColumn'}>
                         <div className='H3 Bold'>Join Us</div>
@@ -48,7 +48,7 @@ export default function PageFooter() {
                         <a href={FAQ} target={'_blank'} rel={'noreferrer'} >FAQs</a>
                         <a href={DISCORD} target={'_blank'} rel={'noreferrer'} >Contact us</a>
                     </div>
-                    {/*<div className={'LinksColumn'}>
+                    {/* <div className={'LinksColumn'}>
                         <div className='H3 Bold'>Marketplace</div>
                         <a className={'Clickable'} onClick={onClickExploreNfts} >Explore</a>
                         <a href={REWARDS_CALCULATOR} target={'_blank'} rel={'noreferrer'} >Calculator</a>

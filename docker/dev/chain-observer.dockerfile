@@ -4,9 +4,9 @@ ARG USER_ID
 ARG USER_NAME
 ARG GROUP_ID
 ARG GROUP_NAME
-ARG AURA_POOL_BACKEND
+ARG CUDOS_MARKETS_BACKEND
 ARG CHAIN_RPC
-ARG WORKING_DIR="/usr/cudos-aura-chain-observer"
+ARG WORKING_DIR="/usr/cudos-markets-chain-observer"
 
 RUN if [ $USER_NAME != 'root' ]; then \
         groupmod -g 2000 node; \
@@ -25,7 +25,7 @@ WORKDIR ${WORKING_DIR}
 
 USER ${USER_NAME}
 
-ENV App_Host=${AURA_POOL_BACKEND}
+ENV App_Host=${CUDOS_MARKETS_BACKEND}
 ENV APP_CUDOS_RPC=${CHAIN_RPC}
 
 CMD ["/bin/bash", "-c", "npm i && (trap 'kill 0' SIGINT; npm run start:chain-observer:dev)"] 

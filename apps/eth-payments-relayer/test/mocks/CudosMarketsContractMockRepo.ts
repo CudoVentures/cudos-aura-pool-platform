@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import PaymentEventEntity, { PaymentStatus } from '../../src/entities/PaymentEventEntity';
-import AuraContractRepo from '../../src/workers/repos/AuraContractRepo';
+import CudosMarketsContractRepo from '../../src/workers/repos/CudosMarketsContractRepo';
 
 const paymentEvents = [
     createPaymentEventEntity(1, 'address1', '1', '0xaddress1', 1),
@@ -24,7 +24,7 @@ function createPaymentEventEntity(paymentId: number, cudosAddress: string, amoun
     return entity;
 }
 
-export class AuraContractHappyPathMockRepo implements AuraContractRepo {
+export class CudosMarketsContractHappyPathMockRepo implements CudosMarketsContractRepo {
     async fetchEvents(lastCheckedBlockHeight: number, currentBlockheight: number): Promise<PaymentEventEntity[]> {
         return paymentEvents
     }
@@ -43,7 +43,7 @@ export class AuraContractHappyPathMockRepo implements AuraContractRepo {
 
 }
 
-export class AuraContractHappyPathNoPaymentsMockRepo implements AuraContractRepo {
+export class CudosMarketsContractHappyPathNoPaymentsMockRepo implements CudosMarketsContractRepo {
     async fetchEvents(lastCheckedBlockHeight: number, currentBlockheight: number): Promise<PaymentEventEntity[]> {
         return []
     }
@@ -61,7 +61,7 @@ export class AuraContractHappyPathNoPaymentsMockRepo implements AuraContractRepo
     }
 }
 
-export class AuraContractPaymentReturnedMockRepo implements AuraContractRepo {
+export class CudosMarketsContractPaymentReturnedMockRepo implements CudosMarketsContractRepo {
     async fetchEvents(lastCheckedBlockHeight: number, currentBlockheight: number): Promise<PaymentEventEntity[]> {
         return []
     }
@@ -79,7 +79,7 @@ export class AuraContractPaymentReturnedMockRepo implements AuraContractRepo {
     }
 }
 
-export class AuraContractLowBlockHeightMockRepo implements AuraContractRepo {
+export class CudosMarketsContractLowBlockHeightMockRepo implements CudosMarketsContractRepo {
     async fetchEvents(lastCheckedBlockHeight: number, currentBlockheight: number): Promise<PaymentEventEntity[]> {
         return []
     }
@@ -97,7 +97,7 @@ export class AuraContractLowBlockHeightMockRepo implements AuraContractRepo {
     }
 }
 
-export class AuraContractWrongAmountMockRepo implements AuraContractRepo {
+export class CudosMarketsContractWrongAmountMockRepo implements CudosMarketsContractRepo {
     async fetchEvents(lastCheckedBlockHeight: number, currentBlockheight: number): Promise<PaymentEventEntity[]> {
         const payments = paymentEvents.map((entity) => {
             const editedPayment = Object.assign(new PaymentEventEntity(), entity)

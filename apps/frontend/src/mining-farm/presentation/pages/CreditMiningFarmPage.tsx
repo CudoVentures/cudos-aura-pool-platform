@@ -346,7 +346,7 @@ function CreditMiningFarmPage({ nftPresaleStore, presaleCollectionModalStore, cr
                                             createDataPreview('NFTs Owned', miningFarmDetailsEntity.nftsOwned),
                                             createDataPreview('Total NFTs Sold', miningFarmDetailsEntity.totalNftsSold),
                                             createDataPreview('Maintenance Fee', miningFarmEntity.formatMaintenanceFeesInBtc()),
-                                            createDataPreview('Aura Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()),
+                                            createDataPreview('CUDOS Markets Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()),
                                         ] } >
                                         { miningFarmEntity.isQueued() === true && accountSessionStore.isSuperAdmin() === true && (
                                             <Actions layout={ActionsLayout.LAYOUT_ROW_CENTER} >

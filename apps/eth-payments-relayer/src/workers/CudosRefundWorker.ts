@@ -1,6 +1,6 @@
-import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
+import CudosMarketsServiceRepo from './repos/CudosMarketsServiceRepo';
 import CudosChainRepo from './repos/CudosChainRepo';
-import AuraContractRepo from './repos/AuraContractRepo';
+import CudosMarketsContractRepo from './repos/CudosMarketsContractRepo';
 import Logger from '../../config/Logger';
 import { PaymentStatus } from '../entities/PaymentEventEntity';
 import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
@@ -9,20 +9,20 @@ export default class CudosRefundWorker {
     static WORKER_NAME = 'CUDOS_REFUND_WORKER';
 
     cudosChainRepo: CudosChainRepo;
-    contractRepo: AuraContractRepo;
-    cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
+    contractRepo: CudosMarketsContractRepo;
+    cudosMarketsServiceApi: CudosMarketsServiceRepo;
 
-    constructor(cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
+    constructor(cudosChainRepo: CudosChainRepo, contractRepo: CudosMarketsContractRepo, cudosMarketsServiceApi: CudosMarketsServiceRepo) {
         this.cudosChainRepo = cudosChainRepo;
         this.contractRepo = contractRepo;
-        this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
+        this.cudosMarketsServiceApi = cudosMarketsServiceApi;
     }
 
     async run() {
         try {
             // get last checked eth block
             CudosRefundWorker.log('Fetching last checked block height...');
-            const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedPaymentRelayerCudosBlock();
+            const lastCheckedBlock = await this.cudosMarketsServiceApi.fetchLastCheckedPaymentRelayerCudosBlock();
             CudosRefundWorker.log(`Last checked block: ${lastCheckedBlock}`);
 
             if (!lastCheckedBlock || lastCheckedBlock < 1) {
@@ -89,7 +89,7 @@ export default class CudosRefundWorker {
                     purchaseTransactionEntity.status = PurchaseTransactionStatus.REFUNDED;
 
                     CudosRefundWorker.log('Updating purchase transaction with status refunded...');
-                    await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
+                    await this.cudosMarketsServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
                 }
             } else {
                 CudosRefundWorker.log(`No events found until curren block. Block number: ${currentCudosBlock}`);
@@ -97,7 +97,7 @@ export default class CudosRefundWorker {
 
             // save last checked block
             CudosRefundWorker.log(`Saving last checked cudos block: ${currentCudosBlock}`);
-            this.cudosAuraPoolServiceApi.updateLastCheckedCudosRefundBlock(currentCudosBlock);
+            this.cudosMarketsServiceApi.updateLastCheckedCudosRefundBlock(currentCudosBlock);
             CudosRefundWorker.log('Run finished.');
         } catch (e) {
             CudosRefundWorker.error(e.message);

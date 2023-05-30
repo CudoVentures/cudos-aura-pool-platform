@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 
-const SERVICE_NAME = 'AURA_POOL';
+const SERVICE_NAME = 'CUDOS_MARKETS';
 
 const consoleLogger = createLogger({
     format: format.combine(

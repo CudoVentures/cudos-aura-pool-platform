@@ -11,22 +11,22 @@ import {
     OnDemandMintNftMintFilter,
     OnDemandMintReceivedFundsFilter,
     OnDemandMintRefundsFilter,
-} from '../entities/CudosAuraPoolServiceTxFilter';
+} from '../entities/CudosMarketsServiceTxFilter';
 import MintMemo from '../entities/MintMemo';
 import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
-import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
+import CudosMarketsServiceRepo from './repos/CudosMarketsServiceRepo';
 import { EmailRepo } from './repos/EmailRepo';
 
 export default class TxFindWorker {
     chainClient: StargateClient;
-    cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
+    cudosMarketsServiceApi: CudosMarketsServiceRepo;
     emailRepo: EmailRepo;
 
     lastSentEmailTimestamp: number;
 
-    constructor(chainClient: StargateClient, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo, emailRepo: EmailRepo) {
+    constructor(chainClient: StargateClient, cudosMarketsServiceApi: CudosMarketsServiceRepo, emailRepo: EmailRepo) {
         this.chainClient = chainClient;
-        this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
+        this.cudosMarketsServiceApi = cudosMarketsServiceApi;
         this.emailRepo = emailRepo;
         this.lastSentEmailTimestamp = 0;
     }
@@ -34,7 +34,7 @@ export default class TxFindWorker {
     async run() {
         try {
             // get last checked block
-            const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedBlock();
+            const lastCheckedBlock = await this.cudosMarketsServiceApi.fetchLastCheckedBlock();
             console.log('last checked block: ', lastCheckedBlock);
             // get last block
             // limit to 10000 blocks per run if the service is lagging behind
@@ -55,7 +55,7 @@ export default class TxFindWorker {
             await this.checkOnDemandRefundTransactions(heightFilter);
             await this.checkOnDemandMintTransactions(heightFilter);
 
-            await this.cudosAuraPoolServiceApi.updateLastCheckedHeight(lastBlock);
+            await this.cudosMarketsServiceApi.updateLastCheckedHeight(lastBlock);
         } catch (e) {
             console.log(e.message);
 
@@ -92,7 +92,7 @@ export default class TxFindWorker {
             const collectionIdsSet = new Set(collectionIds);
             const uniqueCollectionIds = Array.from(collectionIdsSet);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleCollections(uniqueDenomIds, uniqueCollectionIds, heightFilter.maxHeight);
+            await this.cudosMarketsServiceApi.triggerUpdateMarketplaceModuleCollections(uniqueDenomIds, uniqueCollectionIds, heightFilter.maxHeight);
         }
 
         if (marketplaceModuleNftEvents.length > 0) {
@@ -103,7 +103,7 @@ export default class TxFindWorker {
                 return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(nftDtos, heightFilter.maxHeight);
+            await this.cudosMarketsServiceApi.triggerUpdateMarketplaceModuleNfts(nftDtos, heightFilter.maxHeight);
         }
     }
 
@@ -121,7 +121,7 @@ export default class TxFindWorker {
                 return denomId;
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateNftModuleCollections(denomIds, heightFilter.maxHeight);
+            await this.cudosMarketsServiceApi.triggerUpdateNftModuleCollections(denomIds, heightFilter.maxHeight);
         }
 
         if (nftModuleNftEvents.length > 0) {
@@ -132,7 +132,7 @@ export default class TxFindWorker {
                 return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
-            await this.cudosAuraPoolServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds, heightFilter.maxHeight);
+            await this.cudosMarketsServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds, heightFilter.maxHeight);
         }
 
     }
@@ -168,7 +168,7 @@ export default class TxFindWorker {
         }
 
         if (purchaseTransactionEntities.length > 0) {
-            await this.cudosAuraPoolServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
+            await this.cudosMarketsServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
         }
     }
 
@@ -202,7 +202,7 @@ export default class TxFindWorker {
         }
 
         if (purchaseTransactionEntities.length > 0) {
-            await this.cudosAuraPoolServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
+            await this.cudosMarketsServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
         }
     }
 
@@ -236,7 +236,7 @@ export default class TxFindWorker {
         }
 
         if (purchaseTransactionEntities.length > 0) {
-            await this.cudosAuraPoolServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
+            await this.cudosMarketsServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
         }
     }
 

@@ -14,7 +14,7 @@ import Actions from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
 import KycBadge from '../../../core/presentation/components/KycBadge';
 
-import SvgAuraPoolLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
+import SvgMarketsLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
 import '../styles/page-header.css'
 import { REWARDS_CALCULATOR } from '../../../core/utilities/Links';
 
@@ -60,7 +60,7 @@ function PageHeader({ accountSessionStore, walletStore, presaleStore }: Props) {
     return (
         <header className={'PageHeader FlexRow'}>
             <div className={'LogoHeader FlexRow'}>
-                <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
+                <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgMarketsLogo } onClick = { onClickLogo } />
             </div>
 
             <div className={'NavCnt FlexRow'}>

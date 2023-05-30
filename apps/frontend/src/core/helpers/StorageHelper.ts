@@ -1,4 +1,4 @@
-const LOCAL_STORAGE_KEY = 'cudos_aura_service_storage';
+const LOCAL_STORAGE_KEY = 'cudos_markets_service_storage';
 const VERSION = 18;
 
 const collectionDescription = 'DigiDaigaku is a collection of 2022 unique characters developed by Limit Break, a company founded by world famous game designers Gabriel Leydon and Halbert Nakagawa.  Currently, DigiDaigaku characters live in a mysterious world unknown to outsiders, but in time, exciting details about their world will be revealed. /n Learn more about the project at: https://digidaigaku.com and https://twitter.com/DigiDaigaku'

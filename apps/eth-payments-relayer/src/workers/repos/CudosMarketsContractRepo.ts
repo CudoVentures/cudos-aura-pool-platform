@@ -1,6 +1,6 @@
 import PaymentEventEntity, { PaymentStatus } from '../../entities/PaymentEventEntity';
 
-export default interface AuraContractRepo {
+export default interface CudosMarketsContractRepo {
     fetchEvents(lastCheckedBlockHeight: number, currentBlockheight: number): Promise < PaymentEventEntity[] >
     fetchCurrentBlockHeight(): Promise < number >;
     markPaymentWithdrawable(paymentId: number): Promise < string >;

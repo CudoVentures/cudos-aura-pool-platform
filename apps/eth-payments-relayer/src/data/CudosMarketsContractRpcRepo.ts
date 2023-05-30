@@ -1,8 +1,8 @@
 import PaymentEventEntity, { parsePaymentStatus, PaymentStatus } from '../entities/PaymentEventEntity';
-import AuraContractRepo from '../workers/repos/AuraContractRepo';
+import CudosMarketsContractRepo from '../workers/repos/CudosMarketsContractRepo';
 import { ethers } from 'ethers';
 
-export default class AuraContractRpcRepo implements AuraContractRepo {
+export default class CudosMarketsContractRpcRepo implements CudosMarketsContractRepo {
     contract: ethers.Contract;
 
     constructor(contract: ethers.Contract) {

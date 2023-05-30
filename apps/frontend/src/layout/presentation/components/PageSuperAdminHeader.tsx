@@ -13,7 +13,7 @@ import Svg from '../../../core/presentation/components/Svg';
 import Actions from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
 
-import SvgAuraPoolLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
+import SvgMarketsLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
 import '../styles/page-super-admin-header.css'
 
 type Props = {
@@ -66,7 +66,7 @@ function PageSuperAdminHeader({ accountSessionStore, changePasswordModalStore, w
     return (
         <header className={'PageSuperAdminHeader FlexRow'}>
             <div className={'LogoHeader FlexRow'}>
-                <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
+                <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgMarketsLogo } onClick = { onClickLogo } />
                 <div className={'AdminPortalNav B2 SemiBold'}>Super Admin</div>
             </div>
             <div className = { 'NavCnt FlexRow' } >

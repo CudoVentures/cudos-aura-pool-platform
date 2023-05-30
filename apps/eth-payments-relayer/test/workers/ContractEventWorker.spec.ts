@@ -1,8 +1,8 @@
 import Config from '../../config/Config';
 import Logger from '../../config/Logger';
 import ContractEventWorker from '../../src/workers/ContractEventWorker';
-import { AuraContractHappyPathMockRepo, AuraContractLowBlockHeightMockRepo, AuraContractPaymentReturnedMockRepo, AuraContractWrongAmountMockRepo } from '../mocks/AuraContractMockRepo';
-import { CudosAuraPoolServiceHappyPathApiRepo, CudosAuraPoolServiceHighBlockCheckedMockRepo } from '../mocks/CudosAuraPoolServiceApiMockRepo';
+import { CudosMarketsContractHappyPathMockRepo, CudosMarketsContractLowBlockHeightMockRepo, CudosMarketsContractPaymentReturnedMockRepo, CudosMarketsContractWrongAmountMockRepo } from '../mocks/CudosMarketsContractMockRepo';
+import { CudosMarketsServiceHappyPathApiRepo, CudosMarketsServiceHighBlockCheckedMockRepo } from '../mocks/CudosMarketsServiceApiMockRepo';
 import { CudosChainRpcFailToMintMockRepo, CudosChainRpcHappyPathMockRepo, CudosChainRpcNoAddressbookEntryMockRepo } from '../mocks/CudosChainRpcMockRepo';
 
 describe('ContractEventWorker (e2e)', () => {
@@ -18,13 +18,13 @@ describe('ContractEventWorker (e2e)', () => {
     it('Mint: HappyPath', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-        const auraContractRepo = new AuraContractHappyPathMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
-        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
+        const cudosMarketsContractRepo = new CudosMarketsContractHappyPathMockRepo();
+        const cudosMarketsServiceRepo = new CudosMarketsServiceHappyPathApiRepo();
+        const spyRefund = jest.spyOn(cudosMarketsContractRepo, 'markPaymentWithdrawable');
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+        const spyFinish = jest.spyOn(cudosMarketsServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, cudosMarketsContractRepo, cudosMarketsServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -39,14 +39,14 @@ describe('ContractEventWorker (e2e)', () => {
     it('Refund: payment not equal to expected', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-        const auraContractRepo = new AuraContractWrongAmountMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
+        const cudosMarketsContractRepo = new CudosMarketsContractWrongAmountMockRepo();
+        const cudosMarketsServiceRepo = new CudosMarketsServiceHappyPathApiRepo();
 
-        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
+        const spyRefund = jest.spyOn(cudosMarketsContractRepo, 'markPaymentWithdrawable');
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+        const spyFinish = jest.spyOn(cudosMarketsServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, cudosMarketsContractRepo, cudosMarketsServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -62,14 +62,14 @@ describe('ContractEventWorker (e2e)', () => {
     // it('Refund: no addressbook entry', async () => {
     //     // Arrange
     //     const chainRpcRepo = new CudosChainRpcNoAddressbookEntryMockRepo();
-    //     const auraContractRepo = new AuraContractHappyPathMockRepo();
-    //     const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
+    //     const cudosMarketsContractRepo = new CudosMarketsContractHappyPathMockRepo();
+    //     const cudosMarketsServiceRepo = new CudosMarketsServiceHappyPathApiRepo();
 
     //     const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-    //     const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
-    //     const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+    //     const spyRefund = jest.spyOn(cudosMarketsContractRepo, 'markPaymentWithdrawable');
+    //     const spyFinish = jest.spyOn(cudosMarketsServiceRepo, 'updateLastCheckedEthereumBlock');
 
-    //     const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+    //     const worker = new ContractEventWorker(chainRpcRepo, cudosMarketsContractRepo, cudosMarketsServiceRepo);
 
     //     // Act
     //     await expect(worker.run()).resolves.not.toThrowError();
@@ -85,14 +85,14 @@ describe('ContractEventWorker (e2e)', () => {
     it('Refund: payment refunded already', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcNoAddressbookEntryMockRepo();
-        const auraContractRepo = new AuraContractPaymentReturnedMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
+        const cudosMarketsContractRepo = new CudosMarketsContractPaymentReturnedMockRepo();
+        const cudosMarketsServiceRepo = new CudosMarketsServiceHappyPathApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
-        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+        const spyRefund = jest.spyOn(cudosMarketsContractRepo, 'markPaymentWithdrawable');
+        const spyFinish = jest.spyOn(cudosMarketsServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, cudosMarketsContractRepo, cudosMarketsServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -107,14 +107,14 @@ describe('ContractEventWorker (e2e)', () => {
     it('Do Nothing: no new block', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-        const auraContractRepo = new AuraContractLowBlockHeightMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
+        const cudosMarketsContractRepo = new CudosMarketsContractLowBlockHeightMockRepo();
+        const cudosMarketsServiceRepo = new CudosMarketsServiceHappyPathApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
-        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+        const spyRefund = jest.spyOn(cudosMarketsContractRepo, 'markPaymentWithdrawable');
+        const spyFinish = jest.spyOn(cudosMarketsServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, cudosMarketsContractRepo, cudosMarketsServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -129,14 +129,14 @@ describe('ContractEventWorker (e2e)', () => {
     it('Error: failed to send minting tx', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcFailToMintMockRepo();
-        const auraContractRepo = new AuraContractHappyPathMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceHappyPathApiRepo();
+        const cudosMarketsContractRepo = new CudosMarketsContractHappyPathMockRepo();
+        const cudosMarketsServiceRepo = new CudosMarketsServiceHappyPathApiRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
-        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+        const spyRefund = jest.spyOn(cudosMarketsContractRepo, 'markPaymentWithdrawable');
+        const spyFinish = jest.spyOn(cudosMarketsServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, cudosMarketsContractRepo, cudosMarketsServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();
@@ -151,14 +151,14 @@ describe('ContractEventWorker (e2e)', () => {
     it('Error: invalid block', async () => {
         // Arrange
         const chainRpcRepo = new CudosChainRpcHappyPathMockRepo();
-        const auraContractRepo = new AuraContractLowBlockHeightMockRepo();
-        const auraPoolServiceRepo = new CudosAuraPoolServiceHighBlockCheckedMockRepo();
+        const cudosMarketsContractRepo = new CudosMarketsContractLowBlockHeightMockRepo();
+        const cudosMarketsServiceRepo = new CudosMarketsServiceHighBlockCheckedMockRepo();
 
         const spyMint = jest.spyOn(chainRpcRepo, 'sendOnDemandMintingTx');
-        const spyRefund = jest.spyOn(auraContractRepo, 'markPaymentWithdrawable');
-        const spyFinish = jest.spyOn(auraPoolServiceRepo, 'updateLastCheckedEthereumBlock');
+        const spyRefund = jest.spyOn(cudosMarketsContractRepo, 'markPaymentWithdrawable');
+        const spyFinish = jest.spyOn(cudosMarketsServiceRepo, 'updateLastCheckedEthereumBlock');
 
-        const worker = new ContractEventWorker(chainRpcRepo, auraContractRepo, auraPoolServiceRepo);
+        const worker = new ContractEventWorker(chainRpcRepo, cudosMarketsContractRepo, cudosMarketsServiceRepo);
 
         // Act
         await expect(worker.run()).resolves.not.toThrowError();

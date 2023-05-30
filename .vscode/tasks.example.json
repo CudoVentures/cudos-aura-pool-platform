@@ -2,26 +2,26 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build CUDOS AURA PLATFORM DEV in docker",
-            "command": "cd ./docker/dev && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-aura-platform-dev up --build",
+            "label": "Build CUDOS MARKETS PLATFORM DEV in docker",
+            "command": "cd ./docker/dev && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-markets-platform-dev up --build",
             "type": "shell",
             "group": "build"
         },
         {
-            "label": "Destroy CUDOS AURA PLATFORM DEV in docker",
-            "command": "cd ./docker/dev && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-aura-platform-dev down",
+            "label": "Destroy CUDOS MARKETS PLATFORM DEV in docker",
+            "command": "cd ./docker/dev && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-markets-platform-dev down",
             "type": "shell",
             "group": "build"
         },
         {
-            "label": "Build CUDOS AURA PLATFORM PROD in docker",
-            "command": "cd ./docker/prod && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-aura-platform-prod up --build",
+            "label": "Build CUDOS MARKETS PLATFORM PROD in docker",
+            "command": "cd ./docker/prod && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-markets-platform-prod up --build",
             "type": "shell",
             "group": "build"
         },
         {
-            "label": "Destroy CUDOS AURA PLATFORM PROD in docker",
-            "command": "cd ./docker/prod && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-aura-platform-prod down",
+            "label": "Destroy CUDOS MARKETS PLATFORM PROD in docker",
+            "command": "cd ./docker/prod && docker-compose --env-file ./compose.arg -f ./compose.yml -p cudos-markets-platform-prod down",
             "type": "shell",
             "group": "build"
         },

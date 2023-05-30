@@ -71,7 +71,7 @@ Create ./docker/dev.arg based on ./docker/dev.arg.example
 Build and Start the container using VS shortcuts commands or
 
 ```bash
-cd ./docker && docker-compose --env-file ./dev.arg -f ./dev.yml -p cudos-aura-platform-dev up --build
+cd ./docker && docker-compose --env-file ./dev.arg -f ./dev.yml -p cudos-markets-platform-dev up --build
 ```
 
 ## Production with docker
@@ -81,7 +81,7 @@ Create ./docker/prod.arg based on ./docker/prod.arg.example
 Build and Start the container using VS shortcuts commands or
 
 ```bash
-cd ./docker && docker-compose --env-file ./prod.arg -f ./prod.yml -p cudos-aura-platform-prod up --build
+cd ./docker && docker-compose --env-file ./prod.arg -f ./prod.yml -p cudos-markets-platform-prod up --build
 ```
 
 ## Test

@@ -1,7 +1,7 @@
 import CudosPriceDataEntity from '../../entities/CudosPriceDataEntity';
 import PurchaseTransactionEntity from '../../entities/PurchaseTransactionEntity';
 
-export default interface CudosAuraPoolServiceRepo {
+export default interface CudosMarketsServiceRepo {
 
     fetchHeartbeat(): Promise< void >;
     fetchLastCheckedEthereumBlock(): Promise < number >;

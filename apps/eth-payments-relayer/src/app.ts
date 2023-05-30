@@ -1,11 +1,11 @@
 import Config from '../config/Config';
 import { DirectSecp256k1HdWallet, GasPrice, SigningStargateClient, StargateClient } from 'cudosjs';
-import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApiRepo';
+import CudosMarketsServiceApi from './data/CudosMarketsServiceApiRepo';
 import { ethers } from 'ethers';
 import CudosMarketsContract from '../contracts/CudosMarkets.sol/CudosMarkets.json'
 import CudosChainRpcRepo from './data/CudosChainRpcRepo';
 import ContractEventWorker from './workers/ContractEventWorker';
-import AuraContractRpcRepo from './data/AuraContractRpcRepo';
+import CudosMarketsContractRpcRepo from './data/CudosMarketsContractRpcRepo';
 import CudosRefundWorker from './workers/CudosRefundWorker';
 import Logger from '../config/Logger';
 
@@ -24,12 +24,12 @@ export default class App {
 
         Logger.info('Getting an ETH contract connection...');
         const contract = await this.getEthContract();
-        const contractRpcRepo = new AuraContractRpcRepo(contract);
+        const contractRpcRepo = new CudosMarketsContractRpcRepo(contract);
         Logger.info('Connection to ETH contract established.');
 
-        Logger.info('Testing AuraPoolService connection...');
-        const api = await this.getAuraPoolServiceApi();
-        Logger.info('Connection to AuraPoolService established.');
+        Logger.info('Testing CudosMarketsService connection...');
+        const api = await this.getCudosMarketsServiceApi();
+        Logger.info('Connection to CudosMarketsService established.');
 
         const contractEventWorker = new ContractEventWorker(chainApiRepo, contractRpcRepo, api);
         const cudosRefundWorker = new CudosRefundWorker(chainApiRepo, contractRpcRepo, api);
@@ -88,7 +88,7 @@ export default class App {
             try {
                 const provider = new ethers.providers.JsonRpcProvider(Config.ETH_NODE_URL);
                 const wallet = new ethers.Wallet(Config.CONTRACT_ADMIN_RPIVATE_KEY || '', provider);
-                const contract = ethers.ContractFactory.getContract(Config.AURA_POOL_CONTRACT_ADDRESS || '', CudosMarketsContract.abi, wallet);
+                const contract = ethers.ContractFactory.getContract(Config.CUDOS_MARKETS_CONTRACT_ADDRESS || '', CudosMarketsContract.abi, wallet);
                 return await contract.deployed();
             } catch (e) {
                 Logger.error(`Failed to get a chain client using ${Config.ETH_NODE_URL}. Retrying...`);
@@ -99,16 +99,16 @@ export default class App {
         return null;
     }
 
-    async getAuraPoolServiceApi() {
+    async getCudosMarketsServiceApi() {
         while (this.running) {
             try {
-                const cudosAuraPoolApi = new CudosAuraPoolServiceApi();
+                const cudosMarketsApi = new CudosMarketsServiceApi();
 
-                await cudosAuraPoolApi.fetchHeartbeat();
+                await cudosMarketsApi.fetchHeartbeat();
 
-                return cudosAuraPoolApi;
+                return cudosMarketsApi;
             } catch (e) {
-                Logger.error('Failed to get a heartbeat from AuraPoolService. Retrying...');
+                Logger.error('Failed to get a heartbeat from CudosMarketsService. Retrying...');
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }

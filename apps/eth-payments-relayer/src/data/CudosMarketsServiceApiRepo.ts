@@ -2,18 +2,18 @@ import axios from 'axios';
 import Config from '../../config/Config';
 import CudosPriceDataEntity from '../entities/CudosPriceDataEntity';
 import PurchaseTransactionEntity from '../entities/PurchaseTransactionEntity';
-import CudosAuraPoolServiceRepo from '../workers/repos/CudosAuraPoolServiceRepo';
+import CudosMarketsServiceRepo from '../workers/repos/CudosMarketsServiceRepo';
 import { ReqCreditPurchaseTransactionEntities, ReqUpdateLastCheckedBlocks } from './dto/Requests';
 import { ResFetchCudosPriceData, ResFetchLastCheckedBlocks } from './dto/Responses';
 
 const HEARTBEAT_ENDPOINT = '/api/v1/general/heartbeat';
 const LAST_BLOCK_ENDPOINT = '/api/v1/general/last-checked-payment-relayer-blocks';
 const CREDIT_PURCHASE_TX_ENDPOINT = '/api/v1/nft/creditPurchaseTransactions'
-export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolServiceRepo {
+export default class CudosMarketsServiceApiRepo implements CudosMarketsServiceRepo {
     api_url: string;
 
     constructor() {
-        this.api_url = Config.AURA_POOL_API;
+        this.api_url = Config.CUDOS_MARKETS_API;
     }
 
     async fetchHeartbeat(): Promise< void > {
@@ -21,7 +21,7 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
             `${this.api_url}${HEARTBEAT_ENDPOINT}`,
             {
                 headers: {
-                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                    'cudos-markets-api-key': Config.APP_CUDOS_MARKETS_API_KEY,
                 },
             },
         );
@@ -32,7 +32,7 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
             `${this.api_url}${LAST_BLOCK_ENDPOINT}`,
             {
                 headers: {
-                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                    'cudos-markets-api-key': Config.APP_CUDOS_MARKETS_API_KEY,
                 },
             },
         );
@@ -46,7 +46,7 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
             `${this.api_url}${LAST_BLOCK_ENDPOINT}`,
             {
                 headers: {
-                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                    'cudos-markets-api-key': Config.APP_CUDOS_MARKETS_API_KEY,
                 },
             },
         );
@@ -63,7 +63,7 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
             req,
             {
                 headers: {
-                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                    'cudos-markets-api-key': Config.APP_CUDOS_MARKETS_API_KEY,
                 },
             },
         );
@@ -76,7 +76,7 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
             req,
             {
                 headers: {
-                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                    'cudos-markets-api-key': Config.APP_CUDOS_MARKETS_API_KEY,
                 },
             },
         );
@@ -89,7 +89,7 @@ export default class CudosAuraPoolServiceApiRepo implements CudosAuraPoolService
             req,
             {
                 headers: {
-                    'aura-pool-api-key': Config.APP_AURA_POOL_API_KEY,
+                    'cudos-markets-api-key': Config.APP_CUDOS_MARKETS_API_KEY,
                 },
             },
         );

@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import CudosPriceDataEntity from '../../src/entities/CudosPriceDataEntity';
 import NftEntity, { NftStatus } from '../../src/entities/NftEntity';
 import PurchaseTransactionEntity from '../../src/entities/PurchaseTransactionEntity';
-import CudosAuraPoolServiceRepo from '../../src/workers/repos/CudosAuraPoolServiceRepo';
+import CudosMarketsServiceRepo from '../../src/workers/repos/CudosMarketsServiceRepo';
 
 const nftEntities = [
     createNftEntity('id1', '1000'),
@@ -25,7 +25,7 @@ function createNftEntity(nftId: string, priceInAcudos: string): NftEntity {
     return entity;
 }
 
-export class CudosAuraPoolServiceHappyPathApiRepo implements CudosAuraPoolServiceRepo {
+export class CudosMarketsServiceHappyPathApiRepo implements CudosMarketsServiceRepo {
     async fetchHeartbeat(): Promise< void > {}
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
@@ -43,7 +43,7 @@ export class CudosAuraPoolServiceHappyPathApiRepo implements CudosAuraPoolServic
     }
 }
 
-export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolServiceRepo {
+export class CudosMarketsServiceDifferentPriceApiRepo implements CudosMarketsServiceRepo {
     async fetchHeartbeat(): Promise< void > {}
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
@@ -61,7 +61,7 @@ export class CudosAuraPoolServiceDifferentPriceApiRepo implements CudosAuraPoolS
     }
 }
 
-export class CudosAuraPoolServiceApiNoNftsFoundMockRepo implements CudosAuraPoolServiceRepo {
+export class CudosMarketsServiceApiNoNftsFoundMockRepo implements CudosMarketsServiceRepo {
     async fetchHeartbeat(): Promise< void > {}
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 1 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 1 }
@@ -79,7 +79,7 @@ export class CudosAuraPoolServiceApiNoNftsFoundMockRepo implements CudosAuraPool
     }
 }
 
-export class CudosAuraPoolServiceHighBlockCheckedMockRepo implements CudosAuraPoolServiceRepo {
+export class CudosMarketsServiceHighBlockCheckedMockRepo implements CudosMarketsServiceRepo {
     async fetchHeartbeat(): Promise< void > {}
     async fetchLastCheckedEthereumBlock(): Promise < number > { return 10 }
     async fetchLastCheckedPaymentRelayerCudosBlock(): Promise < number > { return 10 }

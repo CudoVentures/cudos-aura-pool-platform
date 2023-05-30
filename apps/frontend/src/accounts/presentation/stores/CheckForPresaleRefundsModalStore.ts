@@ -57,7 +57,7 @@ export default class CheckForPresaleRefundsModalStore extends ModalStore {
         const addresses = await provider.eth.getAccounts();
         this.ethAddress = addresses[0];
 
-        this.contract = new provider.eth.Contract(contractABI.abi, ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS, {
+        this.contract = new provider.eth.Contract(contractABI.abi, ETH_CONSTS.CUDOS_MARKETS_CONTRACT_ADDRESS, {
             from: addresses[0],
         });
         const payments = await this.contract.methods.getPayments().call();

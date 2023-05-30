@@ -7,10 +7,10 @@ let CUDOS_SIGNER_ADDRESS = null;
 
 const config = {
     LOOP_INTERVAL_MILIS: 10000,
-    AURA_POOL_API: `${process.env.App_Host}:${process.env.App_Port}`,
+    CUDOS_MARKETS_API: `${process.env.App_Host}:${process.env.App_Port}`,
     RPC_ENDPOINT: process.env.APP_CUDOS_RPC,
     ETH_CHAIN_ID: process.env.APP_ETH_CHAIN_ID,
-    AURA_POOL_CONTRACT_ADDRESS: process.env.APP_AURA_POOL_CONTRACT_ADDRESS,
+    CUDOS_MARKETS_CONTRACT_ADDRESS: process.env.APP_CUDOS_MARKETS_CONTRACT_ADDRESS,
     ETH_NODE_URL: process.env.App_Eth_Node_Url,
     CONTRACT_ADMIN_RPIVATE_KEY: process.env.App_Contract_Admin_Private_Key,
     CUDOS_GAS_PRICE: process.env.APP_CUDOS_GAS_PRICE,
@@ -18,7 +18,7 @@ const config = {
     CUDOS_SIGNER_MNEMONIC: process.env.App_Eth_Payment_Relayer_Cudos_Wallet_Mnemonic,
     EXPECTED_PRICE_USD: Number(process.env.APP_PRESALE_PRICE_USD),
     EXPECTED_PRICE_EPSILON_PERCENT: Number(process.env.APP_PRESALE_EXPECTED_PRICE_EPSILON),
-    APP_AURA_POOL_API_KEY: process.env.App_Aura_Pool_Api_Key,
+    APP_CUDOS_MARKETS_API_KEY: process.env.App_Cudos_Markets_Api_Key,
     CRYPTO_COMPARE_API_KEY: process.env.App_Crypto_Compare_Api_Key,
 
     async getCudosSignerAddress() {

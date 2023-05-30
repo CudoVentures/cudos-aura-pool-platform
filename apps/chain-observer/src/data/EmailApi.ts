@@ -17,7 +17,7 @@ export class EmailApi extends EmailRepo {
 
         if (Config.ENV_DEV === true) {
             this.transport = nodemailer.createTransport({
-                host: 'mailhog',
+                host: 'cudos-markets-mailhog',
                 port: 1025,
             });
         }

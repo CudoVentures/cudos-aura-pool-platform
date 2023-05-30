@@ -4,9 +4,9 @@ import { RequestWithSessionAccounts } from '../../common/commont.types';
 class ApiKeyGuard implements CanActivate {
     async canActivate(context: ExecutionContext) {
         const request = context.switchToHttp().getRequest<RequestWithSessionAccounts>();
-        const apiKey = request.header('aura-pool-api-key');
+        const apiKey = request.header('cudos-markets-api-key');
 
-        return apiKey === process.env.App_Aura_Pool_Api_Key;
+        return apiKey === process.env.App_Cudos_Markets_Api_Key;
     }
 }
 

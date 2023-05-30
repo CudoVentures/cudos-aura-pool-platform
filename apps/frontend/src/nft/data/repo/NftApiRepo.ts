@@ -186,7 +186,7 @@ export default class NftApiRepo implements NftRepo {
 
                 const addresses = await web3.eth.getAccounts();
 
-                const contract = new web3.eth.Contract(contractABI.abi, ETH_CONSTS.AURA_POOL_CONTRACT_ADDRESS, {
+                const contract = new web3.eth.Contract(contractABI.abi, ETH_CONSTS.CUDOS_MARKETS_CONTRACT_ADDRESS, {
                     from: addresses[0],
                 });
 

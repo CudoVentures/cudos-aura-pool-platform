@@ -1,6 +1,6 @@
 import CollectionEntity from '../../entities/CollectionEntity';
 
-const STORAGE_KEY = 'cudos_aura_service_storage_collections'
+const STORAGE_KEY = 'cudos_markets_service_storage_collections'
 
 export default class CollectionSessionStorage {
 

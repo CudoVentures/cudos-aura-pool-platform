@@ -7,7 +7,7 @@ import CudosDataEntity from '../../entities/CudosDataEntity';
 import CudosRepo from '../../presentation/repos/CudosRepo';
 import CudosApi from '../data-sources/CudosApi';
 
-const LOCAL_STORAGE_KEY = 'cudos_aura_service_storage_cudos';
+const LOCAL_STORAGE_KEY = 'cudos_markets_service_storage_cudos';
 
 export default class CudosApiRepo implements CudosRepo {
 

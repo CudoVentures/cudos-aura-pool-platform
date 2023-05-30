@@ -1,5 +1,5 @@
-import CudosAuraPoolServiceRepo from './repos/CudosAuraPoolServiceRepo';
-import AuraContractRepo from './repos/AuraContractRepo';
+import CudosMarketsServiceRepo from './repos/CudosMarketsServiceRepo';
+import CudosMarketsContractRepo from './repos/CudosMarketsContractRepo';
 import CudosChainRepo from './repos/CudosChainRepo';
 import Logger from '../../config/Logger';
 import { PaymentStatus } from '../entities/PaymentEventEntity';
@@ -12,16 +12,16 @@ export default class ContractEventWorker {
     static FIFTEEN_MINUTES_IN_MS = 15 * 60 * 1000;
 
     cudosChainRepo: CudosChainRepo;
-    contractRepo: AuraContractRepo;
-    cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo;
+    contractRepo: CudosMarketsContractRepo;
+    cudosMarketsServiceApi: CudosMarketsServiceRepo;
 
     ethUsdPrice: number;
     cudosEthPrice: BigNumber;
 
-    constructor(cudosChainRepo: CudosChainRepo, contractRepo: AuraContractRepo, cudosAuraPoolServiceApi: CudosAuraPoolServiceRepo) {
+    constructor(cudosChainRepo: CudosChainRepo, contractRepo: CudosMarketsContractRepo, cudosMarketsServiceApi: CudosMarketsServiceRepo) {
         this.cudosChainRepo = cudosChainRepo;
         this.contractRepo = contractRepo;
-        this.cudosAuraPoolServiceApi = cudosAuraPoolServiceApi;
+        this.cudosMarketsServiceApi = cudosMarketsServiceApi;
 
         this.ethUsdPrice = 1;
         this.cudosEthPrice = null;
@@ -31,7 +31,7 @@ export default class ContractEventWorker {
         try {
             // get last checked eth block
             ContractEventWorker.log('Fetching last checked block height...');
-            const lastCheckedBlock = await this.cudosAuraPoolServiceApi.fetchLastCheckedEthereumBlock();
+            const lastCheckedBlock = await this.cudosMarketsServiceApi.fetchLastCheckedEthereumBlock();
             ContractEventWorker.log(`Last checked block: ${lastCheckedBlock}`);
 
             if (!lastCheckedBlock || lastCheckedBlock < 1) {
@@ -69,7 +69,7 @@ export default class ContractEventWorker {
                 ContractEventWorker.log('Processing events...');
 
                 ContractEventWorker.log('Getting USD/ETH price for calculations...');
-                const cudosPriceData = await this.cudosAuraPoolServiceApi.fetchCudosPriceData();
+                const cudosPriceData = await this.cudosMarketsServiceApi.fetchCudosPriceData();
 
                 this.ethUsdPrice = 1 / cudosPriceData.cudosEthPrice.dividedBy(cudosPriceData.cudosUsdPrice).toNumber();
                 ContractEventWorker.log(`Current USD/ETH price is: $ ${this.ethUsdPrice}`);
@@ -141,7 +141,7 @@ export default class ContractEventWorker {
                     }
 
                     ContractEventWorker.log('\tSaving purchase transaction to database...');
-                    await this.cudosAuraPoolServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
+                    await this.cudosMarketsServiceApi.creditPurchaseTransactions([purchaseTransactionEntity])
                 }
 
             } else {
@@ -150,7 +150,7 @@ export default class ContractEventWorker {
 
             // save last checked block
             ContractEventWorker.log(`Saving last checked Ethereum block: ${currentEthereumBlock}`);
-            this.cudosAuraPoolServiceApi.updateLastCheckedEthereumBlock(currentEthereumBlock);
+            this.cudosMarketsServiceApi.updateLastCheckedEthereumBlock(currentEthereumBlock);
             ContractEventWorker.log('Run finished.');
         } catch (e) {
             ContractEventWorker.error(e);

@@ -9,11 +9,11 @@ volumes:
     driver: local
 
 services:
-  cudos-aura-platform-dev:
-    image: cudos-aura-platform-dev
-    container_name: cudos-aura-platform-dev
+  cudos-markets-platform-dev:
+    image: cudos-markets-platform-dev
+    container_name: cudos-markets-platform-dev
     build:
-      dockerfile: docker/dev/aura-pool-platform.dockerfile
+      dockerfile: docker/dev/cudos-markets-platform.dockerfile
       context: ../../
       args:
         args:
@@ -23,7 +23,7 @@ services:
         GROUP_NAME: "$GROUP_NAME"
     restart: unless-stopped
     volumes:
-      - '../../:/usr/cudos-aura-platform'
+      - '../../:/usr/cudos-markets-platform'
     ports:
       - $HOST_PORT:$DOCKER_PORT
     networks:
@@ -36,11 +36,11 @@ services:
         max-size: "128m"
         max-file: "1"
     depends_on: 
-      - cudos-aura-platform-postgres-dev
+      - cudos-markets-platform-postgres-dev
 
-  cudos-aura-platform-postgres-dev:
+  cudos-markets-platform-postgres-dev:
     image: postgres
-    container_name: cudos-aura-platform-postgres-dev
+    container_name: cudos-markets-platform-postgres-dev
     environment:
       POSTGRES_PASSWORD: "$POSTGRES_PASSWORD"
       POSTGRES_HOST_AUTH_METHOD: "$POSTGRES_HOST_AUTH_METHOD"
@@ -53,18 +53,18 @@ services:
     networks:
       - shared-cudos-network
 
-  mailhog:
+  cudos-markets-mailhog:
     image: "mailhog/mailhog"
-    container_name: "mailhog"
+    container_name: "cudos-markets-mailhog"
     ports:
       - 8025:8025
       - 1025:1025
     networks:
       - shared-cudos-network
   
-  cudos-aura-platform-chain-observer-dev:
-    image: cudos-aura-platform-chain-observer-dev
-    container_name: cudos-aura-platform-chain-observer-dev
+  cudos-markets-platform-chain-observer-dev:
+    image: cudos-markets-platform-chain-observer-dev
+    container_name: cudos-markets-platform-chain-observer-dev
     build:
       dockerfile: docker/dev/chain-observer.dockerfile
       context: ../../
@@ -73,13 +73,13 @@ services:
         USER_NAME: "$USER_NAME"
         GROUP_ID: "$GROUP_ID"
         GROUP_NAME: "$GROUP_NAME"
-        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
+        CUDOS_MARKETS_BACKEND: "http://cudos-markets-platform-dev"
         CHAIN_ID: "$CHAIN_ID"
         CHAIN_RPC: "$CHAIN_RPC"
         CHAIN_GRPC: "$CHAIN_GRPC"
     restart: unless-stopped
     volumes:
-      - '../../:/usr/cudos-aura-chain-observer'
+      - '../../:/usr/cudos-markets-chain-observer'
     networks:
       - shared-cudos-network
     extra_hosts:
@@ -90,11 +90,11 @@ services:
         max-size: "128m"
         max-file: "1"
     depends_on: 
-      - cudos-aura-platform-dev
+      - cudos-markets-platform-dev
 
-  cudos-aura-platform-eth-payments-relayer:
-    image: cudos-aura-platform-eth-payments-relayer
-    container_name: cudos-aura-platform-eth-payments-relayer
+  cudos-markets-platform-eth-payments-relayer:
+    image: cudos-markets-platform-eth-payments-relayer
+    container_name: cudos-markets-platform-eth-payments-relayer
     build:
       dockerfile: docker/dev/eth-payments-relayer.dockerfile
       context: ../../
@@ -104,13 +104,13 @@ services:
         USER_NAME: "$USER_NAME"
         GROUP_ID: "$GROUP_ID"
         GROUP_NAME: "$GROUP_NAME"
-        AURA_POOL_BACKEND: "http://cudos-aura-platform-dev"
+        CUDOS_MARKETS_BACKEND: "http://cudos-markets-platform-dev"
         CHAIN_ID: "$CHAIN_ID"
         CHAIN_RPC: "$CHAIN_RPC"
         CHAIN_GRPC: "$CHAIN_GRPC"
     restart: unless-stopped
     volumes:
-      - '../../:/usr/cudos-aura-eth-payments-relayer'
+      - '../../:/usr/cudos-markets-eth-payments-relayer'
     networks:
       - shared-cudos-network
     extra_hosts:
@@ -121,13 +121,13 @@ services:
         max-size: "128m"
         max-file: "1"
     depends_on: 
-      - cudos-aura-platform-dev
+      - cudos-markets-platform-dev
 
-  cudos-on-demand-minting-service-dev:
-    image: cudos-on-demand-minting-service-dev
-    container_name: cudos-on-demand-minting-service-dev
+  cudos-markets-on-demand-minting-service-dev:
+    image: cudos-markets-on-demand-minting-service-dev
+    container_name: cudos-markets-on-demand-minting-service-dev
     build:
-      dockerfile: CudosAuraPoolService/docker/dev/on-demand-minting-service.dockerfile
+      dockerfile: CudosMarketsService/docker/dev/on-demand-minting-service.dockerfile
       context: ../../../
       args:
         USER_ID: "$USER_ID"
@@ -135,7 +135,7 @@ services:
         GROUP_ID: "$GROUP_ID"
         GROUP_NAME: "$GROUP_NAME"
         ON_DEMAND_MINTING_STARTING_HEIGHT: "$ON_DEMAND_MINTING_STARTING_HEIGHT"
-        CUDOS_MARKETS_BACKEND: "http://cudos-aura-platform-dev:$DOCKER_PORT"
+        CUDOS_MARKETS_BACKEND: "http://cudos-markets-platform-dev:$DOCKER_PORT"
         MINTER_WALLET_MNEMONIC: "$MINTER_WALLET_MNEMONIC"
         MINTER_MAX_RETRIES: "$MINTER_MAX_RETRIES"
         MINTER_RETRY_INTERVAL: "$MINTER_RETRY_INTERVAL"
@@ -145,14 +145,14 @@ services:
         CHAIN_ID: "$CHAIN_ID"
         CHAIN_RPC: "$CHAIN_RPC"
         CHAIN_GRPC: "$CHAIN_GRPC"
-        CUDOS_MARKETS_API_KEY: "$AURA_POOL_API_KEY"
+        CUDOS_MARKETS_API_KEY: "$CUDOS_MARKETS_API_KEY"
     restart: unless-stopped
     networks:
       - shared-cudos-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on: 
-      - cudos-aura-platform-dev
+      - cudos-markets-platform-dev
     logging:
       driver: "json-file"
       options:

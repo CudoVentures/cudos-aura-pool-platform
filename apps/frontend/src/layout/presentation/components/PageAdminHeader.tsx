@@ -13,7 +13,7 @@ import HeaderWallet from './HeaderWallet';
 import Actions from '../../../core/presentation/components/Actions';
 import Button from '../../../core/presentation/components/Button';
 
-import SvgAuraPoolLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
+import SvgCudosMarketsLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
 import '../styles/page-admin-header.css'
 import { REWARDS_CALCULATOR } from '../../../core/utilities/Links';
 
@@ -56,7 +56,7 @@ function PageAdminHeader({ accountSessionStore, walletStore, presaleStore }: Pro
     return (
         <header className={'PageAdminHeader FlexRow'}>
             <div className={'LogoHeader FlexRow'}>
-                <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgAuraPoolLogo } onClick = { onClickLogo } />
+                <Svg className={'SVG IconLogoWithText Clickable'} svg={ SvgCudosMarketsLogo } onClick = { onClickLogo } />
                 <div className={'AdminPortalNav B2 SemiBold'}>Farm Portal</div>
             </div>
 

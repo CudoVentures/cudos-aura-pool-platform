@@ -1,6 +1,6 @@
 import Config from '../config/Config';
 import { StargateClient } from 'cudosjs';
-import CudosAuraPoolServiceApi from './data/CudosAuraPoolServiceApi';
+import CudosMarketsServiceApi from './data/CudosMarketsServiceApi';
 import TxFindWorker from './workers/TxFindWorker';
 import { EmailApi } from './data/EmailApi';
 
@@ -15,9 +15,9 @@ export default class App {
         const client = await this.getChainClient();
         console.log('Connection to chain client established.');
 
-        console.log('Testing AuraPoolService connection...');
-        const api = await this.getAuraPoolServiceApi();
-        console.log('Connection to AuraPoolService established.');
+        console.log('Testing CudosMarketsService connection...');
+        const api = await this.getCudosMarketsServiceApi();
+        console.log('Connection to CudosMarketsService established.');
 
         const worker = new TxFindWorker(client, api, new EmailApi());
 
@@ -45,16 +45,16 @@ export default class App {
         return null;
     }
 
-    async getAuraPoolServiceApi() {
+    async getCudosMarketsServiceApi() {
         while (this.running) {
             try {
-                const cudosAuraPoolApi = new CudosAuraPoolServiceApi();
+                const cudosMarketsApi = new CudosMarketsServiceApi();
 
-                await cudosAuraPoolApi.fetchHeartbeat();
+                await cudosMarketsApi.fetchHeartbeat();
 
-                return cudosAuraPoolApi;
+                return cudosMarketsApi;
             } catch (e) {
-                console.log('Failed to get a heartbeat from AuraPoolService. Retrying...');
+                console.log('Failed to get a heartbeat from CudosMarketsService. Retrying...');
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }

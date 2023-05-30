@@ -8,7 +8,7 @@ import PaymentEventEntity from '../entities/PaymentEventEntity';
 import PaymentTransactionEntity from '../entities/PaymentTransactionEntity';
 import RefundTransactionEntity from '../entities/RefundTransactionEntity';
 import CudosChainRepo from '../workers/repos/CudosChainRepo';
-import { getBankSendMsgToOnDemandMintingServiceQuery } from './dto/CudosAuraPoolServiceTxFilter';
+import { getBankSendMsgToOnDemandMintingServiceQuery } from './dto/CudosMarketsServiceTxFilter';
 
 export default class CudosChainRpcRepo implements CudosChainRepo {
     chainClient: StargateClient;

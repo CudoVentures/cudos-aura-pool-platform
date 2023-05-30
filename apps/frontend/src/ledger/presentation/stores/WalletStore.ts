@@ -11,7 +11,7 @@ import Web3 from 'web3';
 import NftRepo from '../../../nft/presentation/repos/NftRepo';
 import { formatCudos } from '../../../core/utilities/NumberFormatter';
 
-const SESSION_STORAGE_WALLET_KEY = 'auraPoolConnectedWallet';
+const SESSION_STORAGE_WALLET_KEY = 'cudosMarketsConnectedWallet';
 
 export enum SessionStorageWalletOptions {
     KEPLR = 'keplr',

@@ -76,7 +76,7 @@ describe('FarmService', () => {
                     port: 15432,
                     username: 'postgres',
                     password: 'postgres',
-                    database: 'aura_pool_test',
+                    database: 'cudos_markets_test',
                     autoLoadModels: true,
                     synchronize: true,
                     logging: false,

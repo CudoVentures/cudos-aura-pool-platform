@@ -3,8 +3,8 @@ import BitcoinDataEntity from '../../entities/BitcoinDataEntity';
 import BitcoinRepo from '../../presentation/repos/BitcoinRepo';
 import BitcoinApi from '../data-sources/BitcoinApi';
 
-const LOCAL_STORAGE_COIN_GECKO_KEY = 'cudos_aura_service_storage_bitcoin_coingecko';
-const LOCAL_STORAGE_BLOCKCHAIN_INFO_KEY = 'cudos_aura_service_storage_bitcoin_blockchaininfo';
+const LOCAL_STORAGE_COIN_GECKO_KEY = 'cudos_markets_service_storage_bitcoin_coingecko';
+const LOCAL_STORAGE_BLOCKCHAIN_INFO_KEY = 'cudos_markets_service_storage_bitcoin_blockchaininfo';
 
 export default class BitcoinApiRepo implements BitcoinRepo {
 

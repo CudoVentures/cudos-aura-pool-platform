@@ -1,6 +1,6 @@
-import CudosAuraPoolServiceRepo from '../../src/workers/repos/CudosAuraPoolServiceRepo';
+import CudosMarketsServiceRepo from '../../src/workers/repos/CudosMarketsServiceRepo';
 
-export default class ApiMock implements CudosAuraPoolServiceRepo {
+export default class ApiMock implements CudosMarketsServiceRepo {
     height: number;
 
     constructor(height) {
