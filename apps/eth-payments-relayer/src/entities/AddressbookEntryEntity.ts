@@ -1,7 +1,7 @@
 import { QueryGetAddressResponse } from 'cudosjs/build/stargate/modules/addressbook/proto-types/query';
 
-export const ADDRESSBOOK_LABEL = 'aurapool';
-export const ADDRESSBOOK_NETWORK = 'aurapool';
+export const ADDRESSBOOK_LABEL = 'cudosmarkets';
+export const ADDRESSBOOK_NETWORK = 'cudosmarkets';
 
 export default class AddressbookEntryEntity {
     cudosAddress: string;

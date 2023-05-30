@@ -59,7 +59,7 @@ function createAddressbookEntry(cudosAddress: string, entryAddress: string, labe
 export class CudosChainRpcHappyPathMockRepo implements CudosChainRepo {
     async fetchCurrentBlockHeight(): Promise<number> { return 3 }
     async fetchAddressbookEntry(cudosAddress: string): Promise<AddressbookEntryEntity> {
-        return createAddressbookEntry(cudosAddress, '0xtest', 'aurapool', 'aurapool');
+        return createAddressbookEntry(cudosAddress, '0xtest', 'cudosmarkets', 'cudosmarkets');
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
@@ -69,7 +69,7 @@ export class CudosChainRpcHappyPathMockRepo implements CudosChainRepo {
 export class CudosChainRpcInvalidOriginalTxMockRepo implements CudosChainRepo {
     async fetchCurrentBlockHeight(): Promise<number> { return 3 }
     async fetchAddressbookEntry(cudosAddress: string): Promise<AddressbookEntryEntity> {
-        return createAddressbookEntry(cudosAddress, '0xtest', 'aurapool', 'aurapool');
+        return createAddressbookEntry(cudosAddress, '0xtest', 'cudosmarkets', 'cudosmarkets');
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return null; }
@@ -79,7 +79,7 @@ export class CudosChainRpcInvalidOriginalTxMockRepo implements CudosChainRepo {
 export class CudosChainRpcNoEventsMockRepo implements CudosChainRepo {
     async fetchCurrentBlockHeight(): Promise<number> { return 3 }
     async fetchAddressbookEntry(cudosAddress: string): Promise<AddressbookEntryEntity> {
-        return createAddressbookEntry(cudosAddress, '0xtest', 'aurapool', 'aurapool');
+        return createAddressbookEntry(cudosAddress, '0xtest', 'cudosmarkets', 'cudosmarkets');
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return []; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
@@ -99,7 +99,7 @@ export class CudosChainRpcNoAddressbookEntryMockRepo implements CudosChainRepo {
 export class CudosChainRpcLowBlockMockRepo implements CudosChainRepo {
     async fetchCurrentBlockHeight(): Promise<number> { return 1 }
     async fetchAddressbookEntry(cudosAddress: string): Promise<AddressbookEntryEntity> {
-        return createAddressbookEntry(cudosAddress, '0xtest', 'aurapool', 'aurapool');
+        return createAddressbookEntry(cudosAddress, '0xtest', 'cudosmarkets', 'cudosmarkets');
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
@@ -109,7 +109,7 @@ export class CudosChainRpcLowBlockMockRepo implements CudosChainRepo {
 export class CudosChainRpcFailToMintMockRepo implements CudosChainRepo {
     async fetchCurrentBlockHeight(): Promise<number> { return 1 }
     async fetchAddressbookEntry(cudosAddress: string): Promise<AddressbookEntryEntity> {
-        return createAddressbookEntry(cudosAddress, '0xtest', 'aurapool', 'aurapool');
+        return createAddressbookEntry(cudosAddress, '0xtest', 'cudosmarkets', 'cudosmarkets');
     }
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> { return refundTransactionEntities; }
     async fetchPaymentTransactionByTxhash(txHash: string): Promise<PaymentTransactionEntity> { return paymentTransactionEntity; }
