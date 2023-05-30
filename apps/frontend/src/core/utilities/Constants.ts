@@ -15,8 +15,8 @@ declare let Config;
 
 export const SIGN_NONCE = -74563;
 
-export const ADDRESSBOOK_LABEL = 'aurapool';
-export const ADDRESSBOOK_NETWORK = 'aurapool';
+export const ADDRESSBOOK_LABEL = 'cudosmarkets';
+export const ADDRESSBOOK_NETWORK = 'cudosmarkets';
 
 export const BTC_CONSTS = {
     BTC_EXPLORER_URL: Config.APP_BTC_NETWORK === 'testnet' ? 'https://ex.signet.bublina.eu.org/address' : 'https://www.blockchain.com/explorer/addresses/btc',
