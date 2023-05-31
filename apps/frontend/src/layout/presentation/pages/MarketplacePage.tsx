@@ -47,6 +47,7 @@ import { TERMS_AND_CONDITIONS } from '../../../core/utilities/Links';
 import MarketPresaleNftPreview from '../components/MarketplacePresaleNftPreview';
 import BuyPresaleNftModalStore from '../stores/BuyPresaleNftModalStore';
 import BuyPresaleNftModal from '../components/BuyPresaleNftModal';
+import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
 
 declare let Config;
 
@@ -310,7 +311,9 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 </>)}
                 {nftPresaleStore.isPresaleOver() === false && (
                     <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
-                        <div className={'Primary60 B2 SemiBold CollectionLabel'}>Presale collection</div>
+                        <div className={'Primary60 B2 SemiBold CollectionLabel'}>
+                            { PRESALE_CONSTS.RESPECT_ALLOWLIST ? 'Presale collection' : 'Public sale collection' }
+                        </div>
                         <div className={'ColorNeutral100 H2 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
                         <div className={'ColorNeutral100 B2 CollectionDescription'}><NewLine text = {presaleCollectionEntity?.description ?? ''} /></div>
                         <StyledContainer

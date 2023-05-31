@@ -169,7 +169,7 @@ export default class NftPresaleStore {
 
     async fetchAllowlistUser(): Promise < void > {
         let allowlistUserEntity;
-        if (this.presaleStore.isInPresale() === true && PRESALE_CONSTS.RESPECT_ALLOWLIST === 'true') {
+        if (this.presaleStore.isInPresale() === true && PRESALE_CONSTS.RESPECT_ALLOWLIST === true) {
             allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserBySessionAccount();
         } else {
             allowlistUserEntity = new AllowlistUserEntity(); // it just has to be != null in order to allow payment
