@@ -39,6 +39,7 @@ export const miningFarmEntities = [
         rewardsFromPoolBtcAddress: 'string', // So far changing them won't affect anything
         leftoverRewardsBtcAddress: 'string', // So far changing them won't affect anything
         maintenanceFeePayoutBtcAddress: 'string', // So far changing them won't affect anything
+        farmStartTime: Date.now(),
     }), MiningFarmEntity.fromJson({
         id: '2',
         accountId: '1',
@@ -65,6 +66,7 @@ export const miningFarmEntities = [
         rewardsFromPoolBtcAddress: 'string', // So far changing them won't affect anything
         leftoverRewardsBtcAddress: 'string', // So far changing them won't affect anything
         maintenanceFeePayoutBtcAddress: 'string', // So far changing them won't affect anything
+        farmStartTime: Date.now(),
     }), MiningFarmEntity.fromJson({
         id: '3',
         accountId: '1',
@@ -91,6 +93,7 @@ export const miningFarmEntities = [
         rewardsFromPoolBtcAddress: 'string', // So far changing them won't affect anything
         leftoverRewardsBtcAddress: 'string', // So far changing them won't affect anything
         maintenanceFeePayoutBtcAddress: 'string', // So far changing them won't affect anything
+        farmStartTime: Date.now(),
     }), MiningFarmEntity.fromJson({
         id: '4',
         accountId: '1',
@@ -117,6 +120,7 @@ export const miningFarmEntities = [
         rewardsFromPoolBtcAddress: 'string', // So far changing them won't affect anything
         leftoverRewardsBtcAddress: 'string', // So far changing them won't affect anything
         maintenanceFeePayoutBtcAddress: 'string', // So far changing them won't affect anything
+        farmStartTime: Date.now(),
     }), MiningFarmEntity.fromJson({
         id: '5',
         accountId: '2',
@@ -143,6 +147,7 @@ export const miningFarmEntities = [
         rewardsFromPoolBtcAddress: 'string', // So far changing them won't affect anything
         leftoverRewardsBtcAddress: 'string', // So far changing them won't affect anything
         maintenanceFeePayoutBtcAddress: 'string', // So far changing them won't affect anything
+        farmStartTime: Date.now(),
     }),
 ]
 

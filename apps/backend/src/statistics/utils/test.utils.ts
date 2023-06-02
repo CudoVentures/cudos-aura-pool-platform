@@ -155,6 +155,7 @@ export const miningFarmTestEntities = [MiningFarmEntity.fromJson({
     rewardsFromPoolBtcAddress: 'leftoversTestAddress', // So far changing them won't affect anything
     leftoverRewardsBtcAddress: 'testpayout', // So far changing them won't affect anything
     maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress', // So far changing them won't affect anything
+    farmStartTime: Date.now(),
 }),
 MiningFarmEntity.fromJson({
     id: '2',
@@ -182,6 +183,7 @@ MiningFarmEntity.fromJson({
     rewardsFromPoolBtcAddress: 'leftoversTestAddress', // So far changing them won't affect anything
     leftoverRewardsBtcAddress: 'testpayout', // So far changing them won't affect anything
     maintenanceFeePayoutBtcAddress: 'maintenanceTestAddress', // So far changing them won't affect anything
+    farmStartTime: Date.now(),
 }),
 ];
 
