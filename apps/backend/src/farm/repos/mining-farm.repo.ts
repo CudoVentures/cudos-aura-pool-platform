@@ -156,6 +156,7 @@ export class MiningFarmRepo extends Model {
     @Column({ type: DataType.DATE })
         deletedAt: Date;
 
+    @AllowNull(false)
     @Column({ type: DataType.DATE })
         farmStartTime: Date;
 

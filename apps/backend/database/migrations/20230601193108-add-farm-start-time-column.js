@@ -3,6 +3,8 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.addColumn('farms', 'farm_start_time', {
             type: Sequelize.DATE,
+            allowNull: false,
+            defaultValue: Sequelize.fn('now'),
         });
     },
 
