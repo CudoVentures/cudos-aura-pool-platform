@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ProjectUtils from '../../../core/utilities/ProjectUtils';
@@ -31,8 +31,9 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
 
     const validationState = useRef(new ValidationState()).current;
     const farmPayoutAddressValidation = useRef(validationState.addBitcoinAddressValidation('Invalid bitcoin address')).current;
-    const mintRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
-    const resaleRoyaltiesValidation = useRef(validationState.addEmptyValidation('Empty name')).current;
+    const mintRoyaltiesValidation = useRef(validationState.addEmptyValidation('Cannot be empty')).current;
+    const resaleRoyaltiesValidation = useRef(validationState.addEmptyValidation('Cannot be empty')).current;
+    const farmStartTimeValidation = useRef(validationState.addEmptyValidation('Cannot be empty')).current;
     const farmBtcWalletNameValidationNoEmpty = useRef(validationState.addEmptyValidation('Empty name')).current;
     const farmBtcWalletNameValidationNoSpace = useRef(validationState.addNoSpaceValidation('Contains space')).current;
     const farmBtcWalletNameLowercaseAndNumber = useRef(validationState.addLowercaseAndNumbersValidation('Must contains only lowercase letters and numbers')).current;
@@ -42,6 +43,11 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     const notNegativeValidation = useRef(validationState.addNotNegativeValidation('Value must be greater or equal to 0.')).current;
 
     const [areChangesMade, setAreChangesMade] = useState(false);
+
+    useEffect(() => {
+        validationState.setShowErrors(false);
+        setAreChangesMade(false);
+    }, [viewMiningFarmModalStore.miningFarmEntity]);
 
     function setEditedCudosMintRoyalties(value) {
         value = ProjectUtils.clampInputValue(value, 0, 10);
@@ -86,8 +92,8 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
 
     function setEditedFarmStartTime(value: Date) {
         runInAction(() => {
-            viewMiningFarmModalStore.editedFarmStartTime = value.getTime();
-            miningFarmEntity.farmStartTime = value.getTime();
+            viewMiningFarmModalStore.editedFarmStartTime = value;
+            miningFarmEntity.farmStartTime = value !== null ? value.getTime() : S.NOT_EXISTS;
             setAreChangesMade(true);
         })
     }
@@ -187,7 +193,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                 <Input
                                     className={'FlexRow RoyaliesInput'}
                                     value = { viewMiningFarmModalStore.editedCudosMintRoyalties }
-                                    onChange = { viewMiningFarmModalStore.setEditedCudosMintRoyalties }
+                                    onChange = { setEditedCudosMintRoyalties }
                                     inputType = {InputType.REAL}
                                     decimalLength={2}
                                     inputValidation={[mintRoyaltiesValidation, notNegativeValidation]}
@@ -199,11 +205,27 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                 />,
                             ),
                             createDataPreview(
+                                'Cudos NFT Resale Royalties',
+                                <Input
+                                    className={'FlexRow RoyaliesInput'}
+                                    value = { viewMiningFarmModalStore.editedCudosResaleRoyalties }
+                                    onChange = { setEditedCudosResaleRoyalties }
+                                    inputType = {InputType.REAL}
+                                    decimalLength={2}
+                                    inputValidation={[resaleRoyaltiesValidation, notNegativeValidation]}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end" >
+                                            %
+                                        </InputAdornment>,
+                                    }}
+                                />,
+                            ),
+                            createDataPreview(
                                 'Farm Start Time',
                                 <SingleDatepicker
-                                    selected = { viewMiningFarmModalStore.getEditedTimeStamp() }
-                                    minDate={new Date()}
-                                    onChange = { setEditedFarmStartTime } />,
+                                    selected = { viewMiningFarmModalStore.editedFarmStartTime }
+                                    onChange = { setEditedFarmStartTime }
+                                    inputValidation = { farmStartTimeValidation } />,
                             ),
                         ] } />
                     <div className = { 'ImgsCnt Grid GridColumns3' } >

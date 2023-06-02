@@ -32,6 +32,7 @@ export default class MiningFarmEntity {
     farmPhotoUrls: string[];
     status: MiningFarmStatus;
     maintenanceFeeInBtc: BigNumber;
+    farmStartTime: number;
 
     // royalties paid to cudos percents
     cudosMintNftRoyaltiesPercent: number;
@@ -42,7 +43,6 @@ export default class MiningFarmEntity {
     rewardsFromPoolBtcAddress: string;
     leftoverRewardsBtcAddress: string;
     maintenanceFeePayoutBtcAddress: string;
-    farmStartTime: number;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -115,6 +115,10 @@ export default class MiningFarmEntity {
 
     hasPhotos(): boolean {
         return this.farmPhotoUrls.length > 0;
+    }
+
+    hasStartTime(): boolean {
+        return this.farmStartTime !== S.NOT_EXISTS;
     }
 
     markApproved() {

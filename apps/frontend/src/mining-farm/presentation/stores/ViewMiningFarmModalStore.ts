@@ -21,7 +21,7 @@ export default class ViewMiningFarmModalStore extends ModalStore {
     @observable miningFarmEntity: MiningFarmEntity;
     @observable editedCudosMintRoyalties: string;
     @observable editedCudosResaleRoyalties: string;
-    @observable editedFarmStartTime: number;
+    @observable editedFarmStartTime: Date;
 
     constructor(generalStore: GeneralStore, miningFarmRepo: MiningFarmRepo) {
         super();
@@ -101,6 +101,7 @@ export default class ViewMiningFarmModalStore extends ModalStore {
 
             this.editedCudosMintRoyalties = miningFarmEntity.cudosMintNftRoyaltiesPercent.toString();
             this.editedCudosResaleRoyalties = miningFarmEntity.cudosResaleNftRoyaltiesPercent.toString();
+            this.editedFarmStartTime = miningFarmEntity.hasStartTime() === true ? new Date(miningFarmEntity.farmStartTime) : null;
 
             this.show();
         });
@@ -121,13 +122,5 @@ export default class ViewMiningFarmModalStore extends ModalStore {
 
         this.hide();
         onSave();
-    }
-
-    getEditedTimeStamp(): Date {
-        if (this.editedFarmStartTime === null) {
-            return new Date();
-        }
-
-        return new Date(this.editedFarmStartTime);
     }
 }

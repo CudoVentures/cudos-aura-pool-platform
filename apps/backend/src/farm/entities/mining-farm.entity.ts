@@ -25,6 +25,7 @@ export default class MiningFarmEntity {
     farmPhotoUrls: string[];
     status: FarmStatus;
     maintenanceFeeInBtc: BigNumber;
+    farmStartTime: number;
 
     // royalties paid to cudos percents
     cudosMintNftRoyaltiesPercent: number;
@@ -35,8 +36,6 @@ export default class MiningFarmEntity {
     rewardsFromPoolBtcAddress: string;
     leftoverRewardsBtcAddress: string;
     maintenanceFeePayoutBtcAddress: string;
-
-    farmStartTime: number;
 
     constructor() {
         this.id = NOT_EXISTS_INT;
@@ -114,7 +113,7 @@ export default class MiningFarmEntity {
         repoJson.profileImg = entity.profileImgUrl;
         repoJson.status = entity.status;
         repoJson.creatorId = entity.accountId;
-        repoJson.farmStartTime = new Date(entity.farmStartTime);
+        repoJson.farmStartTime = entity.farmStartTime !== NOT_EXISTS_INT ? new Date(entity.farmStartTime) : null;
 
         return repoJson;
     }
