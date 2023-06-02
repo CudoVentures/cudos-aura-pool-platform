@@ -18,6 +18,7 @@ import ValidationState from '../../../core/presentation/stores/ValidationState';
 import AlertStore from '../../../core/presentation/stores/AlertStore';
 import S from '../../../core/utilities/Main';
 import NewLine from '../../../core/presentation/components/NewLine';
+import SingleDatepicker from '../../../core/presentation/components/SingleDatepicker';
 
 type Props = {
     alertStore?: AlertStore;
@@ -79,6 +80,14 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
     function onChangeSubAccounttName(value) {
         runInAction(() => {
             miningFarmEntity.subAccountName = value;
+            setAreChangesMade(true);
+        })
+    }
+
+    function setEditedFarmStartTime(value: Date) {
+        runInAction(() => {
+            viewMiningFarmModalStore.editedFarmStartTime = value.getTime();
+            miningFarmEntity.farmStartTime = value.getTime();
             setAreChangesMade(true);
         })
     }
@@ -178,7 +187,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                 <Input
                                     className={'FlexRow RoyaliesInput'}
                                     value = { viewMiningFarmModalStore.editedCudosMintRoyalties }
-                                    onChange = { setEditedCudosMintRoyalties }
+                                    onChange = { viewMiningFarmModalStore.setEditedCudosMintRoyalties }
                                     inputType = {InputType.REAL}
                                     decimalLength={2}
                                     inputValidation={[mintRoyaltiesValidation, notNegativeValidation]}
@@ -190,20 +199,11 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                 />,
                             ),
                             createDataPreview(
-                                'Cudos NFT Resale Royalties',
-                                <Input
-                                    className={'FlexRow RoyaliesInput'}
-                                    value = { viewMiningFarmModalStore.editedCudosResaleRoyalties }
-                                    onChange = { setEditedCudosResaleRoyalties }
-                                    inputType = {InputType.REAL}
-                                    decimalLength={2}
-                                    inputValidation={[resaleRoyaltiesValidation, notNegativeValidation]}
-                                    InputProps={{
-                                        endAdornment: <InputAdornment position="end" >
-                                            %
-                                        </InputAdornment>,
-                                    }}
-                                />,
+                                'Farm Start Time',
+                                <SingleDatepicker
+                                    selected = { viewMiningFarmModalStore.getEditedTimeStamp() }
+                                    minDate={new Date()}
+                                    onChange = { setEditedFarmStartTime } />,
                             ),
                         ] } />
                     <div className = { 'ImgsCnt Grid GridColumns3' } >

@@ -42,6 +42,7 @@ export default class MiningFarmEntity {
     rewardsFromPoolBtcAddress: string;
     leftoverRewardsBtcAddress: string;
     maintenanceFeePayoutBtcAddress: string;
+    farmStartTime: number;
 
     constructor() {
         this.id = S.Strings.NOT_EXISTS;
@@ -69,6 +70,7 @@ export default class MiningFarmEntity {
         this.rewardsFromPoolBtcAddress = '';
         this.leftoverRewardsBtcAddress = '';
         this.maintenanceFeePayoutBtcAddress = '';
+        this.farmStartTime = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -199,6 +201,7 @@ export default class MiningFarmEntity {
             'rewardsFromPoolBtcAddress': entity.rewardsFromPoolBtcAddress,
             'leftoverRewardsBtcAddress': entity.leftoverRewardsBtcAddress,
             'maintenanceFeePayoutBtcAddress': entity.maintenanceFeePayoutBtcAddress,
+            'farmStartTime': entity.farmStartTime,
         }
     }
 
@@ -233,6 +236,7 @@ export default class MiningFarmEntity {
         entity.rewardsFromPoolBtcAddress = json.rewardsFromPoolBtcAddress ?? entity.rewardsFromPoolBtcAddress;
         entity.leftoverRewardsBtcAddress = json.leftoverRewardsBtcAddress ?? entity.leftoverRewardsBtcAddress;
         entity.maintenanceFeePayoutBtcAddress = json.maintenanceFeePayoutBtcAddress ?? entity.maintenanceFeePayoutBtcAddress;
+        entity.farmStartTime = json.farmStartTime ?? entity.farmStartTime;
 
         return entity;
     }
