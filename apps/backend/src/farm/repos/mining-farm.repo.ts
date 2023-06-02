@@ -32,6 +32,7 @@ export const enum MiningFarmRepoColumn {
     CREATE_AT = 'created_at',
     UPDATED_AT = 'updated_at',
     DELETED_AT = 'deleted_at',
+    FARM_START_TIME = 'farm_start_time',
 }
 
 @Table({
@@ -154,4 +155,9 @@ export class MiningFarmRepo extends Model {
 
     @Column({ type: DataType.DATE })
         deletedAt: Date;
+
+    @AllowNull(false)
+    @Column({ type: DataType.DATE })
+        farmStartTime: Date;
+
 }

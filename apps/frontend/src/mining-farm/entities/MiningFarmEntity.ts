@@ -32,6 +32,7 @@ export default class MiningFarmEntity {
     farmPhotoUrls: string[];
     status: MiningFarmStatus;
     maintenanceFeeInBtc: BigNumber;
+    farmStartTime: number;
 
     // royalties paid to cudos percents
     cudosMintNftRoyaltiesPercent: number;
@@ -69,6 +70,7 @@ export default class MiningFarmEntity {
         this.rewardsFromPoolBtcAddress = '';
         this.leftoverRewardsBtcAddress = '';
         this.maintenanceFeePayoutBtcAddress = '';
+        this.farmStartTime = S.NOT_EXISTS;
 
         makeAutoObservable(this);
     }
@@ -113,6 +115,10 @@ export default class MiningFarmEntity {
 
     hasPhotos(): boolean {
         return this.farmPhotoUrls.length > 0;
+    }
+
+    hasStartTime(): boolean {
+        return this.farmStartTime !== S.NOT_EXISTS;
     }
 
     markApproved() {
@@ -199,6 +205,7 @@ export default class MiningFarmEntity {
             'rewardsFromPoolBtcAddress': entity.rewardsFromPoolBtcAddress,
             'leftoverRewardsBtcAddress': entity.leftoverRewardsBtcAddress,
             'maintenanceFeePayoutBtcAddress': entity.maintenanceFeePayoutBtcAddress,
+            'farmStartTime': entity.farmStartTime,
         }
     }
 
@@ -233,6 +240,7 @@ export default class MiningFarmEntity {
         entity.rewardsFromPoolBtcAddress = json.rewardsFromPoolBtcAddress ?? entity.rewardsFromPoolBtcAddress;
         entity.leftoverRewardsBtcAddress = json.leftoverRewardsBtcAddress ?? entity.leftoverRewardsBtcAddress;
         entity.maintenanceFeePayoutBtcAddress = json.maintenanceFeePayoutBtcAddress ?? entity.maintenanceFeePayoutBtcAddress;
+        entity.farmStartTime = json.farmStartTime ?? entity.farmStartTime;
 
         return entity;
     }

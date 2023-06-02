@@ -44,17 +44,17 @@ function SingleDatepicker({ label, inputValidation, ...props }: Props) {
     useEffect(() => {
         if (inputValidation !== null) {
             const value = props.value;
-            if (props.value !== null) {
-                if (Array.isArray(inputValidation)) {
-                    inputValidation.forEach((validation) => validation.onChange(value));
-                } else if (inputValidation !== null) {
-                    inputValidation.onChange(value);
-                }
-
-                return;
+            // if (props.value !== null) {
+            if (Array.isArray(inputValidation)) {
+                inputValidation.forEach((validation) => validation.onChange(value));
+            } else if (inputValidation !== null) {
+                inputValidation.onChange(value);
             }
-
-            inputValidation.onChange(null);
+            //
+            // return;
+            // }
+            //
+            // inputValidation.onChange(null);
         }
     }, [props.value]);
 

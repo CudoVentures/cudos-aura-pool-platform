@@ -1,5 +1,5 @@
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsArray, IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import sanitizeHtml from 'sanitize-html';
 
 export enum FarmStatus {
@@ -115,6 +115,10 @@ export class MiningFarmJsonValidator {
     @IsString()
     @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
         maintenanceFeePayoutBtcAddress: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+        farmStartTime: number;
 
 }
 
