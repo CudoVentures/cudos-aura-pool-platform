@@ -286,7 +286,7 @@ export class NFTService {
         }
     }
 
-    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFIlterModel: PurchaseTransactionsFilterEntity, unsavedPurchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
+    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFilterModel: PurchaseTransactionsFilterEntity, unsavedPurchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
         const totalPurchaseTransactionEntities = await this.fetchPurchasesTransactionsByRecipientAddress(cudosAddress, dbTx);
         const savedTransactionsMap = new Map < string, PurchaseTransactionEntity >();
         totalPurchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
@@ -304,14 +304,14 @@ export class NFTService {
         });
 
         const total = sortedPurchaseTransactionEntities.length
-        const countPerPage = purchaseTransactionFIlterModel.count;
-        let from = purchaseTransactionFIlterModel.from;
+        const countPerPage = purchaseTransactionFilterModel.count;
+        let from = purchaseTransactionFilterModel.from;
         if (from >= total) {
             from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
         }
 
         return {
-            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(from, from + purchaseTransactionFIlterModel.count),
+            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(from, from + purchaseTransactionFilterModel.count),
             total,
         }
     }
