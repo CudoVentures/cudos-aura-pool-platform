@@ -141,16 +141,11 @@ export class NFTService {
         const total = nftEntities.length;
         const countPerPage = nftFilterEntity.count;
         let from = nftFilterEntity.from;
-
         if (from >= total) {
-            from = Math.floor(total / countPerPage) * countPerPage;
-
-            if (total % countPerPage === 0) {
-                from = Math.max(0, from - countPerPage);
-            }
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
         }
-        nftEntities = nftEntities.slice(from, from + nftFilterEntity.count);
 
+        nftEntities = nftEntities.slice(from, from + nftFilterEntity.count);
         return {
             nftEntities,
             total,
@@ -311,14 +306,10 @@ export class NFTService {
         const total = sortedPurchaseTransactionEntities.length
         const countPerPage = purchaseTransactionFIlterModel.count;
         let from = purchaseTransactionFIlterModel.from;
-
-        if (from > total) {
-            from = Math.floor(total / countPerPage) * countPerPage;
-
-            if (total % countPerPage === 0) {
-                from = Math.max(0, from - countPerPage);
-            }
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
         }
+
         return {
             purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(from, from + purchaseTransactionFIlterModel.count),
             total,

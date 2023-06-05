@@ -99,16 +99,11 @@ export class FarmService {
         const total = miningFarmEntities.length;
         const countPerPage = miningFarmFilterModel.count;
         let from = miningFarmFilterModel.from;
-
-        if (from > total) {
-            from = Math.floor(total / countPerPage) * countPerPage;
-
-            if (total % countPerPage === 0) {
-                from = Math.max(0, from - countPerPage);
-            }
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
         }
-        miningFarmEntities = miningFarmEntities.slice(from, from + miningFarmFilterModel.count);
 
+        miningFarmEntities = miningFarmEntities.slice(from, from + miningFarmFilterModel.count);
         return {
             miningFarmEntities,
             total,

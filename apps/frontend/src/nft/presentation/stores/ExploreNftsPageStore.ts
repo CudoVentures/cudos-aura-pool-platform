@@ -24,7 +24,7 @@ export default class ExploreNftsPageStore {
         this.nftRepo = nftRepo;
         this.collectionRepo = collectionRepo;
 
-        this.gridViewState = new GridViewState(this.fetch, 1, 1, 1);
+        this.gridViewState = new GridViewState(this.fetch, 3, 4, 6);
         this.nftFilterModel = new NftFilterModel();
         this.nftFilterModel.markApprovedCollections();
 

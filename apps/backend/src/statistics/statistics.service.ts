@@ -85,13 +85,8 @@ export class StatisticsService {
         const total = filteredNftEventEntities.length
         const countPerPage = nftEventFilterEntity.count;
         let from = nftEventFilterEntity.from;
-
-        if (from > total) {
-            from = Math.floor(total / countPerPage) * countPerPage;
-
-            if (total % countPerPage === 0) {
-                from = Math.max(0, from - countPerPage);
-            }
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
         }
         const slicedFilteredNftEventEntities = filteredNftEventEntities.slice(from, from + nftEventFilterEntity.count);
 
@@ -183,14 +178,10 @@ export class StatisticsService {
         const total = filteredNftEntities.length;
         const countPerPage = megaWalletEventFilterEntity.count;
         let from = megaWalletEventFilterEntity.from;
-
-        if (from > total) {
-            from = Math.floor(total / countPerPage) * countPerPage;
-
-            if (total % countPerPage === 0) {
-                from = Math.max(0, from - countPerPage);
-            }
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
         }
+
         megaWalletEventEntities = megaWalletEventEntities.slice(from, from + megaWalletEventFilterEntity.count);
 
         // const nftEntities = megaWalletEventEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));

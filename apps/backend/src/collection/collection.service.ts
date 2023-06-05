@@ -93,13 +93,8 @@ export class CollectionService {
         const total = collectionEntities.length;
         const countPerPage = collectionFitlerEntity.count;
         let from = collectionFitlerEntity.from;
-
-        if (from > total) {
-            from = Math.floor(total / countPerPage) * countPerPage;
-
-            if (total % countPerPage === 0) {
-                from = Math.max(0, from - countPerPage);
-            }
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
         }
 
         collectionEntities = collectionEntities.slice(
