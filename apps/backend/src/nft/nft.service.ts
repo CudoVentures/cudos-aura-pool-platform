@@ -29,10 +29,10 @@ enum Tier {
 }
 
 const tierBorderMap = new Map<Tier, number>([
-    [Tier.TIER_5, 9983],
-    [Tier.TIER_4, 9937],
-    [Tier.TIER_3, 9439],
-    [Tier.TIER_2, 1912],
+    [Tier.TIER_5, 9988],
+    [Tier.TIER_4, 9939],
+    [Tier.TIER_3, 9438],
+    [Tier.TIER_2, 1911],
     [Tier.TIER_1, 0],
 ])
 
