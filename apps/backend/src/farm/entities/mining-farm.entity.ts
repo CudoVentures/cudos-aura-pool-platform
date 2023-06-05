@@ -25,6 +25,7 @@ export default class MiningFarmEntity {
     farmPhotoUrls: string[];
     status: FarmStatus;
     maintenanceFeeInBtc: BigNumber;
+    farmStartTime: number;
 
     // royalties paid to cudos percents
     cudosMintNftRoyaltiesPercent: number;
@@ -62,6 +63,7 @@ export default class MiningFarmEntity {
         this.rewardsFromPoolBtcAddress = '';
         this.leftoverRewardsBtcAddress = '';
         this.maintenanceFeePayoutBtcAddress = '';
+        this.farmStartTime = NOT_EXISTS_INT;
     }
 
     isNew(): boolean {
@@ -111,6 +113,7 @@ export default class MiningFarmEntity {
         repoJson.profileImg = entity.profileImgUrl;
         repoJson.status = entity.status;
         repoJson.creatorId = entity.accountId;
+        repoJson.farmStartTime = entity.farmStartTime !== NOT_EXISTS_INT ? new Date(entity.farmStartTime) : null;
 
         return repoJson;
     }
@@ -147,6 +150,7 @@ export default class MiningFarmEntity {
         entity.profileImgUrl = repoJson.profileImg ?? entity.profileImgUrl;
         entity.status = repoJson.status ?? entity.status;
         entity.accountId = repoJson.creatorId ?? entity.accountId;
+        entity.farmStartTime = repoJson.farmStartTime?.getTime() ?? entity.farmStartTime;
 
         return entity;
     }
@@ -191,6 +195,7 @@ export default class MiningFarmEntity {
             'rewardsFromPoolBtcAddress': entity.rewardsFromPoolBtcAddress,
             'leftoverRewardsBtcAddress': entity.leftoverRewardsBtcAddress,
             'maintenanceFeePayoutBtcAddress': entity.maintenanceFeePayoutBtcAddress,
+            'farmStartTime': entity.farmStartTime,
         }
     }
 
@@ -226,6 +231,7 @@ export default class MiningFarmEntity {
         entity.rewardsFromPoolBtcAddress = json.rewardsFromPoolBtcAddress ?? entity.rewardsFromPoolBtcAddress;
         entity.leftoverRewardsBtcAddress = json.leftoverRewardsBtcAddress ?? entity.leftoverRewardsBtcAddress;
         entity.maintenanceFeePayoutBtcAddress = json.maintenanceFeePayoutBtcAddress ?? entity.maintenanceFeePayoutBtcAddress;
+        entity.farmStartTime = json.farmStartTime ?? entity.farmStartTime;
 
         return entity;
     }

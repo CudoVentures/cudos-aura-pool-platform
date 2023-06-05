@@ -347,6 +347,7 @@ export default class NftApiRepo implements NftRepo {
                             JSON.stringify({
                                 'expiration_date': nftEntity.expirationDateTimestamp,
                                 'hash_rate_owned': nftEntity.hashPowerInTh,
+                                'artist_name': nftEntity.artistName,
                             }),
                             nftEntity.id,
                             gasPrice,

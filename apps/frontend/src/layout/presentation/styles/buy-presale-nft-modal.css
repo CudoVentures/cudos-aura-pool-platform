@@ -1,0 +1,13 @@
+.BuyPresaleNftModal .BuyPresaleNftModalContent {
+    align-items: center;
+}
+
+.BuyPresaleNftModal .Info {
+    color: var(--color-neutral-060);
+    text-align: center;
+}
+
+.BuyPresaleNftModal .BigSvg {
+    color: var(--color-green);
+    width: 70px; height: 70px;
+}

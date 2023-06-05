@@ -35,6 +35,10 @@
     padding: 40px;
 }
 
+.StyledContainer.Padding32 {
+    padding: 32px;
+}
+
 .StyledContainer.Padding24 {
     padding: 24px;
 }

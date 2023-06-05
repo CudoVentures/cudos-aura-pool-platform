@@ -14,11 +14,11 @@ export enum NftTier {
 }
 
 export const tierPriceMap = new Map<NftTier, number>([
-    [NftTier.TIER_1, 150],
-    [NftTier.TIER_2, 300],
-    [NftTier.TIER_3, 1000],
-    [NftTier.TIER_4, 3000],
-    [NftTier.TIER_5, 5000],
+    [NftTier.TIER_1, 165],
+    [NftTier.TIER_2, 330],
+    [NftTier.TIER_3, 1100],
+    [NftTier.TIER_4, 3300],
+    [NftTier.TIER_5, 5500],
 ])
 
 export enum NftStatus {
@@ -157,6 +157,14 @@ export default class NftEntity {
 
     formatPriceInUsd(): string {
         return formatUsd(this.priceUsd);
+    }
+
+    formatPurchaseTypeText(): string {
+        if (this.isMinted()) {
+            return 'Buy';
+        }
+
+        return 'Mint';
     }
 
     cloneDeep(): NftEntity {

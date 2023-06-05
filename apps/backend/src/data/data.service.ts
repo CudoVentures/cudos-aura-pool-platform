@@ -171,6 +171,22 @@ export default class DataService {
         }
     }
 
+    isUrlUploadedImage(uri: string) {
+        if (this.isGcloudDataUri(uri) === true) {
+            return false;
+        }
+        if (DataService.isBase64(uri) === true) {
+            return false;
+        }
+        if (DataService.isLocalDataUri(uri) === true) {
+            return false;
+        }
+        if (uri.startsWith('http://') === true || uri.startsWith('https://') === true) {
+            return true;
+        }
+        return false;
+    }
+
     private static isBase64(uri: string): boolean {
         return uri.startsWith('data:') && uri.indexOf(DataService.BASE64_KEY) !== -1;
     }

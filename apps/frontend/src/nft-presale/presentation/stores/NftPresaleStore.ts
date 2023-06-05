@@ -32,10 +32,10 @@ export default class NftPresaleStore {
     presaleMintedNftCount: number;
     totalPresaleNftCount: number;
     presaleNftIndexSelected: number;
-    presaleNftsUniqueImageUrls: string[];
+    // presaleNftsUniqueImageUrls: string[];
 
     allowlistUserEntity: AllowlistUserEntity;
-    totalWhitelistedUsersCount: number;
+    // totalWhitelistedUsersCount: number;
 
     inited: boolean;
 
@@ -53,10 +53,10 @@ export default class NftPresaleStore {
         this.presaleMintedNftCount = 0;
         this.totalPresaleNftCount = 0;
         this.presaleNftIndexSelected = 0;
-        this.presaleNftsUniqueImageUrls = ['/assets/presale-nft-images/level1.png', '/assets/presale-nft-images/level2.png', '/assets/presale-nft-images/level3.png', '/assets/presale-nft-images/level4.png', '/assets/presale-nft-images/level5.png'];
+        // this.presaleNftsUniqueImageUrls = ['https://drive.google.com/uc?id=1fRKFBhyCRnUnyjC17j-4YrIuuJ_mQXj1', 'https://drive.google.com/uc?id=1HX8YrbnyJasCZs00KcbQqIOZwCfSUd5I', 'https://drive.google.com/uc?id=1EKyMCFi47yQS6W3T11cCk0WEVEprbroq', 'https://drive.google.com/uc?id=1KdA2gIbNyzjHSvXL9PQgD7JmrtD0OYww', 'https://drive.google.com/uc?id=1W-5Aaw8z3WBRA3LLOwyJV_n_KKbZVKNO'];
 
         this.allowlistUserEntity = null;
-        this.totalWhitelistedUsersCount = 0;
+        // this.totalWhitelistedUsersCount = 0;
 
         this.inited = false;
 
@@ -70,7 +70,7 @@ export default class NftPresaleStore {
         await Promise.all([
             this.cudosStore.init(),
             this.fetchPresaleCollectionWithDetails(),
-            this.fetchTotalWhitelistedCount(),
+            // this.fetchTotalWhitelistedCount(),
         ])
 
         await runInActionAsync(() => {
@@ -96,69 +96,69 @@ export default class NftPresaleStore {
         })
     }
 
-    getPresaleNftPicture() {
-        return this.presaleNftsUniqueImageUrls[this.presaleNftIndexSelected];
-    }
+    // getPresaleNftPicture() {
+    //     return this.presaleNftsUniqueImageUrls[this.presaleNftIndexSelected];
+    // }
 
-    onClickNextPresaleNftPicture = () => {
-        this.presaleNftIndexSelected = this.presaleNftIndexSelected < this.presaleNftsUniqueImageUrls.length - 1 ? this.presaleNftIndexSelected + 1 : 0;
-    }
+    // onClickNextPresaleNftPicture = () => {
+    //     this.presaleNftIndexSelected = this.presaleNftIndexSelected < this.presaleNftsUniqueImageUrls.length - 1 ? this.presaleNftIndexSelected + 1 : 0;
+    // }
 
-    onClickPreviousPresaleNftPicture = () => {
-        this.presaleNftIndexSelected = this.presaleNftIndexSelected === 0 ? this.presaleNftsUniqueImageUrls.length - 1 : this.presaleNftIndexSelected - 1;
-    }
+    // onClickPreviousPresaleNftPicture = () => {
+    //     this.presaleNftIndexSelected = this.presaleNftIndexSelected === 0 ? this.presaleNftsUniqueImageUrls.length - 1 : this.presaleNftIndexSelected - 1;
+    // }
 
     isPresaleOver(): boolean {
         return this.presaleStore.isInPresale() === false;
     }
 
-    async fetchTotalWhitelistedCount(): Promise < void > {
-        const count = await this.allowlistRepo.fetchTotalListedUsers();
+    // async fetchTotalWhitelistedCount(): Promise < void > {
+    //     const count = await this.allowlistRepo.fetchTotalListedUsers();
 
-        runInAction(() => {
-            this.totalWhitelistedUsersCount = count;
-        })
-    }
+    //     runInAction(() => {
+    //         this.totalWhitelistedUsersCount = count;
+    //     })
+    // }
 
-    getPresaleTimeLeft(): {presaleDaysLeft: string, presaleHoursLeft: string, presaleMinutesLeft: string, presaleSecondsleft: string } {
-        const ms = this.presaleStore.timeLeftToPresale;
-        const presaleDaysLeft = Math.floor(ms / (24 * 60 * 60 * 1000));
-        const daysms = ms % (24 * 60 * 60 * 1000);
-        const presaleHoursLeft = Math.floor(daysms / (60 * 60 * 1000));
-        const hoursms = ms % (60 * 60 * 1000);
-        const presaleMinutesLeft = Math.floor(hoursms / (60 * 1000));
-        const minutesms = ms % (60 * 1000);
-        const presaleSecondsleft = Math.floor(minutesms / 1000);
+    // getPresaleTimeLeft(): {presaleDaysLeft: string, presaleHoursLeft: string, presaleMinutesLeft: string, presaleSecondsleft: string } {
+    //     const ms = this.presaleStore.timeLeftToPresale;
+    //     const presaleDaysLeft = Math.floor(ms / (24 * 60 * 60 * 1000));
+    //     const daysms = ms % (24 * 60 * 60 * 1000);
+    //     const presaleHoursLeft = Math.floor(daysms / (60 * 60 * 1000));
+    //     const hoursms = ms % (60 * 60 * 1000);
+    //     const presaleMinutesLeft = Math.floor(hoursms / (60 * 1000));
+    //     const minutesms = ms % (60 * 1000);
+    //     const presaleSecondsleft = Math.floor(minutesms / 1000);
 
-        return {
-            presaleDaysLeft: presaleDaysLeft < 10 ? `0${presaleDaysLeft}` : `${presaleDaysLeft}`,
-            presaleHoursLeft: presaleHoursLeft < 10 ? `0${presaleHoursLeft}` : `${presaleHoursLeft}`,
-            presaleMinutesLeft: presaleMinutesLeft < 10 ? `0${presaleMinutesLeft}` : `${presaleMinutesLeft}`,
-            presaleSecondsleft: presaleSecondsleft < 10 ? `0${presaleSecondsleft}` : `${presaleSecondsleft}`,
-        }
-    }
+    //     return {
+    //         presaleDaysLeft: presaleDaysLeft < 10 ? `0${presaleDaysLeft}` : `${presaleDaysLeft}`,
+    //         presaleHoursLeft: presaleHoursLeft < 10 ? `0${presaleHoursLeft}` : `${presaleHoursLeft}`,
+    //         presaleMinutesLeft: presaleMinutesLeft < 10 ? `0${presaleMinutesLeft}` : `${presaleMinutesLeft}`,
+    //         presaleSecondsleft: presaleSecondsleft < 10 ? `0${presaleSecondsleft}` : `${presaleSecondsleft}`,
+    //     }
+    // }
 
-    getPresaleTotalAmount(): number {
-        return this.totalPresaleNftCount;
-    }
+    // getPresaleTotalAmount(): number {
+    //     return this.totalPresaleNftCount;
+    // }
 
-    getPresaleMintedAmount(): number {
-        return this.presaleMintedNftCount
-    }
+    // getPresaleMintedAmount(): number {
+    //     return this.presaleMintedNftCount
+    // }
 
-    getPresaleMintedPercent(): number {
-        const total = this.getPresaleTotalAmount();
-        if (total === 0) {
-            return 0;
-        }
+    // getPresaleMintedPercent(): number {
+    //     const total = this.getPresaleTotalAmount();
+    //     if (total === 0) {
+    //         return 0;
+    //     }
 
-        return (this.getPresaleMintedAmount() * 100) / total;
-    }
+    //     return (this.getPresaleMintedAmount() * 100) / total;
+    // }
 
     isUserEligibleToBuy(): boolean {
-        if (this.walletStore.isConnected() === false) {
-            return false;
-        }
+        // if (this.walletStore.isConnected() === false) {
+        //     return false;
+        // }
 
         if (this.allowlistUserEntity === null) {
             return false;
@@ -169,7 +169,7 @@ export default class NftPresaleStore {
 
     async fetchAllowlistUser(): Promise < void > {
         let allowlistUserEntity;
-        if (this.presaleStore.isInPresale() === true) {
+        if (this.presaleStore.isInPresale() === true && PRESALE_CONSTS.RESPECT_ALLOWLIST === true) {
             allowlistUserEntity = await this.allowlistRepo.fetchAllowlistUserBySessionAccount();
         } else {
             allowlistUserEntity = new AllowlistUserEntity(); // it just has to be != null in order to allow payment

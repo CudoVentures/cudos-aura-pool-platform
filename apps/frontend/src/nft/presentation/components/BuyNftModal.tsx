@@ -54,7 +54,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
                 {buyNftModalStore.isStagePreview() === true && (
                     <>
-                        <div className={'H3 Bold'}>Buy NFT</div>
+                        <div className={'H3 Bold'}>{nftEntity.formatPurchaseTypeText()} NFT</div>
                         <div className={'BorderContainer FlexRow'}>
                             <div className={'NftPicture'} style = { ProjectUtils.makeBgImgStyle(nftEntity.imageUrl) } />
                             <div className={'NftInfo FlexColumnt'}>
@@ -79,7 +79,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
                         <Checkbox
                             label = { (
-                                <div>I accept the <Link to = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</Link> of CUDOS Markets platform</div>
+                                <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
                             ) }
                             value = { acceptTermsAndConditions }
                             onChange = { setAcceptTermsAndConditions } />

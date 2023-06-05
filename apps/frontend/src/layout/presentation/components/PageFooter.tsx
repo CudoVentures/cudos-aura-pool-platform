@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PackageJson from '../../../../../../package.json'
 
 import Svg from '../../../core/presentation/components/Svg';
-import { TERMS_AND_CONDITIONS, PRIVACY_POLICY, WEBSITE, TELEGRAM, LINKEDIN, TWITTER, DISCORD, FACEBOOK, MEDIUM, SPOTIFY, YOUTUBE, REWARDS_CALCULATOR } from '../../../core/utilities/Links';
+import { TERMS_AND_CONDITIONS, PRIVACY_POLICY, WEBSITE, FAQ, TWITTER, DISCORD, MEDIUM } from '../../../core/utilities/Links';
 
 import SvgAuraPoolLogoLight from '../../../public/assets/vectors/cudos-markets-logo-light.svg'
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
@@ -44,11 +44,15 @@ export default function PageFooter() {
                         <a href={MEDIUM} target={'_blank'} rel={'noreferrer'} >Medium</a>
                     </div>
                     <div className={'LinksColumn'}>
+                        <div className='H3 Bold'>Support</div>
+                        <a href={FAQ} target={'_blank'} rel={'noreferrer'} >FAQs</a>
+                        <a href={DISCORD} target={'_blank'} rel={'noreferrer'} >Contact us</a>
+                    </div>
+                    {/*<div className={'LinksColumn'}>
                         <div className='H3 Bold'>Marketplace</div>
                         <a className={'Clickable'} onClick={onClickExploreNfts} >Explore</a>
-                        {/* <a className={'Clickable'} onClick={onClickCalculator} >Calculator</a> */}
                         <a href={REWARDS_CALCULATOR} target={'_blank'} rel={'noreferrer'} >Calculator</a>
-                    </div>
+                    </div> /*}
                     {/* <div className={ 'LinksColumn' }>
                         <div className='H3 Bold'>Link</div>
                         <a href={'#'} target={'_blank'} rel={'noreferrer'} >Documentation Link</a>

@@ -29,19 +29,19 @@ enum Tier {
 }
 
 const tierBorderMap = new Map<Tier, number>([
-    [Tier.TIER_5, 9983],
-    [Tier.TIER_4, 9937],
-    [Tier.TIER_3, 9439],
-    [Tier.TIER_2, 1912],
+    [Tier.TIER_5, 9988],
+    [Tier.TIER_4, 9939],
+    [Tier.TIER_3, 9438],
+    [Tier.TIER_2, 1911],
     [Tier.TIER_1, 0],
 ])
 
 const tierPriceMap = new Map<Tier, number>([
-    [Tier.TIER_1, 150],
-    [Tier.TIER_2, 300],
-    [Tier.TIER_3, 1000],
-    [Tier.TIER_4, 3000],
-    [Tier.TIER_5, 5000],
+    [Tier.TIER_1, 165],
+    [Tier.TIER_2, 330],
+    [Tier.TIER_3, 1100],
+    [Tier.TIER_4, 3300],
+    [Tier.TIER_5, 5500],
 ])
 
 @Injectable()

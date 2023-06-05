@@ -16,6 +16,7 @@ export enum ContainerBackground {
 
 export enum ContainerPadding {
     PADDING_40 = 'Padding40',
+    PADDING_32 = 'Padding32',
     PADDING_24 = 'Padding24',
     PADDING_16 = 'Padding16',
 }
