@@ -305,7 +305,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     Verify your account
                     <InfoBlueBox
                         className = { 'KycInfo' }
-                        text={'For under $1k no passport nor ID is needed. You only need to provide your first and last name, and we will verify your location.'} />
+                        text={'For under $1k no passport nor ID is needed. You only need to provide your first and last name, and we will look up your internet service provider address to determine your location.'} />
                 </div>
             </AnimationContainer>
 
