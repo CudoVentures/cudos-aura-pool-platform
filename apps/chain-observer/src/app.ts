@@ -21,15 +21,18 @@ export default class App {
 
         const worker = new TxFindWorker(client, api, new EmailApi());
 
-        this.p = setInterval(async () => {
-            await worker.run();
-        }, Config.LOOP_INTERVAL_MILIS);
+        const setNextIteration = () => {
+            this.p = setTimeout(async () => {
+                await worker.run();
+                setNextIteration();
+            }, Config.LOOP_INTERVAL_MILIS);
+        }
+        setNextIteration();
     }
 
     stop() {
         this.running = false;
-
-        clearInterval(this.p);
+        clearTimeout(this.p);
     }
 
     async getChainClient() {
@@ -54,7 +57,7 @@ export default class App {
 
                 return cudosMarketsApi;
             } catch (e) {
-                console.log('Failed to get a heartbeat from CudosMarketsService. Retrying...');
+                console.log(`Failed to get a heartbeat from CudosMarketsService at ${Config.CUDOS_MARKETS_API}. Retrying...`);
                 await new Promise((resolve) => { setTimeout(resolve, 2000) });
             }
         }

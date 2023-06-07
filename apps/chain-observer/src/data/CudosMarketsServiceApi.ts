@@ -71,6 +71,7 @@ export default class CudosMarketsServiceApi implements CudosMarketsServiceRepo {
     }
 
     async triggerUpdateMarketplaceModuleCollections(denomIds: string[], collectionIds: string[], height: number): Promise < void > {
+        // console.log(`Height: ${height} -> Marketplace module | Collection | ${JSON.stringify(denomIds)} and ${JSON.stringify(collectionIds)}`);
         const res = await axios.put(
             `${this.api_url}${TRIGGER_COLLECTION_UPDATES}`,
             {
@@ -88,6 +89,7 @@ export default class CudosMarketsServiceApi implements CudosMarketsServiceRepo {
     }
 
     async triggerUpdateMarketplaceModuleNfts(nftDtos: {tokenId: string, denomId: string}[], height: number): Promise < void > {
+        // console.log(`Height: ${height} -> Marketplace module | Nft | ${JSON.stringify(nftDtos)}`);
         const res = await axios.put(
             `${this.api_url}${TRIGGER_NFT_UPDATES}`,
             {
@@ -104,28 +106,13 @@ export default class CudosMarketsServiceApi implements CudosMarketsServiceRepo {
     }
 
     async triggerUpdateNftModuleCollections(denomIds: string[], height: number): Promise < void > {
+        // console.log(`Height: ${height} -> Nft module | Collection | ${JSON.stringify(denomIds)}`);
         const res = await axios.put(
             `${this.api_url}${TRIGGER_COLLECTION_UPDATES}`,
             {
                 module: NFT_MODULE,
                 denomIds,
                 collectionIds: [],
-                height,
-            },
-            {
-                headers: {
-                    'cudos-markets-api-key': Config.APP_CUDOS_MARKETS_API_KEY,
-                },
-            },
-        );
-    }
-
-    async triggerUpdateNftModuleNfts(tokenIds: string[], height: number): Promise < void > {
-        const res = await axios.put(
-            `${this.api_url}${TRIGGER_NFT_UPDATES}`,
-            {
-                module: NFT_MODULE,
-                tokenIds,
                 height,
             },
             {

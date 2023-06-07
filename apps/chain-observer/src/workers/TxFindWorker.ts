@@ -57,7 +57,7 @@ export default class TxFindWorker {
 
             await this.cudosMarketsServiceApi.updateLastCheckedHeight(lastBlock);
         } catch (e) {
-            console.log(e.message);
+            console.log('error', e.message);
 
             // sending an email once every 30 min
             if (Date.now() - this.lastSentEmailTimestamp > 1800000) {
@@ -78,6 +78,7 @@ export default class TxFindWorker {
         const marketplaceModuleNftEvents = marketplaceEvents.filter((event) => MarketplaceNftEventTypes.includes(event.type));
         const marketplaceModuleCollectionEvents = marketplaceEvents.filter((event) => MarketplaceCollectionEventTypes.includes(event.type));
 
+        console.log('Marketplace transactions: ', marketplaceModuleCollectionEvents.length, marketplaceModuleNftEvents.length);
         if (marketplaceModuleCollectionEvents.length > 0) {
             const denomIds = marketplaceModuleCollectionEvents.map((event) => {
                 return event.attributes.find((attribute) => attribute.key === 'denom_id')?.value ?? -1;
@@ -92,6 +93,7 @@ export default class TxFindWorker {
             const collectionIdsSet = new Set(collectionIds);
             const uniqueCollectionIds = Array.from(collectionIdsSet);
 
+            console.log('Trigger update for uniqueDenomIds: ', uniqueDenomIds);
             await this.cudosMarketsServiceApi.triggerUpdateMarketplaceModuleCollections(uniqueDenomIds, uniqueCollectionIds, heightFilter.maxHeight);
         }
 
@@ -103,6 +105,7 @@ export default class TxFindWorker {
                 return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
+            console.log('Trigger update for nftDtos: ', nftDtos);
             await this.cudosMarketsServiceApi.triggerUpdateMarketplaceModuleNfts(nftDtos, heightFilter.maxHeight);
         }
     }
@@ -114,13 +117,14 @@ export default class TxFindWorker {
         const nftModuleNftEvents = nftModuleEvents.filter((event) => NftModuleNftEventTypes.includes(event.type));
         const nftModuleCollectionEvents = nftModuleEvents.filter((event) => NftModuleCollectionEventTypes.includes(event.type));
 
+        console.log('Nft transactions: ', nftModuleCollectionEvents.length, nftModuleNftEvents.length);
         if (nftModuleCollectionEvents.length > 0) {
-
             const denomIds = nftModuleCollectionEvents.map((event) => {
                 const denomId = event.attributes.find((attribute) => attribute.key === 'denom_id').value;
                 return denomId;
             }).filter((value, index, self) => self.indexOf(value) === index);
 
+            console.log('Trigger update for denomIds: ', denomIds);
             await this.cudosMarketsServiceApi.triggerUpdateNftModuleCollections(denomIds, heightFilter.maxHeight);
         }
 
@@ -132,6 +136,7 @@ export default class TxFindWorker {
                 return { tokenId, denomId };
             }).filter((value, index, self) => self.indexOf(value) === index);
 
+            console.log('Trigger update for tokenIds: ', tokenIds);
             await this.cudosMarketsServiceApi.triggerUpdateMarketplaceModuleNfts(tokenIds, heightFilter.maxHeight);
         }
 
@@ -167,6 +172,7 @@ export default class TxFindWorker {
             purchaseTransactionEntities.push(purchaseTransactionEntity);
         }
 
+        console.log('Mint pending: ', purchaseTransactionEntities.map((pte) => pte.txhash));
         if (purchaseTransactionEntities.length > 0) {
             await this.cudosMarketsServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
         }
@@ -201,6 +207,7 @@ export default class TxFindWorker {
             purchaseTransactionEntities.push(purchaseTransactionEntity);
         }
 
+        console.log('Mint refunds: ', purchaseTransactionEntities.map((pte) => pte.txhash));
         if (purchaseTransactionEntities.length > 0) {
             await this.cudosMarketsServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
         }
@@ -235,6 +242,7 @@ export default class TxFindWorker {
             purchaseTransactionEntities.push(purchaseTransactionEntity);
         }
 
+        console.log('Mint success: ', purchaseTransactionEntities.map((pte) => pte.txhash));
         if (purchaseTransactionEntities.length > 0) {
             await this.cudosMarketsServiceApi.creditPurchaseTransactions(purchaseTransactionEntities);
         }
