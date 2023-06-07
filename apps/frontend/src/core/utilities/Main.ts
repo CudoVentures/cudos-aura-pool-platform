@@ -167,8 +167,12 @@ const S = {
     getScrollY: window.scrollY !== undefined ? () => { return window.scrollY; } : () => { return document.documentElement.scrollTop; },
     getScrollX: window.scrollX !== undefined ? () => { return window.scrollX; } : () => { return document.documentElement.scrollLeft; },
 
-    setScrollY: (value: number) => {
-        window.scrollTo(S.getScrollX(), value);
+    setScrollY: (value: number, behavior: ScrollBehavior = undefined) => {
+        window.scrollTo({
+            top: value,
+            left: S.getScrollX(),
+            behavior,
+        });
     },
 
     parseQueryString: (query: string) => {

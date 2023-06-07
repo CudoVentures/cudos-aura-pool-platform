@@ -49,6 +49,7 @@ import MarketPresaleNftPreview from '../components/MarketplacePresaleNftPreview'
 import BuyPresaleNftModalStore from '../stores/BuyPresaleNftModalStore';
 import BuyPresaleNftModal from '../components/BuyPresaleNftModal';
 import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
+import ScrollDown from '../../../core/presentation/components/ScrollDown';
 
 type Props = {
     nftPresaleStore?: NftPresaleStore
@@ -491,6 +492,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 )}
             </div>
             <PageFooter />
+            <ScrollDown />
         </PageLayout>
     )
 }
