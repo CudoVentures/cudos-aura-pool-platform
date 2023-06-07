@@ -1,72 +1,88 @@
 <!DOCTYPE html>
 
 <html>
+    <head>
+        <style id="antiClickjack">
+            body {
+                display: none !important;
+            }
+        </style>
+        <script type="text/javascript">
+            if (self === top) {
+                var antiClickjack = document.getElementById('antiClickjack');
+                antiClickjack.parentNode.removeChild(antiClickjack);
+            } else {
+                top.location = self.location;
+            }
+        </script>
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-K4T5CKG');
+        </script>
+        <!-- End Google Tag Manager -->
 
-<head>
-    <style id="antiClickjack">
-        body{display:none !important;}
-    </style>
-    <script type="text/javascript">
-        if (self === top) {
-            var antiClickjack = document.getElementById("antiClickjack");
-            antiClickjack.parentNode.removeChild(antiClickjack);
-        } else {
-            top.location = self.location;
-        }
-    </script>
-    
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    
-    <title id="meta_title">CUDOS Markets</title>
-    <meta id="meta_desc" name="description" content="Desc | CUDOS Markets" />
-    <meta name="keywords" content="" />
-    <meta name="robots" content="noindex, nofollow" />
-    
-    <link rel="canonical" href="" />
-    <meta property="og:title" content="CUDOS Markets" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://platform.cudosmarkets.com" />
-    <meta property="og:image" content="/assets/img/social/share.jpg" />
-    <meta property="og:site_name" content="CUDOS Markets" />
-    <meta property="og:description" content="CUDOS Markets connects you to clean mining farms, bringing sustainable hashrate to your wallet via NFT collectibles." />
-    <meta property="og:image:secure_url" content="/assets/img/social/share.jpg" />
-    <meta name="visualdebug-site-verification" content="<%= visualDebugToken %>">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
-    <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="16x16">
-    <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="32x32">
-    <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="96x96">
-    <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="192x192">
-    <base href="/" />
-    <script>
-    (function() {
-        var user_agent = navigator.userAgent;
-        if (user_agent.indexOf('MSIE') === -1  &&  user_agent.indexOf('rv:11') === -1) {
-            return;
-        }
-    
-        var func, name;
-        if (window.attachEvent !== undefined) {
-            func = window.attachEvent;
-            name = 'onload';
-        } else {
-            func = window.addEventListener;
-            name = 'load';
-        }
-    
-        func(name, function() {
-            var container = document.createElement("div");
-            container.style.position = "fixed";
-            container.style.top = container.style.left = "0";
-            container.style.width = container.style.height = "100%";
-            container.style.textAlign = "center";
-            container.style.fontFamily = "sans-serif";
-            container.style.color = "#333";
-            container.style.background = "#fff";
-            container.style.overflow = 'auto';
-            container.style.zIndex = 100000000;
-            container.innerHTML = '<div style="max-width:768px; padding-top:80px; margin:auto;">\
+        <title id="meta_title">CUDOS Markets</title>
+        <meta id="meta_desc" name="description" content="Desc | CUDOS Markets" />
+        <meta name="keywords" content="" />
+        <meta name="robots" content="noindex, nofollow" />
+
+        <link rel="canonical" href="" />
+        <meta property="og:title" content="CUDOS Markets" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://platform.cudosmarkets.com" />
+        <meta property="og:image" content="/assets/img/social/share.jpg" />
+        <meta property="og:site_name" content="CUDOS Markets" />
+        <meta property="og:description" content="CUDOS Markets connects you to clean mining farms, bringing sustainable hashrate to your wallet via NFT collectibles." />
+        <meta property="og:image:secure_url" content="/assets/img/social/share.jpg" />
+        <meta name="visualdebug-site-verification" content="<%= visualDebugToken %>" />
+
+        <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="16x16" />
+        <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="32x32" />
+        <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="96x96" />
+        <link rel="icon" type="image/png" href="/assets/vectors/favicon.svg" sizes="192x192" />
+        <base href="/" />
+        <script>
+            (function () {
+                var user_agent = navigator.userAgent;
+                if (user_agent.indexOf('MSIE') === -1 && user_agent.indexOf('rv:11') === -1) {
+                    return;
+                }
+
+                var func, name;
+                if (window.attachEvent !== undefined) {
+                    func = window.attachEvent;
+                    name = 'onload';
+                } else {
+                    func = window.addEventListener;
+                    name = 'load';
+                }
+
+                func(name, function () {
+                    var container = document.createElement('div');
+                    container.style.position = 'fixed';
+                    container.style.top = container.style.left = '0';
+                    container.style.width = container.style.height = '100%';
+                    container.style.textAlign = 'center';
+                    container.style.fontFamily = 'sans-serif';
+                    container.style.color = '#333';
+                    container.style.background = '#fff';
+                    container.style.overflow = 'auto';
+                    container.style.zIndex = 100000000;
+                    container.innerHTML =
+                        '<div style="max-width:768px; padding-top:80px; margin:auto;">\
                                         <div style="font-size:28px; font-weight:bold;">This webpage does not support the browser you are currently using.</div>\
                                         <div style="margin-top:32px; font-size:24px;">Please, use latest version of some of the following free browsers or some other Chromium/Firefox based browser you have like Opera/Vivaldi.</div>\
                                         <table cellspacing="0" cellpadding="0" style="width:100%; margin:96px 0 64px 0;">\
@@ -105,54 +121,64 @@
                                         </table>\
                                         <div style="font-size:18px;">Thank you for your understanding</div>\
                                     </div>';
-            document.body.appendChild(container);
-        });
-    })();
-    </script>
-    <style>
-        body {
-            background: #fff;
-        }
-
-        .PageLoading {
-            width:100%; height:100%;
-            display:flex; align-items:center; justify-content:center;
-            position:fixed;
-            left:0; top:0;
-        }
-
-        .PageLoading svg {
-            width:64px; height:64px;
-            animation:LOADING_ANIMATION 1s ease-in-out infinite;
-        }
-
-        @keyframes LOADING_ANIMATION {
-            0% {
-                transform:scale(0.5);
-                opacity:1
+                    document.body.appendChild(container);
+                });
+            })();
+        </script>
+        <style>
+            body {
+                background: #fff;
             }
-            100% {
-                transform:scale(1);
-                opacity:0
+
+            .PageLoading {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: fixed;
+                left: 0;
+                top: 0;
             }
-        }
-    </style>
-</head>
 
-<body>
-    <div class="ReactEntryPoint"></div>
-    <div id="page_loading" class="PageLoading">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M23.8968 4.10575C21.6068 1.81989 18.5951 0.398672 15.3748 0.0842099C12.1545 -0.230252 8.92475 0.581487 6.23578 2.38115C3.54682 4.18082 1.56496 6.8571 0.627824 9.95405C-0.309309 13.051 -0.143748 16.3771 1.0963 19.3656C2.33636 22.3542 4.57418 24.8205 7.42858 26.3442C10.283 27.8679 13.5774 28.3549 16.7505 27.7222C19.9237 27.0895 22.7794 25.3762 24.8311 22.8742C26.8828 20.3722 28.0036 17.2363 28.0026 14.0007C27.9983 10.2888 26.5218 6.73022 23.8968 4.10575ZM13.2768 26.5247C10.0873 26.3297 7.09233 24.9252 4.90285 22.5977C2.71338 20.2702 1.49432 17.1951 1.49432 13.9997C1.49432 10.8042 2.71338 7.72915 4.90285 5.40168C7.09233 3.07421 10.0873 1.66968 13.2768 1.47462V6.22268C11.3382 6.4021 9.53647 7.29907 8.22478 8.73776C6.91309 10.1765 6.186 12.0531 6.186 14C6.186 15.9469 6.91309 17.8236 8.22478 19.2623C9.53647 20.701 11.3382 21.5979 13.2768 21.7773V26.5247ZM14.0012 20.3638C12.5271 20.3651 11.0981 19.8551 9.95786 18.9208C8.81763 17.9865 8.0367 16.6856 7.7482 15.24C7.4597 13.7944 7.68149 12.2934 8.37574 10.993C9.06999 9.6926 10.1937 8.67321 11.5554 8.10857C12.9171 7.54393 14.4325 7.469 15.8433 7.89656C17.2541 8.32412 18.4729 9.22769 19.292 10.4533C20.1112 11.6789 20.4799 13.1507 20.3354 14.6177C20.1909 16.0847 19.5421 17.4562 18.4996 18.4985C17.307 19.692 15.6891 20.3629 14.0019 20.3638H14.0012ZM23.1202 22.6076C20.9246 24.9359 17.9224 26.3374 14.7277 26.5254V21.7773C16.6663 21.5979 18.4679 20.701 19.7796 19.2623C21.0913 17.8236 21.8184 15.9469 21.8184 14C21.8184 12.0531 21.0913 10.1765 19.7796 8.73776C18.4679 7.29907 16.6663 6.4021 14.7277 6.22268V1.47462C17.1106 1.61542 19.4039 2.43302 21.3386 3.83143C23.2732 5.22984 24.7688 7.15105 25.6499 9.36961C26.531 11.5882 26.761 14.012 26.3129 16.3567C25.8648 18.7014 24.7573 20.8696 23.1202 22.6069V22.6076Z" fill="url(#paint0_linear_55_484)"/>
-            <defs>
-                <linearGradient id="paint0_linear_55_484" x1="4.11256" y1="23.908" x2="23.8904" y2="4.13021" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.005" stop-color="#4E9DF7"/>
-                    <stop offset="0.996" stop-color="#6CD8F9"/>
-                    <stop offset="1" stop-color="#6DD9FA"/>
-                </linearGradient>
-            </defs>
-        </svg>
-    </div>    
-</body>
+            .PageLoading svg {
+                width: 64px;
+                height: 64px;
+                animation: LOADING_ANIMATION 1s ease-in-out infinite;
+            }
 
+            @keyframes LOADING_ANIMATION {
+                0% {
+                    transform: scale(0.5);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 0;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K4T5CKG" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        <div class="ReactEntryPoint"></div>
+        <div id="page_loading" class="PageLoading">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M23.8968 4.10575C21.6068 1.81989 18.5951 0.398672 15.3748 0.0842099C12.1545 -0.230252 8.92475 0.581487 6.23578 2.38115C3.54682 4.18082 1.56496 6.8571 0.627824 9.95405C-0.309309 13.051 -0.143748 16.3771 1.0963 19.3656C2.33636 22.3542 4.57418 24.8205 7.42858 26.3442C10.283 27.8679 13.5774 28.3549 16.7505 27.7222C19.9237 27.0895 22.7794 25.3762 24.8311 22.8742C26.8828 20.3722 28.0036 17.2363 28.0026 14.0007C27.9983 10.2888 26.5218 6.73022 23.8968 4.10575ZM13.2768 26.5247C10.0873 26.3297 7.09233 24.9252 4.90285 22.5977C2.71338 20.2702 1.49432 17.1951 1.49432 13.9997C1.49432 10.8042 2.71338 7.72915 4.90285 5.40168C7.09233 3.07421 10.0873 1.66968 13.2768 1.47462V6.22268C11.3382 6.4021 9.53647 7.29907 8.22478 8.73776C6.91309 10.1765 6.186 12.0531 6.186 14C6.186 15.9469 6.91309 17.8236 8.22478 19.2623C9.53647 20.701 11.3382 21.5979 13.2768 21.7773V26.5247ZM14.0012 20.3638C12.5271 20.3651 11.0981 19.8551 9.95786 18.9208C8.81763 17.9865 8.0367 16.6856 7.7482 15.24C7.4597 13.7944 7.68149 12.2934 8.37574 10.993C9.06999 9.6926 10.1937 8.67321 11.5554 8.10857C12.9171 7.54393 14.4325 7.469 15.8433 7.89656C17.2541 8.32412 18.4729 9.22769 19.292 10.4533C20.1112 11.6789 20.4799 13.1507 20.3354 14.6177C20.1909 16.0847 19.5421 17.4562 18.4996 18.4985C17.307 19.692 15.6891 20.3629 14.0019 20.3638H14.0012ZM23.1202 22.6076C20.9246 24.9359 17.9224 26.3374 14.7277 26.5254V21.7773C16.6663 21.5979 18.4679 20.701 19.7796 19.2623C21.0913 17.8236 21.8184 15.9469 21.8184 14C21.8184 12.0531 21.0913 10.1765 19.7796 8.73776C18.4679 7.29907 16.6663 6.4021 14.7277 6.22268V1.47462C17.1106 1.61542 19.4039 2.43302 21.3386 3.83143C23.2732 5.22984 24.7688 7.15105 25.6499 9.36961C26.531 11.5882 26.761 14.012 26.3129 16.3567C25.8648 18.7014 24.7573 20.8696 23.1202 22.6069V22.6076Z"
+                    fill="url(#paint0_linear_55_484)"
+                />
+                <defs>
+                    <linearGradient id="paint0_linear_55_484" x1="4.11256" y1="23.908" x2="23.8904" y2="4.13021" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.005" stop-color="#4E9DF7" />
+                        <stop offset="0.996" stop-color="#6CD8F9" />
+                        <stop offset="1" stop-color="#6DD9FA" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+    </body>
 </html>
