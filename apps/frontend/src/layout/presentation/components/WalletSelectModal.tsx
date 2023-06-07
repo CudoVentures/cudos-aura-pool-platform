@@ -305,7 +305,7 @@ function WalletSelectModal({ walletSelectModalStore, walletStore, accountSession
                     Verify your account
                     <InfoBlueBox
                         className = { 'KycInfo' }
-                        text = { 'You can skip this step for now, but you won’t be able to purchase an NFT until you have been verified.' } />
+                        text={'For under $1k no passport nor ID is needed. You only need to provide your first and last name, and we will verify your location.'} />
                 </div>
             </AnimationContainer>
 
