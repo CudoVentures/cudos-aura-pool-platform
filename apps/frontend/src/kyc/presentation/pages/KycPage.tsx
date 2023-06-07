@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { init as OnfidoInit } from 'onfido-sdk-ui/dist/onfido.min';
 import { runInAction } from 'mobx';
 import { Region } from '@onfido/api';
+import { useNavigate } from 'react-router-dom';
 
 import ValidationState from '../../../core/presentation/stores/ValidationState';
 import KycStore from '../stores/KycStore';
@@ -16,6 +17,7 @@ import PageFooter from '../../../layout/presentation/components/PageFooter';
 import AuthBlockLayout from '../../../accounts/presentation/components/AuthBlockLayout';
 import PageHeader from '../../../layout/presentation/components/PageHeader';
 import LoadingIndicator from '../../../core/presentation/components/LoadingIndicator';
+import AppRoutes from '../../../app-routes/entities/AppRoutes';
 
 import '../styles/page-kyc.css';
 import 'onfido-sdk-ui/dist/style.css';
@@ -27,7 +29,7 @@ type Props = {
 }
 
 function KycPage({ kycStore, alertStore }: Props) {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const validationState = useRef(new ValidationState()).current;
     const firstNameValidation = useRef(validationState.addEmptyValidation('Empty first name')).current;
     const lastNameValidation = useRef(validationState.addEmptyValidation('Empty last name')).current;
@@ -47,9 +49,9 @@ function KycPage({ kycStore, alertStore }: Props) {
         });
     }
 
-    // function onClickMarketplace() {
-    //     navigate(AppRoutes.MARKETPLACE);
-    // }
+    function onClickMarketplace() {
+        navigate(AppRoutes.MARKETPLACE);
+    }
 
     function onClickStartLightCheck() {
         runWorkflow(S.INT_FALSE);
@@ -62,13 +64,13 @@ function KycPage({ kycStore, alertStore }: Props) {
     function onClickStartLightCheckForced() {
         alertStore.show('Do you want to start the progress again', () => {
             onClickStartLightCheck();
-        }, () => {});
+        }, () => { });
     }
 
     function onClickStartFullCheckForced() {
         alertStore.show('Do you want to start the progress again', () => {
             onClickStartFullCheck();
-        }, () => {});
+        }, () => { });
     }
 
     async function runWorkflow(runFullWorkflow: number) {
@@ -89,6 +91,7 @@ function KycPage({ kycStore, alertStore }: Props) {
                 onfidoMount.current.classList.remove('Active');
                 try {
                     alertStore.show('You have started your verification', () => {
+                        onClickMarketplace()
                         window.location.reload();
                     });
                 } catch (ex) {
@@ -120,24 +123,24 @@ function KycPage({ kycStore, alertStore }: Props) {
 
         if (kycEntity.isLightStatusNotStarted() === true) {
             return (
-                <Button disabled = { disabled } onClick ={ onClickStartLightCheck } > Complete light check </Button>
+                <Button disabled={disabled} onClick={onClickStartLightCheck} > Complete light check </Button>
             )
         }
 
         if (kycEntity.isLightStatusInProgress() === true) {
             return (
-                <Button disabled = { disabled } color = { ButtonColor.SCHEME_2 } onClick = { onClickStartLightCheckForced } > Light verification is in progress </Button>
+                <Button disabled={disabled} color={ButtonColor.SCHEME_2} onClick={onClickStartLightCheckForced} > Light verification is in progress </Button>
             )
         }
 
         if (kycEntity.isLightStatusCompletedFailed() === true) {
             return (
-                <Button disabled = { disabled } color = { ButtonColor.SCHEME_RED } onClick = { onClickStartLightCheck } > There was a problem. Submit your documents again. </Button>
+                <Button disabled={disabled} color={ButtonColor.SCHEME_RED} onClick={onClickStartLightCheck} > There was a problem. Submit your documents again. </Button>
             )
         }
 
         return (
-            <Button disabled = { disabled } color = { ButtonColor.SCHEME_GREEN } > You have passed light verification </Button>
+            <Button disabled={disabled} color={ButtonColor.SCHEME_GREEN} > You have passed light verification </Button>
         )
     }
 
@@ -148,40 +151,40 @@ function KycPage({ kycStore, alertStore }: Props) {
 
         if (kycEntity.isFullStatusNotStarted() === true) {
             return (
-                <Button onClick={ onClickStartFullCheck } > Complete detailed check </Button>
+                <Button onClick={onClickStartFullCheck} > Complete detailed check </Button>
             )
         }
 
         if (kycEntity.isFullStatusInProgress() === true) {
             return (
-                <Button color = { ButtonColor.SCHEME_2 } onClick = { onClickStartFullCheckForced } > Detailed verification is in progress </Button>
+                <Button color={ButtonColor.SCHEME_2} onClick={onClickStartFullCheckForced} > Detailed verification is in progress </Button>
             )
         }
 
         if (kycEntity.isFullStatusCompletedFailed() === true) {
             return (
-                <Button color = { ButtonColor.SCHEME_RED } onClick = { onClickStartFullCheck } > There was a problem. Submit your documents again. </Button>
+                <Button color={ButtonColor.SCHEME_RED} onClick={onClickStartFullCheck} > There was a problem. Submit your documents again. </Button>
             )
         }
 
         return (
-            <Button color = { ButtonColor.SCHEME_GREEN } > You have passed detailed verification </Button>
+            <Button color={ButtonColor.SCHEME_GREEN} > You have passed detailed verification </Button>
         )
     }
 
     return (
-        <PageLayout className = { 'PageKyc' }>
+        <PageLayout className={'PageKyc'}>
 
             <PageHeader />
 
-            <div className = { 'PageContent AppContent' } >
+            <div className={'PageContent AppContent'} >
 
                 <AuthBlockLayout
-                    title = { 'KYC' }
-                    subtitle = { "To be compliant with regulations, we need to collect a little bit more information before you can make a purchase. Our platform offers two levels of verification depth - light and detailed. The light option can be used for any purchases up to $1000. If you want to purchase more than that, you'll need to complete the detailed option instead." }
-                    content = { (
+                    title={'KYC'}
+                    subtitle={"To be compliant with regulations, we need to collect a little bit more information before you can make a purchase. Our platform offers two levels of verification depth - light and detailed. The light option can be used for any purchases up to $1000. If you want to purchase more than that, you'll need to complete the detailed option instead."}
+                    content={(
                         <>
-                            { kycEntity === null ? (
+                            {kycEntity === null ? (
                                 <LoadingIndicator />
                             ) : (
                                 <>
@@ -194,24 +197,24 @@ function KycPage({ kycStore, alertStore }: Props) {
                                         label={'Last name'}
                                         inputValidation={lastNameValidation}
                                         value={kycEntity.lastName}
-                                        onChange={onChangeLastName}/>
+                                        onChange={onChangeLastName} />
                                 </>
-                            ) }
+                            )}
 
                         </>
-                    ) }
-                    actions = { (
+                    )}
+                    actions={(
                         <>
-                            { renderLightButton() }
-                            { renderFullButton() }
+                            {renderLightButton()}
+                            {renderFullButton()}
                         </>
-                    ) } />
+                    )} />
 
             </div>
 
             <PageFooter />
 
-            <div ref = { onfidoMount } id="onfido-mount" className = { 'FlexSingleCenter ActiveDisplayHidden' } />
+            <div ref={onfidoMount} id="onfido-mount" className={'FlexSingleCenter ActiveDisplayHidden'} />
 
         </PageLayout>
     )
