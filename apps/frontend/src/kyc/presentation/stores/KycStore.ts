@@ -3,6 +3,8 @@ import { runInActionAsync } from '../../../core/utilities/ProjectUtils';
 import KycEntity, { KycStatusWithPartial, LIGHT_PARAMS_LIMIT_IN_USD } from '../../entities/KycEntity';
 import KycRepo from '../repos/KycRepo';
 
+declare let Config;
+
 export default class KycStore {
 
     kycRepo: KycRepo
@@ -55,6 +57,24 @@ export default class KycStore {
         }
 
         return false;
+    }
+
+    canBuyPresaleNft(): boolean {
+        const nftUsdPrice = parseInt(Config.APP_PRESALE_PRICE_USD);
+        return this.canBuyAnNft(nftUsdPrice);
+    }
+
+    willPassLightKycLimit(nftPriceInUsd: number) {
+        return nftPriceInUsd + this.purchasesInUsdSoFar >= LIGHT_PARAMS_LIMIT_IN_USD;
+    }
+
+    willPassLightKycLimitWithPresaleNft() {
+        const nftUsdPrice = parseInt(Config.APP_PRESALE_PRICE_USD);
+        return this.willPassLightKycLimit(nftUsdPrice);
+    }
+
+    doesHasFullKyc(): boolean {
+        return this.kycEntity?.isFullStatusCompletedSuccess() === true ?? false;
     }
 
     getBadgeStatus(): KycStatusWithPartial {
