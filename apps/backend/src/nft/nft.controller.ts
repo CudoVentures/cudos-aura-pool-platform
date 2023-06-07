@@ -194,6 +194,7 @@ export class NFTController {
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
     ): Promise<void> {
         const { nftDtos: nftDataJsons, height } = reqUpdateNftChainData;
+        console.log(`Height: ${height} -> nft.controller | ${JSON.stringify(nftDataJsons)}`);
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
 
@@ -230,6 +231,7 @@ export class NFTController {
             nftEntity.status = chainMarketplaceNftEntity.burned === true ? NftStatus.REMOVED : NftStatus.MINTED;
             nftEntity.marketplaceNftId = chainMarketplaceNftEntity.hasMarketplaceNftId() === true ? chainMarketplaceNftEntity.marketplaceNftId.toString() : '';
 
+            console.log('updating nft with id: ', nftEntity.id);
             await this.nftService.updateOneWithStatus(nftEntity.id, nftEntity, req.transaction);
         }
     }

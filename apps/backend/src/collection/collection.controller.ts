@@ -340,6 +340,7 @@ export class CollectionController {
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,
     ): Promise<void> {
         const { denomIds, collectionIds, module, height } = reqUpdateCollectionChainData;
+        console.log(`Height: ${height} of ${module} -> collection.controller | ${JSON.stringify(denomIds)} | ${JSON.stringify(collectionIds)}`);
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
 
@@ -386,6 +387,7 @@ export class CollectionController {
 
                 if (collectionEntity.isRejected() === false) {
                     collectionEntity.status = chainMarketplaceCollectionEntity.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
+                    console.log('updating collection with denomId: ', denomId);
                     await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
                 }
             }
@@ -413,6 +415,7 @@ export class CollectionController {
                 collectionEntity.name = chainNftCollectionEntity.name;
                 collectionEntity.description = chainNftCollectionEntity.description;
 
+                console.log('updating collection with denomId: ', denomId);
                 await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
             }
         }
