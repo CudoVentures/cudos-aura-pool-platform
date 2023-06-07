@@ -178,7 +178,7 @@ function KycPage({ kycStore, alertStore }: Props) {
 
                 <AuthBlockLayout
                     title = { 'KYC' }
-                    subtitle = { 'We need to collect a little bit more information about you before your purchase. Our platform is design two have 2 levels of verification - light and detailed. The light can be used for total puchases up to $1000. If you exeed this limit you must do the detailed one.' }
+                    subtitle = { "To be compliant with regulations, we need to collect a little bit more information before you can make a purchase. Our platform offers two levels of verification depth - light and detailed. The light option can be used for any purchases up to $1000. If you want to purchase more than that, you'll need to complete the detailed option instead." }
                     content = { (
                         <>
                             { kycEntity === null ? (
