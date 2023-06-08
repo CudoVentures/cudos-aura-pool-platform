@@ -4,7 +4,7 @@
 
 .PageMarketplace .MarketplaceHero {
     position: relative;
-    margin: 90px 0 260px 0;
+    margin: 90px 0 110px 0;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo {
@@ -15,12 +15,12 @@
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine1 {
     color: var(--color-neutral-100);
     text-transform: uppercase;
-    font-size: 25px;
+    font-size: 22px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine2 {
     line-height: 110%;
-    font-size: 65px;
+    font-size: 48px;
     margin-bottom: 16px;
 
     background: linear-gradient(270deg, #050142  0%, #15f8e9 100%);
@@ -34,7 +34,7 @@
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoDesc {
     color: var(--color-neutral-060);
-    margin-bottom: 64px;
+    margin-bottom: 32px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoCons {
@@ -42,7 +42,7 @@
     font-weight: 700;
     font-size: 10px;
     text-transform: uppercase;
-    margin-bottom: 52px;
+    margin-bottom: 32px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoCons label {
@@ -54,25 +54,26 @@
     position: absolute;
     bottom: -122px;
     right: 0;
+    --image-width: 476px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg01 {
-    width: 576px;
+    width: var(--image-width);
     position: absolute;
-    right: 125px;
-    bottom: 55px;
+    right: calc(var(--image-width) * 0.217);
+    bottom: calc(var(--image-width) * 0.0954);
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg02 {
-    width: 576px;
+    width: var(--image-width);
     position: absolute;
     right: 0;
     bottom: 0;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle {
-    width: 427px;
-    height: 427px;
+    width: calc(var(--image-width) * 0.7413);
+    height: calc(var(--image-width) * 0.7413);
     position: absolute;
     filter: blur(75px);
     border-radius: 50%;
@@ -80,18 +81,18 @@
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle01 {
-    right: 270px;
-    bottom: 90px;
+    right: calc(var(--image-width) * 0.4688);
+    bottom: calc(var(--image-width) * 0.1563);
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle02 {
-    right: 120px;
-    bottom: 290px;
+    right: calc(var(--image-width) * 0.2083);
+    bottom: calc(var(--image-width) * 0.5036);
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle03 {
     right: 0px;
-    bottom: 150px;
+    bottom: calc(var(--image-width) * 0.2604);
 }
 
 .PageMarketplace .MarketplaceHeading {
@@ -149,6 +150,15 @@
     align-items: center;
 }
 
+.PageMarketplace .PresaleInfoColumn .PresaleInfo {
+    max-width: 768px;
+    text-align: center;
+    padding: 12px 24px;
+    border: 1px solid var(--color-primary-060);
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
 .PageMarketplace .PresaleInfoColumn .CollectionLabel {
     text-transform: uppercase;
     text-align: center;
@@ -173,6 +183,11 @@
     align-self: stretch;
     align-items: center;
     gap: 32px;
+}
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn {
+    width: 100%;
+    align-items: center;
 }
 
 .PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo {

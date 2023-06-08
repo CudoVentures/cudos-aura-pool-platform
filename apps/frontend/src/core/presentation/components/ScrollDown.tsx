@@ -4,7 +4,7 @@ import S from '../../utilities/Main';
 
 import Svg, { SvgSize } from './Svg';
 
-import MouseIcon from '@mui/icons-material/Mouse';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import '../styles/scroll-down.css';
 
 export default function ScrollDown() {
@@ -20,7 +20,7 @@ export default function ScrollDown() {
     }, []);
 
     function onClickScroll() {
-        S.setScrollY(1024, 'smooth');
+        S.setScrollY(512, 'smooth');
     }
 
     function onScroll() {
@@ -31,6 +31,6 @@ export default function ScrollDown() {
     }
 
     return (
-        <Svg className = { `ScrollDown ActiveVisibilityHidden ${S.CSS.getActiveClassName(displayMouse)}` } svg = { MouseIcon } size = { SvgSize.CUSTOM } onClick = { onClickScroll } />
+        <Svg className = { `ScrollDown ActiveVisibilityHidden ${S.CSS.getActiveClassName(displayMouse)}` } svg = { ArrowDownwardIcon } size = { SvgSize.CUSTOM } onClick = { onClickScroll } />
     )
 }

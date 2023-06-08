@@ -90,7 +90,7 @@ function KycPage({ kycStore, alertStore }: Props) {
             onComplete: async (data) => {
                 onfidoMount.current.classList.remove('Active');
                 try {
-                    alertStore.show('You have started your verification', () => {
+                    alertStore.show('You have successfully submitted your verification request.', () => {
                         onClickMarketplace()
                         window.location.reload();
                     });
@@ -181,7 +181,7 @@ function KycPage({ kycStore, alertStore }: Props) {
 
                 <AuthBlockLayout
                     title={'KYC'}
-                    subtitle={"To be compliant with regulations, we need to collect a little bit more information before you can make a purchase. Our platform offers two levels of verification depth - light and detailed. The light option can be used for any purchases up to $1000. If you want to purchase more than that, you'll need to complete the detailed option instead."}
+                    subtitle={'To be compliant with regulations, we need to collect a little bit more information before you can make a purchase. Our platform offers two levels of verification depth - light and detailed. The light option can be used for any purchases up to $1000. If you want to purchase more than that, you\'ll need to complete the detailed option instead.'}
                     content={(
                         <>
                             {kycEntity === null ? (

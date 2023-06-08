@@ -12,3 +12,22 @@
     box-shadow: var(--box-shadow);
     cursor: pointer;
 }
+
+.ScrollDown svg {
+    animation: ScrollDownAnimation 2s ease-in-out 0s infinite;
+}
+
+@keyframes ScrollDownAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
