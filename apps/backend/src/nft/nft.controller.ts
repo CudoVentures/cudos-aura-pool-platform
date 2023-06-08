@@ -202,18 +202,24 @@ export class NFTController {
             throw new Error(`BDJuno not yet on block:  ${height}`);
         }
 
-        const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId)
-            .filter((denomId, index, self) => self.indexOf(denomId) === index);
+        // const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId).filter((denomId, index, self) => self.indexOf(denomId) === index);
+        const denomIds = Array.from(new Set(nftDataJsons.map((nftJson) => nftJson.denomId)));
+        console.log('Filtered denoms', denomIds);
 
         let chainMarketplaceNftEntities: ChainMarketplaceNftEntity[] = [];
         for (let i = 0; i < denomIds.length; i++) {
             const denomId = denomIds[i];
-            const tokenIds = nftDataJsons.filter((nftDataJson) => nftDataJson.denomId === denomId).map((nftDataJson) => nftDataJson.tokenId);
+            let tokenIds = nftDataJsons.filter((nftDataJson) => nftDataJson.denomId === denomId).map((nftDataJson) => nftDataJson.tokenId);
+            tokenIds = Array.from(new Set(tokenIds)); // filter unique entries
 
             const marketplaceNftDtos = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds, denomId);
+            if (marketplaceNftDtos.length !== tokenIds.length) {
+                throw new Error(`BDJuno is updated but nft entities are missing. Looking for ${tokenIds.join(', ')} found ${JSON.stringify(marketplaceNftDtos)}`);
+            }
 
             chainMarketplaceNftEntities = chainMarketplaceNftEntities.concat(marketplaceNftDtos);
         }
+
         // fetch nfts
         const nftFilterEntity = new NftFilterEntity();
         nftFilterEntity.nftIds = chainMarketplaceNftEntities.filter((entity) => validate(entity.uid)).map((entity) => entity.uid);

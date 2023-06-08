@@ -35,18 +35,21 @@ export default class TxFindWorker {
         try {
             // get last checked block
             const lastCheckedBlock = await this.cudosMarketsServiceApi.fetchLastCheckedBlock();
+            const nextBlockToCheck = lastCheckedBlock + 1;
             console.log('last checked block: ', lastCheckedBlock);
             // get last block
             // limit to 10000 blocks per run if the service is lagging behind
             let lastBlock = await this.chainClient.getHeight();
             const blockCheckLimit = Config.BLOCK_CHECK_LIMIT;
 
-            lastBlock = lastBlock > lastCheckedBlock + blockCheckLimit ? lastCheckedBlock + blockCheckLimit : lastBlock;
+            // lastBlock = lastBlock > lastCheckedBlock + blockCheckLimit ? lastCheckedBlock + blockCheckLimit : lastBlock;
+            lastBlock = Math.min(nextBlockToCheck + blockCheckLimit, lastBlock);
 
             const heightFilter = {
-                minHeight: lastCheckedBlock,
+                minHeight: nextBlockToCheck,
                 maxHeight: lastBlock,
             };
+            console.log(`now checking [${heightFilter.minHeight}, ${heightFilter.maxHeight}]`);
 
             // filter txs in these blocks
             await this.checkMarketplaceTransactions(heightFilter);

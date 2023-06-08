@@ -271,7 +271,7 @@ export class NFTService {
 
             if (purchaseTransactionEntityToUpdate !== undefined) {
                 if (purchaseTransactionEntityToUpdate.isPending() === false) {
-                    return;
+                    continue;
                 }
                 purchaseTransactionEntityToUpdate.status = purchaseTransactionEntity.status;
                 await this.creditPurchaseTransaction(purchaseTransactionEntityToUpdate, dbTx);
