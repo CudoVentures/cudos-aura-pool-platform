@@ -204,7 +204,6 @@ export class NFTController {
 
         // const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId).filter((denomId, index, self) => self.indexOf(denomId) === index);
         const denomIds = Array.from(new Set(nftDataJsons.map((nftJson) => nftJson.denomId)));
-        console.log('Filtered denoms', denomIds);
 
         let chainMarketplaceNftEntities: ChainMarketplaceNftEntity[] = [];
         for (let i = 0; i < denomIds.length; i++) {

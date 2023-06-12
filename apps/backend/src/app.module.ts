@@ -74,9 +74,15 @@ import { ThrottlerModule } from '@nestjs/throttler';
         ServeStaticModule.forRoot({
             rootPath: Path.join(__dirname, '..', 'frontend', 'src', 'public'),
             serveStaticOptions: {
-                index: false,
-                cacheControl: true,
-                maxAge: 2592000000,
+                setHeaders: (res, path, stat) => {
+                    if (path.indexOf('index.html') !== -1) {
+                        console.log('no cache', path);
+                        res.setHeader('Cache-Control', 'no-store, no-cache');
+                    } else {
+                        console.log('cache', path);
+                        res.setHeader('Cache-Control', 'public, max-age=2592000');
+                    }
+                },
             },
         }),
         ConfigModule.forRoot({
