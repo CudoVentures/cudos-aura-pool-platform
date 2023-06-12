@@ -1,0 +1,33 @@
+.ScrollDown {
+    width: 64px; height: 64px;
+    box-sizing: border-box;
+    position: fixed;
+    left: 0; right: 0; bottom: 16px;
+    color: var(--color-primary-060);
+    padding: 12px;
+    border-radius: 50%;
+    border: 1px solid var(--color-primary-060);
+    margin: auto;
+    background: #fff;
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
+}
+
+.ScrollDown svg {
+    animation: ScrollDownAnimation 2s ease-in-out 0s infinite;
+}
+
+@keyframes ScrollDownAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}

@@ -49,6 +49,7 @@ import MarketPresaleNftPreview from '../components/MarketplacePresaleNftPreview'
 import BuyPresaleNftModalStore from '../stores/BuyPresaleNftModalStore';
 import BuyPresaleNftModal from '../components/BuyPresaleNftModal';
 import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
+import ScrollDown from '../../../core/presentation/components/ScrollDown';
 
 type Props = {
     nftPresaleStore?: NftPresaleStore
@@ -66,6 +67,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     const { presaleCollectionEntity } = nftPresaleStore;
 
     const [acceptTermsAndConditions, setAcceptTermsAndConditions] = useState(S.INT_FALSE);
+    const [fetchingKyc, setFetchingKyc] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -80,7 +82,13 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     }, []);
 
     useEffect(() => {
-        nftPresaleStore.fetchAllowlistUser();
+        const run = async () => {
+            setFetchingKyc(true);
+            await nftPresaleStore.fetchAllowlistUser();
+            setFetchingKyc(false);
+        }
+
+        run();
     }, [accountSessionStore.userEntity?.cudosWalletAddress]);
 
     useEffect(() => {
@@ -188,13 +196,26 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
         walletSelectModalStore.showSignalAsUser();
     }
 
-    function renderBuyButton(forcedDisabled: boolean) {
-        const disabled = forcedDisabled || acceptTermsAndConditions !== S.INT_TRUE;
+    function arePresaleBuyButtonsForceDisabled() {
+        return accountSessionStore.isLoggedInAndWalletConnected() === false || nftPresaleStore.isUserEligibleToBuy() === false || kycStore.canBuyPresaleNft() === false;
+    }
+
+    function renderPresaleBuyWithCudos() {
+        const disabled = arePresaleBuyButtonsForceDisabled() || acceptTermsAndConditions !== S.INT_TRUE;
 
         return (
-            <Actions height={ActionsHeight.HEIGHT_48} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithCudos} disabled = { disabled } >Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
-                <Button padding={ButtonPadding.PADDING_48} onClick={onClickBuyWithEth} disabled = { disabled }>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
+            <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithCudos} disabled = { disabled } >Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+            </Actions>
+        )
+    }
+
+    function renderPresaleBuyWithEth() {
+        const disabled = arePresaleBuyButtonsForceDisabled() || acceptTermsAndConditions !== S.INT_TRUE;
+
+        return (
+            <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithEth} disabled = { disabled }>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
             </Actions>
         )
     }
@@ -365,9 +386,10 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 </>)}
                 {nftPresaleStore.isPresaleOver() === false && (
                     <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
-                        <div className={'Primary60 B2 SemiBold CollectionLabel'}>
+                        <div className = { 'PresaleInfo Bold ColorPrimary060' } >Win up to 170TH/s worth of renewable energy NFTs! You are guaranteed one of the five NFTs you can see below, or you could get one of the exclusive 1/1 if you are super lucky! Happy minting!</div>
+                        {/* <div className={'Primary60 B2 SemiBold CollectionLabel'}>
                             { PRESALE_CONSTS.RESPECT_ALLOWLIST ? 'Presale collection' : 'Public sale collection' }
-                        </div>
+                        </div> */}
                         <div className={'ColorNeutral100 H2 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
                         <div className={'ColorNeutral100 B2 CollectionDescription'}><NewLine text = {presaleCollectionEntity?.description ?? ''} /></div>
                         <StyledContainer
@@ -381,13 +403,49 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                         <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} />
                                         <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
                                         <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                        { renderPresaleBuyWithCudos() }
                                     </div>
                                     <div className={'PriceWithIcon FlexRow'}>
                                         <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} />
                                         <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
                                         <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                        { renderPresaleBuyWithEth() }
                                     </div>
                                 </div>
+                                { accountSessionStore.isLoggedInAndWalletConnected() === false ? (
+                                    <>
+                                        <div className={'PurchaseNoWallet Bold'} >
+                                            Please <span className = { 'ColorPrimary060 Clickable' } onClick = { onClickConnectWallet }>connect your wallet</span> to purchase
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        {nftPresaleStore.isUserEligibleToBuy() === false ? (
+                                            <>
+                                                { fetchingKyc === false && (
+                                                    <span className = { 'PurchaseError Bold' }>You are not whitelisted and therefore must wait until the public sale to purchase an NFT.<br />Head over to our <a className = { 'ColorPrimary060' } href="https://discord.gg/7DPZ45C4ms" target='_blank' rel="noreferrer">Discord</a> to get whitelisted for future collections.</span>
+                                                ) }
+                                            </>
+                                        ) : (
+                                            <>
+                                                { kycStore.canBuyPresaleNft() === false ? (
+                                                    <>
+                                                        { renderKycWarnings() }
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Checkbox
+                                                            label = { (
+                                                                <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
+                                                            ) }
+                                                            value = { acceptTermsAndConditions }
+                                                            onChange = { setAcceptTermsAndConditions } />
+                                                    </>
+                                                ) }
+                                            </>
+                                        ) }
+                                    </>
+                                ) }
                             </ColumnLayout>
 
                             <RowLayout className = { 'NftPresalePreviewCnt' } numColumns = { 5 } gap = { 16 } >
@@ -449,48 +507,12 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                         whiteText = { true } />
                                 </RowLayout>
                             </div>
-
-                            { accountSessionStore.isLoggedInAndWalletConnected() === false ? (
-                                <>
-                                    { renderBuyButton(true) }
-                                    <div className={'PurchaseNoWallet Bold'} >
-                                        Please <span className = { 'ColorPrimary060 Clickable' } onClick = { onClickConnectWallet }>connect your wallet</span> to purchase
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    {nftPresaleStore.isUserEligibleToBuy() === false ? (
-                                        <>
-                                            { renderBuyButton(true) }
-                                            <span className = { 'PurchaseError Bold' }>You are not whitelisted and therefore must wait until the public sale to purchase an NFT.<br />Head over to our <a className = { 'ColorPrimary060' } href="https://discord.gg/7DPZ45C4ms" target='_blank' rel="noreferrer">Discord</a> to get whitelisted for future collections.</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            { kycStore.canBuyPresaleNft() === false ? (
-                                                <>
-                                                    { renderBuyButton(true) }
-                                                    { renderKycWarnings() }
-                                                </>
-                                            ) : (
-                                                <>
-                                                    { renderBuyButton(false) }
-                                                    <Checkbox
-                                                        label = { (
-                                                            <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
-                                                        ) }
-                                                        value = { acceptTermsAndConditions }
-                                                        onChange = { setAcceptTermsAndConditions } />
-                                                </>
-                                            ) }
-                                        </>
-                                    ) }
-                                </>
-                            ) }
                         </StyledContainer>
                     </ColumnLayout>
                 )}
             </div>
             <PageFooter />
+            <ScrollDown />
         </PageLayout>
     )
 }
