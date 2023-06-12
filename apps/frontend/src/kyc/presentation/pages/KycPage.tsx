@@ -181,7 +181,16 @@ function KycPage({ kycStore, alertStore }: Props) {
 
                 <AuthBlockLayout
                     title={'KYC'}
-                    subtitle={'To be compliant with regulations, we need to collect a little bit more information before you can make a purchase. Our platform offers two levels of verification depth - light and detailed. The light option can be used for any purchases up to $1000. If you want to purchase more than that, you\'ll need to complete the detailed option instead.'}
+                    subtitle={(
+                        <ul className = { 'KycInfo' }>
+                            <li>
+                                <strong>Light check (under $1k):</strong> only first and last name are required, no other details needed. We will look up your internet service provider address to determine your location as well.
+                            </li>
+                            <li>
+                                <strong>Detailed check (required for over $1k total spend):</strong> in addition to the above, you will need to provide further documentation.
+                            </li>
+                        </ul>
+                    )}
                     content={(
                         <>
                             {kycEntity === null ? (
