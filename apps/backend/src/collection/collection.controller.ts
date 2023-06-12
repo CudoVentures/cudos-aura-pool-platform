@@ -339,23 +339,28 @@ export class CollectionController {
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,
     ): Promise<void> {
-        const { denomIds, collectionIds, module, height } = reqUpdateCollectionChainData;
+        const { module, height } = reqUpdateCollectionChainData;
+        let { denomIds, collectionIds } = reqUpdateCollectionChainData;
+        console.log(`Height: ${height} of ${module} -> collection.controller | ${JSON.stringify(denomIds)} | ${JSON.stringify(collectionIds)}`);
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
-
         if (height > bdJunoParsedHeight) {
             throw new Error(`BDJuno not yet on block:  ${height}`);
         }
+
+        // filter unique entries
+        denomIds = Array.from(new Set(denomIds));
+        collectionIds = Array.from(new Set(collectionIds));
 
         if (module === ModuleName.MARKETPLACE) {
             const chainMarketplaceCollectionEntitiesByDenoms = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
             const chainMarketplaceCollectionEntitiesByIds = await this.graphqlService.fetchMarketplaceCollectionsByIds(collectionIds);
 
             if (chainMarketplaceCollectionEntitiesByDenoms.length !== denomIds.length) {
-                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by denomIds) looking for ${denomIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByDenoms.join(', ')}`);
+                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by denomIds). Looking for ${denomIds.join(', ')} found ${JSON.stringify(chainMarketplaceCollectionEntitiesByDenoms)}`);
             }
             if (chainMarketplaceCollectionEntitiesByIds.length !== collectionIds.length) {
-                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by collectionIds) looking for ${collectionIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByIds.join(', ')}`);
+                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by collectionIds). Looking for ${collectionIds.join(', ')} found ${JSON.stringify(chainMarketplaceCollectionEntitiesByDenoms)}`);
             }
 
             // map is used to filter by denom ids so we don't make duplicated queries later
@@ -386,6 +391,7 @@ export class CollectionController {
 
                 if (collectionEntity.isRejected() === false) {
                     collectionEntity.status = chainMarketplaceCollectionEntity.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
+                    console.log('updating collection with denomId: ', denomId);
                     await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
                 }
             }
@@ -393,7 +399,7 @@ export class CollectionController {
             const chainNftCollectionEntities = await this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
 
             if (chainNftCollectionEntities.length !== denomIds.length) {
-                throw new Error('BDJuno is updated but nft collection entities are missing');
+                throw new Error(`BDJuno is updated but nft collection entities are missing. Looking for ${denomIds.join(', ')} found ${JSON.stringify(chainNftCollectionEntities)}`);
             }
 
             for (let i = 0; i < chainNftCollectionEntities.length; i++) {
@@ -413,6 +419,7 @@ export class CollectionController {
                 collectionEntity.name = chainNftCollectionEntity.name;
                 collectionEntity.description = chainNftCollectionEntity.description;
 
+                console.log('updating collection with denomId: ', denomId);
                 await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
             }
         }
