@@ -205,7 +205,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
         return (
             <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithCudos} disabled = { disabled } >Mint now for {nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS</Button>
+                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithCudos} disabled = { disabled } >Lucky mint ({nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS)</Button>
             </Actions>
         )
     }
@@ -215,7 +215,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
         return (
             <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithEth} disabled = { disabled }>Mint now for {nftPresaleStore.getPresalePriceEthFormatted()} ETH</Button>
+                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithEth} disabled = { disabled }>Lucky mint ({nftPresaleStore.getPresalePriceEthFormatted()} ETH)</Button>
             </Actions>
         )
     }
