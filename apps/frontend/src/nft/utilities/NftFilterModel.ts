@@ -44,16 +44,6 @@ export default class NftFilterModel {
         this.collectionStatus = [CollectionStatus.APPROVED];
     }
 
-    goToLastPossbilePage(total): boolean {
-        const from = Math.floor(total / this.count) * this.count;
-        if (from !== this.from) {
-            this.from = from;
-            return true;
-        }
-
-        return false;
-    }
-
     static toJson(entity: NftFilterModel) {
         if (entity === null) {
             return null;

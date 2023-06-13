@@ -244,96 +244,98 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
             <PageHeader />
             <div className={'PageContent AppContent'} >
 
-                <div className={'MarketplaceHero'} >
-                    <div className={'MarketplaceHeroInfo'} >
-                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The World's first Marketplace for</div>
-                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Hashrate<br />Collectibles</div>
-                        <div className={'H3 MarketplaceHeroInfoDesc'} >Mine Bitcoin, effortlessly</div>
-                        <div className={'MarketplaceHeroInfoCons FlexRow'} >
-                            <label>Sustainable mining</label>
-                            <label>Real bitcoin</label>
-                            <label>No hardware needed</label>
-                        </div>
-                        {nftPresaleStore.isPresaleOver() === true && (
-                            <Actions>
-                                <Button onClick={onClickSeeAllNfts}>Explore Marketplace</Button>
-                            </Actions>
-                        )}
-                    </div>
-                    <div className={'MarketplaceHeroBg'}>
-                        <div className={'HeroCircle HeroCircle03'} />
-                        <img className={'HeroImg02'} src={'/assets/img/marketplace-hero-02.png?cache=1'} />
-                        <div className={'HeroCircle HeroCircle01'} />
-                        <div className={'HeroCircle HeroCircle02'} />
-                        <img className={'HeroImg01'} src={'/assets/img/marketplace-hero-01.png?cache=1'} />
-                    </div>
-                </div>
-                {nftPresaleStore.isPresaleOver() === true && (<>
-                    <div className={'MarketplaceHeading '}>
-                        <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
-                    </div>
-
-                    <div className={'SectionWrapper'} >
-                        {marketplacePageStore.trendingNftEntities.length === 0 ? (
-                            <div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>
-                        ) : (
-                            <Slider>
-                                {marketplacePageStore.trendingNftEntities.map((nftEntity: NftEntity, index: number) => {
-                                    return (
-                                        <NftPreview
-                                            key={index}
-                                            nftEntity={nftEntity}
-                                            collectionName={marketplacePageStore.getCollectionName(nftEntity.collectionId)} />
-                                    )
-                                })}
-                            </Slider>
-                        )}
-                        <Actions
-                            className={'SectionActions'}
-                            layout={ActionsLayout.LAYOUT_ROW_CENTER}
-                            height={ActionsHeight.HEIGHT_48} >
-                            <Button
-                                padding={ButtonPadding.PADDING_24}
-                                type={ButtonType.ROUNDED}
-                                onClick={onClickSeeAllNfts} >
-                                See All NFTs
-                            </Button>
-                        </Actions>
-                    </div>
-
-                    <div className={'SectionWrapper SectionHashRateDrops'} >
-                        <div className={'HashRateDropsInfo FlexColumn'} >
-                            <div className={'H2 ExtraBold'} >New Hash Rate NFT Drops</div>
-                            <div className={'B1'} >Powered by CUDOS Markets</div>
-                            <Actions className={'HashRateDropsInfoActions'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} >
-                                <Button
-                                    border={ButtonBorder.NO_BORDER}
-                                    color={ButtonColor.SCHEME_4}
-                                    onClick={onClickSeeAllNfts}>
-                                    Explore NFTs
-                                </Button>
-                            </Actions>
+                {nftPresaleStore.isPresaleOver() === true ? (
+                    <>
+                        <div className={'MarketplaceHero'} >
+                            <div className={'MarketplaceHeroInfo'} >
+                                <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The World's first Marketplace for</div>
+                                <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Hashrate<br />Collectibles</div>
+                                <div className={'H3 MarketplaceHeroInfoDesc'} >Mine Bitcoin, effortlessly</div>
+                                <div className={'MarketplaceHeroInfoCons FlexRow'} >
+                                    <label>Sustainable mining</label>
+                                    <label>Real bitcoin</label>
+                                    <label>No hardware needed</label>
+                                </div>
+                                {nftPresaleStore.isPresaleOver() === true && (
+                                    <Actions>
+                                        <Button onClick={onClickSeeAllNfts}>Explore Marketplace</Button>
+                                    </Actions>
+                                )}
+                            </div>
+                            <div className={'MarketplaceHeroBg'}>
+                                <div className={'HeroCircle HeroCircle03'} />
+                                <img className={'HeroImg02'} src={'/assets/img/marketplace-hero-02.png?cache=1'} />
+                                <div className={'HeroCircle HeroCircle01'} />
+                                <div className={'HeroCircle HeroCircle02'} />
+                                <img className={'HeroImg01'} src={'/assets/img/marketplace-hero-01.png?cache=1'} />
+                            </div>
                         </div>
 
-                        <div className={'HashRateDropsCnt'}>
-                            {marketplacePageStore.newNftDropsEntities.length === 0 ? (
-                                <div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>
+                        <div className={'MarketplaceHeading '}>
+                            <div className={'H2 ExtraBold ColorNeutral100'}>Explore Trending NFTs</div>
+                        </div>
+
+                        <div className={'SectionWrapper'} >
+                            {marketplacePageStore.trendingNftEntities.length === 0 ? (
+                                <div className={'NoContent B1 SemiBold'}>There are currently no trending NFTs</div>
                             ) : (
-                                <Slider itemsPerPage={3} showDots={false} navWithTransparency={false} >
-                                    {marketplacePageStore.newNftDropsEntities.map((nftEntity: NftEntity, index: number) => {
+                                <Slider>
+                                    {marketplacePageStore.trendingNftEntities.map((nftEntity: NftEntity, index: number) => {
                                         return (
-                                            <NftPreviewInPicture
+                                            <NftPreview
                                                 key={index}
                                                 nftEntity={nftEntity}
-                                                collectionEntity={marketplacePageStore.getCollectionById(nftEntity.collectionId)} />
+                                                collectionName={marketplacePageStore.getCollectionName(nftEntity.collectionId)} />
                                         )
                                     })}
                                 </Slider>
                             )}
+                            <Actions
+                                className={'SectionActions'}
+                                layout={ActionsLayout.LAYOUT_ROW_CENTER}
+                                height={ActionsHeight.HEIGHT_48} >
+                                <Button
+                                    padding={ButtonPadding.PADDING_24}
+                                    type={ButtonType.ROUNDED}
+                                    onClick={onClickSeeAllNfts} >
+                                See All NFTs
+                                </Button>
+                            </Actions>
                         </div>
-                    </div>
 
-                    {/* <div className={'SectionWrapper'} >
+                        <div className={'SectionWrapper SectionHashRateDrops'} >
+                            <div className={'HashRateDropsInfo FlexColumn'} >
+                                <div className={'H2 ExtraBold'} >New Hash Rate NFT Drops</div>
+                                <div className={'B1'} >Powered by CUDOS Markets</div>
+                                <Actions className={'HashRateDropsInfoActions'} layout={ActionsLayout.LAYOUT_COLUMN_FULL} >
+                                    <Button
+                                        border={ButtonBorder.NO_BORDER}
+                                        color={ButtonColor.SCHEME_4}
+                                        onClick={onClickSeeAllNfts}>
+                                    Explore NFTs
+                                    </Button>
+                                </Actions>
+                            </div>
+
+                            <div className={'HashRateDropsCnt'}>
+                                {marketplacePageStore.newNftDropsEntities.length === 0 ? (
+                                    <div className={'NoContent B1 SemiBold'}>There are currently no new NFT Drops</div>
+                                ) : (
+                                    <Slider itemsPerPage={3} showDots={false} navWithTransparency={false} >
+                                        {marketplacePageStore.newNftDropsEntities.map((nftEntity: NftEntity, index: number) => {
+                                            return (
+                                                <NftPreviewInPicture
+                                                    key={index}
+                                                    nftEntity={nftEntity}
+                                                    collectionEntity={marketplacePageStore.getCollectionById(nftEntity.collectionId)} />
+                                            )
+                                        })}
+                                    </Slider>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* <div className={'SectionWrapper'} >
                         <div className={'SectionHeadingCnt'} >
                             <div className={'H2 ExtraBold'}>Top Collections</div>
                             <div className={'CenterCnt FlexSingleCenter'} >
@@ -355,160 +357,164 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                         </Actions>
                     </div> */}
 
-                    <div className={'SectionWrapper'}>
-                        <div className={'SectionHeadingCnt H2 ExtraBold'}>Popular Farms</div>
-                        {marketplacePageStore.popularFarmsEntities.length === 0 ? (
-                            <div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>
-                        ) : (
-                            <Slider itemsPerPage={3} extendPaddingForShadow={true} >
-                                {marketplacePageStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
-                                    return (
-                                        <MiningFarmPreview
-                                            key={index}
-                                            miningFarmEntity={miningFarmEntity}
-                                            miningFarmDetailsEntity={marketplacePageStore.getMiningFarmDetailsEntity(miningFarmEntity.id)} />
-                                    )
-                                })}
-                            </Slider>
-                        )}
-                        <Actions
-                            className={'SectionActions'}
-                            layout={ActionsLayout.LAYOUT_ROW_CENTER}
-                            height={ActionsHeight.HEIGHT_48}>
-                            <Button
-                                onClick={onClickSeeAllFarms}
-                                padding={ButtonPadding.PADDING_24}
-                                type={ButtonType.ROUNDED}>
+                        <div className={'SectionWrapper'}>
+                            <div className={'SectionHeadingCnt H2 ExtraBold'}>Popular Farms</div>
+                            {marketplacePageStore.popularFarmsEntities.length === 0 ? (
+                                <div className={'NoContent B1 SemiBold'}>There are currently no Popular Farms</div>
+                            ) : (
+                                <Slider itemsPerPage={3} extendPaddingForShadow={true} >
+                                    {marketplacePageStore.popularFarmsEntities.map((miningFarmEntity: MiningFarmEntity, index: number) => {
+                                        return (
+                                            <MiningFarmPreview
+                                                key={index}
+                                                miningFarmEntity={miningFarmEntity}
+                                                miningFarmDetailsEntity={marketplacePageStore.getMiningFarmDetailsEntity(miningFarmEntity.id)} />
+                                        )
+                                    })}
+                                </Slider>
+                            )}
+                            <Actions
+                                className={'SectionActions'}
+                                layout={ActionsLayout.LAYOUT_ROW_CENTER}
+                                height={ActionsHeight.HEIGHT_48}>
+                                <Button
+                                    onClick={onClickSeeAllFarms}
+                                    padding={ButtonPadding.PADDING_24}
+                                    type={ButtonType.ROUNDED}>
                                 See All Farms
-                            </Button>
-                        </Actions>
-                    </div>
-                </>)}
-                {nftPresaleStore.isPresaleOver() === false && (
-                    <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
-                        <div className = { 'PresaleInfo Bold ColorPrimary060' } >Win up to 170TH/s worth of renewable energy NFTs! You are guaranteed one of the five NFTs you can see below, or you could get one of the exclusive 1/1 if you are super lucky! Happy minting!</div>
-                        {/* <div className={'Primary60 B2 SemiBold CollectionLabel'}>
+                                </Button>
+                            </Actions>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <img className = { 'PresaleHero' } src={'/assets/img/marketplace-presale-hero.jpg'} />
+
+                        <ColumnLayout className={'PresaleInfoColumn'} gap={8}>
+                            <div className = { 'PresaleInfo Bold ColorPrimary060' } >Win up to 170TH/s worth of renewable energy NFTs! You are guaranteed one of the five NFTs you can see below, or you could get one of the exclusive 1/1 if you are super lucky! Happy minting!</div>
+                            {/* <div className={'Primary60 B2 SemiBold CollectionLabel'}>
                             { PRESALE_CONSTS.RESPECT_ALLOWLIST ? 'Presale collection' : 'Public sale collection' }
                         </div> */}
-                        <div className={'ColorNeutral100 H2 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
-                        <div className={'ColorNeutral100 B2 CollectionDescription'}><NewLine text = {presaleCollectionEntity?.description ?? ''} /></div>
-                        <StyledContainer
-                            className={'PhaseInfoContainer FlexColumn'}
-                            containerPadding={ContainerPadding.PADDING_32}>
+                            <div className={'ColorNeutral100 H2 CollectionName'}>{presaleCollectionEntity?.name ?? ''}</div>
+                            <div className={'ColorNeutral100 B2 CollectionDescription'}><NewLine text = {presaleCollectionEntity?.description ?? ''} /></div>
+                            <StyledContainer
+                                className={'PhaseInfoContainer FlexColumn'}
+                                containerPadding={ContainerPadding.PADDING_32}>
 
-                            <ColumnLayout className={'PhaseInfoColumn'} gap={32}>
-                                <div className={'PriceInfo FlexRow'}>
-                                    <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
-                                    <div className={'PriceWithIcon FlexRow'}>
-                                        <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} />
-                                        <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
-                                        <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
-                                        { renderPresaleBuyWithCudos() }
-                                    </div>
-                                    <div className={'PriceWithIcon FlexRow'}>
-                                        <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} />
-                                        <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
-                                        <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
-                                        { renderPresaleBuyWithEth() }
-                                    </div>
-                                </div>
-                                { accountSessionStore.isLoggedInAndWalletConnected() === false ? (
-                                    <>
-                                        <div className={'PurchaseNoWallet Bold'} >
-                                            Please <span className = { 'ColorPrimary060 Clickable' } onClick = { onClickConnectWallet }>connect your wallet</span> to purchase
+                                <ColumnLayout className={'PhaseInfoColumn'} gap={32}>
+                                    <div className={'PriceInfo FlexRow'}>
+                                        <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
+                                        <div className={'PriceWithIcon FlexRow'}>
+                                            <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} />
+                                            <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
+                                            <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                            { renderPresaleBuyWithCudos() }
                                         </div>
-                                    </>
-                                ) : (
-                                    <>
-                                        {nftPresaleStore.isUserEligibleToBuy() === false ? (
-                                            <>
-                                                { fetchingKyc === false && (
-                                                    <span className = { 'PurchaseError Bold' }>You are not whitelisted and therefore must wait until the public sale to purchase an NFT.<br />Head over to our <a className = { 'ColorPrimary060' } href="https://discord.gg/7DPZ45C4ms" target='_blank' rel="noreferrer">Discord</a> to get whitelisted for future collections.</span>
-                                                ) }
-                                            </>
-                                        ) : (
-                                            <>
-                                                { kycStore.canBuyPresaleNft() === false ? (
-                                                    <>
-                                                        { renderKycWarnings() }
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Checkbox
-                                                            label = { (
-                                                                <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
-                                                            ) }
-                                                            value = { acceptTermsAndConditions }
-                                                            onChange = { setAcceptTermsAndConditions } />
-                                                    </>
-                                                ) }
-                                            </>
-                                        ) }
-                                    </>
-                                ) }
-                            </ColumnLayout>
+                                        <div className={'PriceWithIcon FlexRow'}>
+                                            <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} />
+                                            <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
+                                            <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                            { renderPresaleBuyWithEth() }
+                                        </div>
+                                    </div>
+                                    { accountSessionStore.isLoggedInAndWalletConnected() === false ? (
+                                        <>
+                                            <div className={'PurchaseNoWallet Bold'} >
+                                            Please <span className = { 'ColorPrimary060 Clickable' } onClick = { onClickConnectWallet }>connect your wallet</span> to purchase
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {nftPresaleStore.isUserEligibleToBuy() === false ? (
+                                                <>
+                                                    { fetchingKyc === false && (
+                                                        <span className = { 'PurchaseError Bold' }>You are not whitelisted and therefore must wait until the public sale to purchase an NFT.<br />Head over to our <a className = { 'ColorPrimary060' } href="https://discord.gg/7DPZ45C4ms" target='_blank' rel="noreferrer">Discord</a> to get whitelisted for future collections.</span>
+                                                    ) }
+                                                </>
+                                            ) : (
+                                                <>
+                                                    { kycStore.canBuyPresaleNft() === false ? (
+                                                        <>
+                                                            { renderKycWarnings() }
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Checkbox
+                                                                label = { (
+                                                                    <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
+                                                                ) }
+                                                                value = { acceptTermsAndConditions }
+                                                                onChange = { setAcceptTermsAndConditions } />
+                                                        </>
+                                                    ) }
+                                                </>
+                                            ) }
+                                        </>
+                                    ) }
+                                </ColumnLayout>
 
-                            <RowLayout className = { 'NftPresalePreviewCnt' } numColumns = { 5 } gap = { 16 } >
-                                <MarketPresaleNftPreview
-                                    imgUrl = { '/assets/presale-nft-images/H-1_small.jpg' }
-                                    name = { 'Opal' }
-                                    hashRateInTh = { 5 }
-                                    svgPath = { SvgOpal }
-                                    whiteText = { false } />
-                                <MarketPresaleNftPreview
-                                    imgUrl = { '/assets/presale-nft-images/H-2_small.jpg' }
-                                    name = { 'Ruby' }
-                                    hashRateInTh = { 10 }
-                                    svgPath = { SvgRuby }
-                                    whiteText = { false } />
-                                <MarketPresaleNftPreview
-                                    imgUrl = { '/assets/presale-nft-images/H-3_small.jpg' }
-                                    name = { 'Emerald' }
-                                    hashRateInTh = { 33 }
-                                    svgPath = { SvgEmerald }
-                                    whiteText = { false } />
-                                <MarketPresaleNftPreview
-                                    imgUrl = { '/assets/presale-nft-images/H-4_small.jpg' }
-                                    name = { 'Diamond' }
-                                    hashRateInTh = { 100 }
-                                    svgPath = { SvgDiamond }
-                                    whiteText = { false } />
-                                <MarketPresaleNftPreview
-                                    imgUrl = { '/assets/presale-nft-images/H-5_small.jpg' }
-                                    name = { 'Blue Diamond' }
-                                    hashRateInTh = { 170 }
-                                    svgPath = { SvgBlueDiamond }
-                                    whiteText = { false } />
-                            </RowLayout>
-
-                            <div className = { 'NftPresaleLuckyCnt FlexRow' } >
-                                <div className = { 'LuckyDesc Bold' } >
-                                    If you are<br />super lucky,<br /> you may get
-                                    <div className={'LuckyGradient'} >one of these<br /> exclusive 1/1<br /> NFT’s</div>
-                                </div>
-                                <RowLayout className = { 'NftPresalePreviewLuckyCnt' } numColumns = { 3 } gap = { 16 } >
+                                <RowLayout className = { 'NftPresalePreviewCnt' } numColumns = { 5 } gap = { 16 } >
                                     <MarketPresaleNftPreview
-                                        imgUrl = { '/assets/presale-nft-images/H-11_small.jpg' }
+                                        imgUrl = { '/assets/presale-nft-images/H-1_small.jpg' }
+                                        name = { 'Opal' }
+                                        hashRateInTh = { 5 }
+                                        svgPath = { SvgOpal }
+                                        whiteText = { false } />
+                                    <MarketPresaleNftPreview
+                                        imgUrl = { '/assets/presale-nft-images/H-2_small.jpg' }
                                         name = { 'Ruby' }
                                         hashRateInTh = { 10 }
                                         svgPath = { SvgRuby }
-                                        whiteText = { true } />
+                                        whiteText = { false } />
                                     <MarketPresaleNftPreview
-                                        imgUrl = { '/assets/presale-nft-images/H-12_small.jpg' }
+                                        imgUrl = { '/assets/presale-nft-images/H-3_small.jpg' }
                                         name = { 'Emerald' }
                                         hashRateInTh = { 33 }
                                         svgPath = { SvgEmerald }
-                                        whiteText = { true } />
+                                        whiteText = { false } />
                                     <MarketPresaleNftPreview
-                                        imgUrl = { '/assets/presale-nft-images/H-13_small.jpg' }
+                                        imgUrl = { '/assets/presale-nft-images/H-4_small.jpg' }
                                         name = { 'Diamond' }
                                         hashRateInTh = { 100 }
                                         svgPath = { SvgDiamond }
-                                        whiteText = { true } />
+                                        whiteText = { false } />
+                                    <MarketPresaleNftPreview
+                                        imgUrl = { '/assets/presale-nft-images/H-5_small.jpg' }
+                                        name = { 'Blue Diamond' }
+                                        hashRateInTh = { 170 }
+                                        svgPath = { SvgBlueDiamond }
+                                        whiteText = { false } />
                                 </RowLayout>
-                            </div>
-                        </StyledContainer>
-                    </ColumnLayout>
+
+                                <div className = { 'NftPresaleLuckyCnt FlexRow' } >
+                                    <div className = { 'LuckyDesc Bold' } >
+                                    If you are<br />super lucky,<br /> you may get
+                                        <div className={'LuckyGradient'} >one of these<br /> exclusive 1/1<br /> NFT’s</div>
+                                    </div>
+                                    <RowLayout className = { 'NftPresalePreviewLuckyCnt' } numColumns = { 3 } gap = { 16 } >
+                                        <MarketPresaleNftPreview
+                                            imgUrl = { '/assets/presale-nft-images/H-11_small.jpg' }
+                                            name = { 'Ruby' }
+                                            hashRateInTh = { 10 }
+                                            svgPath = { SvgRuby }
+                                            whiteText = { true } />
+                                        <MarketPresaleNftPreview
+                                            imgUrl = { '/assets/presale-nft-images/H-12_small.jpg' }
+                                            name = { 'Emerald' }
+                                            hashRateInTh = { 33 }
+                                            svgPath = { SvgEmerald }
+                                            whiteText = { true } />
+                                        <MarketPresaleNftPreview
+                                            imgUrl = { '/assets/presale-nft-images/H-13_small.jpg' }
+                                            name = { 'Diamond' }
+                                            hashRateInTh = { 100 }
+                                            svgPath = { SvgDiamond }
+                                            whiteText = { true } />
+                                    </RowLayout>
+                                </div>
+                            </StyledContainer>
+                        </ColumnLayout>
+                    </>
                 )}
             </div>
             <PageFooter />

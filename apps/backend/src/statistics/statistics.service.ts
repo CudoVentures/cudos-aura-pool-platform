@@ -82,7 +82,13 @@ export class StatisticsService {
             : filteredNftEventEntities;
 
         // slice
-        const slicedFilteredNftEventEntities = filteredNftEventEntities.slice(nftEventFilterEntity.from, nftEventFilterEntity.from + nftEventFilterEntity.count);
+        const total = filteredNftEventEntities.length
+        const countPerPage = nftEventFilterEntity.count;
+        let from = nftEventFilterEntity.from;
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
+        }
+        const slicedFilteredNftEventEntities = filteredNftEventEntities.slice(from, from + nftEventFilterEntity.count);
 
         // const nftEntities = slicedFilteredNftEventEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
         const slicedFilteredNftEntitiesMap = new Map < string, NftEntity>();
@@ -97,7 +103,7 @@ export class StatisticsService {
         return {
             nftEventEntities: slicedFilteredNftEventEntities,
             nftEntities,
-            total: filteredNftEventEntities.length,
+            total,
         }
     }
 
@@ -169,7 +175,14 @@ export class StatisticsService {
             : megaWalletEventEntities;
 
         // slice
-        megaWalletEventEntities = megaWalletEventEntities.slice(megaWalletEventFilterEntity.from, megaWalletEventFilterEntity.from + megaWalletEventFilterEntity.count);
+        const total = filteredNftEntities.length;
+        const countPerPage = megaWalletEventFilterEntity.count;
+        let from = megaWalletEventFilterEntity.from;
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
+        }
+
+        megaWalletEventEntities = megaWalletEventEntities.slice(from, from + megaWalletEventFilterEntity.count);
 
         // const nftEntities = megaWalletEventEntities.map((nftEventEntity) => nftEntitiesMap.get(nftEventEntity.nftId));
         const slicedFilteredNftEntitiesMap = new Map < string, NftEntity>();
@@ -184,7 +197,7 @@ export class StatisticsService {
         return {
             megaWalletEventEntities,
             nftEntities,
-            total: filteredNftEntities.length,
+            total,
         }
     }
 

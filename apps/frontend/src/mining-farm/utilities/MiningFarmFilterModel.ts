@@ -37,16 +37,6 @@ export default class MiningFarmFilterModel {
         this.status = [MiningFarmStatus.QUEUED];
     }
 
-    goToLastPossbilePage(total): boolean {
-        const from = Math.floor(total / this.count) * this.count;
-        if (from !== this.from) {
-            this.from = from;
-            return true;
-        }
-
-        return false;
-    }
-
     clone(): MiningFarmFilterModel {
         const model = new MiningFarmFilterModel();
 

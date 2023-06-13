@@ -146,6 +146,11 @@
     flex: 1 1 auto;
 }
 
+.PageMarketplace .PresaleHero {
+    width: 700px;
+    align-self: center;
+}
+
 .PageMarketplace .PresaleInfoColumn {
     align-items: center;
 }
