@@ -128,7 +128,7 @@ export default class CreditMiningFarmPageStore {
 
         await runInActionAsync(() => {
             this.queuedCollectionEntities = collectionEntities;
-            this.queuedCollectionsTableState.tableFilterState.total = total;
+            this.queuedCollectionsTableState.tableFilterState.setTotal(total);
         });
     }
 
@@ -151,7 +151,7 @@ export default class CreditMiningFarmPageStore {
 
         await runInActionAsync(() => {
             this.approvedCollectionEntities = collectionEntities;
-            this.approvedCollectionsTableState.tableFilterState.total = total;
+            this.approvedCollectionsTableState.tableFilterState.setTotal(total);
         });
     }
 
