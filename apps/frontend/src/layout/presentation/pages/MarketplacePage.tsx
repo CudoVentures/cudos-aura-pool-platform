@@ -274,8 +274,8 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
 
                 <div className={'MarketplaceHero'} >
                     <div className={`MarketplaceHeroInfo ${S.CSS.getClassName(nftPresaleStore.isPresaleOver() === false, 'HeroTextInPresaleMode')}`} >
-                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The only NFT marketplace for</div>
-                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Tokenised<br />Real World Assets</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The NFT marketplace delivering</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Sustainable<br />Assets in Your Wallet</div>
                         <div className={'H3 MarketplaceHeroInfoDesc'} >Hashrate NFT collection now live</div>
                         <div className={'MarketplaceHeroInfoCons FlexRow'} >
                             <label>Sustainable mining</label>
@@ -472,7 +472,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                                     <>
                                                         <Checkbox
                                                             label = { (
-                                                                <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
+                                                                <div>I read and accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of the CUDOS Markets platform</div>
                                                             ) }
                                                             value = { acceptTermsAndConditions }
                                                             onChange = { setAcceptTermsAndConditions } />

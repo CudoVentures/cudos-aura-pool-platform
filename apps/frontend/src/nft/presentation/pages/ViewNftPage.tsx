@@ -39,7 +39,7 @@ import NewLine from '../../../core/presentation/components/NewLine';
 
 import SvgCudos from '../../../public/assets/vectors/cudos-logo.svg';
 import '../styles/page-view-nft.css';
-import { REWARDS_CALCULATOR } from '../../../core/utilities/Links';
+import { FAQ } from '../../../core/utilities/Links';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -274,7 +274,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                 <div className={'B3'}>You can calculate your rewards in our dynamic Calculator</div>
                                 <Actions height={ActionsHeight.HEIGHT_32}>
                                     {/* <Button onClick={onClickCalculateRewards}>Calculate Rewards</Button> */}
-                                    <Button href={REWARDS_CALCULATOR}>Calculate Rewards</Button>
+                                    <Button href={FAQ}>FAQs</Button>
                                 </Actions>
                             </div>
                             { presaleStore.isInPresale() === false && (
