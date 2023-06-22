@@ -11,5 +11,6 @@ export const YOUTUBE = 'https://www.youtube.com/c/CUDOS';
 export const TERMS_AND_CONDITIONS = 'https://www.cudosmarkets.com/terms-and-conditions';
 export const TERMS_OF_USE = 'https://www.cudosmarkets.com/terms-and-conditions/#terms-of-use';
 export const PRIVACY_POLICY = 'https://www.cudosmarkets.com/privacy-policy';
-export const REWARDS_CALCULATOR = 'https://calculator.cudosmarkets.com';
+// export const REWARDS_CALCULATOR = 'https://calculator.cudosmarkets.com';
+export const REWARDS_CALCULATOR = 'https://www.cudosmarkets.com/faq';
 export const FAQ = 'https://www.cudosmarkets.com/faq/';

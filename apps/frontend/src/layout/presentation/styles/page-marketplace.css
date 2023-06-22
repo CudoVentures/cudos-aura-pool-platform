@@ -12,6 +12,12 @@
     flex-direction: column;
 }
 
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo.HeroTextInPresaleMode {
+    position: relative;
+    left: 190px;
+    z-index: 2;
+}
+
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine1 {
     color: var(--color-neutral-100);
     text-transform: uppercase;
@@ -206,10 +212,10 @@
     align-items: center;
 }
 
-.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon .SVG {
+/* .PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon .SVG {
     width: 24px;
     height: 24px;
-}
+} */
 
 .PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon .PriceItself {
     font-size: 20px;
