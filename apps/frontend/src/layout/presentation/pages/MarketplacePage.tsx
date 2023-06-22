@@ -298,7 +298,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                         </div>
                     ) : (
                         <div className={'MarketplaceHeroBg'}>
-                            <img className = { 'PresaleHero' } src={'/assets/img/marketplace-presale-hero.jpg'} />
+                            <img className = { 'PresaleHero' } src={'/assets/img/marketplace-presale-hero.jpg?cache=1'} />
                         </div>
                     ) }
                 </div>
