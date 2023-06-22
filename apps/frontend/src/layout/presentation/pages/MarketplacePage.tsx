@@ -275,8 +275,8 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                 <div className={'MarketplaceHero'} >
                     <div className={`MarketplaceHeroInfo ${S.CSS.getClassName(nftPresaleStore.isPresaleOver() === false, 'HeroTextInPresaleMode')}`} >
                         <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The NFT marketplace delivering</div>
-                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Sustainable<br />Assets in Your Wallet</div>
-                        <div className={'H3 MarketplaceHeroInfoDesc'} >Hashrate NFT collection now live</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Sustainable Assets<br />in Your Wallet</div>
+                        <div className={'H3 MarketplaceHeroInfoDesc'} >Bitcoin Hashrate NFT collection now live</div>
                         <div className={'MarketplaceHeroInfoCons FlexRow'} >
                             <label>Sustainable mining</label>
                             <label>Hashrate NFTs</label>
