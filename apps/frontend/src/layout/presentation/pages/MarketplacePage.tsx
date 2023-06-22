@@ -200,13 +200,36 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
         return accountSessionStore.isLoggedInAndWalletConnected() === false || nftPresaleStore.isUserEligibleToBuy() === false || kycStore.canBuyPresaleNft() === false;
     }
 
+    function getButtonsDisabledReason() {
+        if (accountSessionStore.isLoggedInAndWalletConnected() === false) {
+            return 'Please connect your wallet to purchase'
+        }
+        if (nftPresaleStore.isUserEligibleToBuy() === false) {
+            return 'You are not whitelisted and therefore must wait until the public sale to purchase an NFT. Head over to our Discord to get whitelisted for future collections.'
+        }
+        if (kycStore.canBuyPresaleNft() === false) {
+            if (kycStore.willPassLightKycLimitWithPresaleNft() === true && kycStore.doesHasFullKyc() === false) {
+                return 'Spending over $1k requires full KYC verification, so please head to the verification page to submit your KYC data.'
+            }
+
+            return 'Please complete the verification to mint. For under $1k no passport nor ID is needed. You only need to provide your first and last name, and we will look up your internet service provider address to determine your location.'
+        }
+
+        return 'Please, read and accept our Terms and Conditions below'
+    }
+
     function renderPresaleBuyWithCudos() {
         const disabled = arePresaleBuyButtonsForceDisabled() || acceptTermsAndConditions !== S.INT_TRUE;
 
         return (
-            <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithCudos} disabled = { disabled } >Lucky mint ({nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS)</Button>
-            </Actions>
+            <div title={ disabled === true ? getButtonsDisabledReason() : '' } >
+                <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                    <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithCudos} disabled = { disabled } >
+                        <Svg svg={SvgCudosLogo} />
+                        Lucky mint ({nftPresaleStore.getPresalePriceCudosFormatted()} CUDOS)
+                    </Button>
+                </Actions>
+            </div>
         )
     }
 
@@ -214,9 +237,14 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
         const disabled = arePresaleBuyButtonsForceDisabled() || acceptTermsAndConditions !== S.INT_TRUE;
 
         return (
-            <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
-                <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithEth} disabled = { disabled }>Lucky mint ({nftPresaleStore.getPresalePriceEthFormatted()} ETH)</Button>
-            </Actions>
+            <div title={ disabled === true ? getButtonsDisabledReason() : '' } >
+                <Actions height={ActionsHeight.HEIGHT_42} layout={ActionsLayout.LAYOUT_ROW_ENDS}>
+                    <Button padding={ButtonPadding.PADDING_24} onClick={onClickBuyWithEth} disabled = { disabled }>
+                        <Svg svg={SvgEthereumLogo} />
+                    Lucky mint ({nftPresaleStore.getPresalePriceEthFormatted()} ETH)
+                    </Button>
+                </Actions>
+            </div>
         )
     }
 
@@ -245,13 +273,13 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
             <div className={'PageContent AppContent'} >
 
                 <div className={'MarketplaceHero'} >
-                    <div className={'MarketplaceHeroInfo'} >
-                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The World's first Marketplace for</div>
-                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Hashrate<br />Collectibles</div>
-                        <div className={'H3 MarketplaceHeroInfoDesc'} >Mine Bitcoin, effortlessly</div>
+                    <div className={`MarketplaceHeroInfo ${S.CSS.getClassName(nftPresaleStore.isPresaleOver() === false, 'HeroTextInPresaleMode')}`} >
+                        <div className={'MarketplaceHeroInfoHeadingLine1 ExtraBold'} >The only NFT marketplace for</div>
+                        <div className={'MarketplaceHeroInfoHeadingLine2 ExtraBold'} >Tokenised<br />Real World Assets</div>
+                        <div className={'H3 MarketplaceHeroInfoDesc'} >Hashrate NFT collection now live</div>
                         <div className={'MarketplaceHeroInfoCons FlexRow'} >
                             <label>Sustainable mining</label>
-                            <label>Real bitcoin</label>
+                            <label>Hashrate NFTs</label>
                             <label>No hardware needed</label>
                         </div>
                         {nftPresaleStore.isPresaleOver() === true && (
@@ -407,16 +435,16 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                             <ColumnLayout className={'PhaseInfoColumn'} gap={32}>
                                 <div className={'PriceInfo FlexRow'}>
                                     <div className={'B2 SemiBold ColorNeutral050'}>Price:</div>
+                                    <div className={'B1 SemiBold ColorNeutral100'}>{nftPresaleStore.getPresalePriceUsdFormatted()}</div>
                                     <div className={'PriceWithIcon FlexRow'}>
-                                        <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} />
-                                        <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div>
-                                        <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                        {/* <Svg svg={SvgCudosLogo} size={SvgSize.CUSTOM} /> */}
+                                        {/* <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceCudosFormatted()}</div> */}
                                         { renderPresaleBuyWithCudos() }
                                     </div>
                                     <div className={'PriceWithIcon FlexRow'}>
-                                        <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} />
-                                        <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div>
-                                        <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div>
+                                        {/* <Svg svg={SvgEthereumLogo} size={SvgSize.CUSTOM} /> */}
+                                        {/* <div className={'PriceItself Bold ColorNeutral100'}>{nftPresaleStore.getPresalePriceEthFormatted()}</div> */}
+                                        {/* <div className={'B3 SemiBold ColorNeutral040'}>({nftPresaleStore.getPresalePriceUsdFormatted()})</div> */}
                                         { renderPresaleBuyWithEth() }
                                     </div>
                                 </div>
