@@ -14,19 +14,19 @@
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo.HeroTextInPresaleMode {
     position: relative;
-    left: 190px;
+    left: 180px;
     z-index: 2;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine1 {
     color: var(--color-neutral-100);
     text-transform: uppercase;
-    font-size: 22px;
+    font-size: 21px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine2 {
     line-height: 110%;
-    font-size: 48px;
+    font-size: 46px;
     margin-bottom: 16px;
 
     background: linear-gradient(270deg, #050142  0%, #15f8e9 100%);
