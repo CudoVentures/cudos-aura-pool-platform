@@ -79,7 +79,7 @@ function BuyNftModal({ cudosStore, alertStore, resellNftModalStore, buyNftModalS
 
                         <Checkbox
                             label = { (
-                                <div>I accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of CUDOS Markets platform</div>
+                                <div>I read and accept the <a href = { TERMS_AND_CONDITIONS } target="_blank" rel="noopener noreferrer" className = { 'ColorPrimary060' } onClick = { S.stopPropagation } >Terms and Conditions</a> of the CUDOS Markets platform</div>
                             ) }
                             value = { acceptTermsAndConditions }
                             onChange = { setAcceptTermsAndConditions } />
