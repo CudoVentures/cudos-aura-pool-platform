@@ -48,7 +48,7 @@ export default function PageFooter() {
                         <a href={FAQ} target={'_blank'} rel={'noreferrer'} >FAQs</a>
                         <a href={DISCORD} target={'_blank'} rel={'noreferrer'} >Contact us</a>
                     </div>
-                    {/*<div className={'LinksColumn'}>
+                    {/* <div className={'LinksColumn'}>
                         <div className='H3 Bold'>Marketplace</div>
                         <a className={'Clickable'} onClick={onClickExploreNfts} >Explore</a>
                         <a href={REWARDS_CALCULATOR} target={'_blank'} rel={'noreferrer'} >Calculator</a>
