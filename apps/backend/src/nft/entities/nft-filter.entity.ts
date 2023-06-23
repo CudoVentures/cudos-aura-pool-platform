@@ -40,11 +40,11 @@ export default class NftFilterEntity {
         this.count = Number.MAX_SAFE_INTEGER;
 
         // default values so we don't have to check explicitly if they are set
-        this.hashRateMin = 0;
+        this.hashRateMin = Number.MIN_SAFE_INTEGER;
         this.hashRateMax = Number.MAX_SAFE_INTEGER;
 
         this.priceFilterType = NftPriceType.USD;
-        this.priceMin = new BigNumber(0);
+        this.priceMin = new BigNumber(Number.MIN_SAFE_INTEGER);
         this.priceMax = new BigNumber(Number.MAX_SAFE_INTEGER);
 
         this.expiryMin = NOT_EXISTS_INT;
@@ -79,16 +79,20 @@ export default class NftFilterEntity {
         return this.searchString !== '';
     }
 
-    inOnlyForSessionAccount(): boolean {
-        return this.sessionAccount === IntBoolValue.TRUE;
+    hasHashRateMin(): boolean {
+        return this.hashRateMin !== Number.MIN_SAFE_INTEGER;
     }
 
-    isSortByTrending() {
-        return this.orderBy === NftOrderBy.TRENDING_ASC || this.orderBy === NftOrderBy.TRENDING_DESC;
+    hasHashRateMax(): boolean {
+        return this.hashRateMax !== Number.MAX_SAFE_INTEGER;
     }
 
-    getCollectionStatus(): CollectionStatus[] {
-        return this.collectionStatus as unknown as CollectionStatus[];
+    hasPriceMin(): boolean {
+        return this.priceMin.eq(new BigNumber(Number.MIN_SAFE_INTEGER)) === false;
+    }
+
+    hasPriceMax(): boolean {
+        return this.priceMax.eq(new BigNumber(Number.MAX_SAFE_INTEGER)) === false;
     }
 
     hasExpiryMin(): boolean {
@@ -97,6 +101,22 @@ export default class NftFilterEntity {
 
     hasExpiryMax(): boolean {
         return this.expiryMax !== NOT_EXISTS_INT;
+    }
+
+    inOnlyForSessionAccount(): boolean {
+        return this.sessionAccount === IntBoolValue.TRUE;
+    }
+
+    isSortByTrending() {
+        return this.orderBy === NftOrderBy.TRENDING_ASC || this.orderBy === NftOrderBy.TRENDING_DESC;
+    }
+
+    isPriceFilterTypeCudos(): boolean {
+        return this.priceFilterType === NftPriceType.CUDOS;
+    }
+
+    getCollectionStatus(): CollectionStatus[] {
+        return this.collectionStatus as unknown as CollectionStatus[];
     }
 
     static fromJson(json: NftFilterJsonValidation): NftFilterEntity {
@@ -114,7 +134,6 @@ export default class NftFilterEntity {
         entity.from = json.from ?? entity.from;
         entity.count = json.count ?? entity.count;
 
-        // default values so we don't have to check explicitly if they are set
         entity.hashRateMin = json.hashRateMin ?? entity.hashRateMin;
         entity.hashRateMax = json.hashRateMax ?? entity.hashRateMax;
 

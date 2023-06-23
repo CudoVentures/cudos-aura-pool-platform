@@ -66,8 +66,7 @@ function ExploreCollectionsPage({ exploreCollectionsPageStore }: Props) {
                         </>
                     ) }>
 
-                    <DataGridLayout
-                    >
+                    <DataGridLayout>
 
                         { exploreCollectionsPageStore.collectionEntities === null && (
                             <LoadingIndicator />
@@ -75,7 +74,7 @@ function ExploreCollectionsPage({ exploreCollectionsPageStore }: Props) {
 
                         { exploreCollectionsPageStore.collectionEntities !== null && (
                             <GridView
-                                headerRight = { (
+                                headerLeft = { (
                                     <>
                                         <Input
                                             inputType={InputType.TEXT}

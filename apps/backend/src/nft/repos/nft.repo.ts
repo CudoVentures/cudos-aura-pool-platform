@@ -21,7 +21,7 @@ export const enum NftRepoColumn {
     URI = 'uri',
     GROUP = 'group',
     HASHING_POWER = 'hashing_power',
-    price = 'price',
+    PRICE = 'price',
     EXPIRATION_DATE = 'expiration_date',
     STATUS = 'status',
     TOKEN_ID = 'token_id',

@@ -67,8 +67,7 @@ function ExploreMiningFarmsPage({ exploreMiningFarmsPageStore }: Props) {
                         </>
                     ) }>
 
-                    <DataGridLayout
-                    >
+                    <DataGridLayout>
 
                         { miningFarmEntities === null && (
                             <LoadingIndicator />
@@ -76,7 +75,7 @@ function ExploreMiningFarmsPage({ exploreMiningFarmsPageStore }: Props) {
 
                         { miningFarmEntities !== null && (
                             <GridView
-                                headerRight = { (
+                                headerLeft = { (
                                     <>
                                         <Input
                                             inputType={InputType.TEXT}

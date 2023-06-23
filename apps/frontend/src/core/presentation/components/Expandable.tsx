@@ -4,19 +4,18 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Svg from './Svg';
 import '../styles/expandable.css';
-import S from '../../utilities/Main';
 
 type Props = {
     title: React.ReactNode;
-    expanded?: boolean;
+    defaultExpanded?: boolean;
     timeout?: number;
     collapsedSize?: number;
     orientation?: 'horizontal' | 'vertical';
     className?: string;
 }
 
-export default function Expandable({ title, timeout, expanded, collapsedSize, children, orientation, className }: React.PropsWithChildren<Props>) {
-    const [shouldBeExpanded, setShouldBeExpanded] = useState(expanded);
+export default function Expandable({ title, timeout, defaultExpanded, collapsedSize, children, orientation, className }: React.PropsWithChildren<Props>) {
+    const [shouldBeExpanded, setShouldBeExpanded] = useState(defaultExpanded);
 
     return (
         <div className={`Expandable ${className}`}>
@@ -25,8 +24,7 @@ export default function Expandable({ title, timeout, expanded, collapsedSize, ch
                 className={'ExpandableHeader Clickable FlexRow'}
                 onClick={() => {
                     setShouldBeExpanded(!shouldBeExpanded);
-                }}
-            >
+                }}>
                 {title}
                 <Svg svg={shouldBeExpanded ? KeyboardArrowDownIcon : KeyboardArrowUpIcon} />
             </div>
@@ -35,8 +33,7 @@ export default function Expandable({ title, timeout, expanded, collapsedSize, ch
                 in={shouldBeExpanded}
                 timeout={timeout}
                 collapsedSize={collapsedSize}
-                orientation={orientation}
-            >
+                orientation={orientation}>
                 {children}
             </Collapse>
         </div>

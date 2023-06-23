@@ -183,6 +183,7 @@ export class NftFilterJsonValidation {
     @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()
         priceMin: string;
+
     @IsString()
     @Transform((params: TransformFnParams) => sanitizeHtml(params.value))
     @IsNotEmpty()

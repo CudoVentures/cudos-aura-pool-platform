@@ -15,10 +15,13 @@
     margin-bottom: 20px;
 }
 
-
 .GridView .GridHeader .HeaderLeft,
 .GridView .GridHeader .HeaderRight {
     gap: 24px;
+}
+
+.GridView .GridHeader .TotalItems {
+    white-space: nowrap;
 }
 
 .GridView .GridHeader .GridLayoutButtons {    
@@ -37,15 +40,15 @@
     fill: #000;
 }
 
-.GridView .PreviewsGrid {
-    gap: 20px;
-    flex-grow: 1;
-}
-
-.GridView .ContentContainer {
+.GridView .GridViewContent {
     align-items: flex-start;
 }
 
-.GridView .ContentContainer .MainContent {
+.GridView .GridViewContent .GridViewContentItself {
+    flex-grow: 1;
+}
+
+.GridView .GridViewContent .GridViewContentItself .PreviewsGrid {
+    gap: 20px;
     flex-grow: 1;
 }

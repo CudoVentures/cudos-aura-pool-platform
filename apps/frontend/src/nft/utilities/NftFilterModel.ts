@@ -71,6 +71,22 @@ export default class NftFilterModel {
         makeAutoObservable(this);
     }
 
+    hasHashRateMin(): boolean {
+        return this.hashRateMin !== Number.MIN_SAFE_INTEGER;
+    }
+
+    hasHashRateMax(): boolean {
+        return this.hashRateMax !== Number.MAX_SAFE_INTEGER;
+    }
+
+    hasPriceMin(): boolean {
+        return this.priceMin.eq(new BigNumber(Number.MIN_SAFE_INTEGER)) === false;
+    }
+
+    hasPriceMax(): boolean {
+        return this.priceMax.eq(new BigNumber(Number.MAX_SAFE_INTEGER)) === false;
+    }
+
     markApprovedCollections() {
         this.collectionStatus = [CollectionStatus.APPROVED];
     }

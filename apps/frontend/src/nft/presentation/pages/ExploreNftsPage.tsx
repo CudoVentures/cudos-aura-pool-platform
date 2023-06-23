@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
+import S from '../../../core/utilities/Main';
 import NftEntity, { tierPriceMap, NftTier } from '../../entities/NftEntity';
 import ExploreNftsPageStore from '../stores/ExploreNftsPageStore';
 import AppRoutes from '../../../app-routes/entities/AppRoutes';
+import { NftOrderBy, NftPriceType } from '../../utilities/NftFilterModel';
 import { formatUsd } from '../../../core/utilities/NumberFormatter';
 
+import { MenuItem } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Input, { InputType } from '../../../core/presentation/components/Input';
@@ -26,16 +29,12 @@ import RubySvg from '../../../public/assets/vectors/ruby.svg';
 import EmeraldSvg from '../../../public/assets/vectors/emerald.svg';
 import DiamondSvg from '../../../public/assets/vectors/diamond.svg';
 import BlueDiamondSvg from '../../../public/assets/vectors/blue-diamond.svg';
-import FilterListIcon from '@mui/icons-material/FilterList';
-
-import '../styles/page-explore-nfts.css';
 import Select from '../../../core/presentation/components/Select';
-import { MenuItem } from '@mui/material';
-import { NftEventType } from '../../../analytics/entities/NftEventEntity';
-import { NftOrderBy, NftPriceType } from '../../utilities/NftFilterModel';
-import S from '../../../core/utilities/Main';
 import Expandable from '../../../core/presentation/components/Expandable';
 import Checkbox from '../../../core/presentation/components/Checkbox';
+
+import FilterListIcon from '@mui/icons-material/FilterList';
+import '../styles/page-explore-nfts.css';
 
 type Props = {
     exploreNftsPageStore?: ExploreNftsPageStore;
@@ -43,6 +42,9 @@ type Props = {
 
 function ExploreNftsPage({ exploreNftsPageStore }: Props) {
     const navigate = useNavigate();
+
+    const [showFilterSection, setShowFilterSection] = useState(false);
+    const [selectedExpirationPeriod, setSelectedExpirationPeriod] = useState([S.INT_FALSE, S.INT_FALSE, S.INT_FALSE, S.INT_FALSE])
 
     useEffect(() => {
         async function run() {
@@ -60,6 +62,23 @@ function ExploreNftsPage({ exploreNftsPageStore }: Props) {
 
     function onClickExploreMiningFarms() {
         navigate(AppRoutes.EXPLORE_MINING_FARMS);
+    }
+
+    function onClickToggleFilterSection() {
+        setShowFilterSection(!showFilterSection);
+    }
+
+    function onChangeExpirationPeriod(index: number) {
+        const prevValue = selectedExpirationPeriod[index];
+        const newSelectedExpirationPeriod = [S.INT_FALSE, S.INT_FALSE, S.INT_FALSE, S.INT_FALSE];
+        newSelectedExpirationPeriod[index] = prevValue === S.INT_FALSE ? S.INT_TRUE : S.INT_FALSE;
+
+        if (newSelectedExpirationPeriod[index] === S.INT_FALSE) {
+            index = -1;
+        }
+
+        setSelectedExpirationPeriod(newSelectedExpirationPeriod);
+        exploreNftsPageStore.changeExpirationPeriodTo(index)
     }
 
     return (
@@ -82,9 +101,9 @@ function ExploreNftsPage({ exploreNftsPageStore }: Props) {
                     ) }>
                     <>
                         <StyledContainer className = { 'InitialPublicPricesCnt' } containerPadding = { ContainerPadding.PADDING_16 } >
-                            <div className={'FlexRow'}>
+                            <div className={'FlexRow FlexSplit'}>
                                 <div><b>Initial Public Prices:</b></div>
-                                <div className={'NftRanksHolder FlexRow'}>
+                                <div className={'NftRanksHolder FlexRow StartRight'}>
                                     <div className={'FlexRow NftRank'}>
                                         <Svg svg={OpalSvg} />
                                         Opal: {formatUsd(tierPriceMap.get(NftTier.TIER_1))}
@@ -108,8 +127,7 @@ function ExploreNftsPage({ exploreNftsPageStore }: Props) {
                                 </div>
                             </div>
                         </StyledContainer>
-                        <DataGridLayout
-                        >
+                        <DataGridLayout>
 
                             { exploreNftsPageStore.nftEntities === null && (
                                 <LoadingIndicator />
@@ -118,13 +136,13 @@ function ExploreNftsPage({ exploreNftsPageStore }: Props) {
                             { exploreNftsPageStore.nftEntities !== null && (
                                 <div className={'GridAndFilterContainer FlexRow'}>
                                     <GridView
+
                                         headerLeft = { (
                                             <div
-                                                className={`OpenFilterSectionButton Clickable FlexRow ${S.CSS.getActiveClassName(exploreNftsPageStore.showFilterSection)}`}
-                                                onClick = { exploreNftsPageStore.toggleOpenFilterSection }
-                                            >
+                                                className={`OpenFilterSectionButton Transition Clickable FlexRow ${S.CSS.getActiveClassName(exploreNftsPageStore.showFilterSection)}`}
+                                                onClick = { onClickToggleFilterSection } >
                                                 <Svg svg={FilterListIcon} />
-                                            Filter
+                                                Filter
                                             </div>
                                         )}
 
@@ -149,107 +167,103 @@ function ExploreNftsPage({ exploreNftsPageStore }: Props) {
                                                     value={exploreNftsPageStore.nftFilterModel.orderBy} >
                                                     <MenuItem value = { NftOrderBy.PRICE_ASC }> Price <span className={'B2 SemiBold'}>&nbsp;Low to High</span> </MenuItem>
                                                     <MenuItem value = { NftOrderBy.PRICE_DESC }> Price <span className={'B2 SemiBold'}>&nbsp;High to Low</span> </MenuItem>
-                                                    <MenuItem value = { NftOrderBy.HASH_RATE_ASC }> Hashrate <span className={'B2 SemiBold'}>&nbsp;High to Low</span> </MenuItem>
-                                                    <MenuItem value = { NftOrderBy.HASH_RATE_DESC }> Hashrate <span className={'B2 SemiBold'}>&nbsp;Low to High</span> </MenuItem>
+                                                    <MenuItem value = { NftOrderBy.HASH_RATE_DESC }> Hashrate <span className={'B2 SemiBold'}>&nbsp;High to Low</span> </MenuItem>
+                                                    <MenuItem value = { NftOrderBy.HASH_RATE_ASC }> Hashrate <span className={'B2 SemiBold'}>&nbsp;Low to High</span> </MenuItem>
                                                     <MenuItem value = { NftOrderBy.EXPIRY_ASC }> Expiry date <span className={'B2 SemiBold'}>&nbsp;Low to High</span> </MenuItem>
                                                     <MenuItem value = { NftOrderBy.EXPIRY_DESC }> Expiry date <span className={'B2 SemiBold'}>&nbsp;High to Low</span> </MenuItem>
                                                 </Select>
                                             </>
                                         ) }
+
                                         className={'NftGrid'}
                                         gridViewState={exploreNftsPageStore.gridViewState}
-                                        sidebarContent={exploreNftsPageStore.showFilterSection === true && (<div className={'NftFiltersTab FlexColumn'}>
-                                            <Expandable
-                                                className={'FilterExpandable'}
-                                                expanded={true}
-                                                title={<div className={'B1 SemiBold'}>TH/s Range</div>}
-                                            >
-                                                <div className={'FlexRow FilterInputGrid'}>
-                                                    <Input
-                                                        centered={true}
-                                                        gray={true}
-                                                        inputType={InputType.INTEGER}
-                                                        className={'FilterInput'}
-                                                        value = {exploreNftsPageStore.getHashRateMinValue()}
-                                                        onChange = { exploreNftsPageStore.onChangeHashRateMin }
-                                                        placeholder = {'Min'} />
-                                                    <div className={'B2 FlexRow InputSeparator'}>To</div>
-                                                    <Input
-                                                        centered={true}
-                                                        gray={true}
-                                                        inputType={InputType.INTEGER}
-                                                        className={'FilterInput'}
-                                                        value = {exploreNftsPageStore.getHashRateMaxValue()}
-                                                        onChange = { exploreNftsPageStore.onChangeHashRateMax }
-                                                        placeholder = {'Max'} />
-                                                </div>
-                                            </Expandable>
-                                            <div className={'HorizontalSeparator'} />
-                                            <Expandable
-                                                className={'FilterExpandable'}
-                                                expanded={true}
-                                                title={<div className={'B1 SemiBold'}>Price Range</div>}
-                                            >
-                                                <div className={'FilterInputGrid'}>
-                                                    <Select
-                                                        gray={true}
-                                                        centered={true}
-                                                        onChange={exploreNftsPageStore.onChangePriceType}
-                                                        value={exploreNftsPageStore.nftFilterModel.priceFilterType} >
-                                                        <MenuItem value = { NftPriceType.USD }> USD </MenuItem>
-                                                        <MenuItem value = { NftPriceType.CUDOS }> CUDOS </MenuItem>
-                                                    </Select>
-                                                    <div/>
-                                                    <div/>
-                                                    <Input
-                                                        centered={true}
-                                                        gray={true}
-                                                        inputType={InputType.INTEGER}
-                                                        className={'FilterInput'}
-                                                        value = {exploreNftsPageStore.getPriceMinValue()}
-                                                        onChange = { exploreNftsPageStore.onChangePriceMin }
-                                                        placeholder = {'Min'} />
-                                                    <div className={'B2 FlexRow InputSeparator'}>To</div>
-                                                    <Input
-                                                        centered={true}
-                                                        gray={true}
-                                                        inputType={InputType.INTEGER}
-                                                        className={'FilterInput'}
-                                                        value = {exploreNftsPageStore.getPriceMaxValue()}
-                                                        onChange = { exploreNftsPageStore.onChangePriceMax }
-                                                        placeholder = {'Max'} />
-                                                </div>
-                                            </Expandable>
-                                            <div className={'HorizontalSeparator'} />
-                                            <Expandable
-                                                className={'FilterExpandable'}
-                                                expanded={true}
-                                                title={<div className={'B1 SemiBold'}>Expiry Date</div>}
-                                            >
-                                                <div className={'FlexColumn CheckboxContainer'}>
-                                                    <Checkbox
-                                                        label={'Less than a year'}
-                                                        value={exploreNftsPageStore.selectedExpirationPeriod[0]}
-                                                        onChange={() => exploreNftsPageStore.onChangeExpirationPeriod(0)}
-                                                    />
-                                                    <Checkbox
-                                                        label={'More than a year'}
-                                                        value={exploreNftsPageStore.selectedExpirationPeriod[1]}
-                                                        onChange={() => exploreNftsPageStore.onChangeExpirationPeriod(1)}
-                                                    />
-                                                    <Checkbox
-                                                        label={'More than 2 years'}
-                                                        value={exploreNftsPageStore.selectedExpirationPeriod[2]}
-                                                        onChange={() => exploreNftsPageStore.onChangeExpirationPeriod(2)}
-                                                    />
-                                                    <Checkbox
-                                                        label={'More than 3 years'}
-                                                        value={exploreNftsPageStore.selectedExpirationPeriod[3]}
-                                                        onChange={() => exploreNftsPageStore.onChangeExpirationPeriod(3)}
-                                                    />
-                                                </div>
-                                            </Expandable>
-                                        </div>)}
+                                        sidebarContent={showFilterSection === false ? null : (
+                                            <div className={'NftFiltersTab FlexColumn'}>
+                                                <Expandable
+                                                    className={'FilterExpandable'}
+                                                    defaultExpanded={true}
+                                                    title={<div className={'B1 SemiBold'}>TH/s Range</div>}>
+                                                    <div className={'FlexRow FilterInputGrid'}>
+                                                        <Input
+                                                            centered={true}
+                                                            gray={true}
+                                                            inputType={InputType.INTEGER}
+                                                            className={'FilterInput'}
+                                                            value = {exploreNftsPageStore.getHashRateMinValue()}
+                                                            onChange = { exploreNftsPageStore.onChangeHashRateMin }
+                                                            placeholder = {'Min'} />
+                                                        <div className={'B2 FlexRow InputSeparator'}>To</div>
+                                                        <Input
+                                                            centered={true}
+                                                            gray={true}
+                                                            inputType={InputType.INTEGER}
+                                                            className={'FilterInput'}
+                                                            value = {exploreNftsPageStore.getHashRateMaxValue()}
+                                                            onChange = { exploreNftsPageStore.onChangeHashRateMax }
+                                                            placeholder = {'Max'} />
+                                                    </div>
+                                                </Expandable>
+                                                <div className={'HorizontalSeparator'} />
+                                                <Expandable
+                                                    className={'FilterExpandable'}
+                                                    defaultExpanded={true}
+                                                    title={<div className={'B1 SemiBold'}>Price Range</div>}>
+                                                    <div className={'FilterInputGrid'}>
+                                                        <Select
+                                                            gray={true}
+                                                            centered={true}
+                                                            onChange={exploreNftsPageStore.onChangePriceType}
+                                                            value={exploreNftsPageStore.nftFilterModel.priceFilterType} >
+                                                            <MenuItem value = { NftPriceType.USD }> USD </MenuItem>
+                                                            <MenuItem value = { NftPriceType.CUDOS }> CUDOS </MenuItem>
+                                                        </Select>
+                                                        <div/>
+                                                        <div/>
+                                                        <Input
+                                                            centered={true}
+                                                            gray={true}
+                                                            inputType={InputType.INTEGER}
+                                                            className={'FilterInput'}
+                                                            value = {exploreNftsPageStore.getPriceMinValue()}
+                                                            onChange = { exploreNftsPageStore.onChangePriceMin }
+                                                            placeholder = {'Min'} />
+                                                        <div className={'B2 FlexRow InputSeparator'}>To</div>
+                                                        <Input
+                                                            centered={true}
+                                                            gray={true}
+                                                            inputType={InputType.INTEGER}
+                                                            className={'FilterInput'}
+                                                            value = {exploreNftsPageStore.getPriceMaxValue()}
+                                                            onChange = { exploreNftsPageStore.onChangePriceMax }
+                                                            placeholder = {'Max'} />
+                                                    </div>
+                                                </Expandable>
+                                                <div className={'HorizontalSeparator'} />
+                                                <Expandable
+                                                    className={'FilterExpandable'}
+                                                    defaultExpanded={true}
+                                                    title={<div className={'B1 SemiBold'}>Expiry Date</div>}>
+                                                    <div className={'FlexColumn CheckboxContainer'}>
+                                                        <Checkbox
+                                                            label={'Less than a year'}
+                                                            value={selectedExpirationPeriod[0]}
+                                                            onChange={() => onChangeExpirationPeriod(0)} />
+                                                        <Checkbox
+                                                            label={'More than a year'}
+                                                            value={selectedExpirationPeriod[1]}
+                                                            onChange={() => onChangeExpirationPeriod(1)} />
+                                                        <Checkbox
+                                                            label={'More than 2 years'}
+                                                            value={selectedExpirationPeriod[2]}
+                                                            onChange={() => onChangeExpirationPeriod(2)} />
+                                                        <Checkbox
+                                                            label={'More than 3 years'}
+                                                            value={selectedExpirationPeriod[3]}
+                                                            onChange={() => onChangeExpirationPeriod(3)} />
+                                                    </div>
+                                                </Expandable>
+                                            </div>
+                                        )}
                                         defaultContent={exploreNftsPageStore.nftEntities.length === 0 ? <div className={'NoContentFound'}>No Nfts found</div> : null}>
                                         {exploreNftsPageStore.nftEntities.map(
                                             (nftEntity: NftEntity, index: number) => {

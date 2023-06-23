@@ -225,9 +225,7 @@ function CreditCollectionPage({ creditCollectionPageStore, accountSessionStore, 
                             </Actions>
                         )}
                     </div>
-                    <DataGridLayout
-                        className={'NftsCnt'}
-                    >
+                    <DataGridLayout className={'NftsCnt'}>
 
                         {nftEntities === null && (
                             <LoadingIndicator />

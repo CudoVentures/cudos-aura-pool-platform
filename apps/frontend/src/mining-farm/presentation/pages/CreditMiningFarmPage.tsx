@@ -176,15 +176,13 @@ function CreditMiningFarmPage({ nftPresaleStore, presaleCollectionModalStore, cr
 
         const collectionEntities = creditMiningFarmPageStore.collectionEntities;
         return (
-            <DataGridLayout
-                className = { ' CollectionsCnt' }
-            >
+            <DataGridLayout className = { ' CollectionsCnt' } >
 
                 { collectionEntities === null ? (
                     <LoadingIndicator />
                 ) : (
                     <GridView
-                        headerRight = { (
+                        headerLeft = { (
                             <>
                                 <Input
                                     className={'SearchBar'}

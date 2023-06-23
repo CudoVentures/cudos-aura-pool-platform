@@ -22,8 +22,7 @@ function MyNftsTab({ userProfilePageStore }: Props) {
     const nftFilterModel = userProfilePageStore.nftFilterModel;
 
     return (
-        <DataGridLayout
-        >
+        <DataGridLayout>
 
             {userProfilePageStore.nftEntities === null && (
                 <LoadingIndicator />
@@ -31,7 +30,7 @@ function MyNftsTab({ userProfilePageStore }: Props) {
 
             {userProfilePageStore.nftEntities !== null && (
                 <GridView
-                    headerRight={(userProfilePageStore.nftEntities?.length !== 0 || nftFilterModel.searchString !== '')
+                    headerLeft={(userProfilePageStore.nftEntities?.length !== 0 || nftFilterModel.searchString !== '')
                         ? <>
                             <Input
                                 inputType={InputType.TEXT}

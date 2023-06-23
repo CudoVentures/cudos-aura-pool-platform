@@ -33,7 +33,8 @@ function GridView({ className, gridViewState, defaultContent, children, headerLe
                     {gridViewState.getItemCount() !== 0 && (
                         <div className={'TotalItems B2 SemiBold'}>
                             {gridViewState.getItemCount()} Items
-                        </div>)}
+                        </div>
+                    )}
                 </div>
                 <div className={'HeaderRight FlexRow'}>
                     {headerRight}
@@ -53,21 +54,20 @@ function GridView({ className, gridViewState, defaultContent, children, headerLe
                         </div>)}
                 </div>
             </div>
-            <div className={'FlexRow ContentContainer'}>
-                <div className={'SideBar'}>
+            <div className={'FlexRow GridViewContent'}>
+                <div className={`SideBar Transition ActiveVisibilityHidden ${S.CSS.getActiveClassName(sidebarContent !== null)}`}>
                     {sidebarContent}
                 </div>
-                <div className={'MainContent'}>
+                <div className={'GridViewContentItself'}>
                     { gridViewState.isFetching === true && (
                         <LoadingIndicator margin={'16px'}/>
                     ) }
 
                     { gridViewState.isFetching === false && (
                         <>
-                            { defaultContent !== null && (
+                            { defaultContent !== null ? (
                                 <div className={'DefaultContent FlexRow'}>{defaultContent}</div>
-                            ) }
-                            { defaultContent === null && (
+                            ) : (
                                 <SingleRowTable
                                     legend={['']}
                                     widths={['100%']}
@@ -86,6 +86,9 @@ function GridView({ className, gridViewState, defaultContent, children, headerLe
 GridView.defaultProps = {
     defaultContent: null,
     className: '',
+    sidebarContent: null,
+    headerLeft: null,
+    headerRight: null,
 }
 
 export default observer(GridView);
