@@ -120,19 +120,19 @@ export class NFTService {
         if (nftFilterEntity.hasPriceMin() === true || nftFilterEntity.hasPriceMax() === true) {
             const cudosDataEntity = await this.cryptoCompareService.getCachedCudosData();
             if (cudosDataEntity != null) {
-                let priceCudosMin, priceCudosMax, priceUsdMin, priceUsdMax;
+                let priceCudosMin: BigNumber, priceCudosMax: BigNumber, priceUsdMin: BigNumber, priceUsdMax: BigNumber;
                 cudosPriceInUsd = cudosDataEntity.cudosUsdPrice;
 
                 if (nftFilterEntity.isPriceFilterTypeCudos() === true) {
                     priceCudosMin = nftFilterEntity.priceMin;
                     priceCudosMax = nftFilterEntity.priceMax;
-                    priceUsdMin = priceCudosMin * cudosPriceInUsd;
-                    priceUsdMax = priceCudosMax * cudosPriceInUsd;
+                    priceUsdMin = priceCudosMin.multipliedBy(new BigNumber(cudosPriceInUsd));
+                    priceUsdMax = priceCudosMax.multipliedBy(new BigNumber(cudosPriceInUsd));
                 } else {
-                    priceCudosMin = priceUsdMin / cudosPriceInUsd;
-                    priceCudosMax = priceUsdMax / cudosPriceInUsd;
                     priceUsdMin = nftFilterEntity.priceMin;
                     priceUsdMax = nftFilterEntity.priceMax;
+                    priceCudosMin = priceUsdMin.dividedBy(new BigNumber(cudosPriceInUsd));
+                    priceCudosMax = priceUsdMax.dividedBy(new BigNumber(cudosPriceInUsd));
                 }
 
                 whereClause[Op.or] = [
@@ -141,15 +141,15 @@ export class NFTService {
                             [Op.ne]: '',
                         },
                         [NftRepoColumn.PRICE]: {
-                            [Op.gte]: priceCudosMin,
-                            [Op.lte]: priceCudosMax,
+                            [Op.gte]: priceCudosMin.toFixed(0),
+                            [Op.lte]: priceCudosMax.toFixed(0),
                         },
                     },
                     {
                         [NftRepoColumn.TOKEN_ID]: '',
                         [NftRepoColumn.PRICE_USD]: {
-                            [Op.gte]: priceUsdMin,
-                            [Op.lte]: priceUsdMax,
+                            [Op.gte]: priceUsdMin.toFixed(0),
+                            [Op.lte]: priceUsdMax.toFixed(0),
                         },
                     },
                 ];
@@ -170,14 +170,18 @@ export class NFTService {
                     const cudosDataEntity = await this.cryptoCompareService.getCachedCudosData();
                     if (cudosDataEntity !== null) {
                         cudosPriceInUsd = cudosDataEntity.cudosUsdPrice;
-                        attributesClause = {
-                            include: [
-                                [sequelize.literal(`(CASE WHEN ${NftRepoColumn.TOKEN_ID} = '' THEN (${NftRepoColumn.PRICE_USD} / ${cudosPriceInUsd}) ELSE (${NftRepoColumn.PRICE} / ${new BigNumber(1).shiftedBy(CURRENCY_DECIMALS).toString()}) END)`), 'accumulated_price'],
-                            ],
-                        }
                     }
                 }
-                orderByClause = [['accumulated_price']]
+                if (cudosPriceInUsd !== NOT_EXISTS_INT) {
+                    attributesClause = {
+                        include: [
+                            [sequelize.literal(`(CASE WHEN ${NftRepoColumn.TOKEN_ID} = '' THEN (${NftRepoColumn.PRICE_USD} / ${cudosPriceInUsd}) ELSE (${NftRepoColumn.PRICE} / ${new BigNumber(1).shiftedBy(CURRENCY_DECIMALS).toString()}) END)`), 'accumulated_price'],
+                        ],
+                    }
+                    orderByClause = [['accumulated_price']]
+                } else {
+                    orderByClause = [[NftRepoColumn.PRICE]]
+                }
                 break;
             case NftOrderBy.TIMESTAMP_ASC:
             case NftOrderBy.TIMESTAMP_DESC:
