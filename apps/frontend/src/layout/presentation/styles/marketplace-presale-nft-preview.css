@@ -1,0 +1,23 @@
+.MarketPresaleNftPreview {
+    font-family: "OpenSans";
+}
+
+.MarketPresaleNftPreview .NftPreviewImg {
+    padding-bottom: 100%;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: 2px 2px 30px rgba(8, 9, 12, 0.1);
+}
+
+.MarketPresaleNftPreview .NftPreviewNameRow {
+    margin-bottom: 8px;
+}
+
+.MarketPresaleNftPreview .NftPreviewNameRow .NftPreviewSvg {
+    width: 18px; height: 18px;
+    margin-right: 4px;
+}
+
+.MarketPresaleNftPreview .NftPreviewNameRow .NftPreviewName.NftPreviewNameWhite {
+    color: #fff;
+}

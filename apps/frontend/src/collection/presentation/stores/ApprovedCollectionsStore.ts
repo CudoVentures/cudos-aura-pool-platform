@@ -70,7 +70,7 @@ export default class ApprovedCollectionsStore {
         await runInActionAsync(() => {
             this.collectionEntities = collectionEntities;
             this.collectionDetailsMap = collectionDetailsMap;
-            this.collectionsTableState.tableFilterState.total = total;
+            this.collectionsTableState.tableFilterState.setTotal(total);
         });
     }
 

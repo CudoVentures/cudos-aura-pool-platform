@@ -45,6 +45,8 @@ export default class WalletSelectModal extends ModalStore {
     @observable sequence: number;
     @observable accountNumber: number;
     @observable onFinish: (signedTx: StdSignature | null, sequence: number, accountNumber: number) => void;
+    @observable termsAccepted: number;
+    @observable termsAcceptedError: boolean;
 
     accountRepo: AccountRepo;
     walletStore: WalletStore;
@@ -69,6 +71,9 @@ export default class WalletSelectModal extends ModalStore {
         this.sequence = S.NOT_EXISTS;
         this.accountNumber = S.NOT_EXISTS;
         this.onFinish = null;
+
+        this.termsAccepted = S.INT_FALSE;
+        this.termsAcceptedError = false;
 
         makeObservable(this);
     }
@@ -191,6 +196,10 @@ export default class WalletSelectModal extends ModalStore {
         return this.identityTx === TransactionStatus.ERROR;
     }
 
+    isTermsAccepted(): boolean {
+        return this.termsAccepted === S.INT_TRUE;
+    }
+
     hasNextStep(): boolean {
         switch (this.progressStep) {
             case ProgressSteps.CONNECT_WALLET:
@@ -212,6 +221,19 @@ export default class WalletSelectModal extends ModalStore {
                 return true;
         }
     }
+
+    onChangeTermsAndConditions = action((value) => {
+        this.termsAccepted = value;
+        this.hideTermsAcceptedError();
+    })
+
+    showTermsAcceptedError = action(() => {
+        this.termsAcceptedError = true;
+    })
+
+    hideTermsAcceptedError = action(() => {
+        this.termsAcceptedError = false;
+    })
 
     @action
     showSignalAsUser() {
@@ -236,6 +258,9 @@ export default class WalletSelectModal extends ModalStore {
         this.walletOption = SessionStorageWalletOptions.KEPLR;
         this.identityTx = TransactionStatus.NOT_INITIALIZED;
         this.onFinish = onFinish;
+
+        this.termsAccepted = walletSelectMode === WalletSelectMode.SUPER_ADMIN ? S.INT_TRUE : S.INT_FALSE;
+        this.termsAcceptedError = false;
 
         this.invalidateProgressSteps();
 

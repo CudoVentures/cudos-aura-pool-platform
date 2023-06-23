@@ -54,7 +54,7 @@ export default class SuperAdminMningFarmsPageStore {
             this.miningFarmFilterModel.count = this.tableState.tableFilterState.itemsPerPage;
             this.miningFarmEntities = miningFarmEntities;
             this.miningFarmDetailEntitiesMap = miningFarmDetailEntitiesMap;
-            this.tableState.tableFilterState.total = total;
+            this.tableState.tableFilterState.setTotal(total);
         });
     }
 

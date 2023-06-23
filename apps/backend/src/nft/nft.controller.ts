@@ -80,19 +80,21 @@ export class NFTController {
         let nftEntity: NftEntity;
 
         if (id === 'presale') {
-            const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
+            const presaleEndTimestamp = this.configService.getOrThrow<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp < Date.now()) {
                 console.log('Getting NFT from OnDemandMinting', 'presale has ended at', presaleEndTimestamp);
                 req.logger.info(`Getting NFT from OnDemandMinting presale has ended at ${presaleEndTimestamp}`);
                 throw new Error('Presale ended.')
             }
 
-            const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient, req.transaction);
-
-            if (allowlistUser === null) {
-                console.log('Getting NFT from OnDemandMinting', `Address ${recipient} not found in allowlist`);
-                req.logger.info(`Getting NFT from OnDemandMinting Address ${recipient} not found in allowlist`);
-                throw new Error('Recipient not in allowlist.')
+            const respectAllowlist = this.configService.getOrThrow<string>('APP_RESPECT_ALLOWLIST');
+            if (respectAllowlist === 'true') {
+                const allowlistUser = this.allowlistService.getAllowlistUserByAddress(recipient, req.transaction);
+                if (allowlistUser === null) {
+                    console.log('Getting NFT from OnDemandMinting', `Address ${recipient} not found in allowlist`);
+                    req.logger.info(`Getting NFT from OnDemandMinting Address ${recipient} not found in allowlist`);
+                    throw new Error('Recipient not in allowlist.')
+                }
             }
 
             nftEntity = await this.nftService.getRandomPresaleNft(paidAmountAcudos, req.transaction, req.transaction.LOCK.UPDATE);
@@ -100,7 +102,7 @@ export class NFTController {
                 nftEntity = await this.nftService.updatePremintNftPrice(nftEntity, paidAmountAcudos, req.transaction);
             }
         } else {
-            const presaleEndTimestamp = this.configService.get<number>('APP_PRESALE_END_TIMESTAMP');
+            const presaleEndTimestamp = this.configService.getOrThrow<number>('APP_PRESALE_END_TIMESTAMP');
             if (presaleEndTimestamp > Date.now()) {
                 console.log('Getting NFT from OnDemandMinting', 'public sale has not started yet', presaleEndTimestamp);
                 req.logger.info(`Getting NFT from OnDemandMinting public sale has not started yet ${presaleEndTimestamp}`);
@@ -109,7 +111,7 @@ export class NFTController {
 
             nftEntity = await this.nftService.findOne(id, req.transaction, req.transaction.LOCK.UPDATE);
 
-            const presaleExpectedPriceEpsilon = this.configService.get<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
+            const presaleExpectedPriceEpsilon = this.configService.getOrThrow<number>('APP_PRESALE_EXPECTED_PRICE_EPSILON');
             const expectedAcudosEpsilonAbsolute = paidAmountAcudos.multipliedBy(presaleExpectedPriceEpsilon);
             const expectedAcudosLowerBand = expectedAcudosEpsilonAbsolute.minus(expectedAcudosEpsilonAbsolute);
             const expectedAcudosUpperband = expectedAcudosEpsilonAbsolute.plus(expectedAcudosEpsilonAbsolute);
@@ -192,6 +194,7 @@ export class NFTController {
         @Body() reqUpdateNftChainData: ReqUpdateNftChainData,
     ): Promise<void> {
         const { nftDtos: nftDataJsons, height } = reqUpdateNftChainData;
+        console.log(`Height: ${height} -> nft.controller | ${JSON.stringify(nftDataJsons)}`);
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
 
@@ -199,18 +202,23 @@ export class NFTController {
             throw new Error(`BDJuno not yet on block:  ${height}`);
         }
 
-        const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId)
-            .filter((denomId, index, self) => self.indexOf(denomId) === index);
+        // const denomIds = nftDataJsons.map((nftJson) => nftJson.denomId).filter((denomId, index, self) => self.indexOf(denomId) === index);
+        const denomIds = Array.from(new Set(nftDataJsons.map((nftJson) => nftJson.denomId)));
 
         let chainMarketplaceNftEntities: ChainMarketplaceNftEntity[] = [];
         for (let i = 0; i < denomIds.length; i++) {
             const denomId = denomIds[i];
-            const tokenIds = nftDataJsons.filter((nftDataJson) => nftDataJson.denomId === denomId).map((nftDataJson) => nftDataJson.tokenId);
+            let tokenIds = nftDataJsons.filter((nftDataJson) => nftDataJson.denomId === denomId).map((nftDataJson) => nftDataJson.tokenId);
+            tokenIds = Array.from(new Set(tokenIds)); // filter unique entries
 
             const marketplaceNftDtos = await this.graphqlService.fetchMarketplaceNftsByTokenIds(tokenIds, denomId);
+            if (marketplaceNftDtos.length !== tokenIds.length) {
+                throw new Error(`BDJuno is updated but nft entities are missing. Looking for ${tokenIds.join(', ')} found ${JSON.stringify(marketplaceNftDtos)}`);
+            }
 
             chainMarketplaceNftEntities = chainMarketplaceNftEntities.concat(marketplaceNftDtos);
         }
+
         // fetch nfts
         const nftFilterEntity = new NftFilterEntity();
         nftFilterEntity.nftIds = chainMarketplaceNftEntities.filter((entity) => validate(entity.uid)).map((entity) => entity.uid);
@@ -228,6 +236,7 @@ export class NFTController {
             nftEntity.status = chainMarketplaceNftEntity.burned === true ? NftStatus.REMOVED : NftStatus.MINTED;
             nftEntity.marketplaceNftId = chainMarketplaceNftEntity.hasMarketplaceNftId() === true ? chainMarketplaceNftEntity.marketplaceNftId.toString() : '';
 
+            console.log('updating nft with id: ', nftEntity.id);
             await this.nftService.updateOneWithStatus(nftEntity.id, nftEntity, req.transaction);
         }
     }

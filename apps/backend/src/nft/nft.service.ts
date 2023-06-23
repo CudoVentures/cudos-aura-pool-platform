@@ -29,19 +29,19 @@ enum Tier {
 }
 
 const tierBorderMap = new Map<Tier, number>([
-    [Tier.TIER_5, 9983],
-    [Tier.TIER_4, 9937],
-    [Tier.TIER_3, 9439],
-    [Tier.TIER_2, 1912],
+    [Tier.TIER_5, 9988],
+    [Tier.TIER_4, 9939],
+    [Tier.TIER_3, 9438],
+    [Tier.TIER_2, 1911],
     [Tier.TIER_1, 0],
 ])
 
 const tierPriceMap = new Map<Tier, number>([
-    [Tier.TIER_1, 150],
-    [Tier.TIER_2, 300],
-    [Tier.TIER_3, 1000],
-    [Tier.TIER_4, 3000],
-    [Tier.TIER_5, 5000],
+    [Tier.TIER_1, 165],
+    [Tier.TIER_2, 330],
+    [Tier.TIER_3, 1100],
+    [Tier.TIER_4, 3300],
+    [Tier.TIER_5, 5500],
 ])
 
 @Injectable()
@@ -208,8 +208,13 @@ export class NFTService {
         }
 
         const total = nftEntities.length;
-        nftEntities = nftEntities.slice(nftFilterEntity.from, nftFilterEntity.from + nftFilterEntity.count);
+        const countPerPage = nftFilterEntity.count;
+        let from = nftFilterEntity.from;
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
+        }
 
+        nftEntities = nftEntities.slice(from, from + nftFilterEntity.count);
         return {
             nftEntities,
             total,
@@ -340,7 +345,7 @@ export class NFTService {
 
             if (purchaseTransactionEntityToUpdate !== undefined) {
                 if (purchaseTransactionEntityToUpdate.isPending() === false) {
-                    return;
+                    continue;
                 }
                 purchaseTransactionEntityToUpdate.status = purchaseTransactionEntity.status;
                 await this.creditPurchaseTransaction(purchaseTransactionEntityToUpdate, dbTx);
@@ -350,7 +355,7 @@ export class NFTService {
         }
     }
 
-    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFIlterModel: PurchaseTransactionsFilterEntity, unsavedPurchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
+    async fetchPurchaseTransactions(cudosAddress: string, purchaseTransactionFilterModel: PurchaseTransactionsFilterEntity, unsavedPurchaseTransactionEntities: PurchaseTransactionEntity[], dbTx: Transaction): Promise < {purchaseTransactionEntities: PurchaseTransactionEntity[], total: number} > {
         const totalPurchaseTransactionEntities = await this.fetchPurchasesTransactionsByRecipientAddress(cudosAddress, dbTx);
         const savedTransactionsMap = new Map < string, PurchaseTransactionEntity >();
         totalPurchaseTransactionEntities.forEach((purchaseTransactionEntity) => {
@@ -367,9 +372,16 @@ export class NFTService {
             return b.timestamp - a.timestamp;
         });
 
+        const total = sortedPurchaseTransactionEntities.length
+        const countPerPage = purchaseTransactionFilterModel.count;
+        let from = purchaseTransactionFilterModel.from;
+        if (from >= total) {
+            from = Math.max(0, countPerPage * Math.floor((total - 1) / countPerPage));
+        }
+
         return {
-            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(purchaseTransactionFIlterModel.from, purchaseTransactionFIlterModel.from + purchaseTransactionFIlterModel.count),
-            total: sortedPurchaseTransactionEntities.length,
+            purchaseTransactionEntities: sortedPurchaseTransactionEntities.slice(from, from + purchaseTransactionFilterModel.count),
+            total,
         }
     }
 

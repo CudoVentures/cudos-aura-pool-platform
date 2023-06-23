@@ -60,7 +60,7 @@ export default class QueuedMiningFarmsStore {
 
         await runInActionAsync(() => {
             this.miningFarmEntities = miningFarmEntities;
-            this.miningFarmsTableState.tableFilterState.total = total;
+            this.miningFarmsTableState.tableFilterState.setTotal(total);
         });
     }
 

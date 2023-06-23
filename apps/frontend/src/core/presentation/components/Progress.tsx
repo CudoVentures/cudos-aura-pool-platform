@@ -20,10 +20,10 @@ function Progress({ progressStore }: Props) {
                     <div className = { 'ProgressTitle' } > { progressStore.title } </div>
                 ) }
 
-                <div className = { 'ProgressBar' } >
+                {/* <div className = { 'ProgressBar' } >
                     <div className = { 'ProgressBarIndicator' } style = { progressStore.getProgressBarStyle() } />
                     <span>{progressStore.formatProgressInPercentage()}</span>
-                </div>
+                </div> */}
 
                 <LoadingIndicator />
             </div>

@@ -15,7 +15,8 @@ import Button from '../../../core/presentation/components/Button';
 
 import SvgAuraPoolLogo from '../../../public/assets/vectors/cudos-markets-logo.svg';
 import '../styles/page-admin-header.css'
-import { REWARDS_CALCULATOR } from '../../../core/utilities/Links';
+import { FAQ } from '../../../core/utilities/Links';
+import { PRESALE_CONSTS } from '../../../core/utilities/Constants';
 
 type Props = {
     accountSessionStore?: AccountSessionStore;
@@ -61,9 +62,13 @@ function PageAdminHeader({ accountSessionStore, walletStore, presaleStore }: Pro
             </div>
 
             <div className={'NavCnt FlexRow'}>
-                <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>{ presaleStore.isInPresale() === true ? 'Presale' : 'Marketplace' }</div>
+                { presaleStore.isInPresale() === true ? (
+                    <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}>{ PRESALE_CONSTS.RESPECT_ALLOWLIST ? 'Presale' : 'Public sale' }</div>
+                ) : (
+                    <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.MARKETPLACE)}`} onClick={onClickMarketplace}> Marketplace </div>
+                ) }
                 {/* <div className={`NavButton B1 SemiBold Clickable ${S.CSS.getActiveClassName(location.pathname === AppRoutes.REWARDS_CALCULATOR)}`} onClick={onClickRewardsCalculator}>Rewards Calculator</div> */}
-                <a className={'NavButton B1 SemiBold Clickable'} href={REWARDS_CALCULATOR} target='_blank' rel="noreferrer">Rewards Calculator</a>
+                <a className={'NavButton B1 SemiBold Clickable'} href={FAQ} target='_blank' rel="noreferrer">FAQs</a>
 
                 { accountSessionStore.isAdmin() === true && (
                     <>

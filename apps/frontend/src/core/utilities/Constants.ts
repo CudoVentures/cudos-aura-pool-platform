@@ -15,8 +15,8 @@ declare let Config;
 
 export const SIGN_NONCE = -74563;
 
-export const ADDRESSBOOK_LABEL = 'aurapool';
-export const ADDRESSBOOK_NETWORK = 'aurapool';
+export const ADDRESSBOOK_LABEL = 'cudosmarkets';
+export const ADDRESSBOOK_NETWORK = 'cudosmarkets';
 
 export const BTC_CONSTS = {
     BTC_EXPLORER_URL: Config.APP_BTC_NETWORK === 'testnet' ? 'https://ex.signet.bublina.eu.org/address' : 'https://www.blockchain.com/explorer/addresses/btc',
@@ -25,6 +25,7 @@ export const BTC_CONSTS = {
 export const PRESALE_CONSTS = {
     PRICE_USD: Number(Config.APP_PRESALE_PRICE_USD),
     PRESALE_ENDTIME: Config.APP_PRESALE_END_TIMESTAMP,
+    RESPECT_ALLOWLIST: Config.APP_RESPECT_ALLOWLIST === 'true',
 }
 
 export const ETH_CONSTS = {

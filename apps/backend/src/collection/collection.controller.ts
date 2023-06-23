@@ -32,6 +32,7 @@ import { GraphqlService } from '../graphql/graphql.service';
 import { FarmService } from '../farm/farm.service';
 import ApiKeyGuard from '../auth/guards/api-key.guard';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { HttpService } from '@nestjs/axios';
 
 @Controller('collection')
 export class CollectionController {
@@ -46,6 +47,7 @@ export class CollectionController {
         private dataService: DataService,
         private graphqlService: GraphqlService,
         private farmService: FarmService,
+        private readonly httpService: HttpService,
     ) {
         this.isCreatorOrSuperAdminGuard = new IsCreatorOrSuperAdminGuard(this.collectionService, this.farmService);
         this.isFarmApprovedGuard = new IsFarmApprovedGuard(this.farmService);
@@ -115,9 +117,54 @@ export class CollectionController {
         const miningFarmDb = await this.farmService.findMiningFarmById(collectionEntity.farmId, req.transaction);
         const collectionOwnerAccountId = miningFarmDb.accountId;
 
+        const collectionDbEntity = await this.collectionService.findOne(collectionId, req.transaction, req.transaction.LOCK.UPDATE);
+        const nftFilterEntity = new NftFilterEntity();
+        nftFilterEntity.collectionIds = [collectionId.toString()];
+        const { nftEntities: collectionNftDbEntities } = await this.nftService.findByFilter(null, nftFilterEntity, req.transaction, req.transaction.LOCK.UPDATE);
+
+        // check collection hasing power
+        const collectionDbEntities = await this.collectionService.findByFarmId(miningFarmDb.id, req.transaction, req.transaction.LOCK.UPDATE);
+        const miningFarmHashPowerSoFar = collectionDbEntities.reduce((accu, entity) => {
+            if (collectionDbEntity === null || collectionDbEntity.id !== entity.id) {
+                accu += entity.hashingPower;
+            }
+            return accu;
+        }, 0);
+        if (miningFarmHashPowerSoFar + collectionEntity.hashingPower > miningFarmDb.hashPowerInTh) {
+            throw new CollectionCreationError(); // exceed hashing power
+        }
+
+        // check nfts hasing power
+        const nftsHashingPower = nftEntities.reduce((accumulator, nftEntity) => {
+            return accumulator + nftEntity.hashingPower;
+        }, 0);
+        if (nftsHashingPower > collectionEntity.hashingPower) {
+            throw new CollectionCreationError(); // exceed hashing power
+        }
+
+        // check immutable fields
+        if (collectionDbEntity !== null) {
+            if (collectionEntity.farmId !== collectionDbEntity.farmId) {
+                throw new CollectionCreationError(); // exceed hashing power
+            }
+        }
+
         try {
             collectionEntity.bannerImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.bannerImage);
             collectionEntity.mainImage = await this.dataService.trySaveUri(collectionOwnerAccountId, collectionEntity.mainImage);
+            const uniqueUrlsMap = new Map < string, string >();
+            for (let i = nftEntities.length; i-- > 0;) {
+                const nftEntity = nftEntities[i];
+                if (this.dataService.isUrlUploadedImage(nftEntity.uri) === true) {
+                    if (uniqueUrlsMap.has(nftEntity.uri) === false) {
+                        const response = await this.httpService.axiosRef.get(nftEntity.uri, { responseType: 'arraybuffer' });
+                        const base64 = Buffer.from(response.data, 'binary').toString('base64');
+                        const uri = `data:image/png;base64,${base64}`;
+                        uniqueUrlsMap.set(nftEntity.uri, uri);
+                    }
+                    nftEntity.uri = uniqueUrlsMap.get(nftEntity.uri);
+                }
+            }
             for (let i = nftEntities.length; i-- > 0;) {
                 nftEntities[i].uri = await this.dataService.trySaveUri(collectionOwnerAccountId, nftEntities[i].uri);
             }
@@ -125,11 +172,6 @@ export class CollectionController {
             console.log(e);
             throw new DataServiceError();
         }
-
-        const collectionDbEntity = await this.collectionService.findOne(collectionId, req.transaction, req.transaction.LOCK.UPDATE);
-        const nftFilterEntity = new NftFilterEntity();
-        nftFilterEntity.collectionIds = [collectionId.toString()];
-        const { nftEntities: collectionNftDbEntities } = await this.nftService.findByFilter(null, nftFilterEntity, req.transaction, req.transaction.LOCK.UPDATE);
 
         let oldUris = [];
         if (collectionDbEntity !== null) {
@@ -297,23 +339,28 @@ export class CollectionController {
         @Req() req: AppRequest,
         @Body() reqUpdateCollectionChainData: ReqUpdateCollectionChainData,
     ): Promise<void> {
-        const { denomIds, collectionIds, module, height } = reqUpdateCollectionChainData;
+        const { module, height } = reqUpdateCollectionChainData;
+        let { denomIds, collectionIds } = reqUpdateCollectionChainData;
+        console.log(`Height: ${height} of ${module} -> collection.controller | ${JSON.stringify(denomIds)} | ${JSON.stringify(collectionIds)}`);
 
         const bdJunoParsedHeight = await this.graphqlService.fetchLastParsedHeight();
-
         if (height > bdJunoParsedHeight) {
             throw new Error(`BDJuno not yet on block:  ${height}`);
         }
+
+        // filter unique entries
+        denomIds = Array.from(new Set(denomIds));
+        collectionIds = Array.from(new Set(collectionIds));
 
         if (module === ModuleName.MARKETPLACE) {
             const chainMarketplaceCollectionEntitiesByDenoms = await this.graphqlService.fetchMarketplaceCollectionsByDenomIds(denomIds);
             const chainMarketplaceCollectionEntitiesByIds = await this.graphqlService.fetchMarketplaceCollectionsByIds(collectionIds);
 
             if (chainMarketplaceCollectionEntitiesByDenoms.length !== denomIds.length) {
-                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by denomIds) looking for ${denomIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByDenoms.join(', ')}`);
+                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by denomIds). Looking for ${denomIds.join(', ')} found ${JSON.stringify(chainMarketplaceCollectionEntitiesByDenoms)}`);
             }
             if (chainMarketplaceCollectionEntitiesByIds.length !== collectionIds.length) {
-                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by collectionIds) looking for ${collectionIds.join(', ')} found ${chainMarketplaceCollectionEntitiesByIds.join(', ')}`);
+                throw new Error(`BDJuno is updated but marketpalce collections are missing (fetch by collectionIds). Looking for ${collectionIds.join(', ')} found ${JSON.stringify(chainMarketplaceCollectionEntitiesByDenoms)}`);
             }
 
             // map is used to filter by denom ids so we don't make duplicated queries later
@@ -344,6 +391,7 @@ export class CollectionController {
 
                 if (collectionEntity.isRejected() === false) {
                     collectionEntity.status = chainMarketplaceCollectionEntity.verified === true ? CollectionStatus.APPROVED : CollectionStatus.DELETED;
+                    console.log('updating collection with denomId: ', denomId);
                     await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
                 }
             }
@@ -351,7 +399,7 @@ export class CollectionController {
             const chainNftCollectionEntities = await this.graphqlService.fetchNftCollectionsByDenomIds(denomIds);
 
             if (chainNftCollectionEntities.length !== denomIds.length) {
-                throw new Error('BDJuno is updated but nft collection entities are missing');
+                throw new Error(`BDJuno is updated but nft collection entities are missing. Looking for ${denomIds.join(', ')} found ${JSON.stringify(chainNftCollectionEntities)}`);
             }
 
             for (let i = 0; i < chainNftCollectionEntities.length; i++) {
@@ -371,6 +419,7 @@ export class CollectionController {
                 collectionEntity.name = chainNftCollectionEntity.name;
                 collectionEntity.description = chainNftCollectionEntity.description;
 
+                console.log('updating collection with denomId: ', denomId);
                 await this.collectionService.updateOneByIdAndDenomId(denomId, collectionEntity, req.transaction);
             }
         }

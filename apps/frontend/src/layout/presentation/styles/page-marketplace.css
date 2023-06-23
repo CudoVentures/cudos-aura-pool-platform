@@ -4,7 +4,7 @@
 
 .PageMarketplace .MarketplaceHero {
     position: relative;
-    margin: 90px 0 260px 0;
+    margin: 90px 0 110px 0;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo {
@@ -12,15 +12,21 @@
     flex-direction: column;
 }
 
+.PageMarketplace .MarketplaceHero .MarketplaceHeroInfo.HeroTextInPresaleMode {
+    position: relative;
+    left: 180px;
+    z-index: 2;
+}
+
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine1 {
     color: var(--color-neutral-100);
     text-transform: uppercase;
-    font-size: 25px;
+    font-size: 21px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoHeadingLine2 {
     line-height: 110%;
-    font-size: 65px;
+    font-size: 46px;
     margin-bottom: 16px;
 
     background: linear-gradient(270deg, #050142  0%, #15f8e9 100%);
@@ -34,7 +40,7 @@
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoDesc {
     color: var(--color-neutral-060);
-    margin-bottom: 64px;
+    margin-bottom: 32px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoCons {
@@ -42,7 +48,7 @@
     font-weight: 700;
     font-size: 10px;
     text-transform: uppercase;
-    margin-bottom: 52px;
+    margin-bottom: 32px;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroInfo .MarketplaceHeroInfoCons label {
@@ -54,25 +60,31 @@
     position: absolute;
     bottom: -122px;
     right: 0;
+    --image-width: 476px;
+}
+
+.PageMarketplace .MarketplaceHero .MarketplaceHeroBg .PresaleHero {
+    width: 768px;
+    align-self: center;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg01 {
-    width: 576px;
+    width: var(--image-width);
     position: absolute;
-    right: 125px;
-    bottom: 55px;
+    right: calc(var(--image-width) * 0.217);
+    bottom: calc(var(--image-width) * 0.0954);
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroImg02 {
-    width: 576px;
+    width: var(--image-width);
     position: absolute;
     right: 0;
     bottom: 0;
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle {
-    width: 427px;
-    height: 427px;
+    width: calc(var(--image-width) * 0.7413);
+    height: calc(var(--image-width) * 0.7413);
     position: absolute;
     filter: blur(75px);
     border-radius: 50%;
@@ -80,18 +92,18 @@
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle01 {
-    right: 270px;
-    bottom: 90px;
+    right: calc(var(--image-width) * 0.4688);
+    bottom: calc(var(--image-width) * 0.1563);
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle02 {
-    right: 120px;
-    bottom: 290px;
+    right: calc(var(--image-width) * 0.2083);
+    bottom: calc(var(--image-width) * 0.5036);
 }
 
 .PageMarketplace .MarketplaceHero .MarketplaceHeroBg .HeroCircle03 {
     right: 0px;
-    bottom: 150px;
+    bottom: calc(var(--image-width) * 0.2604);
 }
 
 .PageMarketplace .MarketplaceHeading {
@@ -145,74 +157,110 @@
     flex: 1 1 auto;
 }
 
-.PageMarketplace .PresaleContainer {
-    gap: 50px;
-    margin-bottom: 260px;
+.PageMarketplace .PresaleInfoColumn {
+    align-items: center;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .CollectionDescription {
+/* .PageMarketplace .PresaleInfoColumn .PresaleInfo {
+    max-width: 768px;
+    text-align: center;
+    padding: 12px 24px;
+    border: 1px solid var(--color-primary-060);
+    border-radius: 6px;
+    margin-bottom: 16px;
+} */
+
+.PageMarketplace .PresaleInfoColumn .CollectionLabel {
+    text-transform: uppercase;
+    text-align: center;
     font-family: "OpenSans";
-    font-size: 14px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .CollectionName {
+.PageMarketplace .PresaleInfoColumn .CollectionName {
+    max-width: 900px;
+    text-align: center;
     font-family: "Montserrat";
-    font-size: 32px;
     font-weight: 800;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader {
-    display: flex; justify-content: space-between;
-    align-items: flex-start;
+.PageMarketplace .PresaleInfoColumn .CollectionDescription {
+    max-width: 900px;
+    text-align: center;
+    font-family: "OpenSans";
+    margin-bottom: 24px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .PhaseName {
-    background: #000000;
-    border-radius: 6px;
-    padding: 3px 8px;
-    color: #f6f6f6;
-    width: fit-content;
-}
-
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .PhaseEta {
-    justify-content: flex-end;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer {
+    align-self: stretch;
     align-items: center;
-    gap: 4px;
+    gap: 32px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .TimeNumberBox {
-    width: 56px;
-    height: 56px;
-    background: #E6E9F2;
-    border-radius: 6px;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn {
+    width: 100%;
     align-items: center;
-    justify-content: center;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhaseHeader .TimeNumberBox span {
-    font-size: 10px;
-}
-
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow {
-    justify-content: space-between;
-}
-
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow .PriceInfo {
-    gap: 4px;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo {
+    gap: 16px;
     align-items: center;
     justify-content: space-between;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow .PriceInfo .PriceWithIcon {
-    gap: 4px;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon {
+    gap: 6px;
     align-items: center;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PhasePriceRow .PriceInfo .PriceWithIcon .SVG {
+/* .PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon .SVG {
     width: 24px;
     height: 24px;
+} */
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .PriceInfo .PriceWithIcon .PriceItself {
+    font-size: 20px;
 }
 
-.PageMarketplace .PresaleContainer .PresaleInfoColumn .PhaseInfoContainer .PhaseInfoColumn .AmountMintedRow {
-    justify-content: space-between;
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresalePreviewCnt {
+    align-self: stretch;
+}
+
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt {
+    align-self: stretch;
+    padding: 32px 32px 32px 48px;
+    border-radius: 16px;
+    background-color: var(--color-neutral-100);
+}
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt .LuckyDesc {
+    width: 390px;
+    line-height: 100%;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 40px;
+    margin-right: 40px;
+}
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt .LuckyDesc .LuckyGradient {
+    background: linear-gradient(270deg, #67D271  0%, #08BDDC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+.PageMarketplace .PresaleInfoColumn .PhaseInfoContainer .NftPresaleLuckyCnt .NftPresalePreviewLuckyCnt {
+    flex: 1 1 auto;
+}
+
+.PageMarketplace .PresaleInfoColumn .PurchaseNoWallet {
+    font-size: 18px;
+}
+
+.PageMarketplace .PresaleInfoColumn .PurchaseError {
+    max-width: 768px;
+    color: var(--color-error-060);
+    text-align: center;
+    margin-bottom: 32px;
 }

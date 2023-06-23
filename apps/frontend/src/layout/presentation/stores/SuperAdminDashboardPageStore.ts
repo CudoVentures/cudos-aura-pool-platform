@@ -98,7 +98,7 @@ export default class SuperAdminDashboardPageStore {
         await runInActionAsync(() => {
             this.bestPerformingMiningFarms = miningFarmEntities;
             this.miningFarmPerformanceEntitiesMap = miningFarmPerformanceEntitiesMap;
-            this.topFarmsTableState.tableFilterState.total = miningFarmEntities.length; // no paging here
+            this.topFarmsTableState.tableFilterState.setTotal(miningFarmEntities.length) // no paging here
         })
     }
 
