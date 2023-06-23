@@ -15,7 +15,7 @@ import BigNumber from 'bignumber.js';
 import { CURRENCY_DECIMALS } from 'cudosjs';
 import { ConfigService } from '@nestjs/config';
 import { randomInt } from 'crypto';
-import { FIFTEEN_MINUTES_IN_MILIS } from '../common/utils';
+import { FIFTEEN_MINUTES_IN_MILIS, NOT_EXISTS_INT } from '../common/utils';
 import PurchaseTransactionEntity from './entities/purchase-transaction-entity';
 import { PurchaseTransactionRepo, PurchaseTransactionsRepoColumn } from './repos/purchase-transaction.repo';
 import PurchaseTransactionsFilterEntity from './entities/purchase-transaction-filter-entity';
@@ -60,8 +60,10 @@ export class NFTService {
 
     // controller functions
     async findByFilter(userEntity: UserEntity, nftFilterEntity: NftFilterEntity, dbTx: Transaction, dbLock: LOCK = undefined): Promise < { nftEntities: NftEntity[], total: number } > {
+        let cudosPriceInUsd = NOT_EXISTS_INT;
         let whereClause: any = {};
         let orderByClause: any[] = null;
+        let attributesClause: any = null;
 
         if (nftFilterEntity.hasNftIds() === true) {
             whereClause.id = nftFilterEntity.nftIds;
@@ -95,6 +97,65 @@ export class NFTService {
             whereClause.current_owner = userEntity?.cudosWalletAddress ?? '0x';
         }
 
+        if (nftFilterEntity.hasHashRateMin() === true || nftFilterEntity.hasHashRateMax() === true) {
+            whereClause[NftRepoColumn.HASHING_POWER] = {
+                [Op.gte]: nftFilterEntity.hashRateMin,
+                [Op.lte]: nftFilterEntity.hashRateMax,
+            }
+        }
+
+        if (nftFilterEntity.hasExpiryMin() === true) {
+            whereClause[NftRepoColumn.EXPIRATION_DATE] = {
+                [Op.gte]: (new Date(nftFilterEntity.expiryMin)).toISOString(),
+            }
+        }
+
+        if (nftFilterEntity.hasExpiryMax() === true) {
+            if (whereClause[NftRepoColumn.EXPIRATION_DATE] === undefined) {
+                whereClause[NftRepoColumn.EXPIRATION_DATE] = {}
+            }
+            whereClause[NftRepoColumn.EXPIRATION_DATE][Op.lte] = (new Date(nftFilterEntity.expiryMax)).toISOString();
+        }
+
+        if (nftFilterEntity.hasPriceMin() === true || nftFilterEntity.hasPriceMax() === true) {
+            const cudosDataEntity = await this.cryptoCompareService.getCachedCudosData();
+            if (cudosDataEntity != null) {
+                let priceCudosMin, priceCudosMax, priceUsdMin, priceUsdMax;
+                cudosPriceInUsd = cudosDataEntity.cudosUsdPrice;
+
+                if (nftFilterEntity.isPriceFilterTypeCudos() === true) {
+                    priceCudosMin = nftFilterEntity.priceMin;
+                    priceCudosMax = nftFilterEntity.priceMax;
+                    priceUsdMin = priceCudosMin * cudosPriceInUsd;
+                    priceUsdMax = priceCudosMax * cudosPriceInUsd;
+                } else {
+                    priceCudosMin = priceUsdMin / cudosPriceInUsd;
+                    priceCudosMax = priceUsdMax / cudosPriceInUsd;
+                    priceUsdMin = nftFilterEntity.priceMin;
+                    priceUsdMax = nftFilterEntity.priceMax;
+                }
+
+                whereClause[Op.or] = [
+                    {
+                        [NftRepoColumn.TOKEN_ID]: {
+                            [Op.ne]: '',
+                        },
+                        [NftRepoColumn.PRICE]: {
+                            [Op.gte]: priceCudosMin,
+                            [Op.lte]: priceCudosMax,
+                        },
+                    },
+                    {
+                        [NftRepoColumn.TOKEN_ID]: '',
+                        [NftRepoColumn.PRICE_USD]: {
+                            [Op.gte]: priceUsdMin,
+                            [Op.lte]: priceUsdMax,
+                        },
+                    },
+                ];
+            }
+        }
+
         if (nftFilterEntity.hasSearchString() === true) {
             whereClause = [
                 whereClause,
@@ -105,14 +166,34 @@ export class NFTService {
         switch (nftFilterEntity.orderBy) {
             case NftOrderBy.PRICE_ASC:
             case NftOrderBy.PRICE_DESC:
-                orderByClause = [['price']]
+                if (cudosPriceInUsd === NOT_EXISTS_INT) {
+                    const cudosDataEntity = await this.cryptoCompareService.getCachedCudosData();
+                    if (cudosDataEntity !== null) {
+                        cudosPriceInUsd = cudosDataEntity.cudosUsdPrice;
+                        attributesClause = {
+                            include: [
+                                [sequelize.literal(`(CASE WHEN ${NftRepoColumn.TOKEN_ID} = '' THEN (${NftRepoColumn.PRICE_USD} / ${cudosPriceInUsd}) ELSE (${NftRepoColumn.PRICE} / ${new BigNumber(1).shiftedBy(CURRENCY_DECIMALS).toString()}) END)`), 'accumulated_price'],
+                            ],
+                        }
+                    }
+                }
+                orderByClause = [['accumulated_price']]
                 break;
             case NftOrderBy.TIMESTAMP_ASC:
             case NftOrderBy.TIMESTAMP_DESC:
-            default:
                 orderByClause = [['createdAt']]
                 break;
+            case NftOrderBy.HASH_RATE_ASC:
+            case NftOrderBy.HASH_RATE_DESC:
+                orderByClause = [[NftRepoColumn.HASHING_POWER]]
+                break;
+            case NftOrderBy.EXPIRY_ASC:
+            case NftOrderBy.EXPIRY_DESC:
+            default:
+                orderByClause = [[NftRepoColumn.EXPIRATION_DATE]]
+                break;
         }
+
         if (orderByClause !== null) {
             orderByClause[0].push(nftFilterEntity.orderBy > 0 ? 'ASC' : 'DESC');
         }
@@ -120,6 +201,7 @@ export class NFTService {
         const nftRepos = await this.nftRepo.findAll({
             where: whereClause,
             order: orderByClause,
+            attributes: attributesClause,
             transaction: dbTx,
             lock: dbLock,
         });

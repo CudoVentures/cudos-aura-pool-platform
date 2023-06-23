@@ -18,9 +18,10 @@ type Props = SelectProps & {
     error?: boolean;
     gray?: boolean;
     inputValidation?: InputValidation | InputValidation[],
+    centered?: boolean;
 }
 
-function Select({ className, margin, onChange, innerLabel, label, readOnly, error, gray, inputValidation, ...props }: Props) {
+function Select({ centered, className, margin, onChange, innerLabel, label, readOnly, error, gray, inputValidation, ...props }: Props) {
 
     const [open, setOpen] = useState(false);
 
@@ -158,6 +159,7 @@ function Select({ className, margin, onChange, innerLabel, label, readOnly, erro
                     open = { open }
                     IconComponent = { KeyboardArrowDownIcon }
                     margin = { 'dense' }
+                    inputProps={ { style: { textAlign: centered ? 'center' : 'left' } }} // the change is here
                     MenuProps = {{
                         disableScrollLock: true,
                         PopoverClasses: {
@@ -175,6 +177,7 @@ function Select({ className, margin, onChange, innerLabel, label, readOnly, erro
 
 Select.defaultProps = {
     className: '',
+    centered: false,
     onChange: undefined,
     readOnly: false,
     error: false,

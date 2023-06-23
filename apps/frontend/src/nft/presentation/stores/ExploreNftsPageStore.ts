@@ -1,7 +1,7 @@
 import GridViewState from '../../../core/presentation/stores/GridViewState';
 import { makeAutoObservable } from 'mobx';
 import NftEntity from '../../entities/NftEntity';
-import NftFilterModel from '../../utilities/NftFilterModel';
+import NftFilterModel, { NftOrderBy } from '../../utilities/NftFilterModel';
 import NftRepo from '../repos/NftRepo';
 import CollectionRepo from '../../../collection/presentation/repos/CollectionRepo';
 import CollectionEntity from '../../../collection/entities/CollectionEntity';
@@ -26,12 +26,14 @@ export default class ExploreNftsPageStore {
 
         this.gridViewState = new GridViewState(this.fetch, 3, 4, 6);
         this.nftFilterModel = new NftFilterModel();
+        this.nftFilterModel.orderBy = NftOrderBy.PRICE_ASC;
         this.nftFilterModel.markApprovedCollections();
 
         this.nftEntities = null;
         this.collectionEntitiesMap = null;
 
         this.searchTimeoutHelper = new TimeoutHelper();
+
         makeAutoObservable(this);
     }
 
@@ -67,9 +69,81 @@ export default class ExploreNftsPageStore {
         return this.collectionEntitiesMap.get(collectionId)?.name ?? '';
     }
 
-    onChangeSearchWord = async (value) => {
+    onChangeSearchWord = (value) => {
         this.nftFilterModel.searchString = value;
         this.searchTimeoutHelper.signal(this.fetch);
     }
 
+    onChangeSortType = (value) => {
+        this.nftFilterModel.orderBy = value;
+        this.searchTimeoutHelper.signal(this.fetch);
+    }
+
+    onChangeHashRateMin = (value) => {
+        this.nftFilterModel.parseMinHashRate(value);
+        this.searchTimeoutHelper.signal(this.fetch);
+    }
+
+    onChangeHashRateMax = (value) => {
+        this.nftFilterModel.parseMaxHashRate(value);
+        this.searchTimeoutHelper.signal(this.fetch);
+    }
+
+    onChangePriceType = (value) => {
+        this.nftFilterModel.priceFilterType = value;
+        this.searchTimeoutHelper.signal(this.fetch);
+    }
+
+    onChangePriceMin = (value) => {
+        this.nftFilterModel.parseMinPrice(value);
+        this.searchTimeoutHelper.signal(this.fetch);
+    }
+
+    onChangePriceMax = (value) => {
+        this.nftFilterModel.parseMaxPrice(value);
+        this.searchTimeoutHelper.signal(this.fetch);
+    }
+
+    getHashRateMinValue(): string {
+        return this.nftFilterModel.hasHashRateMin() === true ? this.nftFilterModel.hashRateMin.toString() : '';
+    }
+
+    getHashRateMaxValue(): string {
+        return this.nftFilterModel.hasHashRateMax() === true ? this.nftFilterModel.hashRateMax.toString() : '';
+    }
+
+    getPriceMinValue(): string {
+        return this.nftFilterModel.hasPriceMin() === true ? this.nftFilterModel.priceMin.toString() : '';
+    }
+
+    getPriceMaxValue(): string {
+        return this.nftFilterModel.hasPriceMax() === true ? this.nftFilterModel.priceMax.toString() : '';
+    }
+
+    changeExpirationPeriodTo(index: number) {
+        switch (index) {
+            case 0:
+                this.nftFilterModel.expiryMax = Date.now() + (365 * 24 * 60 * 60 * 1000);
+                this.nftFilterModel.resetExpiryMin();
+                break;
+            case 1:
+                this.nftFilterModel.expiryMin = Date.now() + (365 * 24 * 60 * 60 * 1000);
+                this.nftFilterModel.resetExpiryMax();
+                break;
+            case 2:
+                this.nftFilterModel.expiryMin = Date.now() + (2 * 365 * 24 * 60 * 60 * 1000);
+                this.nftFilterModel.resetExpiryMax();
+                break;
+            case 3:
+                this.nftFilterModel.expiryMin = Date.now() + (3 * 365 * 24 * 60 * 60 * 1000);
+                this.nftFilterModel.resetExpiryMax();
+                break;
+            default:
+                this.nftFilterModel.resetExpiryMin();
+                this.nftFilterModel.resetExpiryMax();
+                break;
+        }
+
+        this.searchTimeoutHelper.signal(this.fetch);
+    }
 }

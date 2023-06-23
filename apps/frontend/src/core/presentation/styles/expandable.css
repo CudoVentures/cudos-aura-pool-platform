@@ -1,0 +1,7 @@
+.Expandable .ExpandableHeader {
+    justify-content: space-between;
+}
+
+.Expandable .ExpandableContent>* {
+    padding-top: 25px;
+}
