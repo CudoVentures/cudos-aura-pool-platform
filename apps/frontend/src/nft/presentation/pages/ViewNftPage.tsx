@@ -151,8 +151,8 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
         const generalDatapreviews = [];
 
         generalDatapreviews.push(createDataPreview('Listing Status', nftEntity.isStatusListed() === true ? 'Active' : 'Not Listed'));
-        generalDatapreviews.push(createDataPreview('Mining Farm', <span className = { 'Clickable' } onClick = { onClickFarmLink }>{miningFarmEntity.name}</span>));
-        generalDatapreviews.push(createDataPreview('Collection', <span className = { 'Clickable' } onClick = { onClickCollectionLink }>{collectionEntity.name}</span>));
+        generalDatapreviews.push(createDataPreview('Mining Farm', <span className = {presaleStore.isInPresale() ? '' : 'Clickable' } onClick = { presaleStore.isInPresale() ? null : onClickFarmLink }>{miningFarmEntity.name}</span>));
+        generalDatapreviews.push(createDataPreview('Collection', <span className = { presaleStore.isInPresale() ? '' : 'Clickable' } onClick = { presaleStore.isInPresale() ? null : onClickCollectionLink }>{collectionEntity.name}</span>));
         generalDatapreviews.push(createDataPreview('Expiry', nftEntity.formatExpiryDate()));
         generalDatapreviews.push(createDataPreview('Secondary NFT Sale Platform Fee', collectionEntity.formatRoyaltiesInPercentage()));
         generalDatapreviews.push(createDataPreview('CUDOS Markets Secondary Resale Royalty', miningFarmEntity.formatResaleNftRoyaltiesPercent()));
@@ -228,7 +228,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                 <div className={'PageContent AppContent'} >
 
                     <Breadcrumbs crumbs={ [
-                        createBreadcrumb('Marketplace', onClickExploreNfts),
+                        createBreadcrumb('Marketplace', presaleStore.isInPresale() === true ? onClickNavigateMarketplace : onClickExploreNfts),
                         createBreadcrumb('NFT Details'),
                     ] }/>
 
