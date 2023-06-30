@@ -25,7 +25,7 @@ function ViewCollectionModal({ cudosStore, viewCollectionModalStore }: Props) {
 
     return (
         <ModalWindow
-            className = { 'ViewCollectionModal' }
+            className = { 'ViewCollectionModal LargeContent' }
             modalStore = { viewCollectionModalStore } >
 
             { viewCollectionModalStore.visible === true && (

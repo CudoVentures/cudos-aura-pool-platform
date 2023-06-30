@@ -244,9 +244,6 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                                         containerBackground: ContainerBackground.WHITE,
                                     } } />
                             </div>
-                            <div className={'H2 Bold'}>Description</div>
-                            <div className={'Description B1'}><NewLine text = {collectionEntity.description} /></div>
-                            <NftStats viewNftPageStore = {viewNftPageStore}/>
                         </div>
 
                         <div className={'RightLayout FlexColumn'}>
@@ -306,6 +303,10 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                             ) }
                         </div>
                     </div>
+
+                    <div className={'H2 Bold'}>Description</div>
+                    <div className={'Description B1'}><NewLine text = {collectionEntity.description} /></div>
+                    <NftStats viewNftPageStore = {viewNftPageStore}/>
 
                     { presaleStore.isInPresale() === false && (
                         <>
