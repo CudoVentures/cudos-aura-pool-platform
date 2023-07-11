@@ -168,22 +168,20 @@ export class NFTService {
         }
 
         const collectionId = parseInt(this.configService.get<string>('APP_PRESALE_COLLECTION_ID'));
-        // get a tier by random, if a tier is finished - add it to the closes lower tier
+        // get a tier by random, if a tier is finished - add it to the closest lower tier
         const randomNumber = randomInt(1, 10001);
 
-        let tier = Tier.TIER_1;
+        let tier = Tier.TIER_2;
         if (randomNumber > tierBorderMap.get(Tier.TIER_5)) {
             tier = Tier.TIER_5;
         } else if (randomNumber > tierBorderMap.get(Tier.TIER_4)) {
             tier = Tier.TIER_4;
         } else if (randomNumber > tierBorderMap.get(Tier.TIER_3)) {
             tier = Tier.TIER_3;
-        } else if (randomNumber > tierBorderMap.get(Tier.TIER_2)) {
-            tier = Tier.TIER_2;
         }
 
         const tierArray = [];
-        for (let i = tier; i >= Tier.TIER_1; i--) {
+        for (let i = tier; i > Tier.TIER_1; i--) {
             tierArray.push(i);
         }
         for (let i = tier + 1; i <= Tier.TIER_5; i++) {
