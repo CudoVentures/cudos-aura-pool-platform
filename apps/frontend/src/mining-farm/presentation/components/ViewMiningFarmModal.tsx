@@ -114,7 +114,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
 
     return (
         <ModalWindow
-            className = { 'ViewMiningFarmModal' }
+            className = { 'ViewMiningFarmModal LargeContent' }
             modalStore = { viewMiningFarmModalStore } >
 
             { viewMiningFarmModalStore.visible === true && (
@@ -228,7 +228,7 @@ function ViewMiningFarmModal({ alertStore, viewMiningFarmModalStore }: Props) {
                                     inputValidation = { farmStartTimeValidation } />,
                             ),
                         ] } />
-                    <div className = { 'ImgsCnt Grid GridColumns3' } >
+                    <div className = { 'ImgsCnt Grid GridColumns4' } >
                         { miningFarmEntity.farmPhotoUrls.map((url, i) => {
                             return (
                                 <a

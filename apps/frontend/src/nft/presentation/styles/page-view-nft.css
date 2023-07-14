@@ -20,10 +20,6 @@
     border-radius: 16px;
 }
 
-.PageViewNft .PageContent .LeftLayout .Description {
-    margin: 16px 0 40px 0;
-}
-
 .PageViewNft .PageContent .RightLayout .CollectionName {
     margin-bottom: 16px;
 }
@@ -91,6 +87,10 @@
 
 .PageViewNft .PageContent .RightLayout .CalculateRewardsNav .Button:hover {
     box-shadow: none;
+}
+
+.PageViewNft .PageContent .Description {
+    margin: 16px 0 40px 0;
 }
 
 .PageViewNft .SectionDivider {

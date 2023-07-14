@@ -12,12 +12,14 @@
 }
 
 .DataPreviewLayout .DataPreviewKey {
+    flex: 1 1 auto;
     color: var(--color-neutral-060);
-    white-space: nowrap;
+    /* white-space: nowrap; */
     margin-right: 16px;
 }
 
 .DataPreviewLayout .DataPreviewValue {
+    flex: 0 0 auto;
     text-align: right;
     margin-left: auto;
 }
