@@ -28,9 +28,10 @@ type Props = TextFieldProps & PropsWithChildren & {
     gray?: boolean;
     defaultOnChangeParameter?: boolean,
     inputValidation?: InputValidation | InputValidation[],
+    centered?: boolean;
 }
 
-const Input = React.forwardRef(({ children, className, inputType, decimalLength, readOnly, underline, onChange, stretch, gray, defaultOnChangeParameter, inputValidation, ...props }: Props, ref) => {
+const Input = React.forwardRef(({ children, centered, className, inputType, decimalLength, readOnly, underline, onChange, stretch, gray, defaultOnChangeParameter, inputValidation, ...props }: Props, ref) => {
 
     const changed = useRef(false);
 
@@ -143,6 +144,7 @@ const Input = React.forwardRef(({ children, className, inputType, decimalLength,
             <TextField
                 {...props}
                 error={error}
+                inputProps={ { style: { textAlign: centered ? 'center' : 'left' } }} // the change is here
                 helperText={error ? getErrorMessage() : '' }
                 hiddenLabel = { false }
                 onChange={onChange !== null && readOnly !== true ? onChangeHandler : undefined}
@@ -157,6 +159,7 @@ Input.displayName = 'Input';
 
 Input.defaultProps = {
     className: '',
+    centered: false,
     inputType: InputType.TEXT,
     decimalLength: 4,
     readOnly: false,

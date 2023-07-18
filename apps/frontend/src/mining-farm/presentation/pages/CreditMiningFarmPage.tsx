@@ -176,27 +176,27 @@ function CreditMiningFarmPage({ nftPresaleStore, presaleCollectionModalStore, cr
 
         const collectionEntities = creditMiningFarmPageStore.collectionEntities;
         return (
-            <DataGridLayout
-                className = { ' CollectionsCnt' }
-                headerLeft = { (
-                    <>
-                        <Input
-                            className={'SearchBar'}
-                            value = {collectionFilterModel.searchString}
-                            onChange = { creditMiningFarmPageStore.onChangeSearchWord }
-                            placeholder = {'Search Collections name'}
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start" >
-                                    <Svg svg={SearchIcon} />
-                                </InputAdornment>,
-                            }} />
-                    </>
-                ) } >
+            <DataGridLayout className = { ' CollectionsCnt' } >
 
                 { collectionEntities === null ? (
                     <LoadingIndicator />
                 ) : (
                     <GridView
+                        headerLeft = { (
+                            <>
+                                <Input
+                                    className={'SearchBar'}
+                                    gray={true}
+                                    value = {collectionFilterModel.searchString}
+                                    onChange = { creditMiningFarmPageStore.onChangeSearchWord }
+                                    placeholder = {'Search Collections name'}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start" >
+                                            <Svg svg={SearchIcon} />
+                                        </InputAdornment>,
+                                    }} />
+                            </>
+                        ) }
                         gridViewState={creditMiningFarmPageStore.gridViewState}
                         defaultContent={collectionEntities.length === 0 ? <NoCollectionView /> : null} >
                         { collectionEntities.map((collectionEntity: CollectionEntity, index: number) => {
