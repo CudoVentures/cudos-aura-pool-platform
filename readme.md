@@ -104,11 +104,15 @@ $ npm run test:cov
 
 # Project information about development
 
-The project is SPA application. It includes both a frontend and a backend.
+The project is SPA application. It includes both a frontend and a backend. Also it require a chain-observer and eth-payments relayer.
 
 The frontend app is located at /apps/frontend.
 
 The backend app is located at /apps/backend.
+
+The chain-observer is located at /apps/chain-observer.
+
+The eth-payments relayer is located at /apps/eth-payments-relayer.
 
 The project's config is located at /config. An .env must be created based on .example.env in the config folder.
 
