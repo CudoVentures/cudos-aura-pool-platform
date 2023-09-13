@@ -59,6 +59,10 @@ export default class AccountEntity {
         return this.accountId === NOT_EXISTS_INT;
     }
 
+    isActive(): boolean {
+        return this.active === IntBoolValue.TRUE;
+    }
+
     isUser(): boolean {
         return this.type === AccountType.USER;
     }

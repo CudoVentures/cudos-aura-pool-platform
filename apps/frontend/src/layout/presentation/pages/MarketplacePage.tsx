@@ -155,6 +155,11 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
             return;
         }
 
+        if (accountSessionStore.isAccountActive() === false) {
+            alertStore.show('We have had to pause your account, we will be in touch soon.');
+            return;
+        }
+
         const success = await nftPresaleStore.onClickBuyWithCudos();
         if (success === true) {
             buyPresaleNftModalStore.show();
@@ -164,6 +169,11 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
     async function onClickBuyWithEth() {
         // if (await checkBtcAddressRegistered() === false || checkKyc() === false) {
         if (checkKyc() === false) {
+            return;
+        }
+
+        if (accountSessionStore.isAccountActive() === false) {
+            alertStore.show('We have had to pause your account, we will be in touch soon.');
             return;
         }
 

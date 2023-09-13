@@ -99,6 +99,10 @@ export default class AccountSessionStore {
         return this.accountEntity?.isEmailVerified() || false;
     }
 
+    isAccountActive(): boolean {
+        return this.accountEntity?.isActive() || false;
+    }
+
     doesAddressMatchAgainstSessionUserIfAny(cudosWalletAddress: string): boolean {
         if (this.isUser() === true) {
             return this.userEntity.cudosWalletAddress === cudosWalletAddress;
