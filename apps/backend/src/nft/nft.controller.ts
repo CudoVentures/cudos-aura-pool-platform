@@ -77,6 +77,11 @@ export class NFTController {
         }
 
         const accountEntity = await this.accountService.findAccountById(userEntity.accountId, req.transaction);
+        if (accountEntity.isActive() === false) {
+            console.log('Getting NFT from OnDemandMinting', 'account is blacklisted', accountEntity.accountId);
+            req.logger.info(`Getting NFT from OnDemandMinting account is blacklisted ${accountEntity.accountId}`);
+            throw new Error('Temporary restricted');
+        }
         let nftEntity: NftEntity;
 
         if (id === 'presale') {
