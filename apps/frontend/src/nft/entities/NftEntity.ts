@@ -104,6 +104,10 @@ export default class NftEntity {
         return this.currentOwner === cudosWalletAddress;
     }
 
+    isPriceInAcudosValidForMinting(): boolean {
+        return Date.now() < this.priceAcudosValidUntil;
+    }
+
     hasImage(): boolean {
         return this.imageUrl !== '';
     }
@@ -123,6 +127,11 @@ export default class NftEntity {
 
     markAsExpiringToday() {
         this.expirationDateTimestamp = ProjectUtils.getEndOfTodaysTimestamp();
+    }
+
+    overwriteNftAfterPurchase() {
+        this.markAsMinted();
+        this.setPricesZero();
     }
 
     formatExpiryDate(): string {
@@ -178,6 +187,82 @@ export default class NftEntity {
     copyDeepFrom(nftEntity: NftEntity): void {
         Object.assign(this, nftEntity);
         this.priceInAcudos = nftEntity.priceInAcudos !== null ? new BigNumber(nftEntity.priceInAcudos) : null;
+    }
+
+    isOverwrittenByNftAfterPurchase(nftEntity: NftEntity): boolean {
+        if (this.id !== nftEntity.id) {
+            return false;
+        }
+        if (this.name !== nftEntity.name) {
+            return false;
+        }
+        if (this.tokenId !== nftEntity.tokenId) {
+            return false;
+        }
+        if (this.creatorId !== nftEntity.creatorId) {
+            return false;
+        }
+        if (this.marketplaceNftId !== nftEntity.marketplaceNftId) {
+            return false;
+        }
+        if (this.collectionId !== nftEntity.collectionId) {
+            return false;
+        }
+        if (this.hashPowerInTh !== nftEntity.hashPowerInTh) {
+            return false;
+        }
+        // if (this.priceInAcudos !== nftEntity.priceInAcudos) {
+        //     return false;
+        // }
+        if (this.imageUrl !== nftEntity.imageUrl) {
+            return false;
+        }
+        // if (this.status !== nftEntity.status) {
+        //     return false;
+        // }
+        if (this.expirationDateTimestamp !== nftEntity.expirationDateTimestamp) {
+            return false;
+        }
+        if (this.currentOwner !== nftEntity.currentOwner) {
+            return false;
+        }
+        if (this.group !== nftEntity.group) {
+            return false;
+        }
+        // if (this.priceUsd !== nftEntity.priceUsd) {
+        //     return false;
+        // }
+        if (this.priceAcudosValidUntil !== nftEntity.priceAcudosValidUntil) {
+            return false;
+        }
+        if (this.updatedAt !== nftEntity.updatedAt) {
+            return false;
+        }
+        if (this.deletedAt !== nftEntity.deletedAt) {
+            return false;
+        }
+        if (this.createdAt !== nftEntity.createdAt) {
+            return false;
+        }
+        if (this.artistName !== nftEntity.artistName) {
+            return false;
+        }
+
+        if (this.priceInAcudos.eq(nftEntity.priceInAcudos) === true || this.priceUsd === nftEntity.priceUsd || this.status === nftEntity.status) {
+            return false;
+        }
+
+        if (nftEntity.priceInAcudos.gt(new BigNumber(0)) === true) {
+            return false;
+        }
+        if (nftEntity.priceUsd !== S.NOT_EXISTS) {
+            return false;
+        }
+        if (nftEntity.isMinted() === false) {
+            return false;
+        }
+
+        return true;
     }
 
     static toJson(entity: NftEntity): any {

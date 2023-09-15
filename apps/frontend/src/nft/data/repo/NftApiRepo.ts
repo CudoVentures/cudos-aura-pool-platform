@@ -153,8 +153,7 @@ export default class NftApiRepo implements NftRepo {
                 txHash = tx.transactionHash;
             }
 
-            nftEntity.markAsMinted();
-            nftEntity.setPricesZero();
+            nftEntity.overwriteNftAfterPurchase();
             this.nftSessionStorage.updateNftsMap([nftEntity]);
 
             return txHash;
@@ -369,7 +368,15 @@ export default class NftApiRepo implements NftRepo {
         return nftEntities.map((nftEntity) => {
             const storageNft = nftsMap.get(nftEntity.id);
             if (storageNft !== undefined && nftEntity.updatedAt === storageNft.updatedAt) {
-                return storageNft;
+                const isOverwrittenByNftAfterPurchase = nftEntity.isOverwrittenByNftAfterPurchase(storageNft)
+                if (isOverwrittenByNftAfterPurchase === false) {
+                    return storageNft;
+                }
+
+                const shouldOverwrite = storageNft.isPriceInAcudosValidForMinting();
+                if (shouldOverwrite === true) {
+                    return storageNft;
+                }
             }
 
             return nftEntity;
