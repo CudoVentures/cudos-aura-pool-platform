@@ -78,6 +78,12 @@ export default class MiningFarmEntity {
         return this.rewardsFromPoolBtcAddress !== this.leftoverRewardsBtcAddress && this.rewardsFromPoolBtcAddress !== this.maintenanceFeePayoutBtcAddress && this.leftoverRewardsBtcAddress !== this.maintenanceFeePayoutBtcAddress;
     }
 
+    invalidateFarmStartTimeIfNew() {
+        if (this.isNew() === true) {
+            this.farmStartTime = Date.now();
+        }
+    }
+
     static toRepo(entity: MiningFarmEntity): MiningFarmRepo {
         if (entity === null) {
             return null;

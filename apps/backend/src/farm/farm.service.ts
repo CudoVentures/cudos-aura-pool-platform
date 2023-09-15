@@ -240,6 +240,8 @@ export class FarmService {
     async creditMiningFarm(miningFarmEntity: MiningFarmEntity, creditImages: boolean, dbTx: Transaction): Promise < MiningFarmEntity > {
         let newUris = [], oldUris = [];
 
+        miningFarmEntity.invalidateFarmStartTimeIfNew();
+
         if (creditImages === true) {
             try {
                 miningFarmEntity.coverImgUrl = await this.dataService.trySaveUri(miningFarmEntity.accountId, miningFarmEntity.coverImgUrl);
