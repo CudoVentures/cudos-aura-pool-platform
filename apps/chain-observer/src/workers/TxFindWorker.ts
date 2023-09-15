@@ -2,6 +2,7 @@ import { StargateClient } from '@cosmjs/stargate';
 import { decodeTxRaw } from 'cudosjs';
 import Config from '../../config/Config';
 import {
+    HeightFilter,
     MarketplaceCollectionEventTypes,
     MarketplaceModuleFilter,
     MarketplaceNftEventTypes,
@@ -11,6 +12,7 @@ import {
     OnDemandMintNftMintFilter,
     OnDemandMintReceivedFundsFilter,
     OnDemandMintRefundsFilter,
+    makeHeightSearchQuery,
 } from '../entities/CudosAuraPoolServiceTxFilter';
 import MintMemo from '../entities/MintMemo';
 import PurchaseTransactionEntity, { PurchaseTransactionStatus } from '../entities/PurchaseTransactionEntity';
@@ -45,7 +47,7 @@ export default class TxFindWorker {
             // lastBlock = lastBlock > lastCheckedBlock + blockCheckLimit ? lastCheckedBlock + blockCheckLimit : lastBlock;
             lastBlock = Math.min(nextBlockToCheck + blockCheckLimit, lastBlock);
 
-            const heightFilter = {
+            const heightFilter: HeightFilter = {
                 minHeight: nextBlockToCheck,
                 maxHeight: lastBlock,
             };
@@ -60,7 +62,7 @@ export default class TxFindWorker {
 
             await this.cudosAuraPoolServiceApi.updateLastCheckedHeight(lastBlock);
         } catch (e) {
-            console.log('error', e.message);
+            console.log('error', e);
 
             // sending an email once every 30 min
             if (Date.now() - this.lastSentEmailTimestamp > 1800000) {
@@ -74,8 +76,8 @@ export default class TxFindWorker {
         }
     }
 
-    async checkMarketplaceTransactions(heightFilter) {
-        const marketplaceTxs = await this.chainClient.searchTx(MarketplaceModuleFilter, heightFilter)
+    async checkMarketplaceTransactions(heightFilter: HeightFilter) {
+        const marketplaceTxs = await this.chainClient.searchTx(makeHeightSearchQuery(MarketplaceModuleFilter, heightFilter));
         const marketplaceDataJson = marketplaceTxs.map((tx) => JSON.parse(tx.rawLog));
         const marketplaceEvents = marketplaceDataJson.flat().map((a) => a.events).flat();
         const marketplaceModuleNftEvents = marketplaceEvents.filter((event) => MarketplaceNftEventTypes.includes(event.type));
@@ -114,7 +116,7 @@ export default class TxFindWorker {
     }
 
     async checkNftTransactions(heightFilter) {
-        const nftModuleTxs = await this.chainClient.searchTx(NftModuleFilter, heightFilter)
+        const nftModuleTxs = await this.chainClient.searchTx(makeHeightSearchQuery(NftModuleFilter, heightFilter));
         const nftModuleDataJson = nftModuleTxs.map((tx) => JSON.parse(tx.rawLog));
         const nftModuleEvents = nftModuleDataJson.flat().map((a) => a.events).flat();
         const nftModuleNftEvents = nftModuleEvents.filter((event) => NftModuleNftEventTypes.includes(event.type));
@@ -146,7 +148,7 @@ export default class TxFindWorker {
     }
 
     async checkOnDemandMintReceivedFundsTransactions(heightFilter) {
-        const fundsReceivedTxs = await this.chainClient.searchTx(OnDemandMintReceivedFundsFilter, heightFilter)
+        const fundsReceivedTxs = await this.chainClient.searchTx(makeHeightSearchQuery(OnDemandMintReceivedFundsFilter, heightFilter));
 
         const purchaseTransactionEntities = [];
         for (let i = 0; i < fundsReceivedTxs.length; i++) {
@@ -182,7 +184,7 @@ export default class TxFindWorker {
     }
 
     async checkOnDemandRefundTransactions(heightFilter) {
-        const refundTransactions = await this.chainClient.searchTx(OnDemandMintRefundsFilter, heightFilter)
+        const refundTransactions = await this.chainClient.searchTx(makeHeightSearchQuery(OnDemandMintRefundsFilter, heightFilter));
 
         const purchaseTransactionEntities = [];
         for (let i = 0; i < refundTransactions.length; i++) {
@@ -217,7 +219,7 @@ export default class TxFindWorker {
     }
 
     async checkOnDemandMintTransactions(heightFilter) {
-        const mintTransactions = await this.chainClient.searchTx(OnDemandMintNftMintFilter, heightFilter)
+        const mintTransactions = await this.chainClient.searchTx(makeHeightSearchQuery(OnDemandMintNftMintFilter, heightFilter));
         const purchaseTransactionEntities = [];
         for (let i = 0; i < mintTransactions.length; i++) {
             const tx = mintTransactions[i];

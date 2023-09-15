@@ -8,7 +8,7 @@ import PaymentEventEntity from '../entities/PaymentEventEntity';
 import PaymentTransactionEntity from '../entities/PaymentTransactionEntity';
 import RefundTransactionEntity from '../entities/RefundTransactionEntity';
 import CudosChainRepo from '../workers/repos/CudosChainRepo';
-import { getBankSendMsgToOnDemandMintingServiceQuery } from './dto/CudosAuraPoolServiceTxFilter';
+import { getBankSendMsgToOnDemandMintingServiceQuery, HeightFilter, makeHeightSearchQuery } from './dto/CudosAuraPoolServiceTxFilter';
 
 export default class CudosChainRpcRepo implements CudosChainRepo {
     chainClient: StargateClient;
@@ -33,12 +33,12 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
     }
 
     async fetchRefundTransactions(fromHeight: number, toHeight: number): Promise<RefundTransactionEntity[]> {
-        const heightFilter = {
+        const heightFilter: HeightFilter = {
             minHeight: fromHeight,
             maxHeight: toHeight,
         };
 
-        const indexedTxs = await this.chainClient.searchTx(await getBankSendMsgToOnDemandMintingServiceQuery(), heightFilter)
+        const indexedTxs = await this.chainClient.searchTx(makeHeightSearchQuery(await getBankSendMsgToOnDemandMintingServiceQuery(), heightFilter));
 
         const cudosSignerAddress = await Config.getCudosSignerAddress();
         return indexedTxs.map((indexedTx) => RefundTransactionEntity.fromChainIndexedTx(indexedTx)).filter((entity) => {

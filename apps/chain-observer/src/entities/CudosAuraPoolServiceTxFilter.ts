@@ -1,5 +1,9 @@
-import { SearchByTagsQuery } from '@cosmjs/stargate/build/search';
 import Config from '../../config/Config';
+
+export type HeightFilter = {
+    minHeight: number;
+    maxHeight: number;
+}
 
 export const MarketplaceCollectionEventTypes: string[] = [
     'publish_collection',
@@ -32,72 +36,64 @@ export const NftModuleNftEventTypes: string[] = [
     'burn_nft',
 ]
 
-export const MarketplaceModuleFilter: SearchByTagsQuery = {
-    tags: [
-        {
-            key: 'message.module',
-            value: 'marketplace',
-        },
-    ],
+export function makeHeightSearchQuery(query: ReadonlyArray <{readonly key: string, readonly value: string}>, heightFilter: HeightFilter): string {
+    return `${query.map((t) => `${t.key}='${t.value}'`).join(' AND ')} AND tx.height >= ${heightFilter.minHeight} AND tx.height <= ${heightFilter.maxHeight}`;
 }
 
-export const NftModuleFilter: SearchByTagsQuery = {
-    tags: [
-        {
-            key: 'message.module',
-            value: 'nft',
-        },
-    ],
-}
+export const MarketplaceModuleFilter = [
+    {
+        key: 'message.module',
+        value: 'marketplace',
+    },
+];
 
-export const AddressbookModuleFilter: SearchByTagsQuery = {
-    tags: [
-        {
-            key: 'message.module',
-            value: 'addressbook',
-        },
-    ],
-}
+export const NftModuleFilter = [
+    {
+        key: 'message.module',
+        value: 'nft',
+    },
+];
 
-export const OnDemandMintReceivedFundsFilter: SearchByTagsQuery = {
-    tags: [
-        {
-            key: 'message.module',
-            value: 'bank',
-        },
-        {
-            key: 'transfer.recipient',
-            value: Config.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
-        },
-    ],
-}
+export const AddressbookModuleFilter = [
+    {
+        key: 'message.module',
+        value: 'addressbook',
+    },
+];
 
-export const OnDemandMintNftMintFilter: SearchByTagsQuery = {
-    tags: [
-        {
-            key: 'message.module',
-            value: 'marketplace',
-        },
-        {
-            key: 'message.action',
-            value: 'mint_nft',
-        },
-        {
-            key: 'message.sender',
-            value: Config.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
-        },
-    ],
-}
+export const OnDemandMintReceivedFundsFilter = [
+    {
+        key: 'message.module',
+        value: 'bank',
+    },
+    {
+        key: 'transfer.recipient',
+        value: Config.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
+    },
+];
 
-export const OnDemandMintRefundsFilter: SearchByTagsQuery = {
-    tags: [
-        {
-            key: 'message.module',
-            value: 'bank',
-        },
-        {
-            key: 'transfer.sender',
-            value: Config.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
-        },
-    ],
-}
+export const OnDemandMintNftMintFilter = [
+    {
+        key: 'message.module',
+        value: 'marketplace',
+    },
+    {
+        key: 'message.action',
+        value: 'mint_nft',
+    },
+    {
+        key: 'message.sender',
+        value: Config.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
+    },
+];
+
+export const OnDemandMintRefundsFilter = [
+    {
+        key: 'message.module',
+        value: 'bank',
+    },
+    {
+        key: 'transfer.sender',
+        value: Config.APP_CUDOS_ON_DEMAND_MINTING_ADDRESS,
+    },
+];

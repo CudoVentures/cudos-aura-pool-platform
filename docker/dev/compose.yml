@@ -7,6 +7,8 @@ networks:
 volumes:
   cudosdappdbdata:
     driver: local
+  cudosdappdbdata2:
+    driver: local
 
 services:
   cudos-aura-platform-dev:
@@ -50,6 +52,21 @@ services:
       - "5432:5432"
     volumes:
       - cudosdappdbdata:/var/lib/postgresql/data
+    networks:
+      - shared-cudos-network
+
+  cudos-aura-platform-postgres-dev-2:
+    image: postgres
+    container_name: cudos-aura-platform-postgres-dev-2
+    environment:
+      POSTGRES_PASSWORD: "$POSTGRES_PASSWORD"
+      POSTGRES_HOST_AUTH_METHOD: "$POSTGRES_HOST_AUTH_METHOD"
+      POSTGRES_DB: "$POSTGRES_DB"
+    restart: unless-stopped
+    ports:
+      - "55432:5432"
+    volumes:
+      - cudosdappdbdata2:/var/lib/postgresql/data
     networks:
       - shared-cudos-network
 
