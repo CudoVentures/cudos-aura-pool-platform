@@ -15,7 +15,7 @@ export default class ProjectUtils {
     static DATEPICKER_FORMAT_DATE_AND_TIME = 'dd.MM.yyyy, HH:mm';
     static DATEPICKER_FORMAT_DATE = 'dd.MM.yyyy';
     static CUDOS_CURRENCY_DIVIDER = new BigNumber(1).shiftedBy(CURRENCY_DECIMALS);
-    static ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS = new BigNumber(1);
+    static ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS = new BigNumber(1.5);
     static ON_DEMAND_MINTING_SERVICE_FEE_IN_ACUDOS = ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS.shiftedBy(CURRENCY_DECIMALS);
     static FIVE_MINUTES_IN_MILIS = 5 * 60 * 1000;
 

@@ -203,7 +203,7 @@ function ViewNftPage({ accountSessionStore, walletStore, bitcoinStore, viewNftPa
                 'Fee',
                 <div className={'DataValue NftPrice FlexRow'}>
                     <Svg svg={SvgCudos}/>
-                    <div className={'H3 Bold'}>{ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS.toFixed(0)} CUDOS</div>
+                    <div className={'H3 Bold'}>{ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS.toFixed(2)} CUDOS</div>
                     <div className={'SubPrice B2 SemiBold'}>{cudosStore.formatCudosInUsd(ProjectUtils.ON_DEMAND_MINTING_SERVICE_FEE_IN_CUDOS)}</div>
                 </div>,
             ));

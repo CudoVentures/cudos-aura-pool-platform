@@ -137,7 +137,7 @@ export default class NftApiRepo implements NftRepo {
                 const nftEntityResult = await this.nftApi.updateNftCudosPrice(nftEntity.id);
                 nftEntity.copyDeepFrom(nftEntityResult);
 
-                const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
+                const mintFee = (new BigNumber(300000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const amount = nftEntityResult.priceInAcudos.plus(mintFee);
                 const sendAmountCoin = coin(amount.toFixed(0), 'acudos')
                 const memo = new MintMemo(nftEntity.id, ledger.accountAddress).toJsonString();
@@ -199,7 +199,7 @@ export default class NftApiRepo implements NftRepo {
                 const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
                 const signingClient = await SigningStargateClient.connectWithSigner(CHAIN_DETAILS.RPC_ADDRESS, ledger.offlineSigner, { gasPrice });
 
-                const mintFee = (new BigNumber(200000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
+                const mintFee = (new BigNumber(300000)).multipliedBy(CHAIN_DETAILS.GAS_PRICE);
                 const sendAmountCoin = coin(amount.shiftedBy(CURRENCY_DECIMALS).plus(mintFee).toFixed(0), 'acudos')
                 const memo = new MintMemo('presale', ledger.accountAddress).toJsonString();
                 const tx = await signingClient.sendTokens(ledger.accountAddress, CHAIN_DETAILS.MINTING_SERVICE_ADDRESS, [sendAmountCoin], 'auto', memo);
