@@ -139,12 +139,13 @@ const Input = React.forwardRef(({ children, centered, className, inputType, deci
     const cssClassStretch = S.CSS.getClassName(stretch, 'InputStretch');
     const cssClassGray = S.CSS.getClassName(gray, 'InputGray');
     const error = shouldShowError() && isErrorPresent();
+    const parentInputProps = props.inputProps ?? {};
     return (
         <div ref = { ref } className={`Input ${className} ${cssClassStretch} ${cssClassGray} ${S.CSS.getClassName(readOnly, 'ReadOnly')} ${S.CSS.getClassName(underline, 'Underline')}`}>
             <TextField
                 {...props}
                 error={error}
-                inputProps={ { style: { textAlign: centered ? 'center' : 'left' } }} // the change is here
+                inputProps={ Object.assign(parentInputProps, { style: { textAlign: centered ? 'center' : 'left' } }) } // the change is here
                 helperText={error ? getErrorMessage() : '' }
                 hiddenLabel = { false }
                 onChange={onChange !== null && readOnly !== true ? onChangeHandler : undefined}
