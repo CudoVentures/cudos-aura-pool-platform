@@ -43,12 +43,12 @@ function SingleDatepicker({ label, inputValidation, ...props }: Props) {
 
     useEffect(() => {
         if (inputValidation !== null) {
-            const value = props.value;
+            const selected = props.selected;
             // if (props.value !== null) {
             if (Array.isArray(inputValidation)) {
-                inputValidation.forEach((validation) => validation.onChange(value));
+                inputValidation.forEach((validation) => validation.onChange(selected));
             } else if (inputValidation !== null) {
-                inputValidation.onChange(value);
+                inputValidation.onChange(selected);
             }
             //
             // return;
@@ -56,7 +56,7 @@ function SingleDatepicker({ label, inputValidation, ...props }: Props) {
             //
             // inputValidation.onChange(null);
         }
-    }, [props.value]);
+    }, [props.selected]);
 
     return (
         <Datepicker {...props}
