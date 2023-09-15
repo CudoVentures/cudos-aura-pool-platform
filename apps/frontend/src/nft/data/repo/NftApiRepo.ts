@@ -149,7 +149,7 @@ export default class NftApiRepo implements NftRepo {
                 // set tx hash in storage until processed by the observer
                 this.nftSessionStorage.onNewPurchase(txHash);
             } else {
-                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
+                const tx = await signingClient.marketplaceBuyNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice, 1.5);
                 txHash = tx.transactionHash;
             }
 
@@ -225,7 +225,7 @@ export default class NftApiRepo implements NftRepo {
             const gasPrice = GasPrice.fromString(`${CHAIN_DETAILS.GAS_PRICE}${CHAIN_DETAILS.NATIVE_TOKEN_DENOM}`);
 
             const priceInAcudos = priceInCudos.shiftedBy(CURRENCY_DECIMALS);
-            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(priceInAcudos.toFixed(0), 'acudos'), gasPrice);
+            const tx = await signingClient.marketplacePublishNft(ledger.accountAddress, nftEntity.tokenId, collectionEntity.denomId, coin(priceInAcudos.toFixed(0), 'acudos'), gasPrice, 1.5);
             const txHash = tx.transactionHash;
 
             const parsedRawLog = JSON.parse(tx.rawLog);
@@ -254,7 +254,7 @@ export default class NftApiRepo implements NftRepo {
 
             const priceInAcudos = priceInCudos.shiftedBy(CURRENCY_DECIMALS);
 
-            const tx = await signingClient.marketplaceUpdatePrice(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), coin(priceInAcudos.toFixed(0), 'acudos'), gasPrice);
+            const tx = await signingClient.marketplaceUpdatePrice(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), coin(priceInAcudos.toFixed(0), 'acudos'), gasPrice, 1.5);
             const txHash = tx.transactionHash;
 
             await runInActionAsync(() => {
@@ -277,7 +277,7 @@ export default class NftApiRepo implements NftRepo {
                 throw Error('NFT is not listed for sale yet. Please list it first.');
             }
 
-            const tx = await signingClient.marketplaceRemoveNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice);
+            const tx = await signingClient.marketplaceRemoveNft(ledger.accountAddress, Long.fromString(nftEntity.marketplaceNftId), gasPrice, 1.5);
             const txHash = tx.transactionHash;
 
             await runInActionAsync(() => {
@@ -350,6 +350,7 @@ export default class NftApiRepo implements NftRepo {
                             }),
                             nftEntity.id,
                             gasPrice,
+                            1.5,
                         )
                         msgs.push(msg);
                     }
