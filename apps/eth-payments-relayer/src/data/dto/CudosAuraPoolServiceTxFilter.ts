@@ -28,6 +28,6 @@ export async function getBankSendMsgToOnDemandMintingServiceQuery(): Promise < R
     ];
 }
 
-export function makeHeightSearchQuery(query: ReadonlyArray <{readonly key: string, readonly value: string}>, heightFilter: HeightFilter): string {
-    return `${query.map((t) => `${t.key}='${t.value}'`).join(' AND ')} AND tx.height >= ${heightFilter.minHeight} AND tx.height <= ${heightFilter.maxHeight}`;
-}
+// export function makeHeightSearchQuery(query: ReadonlyArray <{readonly key: string, readonly value: string}>, heightFilter: HeightFilter): string {
+//     return `${query.map((t) => `${t.key}='${t.value}'`).join(' AND ')} AND tx.height >= ${heightFilter.minHeight} AND tx.height <= ${heightFilter.maxHeight}`;
+// }

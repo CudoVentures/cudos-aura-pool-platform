@@ -36,9 +36,9 @@ export const NftModuleNftEventTypes: string[] = [
     'burn_nft',
 ]
 
-export function makeHeightSearchQuery(query: ReadonlyArray <{readonly key: string, readonly value: string}>, heightFilter: HeightFilter): string {
-    return `${query.map((t) => `${t.key}='${t.value}'`).join(' AND ')} AND tx.height >= ${heightFilter.minHeight} AND tx.height <= ${heightFilter.maxHeight}`;
-}
+// export function makeHeightSearchQuery(query: ReadonlyArray <{readonly key: string, readonly value: string}>, heightFilter: HeightFilter): string {
+//     return `${query.map((t) => `${t.key}='${t.value}'`).join(' AND ')} AND tx.height >= ${heightFilter.minHeight} AND tx.height <= ${heightFilter.maxHeight}`;
+// }
 
 export const MarketplaceModuleFilter = [
     {
@@ -79,7 +79,7 @@ export const OnDemandMintNftMintFilter = [
     },
     {
         key: 'message.action',
-        value: 'mint_nft',
+        value: '/cudoventures.cudosnode.marketplace.MsgMintNft',
     },
     {
         key: 'message.sender',

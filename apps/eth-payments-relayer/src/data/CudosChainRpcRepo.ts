@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { coin, CURRENCY_DECIMALS, DirectSecp256k1HdWallet } from 'cudosjs';
-import { SigningStargateClient, StargateClient } from 'cudosjs/build/stargate';
+import { coin, CURRENCY_DECIMALS, DirectSecp256k1HdWallet, SigningStargateClient, StargateClient } from 'cudosjs';
 import Config from '../../config/Config';
 import AddressbookEntryEntity, { ADDRESSBOOK_LABEL, ADDRESSBOOK_NETWORK } from '../entities/AddressbookEntryEntity';
 import MintMemo from '../entities/MintMemo';
@@ -8,7 +7,7 @@ import PaymentEventEntity from '../entities/PaymentEventEntity';
 import PaymentTransactionEntity from '../entities/PaymentTransactionEntity';
 import RefundTransactionEntity from '../entities/RefundTransactionEntity';
 import CudosChainRepo from '../workers/repos/CudosChainRepo';
-import { getBankSendMsgToOnDemandMintingServiceQuery, HeightFilter, makeHeightSearchQuery } from './dto/CudosAuraPoolServiceTxFilter';
+import { getBankSendMsgToOnDemandMintingServiceQuery, HeightFilter } from './dto/CudosAuraPoolServiceTxFilter';
 
 export default class CudosChainRpcRepo implements CudosChainRepo {
     chainClient: StargateClient;
@@ -38,7 +37,8 @@ export default class CudosChainRpcRepo implements CudosChainRepo {
             maxHeight: toHeight,
         };
 
-        const indexedTxs = await this.chainClient.searchTx(makeHeightSearchQuery(await getBankSendMsgToOnDemandMintingServiceQuery(), heightFilter));
+        // const indexedTxs = await this.chainClient.searchTx(makeHeightSearchQuery(await getBankSendMsgToOnDemandMintingServiceQuery(), heightFilter));
+        const indexedTxs = await this.chainClient.searchTxLegacy(await getBankSendMsgToOnDemandMintingServiceQuery(), heightFilter.minHeight, heightFilter.maxHeight);
 
         const cudosSignerAddress = await Config.getCudosSignerAddress();
         return indexedTxs.map((indexedTx) => RefundTransactionEntity.fromChainIndexedTx(indexedTx)).filter((entity) => {

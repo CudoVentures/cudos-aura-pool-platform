@@ -64,7 +64,7 @@
     "class-validator": "^0.14.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
-    "cudosjs": "2.0.0",
+    "cudosjs": "2.0.2",
     "dotenv": "^16.0.1",
     "ethers": "^5.7.2",
     "graphql-tag": "^2.12.6",
