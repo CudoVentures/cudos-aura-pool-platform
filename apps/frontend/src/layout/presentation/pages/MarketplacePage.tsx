@@ -461,7 +461,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                 { accountSessionStore.isLoggedInAndWalletConnected() === false ? (
                                     <>
                                         <div className={'PurchaseNoWallet Bold'} >
-                                            Please <span className = { 'ColorPrimary060 Clickable' } onClick = { onClickConnectWallet }>connect your wallet</span> to purchase
+                                            Mote test text
                                         </div>
                                     </>
                                 ) : (
@@ -469,7 +469,7 @@ function MarkedplacePage({ nftPresaleStore, alertStore, accountSessionStore, mar
                                         {nftPresaleStore.isUserEligibleToBuy() === false ? (
                                             <>
                                                 { fetchingKyc === false && (
-                                                    <span className = { 'PurchaseError Bold' }>You are not whitelisted and therefore must wait until the public sale to purchase an NFT.<br />Head over to our <a className = { 'ColorPrimary060' } href="https://discord.gg/7DPZ45C4ms" target='_blank' rel="noreferrer">Discord</a> to get whitelisted for future collections.</span>
+                                                    <span className = { 'PurchaseError Bold' }>Test change.</span>
                                                 ) }
                                             </>
                                         ) : (
